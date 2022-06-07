@@ -1,0 +1,57 @@
+@import url("../../assets/css/style.scss");
+
+.ca_writer_card {
+  text-align: center;
+  p {
+    font-size: var(--body-text);
+    padding: 0px 80px;
+    line-height: 17px;
+  }
+  h5 {
+    font-size: var(--header5-text);
+    color: var(--ono-primary-text);
+    margin-top: 20px;
+    padding: 0px 30px;
+  }
+  h6 {
+    font-size: var(--btn-text);
+    color: var(--ono-blue);
+    margin-top: 5px;
+  }
+}
+.login_container {
+  max-width: 100%;
+  padding: 80px 250px;
+  margin: 0 auto;
+}
+.wrapper {
+  background-color: var(--ono-white);
+  border-top: 6px solid var(--ono-primary);
+  border-radius: 5px;
+  form {
+    label {
+      font-size: var(--header2-text);
+    }
+    padding: 25px 45px;
+    a {
+      color: var(--ono-blue) !important;
+    }
+    button {
+      width: 100%;
+    }
+    .form-control {
+      padding: 12px 20px;
+      border-radius: 4px;
+    }
+    .form_div {
+      margin-bottom: 25px;
+    }
+    p {
+      font-size: var(--body-text);
+      color: var(--ono-subtext);
+    }
+    .resend_otp {
+      font-size: var(--btn-text);
+    }
+  }
+}

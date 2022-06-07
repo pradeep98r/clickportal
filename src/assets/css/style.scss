@@ -1,0 +1,166 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap");
+body {
+  margin: 0px;
+  font-family: "Manrope", sans-serif;
+  font-weight: normal;
+  background-color: var(--ono-primary-background);
+}
+body p {
+  letter-spacing: 0.3px;
+}
+.row,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0px;
+}
+a {
+  text-decoration: none;
+}
+.card {
+  border: none;
+}
+.bg_white {
+  background-color: var(--ono-white);
+}
+.main_div_padding {
+  padding: 20px;
+}
+:root {
+  --ono-primary: #16a12c;
+  --ono-yellow: #fff536;
+  --ono-red: #d43939;
+  --ono-blue: #0066ff;
+  --ono-primary-background: #eff3ef;
+  --ono-select-background: #d7f3dd;
+  --ono-primary-text: #121212;
+  --ono-white: #ffffff;
+  --ono-subtext: #4d4d4d;
+  --main-heading: 24px;
+  --header2-text: 20px;
+  --header3-text: 16px;
+  --btn-text: 15px;
+  --header5-text: 14px;
+  --body-text: 13px;
+}
+.main_div {
+  width: calc(100% - 210px);
+}
+.main_wrapper {
+  background-color: var(--ono-primary);
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+.login_nav {
+  background-color: var(--ono-white);
+  padding: 25px;
+  width: 100%;
+  h1 {
+    font-size: var(--main-heading);
+  }
+}
+.flex_class {
+  display: flex;
+  align-items: center;
+}
+.primary_btn,
+.btn_white,
+.outline_btn {
+  color: var(--ono-white);
+  background-color: var(--ono-primary);
+  border-radius: 4px;
+  padding: 13px 40px;
+  font-size: var(--btn-text);
+  border: none;
+}
+.btn_white,
+.outline_btn {
+  background-color: var(--ono-white);
+  color: var(--ono-primary-text);
+  padding: 10px 15px;
+}
+.outline_btn {
+  border: 1px solid var(--ono-primary);
+  color: var(--ono-primary);
+}
+.buttons {
+  margin-top: 30px;
+}
+.para_margin {
+  margin-top: 20px;
+}
+.logo_top {
+  position: absolute;
+  bottom: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.green_border {
+  border-right: 1px solid var(--ono-primary);
+}
+.no_data_div {
+  background-color: var(--ono-white);
+  padding: 20px;
+  border-radius: 10px;
+  p {
+    font-size: var(--btn-text);
+    color: var(--ono-primary-text);
+    margin-top: 20px;
+  }
+}
+.default_card {
+  background-color: var(--ono-white);
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  padding: 20px 30px;
+}
+.green_card {
+  background-color: var(--ono-primary);
+  border-radius: 10px;
+}
+.warning_card {
+  background-color: #f3d7d7;
+  border-radius: 10px;
+}
+.margin_bottom {
+  margin-bottom: 20px;
+}
+.col_left {
+  padding-left: 0px;
+}
+.col_right {
+  padding-right: 0px;
+}
+.column {
+  padding: 0px;
+}
+.smartboard_main_header {
+  font-size: var(--btn-text);
+  color: var(--ono-primary-text);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+// smartboard
+.mandi_setup {
+  background-color: var(--ono-primary);
+  padding: 15px 20px;
+  color: var(--ono-white);
+  h3 {
+    font-size: var(--header3-text);
+    font-weight: 600;
+  }
+  p {
+    font-size: var(--body-text);
+    font-weight: 500;
+  }
+}
+.outstanding_balance {
+  .card {
+    padding: 20px 30px;
+  }
+}
