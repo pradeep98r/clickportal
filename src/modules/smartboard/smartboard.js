@@ -2,29 +2,13 @@ import React, { Component } from "react";
 import TopNavigation from "../../components/top_navigation/top_navigation";
 import SideNavigation from "../../components/side_navigation/side_navigation";
 import NoDataAvailable from "../../components/no_data_available";
-import axiosConn from "../../components/axiosConn";
 import OutlineButton from "../../components/outline_button";
 import { Link } from "react-router-dom";
-import "jquery/dist/jquery.min.js";
-import $ from "jquery";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";
 import "owl.carousel/dist/assets/owl.theme.default.css";
 
 class SmartBoard extends Component {
-  // componentDidMount() {
-  //   const url = `click/mobile/9640939391`;
-  //   axiosConn
-  //     .post(url, {
-  //       mobile: 9640939391,
-  //     })
-  //     .then(function (response) {
-  //       console.log(response);
-  //     })
-  //     .catch(function (response) {
-  //       console.log(response);
-  //     });
-  // }
   render() {
     return (
       <div>
