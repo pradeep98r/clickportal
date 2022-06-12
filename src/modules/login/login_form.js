@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import Navigation from "../../components/navigation";
 import Logo from "../../components/logo";
 import InputField from "../../components/input_field";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login } from "../../features/userSlice";
 const LoginForm = ({ loginSubmit, otpSubmit, viewOtpForm }) => {
   const [inputValue, setInputValue] = useState({ name: "" });
   const { name } = inputValue;
@@ -14,6 +16,20 @@ const LoginForm = ({ loginSubmit, otpSubmit, viewOtpForm }) => {
       [name]: value,
     }));
   };
+
+  const dispath = useDispatch();
+
+  const navigate = useNavigate();
+  const handleSUbmit = (e) =>{
+    e.preventDefault();
+
+    dispath(login({
+      name:name,
+      loggedIn:true
+    }));
+
+    navigate('/smartboard')
+  }
   return (
     <div>
       <Navigation login_type="login_form" />
@@ -22,23 +38,23 @@ const LoginForm = ({ loginSubmit, otpSubmit, viewOtpForm }) => {
           <div className="col-lg-6 wrapper p-0">
             {!viewOtpForm ? (
               <div className="form-wrapper">
-                <form id="loginForm" onSubmit={loginSubmit}>
+                <form id="loginForm" onSubmit={(e) => handleSUbmit(e)}>
                   <InputField
-                    type="number"
+                    type="text"
                     value={name}
                     label="Enter your mobile number"
                     name="name"
                     onChange={handleChange}
                   />
-                  <Link to="/smartboard">
-                    <button
-                      className="primary_btn"
-                      type="submit"
-                      id="sign-in-button"
-                    >
-                      Login
-                    </button>
-                  </Link>
+                  {/* <Link to="/smartboard"> */}
+                  <button
+                    className="primary_btn"
+                    type="submit"
+                    id="sign-in-button"
+                  >
+                    Login
+                  </button>
+                  {/* </Link> */}
                   <p className="para_margin">
                     By continuing, you agree to Ono’s
                     <br></br>
