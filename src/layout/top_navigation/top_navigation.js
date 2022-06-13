@@ -1,4 +1,3 @@
-import React, { Component } from "react";
 import bell from "../../assets/images/navbar/Bell.svg";
 import help from "../../assets/images/navbar/Help.svg";
 import "./top_navigation.scss";
