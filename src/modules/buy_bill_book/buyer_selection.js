@@ -1,6 +1,4 @@
 import React, { Component, useState } from "react";
-// import TopNavigation from "../../components/top_navigation/top_navigation";
-// import SideNavigation from "../../components/side_navigation/side_navigation";
 import "../buy_bill_book/buy_bill_book.scss";
 import Select, { components } from "react-select";
 function BuyerSelection() {

@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import TopNavigation from "../../components/top_navigation/top_navigation";
-// import SideNavigation from "../../components/side_navigation/side_navigation";
 import NoDataAvailable from "../../components/no_data_available";
 import OutlineButton from "../../components/outline_button";
 import { Link } from "react-router-dom";

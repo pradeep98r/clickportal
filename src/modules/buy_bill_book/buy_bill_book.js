@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-// import TopNavigation from "../../components/top_navigation/top_navigation";
-// import SideNavigation from "../../components/side_navigation/side_navigation";
 import "../buy_bill_book/buy_bill_book.scss";
 import Button from "../../components/button";
 import single_bill from "../../assets/images/bills/single_bill.svg";
