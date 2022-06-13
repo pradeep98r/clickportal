@@ -74,7 +74,7 @@ a {
   color: var(--ono-white);
   background-color: var(--ono-primary);
   border-radius: 4px;
-  padding: 13px 40px;
+  padding: 12px 40px;
   font-size: var(--btn-text);
   border: none;
 }
@@ -87,6 +87,9 @@ a {
 .outline_btn {
   border: 1px solid var(--ono-primary);
   color: var(--ono-primary);
+}
+.add_bills_btn{
+  padding: 8px 25px;
 }
 .buttons {
   margin-top: 30px;
@@ -164,3 +167,12 @@ a {
     padding: 20px 30px;
   }
 }
+
+// bills
+// .bottom_bar{
+//   background-color: var(--ono-white);
+//   position: absolute;
+//   bottom: 0;
+//   width: 100%;
+//   padding: 20px;
+// }

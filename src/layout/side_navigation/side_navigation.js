@@ -147,12 +147,12 @@ class SideNavigation extends Component {
               {links.map((link) => {
                 return (
                   <li key={link.id}>
-                    <a
+                    <Link
+                      onClick={() => this.handleClick(link.id)}
                       className={
                         link.className +
                         (link.id === activeLink ? " active_item" : "")
                       }
-                      onClick={() => this.handleClick(link.id)}
                       to={link.to}
                     >
                       <div className="flex_class">
@@ -161,7 +161,7 @@ class SideNavigation extends Component {
                         </div>
                         <span>{link.name} </span>
                       </div>
-                    </a>
+                    </Link>
                   </li>
                 );
               })}

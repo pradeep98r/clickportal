@@ -78,7 +78,7 @@
   }
 }
 
-.sidebar-nav li a:hover, .sidebar-nav li a.active_item {
+.sidebar-nav li .side_nav_item:hover, .sidebar-nav li .side_nav_item.active_item {
   text-decoration: none;
   color: var(--ono-yellow);
   background: var(--ono-primary);
@@ -89,8 +89,8 @@
   }
 }
 
-.sidebar-nav li a:active,
-.sidebar-nav li a:focus {
+.sidebar-nav li .side_nav_item:active,
+.sidebar-nav li .side_nav_item:focus {
   text-decoration: none;
 }
 
