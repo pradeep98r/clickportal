@@ -5,6 +5,9 @@ import InputField from "../../components/input_field";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/userSlice";
+import doLgin from '../../services/loginService';
+import doLogin from "../../services/loginService";
+
 const LoginForm = ({ loginSubmit, otpSubmit, viewOtpForm }) => {
   const [inputValue, setInputValue] = useState({ name: "" });
   const { name } = inputValue;
@@ -18,17 +21,36 @@ const LoginForm = ({ loginSubmit, otpSubmit, viewOtpForm }) => {
   };
 
   const dispath = useDispatch();
-
   const navigate = useNavigate();
-  const handleSUbmit = (e) =>{
+  const handleSUbmit = (e) => {
     e.preventDefault();
 
     dispath(login({
-      name:name,
-      loggedIn:true
+      name: name,
+      loggedIn: true
     }));
 
-    navigate('/smartboard')
+    const obj = {
+      "deviceInfo": {
+        "deviceId": "d1",
+        "model": "test",
+        "os": "android",
+        "version": "1.234"
+      },
+      "langId": 1,
+      "locAllow": true,
+      "location": {
+        "latitude": "19.234",
+        "longitude": "34.233"
+      },
+      "mobile": name,
+      "newMobileNum": true,
+      "userType": "id1"
+    }
+    doLogin(obj).then(response => console.log(response));
+    viewOtpForm = true;
+    // this.setState({viewOtpForm : true})
+    navigate('/smartboard');
   }
   return (
     <div>
