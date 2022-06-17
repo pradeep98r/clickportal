@@ -1,40 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../buy_bill_book/buy_bill_book.scss";
 import SelectSearch from "./select_search";
 import Select from "react-select";
-import click_logo from "../../assets/images/click_logo_green.svg";
+import { useDispatch } from "react-redux";
+import { selectBuyer } from "../../features/buyerSlice";
+import getPartnerApi from "../../services/get_partner_api";
+import single_bill from "../../assets/images/bills/single_bill.svg";
+import { useNavigate } from "react-router-dom";
 function BuyerSelection() {
-  const data = [
-    {
-      value: "aparna",
-      label: "aparna",
-      icon: click_logo,
-    },
-    {
-      value: "janu",
-      label: "janu ",
-      icon: click_logo,
-    },
-    {
-      value: "komal",
-      label: "komal",
-      icon: click_logo,
-    },
-    {
-      value: "rakhi",
-      label: "rakhi",
-      icon: click_logo,
-    },
-  ];
-
   const [selectedOption, setSelectedOption] = useState();
+  const dispath = useDispatch();
+
+  let [responseData, setResponseData] = useState([]);
+  const navigate = useNavigate();
+  const fetchData = () => {
+    getPartnerApi
+      .getPartnerData()
+      .then((response) => {
+        setResponseData(response.data.data);
+        console.log(response.data,"buyer data")
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   // handle onChange event of the dropdown
   const handleChange = (e) => {
     setSelectedOption(e);
-    console.log(e,"select")
   };
-
+  const handleSUbmit = (e) => {
+    e.preventDefault();
+    dispath(
+      selectBuyer({
+        buyerInfo: selectedOption,
+      })
+    );
+    navigate('/bill_creation')
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -44,25 +51,22 @@ function BuyerSelection() {
               <h4 className="smartboard_main_header">Bill Information</h4>
               <div className="row margin_bottom">
                 <div className="col-lg-8 col_left">
-                  <Select
-                    options={data}
-                    placeholder="Select Buyer"
-                    value={selectedOption}
-                    onChange={handleChange}
-                    isSearchable={true}
-                    getOptionLabel={(e) => (
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <img src={e.icon} className="icon_user" />
-                        <span style={{ marginLeft: 5 }}>{e.value}</span>
-                      </div>
-                    )}
-                  />
-
-                  {/* {selectedOption && (
-                    <div>
-                      <b>Selected Option:</b> {selectedOption.value}
-                    </div>
-                  )} */}
+                  {responseData.length > 0 && (
+                    <Select
+                      options={responseData}
+                      placeholder="Select Buyer"
+                      value={selectedOption}
+                      onChange={handleChange}
+                      isSearchable={true}
+                      getOptionValue={(e) => e.partyId}
+                      getOptionLabel={(e) => (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img src={single_bill} className="icon_user" />
+                          <span style={{ marginLeft: 5 }}>{e.partyName}</span>
+                        </div>
+                      )}
+                    />
+                  )}
                 </div>
                 <div className="col-lg-4 ">
                   <input
@@ -76,23 +80,19 @@ function BuyerSelection() {
               <div className="row">
                 <div className="col-lg-8 col_left">
                   <SelectSearch />
-                  {/* <select>
-                        <option value="DEFAULT" disabled>
-                          Add Transporter
-                        </option>
-                        <option>swa</option>
-                        <option>ashu</option>
-                        <option>kiran</option>
-                        <option>komal</option>
-                        <option>taru</option>
-                        <option>meenu</option>
-                      </select> */}
                 </div>
                 <div></div>
               </div>
             </div>
-            <div className="col-lg-5"></div>
           </div>
+        </div>
+      </div>
+      <div className="bottom_div main_div">
+        <div className="d-flex align-items-center justify-content-end">
+          <button className="">Cancel</button>
+          <button className="primary_btn" onClick={(e) => handleSUbmit(e)}>
+            Next
+          </button>
         </div>
       </div>
     </div>

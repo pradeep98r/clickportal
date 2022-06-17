@@ -20,16 +20,18 @@ const LoginForm = ({ loginSubmit, otpSubmit, viewOtpForm }) => {
   const dispath = useDispatch();
 
   const navigate = useNavigate();
-  const handleSUbmit = (e) =>{
+  const handleSUbmit = (e) => {
     e.preventDefault();
 
-    dispath(login({
-      name:name,
-      loggedIn:true
-    }));
+    dispath(
+      login({
+        name: name,
+        loggedIn: true,
+      })
+    );
 
-    navigate('/smartboard')
-  }
+    navigate("/smartboard");
+  };
   return (
     <div>
       <Navigation login_type="login_form" />

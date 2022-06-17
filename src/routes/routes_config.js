@@ -7,6 +7,7 @@ import SmartBoard from "../modules/smartboard/smartboard";
 import BuyBillBook from "../modules/buy_bill_book/buy_bill_book";
 import BuyerSelection from "../modules/buy_bill_book/buyer_selection";
 import Layout from "../layout/layout";
+import BillCreation from "../modules/buy_bill_book/bill_creation";
 const Routes_Config = () => {
   return (
     <Router>
@@ -20,6 +21,7 @@ const Routes_Config = () => {
           <Route path="/smartboard" element={<SmartBoard />} />
           <Route path="/buy_bill_book" element={<BuyBillBook />} />
           <Route path="/buyer_selection" element={<BuyerSelection />} />
+          <Route path="/bill_creation" element={<BillCreation />} />
         </Routes>
       </Layout>
     </Router>

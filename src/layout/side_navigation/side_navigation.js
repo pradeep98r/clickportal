@@ -150,7 +150,7 @@ class SideNavigation extends Component {
                     <Link
                       onClick={() => this.handleClick(link.id)}
                       className={
-                        link.className +
+                        link.className + 
                         (link.id === activeLink ? " active_item" : "")
                       }
                       to={link.to}

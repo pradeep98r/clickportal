@@ -4,6 +4,7 @@ body {
   font-family: "Manrope", sans-serif;
   font-weight: normal;
   background-color: var(--ono-primary-background);
+  height: 100%;
 }
 body p {
   letter-spacing: 0.3px;
@@ -46,9 +47,15 @@ a {
   --btn-text: 15px;
   --header5-text: 14px;
   --body-text: 13px;
+  --body-small-text:12px
+}
+.header2_text{
+  font-size: var( --header2-text);
+  color: var(--ono-primary-text);
 }
 .main_div {
   width: calc(100% - 210px);
+  overflow-x: hidden;
 }
 .main_wrapper {
   background-color: var(--ono-primary);
@@ -73,7 +80,7 @@ a {
 .outline_btn {
   color: var(--ono-white);
   background-color: var(--ono-primary);
-  border-radius: 4px;
+  border-radius: 10px;
   padding: 12px 40px;
   font-size: var(--btn-text);
   border: none;
@@ -88,7 +95,15 @@ a {
   border: 1px solid var(--ono-primary);
   color: var(--ono-primary);
 }
-.add_bills_btn{
+.secondary_btn{
+  color: var(--ono-subtext);
+  background-color: var(--ono-primary-background);
+  border-radius: 10px;
+  padding: 12px 40px;
+  font-size: var(--btn-text);
+  border: none;
+}
+.add_bills_btn {
   padding: 8px 25px;
 }
 .buttons {
@@ -167,12 +182,13 @@ a {
     padding: 20px 30px;
   }
 }
-
 // bills
-// .bottom_bar{
-//   background-color: var(--ono-white);
-//   position: absolute;
-//   bottom: 0;
-//   width: 100%;
-//   padding: 20px;
-// }
+.bottom_div {
+  background-color: var(--ono-white);
+  padding:10px 20px;
+  position: absolute;
+  bottom: 0;
+  .primary_btn {
+    margin-left: 20px;
+  }
+}

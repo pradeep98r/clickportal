@@ -16,6 +16,7 @@
   
   .main {
     grid-area: 3 / 2 / 3 / 3;
+    height: calc(100vh - 71px);
   }
   
   .footer {

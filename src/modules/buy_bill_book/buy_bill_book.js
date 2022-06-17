@@ -8,44 +8,36 @@ class BuyBillBook extends Component {
   render() {
     return (
       <div>
-  <div className="main_div_padding">
-              <div className="container-fluid px-0">
-                <div className="card default_card text-center">
-                  <div className="row no_data_row">
-                    <div className="col-lg-6 col1">
-                      <div>
-                        <img
-                          src={single_bill}
-                          alt="image"
-                          className="flex_class"
-                        />
-                        <p>
-                          Lorem ipsum is placeholder text commonly used in the
-                          graphic
-                        </p>
-                        <Link to="/buyer_selection">
-                          <Button text="Single Bill" />
-                        </Link>
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div>
-                        <img
-                          src={multi_bills}
-                          alt="image"
-                          className="flex_class"
-                        />
-                        <p>
-                          Lorem ipsum is placeholder text commonly used in the
-                          graphic
-                        </p>
-                        <Button text="Multi Bill" />
-                      </div>
-                    </div>
+        <div className="main_div_padding">
+          <div className="container-fluid px-0">
+            <div className="card default_card text-center">
+              <div className="row no_data_row">
+                <div className="col-lg-6 col1">
+                  <div>
+                    <img src={single_bill} alt="image" className="flex_class" />
+                    <p>
+                      Lorem ipsum is placeholder text commonly used in the
+                      graphic
+                    </p>
+                    <Link to="/buyer_selection">
+                      <Button text="Single Bill" />
+                    </Link>
+                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <div>
+                    <img src={multi_bills} alt="image" className="flex_class" />
+                    <p>
+                      Lorem ipsum is placeholder text commonly used in the
+                      graphic
+                    </p>
+                    <Button text="Multi Bill" />
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
       </div>
     );
   }
