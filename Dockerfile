@@ -1,29 +1,24 @@
-#FROM node:16-alpine as build-stage
-#
-#WORKDIR /app
-#RUN apk add --update --no-cache \
-#            chromium \
-#            nodejs \
-#            npm
-#
-#ENV PATH /app/node_modules/.bin:$PATH
-#ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-#ENV CHROMIUM_PATH /usr/bin/chromium-browser
-#ENV PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium-browser
-#
-#COPY package.json ./
-#COPY package-lock.json ./
-#COPY . .
-#RUN ./bin/build.sh
-#
-###EXPOSE 3000
-###
-###CMD ["npm", "start"]
-#
-#
+FROM node:slim as build
+
+RUN mkdir -p /app
+WORKDIR /app
+COPY . /app
+
+RUN npm install --no-audit
+#    && \
+#    npm audit fix --force
+#-g npm@7.18.1 \
+#    && npm audit fix \
+#    && npm install
+
+RUN npm run build
+
+
+# Use official nginx image as the base image
 FROM nginx:latest
-#COPY --from=build-stage /app/build /usr/share/nginx/html
-COPY build /usr/share/nginx/html
-COPY ./conf/default.conf /etc/nginx/conf.d/
+
+# Copy the build output to replace the default nginx contents.
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 80
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
