@@ -113,10 +113,11 @@ a {
   margin-top: 20px;
 }
 .logo_top {
-  position: absolute;
-  bottom: 15%;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 5rem;
+  // position: absolute;
+  // bottom: 15%;
+  // left: 50%;
+  // transform: translateX(-50%);
 }
 .green_border {
   border-right: 1px solid var(--ono-primary);

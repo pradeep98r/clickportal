@@ -1,0 +1,53 @@
+image: python:3.9
+
+definitions:
+  scripts:
+    script: &commonScript
+              echo "Setting up environment and required tools ...";
+              pip3 install --upgrade pip && pip3 install awscli boto3;
+              apt-get update -y && apt-get install -y openjdk-11-jdk maven jq;
+              aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID};
+              aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY};
+              aws configure set default.region ap-south-1;
+              aws s3 cp s3://onoark-infra/deploy-scripts.zip . ;
+              unzip deploy-scripts.zip;
+
+pipelines:
+  branches:
+    dev:
+      - step:
+          name: 'Build and Push Application Docker Image'
+          services:
+            - docker
+          script:
+            - *commonScript
+            - echo "Building Docker Image"
+            - pwd && ls -ltra && ls -ltra ./bin
+            - /bin/sh ./bin/service-build.sh dev
+      - step:
+          name: 'Deploy Application Docker Image to ECS'
+          #          deployment: development
+          trigger: 'manual'
+          script:
+            - *commonScript
+            - echo "Deploy to Development"
+            - /bin/sh ./bin/service-deploy.sh dev
+    master:
+      - step:
+          name: 'Build and Push Application Docker Image'
+          services:
+            - docker
+          script:
+            - *commonScript
+            - echo "Building Docker Image"
+            - pwd && ls -ltra && ls -ltra ./bin
+            - python ./bin/get-member-account-token.py --env prod
+            - /bin/sh ./bin/service-build.sh prod
+      - step:
+          name: 'Deploy Application Docker Image to ECS'
+          trigger: 'manual'
+          script:
+            - *commonScript
+            - echo "Deploy to Production"
+            - python ./bin/get-member-account-token.py --env prod
+            - /bin/sh ./bin/service-deploy.sh prod
