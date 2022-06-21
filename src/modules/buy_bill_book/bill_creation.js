@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "../buy_bill_book/buy_bill_book.scss";
-import { useDispatch } from "react-redux";
-import { selectBuyer } from "../../features/buyerSlice";
 import getPreferredCropsApi from "../../services/get_partner_api";
 import other_crop from "../../assets/images/other_crop.svg";
 import { useNavigate } from "react-router-dom";
@@ -11,13 +9,12 @@ import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import postPreferenceApi from "../../services/preferences";
-
 import $ from "jquery";
-
+var array = [];
 function BillCreation() {
   let [responseData, setResponseData] = useState([]);
-
   let [allCropsData, allCropResponseData] = useState([]);
+  let [cropData, cropResponseData] = useState(array);
   const navigate = useNavigate();
   // api to fettch preferred crops data
   const fetchData = () => {
@@ -34,7 +31,6 @@ function BillCreation() {
   const allCropData = () => {
     getPreferredCropsApi.getAllCrops().then((response) => {
       allCropResponseData(response.data.data);
-      console.log(response.data.data, "allCrops");
     });
   };
 
@@ -44,22 +40,18 @@ function BillCreation() {
 
   const handleSUbmit = (e) => {
     e.preventDefault();
-    // dispath(
-    //   selectBuyer({
-    //     buyerInfo: selectedOption,
-    //   })
-    // );
     navigate("/smartboard");
   };
   // click on crop to get that crop details
-  var array = [];
-  const [cropData, cropResponseData] = useState(array);
-  const cropOnclick = (crop) => {
-    array.push(crop);
-    cropResponseData(array);
+  const cropOnclick = (crop, id) => {
+    cropResponseData([...cropData, crop]);
   };
-  // console.log(array);
-  console.log(cropData, "cropdata");
+  // add crop in other crop popup model
+  const addCropOnclick = (crop_item) => {
+    console.log(crop_item, "add crop selected");
+    setResponseData([...responseData, crop_item]);
+    cropResponseData([...cropData, crop_item]);
+  };
   const [selectedOption, setSelectedOption] = useState();
   const [selectedQty, setSelected] = useState(
     selectedOption ? selectedOption : "Crates"
@@ -72,6 +64,7 @@ function BillCreation() {
   const getQuantity = (e) => {
     setSelectedOption(e.target.value);
   };
+
   // delete crop
   const deleteCrop = (crop) => {
     var array = cropData.filter(function (s) {
@@ -83,35 +76,20 @@ function BillCreation() {
   const [commValue, getCommInput] = useState("");
   const [returnValue, getReturnInput] = useState("");
   const [cropItem, setSelectCrop] = useState("");
-  const [unitsValue, getUnitsValue] = useState("");
-  const [wastageValue, getWastageValue] = useState("");
-  const [rateValue, getRateValue] = useState("");
-  const [weightValue, getWeightValue] = useState("");
-  // add crop in other crop popup model
-  const addCropOnclick = (crop_item) => {
-    console.log(crop_item, "add crop selected");
-    // var options = allCropsData;
-    // var value = [];
-    // for (var i = 0; i < options.length; i++) {
-    //   value.push(crop_item);
-    // }
-    // console.log(value, "multi selection");
-  };
-
-  // post crop api request
-  const cropObj = {
-    prefType: "CROP",
-    preferences: [
-      {
-        prefId: 13,
-        status: 0,
-      },
-    ],
-  };
-  const postPreference = () => {
-    postPreferenceApi(cropObj).then((response) => {
-      fetchData();
+  const [state, setState] = useState({
+    quantity: "",
+    rate: "",
+    totalWeight: "",
+    wastage: "",
+    total: "",
+  });
+  const getQuantityInputValues = (evt) => {
+    const value = evt.target.value;
+    setState({
+      ...state,
+      [evt.target.name]: value,
     });
+    state.total = state.quantity;
   };
   return (
     <div>
@@ -122,6 +100,7 @@ function BillCreation() {
               <h4 className="smartboard_main_header">
                 Select crop and creat bill
               </h4>
+
               <div className="d-flex">
                 {responseData.length > 0 && (
                   <div className="d-flex total_crops_div">
@@ -129,7 +108,7 @@ function BillCreation() {
                       <div
                         className="text-center crop_div"
                         key={crop.cropId}
-                        onClick={() => cropOnclick(crop)}
+                        onClick={() => cropOnclick(crop, crop.cropId)}
                       >
                         <img
                           src={crop.imageUrl}
@@ -154,200 +133,203 @@ function BillCreation() {
                 {cropData.length > 0 && (
                   <div className="">
                     <h4 className="smartboard_main_header">Crop Information</h4>
-                    {cropData.map((crop) => (
-                      <div
-                        className="crop_div crop_table_div"
-                        key={crop.cropId}
-                      >
-                        <div className="flex_class justify-content-between">
-                          <div className="flex_class">
-                            <img
-                              src={crop.imageUrl}
-                              className="flex_class mx-auto"
-                            />
-                            <p className="ml-auto ms-2">{crop.cropName}</p>
-                          </div>
-                          <select
-                            className="form-control qty_dropdown dropdown"
-                            value={selectedOption}
-                            onChange={getQuantity}
-                          >
-                            <option value="Crates">Crates</option>
-                            <option value="Bags">Bags</option>
-                            <option value="Sacs">Sacs </option>
-                            <option value="Boxes">Boxes </option>
-                            <option value="Kgs">Kgs </option>
-                          </select>
+                    <div className="table_row" id="scroll_style">
+                      {cropData.map((crop) => (
+                        <div
+                          className="crop_div crop_table_div"
+                          key={crop.cropId}
+                        >
+                          <div className="flex_class justify-content-between">
+                            <div className="flex_class">
+                              <img
+                                src={crop.imageUrl}
+                                className="flex_class mx-auto"
+                              />
+                              <p className="ml-auto ms-2">{crop.cropName}</p>
+                            </div>
+                            <select
+                              className="form-control qty_dropdown dropdown"
+                              value={selectedOption}
+                              onChange={getQuantity}
+                            >
+                              <option value="Crates">Crates</option>
+                              <option value="Bags">Bags</option>
+                              <option value="Sacs">Sacs </option>
+                              <option value="Boxes">Boxes </option>
+                              <option value="Kgs">Kgs </option>
+                            </select>
 
-                          <div
-                            className="radio_buttons"
-                            onClick={selectQuantity}
-                          >
-                            <input
-                              type="radio"
-                              id="yes"
-                              name="choose"
-                              value={selectedOption ? selectedOption : "Crates"}
-                              checked={
-                                selectedQty === selectedOption
-                                  ? selectedOption
-                                  : "Crates"
-                              }
-                            />
-                            <label htmlFor="yes">
-                              Rate Per {""}
-                              {selectedOption ? selectedOption : "Crates"}
-                            </label>
-                            <input
-                              type="radio"
-                              id="kg"
-                              name="choose"
-                              value="kg"
-                            />
-                            <label htmlFor="kg">Rate Per Kg</label>
+                            <div
+                              className="radio_buttons"
+                              onClick={selectQuantity}
+                            >
+                              <input
+                                type="radio"
+                                id="yes"
+                                name="choose"
+                                value={
+                                  selectedOption ? selectedOption : "Crates"
+                                }
+                                checked={
+                                  selectedQty === selectedOption
+                                    ? selectedOption
+                                    : "Crates"
+                                }
+                              />
+                              <label htmlFor="yes">
+                                Rate Per {""}
+                                {selectedOption ? selectedOption : "Crates"}
+                              </label>
+                              <input
+                                type="radio"
+                                id="kg"
+                                name="choose"
+                                value="kg"
+                              />
+                              <label htmlFor="kg">Rate Per Kg</label>
+                            </div>
+                          </div>
+                          {/* table */}
+                          <div className="crop_table_view">
+                            {selectedQty == "kg" ? (
+                              <table className="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th className="">
+                                      Number of{" "}
+                                      {selectedOption
+                                        ? selectedOption
+                                        : "Crates"}
+                                    </th>
+                                    <th>Total Weight(Kgs)</th>
+                                    <th>Wastage(kgs)</th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="quantity"
+                                        value={state.quantity}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="totalWeight"
+                                        value={state.totalWeight}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="wastage"
+                                        value={state.wastage}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="rate"
+                                        value={state.rate}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      {(state.totalWeight - state.wastage) *
+                                        state.rate}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            ) : (
+                              <table className="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th className="">
+                                      Number of{" "}
+                                      {selectedOption
+                                        ? selectedOption
+                                        : "Crates"}
+                                    </th>
+                                    <th>
+                                      Wastage(
+                                      {selectedOption
+                                        ? selectedOption
+                                        : "Crates"}
+                                      )
+                                    </th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="quantity"
+                                        value={state.quantity}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="wastage"
+                                        value={state.wastage}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        name="rate"
+                                        value={state.rate}
+                                        onChange={getQuantityInputValues}
+                                      />
+                                    </td>
+                                    <td>
+                                      {(state.quantity - state.wastage) *
+                                        state.rate}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            )}
+                          </div>
+                          <div className="flex_class">
+                            <div className="flex_class sub_icons_div">
+                              <img
+                                src={copy_icon}
+                                className="sub_icons"
+                                alt="image"
+                              />
+                              <p className="sub_icons_para copy_icon_text">
+                                Copy
+                              </p>
+                            </div>
+                            <div
+                              className="flex_class sub_icons_div"
+                              onClick={deleteCrop.bind(this, crop)}
+                            >
+                              <img
+                                src={delete_icon}
+                                className="sub_icons"
+                                alt="image"
+                              />
+                              <p className="sub_icons_para">delete</p>
+                            </div>
                           </div>
                         </div>
-                        {/* table */}
-                        <div className="crop_table_view">
-                          {selectedQty == "kg" ? (
-                            <table className="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th className="">
-                                    Number of{" "}
-                                    {selectedOption ? selectedOption : "Crates"}
-                                  </th>
-                                  <th>Total Weight(Kgs)</th>
-                                  <th>Wastage(kgs)</th>
-                                  <th>Rate</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onChange={(event) =>
-                                        getUnitsValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onChange={(event) =>
-                                        getWeightValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      className="wastage"
-                                      onChange={(event) =>
-                                        getWastageValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onChange={(event) =>
-                                        getRateValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    {(weightValue - wastageValue) * rateValue}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          ) : (
-                            <table className="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th className="">
-                                    Number of{" "}
-                                    {selectedOption ? selectedOption : "Crates"}
-                                  </th>
-                                  <th>
-                                    Wastage(
-                                    {selectedOption ? selectedOption : "Crates"}
-                                    )
-                                  </th>
-                                  <th>Rate</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onChange={(event) =>
-                                        getUnitsValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      className="wastage"
-                                      onChange={(event) =>
-                                        getWastageValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onChange={(event) =>
-                                        getRateValue(event.target.value)
-                                      }
-                                    />
-                                  </td>
-                                  <td>
-                                    {(unitsValue - wastageValue) * rateValue}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
-                        </div>
-                        <div className="flex_class">
-                          <div className="flex_class sub_icons_div">
-                            <img
-                              src={copy_icon}
-                              className="sub_icons"
-                              alt="image"
-                            />
-                            <p className="sub_icons_para copy_icon_text">
-                              Copy
-                            </p>
-                          </div>
-                          <div
-                            className="flex_class sub_icons_div"
-                            onClick={deleteCrop.bind(this, crop)}
-                          >
-                            <img
-                              src={delete_icon}
-                              className="sub_icons"
-                              alt="image"
-                            />
-                            <p className="sub_icons_para">delete</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -555,7 +537,7 @@ function BillCreation() {
               <button
                 type="button"
                 className="primary_btn"
-                onClick={() => postPreference()}
+                // onClick={() => postPreference()}
                 data-bs-dismiss="modal"
               >
                 Next

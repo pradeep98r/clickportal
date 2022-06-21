@@ -116,7 +116,7 @@ class SideNavigation extends Component {
         img: advnces,
       },
     ],
-    activeLink: null,
+    // activeLink: null,
   };
 
   handleClick = (id) => {

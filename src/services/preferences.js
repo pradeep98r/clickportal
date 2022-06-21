@@ -1,6 +1,6 @@
 import axios from "axios";
 function postPreferenceApi(cropObj) {
-  console.log(cropObj);
+  console.log(cropObj,"object");
   return axios.post(
     "https://dev-api.onoark.com/v1/account/preferences/caId/330",
     cropObj,

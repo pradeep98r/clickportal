@@ -407,8 +407,11 @@ input:focus-visible {
 .comm_total_card {
   padding: 15px;
   overflow-y: auto;
-  // height: 500px;
   height: calc(100vh - 210px);
+}
+ .table_row{
+  overflow-y: auto;
+  height: calc(100vh - 320px);
 }
 #scroll_style::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);

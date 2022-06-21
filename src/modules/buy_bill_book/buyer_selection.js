@@ -89,7 +89,7 @@ function BuyerSelection() {
       </div>
       <div className="bottom_div main_div">
         <div className="d-flex align-items-center justify-content-end">
-          <button className="">Cancel</button>
+          <button className="secondary_btn">Cancel</button>
           <button className="primary_btn" onClick={(e) => handleSUbmit(e)}>
             Next
           </button>
