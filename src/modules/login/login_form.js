@@ -79,6 +79,7 @@ class LoginForm extends Component {
     validateOTP(obj).then((resp) => {
       if (resp.data.status.type === "SUCCESS") {
         this.setState({ toDashboard: true, otpError : '' })
+        console.log(resp.data.data)
       }
       else {
         this.setState({otpError : 'The entered otp is incorrect'})
