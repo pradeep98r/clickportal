@@ -40,7 +40,6 @@ class LoginForm extends Component {
     //   name: this.name,
     //   loggedIn: true
     // }));
-    // toastr.success("Hello Pavan")
     if (document.getElementsByClassName('mobile-input')[0].validity.valid) {
       const obj = {
         "deviceInfo": {
