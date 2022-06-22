@@ -24,6 +24,17 @@
   padding: 80px 250px;
   margin: 0 auto;
 }
+
+.edit-icon {
+  width: 25px;
+  height: 22px;
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 2rem;
+  background-image: url(../../assets/images/edit.svg);
+  background-repeat: no-repeat;
+}
+
 .wrapper {
   background-color: var(--ono-white);
   border-top: 6px solid var(--ono-primary);
@@ -46,12 +57,26 @@
     .form_div {
       margin-bottom: 25px;
     }
+
+    .mobile-field{
+      margin-bottom: 0;
+      .mobile-error{
+        height: 25px;
+        // display: none;
+        visibility: hidden;
+      }
+      input:invalid ~ .mobile-error{
+        visibility: visible;
+      }
+
+    }
     p {
       font-size: var(--body-text);
       color: var(--ono-subtext);
     }
     .resend_otp {
       font-size: var(--btn-text);
+      cursor: pointer;
     }
   }
 }

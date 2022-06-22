@@ -43,7 +43,9 @@ class Login extends Component {
                   operations and ensure all partners and transactions recorded
                   properly.
                 </p>
-                <Button text="I’m Writer" />
+                <Link to="/login_form">
+                  <Button text="I’m Writer" />
+                </Link>
                 <h5>Only you can login once your CA added you the system.</h5>
               </div>
             </div>
