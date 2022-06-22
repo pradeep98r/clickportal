@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../features/userSlice";
 import { doLogin, validateOTP } from "../../services/loginService";
 import { deviceType, osName, OsTypes, osVersion } from 'react-device-detect';
+import toastr from 'toastr';
 
 
 class LoginForm extends Component {
@@ -39,6 +40,7 @@ class LoginForm extends Component {
     //   name: this.name,
     //   loggedIn: true
     // }));
+    // toastr.success("Hello Pavan")
     if (document.getElementsByClassName('mobile-input')[0].validity.valid) {
       const obj = {
         "deviceInfo": {
@@ -55,7 +57,7 @@ class LoginForm extends Component {
         },
         "mobile": this.state.number,
         "newMobileNum": true,
-        "userType": "1"
+        "userType": localStorage.getItem('userType')
       }
       doLogin(obj).then((response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -63,11 +65,11 @@ class LoginForm extends Component {
           this.setState(() => ({ viewOtpForm: true, otpReqId: response.data.data.otpReqId, otp: '', otpError: '' }))
         }
         else if (response.data.status === "FAILURE") {
-          
         }
         else {
         }
       },(error)=>{
+        toastr.error(error.response.data.status.description);
       });
     }
   }
