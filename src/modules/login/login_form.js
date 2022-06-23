@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../features/userSlice";
 import { doLogin, validateOTP } from "../../services/loginService";
 import { deviceType, osName, OsTypes, osVersion } from 'react-device-detect';
+import toastr from 'toastr';
 
 
 class LoginForm extends Component {
@@ -19,7 +20,8 @@ class LoginForm extends Component {
     otp: '',
     latitude: '',
     longitude: '',
-    otpError: ''
+    otpError: '',
+    mobileError: 'Enter correct mobile number'
   }
   constructor() {
     super();
@@ -29,11 +31,6 @@ class LoginForm extends Component {
     this.setState({
       number: value
     })
-    // this.state.number = value
-    // this.setInputValue((prev) => ({
-    //   ...prev,
-    //   [name]: value,
-    // }));
   };
 
 
@@ -43,29 +40,37 @@ class LoginForm extends Component {
     //   name: this.name,
     //   loggedIn: true
     // }));
-    const obj = {
-      "deviceInfo": {
-        "deviceId": deviceType,
-        "model": deviceType,
-        "os": osName,
-        "version": osVersion
-      },
-      "langId": 1,
-      "locAllow": true,
-      "location": {
-        "latitude": "18.365",
-        "longitude": "19.654"
-      },
-      "mobile": this.state.number,
-      "newMobileNum": true,
-      "userType": "1"
-    }
-    doLogin(obj).then((response) => {
-      if (response.data.status.type === "SUCCESS") {
-        this.viewOtpForm = true;
-        this.setState(() => ({ viewOtpForm: true, otpReqId: response.data.data.otpReqId, otp:'',otpError:'' }))
+    if (document.getElementsByClassName('mobile-input')[0].validity.valid) {
+      const obj = {
+        "deviceInfo": {
+          "deviceId": deviceType,
+          "model": deviceType,
+          "os": osName,
+          "version": osVersion
+        },
+        "langId": 1,
+        "locAllow": true,
+        "location": {
+          "latitude": "18.365",
+          "longitude": "19.654"
+        },
+        "mobile": this.state.number,
+        "newMobileNum": true,
+        "userType": localStorage.getItem('userType')
       }
-    });
+      doLogin(obj).then((response) => {
+        if (response.data.status.type === "SUCCESS") {
+          this.viewOtpForm = true;
+          this.setState(() => ({ viewOtpForm: true, otpReqId: response.data.data.otpReqId, otp: '', otpError: '' }))
+        }
+        else if (response.data.status === "FAILURE") {
+        }
+        else {
+        }
+      },(error)=>{
+        toastr.error(error.response.data.status.description);
+      });
+    }
   }
 
   submitOTP(event) {
@@ -75,16 +80,16 @@ class LoginForm extends Component {
       "otp": this.state.otp,
       "otpReqId": this.state.otpReqId,
       "userType": "1"
-    }
+    };
     validateOTP(obj).then((resp) => {
       if (resp.data.status.type === "SUCCESS") {
-        this.setState({ toDashboard: true, otpError : '' })
+        this.setState({ toDashboard: true, otpError: '' })
       }
       else {
-        this.setState({otpError : 'The entered otp is incorrect'})
+        this.setState({ otpError: 'The entered otp is incorrect' })
       }
-    }, (error)=>{
-      this.setState({otpError : 'The entered otp is incorrect'})
+    }, (error) => {
+      this.setState({ otpError: 'The entered otp is incorrect' })
     })
   }
 
@@ -109,16 +114,15 @@ class LoginForm extends Component {
               {!this.state.viewOtpForm ? (
                 <div className="form-wrapper">
                   <form id="loginForm">
-                    <InputField
-                      type="text"
-                      value={this.state.number}
-                      label="Enter your mobile number"
-                      name="name"
-                      onChange={event => this.handleChange(event)}
-                    />
+                    <div className="form_div mobile-field">
+                      <label className="form-label mb-2">Enter your mobile number</label>
+                      <input type="text" className="form-control mobile-input" name="name" value={this.state.number} onChange={event => this.handleChange(event)} pattern="^[0-9]{10}$">
+                      </input>
+                      <div className="text-danger mobile-error" id="mobile-err">{this.state.mobileError}</div>
+                    </div>
                     {/* <Link to="/smartboard"> */}
                     <button
-                      className="primary_btn"
+                      className="primary_btn login-btn"
                       type="submit"
                       id="sign-in-button"
                       onClick={event => this.handleSubmit(event)}
