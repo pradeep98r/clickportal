@@ -9,12 +9,14 @@ import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import postPreferenceApi from "../../services/preferences";
+import BuyBillCreation from "./buy_bill_creation";
 import $ from "jquery";
 var array = [];
 function BillCreation() {
   let [responseData, setResponseData] = useState([]);
   let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
+  let [billSettingResponse, billSettingData] = useState(array);
   const navigate = useNavigate();
   // api to fettch preferred crops data
   const fetchData = () => {
@@ -27,6 +29,10 @@ function BillCreation() {
       .catch((error) => {
         console.log(error);
       });
+    getPreferredCropsApi.getSystemSettings().then((res) => {
+      console.log(res.data.data.billSetting);
+      billSettingData(res.data.data.billSetting);
+    });
   };
   const allCropData = () => {
     getPreferredCropsApi.getAllCrops().then((response) => {
@@ -57,13 +63,11 @@ function BillCreation() {
     selectedOption ? selectedOption : "Crates"
   );
   // select quantity through radio button
-  const selectQuantity = (event) => {
-    setSelected(event.target.value);
+  const selectQuantity = (e) => {
+    console.log(e);
+    setSelected(e.target.value);
   };
   // get quantity from dropdown
-  const getQuantity = (e) => {
-    setSelectedOption(e.target.value);
-  };
 
   // delete crop
   const deleteCrop = (crop) => {
@@ -82,14 +86,25 @@ function BillCreation() {
     totalWeight: "",
     wastage: "",
     total: "",
+    activeLink: "",
   });
-  const getQuantityInputValues = (evt) => {
-    const value = evt.target.value;
+
+  const getQuantity = (id) => (e) => {
+    console.log("hey");
+    setState({ activeLink: id });
+    setSelectedOption(e.target.value);
+  };
+
+  const getQuantityInputValues = (event, index) => {
+    const { name, value } = event.target;
     setState({
       ...state,
-      [evt.target.name]: value,
+      [name]: value,total:(state.quantity - state.wastage) *
+                                        state.rate
     });
-    state.total = state.quantity;
+  };
+  const cloneCopy = (crop) => {
+    cropResponseData([...cropData, crop]);
   };
   return (
     <div>
@@ -100,7 +115,6 @@ function BillCreation() {
               <h4 className="smartboard_main_header">
                 Select crop and creat bill
               </h4>
-
               <div className="d-flex">
                 {responseData.length > 0 && (
                   <div className="d-flex total_crops_div">
@@ -129,16 +143,14 @@ function BillCreation() {
                   <p>Other Crop</p>
                 </div>
               </div>
-              <div className="row">
+              <div className="row p-0">
                 {cropData.length > 0 && (
-                  <div className="">
+                  <div className="p-0">
                     <h4 className="smartboard_main_header">Crop Information</h4>
+
                     <div className="table_row" id="scroll_style">
-                      {cropData.map((crop) => (
-                        <div
-                          className="crop_div crop_table_div"
-                          key={crop.cropId}
-                        >
+                      {cropData.map((crop, index) => (
+                        <div className="crop_div crop_table_div" key={index}>
                           <div className="flex_class justify-content-between">
                             <div className="flex_class">
                               <img
@@ -149,8 +161,12 @@ function BillCreation() {
                             </div>
                             <select
                               className="form-control qty_dropdown dropdown"
-                              value={selectedOption}
-                              onChange={getQuantity}
+                              value={
+                                crop.cropId == state.activeLink
+                                  ? selectedOption
+                                  : ""
+                              }
+                              onChange={getQuantity(crop.cropId)}
                             >
                               <option value="Crates">Crates</option>
                               <option value="Bags">Bags</option>
@@ -168,36 +184,40 @@ function BillCreation() {
                                 id="yes"
                                 name="choose"
                                 value={
-                                  selectedOption ? selectedOption : "Crates"
+                                  crop.cropId == state.activeLink
+                                    ? selectedOption
+                                    : "Crates"
                                 }
                                 checked={
-                                  selectedQty === selectedOption
+                                  crop.cropId == state.activeLink
                                     ? selectedOption
                                     : "Crates"
                                 }
                               />
                               <label htmlFor="yes">
                                 Rate Per {""}
-                                {selectedOption ? selectedOption : "Crates"}
+                                {crop.cropId == state.activeLink
+                                  ? selectedOption
+                                  : "Crates"}
                               </label>
                               <input
                                 type="radio"
                                 id="kg"
-                                name="choose"
                                 value="kg"
+                                checked={"kg"}
                               />
                               <label htmlFor="kg">Rate Per Kg</label>
                             </div>
                           </div>
                           {/* table */}
                           <div className="crop_table_view">
-                            {selectedQty == "kg" ? (
+                            {selectedQty == "kgs" ? (
                               <table className="table table-bordered">
                                 <thead>
                                   <tr>
                                     <th className="">
                                       Number of{" "}
-                                      {selectedOption
+                                      {crop.cropId == state.activeLink
                                         ? selectedOption
                                         : "Crates"}
                                     </th>
@@ -213,8 +233,14 @@ function BillCreation() {
                                       <input
                                         type="text"
                                         name="quantity"
-                                        value={state.quantity}
-                                        onChange={getQuantityInputValues}
+                                        value={
+                                          crop.cropId == state.activeLink
+                                            ? state.quantity
+                                            : ""
+                                        }
+                                        onChange={getQuantityInputValues(
+                                          crop.cropId
+                                        )}
                                       />
                                     </td>
                                     <td>
@@ -222,7 +248,9 @@ function BillCreation() {
                                         type="text"
                                         name="totalWeight"
                                         value={state.totalWeight}
-                                        onChange={getQuantityInputValues}
+                                        onChange={getQuantityInputValues(
+                                          crop.cropId
+                                        )}
                                       />
                                     </td>
                                     <td>
@@ -230,7 +258,9 @@ function BillCreation() {
                                         type="text"
                                         name="wastage"
                                         value={state.wastage}
-                                        onChange={getQuantityInputValues}
+                                        onChange={getQuantityInputValues(
+                                          crop.cropId
+                                        )}
                                       />
                                     </td>
                                     <td>
@@ -238,7 +268,9 @@ function BillCreation() {
                                         type="text"
                                         name="rate"
                                         value={state.rate}
-                                        onChange={getQuantityInputValues}
+                                        onChange={getQuantityInputValues(
+                                          crop.cropId
+                                        )}
                                       />
                                     </td>
                                     <td>
@@ -254,13 +286,13 @@ function BillCreation() {
                                   <tr>
                                     <th className="">
                                       Number of{" "}
-                                      {selectedOption
+                                      {crop.cropId == state.activeLink
                                         ? selectedOption
                                         : "Crates"}
                                     </th>
                                     <th>
                                       Wastage(
-                                      {selectedOption
+                                      {crop.cropId == state.activeLink
                                         ? selectedOption
                                         : "Crates"}
                                       )
@@ -274,8 +306,9 @@ function BillCreation() {
                                     <td>
                                       <input
                                         type="text"
+                                        class="form-control"
                                         name="quantity"
-                                        value={state.quantity}
+                                        // value={state.quantity}
                                         onChange={getQuantityInputValues}
                                       />
                                     </td>
@@ -283,7 +316,8 @@ function BillCreation() {
                                       <input
                                         type="text"
                                         name="wastage"
-                                        value={state.wastage}
+                                        // value={state.wastage}
+                                        // onChange
                                         onChange={getQuantityInputValues}
                                       />
                                     </td>
@@ -291,12 +325,13 @@ function BillCreation() {
                                       <input
                                         type="text"
                                         name="rate"
-                                        value={state.rate}
+                                        // value={state.rate}
+                                        // onChange
                                         onChange={getQuantityInputValues}
                                       />
                                     </td>
                                     <td>
-                                      {(state.quantity - state.wastage) *
+                                      {index + (state.quantity - state.wastage) *
                                         state.rate}
                                     </td>
                                   </tr>
@@ -305,7 +340,10 @@ function BillCreation() {
                             )}
                           </div>
                           <div className="flex_class">
-                            <div className="flex_class sub_icons_div">
+                            <div
+                              className="flex_class sub_icons_div"
+                              onClick={cloneCopy.bind(this, crop)}
+                            >
                               <img
                                 src={copy_icon}
                                 className="sub_icons"

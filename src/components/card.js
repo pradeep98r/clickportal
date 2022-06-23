@@ -7,6 +7,7 @@ const CommonCard = ({
   onChange,
   totalTitle,
   unitsTitle,
+  inputValue
 }) => (
   <div>
     {title == "Transportation" || "Labor Charges" || "Rent" ? (
@@ -26,7 +27,7 @@ const CommonCard = ({
         <div className="card input_card">
           <div className="row">
             <div className="col-lg-4">
-              <input type="text" placeholder="" onChange={onChange} />
+              <input type="text" placeholder="" onChange={onChange} value={inputValue}/>
             </div>
             <div className="col-lg-4 col_left_border">
               <input type="text" placeholder="" onChange={onChange} />

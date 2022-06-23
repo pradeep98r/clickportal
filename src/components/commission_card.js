@@ -6,6 +6,7 @@ const CommissionCard = ({
   inputText,
   onChange,
   totalTitle,
+  inputValue
 }) => (
   <div>
       <div className="comm_cards">
@@ -21,7 +22,7 @@ const CommissionCard = ({
         <div className="card input_card">
           <div className="row">
             <div className="col-lg-6">
-              <input type="text" placeholder="" onChange={onChange} />
+              <input type="text" placeholder="" onChange={onChange} value={inputValue}/>
             </div>
             <div className="col-lg-6 col_left_border">
               <p className="text-center">{inputText ? inputText : 0.0}</p>
