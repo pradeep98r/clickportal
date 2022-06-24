@@ -9,6 +9,8 @@ import "owl.carousel/dist/assets/owl.theme.default.css";
 class SmartBoard extends Component {
   componentDidMount() {
     this.setState({ title: "Smartboard" });
+    const loginData = JSON.parse(localStorage.getItem('loginResponse'));
+    console.log(loginData,"local storage data for login")
   }
   render() {
     return (

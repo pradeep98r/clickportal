@@ -4,25 +4,34 @@ import SelectSearch from "./select_search";
 import Select from "react-select";
 import { useDispatch } from "react-redux";
 import { selectBuyer } from "../../features/buyerSlice";
-import getPartnerApi from "../../services/get_partner_api";
+import {getPartnerData} from "../../services/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { useNavigate } from "react-router-dom";
 function BuyerSelection() {
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId=loginData.clickId;
+  const clientId=loginData.authKeys.clientId;
+  const clientSecret=loginData.authKeys.clientSecret;
   const [selectedOption, setSelectedOption] = useState();
   const dispath = useDispatch();
-
   let [responseData, setResponseData] = useState([]);
   const navigate = useNavigate();
   const fetchData = () => {
-    getPartnerApi
-      .getPartnerData()
-      .then((response) => {
-        setResponseData(response.data.data);
-        console.log(response.data,"buyer data")
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    getPartnerData(clickId,clientId,clientSecret
+    ).then((response) => {
+      setResponseData(response.data.data);
+      console.log(response.data,"buyer data")
+    }) .catch((error) => {
+      console.log(error);
+    });
+    // getPartnerData()
+    //   .then((response) => {
+    //     setResponseData(response.data.data);
+    //     console.log(response.data,"buyer data")
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   useEffect(() => {

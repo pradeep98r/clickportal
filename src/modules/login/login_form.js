@@ -69,7 +69,8 @@ class LoginForm extends Component {
         }
       },(error)=>{
         toastr.error(error.response.data.status.description);
-      });
+      }
+      );
     }
   }
 
@@ -84,6 +85,7 @@ class LoginForm extends Component {
     validateOTP(obj).then((resp) => {
       if (resp.data.status.type === "SUCCESS") {
         this.setState({ toDashboard: true, otpError: '' })
+        localStorage.setItem('loginResponse',JSON.stringify(resp.data.data))
       }
       else {
         this.setState({ otpError: 'The entered otp is incorrect' })

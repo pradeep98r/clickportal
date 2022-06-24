@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../buy_bill_book/buy_bill_book.scss";
-import getPreferredCropsApi from "../../services/get_partner_api";
+import {
+  getPreferredCrops,
+  getAllCrops,
+  getSystemSettings,
+} from "../../services/billCreationService";
 import other_crop from "../../assets/images/other_crop.svg";
 import { useNavigate } from "react-router-dom";
 import CommonCard from "../../components/card";
@@ -8,20 +12,24 @@ import CommissionCard from "../../components/commission_card";
 import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
-import postPreferenceApi from "../../services/preferences";
-import BuyBillCreation from "./buy_bill_creation";
+import postbuybillApi from "../../services/preferencesService";
 import $ from "jquery";
 var array = [];
 function BillCreation() {
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.clickId;
+  const clientId = loginData.authKeys.clientId;
+  const clientSecret = loginData.authKeys.clientSecret;
+  console.log(loginData)
   let [responseData, setResponseData] = useState([]);
   let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
-  let [billSettingResponse, billSettingData] = useState(array);
+  // let [billSettingResponse, billSettingData] = useState(array);
   const navigate = useNavigate();
   // api to fettch preferred crops data
   const fetchData = () => {
-    getPreferredCropsApi
-      .getPreferredCrops()
+    console.log(clickId);
+    getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
         setResponseData(response.data.data);
         console.log(response.data.data, "crops preferred");
@@ -29,32 +37,27 @@ function BillCreation() {
       .catch((error) => {
         console.log(error);
       });
-    getPreferredCropsApi.getSystemSettings().then((res) => {
-      console.log(res.data.data.billSetting);
-      billSettingData(res.data.data.billSetting);
+    getSystemSettings(clickId, clientId, clientSecret).then((res) => {
+      // console.log(res.data.data);
     });
   };
+  // allcrops displaying in model popup when click on other crop
   const allCropData = () => {
-    getPreferredCropsApi.getAllCrops().then((response) => {
+    getAllCrops(clientId, clientSecret).then((response) => {
       allCropResponseData(response.data.data);
     });
   };
-
+  // on load calliing preferred crops function
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleSUbmit = (e) => {
-    e.preventDefault();
-    navigate("/smartboard");
-  };
   // click on crop to get that crop details
   const cropOnclick = (crop, id) => {
     cropResponseData([...cropData, crop]);
   };
   // add crop in other crop popup model
   const addCropOnclick = (crop_item) => {
-    console.log(crop_item, "add crop selected");
     setResponseData([...responseData, crop_item]);
     cropResponseData([...cropData, crop_item]);
   };
@@ -64,11 +67,8 @@ function BillCreation() {
   );
   // select quantity through radio button
   const selectQuantity = (e) => {
-    console.log(e);
     setSelected(e.target.value);
   };
-  // get quantity from dropdown
-
   // delete crop
   const deleteCrop = (crop) => {
     var array = cropData.filter(function (s) {
@@ -88,23 +88,73 @@ function BillCreation() {
     total: "",
     activeLink: "",
   });
-
+  // get quantity from dropdown
   const getQuantity = (id) => (e) => {
-    console.log("hey");
     setState({ activeLink: id });
     setSelectedOption(e.target.value);
   };
-
+  // table input onchange event handling
   const getQuantityInputValues = (event, index) => {
-    const { name, value } = event.target;
-    setState({
-      ...state,
-      [name]: value,total:(state.quantity - state.wastage) *
-                                        state.rate
-    });
+    const { name } = event.target;
+    const re = /^[0-9\b]+$/;
+    if (event.target.value === "" || re.test(event.target.value)) {
+      setState({
+        ...state,
+        [name]: event.target.value,
+      });
+    }
   };
-  const cloneCopy = (crop) => {
+  const cloneCrop = (crop) => {
     cropResponseData([...cropData, crop]);
+  };
+  var lineItemsArray = [];
+  var len = cropData.length;
+  for (var i = 0; i < len; i++) {
+    lineItemsArray.push({
+      cropId: cropData[i].cropId,
+      qty: 10.0,
+      qtyUnit: selectedOption,
+      rate: 10.0,
+      total: 100.0,
+      rateType: "RATE_PER_UNIT",
+    });
+  }
+  // total calculations
+  var totalCommValue = (commValue / 100) * 1000;
+  // create bill request object
+  const billRequestObj = {
+    actualPayble: 0,
+    advance: 0,
+    billDate: "2022-06-23",
+    billStatus: "Completed",
+    caId: 369,
+    cashPaid: 0,
+    comm: totalCommValue,
+    commIncluded: true,
+    commShown: true,
+    comments: "hi",
+    farmerId: 0,
+    govtLevies: 0,
+    grossTotal: 0,
+    labourCharges: 0,
+    less: true,
+    lineItems: lineItemsArray,
+    mandiFee: 0,
+    misc: 0,
+    outStBal: 0,
+    paidTo: 100,
+    rent: 0,
+    rtComm: returnValue,
+    rtCommIncluded: true,
+    totalPayble: 0,
+    transportation: 0,
+    transporterId: 0,
+  };
+  // post bill request api call
+  const postbuybill = () => {
+    postbuybillApi(billRequestObj, clientId, clientSecret).then((response) => {
+      console.log(response, "successfull");
+    });
   };
   return (
     <div>
@@ -308,7 +358,7 @@ function BillCreation() {
                                         type="text"
                                         class="form-control"
                                         name="quantity"
-                                        // value={state.quantity}
+                                        value={state.quantity}
                                         onChange={getQuantityInputValues}
                                       />
                                     </td>
@@ -316,7 +366,7 @@ function BillCreation() {
                                       <input
                                         type="text"
                                         name="wastage"
-                                        // value={state.wastage}
+                                        value={state.wastage}
                                         // onChange
                                         onChange={getQuantityInputValues}
                                       />
@@ -325,14 +375,15 @@ function BillCreation() {
                                       <input
                                         type="text"
                                         name="rate"
-                                        // value={state.rate}
+                                        value={state.rate}
                                         // onChange
                                         onChange={getQuantityInputValues}
                                       />
                                     </td>
                                     <td>
-                                      {index + (state.quantity - state.wastage) *
-                                        state.rate}
+                                      {index +
+                                        (state.quantity - state.wastage) *
+                                          state.rate}
                                     </td>
                                   </tr>
                                 </tbody>
@@ -342,7 +393,7 @@ function BillCreation() {
                           <div className="flex_class">
                             <div
                               className="flex_class sub_icons_div"
-                              onClick={cloneCopy.bind(this, crop)}
+                              onClick={cloneCrop.bind(this, crop)}
                             >
                               <img
                                 src={copy_icon}
@@ -381,46 +432,64 @@ function BillCreation() {
                 <CommissionCard
                   title="Commission"
                   rateTitle="Default Percentage %"
-                  onChange={(event) => getCommInput(event.target.value)}
-                  inputText={commValue}
+                  onChange={(event) =>
+                    getCommInput(event.target.value.replace(/\D/g, ""))
+                  }
+                  inputText={totalCommValue}
+                  inputValue={commValue}
                   totalTitle="Total"
                 />
                 <CommissionCard
                   title="Return Commission"
                   rateTitle="Default Percentage %"
-                  onChange={(event) => getReturnInput(event.target.value)}
+                  onChange={(event) =>
+                    getReturnInput(event.target.value.replace(/\D/g, ""))
+                  }
                   inputText={returnValue}
+                  inputValue={returnValue}
                   totalTitle="Total"
                 />
                 <CommonCard
                   title="Transportation"
                   rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) => getReturnInput(event.target.value)}
+                  onChange={(event) =>
+                    getReturnInput(event.target.value.replace(/\D/g, ""))
+                  }
                   inputText={returnValue}
+                  inputValue={returnValue}
                   totalTitle="Total"
                   unitsTitle="Number of Units"
                 />
                 <CommonCard
                   title="Labor Charges"
                   rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) => getReturnInput(event.target.value)}
+                  onChange={(event) =>
+                    getReturnInput(event.target.value.replace(/\D/g, ""))
+                  }
                   inputText={returnValue}
+                  inputValue={returnValue}
                   totalTitle="Total"
                   unitsTitle="Number of Units"
                 />
                 <CommonCard
                   title="Rent"
                   rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) => getReturnInput(event.target.value)}
+                  onChange={(event) =>
+                    getReturnInput(event.target.value.replace(/\D/g, ""))
+                  }
                   inputText={returnValue}
+                  inputValue={returnValue}
                   totalTitle="Total"
                   unitsTitle="Number of Units"
                 />
                 <CommissionCard
                   title="Mandi Fee"
                   rateTitle="Default Percentage %"
-                  onChange={(event) => getCommInput(event.target.value)}
+                  onChange={(event) =>
+                    getCommInput(event.target.value.replace(/\D/g, ""))
+                  }
                   inputText={commValue}
+                  inputValue={returnValue}
                   totalTitle="Total"
                 />
                 <div className="comm_cards row">
@@ -496,7 +565,7 @@ function BillCreation() {
       </div>
       <div className="bottom_div main_div">
         <div className="d-flex align-items-center justify-content-end">
-          <button className="primary_btn" onClick={(e) => handleSUbmit(e)}>
+          <button className="primary_btn" onClick={(e) => postbuybill(e)}>
             Next
           </button>
         </div>
