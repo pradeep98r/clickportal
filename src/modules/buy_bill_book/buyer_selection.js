@@ -83,7 +83,7 @@ function BuyerSelection() {
                 }
                 </div>
                 <div className="col-lg-4 ">
-                  <label className="d-flex align-items-baseline date_field">
+                  <label className="d-flex align-items-baseline date_field" onClick={e => e.preventDefault()}>
                     <span className="date_icon">
                       <img src={date_icon} alt="icon" />
                     </span>
