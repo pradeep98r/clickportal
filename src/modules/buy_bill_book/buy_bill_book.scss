@@ -458,3 +458,92 @@ input:focus-visible {
   margin-bottom: 0px;
   border-radius: 10px;
 }
+
+// date field  css
+.date_field{
+  position: relative;
+  .date_icon img{
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    z-index: 99;
+  }
+  .form-control{
+    padding-left: 35px;
+    color: var(--ono-blue);
+    font-size: 15px;
+  }
+  .form-control:focus {
+    border: 1px solid #ccc;
+}
+.react-datepicker{
+  border: 0px;
+  padding: 15px;
+}
+.react-datepicker__header{
+  background-color: var(--ono-white);
+  border-bottom: 0px;
+}
+.react-datepicker__navigation{
+  top: 25px;
+}
+.react-datepicker__navigation--previous{
+  left: 15px;
+}
+.react-datepicker__navigation--next{
+  right: 15px;
+}
+.react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header{
+  margin-bottom: 20px;
+}
+.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::after,.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle::before{
+  border-bottom-color: #fff;
+}
+.react-datepicker-popper[data-placement^=bottom] {
+  padding-top: 0px;
+}
+.react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header{
+  color: var(--ono-blue);
+  font-weight: normal;
+}
+.react-datepicker__year-read-view--down-arrow, .react-datepicker__month-read-view--down-arrow, .react-datepicker__month-year-read-view--down-arrow, .react-datepicker__navigation-icon::before{
+  border-width: 2px 2px 0 0;
+  border-color: #1C1C1C;
+}
+.react-datepicker__navigation:hover *::before{
+  border-color: var(--ono-primary);
+}
+.react-datepicker__day--keyboard-selected, .react-datepicker__day--selected{
+  background-color: var(--ono-primary)!important;
+  border-radius: 100%!important;
+}
+.react-datepicker__day:hover, .react-datepicker__month-text:hover, .react-datepicker__quarter-text:hover, .react-datepicker__year-text:hover{
+  border-radius: 100%!important;
+}
+}
+// buyer info in step3 css
+.buyer_info_style{
+  h6{
+    font-size: var( --body-text);
+    color: #1C1C1C;
+    font-weight: 600;
+  }
+  .default_card{
+    padding: 10px 20px;
+  }
+  p{
+    font-size: var(--body-small-text);
+    color: var(--ono-primary-text);
+    font-weight: 500;
+  }
+  span{
+    color: #4D4D4D;
+    font-size: var(--body-small-text);
+  }
+}
+.date_class{
+  color: var(--ono-blue)!important;
+}
+.sec_space_gap{
+  margin-bottom: 20px;
+}

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export function getPartnerData(clickId, clientId, clientSecret) {
   return axios.get(
-    `https://dev-api.onoark.com/v1/account/partners/caId/${clickId}/partyType/BUYER`,
+    `https://dev-api.onoark.com/v1/account/partners/caId/${clickId}/partyType/FARMER`,
     {
       headers: {
         "Content-Type": "application/json",

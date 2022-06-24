@@ -13,6 +13,7 @@ import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import postbuybillApi from "../../services/preferencesService";
+import toastr from 'toastr';
 import $ from "jquery";
 var array = [];
 function BillCreation() {
@@ -20,7 +21,9 @@ function BillCreation() {
   const clickId = loginData.clickId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
-  console.log(loginData)
+  const getPartnerInfo = JSON.parse(localStorage.getItem("partnerData"));
+  const partnerSelectedDate = localStorage.getItem("partnerSelectDate");
+  console.log(partnerSelectedDate, getPartnerInfo);
   let [responseData, setResponseData] = useState([]);
   let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
@@ -28,7 +31,6 @@ function BillCreation() {
   const navigate = useNavigate();
   // api to fettch preferred crops data
   const fetchData = () => {
-    console.log(clickId);
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
         setResponseData(response.data.data);
@@ -125,15 +127,15 @@ function BillCreation() {
   const billRequestObj = {
     actualPayble: 0,
     advance: 0,
-    billDate: "2022-06-23",
+    billDate: partnerSelectedDate,
     billStatus: "Completed",
-    caId: 369,
+    caId: clickId,
     cashPaid: 0,
     comm: totalCommValue,
     commIncluded: true,
     commShown: true,
     comments: "hi",
-    farmerId: 0,
+    farmerId: getPartnerInfo.partyId,
     govtLevies: 0,
     grossTotal: 0,
     labourCharges: 0,
@@ -153,8 +155,17 @@ function BillCreation() {
   // post bill request api call
   const postbuybill = () => {
     postbuybillApi(billRequestObj, clientId, clientSecret).then((response) => {
-      console.log(response, "successfull");
-    });
+      if (response.data.status.type === "SUCCESS") {
+        toastr.success(response.data.status.description); 
+      }
+      else if (response.data.status === "FAILURE") {
+      }
+      else {
+      }
+    },(error)=>{
+      toastr.error(error.response.data.status.description);
+    }
+    );
   };
   return (
     <div>
@@ -162,6 +173,19 @@ function BillCreation() {
         <div className="container-fluid px-0">
           <div className="row">
             <div className="col-lg-7 col_left">
+              <h4 className="smartboard_main_header">Bill Information</h4>
+              <div className="buyer_info_style sec_space_gap">
+                <div className="card default_card d-flex">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <div>
+                      <h6>{getPartnerInfo.partyName}</h6>
+                      <p>{getPartnerInfo.mobile}</p>
+                      <p>{getPartnerInfo.address.addressLine}</p>
+                    </div>
+                    <p className="date_class">{partnerSelectedDate}</p>
+                  </div>
+                </div>
+              </div>
               <h4 className="smartboard_main_header">
                 Select crop and creat bill
               </h4>
