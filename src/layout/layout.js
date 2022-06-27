@@ -14,7 +14,6 @@ const Layout = (props) => {
         <SideNavigation />
       </aside>
       <main className="main">{children}</main>
-      <footer className="footer"></footer>
     </div>
   );
 };

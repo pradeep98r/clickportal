@@ -13,11 +13,10 @@ import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import postbuybillApi from "../../services/preferencesService";
-import {ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
-  import SelectSearch from "./select_search";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import SelectSearch from "./select_search";
 import Select from "react-select";
-import { useDispatch } from "react-redux";
 import { getPartnerData } from "../../services/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import DatePicker from "react-datepicker";
@@ -126,10 +125,9 @@ function BillCreation() {
   }
   // total calculations
   var totalCommValue = (commValue / 100) * 1000;
+
   // create bill request object
- 
   const [selectedPartner, setselectedPartner] = useState();
-  const dispath = useDispatch();
   let [partnerData, setpartnerData] = useState([]);
   const fetchPertnerData = () => {
     getPartnerData(clickId, clientId, clientSecret)
@@ -149,13 +147,13 @@ function BillCreation() {
   // handle onChange event of the dropdown
   const handleChange = (e) => {
     setselectedPartner(e);
-  };  // click on crop to get that crop details
-    const cropOnclick = (crop, id) => {
-      cropResponseData([...cropData, crop]);
-    };
+  }; // click on crop to get that crop details
+  const cropOnclick = (crop, id) => {
+    cropResponseData([...cropData, crop]);
+  };
   const [startDate, setStartDate] = useState(new Date());
-  const partnerSelectDate=moment(startDate).format("YYYY-MM-DD");
-  console.log(selectedPartner)
+  const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
+  console.log(selectedPartner);
   const billRequestObj = {
     actualPayble: 0,
     advance: 0,
@@ -167,7 +165,7 @@ function BillCreation() {
     commIncluded: true,
     commShown: true,
     comments: "hi",
-    farmerId: selectedPartner? selectedPartner.partyId : '',
+    farmerId: selectedPartner ? selectedPartner.partyId : "",
     govtLevies: 0,
     grossTotal: 0,
     labourCharges: 0,
@@ -197,8 +195,8 @@ function BillCreation() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            });
-            console.log("heyyy")
+          });
+          console.log("heyyy");
           // toastr.success(response.data.status.description);
         } else if (response.data.status === "FAILURE") {
         } else {
@@ -216,35 +214,37 @@ function BillCreation() {
         <div className="container-fluid px-0">
           <div className="row">
             <div className="col-lg-7 col_left">
-            <div className="row row_margin_botton">
+              <div className="row row_margin_botton">
                 <div className="col-lg-5 column">
                   {partnerData.length > 0 ? (
-                  <div>
+                    <div>
                       <Select
-                    name="partner"
-                      options={partnerData}
-                      placeholder="Select Farmer"
-                      value={selectedPartner}
-                      onChange={handleChange}
-                      isSearchable={true}
-                      getOptionValue={(e) => e.partyId}
-                      getOptionLabel={(e) => (
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <img src={single_bill} className="icon_user" />
-                          <span style={{ marginLeft: 5 }}>{e.partyName}</span>
-                        </div>
-                      )}
-                    />
-                   
+                        name="partner"
+                        options={partnerData}
+                        placeholder="Select Farmer"
+                        value={selectedPartner}
+                        onChange={handleChange}
+                        isSearchable={true}
+                        getOptionValue={(e) => e.partyId}
+                        getOptionLabel={(e) => (
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <img src={single_bill} className="icon_user" />
+                            <span style={{ marginLeft: 5 }}>{e.partyName}</span>
+                          </div>
+                        )}
+                      />
                     </div>
-                  )
-                :
-                <Select  placeholder="Select Farmer" />
-
-                }
+                  ) : (
+                    <Select placeholder="Select Farmer" />
+                  )}
                 </div>
                 <div className="col-lg-3 col_right">
-                  <label className="d-flex align-items-baseline date_field" onClick={e => e.preventDefault()}>
+                  <label
+                    className="d-flex align-items-baseline date_field"
+                    onClick={(e) => e.preventDefault()}
+                  >
                     <span className="date_icon">
                       <img src={date_icon} alt="icon" />
                     </span>
@@ -262,12 +262,6 @@ function BillCreation() {
                   <SelectSearch />
                 </div>
               </div>
-              {/* <div className="row margin_bottom">
-                <div className="col-lg-12 column">
-                  <SelectSearch />
-                </div>
-                <div></div>
-              </div> */}
               <h4 className="smartboard_main_header">
                 Select crop and creat bill
               </h4>
@@ -303,7 +297,6 @@ function BillCreation() {
                 {cropData.length > 0 && (
                   <div className="p-0">
                     <h4 className="smartboard_main_header">Crop Information</h4>
-
                     <div className="table_row" id="scroll_style">
                       {cropData.map((crop, index) => (
                         <div className="crop_div crop_table_div" key={index}>

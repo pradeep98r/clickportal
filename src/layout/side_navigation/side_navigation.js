@@ -141,7 +141,7 @@ class SideNavigation extends Component {
             <img src={click_logo} alt="" className="click_logo" />
           </div>
         </nav>
-        <div id="wrapper" className={isActive ? "toggled-2" : null}>
+        <div id="wrapper scroll_style" className={isActive ? "toggled-2" : null}>
           <div id="sidebar-wrapper">
             <ul className="sidebar-nav nav-pills nav-stacked" id="menu">
               {links.map((link) => {
