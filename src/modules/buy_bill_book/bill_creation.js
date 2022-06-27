@@ -13,7 +13,17 @@ import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import postbuybillApi from "../../services/preferencesService";
-import toastr from 'toastr';
+import {ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+  import SelectSearch from "./select_search";
+import Select from "react-select";
+import { useDispatch } from "react-redux";
+import { getPartnerData } from "../../services/billCreationService";
+import single_bill from "../../assets/images/bills/single_bill.svg";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import date_icon from "../../assets/images/date_icon.svg";
 import $ from "jquery";
 var array = [];
 function BillCreation() {
@@ -21,9 +31,6 @@ function BillCreation() {
   const clickId = loginData.clickId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
-  const getPartnerInfo = JSON.parse(localStorage.getItem("partnerData"));
-  const partnerSelectedDate = localStorage.getItem("partnerSelectDate");
-  console.log(partnerSelectedDate, getPartnerInfo);
   let [responseData, setResponseData] = useState([]);
   let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
@@ -54,10 +61,6 @@ function BillCreation() {
     fetchData();
   }, []);
 
-  // click on crop to get that crop details
-  const cropOnclick = (crop, id) => {
-    cropResponseData([...cropData, crop]);
-  };
   // add crop in other crop popup model
   const addCropOnclick = (crop_item) => {
     setResponseData([...responseData, crop_item]);
@@ -124,10 +127,39 @@ function BillCreation() {
   // total calculations
   var totalCommValue = (commValue / 100) * 1000;
   // create bill request object
+ 
+  const [selectedPartner, setselectedPartner] = useState();
+  const dispath = useDispatch();
+  let [partnerData, setpartnerData] = useState([]);
+  const fetchPertnerData = () => {
+    getPartnerData(clickId, clientId, clientSecret)
+      .then((response) => {
+        setpartnerData(response.data.data);
+        console.log(response.data, "buyer data");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    fetchPertnerData();
+  }, []);
+
+  // handle onChange event of the dropdown
+  const handleChange = (e) => {
+    setselectedPartner(e);
+  };  // click on crop to get that crop details
+    const cropOnclick = (crop, id) => {
+      cropResponseData([...cropData, crop]);
+    };
+  const [startDate, setStartDate] = useState(new Date());
+  const partnerSelectDate=moment(startDate).format("YYYY-MM-DD");
+  console.log(selectedPartner)
   const billRequestObj = {
     actualPayble: 0,
     advance: 0,
-    billDate: partnerSelectedDate,
+    billDate: partnerSelectDate,
     billStatus: "Completed",
     caId: clickId,
     cashPaid: 0,
@@ -135,7 +167,7 @@ function BillCreation() {
     commIncluded: true,
     commShown: true,
     comments: "hi",
-    farmerId: getPartnerInfo.partyId,
+    farmerId: selectedPartner? selectedPartner.partyId : '',
     govtLevies: 0,
     grossTotal: 0,
     labourCharges: 0,
@@ -154,38 +186,88 @@ function BillCreation() {
   };
   // post bill request api call
   const postbuybill = () => {
-    postbuybillApi(billRequestObj, clientId, clientSecret).then((response) => {
-      if (response.data.status.type === "SUCCESS") {
-        toastr.success(response.data.status.description); 
+    postbuybillApi(billRequestObj, clientId, clientSecret).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.description, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            });
+            console.log("heyyy")
+          // toastr.success(response.data.status.description);
+        } else if (response.data.status === "FAILURE") {
+        } else {
+        }
+      },
+      (error) => {
+        // toastr.error(error.response.data.status.description);
       }
-      else if (response.data.status === "FAILURE") {
-      }
-      else {
-      }
-    },(error)=>{
-      toastr.error(error.response.data.status.description);
-    }
     );
   };
+
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
           <div className="row">
             <div className="col-lg-7 col_left">
-              <h4 className="smartboard_main_header">Bill Information</h4>
-              <div className="buyer_info_style sec_space_gap">
-                <div className="card default_card d-flex">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <div>
-                      <h6>{getPartnerInfo.partyName}</h6>
-                      <p>{getPartnerInfo.mobile}</p>
-                      <p>{getPartnerInfo.address.addressLine}</p>
+            <div className="row row_margin_botton">
+                <div className="col-lg-5 column">
+                  {partnerData.length > 0 ? (
+                  <div>
+                      <Select
+                    name="partner"
+                      options={partnerData}
+                      placeholder="Select Farmer"
+                      value={selectedPartner}
+                      onChange={handleChange}
+                      isSearchable={true}
+                      getOptionValue={(e) => e.partyId}
+                      getOptionLabel={(e) => (
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <img src={single_bill} className="icon_user" />
+                          <span style={{ marginLeft: 5 }}>{e.partyName}</span>
+                        </div>
+                      )}
+                    />
+                   
                     </div>
-                    <p className="date_class">{partnerSelectedDate}</p>
-                  </div>
+                  )
+                :
+                <Select  placeholder="Select Farmer" />
+
+                }
+                </div>
+                <div className="col-lg-3 col_right">
+                  <label className="d-flex align-items-baseline date_field" onClick={e => e.preventDefault()}>
+                    <span className="date_icon">
+                      <img src={date_icon} alt="icon" />
+                    </span>
+                    <DatePicker
+                      dateFormat="yyyy-MM-dd"
+                      selected={startDate}
+                      onChange={(date) => setStartDate(date)}
+                      className="form-control"
+                      placeholder="Date"
+                      maxDate={new Date()}
+                    />
+                  </label>
+                </div>
+                <div className="col-lg-4">
+                  <SelectSearch />
                 </div>
               </div>
+              {/* <div className="row margin_bottom">
+                <div className="col-lg-12 column">
+                  <SelectSearch />
+                </div>
+                <div></div>
+              </div> */}
               <h4 className="smartboard_main_header">
                 Select crop and creat bill
               </h4>
@@ -677,6 +759,7 @@ function BillCreation() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
   // }

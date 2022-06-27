@@ -32,7 +32,7 @@ class SelectSearch extends Component {
     return (
       <div>
         <div className="row">
-          <div className="col-lg-8 col_left">
+          <div className="col-lg-12 column">
             <Dropdown
               isOpen={isOpen}
               onClose={this.toggleOpen}

@@ -19,7 +19,7 @@ class BuyBillBook extends Component {
                       Lorem ipsum is placeholder text commonly used in the
                       graphic
                     </p>
-                    <Link to="/buyer_selection">
+                    <Link to="/bill_creation">
                       <Button text="Single Bill" />
                     </Link>
                   </div>
