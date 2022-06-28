@@ -153,7 +153,6 @@ function BillCreation() {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  console.log(selectedPartner);
   const billRequestObj = {
     actualPayble: 0,
     advance: 0,
@@ -231,7 +230,10 @@ function BillCreation() {
                             style={{ display: "flex", alignItems: "center" }}
                           >
                             <img src={single_bill} className="icon_user" />
-                            <span style={{ marginLeft: 5 }}>{e.partyName}</span>
+                            <div style={{ marginLeft: 5 }}>
+                              <span>{e.partyName}</span>
+                              <p>{e.mobile}</p>
+                            </div>
                           </div>
                         )}
                       />
@@ -258,10 +260,12 @@ function BillCreation() {
                     />
                   </label>
                 </div>
+
                 <div className="col-lg-4">
                   <SelectSearch />
                 </div>
               </div>
+
               <h4 className="smartboard_main_header">
                 Select crop and creat bill
               </h4>
