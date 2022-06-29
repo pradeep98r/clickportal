@@ -616,81 +616,174 @@ article.on {
 }
 
 // all bills page css
-.header_row{
-  p{
+.header_row {
+  p {
     font-size: 12px;
     color: #121212;
     font-weight: 500;
   }
-  .col-sm-12{
+  .col-sm-12 {
     padding-left: 10px;
     padding-right: 5px;
   }
 }
-.bills_rows{
+.bills_rows {
   .bill_user_details {
-.userName{
-  font-size: 13px;
-  font-weight: 600;
-  color: #1C1C1C;
-}
-.mobile, .address{
-  font-size: 12px;
-  color: #121212;
-  font-weight: 500;
-  margin: 2px 0px;
-}
-.address{
-  color: #4D4D4D;
-  margin: 0px;
-}
-.user_icon{
-  width: 50px;
-}
+    .userName {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1c1c1c;
+    }
+    .mobile,
+    .address {
+      font-size: 12px;
+      color: #121212;
+      font-weight: 500;
+      margin: 2px 0px;
+    }
+    .address {
+      color: #4d4d4d;
+      margin: 0px;
+    }
+    .user_icon {
+      width: 50px;
+    }
   }
   .billid_div {
-   p{
-    font-size: 10px;
-    color: #1C1C1C;
-    font-weight: 500;
-   }
-   .biilid{
-    color: var(--ono-blue);
+    p {
+      font-size: 10px;
+      color: #1c1c1c;
+      font-weight: 500;
+    }
+    .biilid {
+      color: var(--ono-blue);
+    }
   }
-  }
-  .crop_name{
+  .crop_name {
     font-size: 13px;
     color: #121212;
     font-weight: 600;
-    text-transform: capitalize!important;
+    text-transform: capitalize !important;
   }
-  .payble_text{
+  .payble_text {
     color: var(--ono-red);
   }
-  .col-sm-12{
+  .col-sm-12 {
     padding-left: 10px;
     padding-right: 10px;
   }
-  .crop_image{
+  .crop_image {
     width: 40px;
     margin-right: 10px;
   }
 }
-.bg_red{
+.bg_red {
   background-color: red;
 }
-.number_overflow{
+.number_overflow {
   overflow-wrap: anywhere;
 }
-.full_width{
+.full_width {
   width: 100%;
 }
-.buy_bills{
+.buy_bills {
   overflow-y: auto;
   height: calc(100vh - 150px);
 }
 // bill view details
-.bill_view_card{
+.bill_view_card {
   border-radius: 10px;
+  // border: 1px solid var(--ono-primary);
+}
+.bill_view_header {
+  background-color: var(--ono-primary);
+  border-radius: 10px 10px 0px 0px;
+  color: var(--ono-white);
+  .bill_view_top_header{
+    align-items: center;
+    padding: 10px;
+    border-bottom: 0.5px dashed #FFFFFF;
+  }
+  .mandi_details_header{
+    padding: 10px 10px 0px 10px;
+  }
+  .mandi_logo {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .credit_bill{
+    font-size: 12px;
+    color: var(--ono-yellow);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .shop_no{
+    margin-left: auto;
+  }
+  .mandi_circle{
+    border-radius: 100%;
+    background-color: var(--ono-yellow);
+    padding: 10px;
+    width: 70px;
+    height: 70px;
+    color: var(--ono-primary);
+    justify-content: center;
+    margin: 0 auto;
+   .shop_number{
+     line-height: 16px;
+   }
+  }
+  .billid_date_bg{
+    border-radius: 15px 15px 0px 0px;
+    background-color:#0C7A1E;
+    margin-top: 10px;
+    padding: 5px 0px;
+  }
+}
+.bill_crop_details{
   border: 1px solid var(--ono-primary);
+  border-top: 0px;
+  border-radius: 0px 0px 10px 10px;
+}
+.small_text {
+  font-size: 10px;
+}
+.medium_text {
+  font-size: 13px;
+  font-size: 600;
+}
+.large_text {
+  font-size: 32px;
+  font-weight: 700;
+}
+.partner_info{
+  p{
+    color: #4D4D4D;
+    font-weight: 600;
+  }
+  h6{
+    color: #121212;
+    font-weight: 700;
+  }
+}
+.partner_info_padding{
+  padding: 5px 20px;
+}
+.table > :not(:first-child) {
+  border-top: 0;
+}
+.table-bordered td, .table-bordered th, .table-bordered {
+  border: 0.5px solid #4d4d4d;
+  vertical-align: middle;
+}
+.table{
+  font-size: 12px;
+  color: #121212;
+}
+.crop_image_bill{
+  width: 35px;
+  margin-right: 10px;
+}
+.red_text{
+  color: var(--ono-red);
 }

@@ -26,9 +26,10 @@ function BuyBillBook() {
   };
   const [billItem, setSelectBill] = useState("");
   const navigate=useNavigate();
-  const handleProceed = (id) => {
+  const billOnClick = (id,bill) => {
     navigate(generatePath(`/bill_view/${id}`,{id}));
     localStorage.setItem('billId',id)
+    localStorage.setItem('selectedBillData',JSON.stringify(bill))
   };
   return (
     <div>
@@ -185,7 +186,7 @@ function BuyBillBook() {
                         }
                       })
                       .map((bill) => (
-                        <div onClick={() => handleProceed(bill.billId)} >
+                        <div onClick={() => billOnClick(bill.billId,bill)} >
                         <div
                           className="row bills_rows bg_white bottom_space"
                           key={bill.billId}
