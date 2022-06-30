@@ -50,7 +50,7 @@ function BillView() {
       <div className="container-fluid px-0">
         <div className="row">
           <div className="col-lg-7 col_left">
-            <div className="bill_view_card">
+            <div className="bill_view_card buy_bills_view" id="scroll_style">
               <div className="bill_view_header">
                 <div className="row bill_view_top_header">
                   <div className="col-lg-3">

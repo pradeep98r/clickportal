@@ -124,7 +124,7 @@ function BuyBillBook() {
                   </div>
                 </div>
               </div>
-              <div className="buy_bills" id="scroll_style">
+              <div >
                 <div className="tab-content">
                   <div
                     className="tab-pane active"
@@ -167,6 +167,7 @@ function BuyBillBook() {
                         </div>
                       </div>
                     </div>
+                    <div className="buy_bills" id="scroll_style">
                     {buyBillData
                       .filter((bill) => {
                         if (billItem === "") {
@@ -264,6 +265,7 @@ function BuyBillBook() {
                         </div>
                         </div>
                       ))}
+                    </div>
                   </div>
                   <div
                     className="tab-pane"

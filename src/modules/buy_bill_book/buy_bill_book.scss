@@ -688,7 +688,7 @@ article.on {
 }
 .buy_bills {
   overflow-y: auto;
-  height: calc(100vh - 150px);
+  height: calc(100vh - 200px);
 }
 // bill view details
 .bill_view_card {
@@ -809,4 +809,8 @@ article.on {
 }
 .bg_b{
   background-color: blue;
+}
+.buy_bills_view {
+  overflow-y: auto;
+  height: calc(100vh - 260px);
 }
