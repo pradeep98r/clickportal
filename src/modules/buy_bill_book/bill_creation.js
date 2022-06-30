@@ -46,7 +46,7 @@ function BillCreation() {
         console.log(error);
       });
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      // console.log(res.data.data);
+      console.log(res.data.data);
     });
   };
   // allcrops displaying in model popup when click on other crop
@@ -202,7 +202,7 @@ function BillCreation() {
         }
       },
       (error) => {
-        // toastr.error(error.response.data.status.description);
+        toast.error(error.response.data.status.description);
       }
     );
   };
@@ -341,7 +341,7 @@ function BillCreation() {
                                     ? selectedOption
                                     : "Crates"
                                 }
-                                checked={
+                                defaultChecked={
                                   crop.cropId == state.activeLink
                                     ? selectedOption
                                     : "Crates"
@@ -357,7 +357,7 @@ function BillCreation() {
                                 type="radio"
                                 id="kg"
                                 value="kg"
-                                checked={"kg"}
+                                defaultChecked={"kg"}        
                               />
                               <label htmlFor="kg">Rate Per Kg</label>
                             </div>
@@ -459,7 +459,7 @@ function BillCreation() {
                                     <td>
                                       <input
                                         type="text"
-                                        class="form-control"
+                                        className="form-control"
                                         name="quantity"
                                         value={state.quantity}
                                         onChange={getQuantityInputValues}

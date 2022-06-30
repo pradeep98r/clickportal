@@ -185,11 +185,10 @@ function BuyBillBook() {
                           return bill;
                         }
                       })
-                      .map((bill) => (
-                        <div onClick={() => billOnClick(bill.billId,bill)} >
+                      .map((bill,index) => (
+                        <div onClick={() => billOnClick(bill.billId,bill)} key={index}>
                         <div
-                          className="row bills_rows bg_white bottom_space"
-                          key={bill.billId}
+                          className="row bills_rows bg_white bottom_space"           
                         >
                           <div className="col-lg-4 col ps-0 flex_class">
                             <div className="row full_width">
@@ -223,8 +222,8 @@ function BuyBillBook() {
                             </div>
                           </div>
                           <div className="col-lg-6 p-0">
-                            {bill.lineItems.map((crop) => (
-                              <div className="row">
+                            {bill.lineItems.map((crop,index) => (
+                              <div className="row" key={index}>
                                 <div className="col-lg-4 col-sm-12 col">
                                   <p className="flex_class crop_name">
                                     <img

@@ -35,12 +35,12 @@ export function getAllCrops(clientId, clientSecret) {
 }
 export function getSystemSettings(clickId, clientId, clientSecret) {
   return axios.get(
-    `https://dev-api.onoark.com/v1/click/bcp-settings/caId/${clickId}`,
+    `https://dev-api.onoark.com/v1/click/bcp-settings/caId/371`,
     {
       headers: {
         "Content-Type": "application/json",
-        "client-id": clientId,
-        "client-secret": clientSecret,
+        "client-id": 'klT68w3ey9apljo',
+        "client-secret": 'cqFHj2glsqVLHq0bA80zmNqzu',
       },
     }
   );

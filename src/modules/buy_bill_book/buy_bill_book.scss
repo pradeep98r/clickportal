@@ -787,3 +787,26 @@ article.on {
 .red_text{
   color: var(--ono-red);
 }
+.total_value{
+  font-size: 12px;
+  color: #121212;
+  font-weight: 700;
+}
+.gross_profit{
+  background-color: #D7F3DD;
+  padding: 5px;
+  border-bottom: 1px solid #4d4d4d;
+}
+.col_border_left{
+  border-left: 0.5px solid var(--ono-primary);
+}
+.clo{
+  font-size: 20px;
+  font-weight: 500;
+}
+.bg_y{
+  background-color: yellow;
+}
+.bg_b{
+  background-color: blue;
+}
