@@ -8,6 +8,7 @@ import BuyBillBook from "../modules/buy_bill_book/buy_bill_book";
 import Layout from "../layout/layout";
 import BillCreation from "../modules/buy_bill_book/bill_creation";
 import BillView from "../modules/buy_bill_book/bill_view";
+import Calender from "../modules/buy_bill_book/calender";
 const Routes_Config = () => {
   return (
     <Router>
@@ -22,6 +23,7 @@ const Routes_Config = () => {
           <Route path="/buy_bill_book" element={<BuyBillBook />} />
           <Route path="/bill_creation" element={<BillCreation />} />
           <Route path="/bill_view/:billId" element={<BillView />}/>
+          <Route path="/calender" element={<Calender />}/>
         </Routes>
       </Layout>
     </Router>

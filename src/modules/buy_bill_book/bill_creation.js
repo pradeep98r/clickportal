@@ -681,7 +681,7 @@ function BillCreation() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-dialog crop_modal_dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
@@ -703,7 +703,7 @@ function BillCreation() {
                 />
               </div>
             </div>
-            <div className="modal-body" id="scroll_style">
+            <div className="modal-body crop_modal_body" id="scroll_style">
               {allCropsData.length > 0 && (
                 <div className="d-flex flex_width">
                   {allCropsData
