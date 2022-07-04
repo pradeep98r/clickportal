@@ -10,6 +10,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
+import { WeeklyCalendar } from 'react-week-picker';
+import "../../assets/css/calender.scss";
 function BuyBillBook() {
   $("[name=tab]").each(function (i, d) {
     var p = $(this).prop("checked");
@@ -59,6 +61,9 @@ function BuyBillBook() {
     setStartDate(start);
     setEndDate(end);
   };
+  const handleWeekPick = (startDate, endDate) => {
+    console.log(`${startDate} to ${endDate}`);
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -400,12 +405,12 @@ function BuyBillBook() {
                       <label for="tab3">Yearly</label>
                     </div>
                     <div className="flex_class">
-                      <input type="radio" id="tab3" name="tab" />
-                      <label for="tab3">Weekly</label>
+                      <input type="radio" id="tab4" name="tab" />
+                      <label for="tab4">Weekly</label>
                     </div>
                     <div className="flex_class">
-                      <input type="radio" id="tab3" name="tab" />
-                      <label for="tab3">Custom</label>
+                      <input type="radio" id="tab5" name="tab" />
+                      <label for="tab5">Custom</label>
                     </div>
                   </div>
                   <article className="date_picker">
@@ -448,7 +453,9 @@ function BuyBillBook() {
                       />
                     </h2>
                   </article>
-                  <article>week</article>
+                  <article className="week_picker">  
+                    <WeeklyCalendar onWeekPick={handleWeekPick} max={moment().format("DD-MM-YYYY")}/>
+  </article>
                   <article className="custom_picker">
                     <div className="flex_class custom_input_div">
                       <DatePicker
