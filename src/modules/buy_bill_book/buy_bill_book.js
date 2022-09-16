@@ -393,24 +393,24 @@ function BuyBillBook() {
                   <div className="dates_div">
                     <div className="flex_class">
                       <input type="radio" id="tab1" name="tab" defaultChecked />
-                      <label for="tab1">Daily</label>
+                      <label htmlFor="tab1">Daily</label>
                     </div>
                     <div className="flex_class">
                       <input type="radio" id="tab2" name="tab" />
-                      <label for="tab2">Monthly</label>
+                      <label htmlFor="tab2">Monthly</label>
                     </div>
                     <div className="flex_class">
                       {" "}
                       <input type="radio" id="tab3" name="tab" />
-                      <label for="tab3">Yearly</label>
+                      <label htmlFor="tab3">Yearly</label>
                     </div>
                     <div className="flex_class">
                       <input type="radio" id="tab4" name="tab" />
-                      <label for="tab4">Weekly</label>
+                      <label htmlFor="tab4">Weekly</label>
                     </div>
                     <div className="flex_class">
                       <input type="radio" id="tab5" name="tab" />
-                      <label for="tab5">Custom</label>
+                      <label htmlFor="tab5">Custom</label>
                     </div>
                   </div>
                   <article className="date_picker">

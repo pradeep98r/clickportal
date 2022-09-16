@@ -49,13 +49,13 @@ export function getBuyBills(clickId, clientId, clientSecret) {
   let config = {
     headers: {
       "Content-Type": "application/json",
-      "client-id": 'klT68w3ey9apljo',
-      "client-secret": 'cqFHj2glsqVLHq0bA80zmNqzu',
+      "client-id": 'sCcWyvchM2LEJl0',
+      "client-secret": 'QTwCVuDVWge9pDt4fvXqGNmTp',
     },
     // params: { fromDate: "2022-06-27", toDate: "2022-06-27" },
   }
   return axios.get(
-    ' https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/371?fromDate=2022-06-28&toDate=2022-06-28',
+    ' https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/375?fromDate=2022-06-28&toDate=2022-06-28',
     config
   );
 }
