@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
-import "../buy_bill_book/buy_bill_book.scss";
-import Button from "../../components/button";
+import "../buy_bill_book/BuyBillBook.scss";
+import Button from "../../components/Button";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";

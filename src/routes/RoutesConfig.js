@@ -1,15 +1,15 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Splash from "../modules/splash";
-import Login from "../modules/login/login";
-import LoginForm from "../modules/login/login_form";
-import SmartBoard from "../modules/smartboard/smartboard";
-import BuyBillBook from "../modules/buy_bill_book/buy_bill_book";
-import Layout from "../layout/layout";
-import BillCreation from "../modules/buy_bill_book/bill_creation";
-import BillView from "../modules/buy_bill_book/bill_view";
-import Calender from "../modules/buy_bill_book/calender";
-const Routes_Config = () => {
+import Splash from "../modules/Splash";
+import Login from "../modules/login/Login";
+import LoginForm from "../modules/login/LoginForm";
+import SmartBoard from "../modules/smartboard/Smartboard";
+import BuyBillBook from "../modules/buy_bill_book/BuyBillBook";
+import Layout from "../layout/Layout";
+import BillCreation from "../modules/buy_bill_book/BillCreation";
+import BillView from "../modules/buy_bill_book/BillView";
+import Calender from "../modules/buy_bill_book/Calender";
+const RoutesConfig = () => {
   return (
     <Router>
       <Routes>
@@ -30,4 +30,4 @@ const Routes_Config = () => {
   );
 };
 
-export default Routes_Config;
+export default RoutesConfig;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../buy_bill_book/buy_bill_book.scss";
+import "../buy_bill_book/BuyBillBook.scss";
 import {
   getPreferredCrops,
   getAllCrops,
@@ -7,15 +7,15 @@ import {
 } from "../../actions/billCreationService";
 import other_crop from "../../assets/images/other_crop.svg";
 import { useNavigate } from "react-router-dom";
-import CommonCard from "../../components/card";
-import CommissionCard from "../../components/commission_card";
+import CommonCard from "../../components/Card";
+import CommissionCard from "../../components/CommissionCard";
 import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import postbuybillApi from "../../actions/preferencesService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SelectSearch from "./select_search";
+import SelectSearch from "./SelectSearch";
 import Select from "react-select";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";

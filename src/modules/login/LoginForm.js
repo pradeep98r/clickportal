@@ -1,10 +1,10 @@
 import { Component } from "react";
-import Navigation from "../../components/navigation";
-import Logo from "../../components/logo";
-import InputField from "../../components/input_field";
+import Navigation from "../../components/Navigation";
+import Logo from "../../components/Logo";
+import InputField from "../../components/InputField";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../reducers/userSlice";
+import { login } from "../../reducers/UserSlice";
 import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, OsTypes, osVersion } from 'react-device-detect';
 import toastr from 'toastr';

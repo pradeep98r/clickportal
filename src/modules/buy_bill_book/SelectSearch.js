@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import "../buy_bill_book/buy_bill_book.scss";
+import "../buy_bill_book/BuyBillBook.scss";
 import Select from "react-select";
 import click_logo from "../../assets/images/click_logo_green.svg";
 import click_logo_y from "../../assets/images/click_logo_yellow.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import search from "../../assets/images/search.svg";
 import { useDispatch } from "react-redux";
-import { selectBuyer } from "../../reducers/buyerSlice";
+import { selectBuyer } from "../../reducers/BuyerSlice";
 const options = [
   { value: "Aparna", label: "Aparna", icon: single_bill },
   { value: "appuu", label: "appuu", icon: single_bill },

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import NoDataAvailable from "../../components/no_data_available";
-import OutlineButton from "../../components/outline_button";
+import NoDataAvailable from "../../components/NoDataAvailable";
+import OutlineButton from "../../components/OutlineButton";
 import { Link } from "react-router-dom";
 import OwlCarousel from "react-owl-carousel";
 import "owl.carousel/dist/assets/owl.carousel.css";

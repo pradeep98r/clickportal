@@ -1,6 +1,6 @@
 import bell from "../../assets/images/navbar/Bell.svg";
 import help from "../../assets/images/navbar/Help.svg";
-import "./top_navigation.scss";
+import "./TopNavigation.scss";
 function TopNavigation(props) {
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
