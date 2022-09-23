@@ -4,8 +4,8 @@ import Logo from "../../components/logo";
 import InputField from "../../components/input_field";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { login } from "../../features/userSlice";
-import { doLogin, validateOTP } from "../../services/loginService";
+import { login } from "../../reducers/userSlice";
+import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, OsTypes, osVersion } from 'react-device-detect';
 import toastr from 'toastr';
 

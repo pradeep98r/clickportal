@@ -4,7 +4,7 @@ import Button from "../../components/button";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
-import { getBuyBills } from "../../services/billCreationService";
+import { getBuyBills } from "../../actions/billCreationService";
 import close from "../../assets/images/close.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";

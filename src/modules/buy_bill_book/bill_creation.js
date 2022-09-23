@@ -4,7 +4,7 @@ import {
   getPreferredCrops,
   getAllCrops,
   getSystemSettings,
-} from "../../services/billCreationService";
+} from "../../actions/billCreationService";
 import other_crop from "../../assets/images/other_crop.svg";
 import { useNavigate } from "react-router-dom";
 import CommonCard from "../../components/card";
@@ -12,12 +12,12 @@ import CommissionCard from "../../components/commission_card";
 import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
-import postbuybillApi from "../../services/preferencesService";
+import postbuybillApi from "../../actions/preferencesService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectSearch from "./select_search";
 import Select from "react-select";
-import { getPartnerData } from "../../services/billCreationService";
+import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";

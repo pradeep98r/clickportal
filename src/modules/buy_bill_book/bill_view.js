@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   getMandiDetails,
   getSystemSettings,
-} from "../../services/billCreationService";
+} from "../../actions/billCreationService";
 var groupOne=[];
 var grouptwo =[];
 var groupthree=[];
