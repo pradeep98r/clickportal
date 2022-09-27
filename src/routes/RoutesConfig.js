@@ -8,15 +8,19 @@ import BuyBillBook from "../modules/buy_bill_book/BuyBillBook";
 import Layout from "../layout/Layout";
 import BillCreation from "../modules/buy_bill_book/BillCreation";
 import BillView from "../modules/buy_bill_book/BillView";
-import Calender from "../modules/buy_bill_book/Calender";
+import Calender from "../modules/buy_bill_book/calender";
+import { useSelector } from 'react-redux';
 const RoutesConfig = () => {
+  const isAuth = useSelector(state => state.auth.isAuthenticated);
   return (
     <Router>
+      {!isAuth &&
       <Routes>
         <Route path="/" element={<Splash />} />
         <Route path="/login" element={<Login />} />
         <Route path="/login_form" element={<LoginForm />} />
-      </Routes>
+      </Routes>}
+      {isAuth &&
       <Layout>
         <Routes>
           <Route path="/smartboard" element={<SmartBoard />} />
@@ -25,7 +29,7 @@ const RoutesConfig = () => {
           <Route path="/bill_view/:billId" element={<BillView />}/>
           <Route path="/calender" element={<Calender />}/>
         </Routes>
-      </Layout>
+      </Layout>}
     </Router>
   );
 };

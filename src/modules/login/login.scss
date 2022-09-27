@@ -1,6 +1,21 @@
 @import url("../../assets/css/style.scss");
 @import "toastr";
-
+.button{
+  display: block!important;
+}
+.timer button{
+  background-color: #fff!important;
+  color: var(--ono-blue) !important;
+  font-family: "Manrope", sans-serif;
+  span{
+    span{
+      display: none!important;
+    }
+  }
+}
+.timer span{
+  color: var(--ono-blue) !important;
+}
 .ca_writer_card {
   text-align: center;
   p {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,  } from "react";
 import "../buy_bill_book/BuyBillBook.scss";
 import {
   getPreferredCrops,
@@ -24,6 +24,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
 import $ from "jquery";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../reducers/UserSlice";
 var array = [];
 function BillCreation() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -59,11 +61,19 @@ function BillCreation() {
   useEffect(() => {
     fetchData();
   }, []);
-
+//  useDispatch(
+//   login({
+//     name: this.name,
+//     loggedIn: true,
+//   })
+// )
+const userName = useSelector((state)=>state.user.user)
+console.log(userName);
   // add crop in other crop popup model
   const addCropOnclick = (crop_item) => {
     setResponseData([...responseData, crop_item]);
     cropResponseData([...cropData, crop_item]);
+    
   };
   const [selectedOption, setSelectedOption] = useState();
   const [selectedQty, setSelected] = useState(

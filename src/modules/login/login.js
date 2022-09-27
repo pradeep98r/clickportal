@@ -25,7 +25,12 @@ class Login extends Component {
                   (farmers, traders, buyers, transporters) and transactions.
                 </p>
                 <Link to="/login_form">
-                  <button className="primary_btn buttons d-flex mx-auto" onClick={e => localStorage.setItem('userType', 'CA')}>I’m Commission Agent</button>
+                  <button
+                    className="primary_btn buttons d-flex mx-auto"
+                    onClick={(e) => localStorage.setItem("userType", "CA")}
+                  >
+                    I’m Commission Agent
+                  </button>
                 </Link>
                 <h5>Don't have an account?</h5>
                 <h6>Register Now</h6>
@@ -44,7 +49,12 @@ class Login extends Component {
                   properly.
                 </p>
                 <Link to="/login_form">
-                  <button className="primary_btn buttons d-flex mx-auto" onClick={e => localStorage.setItem('userType', 'WRITER')}>I’m Writer</button>
+                  <button
+                    className="primary_btn buttons d-flex mx-auto"
+                    onClick={(e) => localStorage.setItem("userType", "WRITER")}
+                  >
+                    I’m Writer
+                  </button>
                 </Link>
                 <h5>Only you can login once your CA added you the system.</h5>
               </div>
