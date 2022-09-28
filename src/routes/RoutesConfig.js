@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Splash from "../modules/Splash";
 import Login from "../modules/login/Login";
 import LoginForm from "../modules/login/LoginForm";
@@ -12,8 +12,9 @@ import Calender from "../modules/buy_bill_book/calender";
 import { useSelector } from 'react-redux';
 const RoutesConfig = () => {
   const isAuth = useSelector(state => state.auth.isAuthenticated);
+  console.log(isAuth)
   return (
-    <Router>
+    <BrowserRouter>
       {!isAuth &&
       <Routes>
         <Route path="/" element={<Splash />} />
@@ -30,7 +31,7 @@ const RoutesConfig = () => {
           <Route path="/calender" element={<Calender />}/>
         </Routes>
       </Layout>}
-    </Router>
+    </BrowserRouter>
   );
 };
 

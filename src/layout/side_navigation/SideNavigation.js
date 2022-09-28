@@ -121,6 +121,7 @@ class SideNavigation extends Component {
 
   handleClick = (id) => {
     this.setState({ activeLink: id });
+    localStorage.setItem("LinkId", id);
   };
   componentDidMount() {}
   render() {

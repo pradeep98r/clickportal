@@ -9,8 +9,8 @@ import "owl.carousel/dist/assets/owl.theme.default.css";
 class SmartBoard extends Component {
   componentDidMount() {
     this.setState({ title: "Smartboard" });
-    const loginData = JSON.parse(localStorage.getItem('loginResponse'));
-    console.log(loginData,"local storage data for login")
+    const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+    console.log(loginData, "local storage data for login");
   }
   render() {
     return (
@@ -19,37 +19,26 @@ class SmartBoard extends Component {
           <div className="container-fluid px-0">
             <div className="row">
               {/* left side */}
-              <div className="col-lg-9 col_left">
-                <div className="mandi_setup card margin_bottom">
-                  <div className="flex_class justify-content-between">
-                    <div>
-                      <h3>Complete your Mandi Setup</h3>
-                      <p>
-                        Lorem ipsum is placeholder text commonly used in the
-                        graphic
-                      </p>
-                    </div>
-                    <button className="btn_white">Complete Now</button>
-                  </div>
-                </div>
-                <div className="outstanding_balance margin_bottom">
+              <div className="col-lg-9">
+                <h3>comming soon</h3>
+                {/* <div className="outstanding_balance margin_bottom">
                   <h4 className="smartboard_main_header">
                     Outstanding Balances
                   </h4>
                   <div className="row">
-                    <div className="col-lg-6 col_left">
+                    <div className="col-lg-6">
                       <div className="card pending_rec_card green_card">
                         hii
                       </div>
                     </div>
-                    <div className="col-lg-6 col_right">
+                    <div className="col-lg-6">
                       <div className="card pending_pay_card warning_card">
                         hloo
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="reports_cards margin_bottom">
+                </div> */}
+                {/* <div className="reports_cards margin_bottom">
                   <div className="row margin_bottom">
                     <div className="col-lg-6 col_left">
                       <h4 className="smartboard_main_header">Sales Reports</h4>
@@ -91,7 +80,7 @@ class SmartBoard extends Component {
                       <div className="card default_card">hloo</div>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 {/* <NoDataAvailable /> */}
               </div>
               {/* right side */}

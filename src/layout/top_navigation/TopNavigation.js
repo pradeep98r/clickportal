@@ -1,7 +1,20 @@
 import bell from "../../assets/images/navbar/Bell.svg";
 import help from "../../assets/images/navbar/Help.svg";
 import "./TopNavigation.scss";
+import { useSelector, useDispatch } from "react-redux";
+import { authActions } from "../../reducers/authSlice";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 function TopNavigation(props) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  console.log("gg");
+  const routeId = localStorage.getItem("LinkId");
+  console.log(routeId);
+  const loginUserDetails = useSelector((state) => state.userInfo.isUserDetails);
+  const logOutFunction = () => {
+    dispatch(authActions.logout(true));
+    navigate("/login_form");
+  };
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
@@ -52,27 +65,22 @@ function TopNavigation(props) {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Aparna
+                {loginUserDetails.profile.profile.fullName}
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Action
+              <li>
+                  <p>Click Id:{loginUserDetails.profile.profile.clickId}</p>
+                  </li>
+                  <li>
+                  <p>{loginUserDetails.profile.profile.mobile}</p>
+                  </li>
+                <li className="pb-0">
+                  <a className="dropdown-item p-0" href="#">
+                    <button onClick={logOutFunction} className="primary_btn ">logout</button>
                   </a>
                 </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Another action
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Something else here
-                  </a>
-                </li>
+               
+                
               </ul>
             </li>
           </ul>

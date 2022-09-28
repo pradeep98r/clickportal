@@ -36,3 +36,13 @@
     color: var(--ono-subtext);
   }
 }
+
+.dropdown-menu[data-bs-popper]{
+  left: -130px;
+  }
+  .dropdown-menu{
+    padding: 20px;
+    li{
+      padding-bottom: 20px;
+    }
+  }

@@ -8,30 +8,70 @@ import { login } from "../../reducers/UserSlice";
 import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, OsTypes, osVersion } from "react-device-detect";
 import toastr from "toastr";
-import { authActions } from '../../reducers/authSlice';
-import OtpTimer from 'otp-timer'
+import { authActions } from "../../reducers/authSlice";
+import { userInfoActions } from "../../reducers/UserInfoSlice";
+import OtpTimer from "otp-timer";
 
 const LoginForm = () => {
+  const [lat, setLatValue] = useState("");
+  const [lang, setLangValue] = useState("");
   const [mobileNumber, setmobileNumber] = useState("");
   const [otpId, setOtpId] = useState("");
   const handleChange = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, '');
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
   };
+  navigator.geolocation.getCurrentPosition(function (position) {
+    setLatValue(position.coords.latitude);
+    setLangValue(position.coords.longitude);
+  });
   const [otpValue, setOtpValue] = useState("");
   const [viewOtpForm, setViewOtpForm] = useState(false);
   const [otpError, setotpError] = useState("");
   const [toDashboard, setoDashboard] = useState(false);
   const handleOtpChange = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, '');
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 6);
     setOtpValue(number);
   };
-  const handleClick=()=>{
-    //desired function to be performed on clicking resend button
-  }
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const obj = {
+    deviceInfo: {
+      deviceId: deviceType,
+      model: deviceType,
+      os: osName,
+      version: osVersion,
+    },
+    langId: 1,
+    locAllow: true,
+    location: {
+      latitude: lat != null ? lat : "",
+      longitude: lang != null ? lang : "",
+    },
+    mobile: mobileNumber,
+    newMobileNum: true,
+    userType: localStorage.getItem("userType"),
+  };
+  const handleClick = () => {
+    console.log("resend on");
+    doLogin(obj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          setViewOtpForm(true);
+          setOtpId(response.data.data.otpReqId);
+        } else if (response.data.status === "FAILURE") {
+        } else {
+        }
+      },
+      (error) => {
+        toastr.error(error.response.data.status.description);
+      }
+    );
+    console.log("resend after");
+  };
   const handleSUbmit = (e) => {
     e.preventDefault();
     dispatch(
@@ -40,29 +80,13 @@ const LoginForm = () => {
         loggedIn: true,
       })
     );
-    const obj = {
-      deviceInfo: {
-        deviceId: deviceType,
-        model: deviceType,
-        os: osName,
-        version: osVersion,
-      },
-      langId: 1,
-      locAllow: true,
-      location: {
-        latitude: "19.234",
-        longitude: "34.233",
-      },
-      mobile: mobileNumber,
-      newMobileNum: true,
-      userType: localStorage.getItem("userType"),
-    };
     doLogin(obj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           setViewOtpForm(true);
-
           setOtpId(response.data.data.otpReqId);
+          console.log(viewOtpForm);
+          toastr.success(response.data.status.description);
         } else if (response.data.status === "FAILURE") {
         } else {
         }
@@ -80,14 +104,17 @@ const LoginForm = () => {
       otpReqId: otpId,
       userType: localStorage.getItem("userType"),
     };
+
     validateOTP(obj).then(
       (resp) => {
         if (resp.data.status.type === "SUCCESS") {
-          setotpError("");
+          setotpError("heyyy");
+          localStorage.setItem("loginResponse", JSON.stringify(resp.data.data));
+          dispatch(authActions.login(true));
+          dispatch(userInfoActions.loginSuccess(resp.data.data));
+          toastr.success(resp.data.status.description);
           setoDashboard(true);
-          // this.setState({ toDashboard: true, otpError: "" });
-          localStorage.setItem("loginResponse", JSON.stringify(resp.data.data))
-          dispatch(authActions.login());;
+          navigate("/smartboard");
         } else {
           setotpError("The entered otp is incorrect");
         }
@@ -97,12 +124,12 @@ const LoginForm = () => {
       }
     );
   };
-
   const backToLogin = (event) => {
     event.preventDefault();
     setViewOtpForm(false);
   };
   if (toDashboard) {
+    console.log(toDashboard);
     return <Navigate to="/smartboard" />;
   }
   return (
@@ -120,7 +147,7 @@ const LoginForm = () => {
                     label="Enter your mobile number"
                     name="name"
                     onChange={(e) => {
-                      handleChange(e)
+                      handleChange(e);
                     }}
                   />
                   <button
@@ -149,15 +176,13 @@ const LoginForm = () => {
                     ></span>
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <label className="form-label mb-0">Enter OTP</label>
-                     <div className="timer">
-                     <OtpTimer seconds= {30} minutes={0} resend={handleClick} />
-                     </div>
-                      {/* <a
-                      className="resend_otp"
-                      onClick={(event) => handleSubmit(event)}
-                    >
-                      Resend OTP
-                    </a> */}
+                      <div className="timer">
+                        <OtpTimer
+                          seconds={30}
+                          minutes={0}
+                          resend={handleClick}
+                        />
+                      </div>
                     </div>
                     <input
                       type="text"
