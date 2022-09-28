@@ -112,9 +112,22 @@ const LoginForm = () => {
           localStorage.setItem("loginResponse", JSON.stringify(resp.data.data));
           dispatch(authActions.login(true));
           dispatch(userInfoActions.loginSuccess(resp.data.data));
+          localStorage.setItem("clientId",resp.data.data.authKeys.clientId)
+          const clientId = localStorage.getItem("clientId");
+          if(resp.data.data.authKeys.clientId == clientId){
+            console.log('login suc')
+            localStorage.setItem("isauth",true);
+            console.log('login success')
+            navigate("/smartboard");
+            window.location.reload();
+          }
+          else{
+            localStorage.setItem("isauth",false);
+          }
+          console.log(clientId,"clientid")
           toastr.success(resp.data.status.description);
           setoDashboard(true);
-          navigate("/smartboard");
+          
         } else {
           setotpError("The entered otp is incorrect");
         }

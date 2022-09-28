@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter, BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  BrowserRouter as Router,
+  Route,
+  Routes,
+} from "react-router-dom";
 import Splash from "../modules/Splash";
 import Login from "../modules/login/Login";
 import LoginForm from "../modules/login/LoginForm";
@@ -9,30 +14,80 @@ import Layout from "../layout/Layout";
 import BillCreation from "../modules/buy_bill_book/BillCreation";
 import BillView from "../modules/buy_bill_book/BillView";
 import Calender from "../modules/buy_bill_book/calender";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+import { Component, useState } from "react";
 const RoutesConfig = () => {
-  const isAuth = useSelector(state => state.auth.isAuthenticated);
-  console.log(isAuth)
-  return (
-    <BrowserRouter>
-      {!isAuth &&
-      <Routes>
-        <Route path="/" element={<Splash />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/login_form" element={<LoginForm />} />
-      </Routes>}
-      {isAuth &&
-      <Layout>
+  const isLocalAuth = localStorage.getItem("isauth");
+  if (isLocalAuth == null) {
+    return (
+      <BrowserRouter>
         <Routes>
-          <Route path="/smartboard" element={<SmartBoard />} />
-          <Route path="/buy_bill_book" element={<BuyBillBook />} />
-          <Route path="/bill_creation" element={<BillCreation />} />
-          <Route path="/bill_view/:billId" element={<BillView />}/>
-          <Route path="/calender" element={<Calender />}/>
+          <Route path="/" element={<Splash />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/login_form" element={<LoginForm />} />
         </Routes>
-      </Layout>}
-    </BrowserRouter>
-  );
+      </BrowserRouter>
+    );
+  } else {
+    if (isLocalAuth == "true") {
+      console.log("hey",JSON.parse(localStorage.getItem("loginResponse")));
+      return (
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/smartboard" element={<SmartBoard />} />
+              <Route path="/buy_bill_book" element={<BuyBillBook />} />
+              <Route path="/bill_creation" element={<BillCreation />} />
+              <Route path="/bill_view/:billId" element={<BillView />} />
+              <Route path="/calender" element={<Calender />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      );
+    } else {
+      return (
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Splash />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/login_form" element={<LoginForm />} />
+          </Routes>
+        </BrowserRouter>
+      );
+    }
+  }
+  // return (
+  //   <BrowserRouter>
+  //     {isLocalAuth == null   (
+  //      {
+  //        if(isLocalAuth)
+  //        {
+  //         <Routes>
+  //         <Route path="/" element={<Splash />} />
+  //         <Route path="/login" element={<Login />} />
+  //         <Route path="/login_form" element={<LoginForm />} />
+  //       </Routes>
+  //        }
+
+  //      }
+  //     ) :  <Layout>
+  //     <Routes>
+  //       <Route path="/smartboard" element={<SmartBoard />} />
+  //       <Route path="/buy_bill_book" element={<BuyBillBook />} />
+  //       <Route path="/bill_creation" element={<BillCreation />} />
+  //       <Route path="/bill_view/:billId" element={<BillView />} />
+  //       <Route path="/calender" element={<Calender />} />
+  //     </Routes>
+  //   </Layout>}
+  //     {/* {isAuth && (
+  //       isAuth
+  //        && (
+
+  //        )
+
+  //     )} */}
+  //   </BrowserRouter>
+  // );
 };
 
 export default RoutesConfig;

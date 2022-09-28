@@ -8,12 +8,17 @@ function TopNavigation(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log("gg");
-  const routeId = localStorage.getItem("LinkId");
-  console.log(routeId);
-  const loginUserDetails = useSelector((state) => state.userInfo.isUserDetails);
+  // const loginUserDetails = useSelector((state) => state.userInfo.isUserDetails);
+  const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
+  console.log(loginUserDetails)
   const logOutFunction = () => {
-    dispatch(authActions.logout(true));
+    localStorage.setItem("isauth",false);
+    dispatch(authActions.logout(false));
     navigate("/login_form");
+    window.location.reload();
+    console.log(loginUserDetails,"before clear")
+    localStorage.removeItem("loginResponse");
+    console.log(loginUserDetails,"after clearing")
   };
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">

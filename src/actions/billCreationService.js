@@ -1,4 +1,5 @@
 import axios from "axios";
+// import axiosCommon from "../axios";
 
 export function getPartnerData(clickId, clientId, clientSecret) {
   return axios.get(
