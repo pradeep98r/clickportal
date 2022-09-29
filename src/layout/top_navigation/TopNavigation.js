@@ -3,21 +3,20 @@ import help from "../../assets/images/navbar/Help.svg";
 import "./TopNavigation.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function TopNavigation(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("gg");
   // const loginUserDetails = useSelector((state) => state.userInfo.isUserDetails);
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
-  console.log(loginUserDetails)
   const logOutFunction = () => {
     localStorage.setItem("isauth",false);
     dispatch(authActions.logout(false));
-    navigate("/login_form");
+    navigate("/login");
     window.location.reload();
     console.log(loginUserDetails,"before clear")
     localStorage.removeItem("loginResponse");
+    localStorage.removeItem("userType");
     console.log(loginUserDetails,"after clearing")
   };
   return (
