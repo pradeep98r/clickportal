@@ -109,12 +109,13 @@ const LoginForm = () => {
       (resp) => {
         if (resp.data.status.type === "SUCCESS") {
           setotpError("heyyy");
-          localStorage.setItem("loginResponse", JSON.stringify(resp.data.data));
+         
           dispatch(authActions.login(true));
           dispatch(userInfoActions.loginSuccess(resp.data.data));
           localStorage.setItem("clientId",resp.data.data.authKeys.clientId)
           const clientId = localStorage.getItem("clientId");
           if(resp.data.data.authKeys.clientId == clientId){
+            localStorage.setItem("loginResponse", JSON.stringify(resp.data.data));
             console.log('login suc')
             localStorage.setItem("isauth",true);
             console.log('login success')

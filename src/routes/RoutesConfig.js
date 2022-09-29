@@ -14,8 +14,6 @@ import Layout from "../layout/Layout";
 import BillCreation from "../modules/buy_bill_book/BillCreation";
 import BillView from "../modules/buy_bill_book/BillView";
 import Calender from "../modules/buy_bill_book/calender";
-import { useSelector } from "react-redux";
-import { Component, useState } from "react";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
   if (isLocalAuth == null) {
@@ -30,7 +28,6 @@ const RoutesConfig = () => {
     );
   } else {
     if (isLocalAuth == "true") {
-      console.log("hey",JSON.parse(localStorage.getItem("loginResponse")));
       return (
         <BrowserRouter>
           <Layout>
@@ -56,38 +53,6 @@ const RoutesConfig = () => {
       );
     }
   }
-  // return (
-  //   <BrowserRouter>
-  //     {isLocalAuth == null   (
-  //      {
-  //        if(isLocalAuth)
-  //        {
-  //         <Routes>
-  //         <Route path="/" element={<Splash />} />
-  //         <Route path="/login" element={<Login />} />
-  //         <Route path="/login_form" element={<LoginForm />} />
-  //       </Routes>
-  //        }
-
-  //      }
-  //     ) :  <Layout>
-  //     <Routes>
-  //       <Route path="/smartboard" element={<SmartBoard />} />
-  //       <Route path="/buy_bill_book" element={<BuyBillBook />} />
-  //       <Route path="/bill_creation" element={<BillCreation />} />
-  //       <Route path="/bill_view/:billId" element={<BillView />} />
-  //       <Route path="/calender" element={<Calender />} />
-  //     </Routes>
-  //   </Layout>}
-  //     {/* {isAuth && (
-  //       isAuth
-  //        && (
-
-  //        )
-
-  //     )} */}
-  //   </BrowserRouter>
-  // );
 };
 
 export default RoutesConfig;
