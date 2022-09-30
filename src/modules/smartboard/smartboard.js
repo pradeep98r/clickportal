@@ -12,6 +12,7 @@ class SmartBoard extends Component {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     console.log(loginData, "local storage data for login");
   }
+ 
   render() {
     return (
       <div>

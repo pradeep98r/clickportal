@@ -21,6 +21,10 @@ class SideNavigation extends Component {
 
   handleToggle = () => {
     this.setState({ isActive: !this.state.isActive });
+    // console.log(isActive);
+    localStorage.setItem("isActiveMenu",!this.state.isActive);
+    // console.log("hjjj",this.state.isActive)
+
   };
   state = {
     links: [
@@ -118,7 +122,7 @@ class SideNavigation extends Component {
     ],
     // activeLink: null,
   };
-
+  
   handleClick = (id) => {
     this.setState({ activeLink: id });
     localStorage.setItem("LinkId", id);
@@ -126,6 +130,7 @@ class SideNavigation extends Component {
   componentDidMount() {}
   render() {
     const isActive = this.state.isActive;
+   
     const { links, activeLink } = this.state;
     return (
       <div>
@@ -152,7 +157,7 @@ class SideNavigation extends Component {
                       onClick={() => this.handleClick(link.id)}
                       className={
                         link.className + 
-                        (link.id === activeLink ? " active_item" : "")
+                        (link.id === (activeLink != null ? activeLink : 1) ? " active_item" : "")
                       }
                       to={link.to}
                     >

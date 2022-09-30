@@ -1,13 +1,12 @@
 import axios from "axios";
-// import { useSelector } from 'react-redux';
+const isLocalAuth = localStorage.getItem("isauth");
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-const clientId = loginData.authKeys.clientId;
-const clientSecret = loginData.authKeys.clientSecret;
+const clientId = isLocalAuth == "true" ? loginData.authKeys.clientId : "";
+const clientSecret =
+  isLocalAuth == "true" ? loginData.authKeys.clientSecret : "";
 const instance = axios.create({
-  baseURL: "https://dev-api.onoark.com/v1/account/",
+  baseURL: "https://dev-api.onoark.com/v1/",
 });
-// const loginUserDetails = useSelector(state => state.userInfo.isUserDetails);
-//   console.log(loginUserDetails);
 instance.defaults.headers.common["Content-Type"] = "application/json";
 instance.defaults.headers.common["client-id"] = clientId;
 instance.defaults.headers.common["client-secret"] = clientSecret;

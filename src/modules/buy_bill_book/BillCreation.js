@@ -35,6 +35,7 @@ function BillCreation() {
   let [responseData, setResponseData] = useState([]);
   let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
+  console.log(loginData)
   // let [billSettingResponse, billSettingData] = useState(array);
   const navigate = useNavigate();
   // api to fettch preferred crops data
@@ -68,7 +69,7 @@ function BillCreation() {
 //   })
 // )
 const userName = useSelector((state)=>state.user.user)
-console.log(userName);
+// console.log(userName);
   // add crop in other crop popup model
   const addCropOnclick = (crop_item) => {
     setResponseData([...responseData, crop_item]);

@@ -13,7 +13,7 @@ const Layout = (props) => {
       <aside className="aside">
         <SideNavigation />
       </aside>
-      <main className="main">{children}</main>
+      <main id="main">{children}</main>
     </div>
   );
 };

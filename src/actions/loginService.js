@@ -7,5 +7,7 @@ export function doLogin(obj) {
 export function validateOTP(obj) {
     return axios.post('https://dev-api.onoark.com/v1/account/click/sign-in/validate',obj);
 }
-
-export default {doLogin, validateOTP}
+export function langSelection() {
+    return axios.get('https://dev-api.onoark.com/v1/account/common/langs');
+}
+export default {doLogin, validateOTP, langSelection}
