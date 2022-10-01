@@ -141,7 +141,7 @@ const userName = useSelector((state)=>state.user.user)
   const [selectedPartner, setselectedPartner] = useState();
   let [partnerData, setpartnerData] = useState([]);
   const fetchPertnerData = () => {
-    getPartnerData(clickId, clientId, clientSecret)
+    getPartnerData(clickId,'')
       .then((response) => {
         setpartnerData(response.data.data);
         console.log(response.data, "buyer data");

@@ -1,9 +1,9 @@
 import axios from "axios";
 import axiosCommon from "../axios";
 
-export function getPartnerData(clickId, clientId, clientSecret) {
+export function getPartnerData(clickId,type) {
   return axiosCommon.get(
-    `/account/partners/caId/${clickId}/partyType/FARMER`,
+    `/account/partners/caId/${clickId}/partyType/${type}`,
   );
 }
 export function getPreferredCrops(clickId, clientId, clientSecret) {

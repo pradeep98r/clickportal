@@ -15,6 +15,7 @@ import BillCreation from "../modules/buy_bill_book/BillCreation";
 import BillView from "../modules/buy_bill_book/BillView";
 import Calender from "../modules/buy_bill_book/calender";
 import LanguageSelection from "../modules/login/LanguageSelection";
+import Partner from "../modules/partners/Partner";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
   if (isLocalAuth == null) {
@@ -39,6 +40,7 @@ const RoutesConfig = () => {
               <Route path="/bill_creation" element={<BillCreation />} />
               <Route path="/bill_view/:billId" element={<BillView />} />
               <Route path="/calender" element={<Calender />} />
+              <Route path="/partner" element={<Partner />} />
             </Routes>
           </Layout>
         </BrowserRouter>
