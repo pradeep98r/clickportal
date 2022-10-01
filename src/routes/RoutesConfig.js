@@ -15,6 +15,9 @@ import BillCreation from "../modules/buy_bill_book/BillCreation";
 import BillView from "../modules/buy_bill_book/BillView";
 import Calender from "../modules/buy_bill_book/calender";
 import LanguageSelection from "../modules/login/LanguageSelection";
+import BuyerLedger from "../modules/Ledgers/BuyerLedger";
+import LedgerSummary from "../modules/Ledgers/LedgerSummary";
+import DetailedLedger from "../modules/Ledgers/DetailedLedger";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
   if (isLocalAuth == null) {
@@ -39,6 +42,10 @@ const RoutesConfig = () => {
               <Route path="/bill_creation" element={<BillCreation />} />
               <Route path="/bill_view/:billId" element={<BillView />} />
               <Route path="/calender" element={<Calender />} />
+              <Route path="buyerledger" element={<BuyerLedger />}>
+                <Route path="ledgersummary" element={<LedgerSummary />} />
+                <Route path="detailedledger" element={<DetailedLedger />} />
+              </Route>
             </Routes>
           </Layout>
         </BrowserRouter>

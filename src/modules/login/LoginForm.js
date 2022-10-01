@@ -52,7 +52,7 @@ const LoginForm = () => {
       longitude: lang != null ? lang : "",
     },
     mobile: mobileNumber,
-    newMobileNum: true,
+    newMobileNum: false,
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {

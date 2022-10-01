@@ -6,6 +6,23 @@ export function getPartnerData(clickId, clientId, clientSecret) {
     `/account/partners/caId/${clickId}/partyType/FARMER`,
   );
 }
+export function getBuyerLedgers(clickId, clientId, clientSecret){
+  return axiosCommon.get(
+    `/click/ledgers/caId/${clickId}/type/BUYER`,
+  )
+}
+
+export function getLedgerSummary(clickId, clientId, clientSecret){
+  return axiosCommon.get(
+    `/account/reports/ledger/summary/caId/${clickId}/partyId/2004`
+  );
+}
+
+export function getBuyerDetailedLedger(clickId, clientId, clientSecret){
+  return axiosCommon.get(
+    `/account/reports/buyer-ledger/caId/${clickId}/partyId/2004`
+  );
+}
 export function getPreferredCrops(clickId, clientId, clientSecret) {
   return axios.get(
     `https://dev-api.onoark.com/v1/account/preferences/caId/${clickId}/prefType/CROP`,
@@ -71,7 +88,10 @@ export default {
   getAllCrops,
   getSystemSettings,
   getBuyBills,
-  getMandiDetails
+  getMandiDetails,
+  getBuyerLedgers,
+  getLedgerSummary,
+  getBuyerDetailedLedger
 };
 
 // export function getBuyBills(clickId, clientId, clientSecret) {

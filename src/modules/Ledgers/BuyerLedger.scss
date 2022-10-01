@@ -1,0 +1,122 @@
+#ledger-table{
+    width:350px;
+    height:100%;
+    border: 1px solid lightgray;
+    margin-left: 10px;
+}
+td{
+    justify-content: center;
+    padding-left: 100px;
+}
+tr{
+    cursor: pointer;
+}
+.name-tag{
+    cursor: pointer;
+}
+#searchbar{
+    width:350px;
+}
+.table1{
+    margin-left:500px;
+}
+.navbar-nav{
+    margin-left:-530px;
+    margin-top:0px;
+    position: absolute;
+}
+.ledgersummary{
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+    padding:5px 10px;
+}
+.detailedledger{
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+    padding:5px 10px;
+}
+.record-btn{
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+    color: green;
+    border: 1px solid lightgray;
+    cursor: pointer;
+    left:0px;
+}
+.close-btn{
+    border:1px solid white;
+    border-radius: 50%;
+    background-color: green;
+    position: absolute;
+    top:0px;
+    width: 20px;
+    font-size: 10px;
+    margin-left: 300px;
+    overflow:visible;
+    cursor: pointer;
+   
+}
+.submit-btn{
+    border:1px solid white;
+    background-color: green;
+    width: 100%;
+    padding-top: 5px;
+    height: max-content;
+}
+.date_pic{
+    width: 50px;
+    height: 20px;
+    color: blue;
+}
+.date_picker{
+    top:0;
+    position: absolute;
+    margin-left: 400px;
+    border: none;
+    width: 150px;
+    text-align: center;
+}
+#recievable-card{
+    width: 600px;
+    height: 50px;
+    border: 1px solid gray;
+}
+#date-tag{
+    top:0;
+    position: absolute;
+    margin-top: -10px;
+    
+}
+#date_icon{
+    margin-top:-5px;
+    position: relative;
+    margin-left:405px;
+}
+#p-tag, #amt-tag{
+    font-size: 12px;
+    font-family: sans-serif;
+    margin-top: 5px;
+}
+#recieve-tag{
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 2px;
+}
+#receivable-tag{
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    top:0;
+    justify-content: center;
+}
+.payment-tag, #comment-tag{
+    font-size: 15px;
+    font-family: sans-serif;
+    margin-top: 15px;
+}
+.form-check-label{
+    font-size: 13px;
+}
