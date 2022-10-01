@@ -56,6 +56,7 @@ const LoginForm = () => {
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {
+    console.log(obj);
     doLogin(obj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -106,9 +107,9 @@ const LoginForm = () => {
       (resp) => {
         if (resp.data.status.type === "SUCCESS") {
           setotpError("heyyy");
-
           dispatch(authActions.login(true));
           dispatch(userInfoActions.loginSuccess(resp.data.data));
+          console.log(resp.data.data, "response login");
           localStorage.setItem("clientId", resp.data.data.authKeys.clientId);
           const clientId = localStorage.getItem("clientId");
           if (resp.data.data.authKeys.clientId == clientId) {
@@ -138,7 +139,7 @@ const LoginForm = () => {
     event.preventDefault();
     setViewOtpForm(false);
   };
-  
+
   return (
     <div>
       <Navigation login_type="login_form" />

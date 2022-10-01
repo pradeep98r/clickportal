@@ -73,7 +73,7 @@ class SideNavigation extends Component {
       {
         id: 7,
         name: "Partners",
-        to: "/cms",
+        to: "/partner",
         className: "side_nav_item",
         img: partners,
       },
@@ -123,9 +123,11 @@ class SideNavigation extends Component {
     // activeLink: null,
   };
   
-  handleClick = (id) => {
+  handleClick = (id,path) => {
     this.setState({ activeLink: id });
+    console.log(path)
     localStorage.setItem("LinkId", id);
+    localStorage.setItem("LinkPath", path);
   };
   componentDidMount() {}
   render() {
@@ -154,7 +156,7 @@ class SideNavigation extends Component {
                 return (
                   <li key={link.id}>
                     <Link
-                      onClick={() => this.handleClick(link.id)}
+                      onClick={() => this.handleClick(link.id,link.to)}
                       className={
                         link.className + 
                         (link.id === (activeLink != null ? activeLink : 1) ? " active_item" : "")
