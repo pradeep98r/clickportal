@@ -3,7 +3,7 @@ import React from "react";
 const InputField = ({ value, label, name, placeholder, type, onChange }) => (
   <div className="form_div">
     {label && (
-      <label htmlFor="input-field" className="mb-3">
+      <label htmlFor="input-field" className="input_field">
         {label}
       </label>
     )}

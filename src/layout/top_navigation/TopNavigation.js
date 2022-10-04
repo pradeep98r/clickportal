@@ -5,15 +5,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-function TopNavigation(props) {
+function TopNavigation() {
   const linkValue = localStorage.getItem("LinkId");
   const linkPath = localStorage.getItem("LinkPath").toString();
-  // useEffect(() => {
-  //   if(linkValue==1){
-  //     console.log(linkValue)
-  //   }
-  // }, []);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
@@ -30,6 +24,8 @@ function TopNavigation(props) {
     console.log(loginUserDetails, "before clear");
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
+    localStorage.removeItem("LinkPath");
+    localStorage.setItem("LinkPath","/smartboard")
     console.log(loginUserDetails, "after clearing");
   };
   return (
@@ -65,16 +61,6 @@ function TopNavigation(props) {
                 </form>
               </div>
             </li>
-            {/* <li className="nav-item">
-              <div className="nav-link">
-                <input
-                  className="form-control date me-2"
-                  type="date"
-                  placeholder=""
-                  aria-label="date"
-                />
-              </div>
-            </li> */}
             <li className="nav-item">
               <a className="nav-link" href="#">
                 <img src={help} alt="icon" />
@@ -106,7 +92,7 @@ function TopNavigation(props) {
                 <li className="pb-0">
                   <a className="dropdown-item p-0" href="#">
                     <button onClick={logOutFunction} className="primary_btn ">
-                      logout
+                      Logout
                     </button>
                   </a>
                 </li>

@@ -1,41 +1,95 @@
-.partner_tabs{
-    border-bottom: 1px solid #E4E4E4;
-    margin-bottom: 20px;
+.partner_tabs {
+  border-bottom: 1px solid #e4e4e4;
+  margin-bottom: 20px;
 }
-.partner_div{
-    background-color: #fff;
+.partner_div {
+  background-color: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  overflow-y: auto;
+  height: calc(100vh - 180px);
+}
+.partner_card {
+  .partner_card_flex {
+    border-bottom: 1px solid #eff3ef;
+    padding: 10px;
+  }
+  .user_img {
+    margin-right: 15px;
+    width: 40px;
+  }
+  h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1c1c1c;
+  }
+  h6 {
+    font-size: 12px;
+    font-weight: 500;
+    color: #353535;
+    margin: 2px 0px;
+  }
+  p {
+    font-size: 12px;
+    color: #8e8e8e;
+    font-weight: normal;
+  }
+  .edit_delete_icons img {
+    width: 30px;
+    margin-left: 15px;
+  }
+}
+.partner_modal_dialog {
+  max-width: 750px;
+  form {
+    padding: 0px 50px;
+  }
+}
+.partner_model_body {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+.location {
+  color: var(--ono-blue);
+  border: none;
+  
+  background-color: transparent;
+  padding: 0px;
+  :hover{
+      cursor: pointer;
+  }
+}
+.address_text, .location{
+    margin:  15px 0px;
+}
+.file-input{
+    input{
+        opacity: 0;
+       width: 0.1px;
+       height: 0.1px;
+       position: absolute; 
+  }
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+    justify-content: center;
+    align-items: center;
+    position: relative;
     border: 1px solid #E4E4E4;
-    border-radius: 10px;
-    overflow-y: auto;
-    height: calc(100vh - 180px);
-}
-.partner_card{
-    .partner_card_flex{
-        border-bottom: 1px solid #EFF3EF;
-        padding: 10px;
-    }
-    .user_img{
-        margin-right: 15px;
-        width: 40px;
-    }
-    h5{
-        font-size: 14px;
-        font-weight: 600;
-        color: #1C1C1C;
-    }
-    h6{
-        font-size: 12px;
-        font-weight: 500;
-        color: #353535;
-        margin: 2px 0px;
-    }
-    p{
-        font-size: 12px;
-        color: #8E8E8E;
-        font-weight: normal;
-    }
-    .edit_delete_icons img{
-        width: 30px;
-        margin-left: 15px;
-    }
+    border-radius: 4px;
+    padding: 30px 15px;
+    margin-bottom: 15px;
+  label { 
+    color:#1B85FB;
+    font-size: 13px;;
+    left: 50%;
+    position: absolute;
+    transform:translateX(-50%);    
+  } 
+  .file{
+      margin-top: -10px;
+  }
+  .input_file img{
+    width: 60px;
+    height: 60px;
+  }
 }

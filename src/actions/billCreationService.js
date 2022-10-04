@@ -1,10 +1,10 @@
 import axios from "axios";
 import axiosCommon from "../axios";
-
-export function getPartnerData(clickId,type) {
-  return axiosCommon.get(
-    `/account/partners/caId/${clickId}/partyType/${type}`,
-  );
+export function addPartner(obj,clickId) {
+  return axiosCommon.post(`/account/partners/caId/${clickId}`, obj);
+}
+export function getPartnerData(clickId, type) {
+  return axiosCommon.get(`/account/partners/caId/${clickId}/partyType/${type}`);
 }
 export function getPreferredCrops(clickId, clientId, clientSecret) {
   return axios.get(
@@ -33,8 +33,8 @@ export function getSystemSettings(clickId, clientId, clientSecret) {
     {
       headers: {
         "Content-Type": "application/json",
-        "client-id": 'klT68w3ey9apljo',
-        "client-secret": 'cqFHj2glsqVLHq0bA80zmNqzu',
+        "client-id": "klT68w3ey9apljo",
+        "client-secret": "cqFHj2glsqVLHq0bA80zmNqzu",
       },
     }
   );
@@ -43,26 +43,26 @@ export function getBuyBills(clickId, clientId, clientSecret) {
   let config = {
     headers: {
       "Content-Type": "application/json",
-      "client-id": 'sCcWyvchM2LEJl0',
-      "client-secret": 'QTwCVuDVWge9pDt4fvXqGNmTp',
+      "client-id": "sCcWyvchM2LEJl0",
+      "client-secret": "QTwCVuDVWge9pDt4fvXqGNmTp",
     },
     // params: { fromDate: "2022-06-27", toDate: "2022-06-27" },
-  }
+  };
   return axiosCommon.get(
-    'https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/421?fromDate=2022-06-28&toDate=2022-06-28'
-    
+    "https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/421?fromDate=2022-06-28&toDate=2022-06-28"
   );
 }
-export function getMandiDetails(clickId, clientId, clientSecret){
+export function getMandiDetails(clickId, clientId, clientSecret) {
   let config = {
     headers: {
       "Content-Type": "application/json",
       "client-id": clientId,
       "client-secret": clientSecret,
     },
-  }
+  };
   return axios.get(
-    `https://dev-api.onoark.com/v1/account/click/profiles/caId/${clickId}`, config
+    `https://dev-api.onoark.com/v1/account/click/profiles/caId/${clickId}`,
+    config
   );
 }
 export default {
@@ -71,7 +71,7 @@ export default {
   getAllCrops,
   getSystemSettings,
   getBuyBills,
-  getMandiDetails
+  getMandiDetails,
 };
 
 // export function getBuyBills(clickId, clientId, clientSecret) {
