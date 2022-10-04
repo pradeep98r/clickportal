@@ -4,26 +4,51 @@ import "./TopNavigation.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 function TopNavigation(props) {
+  const linkValue = localStorage.getItem("LinkId");
+  const linkPath = localStorage.getItem("LinkPath").toString();
+  // useEffect(() => {
+  //   if(linkValue==1){
+  //     console.log(linkValue)
+  //   }
+  // }, []);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const loginUserDetails = useSelector((state) => state.userInfo.isUserDetails);
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
   const logOutFunction = () => {
-    localStorage.setItem("isauth",false);
+    caches.keys().then((names) => {
+      names.forEach((name) => {
+        caches.delete(name);
+      });
+    });
+    localStorage.setItem("isauth", false);
     dispatch(authActions.logout(false));
     navigate("/login");
     window.location.reload();
-    console.log(loginUserDetails,"before clear")
+    console.log(loginUserDetails, "before clear");
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
-    console.log(loginUserDetails,"after clearing")
+    console.log(loginUserDetails, "after clearing");
   };
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
         <div className="page_header">
-          <h2>{props.heading}</h2>
+          <h2>
+            {linkPath == "/smartboard" && "Smartboard"}
+            {linkValue == 2 && "Smartchart"}
+            {linkValue == 3 && "Sell Bill Book"}
+            {linkPath == "/buy_bill_book" && "Buy Bill Book"}
+            {linkValue == 5 && "Buyer Ledger"}
+            {linkValue == 6 && "Seller Ledger"}
+            {linkPath == "/partner" && "Partners"}
+            {linkValue == 8 && "My Profile"}
+            {linkValue == 9 && "Reports"}
+            {linkValue == 10 && "Transporto"}{" "}
+          </h2>
+          {linkValue == 11 && "Advances"}
           <p>Your performance summary this week</p>
         </div>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -40,7 +65,7 @@ function TopNavigation(props) {
                 </form>
               </div>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <div className="nav-link">
                 <input
                   className="form-control date me-2"
@@ -49,7 +74,7 @@ function TopNavigation(props) {
                   aria-label="date"
                 />
               </div>
-            </li>
+            </li> */}
             <li className="nav-item">
               <a className="nav-link" href="#">
                 <img src={help} alt="icon" />
@@ -72,19 +97,19 @@ function TopNavigation(props) {
                 {loginUserDetails.profile.profile.fullName}
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
+                <li>
                   <p>Click Id:{loginUserDetails.profile.profile.clickId}</p>
-                  </li>
-                  <li>
+                </li>
+                <li>
                   <p>{loginUserDetails.profile.profile.mobile}</p>
-                  </li>
+                </li>
                 <li className="pb-0">
                   <a className="dropdown-item p-0" href="#">
-                    <button onClick={logOutFunction} className="primary_btn ">logout</button>
+                    <button onClick={logOutFunction} className="primary_btn ">
+                      logout
+                    </button>
                   </a>
                 </li>
-               
-                
               </ul>
             </li>
           </ul>

@@ -14,7 +14,7 @@
     grid-area: 2 / 1 / 4 / 2;
   }
   
-  .main {
+  #main {
     grid-area: 3 / 2 / 3 / 3;
     height: calc(100vh - 71px);
   }
@@ -22,5 +22,8 @@
   .footer {
     background-color: #fff;
     grid-area: 3 / 2 / 4 / 3;
+  }
+  #main.tooggled{
+    margin-left: -130px;
   }
   

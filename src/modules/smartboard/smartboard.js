@@ -10,18 +10,87 @@ class SmartBoard extends Component {
   componentDidMount() {
     this.setState({ title: "Smartboard" });
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-    console.log(loginData, "local storage data for login");
   }
+
   render() {
     return (
       <div>
         <div className="main_div_padding">
           <div className="container-fluid px-0">
-            <div className="row">
-              {/* left side */}
-              <div className="col-lg-9">
-                <h3>comming soon</h3>
-                {/* <div className="outstanding_balance margin_bottom">
+            <ul className="nav nav-tabs" id="myTab" role="tablist">
+              <li className="nav-item active">
+                <a
+                  className="nav-link active"
+                  href="#daily"
+                  role="tab"
+                  aria-controls="home"
+                  data-bs-toggle="tab"
+                >
+                  Daily
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#weekly"
+                  role="tab"
+                  aria-controls="profile"
+                  data-bs-toggle="tab"
+                >
+                  Weekly
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#messages"
+                  role="tab"
+                  aria-controls="messages"
+                  data-bs-toggle="tab"
+                >
+                  Monthly
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#settings"
+                  role="tab"
+                  aria-controls="settings"
+                  data-bs-toggle="tab"
+                >
+                  Yearly
+                </a>
+              </li>
+            </ul>
+            <div className="tab-content ps-0">
+              <div
+                className="tab-pane active"
+                id="home"
+                role="tabpanel"
+                aria-labelledby="home-tab"
+              >
+                <div className="row">
+                  {/* left side */}
+                  <div className="col-lg-9 ps-0">
+                    <div className="outstanding_balance margin_bottom mt-4">
+                      <h4 className="smartboard_main_header">
+                        Outstanding Balances
+                      </h4>
+                      <div className="row">
+                        <div className="col-lg-6 ps-0">
+                          <div className="card pending_rec_card green_card">
+                            hii
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <div className="card pending_pay_card warning_card">
+                            hloo
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* <div className="outstanding_balance margin_bottom">
                   <h4 className="smartboard_main_header">
                     Outstanding Balances
                   </h4>
@@ -38,7 +107,7 @@ class SmartBoard extends Component {
                     </div>
                   </div>
                 </div> */}
-                {/* <div className="reports_cards margin_bottom">
+                    {/* <div className="reports_cards margin_bottom">
                   <div className="row margin_bottom">
                     <div className="col-lg-6 col_left">
                       <h4 className="smartboard_main_header">Sales Reports</h4>
@@ -81,25 +150,31 @@ class SmartBoard extends Component {
                     </div>
                   </div>
                 </div> */}
-                {/* <NoDataAvailable /> */}
-              </div>
-              {/* right side */}
-              <div className="col-lg-3">
-                <div className="smartboard_right_cards">
-                  <div className="comission margin_bottom">
-                    <h4 className="smartboard_main_header">My Commissions</h4>
-                    <div className="card default_card">
-                      <Link to="/buy_bill_book">
-                        <OutlineButton text="Add Purchase Bill" />
-                      </Link>
-                    </div>
+                    {/* <NoDataAvailable /> */}
                   </div>
-                  <div className="margin_bottom">
-                    <h4 className="smartboard_main_header">Quick Actions</h4>
-                    <div className="card default_card">hii</div>
+                  {/* right side */}
+                  <div className="col-lg-3">
+                    <div className="smartboard_right_cards">
+                      <div className="comission margin_bottom">
+                        <h4 className="smartboard_main_header">
+                          My Commissions
+                        </h4>
+                        <div className="card default_card">
+                          <Link to="/buy_bill_book">
+                            <OutlineButton text="Add Purchase Bill" />
+                          </Link>
+                        </div>
+                      </div>
+                      <div className="margin_bottom">
+                        <h4 className="smartboard_main_header">
+                          Quick Actions
+                        </h4>
+                        <div className="card default_card">hii</div>
+                      </div>
+                    </div>
+                    <NoDataAvailable />
                   </div>
                 </div>
-                <NoDataAvailable />
               </div>
             </div>
           </div>

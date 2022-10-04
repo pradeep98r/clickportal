@@ -45,18 +45,18 @@ const LoginForm = () => {
       os: osName,
       version: osVersion,
     },
-    langId: 1,
+    langId: localStorage.getItem("langId"),
     locAllow: true,
     location: {
       latitude: lat != null ? lat : "",
       longitude: lang != null ? lang : "",
     },
     mobile: mobileNumber,
-    newMobileNum: true,
+    newMobileNum: false,
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {
-    console.log("resend on");
+    console.log(obj);
     doLogin(obj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -70,7 +70,6 @@ const LoginForm = () => {
         toastr.error(error.response.data.status.description);
       }
     );
-    console.log("resend after");
   };
   const handleSUbmit = (e) => {
     e.preventDefault();
@@ -85,7 +84,6 @@ const LoginForm = () => {
         if (response.data.status.type === "SUCCESS") {
           setViewOtpForm(true);
           setOtpId(response.data.data.otpReqId);
-          console.log(viewOtpForm);
           toastr.success(response.data.status.description);
         } else if (response.data.status === "FAILURE") {
         } else {
@@ -109,26 +107,25 @@ const LoginForm = () => {
       (resp) => {
         if (resp.data.status.type === "SUCCESS") {
           setotpError("heyyy");
-         
           dispatch(authActions.login(true));
           dispatch(userInfoActions.loginSuccess(resp.data.data));
-          localStorage.setItem("clientId",resp.data.data.authKeys.clientId)
+          console.log(resp.data.data, "response login");
+          localStorage.setItem("clientId", resp.data.data.authKeys.clientId);
           const clientId = localStorage.getItem("clientId");
-          if(resp.data.data.authKeys.clientId == clientId){
-            localStorage.setItem("loginResponse", JSON.stringify(resp.data.data));
-            console.log('login suc')
-            localStorage.setItem("isauth",true);
-            console.log('login success')
+          if (resp.data.data.authKeys.clientId == clientId) {
+            localStorage.setItem(
+              "loginResponse",
+              JSON.stringify(resp.data.data)
+            );
+            localStorage.setItem("isauth", true);
+            console.log("login success");
             navigate("/smartboard");
             window.location.reload();
+          } else {
+            localStorage.setItem("isauth", false);
           }
-          else{
-            localStorage.setItem("isauth",false);
-          }
-          console.log(clientId,"clientid")
           toastr.success(resp.data.status.description);
           setoDashboard(true);
-          
         } else {
           setotpError("The entered otp is incorrect");
         }
@@ -142,10 +139,7 @@ const LoginForm = () => {
     event.preventDefault();
     setViewOtpForm(false);
   };
-  if (toDashboard) {
-    console.log(toDashboard);
-    return <Navigate to="/smartboard" />;
-  }
+
   return (
     <div>
       <Navigation login_type="login_form" />

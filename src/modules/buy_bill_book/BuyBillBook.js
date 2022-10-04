@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
-import { WeeklyCalendar } from 'react-week-picker';
+import { WeeklyCalendar } from "react-week-picker";
 import "../../assets/css/calender.scss";
 function BuyBillBook() {
   $("[name=tab]").each(function (i, d) {
@@ -37,10 +37,11 @@ function BuyBillBook() {
     getAllBuyBills();
   }, []);
   const getAllBuyBills = () => {
+    console.log("get")
     getBuyBills(clickId, clientId, clientSecret)
       .then((response) => {
         setBuyBillData(response.data.data);
-        console.log(response.data.data, "billsss");
+        console.log(response.data, "billsss");
       })
       .catch((error) => {
         console.log(error);
@@ -63,12 +64,12 @@ function BuyBillBook() {
   };
   const handleWeekPick = (startDate, endDate) => {
     console.log(`${startDate} to ${endDate}`);
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {buyBillData.length > 0 ? (
+          {/* {buyBillData.length > 0 ? (
             <div>
               <div className="d-flex justify-content-between bills_div">
                 <div className="d-flex">
@@ -336,7 +337,7 @@ function BuyBillBook() {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : ( */}
             <div className="card default_card text-center">
               <div className="row no_data_row">
                 <div className="col-lg-6 col1">
@@ -363,7 +364,7 @@ function BuyBillBook() {
                 </div>
               </div>
             </div>
-          )}
+          {/* )} */}
         </div>
       </div>
       <div
@@ -453,9 +454,12 @@ function BuyBillBook() {
                       />
                     </h2>
                   </article>
-                  <article className="week_picker">  
-                    <WeeklyCalendar onWeekPick={handleWeekPick} max={moment().format("DD-MM-YYYY")}/>
-  </article>
+                  <article className="week_picker">
+                    <WeeklyCalendar
+                      onWeekPick={handleWeekPick}
+                      max={moment().format("DD-MM-YYYY")}
+                    />
+                  </article>
                   <article className="custom_picker">
                     <div className="flex_class custom_input_div">
                       <DatePicker

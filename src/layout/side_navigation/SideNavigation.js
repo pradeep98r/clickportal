@@ -21,6 +21,10 @@ class SideNavigation extends Component {
 
   handleToggle = () => {
     this.setState({ isActive: !this.state.isActive });
+    // console.log(isActive);
+    localStorage.setItem("isActiveMenu",!this.state.isActive);
+    // console.log("hjjj",this.state.isActive)
+
   };
   state = {
     links: [
@@ -55,21 +59,21 @@ class SideNavigation extends Component {
       {
         id: 5,
         name: "Buyer Ledger",
-        to: "/cms",
+        to: "/buyerledger",
         className: "side_nav_item",
         img: buyerledger,
       },
       {
         id: 6,
         name: "Seller Ledger",
-        to: "/cms",
+        to: "/sellerledger",
         className: "side_nav_item",
         img: sellerledger,
       },
       {
         id: 7,
         name: "Partners",
-        to: "/cms",
+        to: "/partner",
         className: "side_nav_item",
         img: partners,
       },
@@ -118,14 +122,17 @@ class SideNavigation extends Component {
     ],
     // activeLink: null,
   };
-
-  handleClick = (id) => {
+  
+  handleClick = (id,path) => {
     this.setState({ activeLink: id });
+    console.log(path)
     localStorage.setItem("LinkId", id);
+    localStorage.setItem("LinkPath", path);
   };
   componentDidMount() {}
   render() {
     const isActive = this.state.isActive;
+   
     const { links, activeLink } = this.state;
     return (
       <div>
@@ -149,10 +156,10 @@ class SideNavigation extends Component {
                 return (
                   <li key={link.id}>
                     <Link
-                      onClick={() => this.handleClick(link.id)}
+                      onClick={() => this.handleClick(link.id,link.to)}
                       className={
                         link.className + 
-                        (link.id === activeLink ? " active_item" : "")
+                        (link.id === (activeLink != null ? activeLink : 1) ? " active_item" : "")
                       }
                       to={link.to}
                     >

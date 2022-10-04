@@ -1,0 +1,30 @@
+.lang_div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 70px 30px;
+  p {
+    font-size: 20px;
+    color: #4d4d4d;
+    margin-top: 20px;
+    font-weight: 700;
+  }
+  .langdiv {
+    padding: 0px 15px;
+    div {
+      //   background-color: #16a02c;
+      border: 1px solid #c2c2c2;
+      border-radius: 100%;
+      padding: 20px;
+      width: 60px;
+      height: 60px;
+    }
+    h5 {
+      //   color: #eff3ef;
+      color: #4d4d4d;
+      font-size: 20px;
+    }
+  }
+}
