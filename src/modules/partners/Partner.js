@@ -11,7 +11,6 @@ import delete_icon from "../../assets/images/delete.svg";
 import close from "../../assets/images/close.svg";
 import NoDataAvailable from "../../components/NoDataAvailable";
 import InputField from "../../components/InputField";
-import LocationFetch from "./location";
 import toastr from "toastr";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
