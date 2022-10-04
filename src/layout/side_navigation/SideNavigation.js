@@ -59,14 +59,14 @@ class SideNavigation extends Component {
       {
         id: 5,
         name: "Buyer Ledger",
-        to: "/cms",
+        to: "/buyerledger",
         className: "side_nav_item",
         img: buyerledger,
       },
       {
         id: 6,
         name: "Seller Ledger",
-        to: "/cms",
+        to: "/sellerledger",
         className: "side_nav_item",
         img: sellerledger,
       },
