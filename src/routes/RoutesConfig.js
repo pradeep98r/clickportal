@@ -20,9 +20,13 @@ import BuyerLedger from "../modules/Ledgers/BuyerLedger";
 import LedgerSummary from "../modules/Ledgers/LedgerSummary";
 import DetailedLedger from "../modules/Ledgers/DetailedLedger";
 import Partner from "../modules/partners/Partner";
+import SellerLedger from "../modules/Ledgers/SellerLedger";
+import SellerLedgerSummary from "../modules/Ledgers/SellerLedgerSummary";
+import SellerDetailedLedger from "../modules/Ledgers/SellerDetailedLedger";
 
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
+
   if (isLocalAuth == null) {
     return (
       <BrowserRouter>
@@ -46,10 +50,13 @@ const RoutesConfig = () => {
               <Route path="/bill_view/:billId" element={<BillView />} />
               <Route path="/calender" element={<Calender />} />
               <Route path="buyerledger" element={<BuyerLedger />}>
-                <Route path="ledgersummary" element={<LedgerSummary />} />
-                <Route path="detailedledger" element={<DetailedLedger />} />
+                <Route path="ledgersummary/:partyId" element={<LedgerSummary />} />
+                <Route path="detailedledger/:partyId" element={<DetailedLedger />} />
               </Route>
-
+              <Route path="sellerledger" element={<SellerLedger />}> 
+                <Route path="sellerledgersummary/:partyId" element={<SellerLedgerSummary />} />
+                <Route path="sellerdetailedledger/:partyId" element={<SellerDetailedLedger />} />
+              </Route>
               <Route path="/partner" element={<Partner />} />
             </Routes>
           </Layout>

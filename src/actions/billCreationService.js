@@ -12,15 +12,27 @@ export function getBuyerLedgers(clickId, clientId, clientSecret){
   )
 }
 
-export function getLedgerSummary(clickId, clientId, clientSecret){
+export function getLedgerSummary(clickId, partyId, clientId, clientSecret){
   return axiosCommon.get(
-    `/account/reports/ledger/summary/caId/${clickId}/partyId/2004`
+    `/account/reports/ledger/summary/caId/${clickId}/partyId/${partyId}`
   );
 }
 
-export function getBuyerDetailedLedger(clickId, clientId, clientSecret){
+export function getBuyerDetailedLedger(clickId,partyId, clientId, clientSecre){
   return axiosCommon.get(
-    `/account/reports/buyer-ledger/caId/${clickId}/partyId/2004`
+    `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
+  );
+}
+
+export function getSelleLedgers(clickId, clientId, clientSecre){
+  return axiosCommon.get(
+    `/click/ledgers/caId/${clickId}/type/FARMER`
+  );
+}
+
+export function getSellerDetailedLedger(clickId, partyId, clientId, clientSecret){
+  return axiosCommon.get(
+    `/account/reports/seller-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
 export function getPreferredCrops(clickId, clientId, clientSecret) {
@@ -82,6 +94,9 @@ export function getMandiDetails(clickId, clientId, clientSecret){
     `https://dev-api.onoark.com/v1/account/click/profiles/caId/${clickId}`, config
   );
 }
+export function postRecordPayment(addRecordPaymentReq, clientId,clientSecret){
+  return axiosCommon.post(`https://dev-api.onoark.com/v1/click/ledgers/payment/record`,addRecordPaymentReq);
+}
 export default {
   getPartnerData,
   getPreferredCrops,
@@ -91,7 +106,10 @@ export default {
   getMandiDetails,
   getBuyerLedgers,
   getLedgerSummary,
-  getBuyerDetailedLedger
+  getBuyerDetailedLedger,
+  getSelleLedgers,
+  getSellerDetailedLedger,
+  postRecordPayment
 };
 
 // export function getBuyBills(clickId, clientId, clientSecret) {

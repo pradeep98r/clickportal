@@ -1,15 +1,15 @@
 import React from 'react'
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { Fragment } from 'react';
-import { useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import { getLedgerSummary } from '../../actions/billCreationService';
 import "../Ledgers/LedgerSummary.scss";
 import pdf from "../../assets/images/pdf.svg";
 import share from "../../assets/images/share.svg";
 import print from "../../assets/images/print.svg";
 
-const LedgerSummary = () => {
+const SellerLedgerSummary = () => {
   const [ledgerSummary, setSummary] = useState([{}]);
   const [data, setData] = useState({}, ledgerSummary);
   const [error, setError] = useState(null);
@@ -18,6 +18,7 @@ const LedgerSummary = () => {
 
   const {partyId}=useParams();
   console.log("partyId",partyId)
+
   useEffect(() => {
     getBuyerLedgerSummary();
   }, []);
@@ -33,14 +34,14 @@ const LedgerSummary = () => {
   }
   return (
     <Fragment>
-    <div className='ledger-summary'>
+    <div className='seller-summary'>
       <table class="table" id="summary-tag">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">RefId | Date</th>
-            <th scope="col">Recieved</th>
-            <th scope="col">To Be Recieved</th>
+            <th scope="col">Paid</th>
+            <th scope="col">To Be Paid</th>
             <th scope="col">Ledger Balance</th>
           </tr>
         </thead>
@@ -48,13 +49,21 @@ const LedgerSummary = () => {
           {
             ledgerSummary.map((item, index) => {
               return (
+                <Fragment>
                 <tr>
                   <th scope="row">{index}</th>
                   <td>{item.refId} {item.date}</td>
                   <td>{item.paidRcvd}</td>
                   <td>{item.tobePaidRcvd}</td>
-                  <td><span className='coloring'>{item.balance}</span></td>
+                  <td>{item.balance}</td>
                 </tr>
+                <p><span class="name-tag">
+                {item.partyName}<br />
+                {item.partyAddress}
+                {item.mobile}
+                {item.profilePic}</span>
+                </p>
+                </Fragment>
               )
             })
           }
@@ -65,4 +74,4 @@ const LedgerSummary = () => {
   )
 }
 
-export default LedgerSummary
+export default SellerLedgerSummary

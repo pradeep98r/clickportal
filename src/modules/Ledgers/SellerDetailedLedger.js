@@ -1,25 +1,24 @@
-import React from 'react'
-import { useState } from 'react';
-import { Fragment } from 'react';
+import React, { Fragment } from 'react'
 import { useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getBuyerDetailedLedger } from '../../actions/billCreationService';
+import { getSellerDetailedLedger } from '../../actions/billCreationService';
 import "../Ledgers/DetailedLedger.scss";
 
-const DetailedLedger = () => {
+const SellerDetailedLedger = () => {
   const [details, setDetails] = useState([{}]);
   const [data, setData] = useState({}, details);
   const [error, setError] = useState(null);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
 
-  const{partyId}=useParams();
+  const {partyId}=useParams();
   useEffect(() => {
     fetchBuyerLedgerDetails();
   }, []);
 
   const fetchBuyerLedgerDetails = () => {
-    getBuyerDetailedLedger(clickId,partyId).then(response => {
+    getSellerDetailedLedger(clickId,partyId).then(response => {
       setData(response.data.data);
       setDetails(response.data.data.details);
     })
@@ -29,15 +28,15 @@ const DetailedLedger = () => {
   }
   return (
     <Fragment>
-    <div className='detailed-ledger'>
+      <div className='detail-ledger'>
     <table class="table">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">RefId  Date</th>
             <th scope="col">Item Unit|Kgs|Rate</th>
-            <th scope="col">Recieved</th>
-            <th scope="col">To Be Recieved</th>
+            <th scope="col">Paid</th>
+            <th scope="col">To Be Paid</th>
             <th scope="col">Ledger Balance</th>
           </tr>
         </thead>
@@ -48,10 +47,10 @@ const DetailedLedger = () => {
                 <tr>
                 <th scope="row">{index}</th>
                 <td>{item.refId}&nbsp;{item.date}</td>
-                <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
-                <td>{item.recieved}</td>
-                <td>{item.toBeRecieved}</td>
-                <td><span className='coloring'>{item.balance}</span></td>
+                <td>{item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
+                <td>{item.paid}</td>
+                <td>{item.toBePaid}</td>
+                <td>{item.balance}</td>
               </tr>
               )
             })
@@ -64,4 +63,4 @@ const DetailedLedger = () => {
   )
 }
 
-export default DetailedLedger
+export default SellerDetailedLedger
