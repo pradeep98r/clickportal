@@ -2,14 +2,14 @@ import { Component, useState } from "react";
 import Navigation from "../../components/navigation";
 import Logo from "../../components/logo";
 import InputField from "../../components/inputField";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../reducers/userSlice";
 import { doLogin, validateOTP } from "../../actions/loginService";
-import { deviceType, osName, OsTypes, osVersion } from "react-device-detect";
+import { deviceType, osName, osVersion } from "react-device-detect";
 import toastr from "toastr";
 import { authActions } from "../../reducers/authSlice";
-import { userInfoActions } from "../../reducers/UserInfoSlice";
+import { userInfoActions } from "../../reducers/userInfoSlice";
 import OtpTimer from "otp-timer";
 
 const LoginForm = () => {
