@@ -15,7 +15,7 @@ import copy_icon from "../../assets/images/copy.svg";
 import postbuybillApi from "../../actions/preferencesService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SelectSearch from "./SelectSearch";
+import SelectSearch from "./selectSearch";
 import Select from "react-select";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
@@ -25,7 +25,7 @@ import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
 import $ from "jquery";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../reducers/UserSlice";
+import { login } from "../../reducers/userSlice";
 var array = [];
 function BillCreation() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));

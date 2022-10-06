@@ -6,7 +6,7 @@ import click_logo_y from "../../assets/images/click_logo_yellow.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import search from "../../assets/images/search.svg";
 import { useDispatch } from "react-redux";
-import { selectBuyer } from "../../reducers/BuyerSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 const options = [
   { value: "Aparna", label: "Aparna", icon: single_bill },
   { value: "appuu", label: "appuu", icon: single_bill },
