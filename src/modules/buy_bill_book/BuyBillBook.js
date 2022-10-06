@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
-import { WeeklyCalendar } from "react-week-picker";
+// import { WeeklyCalendar } from "react-week-picker";
 import "../../assets/css/calender.scss";
 function BuyBillBook() {
   $("[name=tab]").each(function (i, d) {
@@ -455,10 +455,10 @@ function BuyBillBook() {
                     </h2>
                   </article>
                   <article className="week_picker">
-                    <WeeklyCalendar
+                    {/* <WeeklyCalendar
                       onWeekPick={handleWeekPick}
                       max={moment().format("DD-MM-YYYY")}
-                    />
+                    /> */}
                   </article>
                   <article className="custom_picker">
                     <div className="flex_class custom_input_div">
