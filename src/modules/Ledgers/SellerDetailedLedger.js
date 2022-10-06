@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSellerDetailedLedger } from '../../actions/billCreationService';
-import "../Ledgers/DetailedLedger.scss";
+import "./detailedLedger.scss";
 
 const SellerDetailedLedger = () => {
   const [details, setDetails] = useState([{}]);
@@ -29,7 +29,7 @@ const SellerDetailedLedger = () => {
   return (
     <Fragment>
       <div className='detail-ledger'>
-    <table class="table">
+    <table className="table">
         <thead>
           <tr>
             <th scope="col">#</th>

@@ -1,15 +1,11 @@
 import React, { Component } from "react";
-import NoDataAvailable from "../../components/NoDataAvailable";
-import OutlineButton from "../../components/OutlineButton";
+import NoDataAvailable from "../../components/noDataAvailable";
+import OutlineButton from "../../components/outlineButton";
 import { Link } from "react-router-dom";
-import OwlCarousel from "react-owl-carousel";
-import "owl.carousel/dist/assets/owl.carousel.css";
-import "owl.carousel/dist/assets/owl.theme.default.css";
 
 class SmartBoard extends Component {
   componentDidMount() {
     this.setState({ title: "Smartboard" });
-    const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   }
 
   render() {

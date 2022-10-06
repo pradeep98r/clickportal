@@ -1,31 +1,27 @@
-import { Component, useState, useEffect } from "react";
-import Navigation from "../../components/Navigation";
-import { Link, Navigate, useNavigate } from "react-router-dom";
-import OutlineButton from "../../components/OutlineButton";
-import "../partners/Partner.scss";
+import { useState, useEffect } from "react";
+import OutlineButton from "../../components/outlineButton";
+import "../partners/partner.scss";
 import { getPartnerData, addPartner } from "../../actions/billCreationService";
 import $ from "jquery";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import edit from "../../assets/images/edit_round.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import close from "../../assets/images/close.svg";
-import NoDataAvailable from "../../components/NoDataAvailable";
-import InputField from "../../components/InputField";
+import NoDataAvailable from "../../components/noDataAvailable";
+import InputField from "../../components/inputField";
 import toastr from "toastr";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const [partnerData, setPartnerData] = useState([]);
   const [partyType, setPartyType] = useState("");
-  const [linkType, setLinksType] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
   const cityValue = localStorage.getItem("cityValue");
   const [file, setFile] = useState("");
   console.log(cityValue);
   const [nameError, setNameError] = useState("");
   useEffect(() => {
     tabEvent();
-    setLinksType(links);
+    // setLinksType(links);
   }, []);
   const [mobileNumber, setmobileNumber] = useState("0");
   const handleMobileNumber = (e) => {
@@ -94,7 +90,7 @@ const Partner = () => {
     },
   };
   const onSubmit = () => {
-    if (obj.mobile != 0 && obj.name) {
+    if (obj.mobile !== 0 && obj.name) {
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -109,9 +105,9 @@ const Partner = () => {
       alert("fields requirde");
     }
   };
-  const locationFetch = () => {
-    console.log(cityValue);
-  };
+  // const locationFetch = () => {
+  //   console.log(cityValue);
+  // };
   const tabEvent = (type) => {
     setPartyType(type);
     getPartnerData(clickId, type)
@@ -190,7 +186,6 @@ const Partner = () => {
     var pincodeValue = pincode.replace(/\D/g, "");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[4].short_name;
-    let postal = address.results[5].address_components[0].short_name;
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
@@ -239,9 +234,9 @@ const Partner = () => {
         for (var j = 0; j < result.address_components.length; j++) {
           var types = result.address_components[j].types;
           for (var k = 0; k < types.length; k++) {
-            if (types[k] == "locality") {
+            if (types[k] === "locality") {
               locality.city = result.address_components[j].long_name;
-            } else if (types[k] == "administrative_area_level_1") {
+            } else if (types[k] === "administrative_area_level_1") {
               locality.state = result.address_components[j].short_name;
             }
           }
@@ -426,8 +421,8 @@ const Partner = () => {
                     />
                     {/* <LocationFetch onClick={locationFetch} /> */}
                     <label className="input_field address_text mt-0">
-                        Address
-                      </label>
+                      Address
+                    </label>
                     <div>
                       <label htmlFor="zip" className="input_field">
                         Pincode
@@ -466,7 +461,7 @@ const Partner = () => {
                     <label htmlFor="pic" className="input_field">
                       Profile Pic
                     </label>
-                    <div class="file-input">
+                    <div className="file-input">
                       <div className="d-flex align-items-center">
                         <div className="input_file">
                           <img

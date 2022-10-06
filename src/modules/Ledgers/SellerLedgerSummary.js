@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { useEffect } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
 import { getLedgerSummary } from '../../actions/billCreationService';
-import "../Ledgers/LedgerSummary.scss";
+import "./ledgerSummary.scss";
 import pdf from "../../assets/images/pdf.svg";
 import share from "../../assets/images/share.svg";
 import print from "../../assets/images/print.svg";
@@ -35,7 +35,7 @@ const SellerLedgerSummary = () => {
   return (
     <Fragment>
     <div className='seller-summary'>
-      <table class="table" id="summary-tag">
+      <table className="table" id="summary-tag">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -57,7 +57,7 @@ const SellerLedgerSummary = () => {
                   <td>{item.tobePaidRcvd}</td>
                   <td>{item.balance}</td>
                 </tr>
-                <p><span class="name-tag">
+                <p><span className="name-tag">
                 {item.partyName}<br />
                 {item.partyAddress}
                 {item.mobile}

@@ -1,6 +1,6 @@
 import bell from "../../assets/images/navbar/Bell.svg";
 import help from "../../assets/images/navbar/Help.svg";
-import "./TopNavigation.scss";
+import "./topNavigation.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate } from "react-router-dom";

@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom';
 import { getLedgerSummary } from '../../actions/billCreationService';
-import "../Ledgers/LedgerSummary.scss";
+import "./ledgerSummary.scss";
 import pdf from "../../assets/images/pdf.svg";
 import share from "../../assets/images/share.svg";
 import print from "../../assets/images/print.svg";
@@ -34,7 +34,7 @@ const LedgerSummary = () => {
   return (
     <Fragment>
     <div className='ledger-summary'>
-      <table class="table" id="summary-tag">
+      <table className="table" id="summary-tag">
         <thead>
           <tr>
             <th scope="col">#</th>

@@ -1,7 +1,7 @@
 import { Component, useState } from "react";
-import Navigation from "../../components/Navigation";
-import Logo from "../../components/Logo";
-import InputField from "../../components/InputField";
+import Navigation from "../../components/navigation";
+import Logo from "../../components/logo";
+import InputField from "../../components/inputField";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../reducers/userSlice";

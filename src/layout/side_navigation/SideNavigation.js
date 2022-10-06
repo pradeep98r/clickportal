@@ -14,7 +14,7 @@ import myprofile from "../../assets/images/sidebar/myprofile.svg";
 import systemsettings from "../../assets/images/sidebar/systemsettings.svg";
 import transporto from "../../assets/images/sidebar/transporto.svg";
 import menu from "../../assets/images/sidebar/menu.svg";
-import "./SideNavigation.scss";
+import "./sideNavigation.scss";
 import { Link } from "react-router-dom";
 class SideNavigation extends Component {
   state = { isActive: false };

@@ -1,28 +1,27 @@
 import React from "react";
 import {
   BrowserRouter,
-  BrowserRouter as Router,
   Route,
   Routes,
 } from "react-router-dom";
-import Splash from "../modules/Splash";
-import Login from "../modules/login/Login";
-import LoginForm from "../modules/login/LoginForm";
-import SmartBoard from "../modules/smartboard/Smartboard";
-import BuyBillBook from "../modules/buy_bill_book/BuyBillBook";
-import Layout from "../layout/Layout";
-import BillCreation from "../modules/buy_bill_book/BillCreation";
-import BillView from "../modules/buy_bill_book/BillView";
+import Splash from "../modules/splash";
+import Login from "../modules/login/login";
+import LoginForm from "../modules/login/loginForm";
+import SmartBoard from "../modules/smartboard/smartboard";
+import BuyBillBook from "../modules/buy_bill_book/buyBillBook";
+import Layout from "../layout/layout";
+import BillCreation from "../modules/buy_bill_book/billCreation";
+import BillView from "../modules/buy_bill_book/billView";
 import Calender from "../modules/buy_bill_book/calender";
-import LanguageSelection from "../modules/login/LanguageSelection";
+import LanguageSelection from "../modules/login/languageSelection";
 
-import BuyerLedger from "../modules/Ledgers/BuyerLedger";
-import LedgerSummary from "../modules/Ledgers/LedgerSummary";
-import DetailedLedger from "../modules/Ledgers/DetailedLedger";
-import Partner from "../modules/partners/Partner";
-import SellerLedger from "../modules/Ledgers/SellerLedger";
-import SellerLedgerSummary from "../modules/Ledgers/SellerLedgerSummary";
-import SellerDetailedLedger from "../modules/Ledgers/SellerDetailedLedger";
+import BuyerLedger from "../modules/ledgers/buyerLedger";
+import LedgerSummary from "../modules/ledgers/ledgerSummary";
+import DetailedLedger from "../modules/ledgers/detailedLedger";
+import Partner from "../modules/partners/partner";
+import SellerLedger from "../modules/ledgers/sellerLedger";
+import SellerLedgerSummary from "../modules/ledgers/sellerLedgerSummary";
+import SellerDetailedLedger from "../modules/ledgers/sellerDetailedLedger";
 
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
@@ -39,7 +38,7 @@ const RoutesConfig = () => {
       </BrowserRouter>
     );
   } else {
-    if (isLocalAuth == "true") {
+    if (isLocalAuth === "true") {
       return (
         <BrowserRouter>
           <Layout>

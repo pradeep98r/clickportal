@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "../buy_bill_book/BuyBillBook.scss";
+import "../buy_bill_book/buyBillBook.scss";
 import Select from "react-select";
 import click_logo from "../../assets/images/click_logo_green.svg";
 import click_logo_y from "../../assets/images/click_logo_yellow.svg";

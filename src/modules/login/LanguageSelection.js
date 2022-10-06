@@ -1,7 +1,7 @@
 import { Component, useState, useEffect } from "react";
-import Navigation from "../../components/Navigation";
+import Navigation from "../../components/navigation";
 import { langSelection } from "../../actions/loginService";
-import "../login/LanguageSelection.scss";
+import "../login/languageSelection.scss";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const LanguageSelection = () => {

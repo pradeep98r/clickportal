@@ -3,7 +3,7 @@ import ReactModal from 'react-modal';
 import { Link, Outlet, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { getBuyerLedgers, getLedgerSummary, postRecordPayment } from '../../actions/billCreationService';
-import "../Ledgers/BuyerLedger.scss";
+import "./buyerLedger.scss";
 import close_btn from "../../assets/images/close_btn.svg";
 import date_picker from "../../assets/images/date_picker.svg";
 import ReactDatePicker from 'react-datepicker';
@@ -11,7 +11,6 @@ import date_icon from "../../assets/images/date_icon.svg";
 import moment from 'moment/moment';
 import { Fragment } from 'react';
 import add from "../../assets/images/add.svg";
-import search from "../../assets/images/search.svg";
 import pdf from "../../assets/images/pdf.svg";
 import share from "../../assets/images/share.svg";
 import print from "../../assets/images/print.svg";
@@ -118,18 +117,18 @@ const BuyerLedger = () => {
                 <img src={right_click} className="right-click" />
                 <img src={close_btn} className="recordclose-btn" onClick={()=>setRecord(false)}/>
             </div>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <form class="d-flex">
-                        <input id="searchbar" class="form-control me-12" type="search" placeholder="Search by Name / Short Code" aria-label="Search"
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <div className="container-fluid">
+                    <form className="d-flex">
+                        <input id="searchbar" className="form-control me-12" type="search" placeholder="Search by Name / Short Code" aria-label="Search"
                             onChange={(e) => { setSearch(e.target.value) }} />
                         <span><img src={search} /></span>
                     </form>
                 </div>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup" className='links-tag'
+                <div className="collapse navbar-collapse links-tag" id="navbarNavAltMarkup" 
                     style={{display: displayLink ? 'block' : 'none' }}>
-                    <div class="card" className="details">
-                        <div class="card-body">
+                    <div className="card details" >
+                        <div className="card-body">
                         {
                                 ledger.map((item,index)=>{
                                     if(item.partyId==partyId){
@@ -146,7 +145,7 @@ const BuyerLedger = () => {
                                     }
                                 })
                             }
-                            <p class="card-text" className='paid'>Total Business<br/> <span className='coloring'>
+                            <p className="card-text paid">Total Business<br/> <span className='coloring'>
                             &#8377;{ledgerSummaryData.totalTobePaidRcvd? ledgerSummaryData.totalTobePaidRcvd:0}</span></p>
                             <p className='total-paid'>Total Paid <br/><span className='coloring'>
                             &#8377;{ledgerSummaryData.totalRcvdPaid? ledgerSummaryData.totalRcvdPaid:0}</span> </p> 
@@ -163,7 +162,7 @@ const BuyerLedger = () => {
                             <img src={print} className="print"/>
                             </div>
                         </div>
-                        <button class="record-btn" onClick={() => setIsOpen(!isOpen)}><img src={add} className="add"/>Add Record</button>
+                        <button className="record-btn" onClick={() => setIsOpen(!isOpen)}><img src={add} className="add"/>Add Record</button>
                     </div>
                 </div>    
                 <ReactModal isOpen={isOpen}
@@ -186,8 +185,8 @@ const BuyerLedger = () => {
                     <img src={close_btn} className="close-btn" onClick={() => setIsOpen(false)} />
                     <h5 className='addrecord-tag'>Add Record Recivable</h5>
                     <form onSubmit={addRecordPayment}>
-                        <div class="card" id="recievable-card">
-                            <div class="card-body">
+                        <div className="card" id="recievable-card">
+                            <div className="card-body">
                                 {
                                     ledger.map((item,index)=>{
                                         return(
@@ -205,7 +204,7 @@ const BuyerLedger = () => {
                                         )
                                     })
                                 }
-                                <p class="card-text" id="date-tag">
+                                <p className="card-text" id="date-tag">
                                     <ReactDatePicker className='date_picker'
                                         selected={selectDate}
                                         onChange={date => { setSelectDate(date) }}
@@ -230,48 +229,48 @@ const BuyerLedger = () => {
                         <p id='p-tag'>Total Outstanding Recievables</p>
                         <p id="recieve-tag">&#8377;{ledgerSummaryData.outStdRcvPayble}</p>
 
-                        <div class="form-group">
+                        <div className="form-group">
                             <label for="amtRecieved" id="amt-tag">Amount Recieved</label>
-                            <input class="form-control" id="amtRecieved" value={paidRcvd} placeholder="&#8377;" required
+                            <input className="form-control" id="amtRecieved" value={paidRcvd} placeholder="&#8377;" required
                                 onChange={(e) => setPaidRcvd(e.target.value)} />
                         </div>
                         <p className='payment-tag'>Payment Method</p>
 
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value={paymentMode}
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio1" value={paymentMode}
                                 onChange={(e) => setPaymentMode(e.target.value)}  />
-                            <label class="form-check-label" for="inlineRadio1">Cash</label>
+                            <label className="form-check-label" for="inlineRadio1">Cash</label>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value={paymentMode}
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio2" value={paymentMode}
                                 onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label class="form-check-label" for="inlineRadio2">UPI</label>
+                            <label className="form-check-label" for="inlineRadio2">UPI</label>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value={paymentMode}
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio3" value={paymentMode}
                                 onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label class="form-check-label" for="inlineRadio3">NEFT</label>
+                            <label className="form-check-label" for="inlineRadio3">NEFT</label>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value={paymentMode}
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio4" value={paymentMode}
                                 onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label class="form-check-label" for="inlineRadio4">RTGS</label>
+                            <label className="form-check-label" for="inlineRadio4">RTGS</label>
                         </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value={paymentMode}
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value={paymentMode}
                                 onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label class="form-check-label" for="inlineRadio5">IMPS</label>
+                            <label className="form-check-label" for="inlineRadio5">IMPS</label>
                         </div>
-                        <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label" id="comment-tag">Comment</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" value={comments}
+                        <div className="mb-3">
+                            <label for="exampleFormControlTextarea1" className="form-label" id="comment-tag">Comment</label>
+                            <textarea className="form-control" id="exampleFormControlTextarea1" rows="2" value={comments}
                                 onChange={(e) => setComments(e.target.value)}></textarea>
                         </div>
                         <button className='submit-btn' type='sumit'>SUBMIT</button>
                     </form>
                 </ReactModal>
             </nav>
-            <table class="table" id="ledger-table">
+            <table className="table" id="ledger-table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -298,14 +297,14 @@ const BuyerLedger = () => {
                                         <tr onClick={(id) => { particularLedger(item.partyId) }}>
                                             <td scope="row">{index}</td>
                                             <th key={item.date}>{item.date}</th>
-                                            <td key={item.partyName}><span class="name-tag">
+                                            <td key={item.partyName}><span className="name-tag">
                                                 {item.partyName}<br />
                                                 {item.partyAddress}
                                                 {item.mobile}
                                                 {item.profilePic}
                                             </span>
                                             </td>
-                                            <td key={item.tobePaidRcvd}><span class="recieved-tag">&#8377;
+                                            <td key={item.tobePaidRcvd}><span className="recieved-tag">&#8377;
                                                 {item.tobePaidRcvd ? item.tobePaidRcvd : 0}</span></td>
                                         </tr>                    
                                         </Fragment>
