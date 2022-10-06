@@ -9,7 +9,7 @@ import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, OsTypes, osVersion } from "react-device-detect";
 import toastr from "toastr";
 import { authActions } from "../../reducers/authSlice";
-// import { userInfoActions } from "../../reducers/userInfoSlice";
+import { userInfoActions } from "../../reducers/userInfoSlice";
 import OtpTimer from "otp-timer";
 
 const LoginForm = () => {
@@ -108,7 +108,7 @@ const LoginForm = () => {
         if (resp.data.status.type === "SUCCESS") {
           setotpError("heyyy");
           dispatch(authActions.login(true));
-          // dispatch(userInfoActions.loginSuccess(resp.data.data));
+          dispatch(userInfoActions.loginSuccess(resp.data.data));
           console.log(resp.data.data, "response login");
           localStorage.setItem("clientId", resp.data.data.authKeys.clientId);
           const clientId = localStorage.getItem("clientId");
