@@ -9,7 +9,7 @@ import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, OsTypes, osVersion } from "react-device-detect";
 import toastr from "toastr";
 import { authActions } from "../../reducers/authSlice";
-import { userInfoActions } from "../../reducers/userInfoSlice";
+import { userInfoActions } from "../../reducers/UserInfoSlice";
 import OtpTimer from "otp-timer";
 
 const LoginForm = () => {
