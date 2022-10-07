@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 function TopNavigation() {
   const linkValue = localStorage.getItem("LinkId");
-  const linkPath = localStorage.getItem("LinkPath").toString();
+  const linkPath = localStorage.getItem("LinkPath");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
@@ -33,13 +33,13 @@ function TopNavigation() {
       <div className="container-fluid">
         <div className="page_header">
           <h2>
-            {linkPath == "/smartboard" && "Smartboard"}
+            {linkPath.toString() == "/smartboard" && "Smartboard"}
             {linkValue == 2 && "Smartchart"}
             {linkValue == 3 && "Sell Bill Book"}
-            {linkPath == "/buy_bill_book" && "Buy Bill Book"}
+            {linkPath.toString() == "/buy_bill_book" && "Buy Bill Book"}
             {linkValue == 5 && "Buyer Ledger"}
             {linkValue == 6 && "Seller Ledger"}
-            {linkPath == "/partner" && "Partners"}
+            {linkPath.toString() == "/partner" && "Partners"}
             {linkValue == 8 && "My Profile"}
             {linkValue == 9 && "Reports"}
             {linkValue == 10 && "Transporto"}{" "}
