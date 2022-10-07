@@ -33,13 +33,13 @@ function TopNavigation() {
       <div className="container-fluid">
         <div className="page_header">
           <h2>
-            {linkPath.toString() == "/smartboard" && "Smartboard"}
+            {linkPath == "/smartboard" && "Smartboard"}
             {linkValue == 2 && "Smartchart"}
             {linkValue == 3 && "Sell Bill Book"}
-            {linkPath.toString() == "/buy_bill_book" && "Buy Bill Book"}
+            {linkPath == "/buy_bill_book" && "Buy Bill Book"}
             {linkValue == 5 && "Buyer Ledger"}
             {linkValue == 6 && "Seller Ledger"}
-            {linkPath.toString() == "/partner" && "Partners"}
+            {linkPath == "/partner" && "Partners"}
             {linkValue == 8 && "My Profile"}
             {linkValue == 9 && "Reports"}
             {linkValue == 10 && "Transporto"}{" "}
