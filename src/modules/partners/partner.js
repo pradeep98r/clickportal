@@ -122,7 +122,7 @@ const Partner = () => {
   const [pincode, setPincode] = useState("");
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
-  const [radioValue, setradioValue] = useState("Farmer");
+  const [radioValue, setradioValue] = useState("FARMER");
 
   function onChangeValue(event) {
     setradioValue(event.target.value.toUpperCase());
@@ -175,15 +175,16 @@ const Partner = () => {
     profilePic: single_bill,
     seqNum: 0,
     shortName: shortNameField,
-    trader: radioValue == "FARMER" || radioValue == "BUYER" ? false : true,
+    trader:(radioValue.trim().length !== 0) ? (radioValue == "FARMER" || radioValue == "BUYER") ? false : true : false,
     vehicleInfo: {
       vehicleNum: "string",
       vehicleType: vehicleType,
     },
   };
   //   file ? URL.createObjectURL(file) :
-
+  
   const onSubmit = () => {
+    console.log(obj);
     if (
       nameField.trim().length !== 0 &&
       mobileNumber.trim().length !== 0 &&
@@ -462,9 +463,9 @@ const Partner = () => {
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             {links.map((link) => {
               return (
-                <li key={link.id} className="nav-item active">
+                <li key={link.id} className="nav-item ">
                   <a
-                    className="nav-link"
+                    className={"nav-link" + (partyType == link.to ? ' active' : '')}
                     href={"#" + partyType}
                     role="tab"
                     aria-controls="home"
@@ -635,15 +636,15 @@ const Partner = () => {
                       type="radio"
                       value={partyType.toLowerCase()}
                       name="radioValue"
-                      defaultChecked={radioValue === partyType.toLowerCase()}
+                      defaultChecked={(radioValue.trim().length !== 0) ? radioValue === partyType.toLowerCase() : partyType.toLowerCase()}
                     />{" "}
                     {partyType.toLowerCase()}
                     <input
                       type="radio"
-                      value="Trader"
+                      value="trader"
                       name="radioValue"
-                      defaultChecked={radioValue === "Trader"}
-                      className="ms-3 mb-4"
+                      defaultChecked={radioValue === "trader"}
+                      className="radioBtnVal"
                     />{" "}
                     Trader
                   </div>
