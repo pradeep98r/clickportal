@@ -1,36 +1,50 @@
 import axios from "axios";
 import axiosCommon from "../axios";
-export function addPartner(obj,clickId) {
+export function addPartner(obj, clickId) {
   return axiosCommon.post(`/account/partners/caId/${clickId}`, obj);
+}
+export function deletePartnerId(partyId, clickId) {
+  return axiosCommon.put(
+    `/common/reset/caId/${clickId}/partyId/${partyId}?clearPartner=true`
+  );
+}
+export function editPartnerItem(obj) {
+  return axiosCommon.put(`/account/partners`, obj);
 }
 export function getPartnerData(clickId, type) {
   return axiosCommon.get(`/account/partners/caId/${clickId}/partyType/${type}`);
 }
-export function getBuyerLedgers(clickId, clientId, clientSecret){
-  return axiosCommon.get(
-    `/click/ledgers/caId/${clickId}/type/BUYER`,
-  )
+export function getBuyerLedgers(clickId, clientId, clientSecret) {
+  return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/BUYER`);
 }
 
-export function getLedgerSummary(clickId, partyId, clientId, clientSecret){
+export function getLedgerSummary(clickId, partyId, clientId, clientSecret) {
   return axiosCommon.get(
     `/account/reports/ledger/summary/caId/${clickId}/partyId/${partyId}`
   );
 }
 
-export function getBuyerDetailedLedger(clickId,partyId, clientId, clientSecre){
+export function getBuyerDetailedLedger(
+  clickId,
+  partyId,
+  clientId,
+  clientSecre
+) {
   return axiosCommon.get(
     `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
 
-export function getSelleLedgers(clickId, clientId, clientSecre){
-  return axiosCommon.get(
-    `/click/ledgers/caId/${clickId}/type/FARMER`
-  );
+export function getSelleLedgers(clickId, clientId, clientSecre) {
+  return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/FARMER`);
 }
 
-export function getSellerDetailedLedger(clickId, partyId, clientId, clientSecret){
+export function getSellerDetailedLedger(
+  clickId,
+  partyId,
+  clientId,
+  clientSecret
+) {
   return axiosCommon.get(
     `/account/reports/seller-ledger/caId/${clickId}/partyId/${partyId}`
   );
@@ -94,8 +108,11 @@ export function getMandiDetails(clickId, clientId, clientSecret) {
     config
   );
 }
-export function postRecordPayment(addRecordPaymentReq, clientId,clientSecret){
-  return axiosCommon.post(`https://dev-api.onoark.com/v1/click/ledgers/payment/record`,addRecordPaymentReq);
+export function postRecordPayment(addRecordPaymentReq, clientId, clientSecret) {
+  return axiosCommon.post(
+    `https://dev-api.onoark.com/v1/click/ledgers/payment/record`,
+    addRecordPaymentReq
+  );
 }
 export default {
   getPartnerData,
@@ -109,7 +126,7 @@ export default {
   getBuyerDetailedLedger,
   getSelleLedgers,
   getSellerDetailedLedger,
-  postRecordPayment
+  postRecordPayment,
 };
 
 // export function getBuyBills(clickId, clientId, clientSecret) {

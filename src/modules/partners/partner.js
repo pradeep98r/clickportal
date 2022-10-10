@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import OutlineButton from "../../components/outlineButton";
 import "../partners/partner.scss";
-import { getPartnerData, addPartner } from "../../actions/billCreationService";
+import {
+  getPartnerData,
+  addPartner,
+  deletePartnerId,
+  editPartnerItem,
+} from "../../actions/billCreationService";
 import $ from "jquery";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import edit from "../../assets/images/edit_round.svg";
@@ -10,24 +15,53 @@ import close from "../../assets/images/close.svg";
 import NoDataAvailable from "../../components/noDataAvailable";
 import InputField from "../../components/inputField";
 import toastr from "toastr";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import date_icon from "../../assets/images/date_icon.svg";
+import { Modal, Button } from "react-bootstrap";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const [partnerData, setPartnerData] = useState([]);
-  const [partyType, setPartyType] = useState("");
-  const cityValue = localStorage.getItem("cityValue");
+  const [partyType, setPartyType] = useState("FARMER");
   const [file, setFile] = useState("");
-  console.log(cityValue);
   const [nameError, setNameError] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [showModal, setShow] = useState(false);
+  const [partyIdVal, setPartyIdVal] = useState(0);
+  const handleClose = () => setShow(false);
+  const handleDelete = (partyId) => {
+    //   const deletePartner = (partyId) => {
+    deletePartnerId(partyId, clickId).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          console.log(response, "delete partner");
+          tabEvent(partyType);
+        }
+      },
+      (error) => {
+        toastr.error(error.response.data.status.description);
+      }
+    );
+    setShow(false);
+  };
+  //   };
+  const handleShow = (partyid) => {
+    setShow(true);
+    setPartyIdVal(partyid);
+  };
+
   useEffect(() => {
-    tabEvent();
-    // setLinksType(links);
+    tabEvent(partyType);
   }, []);
   const [mobileNumber, setmobileNumber] = useState("0");
   const handleMobileNumber = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
+    console.log("hiii");
   };
   const [aadharNumber, setAadharNumber] = useState("");
   const [openingBalance, setOpeningBalance] = useState("");
@@ -43,6 +77,9 @@ const Partner = () => {
   const [nameField, setNameField] = useState("");
   const handleName = (e) => {
     setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    commonValidation(e);
+  };
+  const commonValidation = (e) => {
     if (e.target.value.length < 2) {
       setNameError("Name should be min 2 characters");
     } else if (e.target.value.length > 30) {
@@ -54,47 +91,94 @@ const Partner = () => {
   const [shortNameField, setShortNameField] = useState("");
   const handleShortName = (e) => {
     setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
-    if (e.target.value.length < 2) {
-      setNameError("Name should be min 2 characters");
-    } else if (e.target.value.length > 30) {
-      setNameError("Name should be max 30 characters");
-    } else {
-      setNameError("");
-    }
+    commonValidation(e);
   };
+  const [vehicleType, setVehicleType] = useState("");
+  const handlevehicleType = (e) => {
+    setVehicleType(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+  };
+  const [vehicleNum, setVehicleNum] = useState("");
+  const handlevehicleNum = (e) => {
+    setVehicleNum(e.target.value);
+  };
+  const [streetVillage, setStreetVillage] = useState("");
+  const handleStreetName = (e) => {
+    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    commonValidation(e);
+  };
+  const [startDate, setStartDate] = useState(new Date());
+  const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
+  const [pincode, setPincode] = useState("");
+  const [cityVal, setCityVal] = useState("");
+  const [stateVal, setStateVal] = useState("");
+  const [radioValue, setradioValue] = useState("Farmer");
+
+  function onChangeValue(event) {
+    setradioValue(event.target.value.toUpperCase());
+    console.log(event.target.value);
+  }
+  const [partnerItem, setPartnerItem] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
+  const [addeditText, setAddeditText] = useState("Add");
+  const editPartner = (partner) => {
+    console.log("hey open", partner);
+    setIsEdit(true);
+    partnerData.map((item) => {
+      if (item.partyId == partner.partyId) {
+        setPartnerItem(item);
+        setAadharNumber(partner.aadharNum);
+        setmobileNumber(partner.mobile);
+        setStreetVillage(partner.address.addressLine);
+        setShortNameField(partner.shortName);
+        setNameField(partner.partyName);
+        setCityVal(partner.address.dist);
+        setStateVal(partner.address.state);
+        setPincode(partner.address.pincode);
+        setOpeningBalance(partner.openingBal);
+        setradioValue(partner.partyType.toUpperCase());
+        setAddeditText('Edit');
+      }
+    });
+
+    $("#Mymodal").modal("show");
+  };
+
   const obj = {
     aadharNum: aadharNumber,
     address: {
-      addressLine: "apps",
-      city: "ap",
-      dist: "string",
-      pincode: 535580,
-      state: "ap",
-      type: "",
+      addressLine: streetVillage,
+      city: cityVal,
+      dist: cityVal,
+      pincode: pincode,
+      state: stateVal,
+      type: "PERSONAL",
     },
-    caId: 0,
+    caId: isEdit ? clickId : 0,
     createdOn: "2022-10-03T10:55:33.895Z",
     mobile: mobileNumber,
     openingBal: openingBalance,
-    openingBalDate: "",
-    partyId: 0,
+    openingBalDate: partnerSelectDate,
+    partyId: isEdit ? partnerItem.partyId : 0,
     partyName: nameField,
     partyType: partyType,
-    profilePic: "string",
+    profilePic: single_bill,
     seqNum: 0,
     shortName: shortNameField,
-    trader: true,
+    trader: radioValue == "FARMER" || radioValue == "BUYER" ? false : true,
     vehicleInfo: {
       vehicleNum: "string",
-      vehicleType: "string",
+      vehicleType: vehicleType,
     },
   };
+  //   file ? URL.createObjectURL(file) :
   const onSubmit = () => {
-    if (obj.mobile !== 0 && obj.name) {
-      addPartner(obj, clickId).then(
+    // if (obj.mobile !== 0 && obj.name) {
+    if (isEdit) {
+      editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            console.log(response, "add partner");
+            console.log(response, "edit partner");
+            tabEvent(partyType);
           }
         },
         (error) => {
@@ -102,14 +186,57 @@ const Partner = () => {
         }
       );
     } else {
-      alert("fields requirde");
+      addPartner(obj, clickId).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            console.log(response, "add partner");
+            tabEvent(partyType);
+          }
+        },
+        (error) => {
+          toastr.error(error.response.data.status.description);
+        }
+      );
+    }
+    // } else {
+    //   alert("fields requirde");
+    // }
+    closeAddModal();
+  };
+  const searchItems = (searchValue) => {
+    setSearchInput(searchValue);
+    if (searchInput !== "") {
+      const filteredData = partnerData.filter((item) => {
+        return (
+          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.partyId
+            .toString()
+            .toLowerCase()
+            .includes(searchInput.toLowerCase())
+        );
+      });
+      setFilteredResults(filteredData);
+    } else {
+      setFilteredResults(partnerData);
     }
   };
-  // const locationFetch = () => {
-  //   console.log(cityValue);
-  // };
   const tabEvent = (type) => {
     setPartyType(type);
+    console.log(type);
+    setAadharNumber("");
+    setCityVal("");
+    setNameField("");
+    setOpeningBalance("");
+    setmobileNumber("");
+    setStateVal("");
+    setShortNameField("");
+    setStreetVillage("");
+    setradioValue("");
+    setIsEdit(false);
+    setPincode();
+    setCityVal("");
+    setStateVal("");
     getPartnerData(clickId, type)
       .then((response) => {
         console.log(response.data, "data");
@@ -189,6 +316,9 @@ const Partner = () => {
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
+    setPincode(pincodeValue);
+    setCityVal(city);
+    setStateVal(state);
     localStorage.setItem("cityValue", city);
     var $input;
     var $text = $(document.createElement("input"));
@@ -201,6 +331,7 @@ const Partner = () => {
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
+    setPincode(zip);
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
@@ -264,7 +395,8 @@ const Partner = () => {
     $("#state").val(locality.state);
     var $input;
     var city = localities[0].city;
-    console.log(city);
+    setCityVal(city);
+    setStateVal(locality.state);
     var $text = $(document.createElement("input"));
     $text.attr("value", city);
     $text.attr("type", "text");
@@ -273,6 +405,32 @@ const Partner = () => {
     $input = $text;
     $("#city-input-wrapper").html($input);
   }
+  //   $('#close_modal').on('click',function(){
+  //     $('#staticBackdrop1').modal();
+  // });
+
+  $("#MybtnModal").click(function () {
+    // setPincode();
+    setAadharNumber("");
+    setCityVal("");
+    setNameField("");
+    setOpeningBalance("");
+    setmobileNumber("");
+    setStateVal("");
+    setShortNameField("");
+    setStreetVillage("");
+    setradioValue("");
+    setIsEdit(false);
+    // setPincode();
+    setCityVal("");
+    setStateVal("");
+    setAddeditText('Add');
+    console.log(isEdit,"after")
+    $("#Mymodal").modal("show");
+  });
+  const closeAddModal = () => {
+    $("#Mymodal").modal("hide");
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -304,10 +462,16 @@ const Partner = () => {
             >
               <div className="row">
                 <div className="col-lg-9 ps-0">
-                  {partnerData.length > 0 ? (
-                    <div>
-                      <div className="partner_div" id="scroll_style">
-                        {partnerData.map((partner, index) => (
+                  <input
+                    icon="search"
+                    placeholder="Search"
+                    onChange={(e) => searchItems(e.target.value)}
+                    className="search_text"
+                  />
+                  <div>
+                    {searchInput.length > 1 ? (
+                      filteredResults.map((partner, index) => {
+                        return (
                           <div className="card partner_card" key={index}>
                             <div className="d-flex partner_card_flex justify-content-between align-items-center">
                               <div className="d-flex align-items-center">
@@ -326,27 +490,96 @@ const Partner = () => {
                                 </div>
                               </div>
                               <div className="d-flex edit_delete_icons">
-                                <img src={edit} alt="img" className="" />
-                                <img src={delete_icon} alt="img" />
+                                <img
+                                  src={edit}
+                                  alt="img"
+                                  className=""
+                                  onClick={() => editPartner(partner)}
+                                />
+                                <img
+                                  src={delete_icon}
+                                  alt="img"
+                                  onClick={() => handleShow(partner.partyId)}
+                                />
                               </div>
                             </div>
                           </div>
-                        ))}
+                        );
+                      })
+                    ) : partnerData.length > 0 ? (
+                      <div>
+                        <div className="partner_div" id="scroll_style">
+                          {partnerData.map((partner, index) => (
+                            <div className="card partner_card" key={index}>
+                              <div className="d-flex partner_card_flex justify-content-between align-items-center">
+                                <div className="d-flex align-items-center">
+                                  <img
+                                    src={single_bill}
+                                    alt="img"
+                                    className="user_img"
+                                  />
+                                  <div>
+                                    <h5>
+                                      {partner.partyName +
+                                        " " +
+                                        partner.shortName}
+                                    </h5>
+                                    <h6>
+                                      {partner.partyType} - {partner.partyId} |{" "}
+                                      {partner.mobile}
+                                    </h6>
+                                    <p>{partner.address.addressLine}</p>
+                                  </div>
+                                </div>
+                                <div className="d-flex edit_delete_icons">
+                                  <img
+                                    src={edit}
+                                    alt="img"
+                                    className=""
+                                    onClick={() => editPartner(partner)}
+                                  />
+                                  <img
+                                    src={delete_icon}
+                                    alt="img"
+                                    // onClick={() =>
+                                    //   handleOpenDeleteModal(partner.partyId)
+                                    // }
+                                    onClick={() => handleShow(partner.partyId)}
+                                    // onClick={() =>
+                                    //   deletePartner(partner.partyId)
+                                    // }
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <NoDataAvailable />
-                  )}
+                    ) : (
+                      <NoDataAvailable />
+                    )}
+                  </div>
                 </div>
                 <div className="col-lg-3">
-                  <div className="card default_card">
-                    <div
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop1"
-                    >
-                      Add Seller
+                  <div className="card default_card add_partner">
+                    <div>
+                      <h6>
+                        {" "}
+                        Add{" "}
+                        {partyType == "FARMER"
+                          ? "seller"
+                          : partyType.toLowerCase()}
+                      </h6>
+                      <p>Lorem ipsum is placeholder text commonly</p>
+
+                      <button className="outline_btn" id="MybtnModal">
+                        Add
+                        {partyType == "FARMER"
+                          ? "seller"
+                          : partyType.toLowerCase()}
+                      </button>
                     </div>
-                    <OutlineButton text="Add Seller" />
+                    {/* <OutlineButton text="Add Seller" /> */}
                   </div>
                 </div>
               </div>
@@ -354,71 +587,137 @@ const Partner = () => {
           </div>
         </div>
       </div>
-      <div
-        className="modal fade"
-        id="staticBackdrop1"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
+
+      <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                Add {partyType}
+                {addeditText} {partyType == "FARMER" ? "seller" : partyType.toLowerCase()}
               </h5>
               <img
                 src={close}
                 alt="image"
                 className="close_icon"
-                data-bs-dismiss="modal"
+                onClick={closeAddModal}
               />
             </div>
             <div className="modal-body partner_model_body" id="scroll_style">
               <form>
+                {partyType == "FARMER" || partyType == "BUYER" ? (
+                  <div onChange={onChangeValue}>
+                    <input
+                      type="radio"
+                      value={partyType.toLowerCase()}
+                      name="radioValue"
+                      defaultChecked={radioValue === partyType.toLowerCase()}
+                    />{" "}
+                    {partyType.toLowerCase()}
+                    <input
+                      type="radio"
+                      value="Trader"
+                      name="radioValue"
+                      defaultChecked={radioValue === "Trader"}
+                      className="ms-3 mb-4"
+                    />{" "}
+                    Trader
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+                {partyType == "COOLIE" ? (
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <InputField
+                        type="text"
+                        value={mobileNumber}
+                        label="Mobile Number*"
+                        name="mobileNumber"
+                        id="mobileNumber"
+                        onChange={(e) => {
+                          handleMobileNumber(e);
+                        }}
+                      />
+                      <InputField
+                        type="text"
+                        value={nameField}
+                        label="Name*"
+                        name="name"
+                        id="inputName"
+                        onChange={(e) => {
+                          handleName(e);
+                        }}
+                      />
+                      <span className="text-danger">{nameError}</span>
+                      <InputField
+                        type="text"
+                        value={aadharNumber}
+                        label="Aadhar"
+                        name="name"
+                        onChange={(e) => {
+                          handleNumber(e);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
                 <div className="row">
                   <div className="col-lg-6">
-                    <InputField
-                      type="text"
-                      value={mobileNumber}
-                      label="Mobile Number*"
-                      name="mobileNumber"
-                      id="mobileNumber"
-                      onChange={(e) => {
-                        handleMobileNumber(e);
-                      }}
-                    />
-                    <InputField
-                      type="text"
-                      value={nameField}
-                      label="Name*"
-                      name="name"
-                      id="inputName"
-                      onChange={(e) => {
-                        handleName(e);
-                      }}
-                    />
-                    <span className="text-danger">{nameError}</span>
-                    <InputField
-                      type="text"
-                      value={aadharNumber}
-                      label="Aadhar"
-                      name="name"
-                      onChange={(e) => {
-                        handleNumber(e);
-                      }}
-                    />
-
-                    <InputField
-                      type="text"
-                      value={openingBalance}
-                      label="Opening Balance"
-                      name="name"
-                      onChange={(e) => {
-                        handleOpeninngBal(e);
-                      }}
-                    />
+                    {partyType == "FARMER" ||
+                    partyType == "BUYER" ||
+                    partyType == "TRANSPORTER" ? (
+                      <div>
+                        <InputField
+                          type="text"
+                          value={mobileNumber}
+                          label="Mobile Number*"
+                          name="mobileNumber"
+                          id="mobileNumber"
+                          onChange={(e) => {
+                            handleMobileNumber(e);
+                          }}
+                        />
+                        <InputField
+                          type="text"
+                          value={nameField}
+                          label="Name*"
+                          name="name"
+                          id="inputName"
+                          onChange={(e) => {
+                            handleName(e);
+                          }}
+                        />
+                        <span className="text-danger">{nameError}</span>
+                        <InputField
+                          type="text"
+                          value={aadharNumber}
+                          label="Aadhar"
+                          name="name"
+                          onChange={(e) => {
+                            handleNumber(e);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
+                    {partyType == "FARMER" ||
+                    partyType == "BUYER" ||
+                    partyType == "TRANSPORTER" ? (
+                      <InputField
+                        type="text"
+                        value={openingBalance}
+                        label="Opening Balance"
+                        name="name"
+                        onChange={(e) => {
+                          handleOpeninngBal(e);
+                        }}
+                      />
+                    ) : (
+                      <div></div>
+                    )}
                     {/* <LocationFetch onClick={locationFetch} /> */}
                     <label className="input_field address_text mt-0">
                       Address
@@ -427,6 +726,7 @@ const Partner = () => {
                       <label htmlFor="zip" className="input_field">
                         Pincode
                       </label>
+                      <div>
                       <input
                         id="zip"
                         className="form-control"
@@ -436,105 +736,152 @@ const Partner = () => {
                         onChange={(e) => {
                           onZip(e);
                         }}
+                        value={pincode}
                       />
+                      </div>
                     </div>
                     <div>
                       <label htmlFor="city" className="input_field">
                         City
                       </label>
                       <div id="city-input-wrapper">
-                        <InputField type="text" id="city" name="city" />
+                        {isEdit ? (
+                         <div>
+                          <InputField type="text" id="city" name="city" value={cityVal}/>
+                           </div>
+                        ) : (
+                          <InputField type="text" id="city" name="city" />
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="col-lg-6">
-                    <InputField
-                      type="text"
-                      value={shortNameField}
-                      label="Initials (Short Name)*"
-                      name="name"
-                      onChange={(e) => {
-                        handleShortName(e);
-                      }}
-                    />
-                    <span className="text-danger">{nameError}</span>
-                    <label htmlFor="pic" className="input_field">
-                      Profile Pic
-                    </label>
-                    <div className="file-input">
-                      <div className="d-flex align-items-center">
-                        <div className="input_file">
-                          <img
-                            src={file ? URL.createObjectURL(file) : single_bill}
-                            alt=""
-                          />
-                        </div>
+                    {partyType != "TRANSPORTER" ? (
+                      partyType != "COOLIE" ? (
                         <div>
-                          <input
-                            type="file"
-                            id="file"
-                            onChange={(e) => setFile(e.target.files[0])}
+                          <InputField
+                            type="text"
+                            value={shortNameField}
+                            label="Initials (Short Name)*"
+                            name="name"
+                            onChange={(e) => {
+                              handleShortName(e);
+                            }}
                           />
-                          <label htmlFor="file" className="file">
-                            Choose from library
+                          <span className="text-danger">{nameError}</span>
+                          <label htmlFor="pic" className="input_field">
+                            Profile Pic
                           </label>
+                          <div className="file-input">
+                            <div className="d-flex align-items-center">
+                              <div className="input_file">
+                                <img
+                                  src={
+                                    file
+                                      ? URL.createObjectURL(file)
+                                      : single_bill
+                                  }
+                                  alt=""
+                                />
+                              </div>
+                              <div>
+                                <input
+                                  type="file"
+                                  id="file"
+                                  onChange={(e) => setFile(e.target.files[0])}
+                                />
+                                <label htmlFor="file" className="file">
+                                  Choose from library
+                                </label>
+                              </div>
+                            </div>
+                          </div>
                         </div>
+                      ) : (
+                        <div></div>
+                      )
+                    ) : (
+                      <div>
+                        <InputField
+                          type="text"
+                          value={vehicleType}
+                          label="Vehicle Type"
+                          name="vehicleType"
+                          onChange={(e) => {
+                            handlevehicleType(e);
+                          }}
+                        />
+
+                        <InputField
+                          type="text"
+                          value={vehicleNum}
+                          label="Vehicle Number"
+                          name="name"
+                          onChange={(e) => {
+                            handlevehicleNum(e);
+                          }}
+                        />
                       </div>
-                    </div>
-                    <InputField
-                      type="text"
-                      value={shortNameField}
-                      label="As on Date"
-                      name="name"
-                      onChange={(e) => {
-                        handleShortName(e);
-                      }}
-                    />
-                    <div onClick={() => getPosition()} className="location">
+                    )}
+                    {partyType == "FARMER" ||
+                    partyType == "BUYER" ||
+                    partyType == "TRANSPORTER" ? (
+                      <div>
+                        <label htmlFor="pic" className="input_field">
+                          As on Date
+                        </label>
+                        <label
+                          className="d-flex align-items-baseline date_label"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <span className="date_icon">
+                            <img src={date_icon} alt="icon" />
+                          </span>
+                          <DatePicker
+                            dateFormat="yyyy-MM-dd"
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            className="form-control"
+                            placeholder="Date"
+                            maxDate={new Date()}
+                          />
+                        </label>
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
+
+                    {partyType != "TRANSPORTER" ? (
+                      <div></div>
+                    ) : (
+                      <div className="transpo_height"></div>
+                    )}
+                    <div
+                      onClick={() => getPosition()}
+                      className="location mt-0"
+                    >
                       Select Current Location
                     </div>
                     <div>
                       <label htmlFor="state" className="input_field">
                         State
                       </label>
-                      <input id="state" className="form-control" name="state" />
+                      {isEdit ? (
+                         <input id="state" className="form-control" name="state" value={stateVal} />
+                          ) : (
+                          <input id="state" className="form-control" name="state" />
+                        )}
+                     
                     </div>
                     <InputField
                       type="text"
-                      value={shortNameField}
+                      value={streetVillage}
                       label="Street & Village"
                       name="name"
                       onChange={(e) => {
-                        handleShortName(e);
+                        handleStreetName(e);
                       }}
                     />
-                    {/* <div>
-                      <h1>Upload and Display Image usign React Hook's</h1>
-                      {selectedImage && (
-                        <div>
-                          <img
-                            alt="not fount"
-                            width={"250px"}
-                            src={URL.createObjectURL(selectedImage)}
-                          />
-                          <br />
-                          <button onClick={() => setSelectedImage(null)}>
-                            Remove
-                          </button>
-                        </div>
-                      )}
-                      <br />
-
-                      <br />
-                      <input
-                        type="file"
-                        name="myImage"
-                        onChange={(event) => {
-                          console.log(event.target.files[0]);
-                          setSelectedImage(event.target.files[0]);
-                        }}
-                      />
-                    </div> */}
                   </div>
                 </div>
               </form>
@@ -542,15 +889,9 @@ const Partner = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="secondary_btn"
-                data-bs-dismiss="modal"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
                 className="primary_btn"
                 onClick={() => onSubmit()}
+                // id="close_modal"
                 data-bs-dismiss="modal"
               >
                 Submit
@@ -559,6 +900,43 @@ const Partner = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        show={showModal}
+        onHide={handleClose}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        className="delete_modal_dialog modal-dialog-centered"
+      >
+        <Modal.Header>
+          <Modal.Title>Delete Partner</Modal.Title>
+          <img
+            src={close}
+            alt="image"
+            onClick={handleClose}
+            className="close_icon"
+          />
+        </Modal.Header>
+        <Modal.Body className="partner_model_body">
+          Are you sure you want to delete partner
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            className="secondary_btn"
+            onClick={handleClose}
+          >
+            No
+          </Button>
+          <Button
+            variant="primary"
+            className="primary_btn"
+            onClick={() => handleDelete(partyIdVal)}
+          >
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

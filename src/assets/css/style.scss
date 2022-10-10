@@ -77,7 +77,7 @@ a {
 }
 .primary_btn,
 .btn_white,
-.outline_btn {
+.outline_btn, .primary_btn:hover {
   color: var(--ono-white);
   background-color: var(--ono-primary);
   border-radius: 10px;
@@ -95,7 +95,7 @@ a {
   border: 1px solid var(--ono-primary);
   color: var(--ono-primary);
 }
-.secondary_btn{
+.secondary_btn, .secondary_btn:hover{
   color: var(--ono-subtext);
   background-color: var(--ono-primary-background);
   border-radius: 10px;
@@ -103,6 +103,7 @@ a {
   font-size: var(--btn-text);
   border: none;
 }
+
 .add_bills_btn {
   padding: 8px 25px;
 }
