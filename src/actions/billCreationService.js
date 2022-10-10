@@ -8,6 +8,11 @@ export function deletePartnerId(partyId, clickId) {
     `/common/reset/caId/${clickId}/partyId/${partyId}?clearPartner=true`
   );
 }
+export function getBuyBills(clickId) {
+  return axiosCommon.get(
+    `/click/bills/buy-bill/caId/${clickId}?fromDate=2022-01-01&toDate=2022-12-30`
+  );
+}
 export function editPartnerItem(obj) {
   return axiosCommon.put(`/account/partners`, obj);
 }
@@ -82,19 +87,7 @@ export function getSystemSettings(clickId, clientId, clientSecret) {
     }
   );
 }
-export function getBuyBills(clickId, clientId, clientSecret) {
-  let config = {
-    headers: {
-      "Content-Type": "application/json",
-      "client-id": "sCcWyvchM2LEJl0",
-      "client-secret": "QTwCVuDVWge9pDt4fvXqGNmTp",
-    },
-    // params: { fromDate: "2022-06-27", toDate: "2022-06-27" },
-  };
-  return axiosCommon.get(
-    "https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/421?fromDate=2022-06-28&toDate=2022-06-28"
-  );
-}
+
 export function getMandiDetails(clickId, clientId, clientSecret) {
   let config = {
     headers: {

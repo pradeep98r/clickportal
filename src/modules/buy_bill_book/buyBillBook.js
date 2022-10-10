@@ -37,15 +37,18 @@ function BuyBillBook() {
     getAllBuyBills();
   }, []);
   const getAllBuyBills = () => {
-    console.log("get")
-    getBuyBills(clickId, clientId, clientSecret)
+    console.log("get");
+    getBuyBills(clickId)
       .then((response) => {
         setBuyBillData(response.data.data);
-        console.log(response.data, "billsss");
+        console.log(response.data.data, "billsss");
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+  const DateModal = () => {
+    $("#datePopupmodal").modal("show");
   };
   const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
@@ -69,7 +72,7 @@ function BuyBillBook() {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {/* {buyBillData.length > 0 ? (
+          {buyBillData.length > 0 ? (
             <div>
               <div className="d-flex justify-content-between bills_div">
                 <div className="d-flex">
@@ -121,9 +124,7 @@ function BuyBillBook() {
                   </ul>
                 </div>
                 <div className="d-flex">
-                  <div data-bs-toggle="modal" data-bs-target="#date_popup">
-                    date
-                  </div>
+                  <div onClick={DateModal}>date</div>
                   <div className="d-flex me-3" role="search">
                     <input
                       className="form-control search"
@@ -337,7 +338,7 @@ function BuyBillBook() {
                 </div>
               </div>
             </div>
-          ) : ( */}
+          ) : (
             <div className="card default_card text-center">
               <div className="row no_data_row">
                 <div className="col-lg-6 col1">
@@ -364,16 +365,16 @@ function BuyBillBook() {
                 </div>
               </div>
             </div>
-          {/* )} */}
+          )}
         </div>
       </div>
       <div
         className="modal fade"
-        id="date_popup"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
+        id="datePopupmodal"
+        // data-bs-backdrop="static"
+        // data-bs-keyboard="false"
+        // aria-labelledby="staticBackdropLabel"
+        // aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered date_modal_dialog">
           <div className="modal-content">

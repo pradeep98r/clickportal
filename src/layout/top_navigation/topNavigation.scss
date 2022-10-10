@@ -37,11 +37,12 @@
   }
 }
 
-.dropdown-menu[data-bs-popper]{
+.dropdown-menu{
   left: -130px;
+  margin-top: 10px;
   }
   .dropdown-menu{
-    padding: 20px;
+    // padding: 20px;
     li{
       padding-bottom: 20px;
     }

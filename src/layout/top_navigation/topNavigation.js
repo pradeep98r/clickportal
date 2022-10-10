@@ -25,7 +25,7 @@ function TopNavigation() {
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
     localStorage.removeItem("LinkPath");
-    localStorage.setItem("LinkPath","/smartboard")
+    localStorage.setItem("LinkPath", "/smartboard");
     console.log(loginUserDetails, "after clearing");
   };
   return (
@@ -71,8 +71,34 @@ function TopNavigation() {
                 <img src={bell} alt="icon" />
               </a>
             </li>
-            <li className="nav-item dropdown">
-              <a
+            <li className="nav-item">
+              <div className="dropdown">
+                <div
+                  className="nav-link dropdown-toggle"
+                  type="button"
+                  data-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  {loginUserDetails.profile.profile.fullName}
+                </div>
+                <div className="dropdown-menu">
+                  <a className="dropdown-item" href="#">
+                    {" "}
+                    <p>Click Id:{loginUserDetails.profile.profile.clickId}</p>
+                  </a>
+                  <a className="dropdown-item" href="#">
+                    {" "}
+                    <p>{loginUserDetails.profile.profile.mobile}</p>
+                  </a>
+                  <a className="dropdown-item" href="#">
+                    {" "}
+                    <button onClick={logOutFunction} className="primary_btn ">
+                      Logout
+                    </button>
+                  </a>
+                </div>
+              </div>
+              {/* <a
                 className="nav-link dropdown-toggle"
                 href="#"
                 id="navbarDropdown"
@@ -96,7 +122,7 @@ function TopNavigation() {
                     </button>
                   </a>
                 </li>
-              </ul>
+              </ul> */}
             </li>
           </ul>
         </div>

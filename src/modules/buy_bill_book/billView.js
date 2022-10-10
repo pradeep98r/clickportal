@@ -20,7 +20,7 @@ function BillView() {
     getBuyBillsById();
   }, []);
   const getBusinessDetails = () => {
-    getMandiDetails(clickId, clientId, clientSecret)
+    getMandiDetails(clickId)
       .then((response) => {
         setMandiData(response.data.data);
       })
