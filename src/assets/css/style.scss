@@ -47,10 +47,10 @@ a {
   --btn-text: 15px;
   --header5-text: 14px;
   --body-text: 13px;
-  --body-small-text:12px
+  --body-small-text: 12px;
 }
-.header2_text{
-  font-size: var( --header2-text);
+.header2_text {
+  font-size: var(--header2-text);
   color: var(--ono-primary-text);
 }
 .main_div {
@@ -77,7 +77,8 @@ a {
 }
 .primary_btn,
 .btn_white,
-.outline_btn, .primary_btn:hover {
+.outline_btn,
+.primary_btn:hover {
   color: var(--ono-white);
   background-color: var(--ono-primary);
   border-radius: 10px;
@@ -95,7 +96,8 @@ a {
   border: 1px solid var(--ono-primary);
   color: var(--ono-primary);
 }
-.secondary_btn, .secondary_btn:hover{
+.secondary_btn,
+.secondary_btn:hover {
   color: var(--ono-subtext);
   background-color: var(--ono-primary-background);
   border-radius: 10px;
@@ -104,9 +106,10 @@ a {
   border: none;
 }
 
-.add_bills_btn {
+.add_bills_btn, .add_bills_btn:hover {
   padding: 8px 25px;
 }
+
 .buttons {
   margin-top: 30px;
 }
@@ -132,6 +135,14 @@ a {
     color: var(--ono-primary-text);
     margin-top: 20px;
   }
+}
+.coming_soon{
+  background-color: transparent;
+  padding: 0px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
 }
 .default_card {
   background-color: var(--ono-white);
@@ -187,14 +198,14 @@ a {
 // bills
 .bottom_div {
   background-color: var(--ono-white);
-  padding:10px 20px;
+  padding: 10px 20px;
   position: absolute;
   bottom: 0;
   .primary_btn {
     margin-left: 20px;
   }
 }
-.input_field{
+.input_field {
   margin-bottom: 10px;
 }
 // scrollbar css
@@ -217,3 +228,23 @@ a {
 // .react-datepicker__week:hover .react-datepicker__day{
 //   background-color: red;
 // }
+.profileCard {
+  h6 {
+    color: #666666;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  h5 {
+    font-size: 15px;
+    color: #121212;
+    font-weight: 600;
+  }
+  img{
+    margin-right: 10px;
+    width: 40px;
+  }
+}
+.proofilecard_icon{
+  margin-left: 50px;
+}
