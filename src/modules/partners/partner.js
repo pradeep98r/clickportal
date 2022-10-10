@@ -56,12 +56,21 @@ const Partner = () => {
   useEffect(() => {
     tabEvent(partyType);
   }, []);
-  const [mobileNumber, setmobileNumber] = useState("0");
+  const [mobileNumber, setmobileNumber] = useState("");
+  const [requiredNameField, setRequiredNameField] = useState("");
+  const [requiredshortNameField, setRequiredshortNameField] = useState("");
+  const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
+    if(e.target.value.length < 10){
+      setRequiredNumberField("Minimum mobile number length should be 10");
+      console.log("het")
+    }
+    else{
+    setRequiredNumberField("");
+    }
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
-    console.log("hiii");
   };
   const [aadharNumber, setAadharNumber] = useState("");
   const [openingBalance, setOpeningBalance] = useState("");
@@ -78,6 +87,7 @@ const Partner = () => {
   const handleName = (e) => {
     setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
     commonValidation(e);
+    setRequiredNameField("");
   };
   const commonValidation = (e) => {
     if (e.target.value.length < 2) {
@@ -92,6 +102,7 @@ const Partner = () => {
   const handleShortName = (e) => {
     setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
     commonValidation(e);
+    setRequiredshortNameField("");
   };
   const [vehicleType, setVehicleType] = useState("");
   const handlevehicleType = (e) => {
@@ -136,7 +147,7 @@ const Partner = () => {
         setPincode(partner.address.pincode);
         setOpeningBalance(partner.openingBal);
         setradioValue(partner.partyType.toUpperCase());
-        setAddeditText('Edit');
+        setAddeditText("Edit");
       }
     });
 
@@ -171,8 +182,24 @@ const Partner = () => {
     },
   };
   //   file ? URL.createObjectURL(file) :
+
   const onSubmit = () => {
-    // if (obj.mobile !== 0 && obj.name) {
+    if (
+      nameField.trim().length !== 0 &&
+      mobileNumber.trim().length !== 0 &&
+      shortNameField.trim().length !== 0
+    ) {
+      addEditPartnerApiCall();
+    } else if (nameField.trim().length === 0) {
+      setRequiredNameField("Please Enter Name");
+      // alert("hii")
+    } else if (mobileNumber.trim().length === 0) {
+      setRequiredNumberField("Please Enter Mobile Number");
+    } else if (shortNameField.trim().length === 0) {
+      setRequiredshortNameField("Please Enter Short Name");
+    }
+  };
+  const addEditPartnerApiCall = () => {
     if (isEdit) {
       editPartnerItem(obj).then(
         (response) => {
@@ -198,9 +225,6 @@ const Partner = () => {
         }
       );
     }
-    // } else {
-    //   alert("fields requirde");
-    // }
     closeAddModal();
   };
   const searchItems = (searchValue) => {
@@ -424,8 +448,8 @@ const Partner = () => {
     // setPincode();
     setCityVal("");
     setStateVal("");
-    setAddeditText('Add');
-    console.log(isEdit,"after")
+    setAddeditText("Add");
+    console.log(isEdit, "after");
     $("#Mymodal").modal("show");
   });
   const closeAddModal = () => {
@@ -593,7 +617,8 @@ const Partner = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {addeditText} {partyType == "FARMER" ? "seller" : partyType.toLowerCase()}
+                {addeditText}{" "}
+                {partyType == "FARMER" ? "seller" : partyType.toLowerCase()}
               </h5>
               <img
                 src={close}
@@ -638,6 +663,7 @@ const Partner = () => {
                           handleMobileNumber(e);
                         }}
                       />
+                      <span className="text-danger">{requiredNumberField}</span>
                       <InputField
                         type="text"
                         value={nameField}
@@ -649,6 +675,7 @@ const Partner = () => {
                         }}
                       />
                       <span className="text-danger">{nameError}</span>
+                      <span className="text-danger">{requiredNameField}</span>
                       <InputField
                         type="text"
                         value={aadharNumber}
@@ -679,6 +706,10 @@ const Partner = () => {
                             handleMobileNumber(e);
                           }}
                         />
+
+                        <span className="text-danger">
+                          {requiredNumberField}
+                        </span>
                         <InputField
                           type="text"
                           value={nameField}
@@ -690,6 +721,7 @@ const Partner = () => {
                           }}
                         />
                         <span className="text-danger">{nameError}</span>
+                        <span className="text-danger">{requiredNameField}</span>
                         <InputField
                           type="text"
                           value={aadharNumber}
@@ -727,17 +759,17 @@ const Partner = () => {
                         Pincode
                       </label>
                       <div>
-                      <input
-                        id="zip"
-                        className="form-control"
-                        type="text"
-                        label="pincode"
-                        name="zip"
-                        onChange={(e) => {
-                          onZip(e);
-                        }}
-                        value={pincode}
-                      />
+                        <input
+                          id="zip"
+                          className="form-control"
+                          type="text"
+                          label="pincode"
+                          name="zip"
+                          onChange={(e) => {
+                            onZip(e);
+                          }}
+                          value={pincode}
+                        />
                       </div>
                     </div>
                     <div>
@@ -746,9 +778,14 @@ const Partner = () => {
                       </label>
                       <div id="city-input-wrapper">
                         {isEdit ? (
-                         <div>
-                          <InputField type="text" id="city" name="city" value={cityVal}/>
-                           </div>
+                          <div>
+                            <InputField
+                              type="text"
+                              id="city"
+                              name="city"
+                              value={cityVal}
+                            />
+                          </div>
                         ) : (
                           <InputField type="text" id="city" name="city" />
                         )}
@@ -759,7 +796,8 @@ const Partner = () => {
                     {partyType != "TRANSPORTER" ? (
                       partyType != "COOLIE" ? (
                         <div>
-                          <InputField
+                         <div>
+                         <InputField
                             type="text"
                             value={shortNameField}
                             label="Initials (Short Name)*"
@@ -769,6 +807,10 @@ const Partner = () => {
                             }}
                           />
                           <span className="text-danger">{nameError}</span>
+                          <span className="text-danger">
+                            {requiredshortNameField}
+                          </span>
+                           </div>
                           <label htmlFor="pic" className="input_field">
                             Profile Pic
                           </label>
@@ -867,11 +909,19 @@ const Partner = () => {
                         State
                       </label>
                       {isEdit ? (
-                         <input id="state" className="form-control" name="state" value={stateVal} />
-                          ) : (
-                          <input id="state" className="form-control" name="state" />
-                        )}
-                     
+                        <input
+                          id="state"
+                          className="form-control"
+                          name="state"
+                          value={stateVal}
+                        />
+                      ) : (
+                        <input
+                          id="state"
+                          className="form-control"
+                          name="state"
+                        />
+                      )}
                     </div>
                     <InputField
                       type="text"
