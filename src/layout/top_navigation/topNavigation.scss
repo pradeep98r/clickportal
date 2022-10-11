@@ -2,7 +2,7 @@
   .navbar-nav {
     margin-left: auto;
   }
-  padding: 5px;
+  padding:10px 5px;
   .form-control {
     border-radius: 8px;
     border: 1px solid #e4e4e4;
@@ -37,11 +37,12 @@
   }
 }
 
-.dropdown-menu[data-bs-popper]{
+.dropdown-menu{
   left: -130px;
+  margin-top: 10px;
   }
   .dropdown-menu{
-    padding: 20px;
+    // padding: 20px;
     li{
       padding-bottom: 20px;
     }

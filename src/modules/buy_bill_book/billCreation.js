@@ -23,9 +23,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import $ from "jquery";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../reducers/userSlice";
+import {  useSelector } from "react-redux";
 var array = [];
 function BillCreation() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -37,7 +35,7 @@ function BillCreation() {
   let [cropData, cropResponseData] = useState(array);
   console.log(loginData)
   // let [billSettingResponse, billSettingData] = useState(array);
-  const navigate = useNavigate();
+
   // api to fettch preferred crops data
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
@@ -68,7 +66,6 @@ function BillCreation() {
 //     loggedIn: true,
 //   })
 // )
-const userName = useSelector((state)=>state.user.user)
 // console.log(userName);
   // add crop in other crop popup model
   const addCropOnclick = (crop_item) => {

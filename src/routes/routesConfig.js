@@ -22,6 +22,11 @@ import Partner from "../modules/partners/partner";
 import SellerLedger from "../modules/ledgers/sellerLedger";
 import SellerLedgerSummary from "../modules/ledgers/sellerLedgerSummary";
 import SellerDetailedLedger from "../modules/ledgers/sellerDetailedLedger";
+import MyProfile from "../modules/my_profile/myProfile";
+import Reports from "../modules/reports/reports";
+import SellBillBook from "../modules/sell_bill_book/sellBillBook";
+import SmartChart from "../modules/smart_chart/smartChart";
+import TransportoLedger from "../modules/transporto_ledger/transportoLedger";
 
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
@@ -57,6 +62,11 @@ const RoutesConfig = () => {
                 <Route path="sellerdetailedledger/:partyId" element={<SellerDetailedLedger />} />
               </Route>
               <Route path="/partner" element={<Partner />} />
+              <Route path="/myprofile" element={<MyProfile />}/>
+              <Route path="/reports" element={<Reports />}/>
+              <Route path="/sellbillbook" element={<SellBillBook />}/>
+              <Route path="/smartchart" element={<SmartChart />}/>
+              <Route path="/transportoledger" element={<TransportoLedger />}/>
             </Routes>
           </Layout>
         </BrowserRouter>
