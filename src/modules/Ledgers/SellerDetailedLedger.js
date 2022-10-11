@@ -28,7 +28,7 @@ const SellerDetailedLedger = () => {
   }
   return (
     <Fragment>
-      <div className='detail-ledger'>
+      <div className='detailed-ledger'>
     <table class="table">
         <thead>
           <tr>

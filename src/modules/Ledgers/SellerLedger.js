@@ -16,6 +16,9 @@ import share from "../../assets/images/share.svg";
 import print from "../../assets/images/print.svg";
 
 import right_click from "../../assets/images/right_click.svg";
+import DatePicker from './DatePicker';
+import DateRangeComp from './DateRangeComp';
+
 
 const SellerLedger = () => {
     
@@ -40,7 +43,7 @@ const SellerLedger = () => {
 
     useEffect(() => {
         fetchSellerLedger();
-    }, []);
+    }, [clickId]);
     const fetchSellerLedger = () => {
         getSelleLedgers(clickId).then(response => {
             setData(response.data.data);
@@ -81,6 +84,9 @@ const SellerLedger = () => {
         console.log(selectDate);
         postRecordPayment(addRecordData).then(response => {
             console.log(response.data.data);
+            window.location.reload();
+            setRecordDisplay("Record Updated Successfully");
+            setRecord(true);
         })
         .catch(error => {
             console.log(error);
@@ -89,8 +95,8 @@ const SellerLedger = () => {
         setIsOpen(false);
     }
     useEffect(() => {
-        getSellerLedgerSummary();
-      }, []);
+        getSellerLedgerSummary(clickId, partyId);
+      }, [clickId, partyId]);
     
       const getSellerLedgerSummary = () => {
         getLedgerSummary(clickId,partyId).then(response => {
@@ -102,23 +108,37 @@ const SellerLedger = () => {
       }
   return (
     <Fragment>
+        
         <div className='seller-ledgers'>
-        <div className='record-update' style={{display: record?'block':'none'}}>
+            <div className='record-update' style={{display: record?'block':'none'}}>
                 <p>{recordDisplay}</p>
                 <img src={right_click} className="right-click" />
                 <img src={close_btn} className="recordclose-btn" onClick={()=>setRecord(false)}/>
             </div>
         <div>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                    <form class="d-flex">
-                        <span><img src={search} /></span>
-                        <input id="searchbar" class="form-control me-12" type="search" placeholder="Search" aria-label="Search"
-                            onChange={(e) => { setSearch(e.target.value) }} />
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <form class="d-flex">
+                        <input id="searchbar"  type="search" value={search} placeholder='Search by Name / Short Code'
+                            onChange={(e) => { setSearch(e.target.value) }}  className='searchbar' />
+                            <div className='searchicon'><img src={search} /></div>
                     </form>
                 </div>
+                <div className='date-byledgers'>
+                        <a herf="#" ><DatePicker onClick={(e)=>{setIsOpen(!isOpen)}}/>
+                        <img id="date_icon" src={date_icon} /></a>
+                    </div>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup" className='links-tag'
                 style={{display: displayLink ? 'block' : 'none' }}>
+                    <nav className='links'>
+                    <Link to={`sellerledgersummary/${partyId}`} className="ledgersummary" active>LedgerSummary</Link>
+                    <Link to={`sellerdetailedledger/${partyId}`} className="detailedledger">Detailed Ledger</Link>
+                    <Outlet />
+                    </nav>
+                    <div className='date-byledgers'>
+                        <a herf="#" ><DatePicker onClick={(e)=>{setIsOpen(!isOpen)}}/>
+                        <img id="date_icon" src={date_icon} /></a>
+                    </div>
                     <div class="card" className="details">
                         <div class="card-body">
                         {
@@ -143,19 +163,16 @@ const SellerLedger = () => {
                             &#8377;{sellerSummaryData.totalRcvdPaid? sellerSummaryData.totalRcvdPaid:0}</span> </p> 
                             <p className='out-standing'>Outstanding Paybles <br /><span className='coloring'>
                             &#8377;{sellerSummaryData.outStdRcvPayble?sellerSummaryData.outStdRcvPayble:0}</span></p>
-                            
-                            <hr style={{color:"blue", marginTop:"25px"}}/>
-                            <Link to={`sellerledgersummary/${partyId}`} className="ledgersummary">LedgerSummary</Link>
-                            <Link to={`sellerdetailedledger/${partyId}`} className="detailedledger">Detailed Ledger</Link>
-                            <Outlet />
+                            {/*
                             <div className="images">
                             <img src={pdf} className="pdf"/>
                             <img src={share} className="share" />
                             <img src={print} className="print"/>
-                            </div>
+                        </div>*/}
                         </div>
-                        <button class="record-btn" onClick={() => setIsOpen(!isOpen)}><img src={add} className="add"/>Add Record</button>
-                    </div>
+                        <button className="record-btn" onClick={() => setIsOpen(!isOpen)}>
+                            <img src={add} className='record-img' />Add Record</button>
+                        </div>
                 </div>    
                 <ReactModal isOpen={isOpen}
                     style={
@@ -199,21 +216,7 @@ const SellerLedger = () => {
                                     })
                                 }
                                 <p class="card-text" id="date-tag">
-                                    <ReactDatePicker className='date_picker'
-                                        selected={selectDate}
-                                        onChange={date => { setSelectDate(date) }}
-                                        dateFormat='dd/MM/yyyy'
-                                        maxDate={new Date()}
-                                        showMonthYearDropdown={true}
-                                        scrollableMonthYearDropdown
-                                        style=
-                                        {{
-                                            width: "400px",
-                                            cursor: "pointer",
-                                            right: "300px"
-                                        }}
-                                    >
-                                    </ReactDatePicker>
+                                    <DatePicker />
                                     <img id="date_icon" src={date_icon} />
                                 </p>
                             </div>
@@ -230,27 +233,27 @@ const SellerLedger = () => {
 
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
+                                onChange={(e) => setPaymentMode(e.target.value)} required/>
                             <label class="form-check-label" for="inlineRadio1">Cash</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
+                                onChange={(e) => setPaymentMode(e.target.value)} required/>
                             <label class="form-check-label" for="inlineRadio2">UPI</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
+                                onChange={(e) => setPaymentMode(e.target.value)} required/>
                             <label class="form-check-NEFT" for="inlineRadio3">NEFT</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
+                                onChange={(e) => setPaymentMode(e.target.value)} required/>
                             <label class="form-check-label" for="inlineRadio4">RTGS</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
+                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value={paymentMode}
+                                onChange={(e) => setPaymentMode(e.target.value)} required/>
                             <label class="form-check-label" for="inlineRadio5">IMPS</label>
                         </div>
                         <div class="mb-3">
@@ -262,7 +265,8 @@ const SellerLedger = () => {
                     </form>
                 </ReactModal>
             </nav>
-            <table class="table" id="ledger-table">
+            <div className='table-scroll'>
+            <table class="table table-fixed" id="ledger-table">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -305,12 +309,15 @@ const SellerLedger = () => {
                         <div>
                         <img src={no_data}/>
                         <p>No Data Available</p>
+                        <DateRangeComp />
                         </div>
                         )
                     }
                 </tbody>
             </table>
             </div>
+            </div>
+            
         </div>
     </Fragment>
 

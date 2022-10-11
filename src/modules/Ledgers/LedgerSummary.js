@@ -49,7 +49,7 @@ const LedgerSummary = () => {
             ledgerSummary.map((item, index) => {
               return (
                 <tr>
-                  <th scope="row">{index}</th>
+                  <th scope="row">{index+1}</th>
                   <td>{item.refId} {item.date}</td>
                   <td>{item.paidRcvd}</td>
                   <td>{item.tobePaidRcvd}</td>

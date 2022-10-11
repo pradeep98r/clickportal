@@ -1,17 +1,23 @@
 .detailed-ledger{
-    top: 100px;
-    left: 0px;
-    width: 615px;
-    height:400px;
-    border: 1px solid gray;
+    height: 300px;
+    width: 617px;
+    left: 140px;
+    top: 151px;
+    border-radius: 10px;
+    box-sizing: border-box;
     position: absolute;
+    left: 0%;
+    right: 25.86%;
+    top: 110%;
+    bottom: 80.99%;
+    border-radius: 10px 10px 0px 0px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    overflow-y: scroll;
 }
+/*th{
+    top:0px;
+    position: sticky;
+    background: #D7F3DD;
+}*/
 
-.detail-ledger{
-    top: 100px;
-    left:0px;
-    width: 615px;
-    height:100%;
-    border: 1px solid gray;
-    position: absolute;
-}

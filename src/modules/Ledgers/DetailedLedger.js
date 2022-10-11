@@ -46,7 +46,7 @@ const DetailedLedger = () => {
             details.map((item, index) => {
               return(
                 <tr>
-                <th scope="row">{index}</th>
+                <th scope="row">{index+1}</th>
                 <td>{item.refId}&nbsp;{item.date}</td>
                 <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
                 <td>{item.recieved}</td>

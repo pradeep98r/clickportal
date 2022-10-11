@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 function TopNavigation() {
   const linkValue = localStorage.getItem("LinkId");
-  const linkPath = localStorage.getItem("LinkPath").toString();
+  const linkPath = localStorage.getItem("LinkPath")//.toString();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));

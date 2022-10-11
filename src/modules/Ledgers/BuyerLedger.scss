@@ -1,24 +1,84 @@
-#ledger-table{
-    width:350px;
-    height:100%;
-    border: 1px solid lightgray;
-    margin-left: 10px;
+.table-scroll {
+    height: 400px;
+    width: 350px;
+    left: 238px;
+    top: 151px;
+    border-radius: 10px;
+    //box-sizing: border-box;
+    position: absolute;
+    left: 18.30%;
+    right: 25.86%;
+    top: 21.5%;
+    //bottom: 80.99%;
+    border-radius: 10px 10px 0px 0px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    overflow-y: scroll;
 }
-/*td{
-    justify-content: center;
-    padding-left: 100px;
-}*/
-thead{
-    background-color: lightgreen;
+#ledgersTab{
+    position: absolute;
+    text-decoration: none;
+    top:13%;
+    left:38.5%;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+    color: #4D4D4D;
+}
+.table, th, td {
+    border-collapse: collapse;
+}
+input[type="search"]::placeholder {  
+    padding-left: 35px; 
+    font-family: 'Manrope';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    color: #939393;
+} 
+.searchbar{
+    height: 40px;
+    width: 488px;
+    left: 238px;
+    top: 100px;
+    border-radius: 10px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 10px;
+
+}
+.searchicon{
+position: absolute;
+left: 2.33%;
+right: 81.35%;
+top: 28.47%;
+bottom: 86.57%;
+
+background: #16A02C;
 }
 tr{
-    cursor: pointer;
-    color: black;
+    color: #121212;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 13px;
+    align-items: center
 }
-tr:hover{
-    background-color: green;
-    color: white;
+.ledger{
+    background: #E5E5E5;
 }
+
+thead{
+    border-radius: 10px 10px 0px 0px;
+    background: #D7F3DD;
+    border: 1px solid #E4E4E4;
+    box-sizing: border-box;
+    position: sticky;
+}
+
 .name-tag{
     cursor: pointer;
 }
@@ -28,47 +88,81 @@ tr:hover{
 .table1{
     margin-left:500px;
 }
-.navbar-nav{
-    // margin-left:-530px;
-    // margin-top:0px;
-    // position: absolute;
-}
+
 .ledgersummary{
-    font-size: 13px;
-    font-weight: bold;
-    color: black;
-    padding:5px 10px;
-    position: relative;
-    top:0px;
-    margin-left: 0px;
-}
-.ledgersummary:hover{
-    color:green;
-    text-decoration: underline;
+position: relative;
+padding-left: 0px;
+margin-left:0px;
+top:-15px;
+font-family: 'Manrope';
+font-style: normal;
+font-weight: 700;
+font-size: 12px;
+line-height: 18px;
+align-items: center;
+letter-spacing: 0.02em;
+color: #4D4D4D;
+text-decoration: underline solid  #16A02C 50% ;
 }
 
 .detailedledger{
-    font-size: 13px;
-    font-weight: bold;
-    color: black;
-    padding:5px 10px;
-    position: relative;
-    top:0px;
+position: relative;
+padding-left:50;
+margin-left:20px;
+top:-15px;
+font-family: 'Manrope';
+font-style: normal;
+font-weight: 700;
+font-size: 12px;
+line-height: 18px;
+letter-spacing: 0.02em;
+color: #4D4D4D;
+text-decoration: underline solid  #16A02C 50% ;
 }
-.detailedledger:hover{
-    color:green;
-    text-decoration: underline;
-}
-.record-btn{
-    width: 100px;
-    height: 30px;
-    font-size: 12px;
-    color: green;
-    border: 1px solid lightgray;
-    cursor: pointer;
-    margin-left: 500px;
+.date-byledgers{
     position: absolute;
     top:55px;
+    margin-left:-420px;
+    border:none;
+    cursor: pointer;
+    display: none;
+}
+
+.record-img{
+    position: absolute;
+    top: 2px;
+    margin-left: -28px;
+    background: #16A02C;
+    border-radius: 50%;
+    width:20px;
+    height:25px;
+    border:1px solid #16A02C;
+    transform: rotate(-90deg);
+
+}
+.record-btn{
+    width: 118px;
+    height: 29px;
+    top:-75px;
+    margin-left: 490px;
+    position: absolute;
+    background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    color: #16A12C;
+}
+.details-tag{
+    position: absolute;
+    width: 615px;
+    height: 100px;
+    left:390px;
+    margin-top: 60px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
     border-radius: 10px;
 }
 .close-btn{
@@ -79,18 +173,24 @@ tr:hover{
     top:0px;
     width: 20px;
     font-size: 10px;
-    margin-left: 300px;
+    margin-left: 610px;
     overflow:visible;
     cursor: pointer;
    
 }
 .submit-btn{
-    border:1px solid white;
-    background-color: green;
     width: 100%;
     padding-top: 5px;
     height: max-content;
+    left: 31.63%;
+    right: 16.71%;
+    top: 79.13%;
+    bottom: 14.67%;
+
+    background: #16A02C;
+    border-radius: 0px 0px 10px 10px;
 }
+
 .date_pic{
     width: 50px;
     height: 20px;
@@ -104,6 +204,9 @@ tr:hover{
     width: 150px;
     text-align: center;
 }
+.date_picker:focus {
+    border: 1px solid #34495e;
+}
 #recievable-card{
     width: 600px;
     height: 50px;
@@ -116,20 +219,51 @@ tr:hover{
     margin-top: -10px;
     
 }
+.dateRangePicker{
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+    color: #16A02C;
+}
 #date_icon{
-    margin-top:-5px;
+    margin-top:-45px;
     position: relative;
-    margin-left:405px;
+    margin-left:-25px;
+}
+.date_icon{
+    margin-top:-10px;
+    position: relative;
+    margin-left:375px;
 }
 #p-tag, #amt-tag{
     font-size: 12px;
     font-family: sans-serif;
     margin-top: 15px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
 }
+#comments{
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 10px;
+}
+
 #recieve-tag{
     font-size: 17px;
     font-weight: bold;
     margin-top: 2px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    color: #121212;
+
 }
 #receivable-tag{
     text-align: center;
@@ -142,9 +276,22 @@ tr:hover{
     font-size: 13px;
     font-family: sans-serif;
     margin-top: 15px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
 }
+
 .form-check-label{
     font-size: 11px;
+
+}
+#amtRecieved{
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 10px;
 }
 .profile
 {
@@ -153,15 +300,16 @@ tr:hover{
     left:0px;
     margin-left:-300px;
 }
-.add{
-    height: 20px;
-    background-color: green;
-    border-radius: 10rem;
-    left:0px;
-}
 .addrecord-tag{
     margin-bottom: 10px;
     font-size: 13px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    color: #121212;
+
 }
 .paid{
     position: absolute;
@@ -169,6 +317,12 @@ tr:hover{
     font-size: 12px;
     margin-left: 150px;
     justify-content: space-between;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
 }
 .total-paid{
     position: absolute;
@@ -176,6 +330,12 @@ tr:hover{
     top:5px;
     margin-left: 250px;
     justify-content: space-between;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
 }
 .out-standing{
     position: absolute;
@@ -183,6 +343,12 @@ tr:hover{
     font-size: 12px;
     margin-left: 350px;
     justify-content: space-between;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
 }
 .profile-details{
     position: absolute;
@@ -197,7 +363,12 @@ tr:hover{
     top: 25px;
 }
 .coloring{
-    color:green;
+    color: #16A12C;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
     display: visible;
 }
 .record-update{
@@ -221,4 +392,3 @@ tr:hover{
     margin-left:-30px;
     cursor: pointer;
 }
-

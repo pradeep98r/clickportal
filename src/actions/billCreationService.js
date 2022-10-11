@@ -26,7 +26,7 @@ export function getBuyerDetailedLedger(clickId,partyId, clientId, clientSecre){
 
 export function getSelleLedgers(clickId, clientId, clientSecre){
   return axiosCommon.get(
-    `/click/ledgers/caId/${clickId}/type/FARMER`
+    `/click/ledgers/caId/${clickId}/type/SELLER`
   );
 }
 

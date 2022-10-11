@@ -1,0 +1,120 @@
+
+.select-date{
+   font-family: 'Manrope';
+   font-style: normal;
+   font-weight: 600;
+   font-size: 20px;
+   line-height: 27px;
+   color: #121212;
+   text-align: center;
+   position: absolute;
+   margin:20px 30px;
+}
+.form-check{
+    margin-top: 70px;
+    margin-left: 30px;
+}
+.rdrDateDisplayItem input {
+    display: none;
+}
+.rdrDateDisplayWrapper {
+    background-color: #FFFFFF;
+    display: none;
+}
+.rdrDateDisplay{
+    display: none;
+    background-color: #FFFFFF;
+}
+.rdrMonthName{
+    display: none;
+    background-color: #FFFFFF;
+}
+.rdrPprevButton{
+    margin-left: 40px;
+    background: #FFFFFF;
+    border: none;
+    position: absolute;
+}
+.rdrNextButton{
+    margin-left:490px;
+    background: #FFFFFF;
+    border: none;
+}
+.rdrMonthPicker{
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    color: #7A7A7A;
+    position: absolute;
+    margin-left: 490px;
+}
+.rdrDay{
+    //height: 0;
+    border-radius: 50%;
+}
+.inputBox{
+    border: none;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+    color: #0066FF;
+    background: none;
+}
+.rdrMonthAndYearWrapper{
+    position: absolute;
+    top:-60px;
+    margin-left: 20px;
+}
+.rdrYearPicker{
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    color: #7A7A7A;
+    position: absolute;
+    margin-left: 670px;
+}
+.rdrCalendarWrapper{
+    position: absolute;
+    margin-top:40px;
+}
+.submitbtn-tag{
+    position: absolute;
+    width: 100%;
+    top:430px;
+    background: #16A02C;
+    padding-bottom: 10px;
+    padding-top: 7px;
+    text-align: center;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 0px 0px 10px 10px;
+}
+.closedate-btn{
+    color: #FFFFFF;
+    margin-left: 9.2px;
+    margin-top: 9.5px;
+    width: 10px;
+    height: 10px;
+    justify-content: center;
+}
+.close-button{
+    border:1px solid white;
+    border-radius: 100%;
+    background-color: green;
+    position: absolute;
+    top:-50px;
+    width: 30px;
+    height: 30px;
+    font-size: 10px;
+    margin-left: 270px;
+    overflow:visible;
+    cursor: pointer;
+}
