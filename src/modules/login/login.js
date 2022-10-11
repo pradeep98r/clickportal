@@ -6,8 +6,24 @@ import "../login/login.scss";
 import ca_avatar from "../../assets/images/login/ca_image.svg";
 import writer_avatar from "../../assets/images/login/writer_image.png";
 import { Link } from "react-router-dom";
-class Login extends Component {
+import { getLanguagesData } from "../../actions/profileService";
+class Login extends Component { 
   render() {
+    const langId = localStorage.getItem("langId");
+    getLanguagesData(langId)
+      .then((response) => {
+        const langData = response.data.data;
+        const res = {};
+        langData.forEach(({ key, value }) =>
+          Object.assign(res, { [key]: value })
+        );
+        localStorage.setItem("languageData", JSON.stringify(res));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    const langData = localStorage.getItem("languageData");
+    const langFullData = JSON.parse(langData);
     return (
       <div>
         <Navigation login_type="login_type_selection" />
@@ -29,7 +45,7 @@ class Login extends Component {
                     className="primary_btn buttons d-flex mx-auto"
                     onClick={(e) => localStorage.setItem("userType", "CA")}
                   >
-                    I’m Commission Agent
+                    I’m {langFullData.commissionAgent}
                   </button>
                 </Link>
                 <h5>Don't have an account?</h5>

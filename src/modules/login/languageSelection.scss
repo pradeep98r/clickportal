@@ -8,18 +8,13 @@
     p {
       font-size: 20px;
       color: #4d4d4d;
-      margin-top: 20px;
+      padding-top: 10px;
       font-weight: 700;
     }
     .langdiv {
       padding: 0px 15px;
-      div {
-        //   background-color: #16a02c;
-        border: 1px solid #c2c2c2;
-        border-radius: 100%;
-        padding: 20px;
-        width: 60px;
-        height: 60px;
+      :hover{
+        cursor: pointer;
       }
       h5 {
         //   color: #eff3ef;
@@ -28,5 +23,19 @@
       }
     }
   }
-  
+  .lang_id{
+    border: 1px solid #c2c2c2;
+    border-radius: 100%;
+    padding: 20px;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+  }
+  .lang_id.active_item{
+    border: 1px solid #16A02C;
+    background-color: #16A02C;
+    h5{
+      color: #fff;
+    }
+  }
   
