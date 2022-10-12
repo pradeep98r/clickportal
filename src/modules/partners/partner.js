@@ -456,6 +456,8 @@ const Partner = () => {
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
   };
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
   return (
     <div>
       <div className="main_div_padding">
@@ -595,7 +597,7 @@ const Partner = () => {
                           ? "seller"
                           : partyType.toLowerCase()}
                       </h6>
-                      <p>Lorem ipsum is placeholder text commonly</p>
+                      <p>Loream iipusm text</p>
 
                       <button className="outline_btn" id="MybtnModal">
                         Add

@@ -25,6 +25,7 @@ function TopNavigation() {
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
     localStorage.removeItem("LinkPath");
+    localStorage.removeItem("languageData")
     localStorage.setItem("LinkPath", "/smartboard");
     console.log(loginUserDetails, "after clearing");
   };
