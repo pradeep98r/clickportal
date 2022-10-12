@@ -1,1 +1,89 @@
 @import url("../../assets/css/style.scss");
+
+.smartboard_div{
+    h5, .trans_title{
+        font-size: 12px;
+        font-weight: 500;
+        color: #121212;
+    }
+    .trans_title{
+        font-weight: 600;
+        color: #1c1c1c;
+        margin-bottom: 10px;
+    }
+    h6{
+        font-size: 16px;
+        color: #121212;
+        font-weight: 700;
+        margin: 5px 0px 15px;
+    }
+    p{
+        color: #EFF3EF;
+        font-size: 13px;
+    }
+    .out_standing_text{
+        font-size: 11px;
+        color: #1C1C1C;
+    }
+    .color_head_subtext{
+        color: #EFF3EF;
+    }
+    .col_left_border{
+        border-right: 1px solid #EFF3EF;
+        // margin-right: 10px;
+    }
+    .color_red{
+        color: #D43939;
+    }
+    .color_blue{
+        color: #0066FF;
+    }
+   .color_green{
+       color: #16A02C;
+   }
+    .col2{
+        padding-left: 30px;
+    }
+    .table_haed{
+        color: #1C1C1C;
+    }
+}
+.pending_pay_card{
+    .col_left_border{
+        border-right: 1px solid #D43939;
+    }
+}
+.outstanding_balance .card, .default_card {
+    padding: 20px 20px;
+}
+.top_border{
+    border-top: 1px solid #EFF3EF;
+    display: flex;
+    justify-content: center;
+    p{
+        margin-top: 5px;
+    }
+}
+.transaction_card{
+    padding: 0px;
+    border-radius: 3px;
+    .card_header{
+        padding: 10px;
+        background-color: #D7F3DD;
+        border-radius: 3px 3px 0px 0px;
+    }
+    .card_body{
+        .card_row{
+            padding: 10px;
+            border-bottom: 1px solid #EFF3EF;
+        }
+    }
+   h4{
+       font-size: 10px;
+       font-weight: 600;
+       color: #1C1C1C;
+   }
+   .out_standing_div{
+       padding: 10px 20px;
+   }
+}
