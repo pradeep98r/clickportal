@@ -1,7 +1,7 @@
 import React from "react";
-import "../layout/Layout.scss";
-import TopNavigation from "./top_navigation/TopNavigation";
-import SideNavigation from "./side_navigation/SideNavigation";
+import "../layout/layout.scss";
+import TopNavigation from "./top_navigation/topNavigation";
+import SideNavigation from "./side_navigation/sideNavigation";
 const Layout = (props) => {
   const { children } = props;
 

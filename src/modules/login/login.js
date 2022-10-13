@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Navigation from "../../components/Navigation";
-import Button from "../../components/Button";
-import Logo from "../../components/Logo";
-import "../login/Login.scss";
+import Navigation from "../../components/navigation";
+import Button from "../../components/button";
+import Logo from "../../components/logo";
+import "../login/login.scss";
 import ca_avatar from "../../assets/images/login/ca_image.svg";
 import writer_avatar from "../../assets/images/login/writer_image.png";
 import { Link } from "react-router-dom";
