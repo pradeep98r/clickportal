@@ -4,7 +4,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
-import Splash from "../modules/splash";
+import Splash from "../modules/Splash";
 import Login from "../modules/login/login";
 import LoginForm from "../modules/login/loginForm";
 import SmartBoard from "../modules/smartboard/smartboard";
