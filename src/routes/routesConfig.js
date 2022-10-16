@@ -16,12 +16,8 @@ import Calender from "../modules/buy_bill_book/calender";
 import LanguageSelection from "../modules/login/languageSelection";
 
 import BuyerLedger from "../modules/ledgers/buyerLedger";
-import LedgerSummary from "../modules/ledgers/ledgerSummary";
-import DetailedLedger from "../modules/ledgers/detailedLedger";
 import Partner from "../modules/partners/partner";
 import SellerLedger from "../modules/ledgers/sellerLedger";
-import SellerLedgerSummary from "../modules/ledgers/sellerLedgerSummary";
-import SellerDetailedLedger from "../modules/ledgers/sellerDetailedLedger";
 import MyProfile from "../modules/my_profile/myProfile";
 import Reports from "../modules/reports/reports";
 import SellBillBook from "../modules/sell_bill_book/sellBillBook";
@@ -53,14 +49,8 @@ const RoutesConfig = () => {
               <Route path="/bill_creation" element={<BillCreation />} />
               <Route path="/bill_view/:billId" element={<BillView />} />
               <Route path="/calender" element={<Calender />} />
-              <Route path="buyerledger" element={<BuyerLedger />}>
-                <Route path="ledgersummary/:partyId" element={<LedgerSummary />} />
-                <Route path="detailedledger/:partyId" element={<DetailedLedger />} />
-              </Route>
-              <Route path="sellerledger" element={<SellerLedger />}> 
-                <Route path="sellerledgersummary/:partyId" element={<SellerLedgerSummary />} />
-                <Route path="sellerdetailedledger/:partyId" element={<SellerDetailedLedger />} />
-              </Route>
+              <Route path="buyerledger" element={<BuyerLedger />} />
+              <Route path="sellerledger" element={<SellerLedger />} /> 
               <Route path="/partner" element={<Partner />} />
               <Route path="/myprofile" element={<MyProfile />}/>
               <Route path="/reports" element={<Reports />}/>

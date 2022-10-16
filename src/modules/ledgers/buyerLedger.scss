@@ -2,7 +2,7 @@
     height: 400px;
     width: 350px;
     left: 238px;
-    top: 151px;
+    top: 151px;//151
     border-radius: 10px;
     //box-sizing: border-box;
     position: absolute;
@@ -15,22 +15,121 @@
     border: 1px solid #E4E4E4;
     overflow-y: scroll;
 }
-#ledgersTab{
+#ledger-summary{
+    height: 330px;
+    width: 617px;
+    left: 140px;
+    //top: 200px;//151
+    border-radius: 10px;
+    box-sizing: border-box;
     position: absolute;
-    text-decoration: none;
-    margin-top:20px;
-    left:38.5%;
+    left: 48.5%;
+    right: 25.86%;
+    top: 45%;//21.5
+    bottom: 80.99%;
+    border-radius: 10px 10px 0px 0px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    overflow-y: scroll;
+}
+.coloring,.paid-coloring{
+    color:  #16A12C;;
+}
+.content {
+    background: white;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+.active-content {
+    display: block;
+}
+.ledger-table{
+    width: 100%;
+}
+.tr-tags{
     font-family: 'Manrope';
     font-style: normal;
-    font-weight: 700;
+    font-weight: 500;
     font-size: 12px;
+    line-height: 17px;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    color: #121212;
+    cursor: pointer;
+    
+}
+.thead-tag{
+    width: 100%;
+    height: 30px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    align-items: center;
+    text-align: center;
+    color: #121212;
+    background: #D7F3DD;
+}
+#singles-img{
+    position: absolute;
+    left: 0px;
+    top:-5px;
+    width: 50px;
+    height: 50px;
+}
+#profile-img{
+    position: absolute;
+    left: 95px;
+    top:0px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+.namedtl-tag{
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
     line-height: 18px;
-    color: #4D4D4D;
+    color: #121212;
 }
-.table, th, td {
-    border-collapse: collapse;
+.outstanding-pay{
+    position: sticky;
+    top:400px;
+    width: 100%;
+    height: 30px;
+    float: left;
+    border: 1px solid #E4E4E4;
+    //border-radius: 10px;
 }
-input[type="search"]::placeholder {  
+.pat-tag{
+    font-size: 12px;
+    font-family: sans-serif;
+    margin-top: 5px;
+    margin-left: 0px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+}
+.values-tag{
+    margin-top: -15px;
+    margin-left: 200px;
+    position: absolute;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    text-align: left;
+    color: #121212;
+    color: red;
+}
+input[type="text"]::placeholder {  
     padding-left: 35px; 
     font-family: 'Manrope';
     font-weight: 500;
@@ -38,26 +137,104 @@ input[type="search"]::placeholder {
     line-height: 17px;
     color: #939393;
 } 
-.searchbar-input{
+.searchicon{
     position: absolute;
+    left: 2.33%;
+    right: 81.35%;
+    top: 110.47%;
+    bottom: 86.57%;
+    color: #16A02C;
+}
+#searchbar{
+    position: absolute;
+    width: 350px;
     height: 40px;
-    width: 488px;
     left: 10px;
-    margin-left: 0px;
     top: 10px;
-    border-radius: 10px;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
-
 }
-.searchicon{
-position: absolute;
-left: 2.33%;
-right: 81.35%;
-top: 100.47%;
-bottom: 86.57%;
-background: #16A02C;
+.bloc-tabs {
+    display: flex;
+}
+.tabs {
+    text-align: center;
+    padding-left:20px;
+    margin-left: 10px;
+    left:0px;
+    top: -5px;
+    //position: absolute;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+    align-items: center;
+    letter-spacing: 0.02em;
+    color: #4D4D4D;
+}
+.active-tabs  {
+    color: green;
+    border-bottom: 2px solid green;
+}
+.active-tabs::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+    align-items: center;
+    letter-spacing: 0.02em;
+    color: #4D4D4D;
+}
+.tab {
+    text-align: center;
+    padding-left:20px;
+    margin-left: 10px;
+    left: 400px;
+    //position: absolute;
+    cursor: pointer;
+    position: relative;
+    outline: none;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+    align-items: center;
+    letter-spacing: 0.02em;
+    color: #4D4D4D;
+}
+.active-tab  {
+    color: green;
+    border-bottom: 2px solid green;
+}
+.active-tab::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 18px;
+    align-items: center;
+    letter-spacing: 0.02em;
+    color: #4D4D4D;
+}
+a:hover{
+    text-decoration: none;
 }
 tr{
     color: #121212;
@@ -67,6 +244,103 @@ tr{
     font-size: 13px;
     line-height: 13px;
     align-items: center
+}
+.addrecord-img{
+    position: absolute;
+    margin-left: 860px;
+    top: 90px;
+    background: #16A02C;
+    border: 1px solid #16A02C;
+    transform: rotate(-90deg);
+    border-radius: 100%;
+}
+.add-record-btn{
+    margin-left: 875px;
+    width: 118px;
+    height: 29px;
+    margin-top:25px;
+    position: absolute;
+    top:55px;
+    background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    color: #16A12C;
+}
+.add-record{
+    position: absolute;
+    top: 0px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: 0px;
+    width: 100%;
+    height: 500px;
+    transition: 'ease-out';
+    background: #FFFFFF;
+    border-radius: 10px;
+}
+.btn-round{
+    width: 35px;
+    height: 35px;
+    background: #16A12C;
+    border-radius: 100%;
+    margin-top:-50px;
+    margin-left: 365px;
+}
+.closing-btn{
+    position: absolute;
+    overflow:visible;
+    margin-top: 10px;
+    margin-left: 10px;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+.record-name{
+    position: absolute;
+    left: 50px;
+    top:5%;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    color: #121212;
+}
+#pref-details-tag{
+    position: absolute;
+    width: 630px;
+    height: 75px;
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 10px;
+    margin-left: 50px;
+    margin-top: 90px;
+}
+.record-update{
+    width:400px;
+    height: 50px;
+    border:1px solid gray;
+    margin-left: 300px;
+    background-color: green;
+    color: white;
+    display: block;
+    padding-top:10px;
+    padding-left:40px;
+}
+.recordclose-btn{
+    margin-top:40px;
+    left:280px;
+    cursor: pointer;
+}
+.right-click{
+    margin-top:0px;
+    margin-left:-30px;
+    cursor: pointer;
 }
 .ledger{
     background: #E5E5E5;
@@ -80,14 +354,25 @@ thead{
     position: sticky;
 }
 
-.name-tag{
-    cursor: pointer;
-    color: #1C1C1C;
+.names-tag{
+    position: absolute;
+    top: -5px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 600;
-    font-size: 13px;
-    line-height: 17px;
+    font-size: 15px;
+    line-height: 18px;
+    color: #121212;
+}
+.profiles-dtl{
+    top:12px;
+    position: absolute;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 13px;
+    color: #121212;
 }
 #searchbar{
     width:350px;
@@ -165,9 +450,10 @@ text-decoration: underline solid  #16A02C 50% ;
 .details-tag{
     position: absolute;
     width: 615px;
+    margin-left: 200px;
     height: 100px;
     left:390px;
-    margin-top: 100px;
+    margin-top: 50px;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
@@ -204,9 +490,9 @@ text-decoration: underline solid  #16A02C 50% ;
     color: blue;
 }
 .date_picker{
-    top:0;
+    top:10px;
     position: absolute;
-    margin-left: 400px;
+    margin-left: 450px;
     border: none;
     width: 150px;
     text-align: center;
@@ -235,29 +521,109 @@ text-decoration: underline solid  #16A02C 50% ;
     color: #16A02C;
 }
 #date_icon{
-    margin-top:-45px;
-    position: relative;
-    margin-left:-25px;
+    margin-top:10px;
+    position: absolute;
+    margin-left:600px;
+    cursor: pointer;
+}
+.react-datepicker-popper{
+    margin-left: 390px;
+    margin-top: 30px;
+}
+.react-datepicker__input-container input{
+    border: none;
 }
 .date_icon{
-    margin-top:-10px;
+    margin-top:10px;
     position: relative;
-    margin-left:375px;
+    margin-left:460px;
 }
-#p-tag, #amt-tag{
+#out-tag{
     font-size: 12px;
     font-family: sans-serif;
-    margin-top: 15px;
+    margin-top: 180px;
+    margin-left: 50px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+} 
+#recieve-tag{
+    font-size: 17px;
+    margin-left: 50px;
+    font-weight: bold;
+    margin-top: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    color: #121212;
+}
+#amt-tag{
+    font-size: 12px;
+    font-family: sans-serif;
+    margin-top:0px;
+    margin-left: 50px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
     line-height: 17px;
 }
+.payment-tag{
+    font-size: 13px;
+    font-family: sans-serif;
+    margin-top: 55px;
+    margin-left: 50px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
+}
+#comment-tag{
+    font-size: 13px;
+    font-family: sans-serif;
+    margin-top: 15px;
+    margin-left: 50px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
+}
+.form-check-label{
+    font-size: 11px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: black
+}
+#inlineRadio1{
+    margin-left: 50px;
+}
+.submit-btn{
+    width: 100%;
+    background: #16A02C;
+    border-radius: 0px 0px 10px 10px;
+    height: 100%;
+    color: #FFFFFF;
+    padding-bottom: 12px;
+    padding-top: 11px;
+}
+
 #comments{
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
+    margin-left: 50px;
+    width: 630px;
 }
 
 #recieve-tag{
@@ -299,6 +665,8 @@ text-decoration: underline solid  #16A02C 50% ;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
+    margin-left: 50px;
+    width: 630px;
 }
 .profile
 {
@@ -322,7 +690,7 @@ text-decoration: underline solid  #16A02C 50% ;
     position: absolute;
     top:5px;
     font-size: 12px;
-    margin-left: 150px;
+    margin-left: 190px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -336,7 +704,7 @@ text-decoration: underline solid  #16A02C 50% ;
     position: absolute;
     font-size: 12px;
     top:5px;
-    margin-left: 260px;
+    margin-left: 300px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -350,7 +718,7 @@ text-decoration: underline solid  #16A02C 50% ;
     position: absolute;
     top:5px;
     font-size: 12px;
-    margin-left: 350px;
+    margin-left: 390px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -362,11 +730,7 @@ text-decoration: underline solid  #16A02C 50% ;
 }
 .profile-details{
     position: absolute;
-    font-weight: bold;
-    top:5px;
-    font-size: 15px;
-    margin-left:0px;
-    justify-content: space-between;
+    padding-left: 70px;
 }
 .address{
     position: absolute;
@@ -414,7 +778,5 @@ text-decoration: underline solid  #16A02C 50% ;
     position: absolute;
     margin-top: 2px;
 }
-.react-datepicker-popper{
-    margin-left: 350px;
-    margin-top: 25px;
-}
+
+
