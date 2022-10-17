@@ -147,8 +147,8 @@
     overflow-y: scroll;
 }
 .add-record-btn{
-    margin-left: 875px;
-    width: 118px;
+    margin-left: 865px;
+    width: 130px;
     height: 29px;
     margin-top:25px;
     position: absolute;
@@ -449,11 +449,11 @@
 .bloc-tabs {
     display: flex;
 }
-.tabs {
+.tabers {
     text-align: center;
     padding-left:20px;
     margin-left: 10px;
-    left: 500px;
+    left: 400px;
     //position: absolute;
     cursor: pointer;
     position: relative;
@@ -593,8 +593,10 @@ a:hover{
 
 .addrecord-img{
     position: absolute;
-    margin-left: 860px;
-    top: 90px;
+    margin-left: -35px;
+    top: 4px;
+    width: 20px;
+    height: 20px;
     background: #16A02C;
     border: 1px solid #16A02C;
     transform: rotate(-90deg);

@@ -6,6 +6,7 @@ import "../../modules/ledgers/buyerLedger.scss";
 import { 
     getBuyerDetailedLedger,
     getBuyerLedgers,
+    getDetailedLedgerByDate,
     getLedgerSummary, 
     getLedgerSummaryByDate, 
     postRecordPayment} 
@@ -22,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import right_click from "../../assets/images/right_click.svg";
 import $ from "jquery";
 import "../../modules/buy_bill_book/buyBillBook.scss";
-
+import moment from 'moment';
 const BuyerLedger = () => {
     const [search, setSearch] = useState("");
     const [openTabs, setOpenTabs] = useState(false);
@@ -34,7 +35,7 @@ const BuyerLedger = () => {
     const [ledgerSummary, setSummary] = useState([{}]);
     const [summaryData, setSummaryData] = useState({}, ledgerSummary);
     const [details, setDetails] = useState([{}]);
-    const [detailedData, setDetailedData] = useState({}, details);
+    //const [detailedData, setDetailedData] = useState({}, details);
     
     const [open, setIsOpen] = useState(false);
     const [selectDate, setSelectDate] = useState(new Date());
@@ -44,7 +45,9 @@ const BuyerLedger = () => {
     const [dateDisplay, setDateDisplay] = useState(false);
     
     const [ledgerSummaryByDate, setSummaryByDate] = useState([{}]);
-    const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummary);
+    //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummaryByDate);
+    const [detailsByDate, setDetailsByDate] = useState([{}]);
+    //const [detailedDataByDate, setDetailedDataByDate] = useState({}, detailsByDate);
 
     const navigate=useNavigate();
     const [toggleState, setToggleState] = useState("ledgersummary");
@@ -108,14 +111,12 @@ const BuyerLedger = () => {
           setError(error.message);
        });
     }
-       
-
+      
     //Get Buyer Detailed Ledger
     const fetchBuyerLedgerDetails = (clickId,partyId) => {
         getBuyerDetailedLedger(clickId,partyId).then(response => {
-            setDetailedData(response.data.data);
+            //setDetailedData(response.data.data);
             setDetails(response.data.data.details);
-            //console.log(details[0].itemName);
         })
         .catch(error => {
           setError(error.message);
@@ -153,13 +154,24 @@ const BuyerLedger = () => {
     }
     //Fetch Ledger Summary By Date
     const fetchLedgerSummaryByDate=(clickId,partyId,fromDate,toDate)=>{
+      console.log(fromDate, toDate);
         getLedgerSummaryByDate(clickId,partyId,fromDate,toDate)
         .then(response=>{
-            setSummaryByDate(response.data.ledgerSummary);
-            setSummaryDataByDate(response.data.data);
+          //setSummaryDataByDate(response.data.data);
+          setSummaryByDate(response.data.data.ledgerSummary);
         }).catch(error => {
             console.log(error);
           })
+    }
+    const fetchDetailedLedgerByDate=(clickId, partyId,fromDate,toDate)=>{
+      getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then(response=>{
+        setDetailsByDate(response.data.data.details);
+        //setDetailedDataByDate(response.data.data)
+      }).catch(error=>{
+        setError(error);
+        console.log(error.message);
+      })
     }
     //Date Range Select
     $("[name=tab]").each(function (i, d) {
@@ -198,6 +210,7 @@ const BuyerLedger = () => {
         localStorage.setItem('fromDate', JSON.stringify(fromDate))
         localStorage.setItem('toDate', JSON.stringify(toDate))
         fetchLedgerSummaryByDate(clickId,partyId,fromDate,toDate);
+        fetchDetailedLedgerByDate(clickId,partyId,fromDate,toDate);
         $("#datePopupmodal").modal("hide");
         setIsOpen(false);
     }
@@ -213,15 +226,15 @@ const BuyerLedger = () => {
          </div>
        </nav>
        <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
-            <div className="bloc-tabs">
-            <a href={"#All"}
-                className={toggleAC === 'all' ? "tab active-tabs" : "tab"}
-                onClick={() => toggleAllCustom('all')}
-            >All</a>
-            <a href={"#Custom"}
-                className={toggleAC === 'custom' ? "tab active-tab" : "tab"}
-                onClick={() => toggleAllCustom('custom')}
-            >Custom</a>
+          <div className="bloc-tab">
+              <a href={"#All"}
+                  className={toggleAC === 'all' ? "tabers active-tab" : "tabers"}
+                  onClick={() => toggleAllCustom('all')}
+              >All</a>
+              <a href={"#Custom"}
+                  className={toggleAC === 'custom' ? "tabers active-tab" : "tabers"}
+                  onClick={() => toggleAllCustom('custom')}
+              >Custom</a>
             </div>
             <div class="card" className='details-tag'>
                 <div class="card-body">
@@ -282,12 +295,11 @@ const BuyerLedger = () => {
                 </div>
             </div>
          <div className="recordbtn-style">
-            <img src={add} className='addrecord-img'/>
             <button className="add-record-btn" onClick={() =>
             {(toggleState === 'ledgersummary' || toggleState === 'detailedledger')
-             && setIsOpen(!open)}}>Add Record</button>
+             && setIsOpen(!open)}}><img src={add} id='addrecord-img'/> Add Record</button>
          </div>
-         {toggleAC==='all' &&
+         {toggleAC==='all' && 
          <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
             <table class="table table-fixed" className="ledger-table">
                <thead className="thead-tag">
@@ -306,41 +318,11 @@ const BuyerLedger = () => {
                        return (
                          <tr className="tr-tags">
                            <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />{item.date}</td>
+                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                           {moment(item.date).format("DD-MMM-YY")}</td>
                            <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
                            <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
-                           <td><span className='paid-coloring'>{item.balance ? item.balance : 0}</span></td>
-                         </tr>
-                        )
-                     })
-                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
-                 }
-               </tbody>
-             </table>
-           </div>}
-           {toggleAC==='custom' &&
-         <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
-            <table class="table table-fixed" className="ledger-table">
-               <thead className="thead-tag">
-                 <tr>
-                   <th scope="col">#</th>
-                   <th scope="col">RefId | Date</th>
-                   <th scope="col">Paid</th>
-                   <th scope="col">To Be Paid</th>
-                  <th scope="col">Ledger Balance</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 {
-                   ledgerSummaryByDate.length > 0 ? (
-                    ledgerSummaryByDate.map((item, index) => {
-                       return (
-                         <tr className="tr-tags">
-                           <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />{item.date}</td>
-                           <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
-                           <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
-                           <td><span className='paid-coloring'>{item.balance ? item.balance : 0}</span></td>
+                           <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
                          </tr>
                         )
                      })
@@ -369,11 +351,12 @@ const BuyerLedger = () => {
                        return (
                          <tr className="tr-tags">
                            <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />{item.date}</td>
+                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                           {moment(item.date).format("DD-MMM-YY")}</td>
                            <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
                            <td>&#8377;{item.recieved ? item.recieved : 0}</td>
                            <td>{item.toBeRecieved ? item.toBeRecieved : 0}</td>
-                           <td><span className='paid-coloring'>{item.balance ? item.balance : 0}</span></td>
+                           <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
                          </tr>
                         )
                      })
@@ -382,7 +365,74 @@ const BuyerLedger = () => {
                </tbody>
              </table>
            </div>
-            }
+          }
+          {toggleAC==='custom' && 
+          <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
+             <table class="table table-fixed" className="ledger-table">
+                <thead className="thead-tag">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">RefId | Date</th>
+                    <th scope="col">Paid</th>
+                    <th scope="col">To Be Paid</th>
+                   <th scope="col">Ledger Balance</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {
+                    ledgerSummaryByDate.length > 0 ? (
+                      ledgerSummaryByDate.map((item, index) => {
+                        return (
+                          <tr className="tr-tags">
+                            <th scope="row">{index + 1}</th>
+                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                            {moment(item.date).format("DD-MMM-YY")}</td>
+                            <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
+                            <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
+                            <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
+                          </tr>
+                         )
+                      })
+                    ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                  }
+                </tbody>
+              </table>
+            </div>}
+            {toggleAC==='custom' &&
+            <div id="ledger-summary" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
+             <table class="table table-fixed" className="ledger-table">
+                <thead className="thead-tag">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">RefId | Date</th>
+                    <th scope="col">Item<br/> Unit | Kgs | Rate</th>
+                    <th scope="col">Recieved</th>
+                    <th scope='col'>To Be Recieved</th>
+                   <th scope="col">Ledger Balance(&#8377;)</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {
+                    detailsByDate.length > 0 ? (
+                      detailsByDate.map((item, index) => {
+                        return (
+                          <tr className="tr-tags">
+                            <th scope="row">{index + 1}</th>
+                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                            {moment(item.date).format("DD-MMM-YY")}</td>
+                            <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
+                            <td>&#8377;{item.recieved ? item.recieved : 0}</td>
+                            <td>{item.toBeRecieved ? item.toBeRecieved : 0}</td>
+                            <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
+                          </tr>
+                         )
+                      })
+                    ) : (<p style={{ fontSize: "20px"}}>No Data Available!</p>)
+                  }
+                </tbody>
+              </table>
+            </div>
+           }
            <ReactModal isOpen={open} className='modal-tag' 
             style={
               {
@@ -433,7 +483,7 @@ const BuyerLedger = () => {
                        <ReactDatePicker className='date_picker'
                          selected={selectDate}
                          onChange={date => { setSelectDate(date) }}
-                         dateFormat='yyyy/MM/dd'
+                         dateFormat='dd-MMM-yy'
                          maxDate={new Date()}
                          placeholder="Date"
                          showMonthYearDropdown={true}
@@ -647,15 +697,15 @@ const BuyerLedger = () => {
                        <Fragment>
                          <tr onClick={(id) => { particularLedger(item.partyId) }} className="tr-tags">
                            <td scope="row">{index + 1}</td>
-                           <td key={item.date}>{item.date}</td>
+                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                            <td key={item.partyName}><span className="namedtl-tag">
                              {item.partyName}<br /></span>
                              {item.partyAddress}<br />
                              {item.mobile}
                              {item.profilePic? item.profilePic
-                               :<img id="profile-img" src={single_bill} alt="img"/>}
+                               :<img className="profile-img" src={single_bill} alt="img"/>}
                            </td>
-                           <td key={item.tobePaidRcvd}><span className='paid-coloring'>&#8377;
+                           <td key={item.tobePaidRcvd}><span className='coloring'>&#8377;
                              {item.tobePaidRcvd ? item.tobePaidRcvd : 0}</span></td>
                          </tr>
                        </Fragment>

@@ -187,13 +187,13 @@ const TransportoLedger = () => {
       <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
         <div className="bloc-tabs">
           <a href={"#paymentledger"}
-            className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
+            className={toggleState === 'paymentledger' ? "tabers active-tabs" : "tabers"}
             onClick={() => toggleTab('paymentledger')}
           >
             Payment Ledger
           </a>
           <a href={"#inventoryledger"}
-            className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
+            className={toggleState === 'inventoryledger' ? "tabers active-tabs" : "tabers"}
             onClick={() => toggleTab('inventoryledger')}
           >
             Inventory Ledger
