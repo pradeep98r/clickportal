@@ -189,7 +189,6 @@ const SmartBoard = () => {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
     }
-    console.log(firstDate, lastDate, "format date first and last");
     closePopup();
     getSmartboardData(clickId, tabType, firstDate, lastDate)
       .then((response) => {
@@ -249,11 +248,15 @@ const SmartBoard = () => {
   };
   const onNextDate = () => {
     var currentDate = selectedDate;
-    var yesterdayDate = currentDate.setDate(currentDate.getDate() + 1);
-    var yDate = moment(+new Date(yesterdayDate)).format("YYYY-MM-DD");
-    setStartDate(new Date(yesterdayDate));
-    getDateValue(new Date(yesterdayDate));
-    console.log(yDate, "next");
+    if (
+      moment(selectedDate).format("YYYY-MM-DD") !==
+      moment(new Date()).format("YYYY-MM-DD")
+    ) {
+      var yesterdayDate = currentDate.setDate(currentDate.getDate() + 1);
+      var yDate = moment(+new Date(yesterdayDate)).format("YYYY-MM-DD");
+      setStartDate(new Date(yesterdayDate));
+      getDateValue(new Date(yesterdayDate));
+    }
   };
   return (
     <div>
@@ -294,26 +297,29 @@ const SmartBoard = () => {
                 ) : (
                   ""
                 )}
-                <span className="date_icon">
-                  <img src={date_icon} alt="icon" />
-                </span>
-                <div onClick={DateModalPopup} className="selected_date">
-                  {(() => {
-                    if (tabType == "Daily") {
-                      return <p>{partnerSelectDate}</p>;
-                    } else if (tabType == "Weekly") {
-                      return (
-                        <p>
-                          <span id="startWeekDate">{weekStartDate}</span> to{" "}
-                          <span id="endWeekDate">{weekEndDate}</span>
-                        </p>
-                      );
-                    } else if (tabType == "Monthly") {
-                      return <p>{monthSelectDate}</p>;
-                    } else if (tabType == "Yearly") {
-                      return <p>{yearSelectDate}</p>;
-                    }
-                  })()}
+
+                <div onClick={DateModalPopup} className="selected_date m-0">
+                  <div className="d-flex align-items-center">
+                    <span className="date_icon">
+                      <img src={date_icon} alt="icon" className="mr-2" />
+                    </span>
+                    {(() => {
+                      if (tabType == "Daily") {
+                        return <p>{partnerSelectDate}</p>;
+                      } else if (tabType == "Weekly") {
+                        return (
+                          <p>
+                            <span id="startWeekDate">{weekStartDate}</span> to{" "}
+                            <span id="endWeekDate">{weekEndDate}</span>
+                          </p>
+                        );
+                      } else if (tabType == "Monthly") {
+                        return <p>{monthSelectDate}</p>;
+                      } else if (tabType == "Yearly") {
+                        return <p>{yearSelectDate}</p>;
+                      }
+                    })()}
+                  </div>
                 </div>
                 {tabType == "Daily" ? (
                   <span className="" onClick={onNextDate}>
@@ -849,8 +855,12 @@ const SmartBoard = () => {
                                   </h6>
                                 </div>
                               </div>
-
-                              <p className="color_blue see_all">See All</p>
+                              {(commissionEarns.totalComm &&
+                                commissionEarns.netComm) == 0 ? (
+                                <NoDataText />
+                              ) : (
+                                <p className="color_blue see_all">See All</p>
+                              )}
                             </div>
                           </div>
                           <div className="margin_bottom">

@@ -211,6 +211,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: 15px;
   .react-datepicker__input-container input {
     border: none !important;
     background-color: transparent;
@@ -356,6 +357,6 @@
 .nodata{
   margin-top: 5px;
 }
-.prev_icon:hover{
+.smartboard_date img:hover{
   cursor: pointer;
 }
