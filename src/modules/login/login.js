@@ -59,8 +59,8 @@ const Login = () => {
                 >
                   I’m{" "}
                   {langFullData != null
-                    ? langFullData.commissionAgent + "ho"
-                    : "hi"}
+                    ? langFullData.commissionAgent
+                    : ""}
                 </button>
               </Link>
               <h5>Don't have an account?</h5>
