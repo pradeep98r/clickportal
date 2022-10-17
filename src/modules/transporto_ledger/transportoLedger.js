@@ -17,11 +17,11 @@ import ReactDatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import date_icon from "../../assets/images/date_icon.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-
+import moment from "moment/moment";
 const TransportoLedger = () => {
   const [transporter, setTransporter] = useState([{}]);
   const [data, setData] = useState({}, transporter);
-  const [search, setSearch] = useState(" ");
+  const [searchName, setSearchName] = useState('');
   const [error, setError] = useState();
   const [openTabs, setOpenTabs] = useState(false);
 
@@ -37,12 +37,10 @@ const TransportoLedger = () => {
   const [paidRcvd, setPaidRcvd] = useState(0);
   const [comments, setComments] = useState(" ");
   const [paymentMode, setPaymentMode] = useState('');
-  const [displayLink, setDisplayLink]= useState(false);
-  const [recordDisplay, setRecordDisplay]= useState("");
-  const [record, setRecord]=useState(false);
+  //const [recordDisplay, setRecordDisplay]= useState("");
+  //const [record, setRecord]=useState(false);
   const [unit, setUnit]= useState('');
   const [qty, setQty]= useState(0);
-  const [type, setType]= useState(" ");
   const [openInventory, setOpenInventory]= useState(false);
   const navigate=useNavigate();
   
@@ -96,7 +94,6 @@ const TransportoLedger = () => {
 
   //Get transporter By partyId
   const particularLedger = (id) => {
-    console.log(id);
     transId=id;
     setOpenTabs(!openTabs);
     //getTransportersData(clickId, id);
@@ -134,15 +131,14 @@ const TransportoLedger = () => {
     postRecordPayment(addRecordData).then(response => {
         console.log(response.data.data);
         window.location.reload();
-        setRecordDisplay("Record Updated Successfully");
-        setRecord(true);
+        //setRecordDisplay("Record Updated Successfully");
+        //setRecord(true);
     })
     .catch(error => {
       console.log(error);
     })
     navigate("/transportoledger")
     setIsOpen(false);
-    localStorage.removeItem("transId");
   }
 
   //Add Record Inventory
@@ -153,20 +149,22 @@ const TransportoLedger = () => {
       comments: comments,
       date: convert(selectDate),
       type:toggleInventory.toUpperCase(),
-      details:{
+      details:[{
         qty:parseInt(qty),
         unit:unit
-      }
+      }]
     }
     addRecordInventory(inventoryRequest)
     .then(response=>{
       console.log(response.data.data);
       window.location.reload();
-      setRecordDisplay("Record Updated Successfully");
-      setRecord(true);
-    }).catch(error=>{setError(error); console.log(error.message)});
+      //setRecordDisplay("Record Updated Successfully");
+      //setRecord(true);
+    })
+    .catch(error=>{setError(error);console.log(error.message)});
     navigate("/transportoledger");
-    setIsOpen(false);
+    setOpenInventory(false);
+    localStorage.removeItem("transId");
   }
   return (
     /*<div className="main_div_padding">
@@ -178,33 +176,70 @@ const TransportoLedger = () => {
       <nav class="navbar navbar-expand-lg ">
         <div class="container-fluid">
           <form class="d-flex">
-            <input id="searchbar" type="text" value={search} placeholder='Search by Name / Short Code'
-              onChange={(e) => { setSearch(e.target.value) }} className='searchbar-input' />
+            <input id="searchbar" type="search" value={searchName} placeholder='Search by Name / Short Code'
+              onChange={(e) => { setSearchName(e.target.value) }} className='searchbar-input' />
           </form>
           <div className='searchicon'><img src={search_img} alt="search" /></div>
         </div>
       </nav>
       <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
-        <div className="bloc-tabs">
-          <a href={"#paymentledger"}
-            className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
-            onClick={() => toggleTab('paymentledger')}
-          >
-            Payment Ledger
-          </a>
-          <a href={"#inventoryledger"}
-            className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
-            onClick={() => toggleTab('inventoryledger')}
-          >
-            Inventory Ledger
-          </a>
-        </div>
-        <div className="recordbtn-style">
-         <img src={add} className='addrecord-img'/>
-          <button className="add-record-btn" onClick={() =>
-            {toggleState === 'paymentledger'? setIsOpen(!open)
-            : setOpenInventory(!openInventory)}}>Add Record</button>
-        </div>
+        <div class="card" className='transport-details'>
+          <div class="card-body">
+            {
+              transporter.map((item, index) => {
+                transId=JSON.parse(localStorage.getItem('transId'));
+                if (item.partyId == transId) {
+                    return (
+                        <Fragment>
+                            <tr>
+                                <td className='profile-details' key={item.partyName}>
+                                    <p className='names-tag'>{item.partyName}</p><br />
+                                    <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
+                                    {item.profilePic ? item.profilePic
+                                    :<img id="singles-img" src={single_bill} alt="img"/>}
+                                    
+                                </td>
+                            </tr>
+                        </Fragment>
+                        )
+                    }
+                    else {
+                      <p>No Data Found</p>
+                  }
+              })
+            }
+            <p class="card-text" className='paid'>Total Business<br /> <span className='coloring'>
+              &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd : 0}</span></p>
+            <p className='total-paid'>Total Paid <br /><span className='coloring'>
+              &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid : 0}</span> </p>
+            <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
+              &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble : 0}</span></p>
+            <hr style={{
+                background: '#FFFFFF', postion: 'absolute',
+                border: '1px solid #E4E4E4', height: '0px', marginTop: '50px', width: '100%',
+                paddingRight: '-40px',
+            }} />
+            <div className="bloc-tabs">
+              <a href={"#paymentledger"}
+                className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
+                onClick={() => toggleTab('paymentledger')}
+              >
+                Payment Ledger
+              </a>
+              <a href={"#inventoryledger"}
+                className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
+                onClick={() => toggleTab('inventoryledger')}
+              >
+                Inventory Ledger
+              </a>
+            </div>
+            <div className="recordbtn-style">
+              <button className="add-record-btn" onClick={() =>
+                {toggleState === 'paymentledger'? setIsOpen(!open)
+                : setOpenInventory(!openInventory)}}><img src={add} className='addrecord-img'/> Add Record</button>
+            </div>
+          </div>
+        </div>         
         <ReactModal isOpen={open} className='modal-tag' 
             style={
               {
@@ -255,7 +290,7 @@ const TransportoLedger = () => {
                       <ReactDatePicker className='date_picker'
                         selected={selectDate}
                         onChange={date => { setSelectDate(date) }}
-                        dateFormat='yyyy/MM/dd'
+                        dateFormat='dd-MMM-yy'
                         maxDate={new Date()}
                         placeholder="Date"
                         showMonthYearDropdown={true}
@@ -339,7 +374,8 @@ const TransportoLedger = () => {
                       return (
                         <tr className="tr-tags">
                           <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />{item.date}</td>
+                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                          {moment(item.date).format("DD-MMM-YY")}</td>
                           <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
                           <td><span className='paid-coloring'>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</span></td>
                           <td>{item.balance ? item.balance : 0}</td>
@@ -370,13 +406,14 @@ const TransportoLedger = () => {
                       return (
                         <tr className="tr-tags">
                           <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />{item.date}</td>
+                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                          {moment(item.date).format("DD-MMM-YY")}</td>
                           <td>{item.collected ? item.collected : 0}&nbsp;{item.unit.charAt(0).toUpperCase()}</td>
                           <td>{item.given ? item.given : 0}&nbsp;{item.unit.charAt(0).toUpperCase()}</td>
                           <td>{item.balance ? item.balance : 0}&nbsp;{item.unit.charAt(0).toUpperCase()}</td>
                         </tr>
                       )
-                    })
+                    }) 
                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
                 }
               </tbody>
@@ -450,7 +487,7 @@ const TransportoLedger = () => {
                       <ReactDatePicker className='date_picker'
                         selected={selectDate}
                         onChange={date => { setSelectDate(date) }}
-                        dateFormat='yyyy/MM/dd'
+                        dateFormat='dd-MMM-yy'
                         maxDate={new Date()}
                         placeholder="Date"
                         showMonthYearDropdown={true}
@@ -529,10 +566,10 @@ const TransportoLedger = () => {
             {
               transporter.length > 0 ? (
                 transporter.filter((item) => {
-                  if (search === " ") return <p>Not Found</p>;
-                  else if (item.partyName.toLowerCase().includes(search.toLowerCase())) {
-                    console.log(item.partyName);
-                    console.log(search)
+                  if (searchName === '') return <p>Not Found</p>;
+                  else if (item.partyName.toLowerCase().includes(searchName.toLowerCase())) {
+                    console.log(item.partyName.toLowerCase());
+                    console.log(searchName)
                     return (<p>item.partyName</p>);
                   }
                   else {
@@ -544,7 +581,7 @@ const TransportoLedger = () => {
                       <Fragment>
                         <tr onClick={(id) => { particularLedger(item.partyId) }} className="tr-tags">
                           <td scope="row">{index + 1}</td>
-                          <td key={item.date}>{item.date}</td>
+                          <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                           <td key={item.partyName}><span className="namedtl-tag">
                             {item.partyName}<br /></span>
                             {item.partyAddress}<br />

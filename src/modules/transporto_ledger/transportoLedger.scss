@@ -61,6 +61,14 @@
     color: #121212;
     background: #D7F3DD;
 }
+input[type="search"]::placeholder {  
+    padding-left: 35px; 
+    font-family: 'Manrope';
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+    color: #939393;
+}
 .paid-coloring{
     color:red;
     display: visible;
@@ -76,6 +84,7 @@
 }
 .p-tag{
     margin-top: 5px;
+    margin-left: 10px;
     position: absolute;
     font-family: 'Manrope';
     font-style: normal;
@@ -113,7 +122,7 @@
     display: none;
 }
 #transporter-summary{
-    height: 450px;
+    height: 400px;
     width: 617px;
     left: 140px;
     top: 151px;
@@ -122,7 +131,7 @@
     position: absolute;
     left: 48.5%;
     right: 25.86%;
-    top: 21.5%;
+    top: 33.5%;//21.5
     bottom: 80.99%;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
@@ -130,7 +139,7 @@
     overflow-y: scroll;
 }
 #detailed-inventory{
-    height: 450px;
+    height: 400px;
     width: 617px;
     left: 140px;
     top: 151px;
@@ -139,7 +148,7 @@
     position: absolute;
     left: 48.5%;
     right: 25.86%;
-    top: 21.5%;
+    top: 33.5%;//21.5
     bottom: 80.99%;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
@@ -147,7 +156,7 @@
     overflow-y: scroll;
 }
 .add-record-btn{
-    margin-left: 875px;
+    margin-left: 465px;
     width: 118px;
     height: 29px;
     margin-top:25px;
@@ -450,10 +459,11 @@
     display: flex;
 }
 .tabs {
+    top: 5px;
     text-align: center;
     padding-left:20px;
     margin-left: 10px;
-    left: 500px;
+    left: 0px;
     //position: absolute;
     cursor: pointer;
     position: relative;
@@ -545,7 +555,7 @@ a:hover{
 }
 #single-img{
     position: absolute;
-    left: 0px;
+    left: 10px;
     top:10px;
     width: 50px;
     height: 50px;
@@ -584,7 +594,7 @@ a:hover{
 }
 #profile-img{
     position: absolute;
-    left: 100px;
+    left: 90px;
     top:0px;
     width: 50px;
     height: 50px;
@@ -593,11 +603,96 @@ a:hover{
 
 .addrecord-img{
     position: absolute;
-    margin-left: 860px;
-    top: 90px;
+    margin-left: -30px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
     background: #16A02C;
     border: 1px solid #16A02C;
     transform: rotate(-90deg);
     border-radius: 100%;
     
+}
+.transport-details{
+    position: absolute;
+    width: 615px;
+    margin-left: 200px;
+    height: 115px;
+    left:390px;
+    margin-top: -5px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 10px;
+}
+.paid{
+    position: absolute;
+    top:5px;
+    font-size: 12px;
+    margin-left: 150px;
+    margin-left: 190px;
+    margin-top:10px;
+    justify-content: space-between;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
+}
+.total-paid{
+    position: absolute;
+    font-size: 12px;
+    top:5px;
+    margin-left: 250px;
+    margin-left: 300px;
+    margin-top:10px;
+    justify-content: space-between;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
+}
+.out-standing{
+    position: absolute;
+    top:5px;
+    font-size: 12px;
+    margin-left: 350px;
+    margin-left: 390px;
+    margin-top:10px;
+    justify-content: space-between;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #1C1C1C;
+}
+.names-tag{
+    position: absolute;
+    top: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+    color: #121212;
+}
+.profiles-dtl{
+    top:27px;
+    position: absolute;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 13px;
+    color: #121212;
+}
+#singles-img{
+    position: absolute;
+    left: 15px;
+    top:7px;
+    width: 50px;
+    height: 50px;
 }
