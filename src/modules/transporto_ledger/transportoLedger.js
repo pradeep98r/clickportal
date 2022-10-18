@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import date_icon from "../../assets/images/date_icon.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
+import $ from "jquery";
 const TransportoLedger = () => {
   const [transporter, setTransporter] = useState([{}]);
   const [data, setData] = useState({}, transporter);
@@ -36,12 +37,13 @@ const TransportoLedger = () => {
   const [selectDate, setSelectDate] = useState(new Date());
   const [paidRcvd, setPaidRcvd] = useState(0);
   const [comments, setComments] = useState(" ");
-  const [paymentMode, setPaymentMode] = useState('');
+  const [paymentMode, setPaymentMode] = useState('CASH');
   //const [recordDisplay, setRecordDisplay]= useState("");
   //const [record, setRecord]=useState(false);
-  const [unit, setUnit]= useState('');
+  const [unit, setUnit]= useState('CRATES');
   const [qty, setQty]= useState(0);
   const [openInventory, setOpenInventory]= useState(false);
+  const [isActive, setIsActive] = useState(false);
   const navigate=useNavigate();
   
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -95,11 +97,12 @@ const TransportoLedger = () => {
   //Get transporter By partyId
   const particularLedger = (id) => {
     transId=id;
-    setOpenTabs(!openTabs);
+    setOpenTabs(true);
     //getTransportersData(clickId, id);
     transporter.filter((item) => {
       if (item.partyId === id) {
         transId=id;
+        setIsActive(!isActive);
         localStorage.setItem('transId', JSON.stringify(transId));
         paymentLedger(clickId, id);
         inventoryLedger(clickId, id);
@@ -166,6 +169,7 @@ const TransportoLedger = () => {
     setOpenInventory(false);
     localStorage.removeItem("transId");
   }
+  transId=JSON.parse(localStorage.getItem('transId'));
   return (
     /*<div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -187,7 +191,6 @@ const TransportoLedger = () => {
           <div class="card-body">
             {
               transporter.map((item, index) => {
-                transId=JSON.parse(localStorage.getItem('transId'));
                 if (item.partyId == transId) {
                     return (
                         <Fragment>
@@ -209,11 +212,11 @@ const TransportoLedger = () => {
               })
             }
             <p class="card-text" className='paid'>Total Business<br /> <span className='coloring'>
-              &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd : 0}</span></p>
+              &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd.toFixed(2): 0}</span></p>
             <p className='total-paid'>Total Paid <br /><span className='coloring'>
-              &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid : 0}</span> </p>
+              &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid.toFixed(2) : 0}</span> </p>
             <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
-              &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble : 0}</span></p>
+              &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</span></p>
             <hr style={{
                 background: '#FFFFFF', postion: 'absolute',
                 border: '1px solid #E4E4E4', height: '0px', marginTop: '50px', width: '100%',
@@ -268,7 +271,6 @@ const TransportoLedger = () => {
                   <div className="card-body" id="details-tag">
                     {
                       transporter.map((item, index) => {
-                        transId=JSON.parse(localStorage.getItem('transId'))
                         if (item.partyId == transId) {
                             return (
                                 <Fragment>
@@ -315,7 +317,7 @@ const TransportoLedger = () => {
                   </div>
                 </div>
                 <p id='p-tag'>Outstanding Paybles</p>
-                <p id="recieve-tag">&#8377;{payLedger.outStdRcvPayble?payLedger.outStdRcvPayble:0}</p>
+                <p id="recieve-tag">&#8377;{payLedger.outStdRcvPayble?payLedger.outStdRcvPayble.toFixed(2) :0}</p>
                 <div class="form-group">
                   <label hmtlFor="amtRecieved" id="amt-tag">Amount</label>
                   <input class="form-control" id="amtRecieved" value={paidRcvd} placeholder="&#8377;" required
@@ -324,27 +326,27 @@ const TransportoLedger = () => {
                 <p className='payment-tag'>Payment Method</p>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CASH"
-                    onChange={(e) => setPaymentMode(e.target.value)} required />
+                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'}required />
                   <label class="form-check-label" for="inlineRadio1">CASH</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
-                    onChange={(e) => setPaymentMode(e.target.value)} required />
+                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
                   <label class="form-check-label" for="inlineRadio2">UPI</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
-                    onChange={(e) => setPaymentMode(e.target.value)} required />
+                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
                   <label class="form-check-label" for="inlineRadio3">NEFT</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
-                    onChange={(e) => setPaymentMode(e.target.value)} required />
+                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
                   <label class="form-check-label" for="inlineRadio4">RTGS</label>
                 </div>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
-                    onChange={(e) => setPaymentMode(e.target.value)} required />
+                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
                   <label class="form-check-label" for="inlineRadio5">IMPS</label>
                 </div>
                 <div class="mb-3">
@@ -372,13 +374,13 @@ const TransportoLedger = () => {
                   ledgerSummary.length > 0 ? (
                     ledgerSummary.map((item, index) => {
                       return (
-                        <tr className="tr-tags">
+                        <tr className="trs-tags">
                           <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                          <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
                           {moment(item.date).format("DD-MMM-YY")}</td>
-                          <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
-                          <td><span className='paid-coloring'>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</span></td>
-                          <td>{item.balance ? item.balance : 0}</td>
+                          <td>{item.paidRcvd ? item.paidRcvd.toFixed(2)  : 0}</td>
+                          <td><span className='paid-coloring'>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2)  : 0}</span></td>
+                          <td>{item.balance ? item.balance.toFixed(2) : 0}</td>
                         </tr>
                       )
                     })
@@ -404,13 +406,27 @@ const TransportoLedger = () => {
                   invDetails.length > 0 ? (
                     invDetails.map((item, index) => {
                       return (
-                        <tr className="tr-tags">
+                        <tr className="trs-tags">
                           <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                          <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
                           {moment(item.date).format("DD-MMM-YY")}</td>
-                          <td>{item.collected ? item.collected : 0}&nbsp;{item.unit.charAt(0).toUpperCase()}</td>
-                          <td>{item.given ? item.given : 0}&nbsp;{item.unit.charAt(0).toUpperCase()}</td>
-                          <td>{item.balance ? item.balance : 0}&nbsp;{item.unit.charAt(0).toUpperCase()}</td>
+                          <td>{item.collected ? item.collected.toFixed(1) : 0}&nbsp;
+                          {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                            item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                            item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
+                          <td>{item.given ? item.given.toFixed(1) : 0}&nbsp;
+                          {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                            item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                            item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
+                          <td>
+                            {item.unit==='CRATES'?item.cratesBalance.toFixed(1):item.unit==='SACS'?item.sacsBalance.toFixed(1):
+                            item.unit==='BAGS'?item.bagsBalance.toFixed(1):item.unit==='BOXES'?item.boxesBalance.toFixed(1):0}
+                            &nbsp;{
+                            item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                            item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                            item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''
+                            }
+                          </td>
                         </tr>
                       )
                     }) 
@@ -465,7 +481,6 @@ const TransportoLedger = () => {
                   <div className="card-body" id="detail-tag">
                     {
                       transporter.map((item, index) => {
-                        transId=JSON.parse(localStorage.getItem('transId'))
                         if (item.partyId == transId) {
                             return (
                                 <Fragment>
@@ -512,12 +527,21 @@ const TransportoLedger = () => {
                   </div>
                 </div>
                 <p id='para-tag'>Inventory Balance</p>
-                <p id="recieves-tag">&#8377;{invDetails.balance?invDetails.balance:0}</p>
+                {toggleState==='inventoryledger' &&
+                  invLedger.balance.map(item=>{
+                    if(item.unit===unit){
+                      return(
+                      <p id="recieves-tag">{unit}:&nbsp;{item.qty.toFixed(1)}</p>
+                      )
+                    }
+                  })
+                }
                 {toggleInventory==='Given' ?<p className='select-tag'>Select Given Type</p>
                   :<p className='select-tag'>Select Collected Type</p>}
+
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CRATES"
-                    onChange={(e) => setUnit(e.target.value)} required />
+                    onChange={(e) => setUnit(e.target.value)} checked={unit==='CRATES'} required />
                   <label class="form-check-label" for="inlineRadio1" id="crates">CRATES</label>
                 </div>
                 <div class="form-check form-check-inline">
@@ -579,18 +603,23 @@ const TransportoLedger = () => {
                   .map((item, index) => {
                     return (
                       <Fragment>
-                        <tr onClick={(id) => { particularLedger(item.partyId) }} className="tr-tags">
-                          <td scope="row">{index + 1}</td>
+                        <tr onClick={(id) => { particularLedger(item.partyId) }}
+                          //scope="row" style={{
+                          //background:isActive ?' linear-gradient(180deg, #16A12C 0%, #008916 100%)':'',
+                          //backgroundColor: isActive ? 'salmon' : '',
+                          //color: isActive ? 'white' : '',
+                           className="tr-tags">
+                          <td key={index}>{index + 1}</td>
                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                           <td key={item.partyName}><span className="namedtl-tag">
                             {item.partyName}<br /></span>
-                            {item.partyAddress}<br />
-                            {item.mobile}
+                            <span className="address-tag">{item.partyAddress}<br /></span>
+                            <span className="mobile-tag"></span>{item.mobile}
                             {item.profilePic? item.profilePic
                               :<img id="profile-img" src={single_bill} alt="img"/>}
                           </td>
                           <td key={item.tobePaidRcvd}><span className='paid-coloring'>&#8377;
-                            {item.tobePaidRcvd ? item.tobePaidRcvd : 0}</span></td>
+                            {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
                         </tr>
                       </Fragment>
                     )
@@ -601,13 +630,13 @@ const TransportoLedger = () => {
                   <p>No Data Available</p>
                 </div>
                 )
-
+ 
             }
           </tbody>
         </table>
         <div className="outstanding-pay">
           <p className="p-tag">Outstanding Paybles:</p>
-          <p className="value-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt : 0}</p>
+          <p className="value-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
         </div>
       </div>
     </Fragment>

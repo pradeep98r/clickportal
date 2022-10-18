@@ -16,6 +16,11 @@
     border: 1px solid #E4E4E4;
     border-radius: 10px;
 }
+th,td{
+    padding-left: 10px;
+    padding-top: 5px;
+    text-align: left;
+}
 .table-scroll {
     height: 400px;
     width: 350px;
@@ -48,6 +53,17 @@
     color: #121212;
     cursor: pointer;
 }
+.trs-tags{
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    color: #121212;
+}
 .thead-tag{
     width: 100%;
     height: 30px;
@@ -68,6 +84,12 @@ input[type="search"]::placeholder {
     font-size: 13px;
     line-height: 17px;
     color: #939393;
+}
+input[type=radio]:checked+label {
+        color:#16A02C;;
+}
+#inlineRadio1:checked{
+    background-color: #16A02C;
 }
 .paid-coloring{
     color:red;
@@ -355,9 +377,9 @@ input[type="search"]::placeholder {
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 600;
-    font-size: 20px;
-    line-height: 27px;
-    color: #121212;
+    font-size: 15px;
+    line-height: 20px;
+    color: #7A7A7A;
 }
 #receivable-tag{
     text-align: center;
@@ -578,9 +600,15 @@ a:hover{
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13px;
     line-height: 18px;
-    color: #121212;
+    margin-left: 25px;
+}
+.address-tag{
+    margin-left: 25px;
+}
+.mobile-tag{
+    margin-left: 25px;
 }
 .profile-dtl{
     top:30px;
@@ -595,7 +623,7 @@ a:hover{
 #profile-img{
     position: absolute;
     left: 90px;
-    top:0px;
+    top:5px;
     width: 50px;
     height: 50px;
     cursor: pointer;
@@ -643,8 +671,7 @@ a:hover{
     position: absolute;
     font-size: 12px;
     top:5px;
-    margin-left: 250px;
-    margin-left: 300px;
+    margin-left: 320px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -658,8 +685,7 @@ a:hover{
     position: absolute;
     top:5px;
     font-size: 12px;
-    margin-left: 350px;
-    margin-left: 390px;
+    margin-left: 420px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
