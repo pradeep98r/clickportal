@@ -24,12 +24,12 @@ const PreferredCrops = () => {
       let newSelected = [...selected, crp_item];
       console.log(selected.length, "length", newSelected, crp_item);
       setSelected(newSelected);
-      // setSelectedNum(selected.length+1);
+      setSelectedNum(selected.length + 1);
     } else {
       let newSelected = selected.filter((t) => t !== crp_item);
       setSelected(newSelected);
       console.log(selected.length, "length", newSelected);
-      setSelectedNum(selected.length++);
+      setSelectedNum(selected.length - 1);
     }
   };
   var lineItemsArray = [];
@@ -58,7 +58,10 @@ const PreferredCrops = () => {
   };
   return (
     <div>
-      <Navigation login_type="preferred_crops" />
+      <div className="login_nav">
+          <h1>Prefered Crops</h1>
+          <p>Choose uo to 15 crops, {selectedNumber}/15 selected</p>
+      </div>
       <div className="container">
         <div className="d-flex search_div" role="search">
           <input

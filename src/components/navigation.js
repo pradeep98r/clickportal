@@ -12,9 +12,6 @@ function Navigation(props) {
     else if(props.login_type == "registration"){
       setNavigationHeader("User Details");
     }
-    else if(props.login_type === "preferred_crops"){
-      setNavigationHeader("Prefered Crops");
-    }
     else{
       setNavigationHeader("Select your preferred language");
     }
