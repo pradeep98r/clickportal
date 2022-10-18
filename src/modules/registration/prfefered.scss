@@ -1,0 +1,24 @@
+.cropdiv {
+  overflow-y: auto;
+  height: calc(100vh - 210px);
+  position: relative;
+}
+.pref_bottom_div{
+    .primary_btn{
+      display: flex;
+      justify-content: flex-end;
+      margin-left: auto;
+    }
+}
+.crop_div .crop_img {
+  width: 50px;
+}
+.crop.active{
+  .crop_img{
+    border: 2px solid green;
+    border-radius: 100%;
+  }
+  p{
+    color: green;
+  }
+}

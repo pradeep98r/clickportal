@@ -66,13 +66,9 @@ export function getPreferredCrops(clickId, clientId, clientSecret) {
     }
   );
 }
-export function getAllCrops(clientId, clientSecret) {
-  return axios.get("https://dev-api.onoark.com/v1/account/common/crops", {
-    headers: {
-      "Content-Type": "application/json",
-      "client-id": clientId,
-      "client-secret": clientSecret,
-    },
+export function getAllCrops() {
+  return axiosCommon.get("https://dev-api.onoark.com/v1/account/common/crops", {
+
   });
 }
 export function getSystemSettings(clickId, clientId, clientSecret) {
