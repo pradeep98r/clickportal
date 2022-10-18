@@ -1,7 +1,14 @@
 .cropdiv {
   overflow-y: auto;
-  height: calc(100vh - 210px);
-  position: relative;
+  height: calc(100vh - 250px);
+  position: relative; 
+  .crop_img:hover, p:hover{
+    cursor: pointer;
+  }
+  p{
+    margin-top: 0px;
+    padding-top: 5px;
+  }
 }
 .pref_bottom_div{
     .primary_btn{
@@ -21,4 +28,16 @@
   p{
     color: green;
   }
+}
+.search_div{
+  padding: 0px 10px;
+  margin: 20px 0px;
+  .form-control{
+    padding: 25px 30px;
+    border: 1px solid #E4E4E4;
+    border-radius: 10px;
+  }
+}
+.cropItem_div{
+  width: 120px;
 }

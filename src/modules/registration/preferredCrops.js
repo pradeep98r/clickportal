@@ -60,7 +60,7 @@ const PreferredCrops = () => {
     <div>
       <Navigation login_type="preferred_crops" />
       <div className="container">
-        <div className="d-flex my-3" role="search">
+        <div className="d-flex search_div" role="search">
           <input
             className="form-control search"
             type="search"
@@ -85,7 +85,7 @@ const PreferredCrops = () => {
                   }
                 })
                 .map((crop_item, index) => (
-                  <div className="col-lg-2" key={index}>
+                  <div className="cropItem_div" key={index}>
                     <div
                       className={`text-center crop_div crop ${
                         selected.includes(crop_item) ? "active" : ""

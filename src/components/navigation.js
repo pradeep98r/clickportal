@@ -13,7 +13,7 @@ function Navigation(props) {
       setNavigationHeader("User Details");
     }
     else if(props.login_type === "preferred_crops"){
-      setNavigationHeader("Preferred Crops");
+      setNavigationHeader("Prefered Crops");
     }
     else{
       setNavigationHeader("Select your preferred language");
