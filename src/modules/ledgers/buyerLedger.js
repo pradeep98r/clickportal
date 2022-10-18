@@ -13,7 +13,7 @@ import {
     from '../../actions/billCreationService';
 import { useEffect } from 'react';
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import no_data from "../../assets/images/no_data.svg";
+import no_data from "../../assets/images/no_data_available.png";
 import add from "../../assets/images/add.svg";
 import ReactDatePicker from 'react-datepicker';
 import close_btn from "../../assets/images/close_btn.svg";
@@ -87,7 +87,7 @@ const BuyerLedger = () => {
     const particularLedger = (id) => {
         console.log(id);
         //getBuyerLedgerSummary(clickId, id);
-        setOpenTabs(!openTabs);
+        setOpenTabs(true);
         ledger.filter((item) => {
             if (item.partyId === id) {
                 partyId=id;
@@ -216,6 +216,8 @@ const BuyerLedger = () => {
     }
   return (
     <Fragment>
+      <div className='no_data_found' style={{ display: openTabs ? 'none' : 'block' }}>
+        <img src={no_data} className='no-data-img' /></div>
         <nav class="navbar navbar-expand-lg ">
            <div class="container-fluid">
            <form class="d-flex">
@@ -299,7 +301,10 @@ const BuyerLedger = () => {
             {(toggleState === 'ledgersummary' || toggleState === 'detailedledger')
              && setIsOpen(!open)}}><img src={add} id='addrecord-img'/> Add Record</button>
          </div>
-         {toggleAC==='all' && 
+         <hr style={{background: '#FFFFFF', postion: 'absolute',
+                        border: '1px solid #E4E4E4', height: '0px', marginTop: '25px', width: '100%',
+                        width:'500px',paddingLeft:'480px'}} />
+         {toggleAC==='all' && toggleState === 'ledgersummary' &&
          <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
             <table class="table table-fixed" className="ledger-table">
                <thead className="thead-tag">
@@ -320,9 +325,9 @@ const BuyerLedger = () => {
                            <th scope="row">{index + 1}</th>
                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                            {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
+                           <td>&#8377;{item.paidRcvd ? item.paidRcvd : 0}</td>
                            <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
-                           <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
+                           <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
                          </tr>
                         )
                      })
@@ -331,7 +336,7 @@ const BuyerLedger = () => {
                </tbody>
              </table>
            </div>}
-           {toggleAC==='all' &&
+           {toggleAC==='all' && toggleState === 'detailedledger' &&
            <div id="ledger-summary" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
             <table class="table table-fixed" className="ledger-table">
                <thead className="thead-tag">
@@ -356,7 +361,7 @@ const BuyerLedger = () => {
                            <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
                            <td>&#8377;{item.recieved ? item.recieved : 0}</td>
                            <td>{item.toBeRecieved ? item.toBeRecieved : 0}</td>
-                           <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
+                           <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
                          </tr>
                         )
                      })
@@ -366,7 +371,7 @@ const BuyerLedger = () => {
              </table>
            </div>
           }
-          {toggleAC==='custom' && 
+          {toggleAC==='custom' && toggleState === 'ledgersummary' &&
           <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
              <table class="table table-fixed" className="ledger-table">
                 <thead className="thead-tag">
@@ -387,9 +392,9 @@ const BuyerLedger = () => {
                             <th scope="row">{index + 1}</th>
                             <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                             {moment(item.date).format("DD-MMM-YY")}</td>
-                            <td>{item.paidRcvd ? item.paidRcvd : 0}</td>
+                            <td>&#8377;{item.paidRcvd ? item.paidRcvd : 0}</td>
                             <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
-                            <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
+                            <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
                           </tr>
                          )
                       })
@@ -398,7 +403,7 @@ const BuyerLedger = () => {
                 </tbody>
               </table>
             </div>}
-            {toggleAC==='custom' &&
+            {toggleAC==='custom' && toggleState === 'detailedledger' &&
             <div id="ledger-summary" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
              <table class="table table-fixed" className="ledger-table">
                 <thead className="thead-tag">
@@ -420,10 +425,12 @@ const BuyerLedger = () => {
                             <th scope="row">{index + 1}</th>
                             <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                             {moment(item.date).format("DD-MMM-YY")}</td>
-                            <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
+                            <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
+                           <span style={{fontSize:'13px'}}>{item.qty?item.qty:0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
+                            &nbsp;|&nbsp;{item.kg?item.kg :0}&nbsp;|&nbsp;{item.rate?item.rate:0}</span></td>
                             <td>&#8377;{item.recieved ? item.recieved : 0}</td>
                             <td>{item.toBeRecieved ? item.toBeRecieved : 0}</td>
-                            <td><span className='coloring'>{item.balance ? item.balance : 0}</span></td>
+                            <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
                           </tr>
                          )
                       })
