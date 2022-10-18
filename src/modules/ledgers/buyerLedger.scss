@@ -29,8 +29,15 @@
     object-fit:cover;
 }
 th,td{
-    padding-left: 8px;
+    padding-left: 10px;
     padding-top: 5px;
+    text-align: left;
+}
+input[type=radio]:checked+label {
+    color:#16A02C;;
+}
+#inlineRadio1:checked{
+    background-color: #16A02C;
 }
 #ledger-summary{
     height: 330px;
@@ -68,15 +75,12 @@ th,td{
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
-    //font-size: 12px;
+    font-size: 12px;
     line-height: 17px;
-    //align-items: center;
+    align-items: center;
     position: relative;
-    text-align: left;
-    //text-align: center;
+    text-align: center;
     color: #121212;
-    cursor: pointer;
-    padding: 15px;
     
 }
 .thead-tag{
@@ -102,13 +106,13 @@ th,td{
     height: 50px;
 }
 .profile-img{
-    //position: absolute;
-    //left: 0px;
-    //top:2px;
-    float: left;
+    position: absolute;
+    left: 100px;
+    top:7px;
     width: 50px;
     height: 50px;
     cursor: pointer;
+
 }
 .namedtl-tag{
     font-family: 'Manrope';
@@ -118,6 +122,13 @@ th,td{
     line-height: 18px;
     color: #121212;
     text-align: left;
+    margin-left: 35px;
+}
+.address-tag{
+    margin-left: 35px;
+}
+.mobile-tag{
+    margin-left: 35px;
 }
 .outstanding-pay{
     position: sticky;

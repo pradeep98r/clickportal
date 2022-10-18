@@ -34,7 +34,7 @@ const SellerLedger = () => {
     const [selectDate, setSelectDate] = useState(new Date());
     const [paidRcvd, setPaidRcvd] = useState(0);
     const [comments, setComments] = useState(" ");
-    const [paymentMode, setPaymentMode] = useState('');
+    const [paymentMode, setPaymentMode] = useState('CASH');
     const [dateDisplay, setDateDisplay] = useState(false);
     
     const [ledgerSummaryByDate, setSummaryByDate] = useState([{}]);
@@ -258,11 +258,11 @@ const SellerLedger = () => {
                             })
                     }
                     <p class="card-text" className='paid'>Total Business<br /> <span className='coloring'>
-                        &#8377;{summaryData.totalTobePaidRcvd ? summaryData.totalTobePaidRcvd : 0}</span></p>
+                        &#8377;{summaryData.totalTobePaidRcvd ? summaryData.totalTobePaidRcvd.toFixed(2) : 0}</span></p>
                     <p className='total-paid'>Total Paid <br /><span className='coloring'>
-                        &#8377;{summaryData.totalRcvdPaid ? summaryData.totalRcvdPaid : 0}</span> </p>
+                        &#8377;{summaryData.totalRcvdPaid ? summaryData.totalRcvdPaid.toFixed(2) : 0}</span> </p>
                     <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
-                        &#8377;{summaryData.outStdRcvPayble ? summaryData.outStdRcvPayble : 0}</span></p>
+                        &#8377;{summaryData.outStdRcvPayble ? summaryData.outStdRcvPayble.toFixed(2) : 0}</span></p>
                     <hr style={{
                         background: '#FFFFFF', postion: 'absolute',
                         border: '1px solid #E4E4E4', height: '0px', marginTop: '45px', width: '100%',
@@ -319,9 +319,9 @@ const SellerLedger = () => {
                            <th scope="row">{index + 1}</th>
                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                            {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td>&#8377;{item.paidRcvd ? item.paidRcvd : 0}</td>
-                           <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
-                           <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
+                           <td>&#8377;{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
+                           <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
+                           <td><span className='coloring'>&#8377;{item.balance ? item.balance.toFixed(2) : 0}</span></td>
                          </tr>
                         )
                      })
@@ -353,11 +353,11 @@ const SellerLedger = () => {
                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                            {moment(item.date).format("DD-MMM-YY")}</td>
                            <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
-                           <span style={{fontSize:'13px'}}>{item.qty?item.qty:0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
-                            &nbsp;|&nbsp;{item.kg?item.kg :0}&nbsp;|&nbsp;{item.rate?item.rate:0}</span></td>
-                           <td>&#8377;{item.recieved ? item.recieved : 0}</td>
-                           <td>{item.toBeRecieved ? item.toBeRecieved : 0}</td>
-                           <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
+                           <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
+                            &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
+                           <td>&#8377;{item.recieved ? item.recieved.toFixed(2) : 0}</td>
+                           <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
+                           <td><span className='coloring'>&#8377;{item.balance ? item.balance.toFixed(2) : 0}</span></td>
                          </tr>
                         )
                      })
@@ -388,9 +388,9 @@ const SellerLedger = () => {
                            <th scope="row">{index + 1}</th>
                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                            {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td>&#8377;{item.paidRcvd ? item.paidRcvd : 0}</td>
-                           <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd : 0}</td>
-                           <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
+                           <td>&#8377;{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
+                           <td>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
+                           <td><span className='coloring'>&#8377;{item.balance ? item.balance.toFixed(2) : 0}</span></td>
                          </tr>
                         )
                      })
@@ -418,18 +418,20 @@ const SellerLedger = () => {
                    sellerDetailed.length > 0 ? (
                      sellerDetailed.map((item, index) => {
                        return (
-                         <tr className="tr-tags">
-                           <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
-                           {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td>{item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;{item.rate}</td>
-                           <td>&#8377;{item.recieved ? item.recieved : 0}</td>
-                           <td>{item.toBeRecieved ? item.toBeRecieved : 0}</td>
-                           <td><span className='coloring'>&#8377;{item.balance ? item.balance : 0}</span></td>
-                         </tr>
+                        <tr className="tr-tags">
+                          <th scope="row">{index + 1}</th>
+                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                          {moment(item.date).format("DD-MMM-YY")}</td>
+                          <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
+                          <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
+                          &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
+                          <td>&#8377;{item.recieved ? item.recieved.toFixed(2) : 0}</td>
+                          <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
+                          <td><span className='coloring'>&#8377;{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                        </tr>
                         )
                      })
-                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                   ) : (<p>No Data Available!</p>)
                  }
                </tbody>
              </table>
@@ -510,7 +512,7 @@ const SellerLedger = () => {
                    </div>
                  </div>
                  <p id='out-tag'>Outstanding Paybles</p>
-                 <p id="recieve-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt : 0}</p>
+                 <p id="recieve-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
                  <div class="form-group">
                    <label hmtlFor="amtRecieved" id="amt-tag">Amount</label>
                    <input class="form-control" id="amtRecieved" value={paidRcvd} placeholder="&#8377;" required
@@ -519,27 +521,27 @@ const SellerLedger = () => {
                  <p className='payment-tag'>Payment Method</p>
                  <div class="form-check form-check-inline">
                    <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CASH"
-                     onChange={(e) => setPaymentMode(e.target.value)} required />
+                     onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'} required />
                    <label class="form-check-label" for="inlineRadio1">CASH</label>
                  </div>
                  <div class="form-check form-check-inline">
                    <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
-                     onChange={(e) => setPaymentMode(e.target.value)} required />
+                     onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
                    <label class="form-check-label" for="inlineRadio2">UPI</label>
                  </div>
                  <div class="form-check form-check-inline">
                    <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
-                     onChange={(e) => setPaymentMode(e.target.value)} required />
+                     onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
                    <label class="form-check-label" for="inlineRadio3">NEFT</label>
                  </div>
                  <div class="form-check form-check-inline">
                    <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
-                     onChange={(e) => setPaymentMode(e.target.value)} required />
+                     onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
                    <label class="form-check-label" for="inlineRadio4">RTGS</label>
                  </div>
                  <div class="form-check form-check-inline">
                    <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
-                     onChange={(e) => setPaymentMode(e.target.value)} required />
+                     onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
                    <label class="form-check-label" for="inlineRadio5">IMPS</label>
                  </div>
                  <div class="mb-3">
@@ -702,13 +704,13 @@ const SellerLedger = () => {
                            <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                            <td key={item.partyName}><span className="namedtl-tag">
                              {item.partyName}<br /></span>
-                             {item.partyAddress}<br />
-                             {item.mobile}
+                             <span className="address-tag">{item.partyAddress?item.partyAddress:'-'}<br /></span>
+                             <span className="mobile-tag">{item.mobile}</span>
                              {item.profilePic? item.profilePic
                                :<img className="profile-img" src={single_bill} alt="img"/>}
                            </td>
                            <td key={item.tobePaidRcvd}><span className='coloring'>&#8377;
-                             {item.tobePaidRcvd ? item.tobePaidRcvd : 0}</span></td>
+                             {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
                          </tr>
                        </Fragment>
                      )
@@ -725,7 +727,7 @@ const SellerLedger = () => {
          </table>
          <div className="outstanding-pay">
            <p className="pat-tag">Outstanding Recievable:</p>
-           <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt : 0}</p>
+           <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
          </div>
        </div>
     </Fragment>
