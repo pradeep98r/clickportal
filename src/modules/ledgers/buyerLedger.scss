@@ -39,6 +39,25 @@ input[type=radio]:checked+label {
 #inlineRadio1:checked{
     background-color: #16A02C;
 }
+.ledger_modal {
+    position: relative;
+    max-width: 750px;
+    max-height: 600px;
+    top: -180px;
+    margin-right: 150px;
+}
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    outline: 0;
+}
 #ledger-summary{
     height: 330px;
     width: 617px;
@@ -55,6 +74,85 @@ input[type=radio]:checked+label {
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     overflow-y: scroll;
+}
+#ledger-summary th:nth-child(1){
+    padding-right: 20px;
+    border-right: 1px solid #E4E4E4;
+}
+#ledger-summary th:nth-child(2){
+    padding-right: 20px;
+    border-right: 1px solid #E4E4E4;
+}
+#ledger-summary td:nth-child(2){
+    padding-right: 20px;
+    border-right: 1px solid #E4E4E4;
+}
+#ledger-summary th:nth-child(3){
+    padding-right: 40px;
+    border-right: 1px solid #E4E4E4;
+}
+#ledger-summary td:nth-child(3){
+    padding-right: 40px;
+    border-right: 1px solid #E4E4E4;
+}
+#ledger-summary th:nth-child(4){
+    padding-right: 30px;
+    border-right: 1px solid #E4E4E4;
+}
+#ledger-summary td:nth-child(4){
+    padding-right: 30px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger{
+    height: 330px;
+    width: 617px;
+    left: 140px;
+    //top: 200px;//151
+    border-radius: 10px;
+    box-sizing: border-box;
+    position: absolute;
+    left: 48.5%;
+    right: 25.86%;
+    top: 44%;//21.5
+    bottom: 80.99%;
+    border-radius: 10px 10px 0px 0px;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    overflow-y: scroll;
+}
+#detailed-ledger th:nth-child(1){
+    padding-right: 2px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger th:nth-child(2){
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger td:nth-child(2){
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger th:nth-child(3){
+    padding-right: 5px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger td:nth-child(3){
+    padding-right: 5px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger th:nth-child(4){
+    padding-right: 5px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger td:nth-child(4){
+    padding-right: 5px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger th:nth-child(5){
+    padding-right: 5px;
+    border-right: 1px solid #E4E4E4;
+}
+#detailed-ledger td:nth-child(5){
+    padding-right: 5px;
+    border-right: 1px solid #E4E4E4;
 }
 .tabRowSelected{
     background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
@@ -74,6 +172,23 @@ input[type=radio]:checked+label {
     .namedtl-tag{
         color: white;
     }
+}
+#horizontal-line{
+    position: absolute;
+    border-bottom:1px solid #E4E4E4;
+    height: 10px;
+    width: 100%;
+    margin-left: 40px;
+    left: -40px;
+    margin-top: 40px;
+}
+#horizontal-line-tag{
+    position: absolute;
+    border-bottom:1px solid #E4E4E4;
+    height: 10px;
+    width: 630px;
+    margin-left: 360px;
+    margin-top: 9px;
 }
 .add-pay-btn{
     position: absolute;
@@ -108,7 +223,7 @@ input[type=radio]:checked+label {
     position: absolute;
     border-left:1px solid #E4E4E4;
     height: 50px;
-    margin-left: 53px;
+    margin-left: 51px;
     top: -5px;
 }
 .content {
@@ -122,6 +237,7 @@ input[type=radio]:checked+label {
 }
 .ledger-table{
     width: 100%;
+    border: 1px solid #E4E4E4;
 }
 .tr-tags{
     font-family: 'Manrope';
@@ -133,7 +249,7 @@ input[type=radio]:checked+label {
     position: relative;
     text-align: center;
     color: #121212;
-    
+    border-bottom: 1px solid #E4E4E4;
 }
 .thead-tag{
     width: 100%;
@@ -248,8 +364,8 @@ input[type="text"]::placeholder {
     text-align: center;
     padding-left:20px;
     margin-left: 10px;
-    left:0px;
-    top: -7px;
+    left:-20px;
+    top: 56px;
     position: absolute;
     cursor: pointer;
     position: relative;
@@ -291,9 +407,8 @@ input[type="text"]::placeholder {
 .tabers{
     position: absolute;
     text-align: center;
-    padding-left:100px;
-    left: 400px;
-    margin-top: -30px;
+    padding-right: 20px;
+    margin-top:-5px;
     cursor: pointer;
     outline: none;
     font-family: 'Manrope';
@@ -346,13 +461,13 @@ tr{
     width: 10px;
     height: 10px;
 }
-.add-record-btn{
+.add-record-btns{
     margin-left: 875px;
     width: 118px;
     height: 29px;
     margin-top:25px;
     position: absolute;
-    top:55px;
+    top:50px;
     background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
     border: 1px solid #D1D1D1;
     border-radius: 10px;
@@ -394,7 +509,7 @@ tr{
 }
 .record-name{
     position: absolute;
-    margin-left: 30px;
+    margin-left: 50px;
     top:5%;
     font-family: 'Manrope';
     font-style: normal;
@@ -410,7 +525,7 @@ tr{
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    margin-left: 80px;
+    margin-left: 100px;
     margin-top: 90px;
 }
 .record-update{
@@ -547,7 +662,7 @@ text-decoration: underline solid  #16A02C 50% ;
     margin-left: 200px;
     height: 100px;
     left:390px;
-    margin-top: 45px;
+    margin-top: 75px;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
@@ -596,12 +711,6 @@ text-decoration: underline solid  #16A02C 50% ;
 .date_picker:focus {
     border: 1px solid #34495e;
 }
-.react-datepicker-popper{
-    margin-left: 390px;
-    margin-top: 30px;
-    margin-left: 320px;
-    margin-top: 32px;
-}
 #recievable-card{
     width: 600px;
     height: 50px;
@@ -623,14 +732,14 @@ text-decoration: underline solid  #16A02C 50% ;
     color: #16A02C;
 }
 #date_icon{
-    margin-top:-5px;
+    margin-top:40px;
     position: absolute;
-    margin-left:550px;
+    margin-left:600px;
     cursor: pointer;
 }
 .react-datepicker-popper{
-    margin-left: 390px;
-    margin-top: 30px;
+    margin-left: 320px;
+    margin-top: 32px;
 }
 .react-datepicker__input-container input{
     border: none;
@@ -645,18 +754,18 @@ text-decoration: underline solid  #16A02C 50% ;
     font-size: 12px;
     font-family: sans-serif;
     margin-top: 180px;
-    margin-left: 80px;
+    margin-left: 100px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
     line-height: 17px;
 } 
-#recieve-tag{
+#recieved-tag{
     font-size: 17px;
-    margin-left: 80px;
+    margin-left: 100px;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 5px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 600;
@@ -664,22 +773,22 @@ text-decoration: underline solid  #16A02C 50% ;
     line-height: 27px;
     color: #121212;
 }
-#amt-tag{
+#amount-tag{
     font-size: 12px;
     font-family: sans-serif;
-    margin-top:0px;
-    margin-left: 80px;
+    margin-top:10px;
+    margin-left: 100px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
     line-height: 17px;
 }
-.payment-tag{
+.payments-tag{
     font-size: 13px;
     font-family: sans-serif;
-    margin-top: 55px;
-    margin-left: 80px;
+    margin-top: 5px;
+    margin-left: 100px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -687,11 +796,11 @@ text-decoration: underline solid  #16A02C 50% ;
     line-height: 17px;
     color: #1C1C1C;
 }
-#comment-tag{
+#commenting-tag{
     font-size: 13px;
     font-family: sans-serif;
     margin-top: 15px;
-    margin-left: 80px;
+    margin-left: 100px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -708,8 +817,8 @@ text-decoration: underline solid  #16A02C 50% ;
     line-height: 17px;
     color: black
 }
-#inlineRadio1{
-    margin-left: 80px;
+#inlineRadios1{
+    margin-left: 100px;
 }
 .submit-btn{
     width: 100%;
@@ -721,12 +830,12 @@ text-decoration: underline solid  #16A02C 50% ;
     padding-top: 11px;
 }
 
-#comments{
+#commenters1{
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    margin-left: 50px;
-    width: 630px;
+    margin-left: 100px;
+    width: 540px;
 }
 
 #recieve-tag{
@@ -764,11 +873,11 @@ text-decoration: underline solid  #16A02C 50% ;
     font-size: 11px;
 
 }
-#amtRecieved{
+#amountRecieved{
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    margin-left: 80px;
+    margin-left: 100px;
     width: 540px;
 }
 .profile
