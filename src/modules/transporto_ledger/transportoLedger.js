@@ -9,7 +9,7 @@ import {
   getTransporters,
   postRecordPayment
 } from "../../actions/transporterService";
-import no_data from "../../assets/images/no_data.svg";
+import no_data from "../../assets/images/no_data_available.png";
 import add from "../../assets/images/add.svg";
 import ReactModal from "react-modal";
 import close_btn from "../../assets/images/close_btn.svg";
@@ -43,7 +43,7 @@ const TransportoLedger = () => {
   const [unit, setUnit]= useState('CRATES');
   const [qty, setQty]= useState(0);
   const [openInventory, setOpenInventory]= useState(false);
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(-1);
   const navigate=useNavigate();
   
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -95,14 +95,14 @@ const TransportoLedger = () => {
   }
 
   //Get transporter By partyId
-  const particularLedger = (id) => {
+  const particularLedger = (id,indexs) => {
     transId=id;
     setOpenTabs(true);
+    setIsActive(indexs);
     //getTransportersData(clickId, id);
     transporter.filter((item) => {
       if (item.partyId === id) {
         transId=id;
-        setIsActive(!isActive);
         localStorage.setItem('transId', JSON.stringify(transId));
         paymentLedger(clickId, id);
         inventoryLedger(clickId, id);
@@ -171,11 +171,6 @@ const TransportoLedger = () => {
   }
   transId=JSON.parse(localStorage.getItem('transId'));
   return (
-    /*<div className="main_div_padding">
-      <div className="container-fluid px-0">
-       <ComingSoon/>
-      </div>
-    </div>*/
     <Fragment>
       <nav class="navbar navbar-expand-lg ">
         <div class="container-fluid">
@@ -200,7 +195,7 @@ const TransportoLedger = () => {
                                     <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
                                     {item.profilePic ? item.profilePic
                                     :<img id="singles-img" src={single_bill} alt="img"/>}
-                                    
+                                    <span id="verticalLine"></span>
                                 </td>
                             </tr>
                         </Fragment>
@@ -211,11 +206,11 @@ const TransportoLedger = () => {
                   }
               })
             }
-            <p class="card-text" className='paid'>Total Business<br /> <span className='coloring'>
+            <p class="card-text" className='paid'>Total Business<span id="vertical-line1"></span><br /> <span className='coloring'>
               &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd.toFixed(2): 0}</span></p>
-            <p className='total-paid'>Total Paid <br /><span className='coloring'>
+            <p className='total-paid'>Total Paid<span id="vertical-line"></span> <br /><span className='coloring'>
               &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid.toFixed(2) : 0}</span> </p>
-            <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
+            <p className='out-standing'>Outstanding Recievables<span id="vertical-line"></span> <br /><span className='coloring'>
               &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</span></p>
             <hr style={{
                 background: '#FFFFFF', postion: 'absolute',
@@ -223,23 +218,24 @@ const TransportoLedger = () => {
                 paddingRight: '-40px',
             }} />
             <div className="bloc-tabs">
-              <a href={"#paymentledger"}
+              <button href={"#paymentledger"}
                 className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
                 onClick={() => toggleTab('paymentledger')}
               >
                 Payment Ledger
-              </a>
-              <a href={"#inventoryledger"}
+              </button>
+              <button href={"#inventoryledger"}
                 className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
                 onClick={() => toggleTab('inventoryledger')}
               >
                 Inventory Ledger
-              </a>
+              </button>
             </div>
             <div className="recordbtn-style">
               <button className="add-record-btn" onClick={() =>
                 {toggleState === 'paymentledger'? setIsOpen(!open)
-                : setOpenInventory(!openInventory)}}><img src={add} className='addrecord-img'/> Add Record</button>
+                : setOpenInventory(!openInventory)}}>
+                  <div className="add-pay-btn"><img src={add} className='addrecord-img'/></div> Add Record</button>
             </div>
           </div>
         </div>         
@@ -248,12 +244,12 @@ const TransportoLedger = () => {
               {
                   overlay: {
                       position: 'absolute',
-                      top: "85px",
+                      top: "75px",
                       left: 0,
                       right: 0,
                       bottom: 0,
                       marginLeft: "350px",
-                      width: "730px",
+                      width: "700px",
                       height: "500px",
                       transition: 'ease-out',
                       border:'none',
@@ -441,12 +437,12 @@ const TransportoLedger = () => {
               {
                   overlay: {
                       position: 'absolute',
-                      top: "85px",
+                      top: "75px",
                       left: 0,
                       right: 0,
                       bottom: 0,
                       marginLeft: "350px",
-                      width: "730px",
+                      width: "700px",
                       height: "500px",
                       transition: 'ease-out',
                       border:'none',
@@ -460,18 +456,18 @@ const TransportoLedger = () => {
               </div>
               <h6 className="inventory-name">Record Inventory</h6>
               <div className="bloc-tabs">
-                <a 
+                <button 
                   className={toggleInventory === 'Given' ? "tab active-tab" : "tab"}
                   onClick={() => toggleTabs('Given')}
                 >
                    Given
-                </a>
-                <a
+                </button>
+                <button
                   className={toggleInventory === 'Collected' ? "tab active-tab" : "tab"}
                   onClick={() => toggleTabs('Collected')}
                 >
                   Collected
-                </a>
+                </button>
               </div>
               <hr className="hr-tag"/>
               <div  className={toggleInventory === 'Given' || toggleInventory === 'Collected' ?
@@ -603,12 +599,8 @@ const TransportoLedger = () => {
                   .map((item, index) => {
                     return (
                       <Fragment>
-                        <tr onClick={(id) => { particularLedger(item.partyId) }}
-                          //scope="row" style={{
-                          //background:isActive ?' linear-gradient(180deg, #16A12C 0%, #008916 100%)':'',
-                          //backgroundColor: isActive ? 'salmon' : '',
-                          //color: isActive ? 'white' : '',
-                           className="tr-tags">
+                        <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
+                           className={isActive===index?'tableRowActive':"tr-tags"}>
                           <td key={index}>{index + 1}</td>
                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                           <td key={item.partyName}><span className="namedtl-tag">

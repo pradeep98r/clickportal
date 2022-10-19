@@ -21,6 +21,22 @@ th,td{
     padding-top: 5px;
     text-align: left;
 }
+.tableRowActive{
+    background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    .paid-coloring{
+        color: white;
+    }
+}
 .table-scroll {
     height: 400px;
     width: 350px;
@@ -144,7 +160,7 @@ input[type=radio]:checked+label {
     display: none;
 }
 #transporter-summary{
-    height: 400px;
+    height: 395px;
     width: 617px;
     left: 140px;
     top: 151px;
@@ -153,7 +169,7 @@ input[type=radio]:checked+label {
     position: absolute;
     left: 48.5%;
     right: 25.86%;
-    top: 33.5%;//21.5
+    top: 34.5%;
     bottom: 80.99%;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
@@ -161,7 +177,7 @@ input[type=radio]:checked+label {
     overflow-y: scroll;
 }
 #detailed-inventory{
-    height: 400px;
+    height: 395px;
     width: 617px;
     left: 140px;
     top: 151px;
@@ -170,7 +186,7 @@ input[type=radio]:checked+label {
     position: absolute;
     left: 48.5%;
     right: 25.86%;
-    top: 33.5%;//21.5
+    top: 34.5%;
     bottom: 80.99%;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
@@ -181,7 +197,7 @@ input[type=radio]:checked+label {
     margin-left: 465px;
     width: 118px;
     height: 29px;
-    margin-top:25px;
+    margin-top:23px;
     position: absolute;
     top:55px;
     background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
@@ -250,10 +266,23 @@ input[type=radio]:checked+label {
     border-radius: 100%;
     margin-top:-50px;
     margin-left: 365px;
+    cursor: pointer;
+}
+.add-pay-btn{
+    position: absolute;
+    background: #16A12C;
+    margin-top:0px;
+    margin-left: -20px;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    border: 1px solid #16A02C;
+    transform: rotate(-90deg);
+    border-radius: 100%;
 }
 .record-name{
     position: absolute;
-    left: 50px;
+    left: 80px;
     top:5%;
     font-family: 'Manrope';
     font-style: normal;
@@ -264,7 +293,7 @@ input[type=radio]:checked+label {
 }
 .inventory-name{
     position: absolute;
-    left: 50px;
+    left: 60px;
     top:2%;
     font-family: 'Manrope';
     font-style: normal;
@@ -275,30 +304,33 @@ input[type=radio]:checked+label {
 }
 #details-tag{
     position: absolute;
-    width: 630px;
-    height: 75px;
+    width: 540px;
+    height: 80px;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    left: 50px;
+    left: 80px;
     margin-top: 80px;
 }
 .react-datepicker-popper{
-    margin-left: 390px;
-    margin-top: 30px;
+    margin-left: 320px;
+    margin-top: 32px;
 }
 .date_icon{
     margin-top:10px;
     position: relative;
-    margin-left:460px;
+    margin-left:375px;
+    cursor: pointer;
 }
 .date_picker{
     top:10px;
     position: absolute;
-    margin-left: 450px;
+    margin-left: 360px;
     border: none;
     width: 150px;
     text-align: center;
+    background: none;
+    cursor: pointer;
 }
 .react-datepicker__input-container input{
     border: none;
@@ -307,7 +339,7 @@ input[type=radio]:checked+label {
     font-size: 12px;
     font-family: sans-serif;
     margin-top: 170px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -318,7 +350,7 @@ input[type=radio]:checked+label {
     font-size: 12px;
     font-family: sans-serif;
     margin-top: 170px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -328,14 +360,33 @@ input[type=radio]:checked+label {
 .hr-tag{
     position: absolute;
     border: 1px solid #E4E4E4;
-    width: 100%;
+    width: 99.7%;
     margin-top: 65px;
+}
+#verticalLine{
+    position: absolute;
+    border-left:1px solid #E4E4E4;
+    height: 50px;
+    top: 10px;
+    margin-left: 70px;
+}
+#vertical-line{
+    position: absolute;
+    border-left:1px solid #E4E4E4;
+    height: 50px;
+    margin-left: 40px;
+}
+#vertical-line1{
+    position: absolute;
+    border-left:1px solid #E4E4E4;
+    height: 50px;
+    margin-left: 25px;
 }
 #amt-tag{
     font-size: 12px;
     font-family: sans-serif;
-    margin-top:0px;
-    margin-left: 50px;
+    margin-top:10px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -347,21 +398,21 @@ input[type=radio]:checked+label {
     border: 1px solid #CCCCCC;
     border-radius: 10px;
     position: absolute;
-    margin-left: 50px;
-    width: 630px;
+    margin-left: 80px;
+    width: 540px;
 }
 #comments{
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    width: 630px;
-    margin-left: 50px;
+    width: 540px;
+    margin-left: 80px;
 }
 #recieve-tag{
     font-size: 17px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 5px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 600;
@@ -371,7 +422,7 @@ input[type=radio]:checked+label {
 }
 #recieves-tag{
     font-size: 17px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-weight: bold;
     margin-top: 5px;
     font-family: 'Manrope';
@@ -392,7 +443,7 @@ input[type=radio]:checked+label {
     font-size: 13px;
     font-family: sans-serif;
     margin-top: 55px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -403,8 +454,8 @@ input[type=radio]:checked+label {
 #comment-tag{
     font-size: 13px;
     font-family: sans-serif;
-    margin-top: 15px;
-    margin-left: 50px;
+    margin-top: 17px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -422,13 +473,13 @@ input[type=radio]:checked+label {
     color: black
 }
 #inlineRadio1{
-    margin-left: 50px;
+    margin-left: 80px;
 }
 .select-tag{
     font-size: 12px;
     font-family: sans-serif;
     margin-top:20px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -437,19 +488,19 @@ input[type=radio]:checked+label {
 }
 #detail-tag{
     position: absolute;
-    width: 630px;
-    height: 75px;
+    width: 540px;//630
+    height: 80px;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    left: 50px;
+    left: 80px;
     margin-top: 80px;
 }
 #comments-tag{
     font-size: 13px;
     font-family: sans-serif;
-    margin-top: 30px;
-    margin-left: 50px;
+    margin-top: 32px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -461,7 +512,7 @@ input[type=radio]:checked+label {
     font-size: 12px;
     font-family: sans-serif;
     margin-top:0px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -481,10 +532,10 @@ input[type=radio]:checked+label {
     display: flex;
 }
 .tabs {
-    top: 5px;
+    top: 4px;
     text-align: center;
     padding-left:20px;
-    margin-left: 10px;
+    margin-left: 0px;
     left: 0px;
     //position: absolute;
     cursor: pointer;
@@ -498,6 +549,8 @@ input[type=radio]:checked+label {
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
+    border: none;
+    background: none;
 }
   
 .active-tabs  {
@@ -518,13 +571,14 @@ input[type=radio]:checked+label {
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
+    border: none;
 }
 
 .tab {
     text-align: center;
     padding-left:20px;;
     top: 65px;
-    left: 30px;
+    left: 40px;
     cursor: pointer;
     position: relative;
     outline: none;
@@ -536,6 +590,8 @@ input[type=radio]:checked+label {
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
+    background: none;
+    border: none;
 }
   
 .active-tab  {
@@ -577,7 +633,7 @@ a:hover{
 }
 #single-img{
     position: absolute;
-    left: 10px;
+    left: -10px;
     top:10px;
     width: 50px;
     height: 50px;
@@ -595,6 +651,7 @@ a:hover{
     font-size: 15px;
     line-height: 18px;
     color: #121212;
+    left: 45px;
 }
 .namedtl-tag{
     font-family: 'Manrope';
@@ -619,6 +676,7 @@ a:hover{
     font-size: 12px;
     line-height: 13px;
     color: #121212;
+    left: 45px;
 }
 #profile-img{
     position: absolute;
@@ -630,15 +688,11 @@ a:hover{
 }
 
 .addrecord-img{
-    position: absolute;
-    margin-left: -30px;
-    top: 5px;
-    width: 20px;
-    height: 20px;
-    background: #16A02C;
-    border: 1px solid #16A02C;
-    transform: rotate(-90deg);
-    border-radius: 100%;
+    position: relative;
+    margin-left: 2px;
+    margin-top: -1px;
+    width: 10px;
+    height: 10px;
     
 }
 .transport-details{
@@ -656,8 +710,7 @@ a:hover{
     position: absolute;
     top:5px;
     font-size: 12px;
-    margin-left: 150px;
-    margin-left: 190px;
+    margin-left: 160px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -671,7 +724,7 @@ a:hover{
     position: absolute;
     font-size: 12px;
     top:5px;
-    margin-left: 320px;
+    margin-left: 305px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -701,6 +754,7 @@ a:hover{
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 600;
+    left: 35px;
     font-size: 15px;
     line-height: 18px;
     color: #121212;
@@ -712,13 +766,14 @@ a:hover{
     font-style: normal;
     font-weight: 600;
     font-size: 12px;
+    left: 35px;
     line-height: 13px;
     color: #121212;
 }
 #singles-img{
     position: absolute;
-    left: 15px;
-    top:7px;
+    left: -15px;
+    top:10px;
     width: 50px;
     height: 50px;
 }
