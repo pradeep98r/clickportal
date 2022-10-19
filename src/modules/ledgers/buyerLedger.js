@@ -48,7 +48,7 @@ const BuyerLedger = () => {
     //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummaryByDate);
     const [detailsByDate, setDetailsByDate] = useState([{}]);
     //const [detailedDataByDate, setDetailedDataByDate] = useState({}, detailsByDate);
-
+    const [isActive, setIsActive]= useState(-1);
     const navigate=useNavigate();
     const [toggleState, setToggleState] = useState("ledgersummary");
     const toggleTab = (type) => {
@@ -84,10 +84,11 @@ const BuyerLedger = () => {
     })
     }
     //Get partner By partyId
-    const particularLedger = (id) => {
+    const particularLedger = (id,indexs) => {
         console.log(id);
         //getBuyerLedgerSummary(clickId, id);
         setOpenTabs(true);
+        setIsActive(indexs)
         ledger.filter((item) => {
             if (item.partyId === id) {
                 partyId=id;
@@ -230,14 +231,14 @@ const BuyerLedger = () => {
        </nav>
        <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
           <div className="bloc-tab">
-              <a href={"#All"}
+              <button href={"#All"}
                   className={toggleAC === 'all' ? "tabers active-tab" : "tabers"}
                   onClick={() => toggleAllCustom('all')}
-              >All</a>
-              <a href={"#Custom"}
+              >All</button>
+              <button href={"#Custom"}
                   className={toggleAC === 'custom' ? "tabers active-tab" : "tabers"}
                   onClick={() => toggleAllCustom('custom')}
-              >Custom</a>
+              >Custom</button>
             </div>
             <div class="card" className='details-tag'>
                 <div class="card-body">
@@ -252,6 +253,7 @@ const BuyerLedger = () => {
                                                 <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
                                                 {item.profilePic ? item.profilePic
                                                 :<img id="singles-img" src={single_bill} alt="img"/>}
+                                                <span id="verticalLines"></span>
                                                 
                                             </td>
                                         </tr>
@@ -263,9 +265,9 @@ const BuyerLedger = () => {
                                 }
                             })
                     }
-                    <p class="card-text" className='paid'>Total Business<br /> <span className='coloring'>
+                    <p class="card-text" className='paid'>Total Business<span id="vertical-line1"></span><br /> <span className='coloring'>
                         &#8377;{summaryData.totalTobePaidRcvd ? summaryData.totalTobePaidRcvd.toFixed(2) : 0}</span></p>
-                    <p className='total-paid'>Total Paid <br /><span className='coloring'>
+                    <p className='total-paid'>Total Paid<span id="vertical-line2"></span> <br /><span className='coloring'>
                         &#8377;{summaryData.totalRcvdPaid ? summaryData.totalRcvdPaid.toFixed(2) : 0}</span> </p>
                     <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
                         &#8377;{summaryData.outStdRcvPayble ? summaryData.outStdRcvPayble.toFixed(2) : 0}</span></p>
@@ -275,18 +277,18 @@ const BuyerLedger = () => {
                         paddingRight: '-40px',
                     }} />
                     <div className="bloc-tabs">
-                        <a href={"#ledgersummary"}
+                        <button href={"#ledgersummary"}
                             className={toggleState === 'ledgersummary' ? "tabs active-tabs" : "tabs"}
                             onClick={() => toggleTab('ledgersummary')}
                         >
                             Ledger Summary
-                        </a>
-                        <a href={"#detailedledger"}
+                        </button>
+                        <button href={"#detailedledger"}
                             className={toggleState === 'detailedledger' ? "tabs active-tabs" : "tabs"}
                             onClick={() => toggleTab('detailedledger')}
                         >
                             Detailed Ledger
-                        </a>
+                        </button>
                     </div>
                     {/*<hr style={{color:"blue", marginTop:"25px"}}/>
                             <div className="images">
@@ -299,7 +301,7 @@ const BuyerLedger = () => {
          <div className="recordbtn-style">
             <button className="add-record-btn" onClick={() =>
             {(toggleState === 'ledgersummary' || toggleState === 'detailedledger')
-             && setIsOpen(!open)}}><img src={add} id='addrecord-img'/> Add Record</button>
+             && setIsOpen(!open)}}><div className='add-pay-btn'><img src={add} id='addrecord-img'/></div> Add Record</button>
          </div>
          <hr style={{background: '#FFFFFF', postion: 'absolute',
                         border: '1px solid #E4E4E4', height: '0px', marginTop: '25px', width: '100%',
@@ -451,7 +453,7 @@ const BuyerLedger = () => {
                        right: 0,
                        bottom: 0,
                        marginLeft: "350px",
-                       width: "730px",
+                       width: "700px",
                        height: "500px",
                        transition: 'ease-out',
                        border:'none',
@@ -487,7 +489,7 @@ const BuyerLedger = () => {
                        })
                      }
                      <span class="card-text" id="date-tag">
-                       <ReactDatePicker className='date_picker'
+                       <ReactDatePicker id='date_picker'
                          selected={selectDate}
                          onChange={date => { setSelectDate(date) }}
                          dateFormat='dd-MMM-yy'
@@ -510,7 +512,7 @@ const BuyerLedger = () => {
                          }}
                         >
                        </ReactDatePicker>
-                       <img className="date_icon" src={date_icon} />
+                       <img className="date_icons" src={date_icon} />
                      </span>
                    </div>
                  </div>
@@ -702,7 +704,8 @@ const BuyerLedger = () => {
                    .map((item, index) => {
                      return (
                        <Fragment>
-                         <tr onClick={(id) => { particularLedger(item.partyId) }} className="tr-tags">
+                         <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
+                          className={isActive===index?"tabRowSelected":"tr-tags"}>
                            <td scope="row">{index + 1}</td>
                            <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                            <td key={item.partyName}><span className="namedtl-tag">

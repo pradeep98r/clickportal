@@ -41,6 +41,7 @@ const SellerLedger = () => {
     //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummary);
 
     const[sellerDetailed, setSellerDetailed]= useState([]);
+    const [isActive, setIsActive]= useState(-1);
 
     const navigate=useNavigate();
     const [toggleState, setToggleState] = useState("ledgersummary");
@@ -77,10 +78,11 @@ const SellerLedger = () => {
     })
     }
     //Get partner By partyId
-    const particularLedger = (id) => {
+    const particularLedger = (id,indexs) => {
         console.log(id);
         //getBuyerLedgerSummary(clickId, id);
         setOpenTabs(true);
+        setIsActive(indexs)
         ledger.filter((item) => {
             if (item.partyId === id) {
                 partyId=id;
@@ -223,14 +225,14 @@ const SellerLedger = () => {
        </nav>
        <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
             <div className="bloc-tab">
-            <a href={"#All"}
+            <button href={"#All"}
                 className={toggleAC === 'all' ? "tabers active-tabs" : "tabers"}
                 onClick={() => toggleAllCustom('all')}
-            >All</a>
-            <a href={"#Custom"}
+            >All</button>
+            <button href={"#Custom"}
                 className={toggleAC === 'custom' ? "tabers active-tab" : "tabers"}
                 onClick={() => toggleAllCustom('custom')}
-            >Custom</a>
+            >Custom</button>
             </div>
             <div class="card" className='details-tag'>
                 <div class="card-body">
@@ -269,18 +271,18 @@ const SellerLedger = () => {
                         paddingRight: '-40px',
                     }} />
                     <div className="bloc-tabs">
-                        <a href={"#ledgersummary"}
+                        <button href={"#ledgersummary"}
                             className={toggleState === 'ledgersummary' ? "tabs active-tabs" : "tabs"}
                             onClick={() => toggleTab('ledgersummary')}
                         >
                             Ledger Summary
-                        </a>
-                        <a href={"#detailedledger"}
+                        </button>
+                        <button href={"#detailedledger"}
                             className={toggleState === 'detailedledger' ? "tabs active-tabs" : "tabs"}
                             onClick={() => toggleTab('detailedledger')}
                         >
                             Detailed Ledger
-                        </a>
+                        </button>
                     </div>
                     {/*<hr style={{color:"blue", marginTop:"25px"}}/>
                             <div className="images">
@@ -293,7 +295,7 @@ const SellerLedger = () => {
          <div className="recordbtn-style">
             <button className="add-record-btn" onClick={() =>
             {(toggleState === 'ledgersummary' || toggleState === 'detailedledger')
-             && setIsOpen(!open)}}><img src={add} id='addrecord-img'/> Add Record</button>
+             && setIsOpen(!open)}}><div className='add-pay-btn'><img src={add} id='addrecord-img'/></div> Add Record</button>
          </div>
          <hr style={{background: '#FFFFFF', postion: 'absolute',
               border: '1px solid #E4E4E4', height: '0px', marginTop: '25px', width: '100%',
@@ -699,7 +701,8 @@ const SellerLedger = () => {
                    .map((item, index) => {
                      return (
                        <Fragment>
-                         <tr onClick={(id) => { particularLedger(item.partyId) }} className="tr-tags">
+                         <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
+                          className={isActive===index?'tabRowSelected':"tr-tags"}>
                            <td scope="row">{index + 1}</td>
                            <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                            <td key={item.partyName}><span className="namedtl-tag">

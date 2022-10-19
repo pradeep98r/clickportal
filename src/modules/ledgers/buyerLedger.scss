@@ -56,8 +56,60 @@ input[type=radio]:checked+label {
     border: 1px solid #E4E4E4;
     overflow-y: scroll;
 }
+.tabRowSelected{
+    background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 17px;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    .coloring{
+        color: white;
+    }
+    .namedtl-tag{
+        color: white;
+    }
+}
+.add-pay-btn{
+    position: absolute;
+    background: #16A12C;
+    margin-top:0px;
+    margin-left: -18px;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    border: 1px solid #16A02C;
+    transform: rotate(-90deg);
+    border-radius: 100%;
+}
 .coloring,.paid-coloring{
     color:  #16A12C;;
+}
+#verticalLines{
+    position: absolute;
+    border-left:1px solid #E4E4E4;
+    height: 50px;
+    top: -10px;
+    margin-left: 70px;
+}
+#vertical-line1{
+    top: -5px;
+    position: absolute;
+    border-left:1px solid #E4E4E4;
+    height: 50px;
+    margin-left:30px;
+}
+#vertical-line2{
+    position: absolute;
+    border-left:1px solid #E4E4E4;
+    height: 50px;
+    margin-left: 53px;
+    top: -5px;
 }
 .content {
     background: white;
@@ -100,8 +152,8 @@ input[type=radio]:checked+label {
 }
 #singles-img{
     position: absolute;
-    left: 10px;
-    top:-10px;
+    left: -10px;
+    top:-5px;
     width: 50px;
     height: 50px;
 }
@@ -197,7 +249,7 @@ input[type="text"]::placeholder {
     padding-left:20px;
     margin-left: 10px;
     left:0px;
-    top: -5px;
+    top: -7px;
     position: absolute;
     cursor: pointer;
     position: relative;
@@ -210,6 +262,8 @@ input[type="text"]::placeholder {
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
+    border: none;
+    background: none;
 }
 .active-tabs  {
     color: green;
@@ -249,6 +303,8 @@ input[type="text"]::placeholder {
     line-height: 18px;
     letter-spacing: 0.02em;
     color: #4D4D4D;
+    background: none;
+    border: none;
 }
 .active-tab  {
     color: green;
@@ -282,16 +338,13 @@ tr{
     align-items: center
 }
 #addrecord-img{
-    position: absolute;
-    margin-left: -35px;
-    top: 5px;
-    font-size: 10px;
-    width: 20px;
-    height: 20px;
-    background: #16A02C;
-    border: 1px solid #16A02C;
     transform: rotate(-90deg);
     border-radius: 100%;
+    position: relative;
+    margin-left: 1.5px;
+    margin-top: -1px;
+    width: 10px;
+    height: 10px;
 }
 .add-record-btn{
     margin-left: 875px;
@@ -341,7 +394,7 @@ tr{
 }
 .record-name{
     position: absolute;
-    left: 50px;
+    margin-left: 30px;
     top:5%;
     font-family: 'Manrope';
     font-style: normal;
@@ -352,12 +405,12 @@ tr{
 }
 #pref-details-tag{
     position: absolute;
-    width: 630px;
-    height: 75px;
+    width: 540px;
+    height: 80px;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    margin-left: 50px;
+    margin-left: 80px;
     margin-top: 90px;
 }
 .record-update{
@@ -402,6 +455,7 @@ thead{
     font-size: 15px;
     line-height: 18px;
     color: #121212;
+    left: 35px;
 }
 .profiles-dtl{
     top:12px;
@@ -412,6 +466,7 @@ thead{
     font-size: 12px;
     line-height: 13px;
     color: #121212;
+    left: 35px;
 }
 #searchbar{
     width:350px;
@@ -528,16 +583,24 @@ text-decoration: underline solid  #16A02C 50% ;
     height: 20px;
     color: blue;
 }
-.date_picker{
+#date_picker{
     top:10px;
     position: absolute;
-    margin-left: 450px;
+    margin-left: 360px;
     border: none;
     width: 150px;
     text-align: center;
+    cursor: pointer;
+    background: none;
 }
 .date_picker:focus {
     border: 1px solid #34495e;
+}
+.react-datepicker-popper{
+    margin-left: 390px;
+    margin-top: 30px;
+    margin-left: 320px;
+    margin-top: 32px;
 }
 #recievable-card{
     width: 600px;
@@ -572,16 +635,17 @@ text-decoration: underline solid  #16A02C 50% ;
 .react-datepicker__input-container input{
     border: none;
 }
-.date_icon{
+.date_icons{
     margin-top:10px;
     position: relative;
-    margin-left:460px;
+    margin-left:375px;
+    cursor: pointer;
 }
 #out-tag{
     font-size: 12px;
     font-family: sans-serif;
     margin-top: 180px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -590,7 +654,7 @@ text-decoration: underline solid  #16A02C 50% ;
 } 
 #recieve-tag{
     font-size: 17px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-weight: bold;
     margin-top: 10px;
     font-family: 'Manrope';
@@ -604,7 +668,7 @@ text-decoration: underline solid  #16A02C 50% ;
     font-size: 12px;
     font-family: sans-serif;
     margin-top:0px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -615,7 +679,7 @@ text-decoration: underline solid  #16A02C 50% ;
     font-size: 13px;
     font-family: sans-serif;
     margin-top: 55px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -627,7 +691,7 @@ text-decoration: underline solid  #16A02C 50% ;
     font-size: 13px;
     font-family: sans-serif;
     margin-top: 15px;
-    margin-left: 50px;
+    margin-left: 80px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
@@ -645,7 +709,7 @@ text-decoration: underline solid  #16A02C 50% ;
     color: black
 }
 #inlineRadio1{
-    margin-left: 50px;
+    margin-left: 80px;
 }
 .submit-btn{
     width: 100%;
@@ -704,8 +768,8 @@ text-decoration: underline solid  #16A02C 50% ;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    margin-left: 50px;
-    width: 630px;
+    margin-left: 80px;
+    width: 540px;
 }
 .profile
 {
@@ -729,7 +793,7 @@ text-decoration: underline solid  #16A02C 50% ;
     position: absolute;
     top:5px;
     font-size: 12px;
-    margin-left: 190px;
+    margin-left: 160px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -743,7 +807,7 @@ text-decoration: underline solid  #16A02C 50% ;
     position: absolute;
     font-size: 12px;
     top:5px;
-    margin-left: 320px;
+    margin-left: 300px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
