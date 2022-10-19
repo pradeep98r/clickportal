@@ -4,6 +4,7 @@ import search_img from "../../assets/images/search.svg";
 import "../../modules/transporto_ledger/transportoLedger.scss"
 import { 
   addRecordInventory,
+  getInventory,
   getInventoryLedgers,
   getParticularTransporter,
   getTransporters,
@@ -19,6 +20,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 import $ from "jquery";
+import context from "react-bootstrap/esm/AccordionContext";
 const TransportoLedger = () => {
   const [transporter, setTransporter] = useState([{}]);
   const [data, setData] = useState({}, transporter);
@@ -44,6 +46,7 @@ const TransportoLedger = () => {
   const [qty, setQty]= useState(0);
   const [openInventory, setOpenInventory]= useState(false);
   const [isActive, setIsActive] = useState(-1);
+  const [getInventor, setGetInventory]=useState([]);
   const navigate=useNavigate();
   
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -106,6 +109,7 @@ const TransportoLedger = () => {
         localStorage.setItem('transId', JSON.stringify(transId));
         paymentLedger(clickId, id);
         inventoryLedger(clickId, id);
+        getInventoryRecord();
         //return item.partyId;
       }
       else {
@@ -169,6 +173,16 @@ const TransportoLedger = () => {
     setOpenInventory(false);
     localStorage.removeItem("transId");
   }
+  //get Inventory
+  const getInventoryRecord=()=>{
+    getInventory(clickId,transId).then(response=>{
+      console.log(response.data.data);
+      setGetInventory(response.data.data)
+    })
+    .catch(error=>{
+      console.log(error);
+    })
+  }
   transId=JSON.parse(localStorage.getItem('transId'));
   return (
     <Fragment>
@@ -210,13 +224,14 @@ const TransportoLedger = () => {
               &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd.toFixed(2): 0}</span></p>
             <p className='total-paid'>Total Paid<span id="vertical-line"></span> <br /><span className='coloring'>
               &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid.toFixed(2) : 0}</span> </p>
-            <p className='out-standing'>Outstanding Recievables<span id="vertical-line"></span> <br /><span className='coloring'>
+            <p className='out-standing'>Outstanding Recievables<br /><span className='coloring'>
               &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</span></p>
-            <hr style={{
+            <span id="horizontal-line"></span>
+            {/*<hr style={{
                 background: '#FFFFFF', postion: 'absolute',
                 border: '1px solid #E4E4E4', height: '0px', marginTop: '50px', width: '100%',
                 paddingRight: '-40px',
-            }} />
+            }} />*/}
             <div className="bloc-tabs">
               <button href={"#paymentledger"}
                 className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
@@ -234,32 +249,19 @@ const TransportoLedger = () => {
             <div className="recordbtn-style">
               <button className="add-record-btn" onClick={() =>
                 {toggleState === 'paymentledger'? setIsOpen(!open)
-                : setOpenInventory(!openInventory)}}>
+                : setOpenInventory(!openInventory)}}  data-toggle="modal" data-target="#myModal">
                   <div className="add-pay-btn"><img src={add} className='addrecord-img'/></div> Add Record</button>
             </div>
           </div>
-        </div>         
-        <ReactModal isOpen={open} className='modal-tag' 
-            style={
-              {
-                  overlay: {
-                      position: 'absolute',
-                      top: "75px",
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      marginLeft: "350px",
-                      width: "700px",
-                      height: "500px",
-                      transition: 'ease-out',
-                      border:'none',
-                      borderRadius: '10px'
-                  }
-              }
-            }>
-            <div className="add-record">
+        </div>
+        {toggleState==='paymentledger' &&
+        <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
+          <div class="modal-dialog modal-lg transporter_modal modal-dialog-centered" id="modal-dailoges">
+            <div class="modal-content" id="modal-content">
+              <div class="modal-body" id="body-modal">
+              <div className="add-record">
               <div className="btn-round">
-                <img src={close_btn} className="closing-btn" onClick={() => setIsOpen(false)} />
+                <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setIsOpen(false)} />
               </div>
               <h6 className="record-name">Record Payment</h6>
               <form onSubmit={addRecordPayment}>
@@ -316,7 +318,7 @@ const TransportoLedger = () => {
                 <p id="recieve-tag">&#8377;{payLedger.outStdRcvPayble?payLedger.outStdRcvPayble.toFixed(2) :0}</p>
                 <div class="form-group">
                   <label hmtlFor="amtRecieved" id="amt-tag">Amount</label>
-                  <input class="form-control" id="amtRecieved" value={paidRcvd} placeholder="&#8377;" required
+                  <input class="form-control" id="amtRecieved"  required
                     onChange={(e) => setPaidRcvd(e.target.value)}/>
                 </div>
                 <p className='payment-tag'>Payment Method</p>
@@ -353,13 +355,19 @@ const TransportoLedger = () => {
                 <button className='submit-btn' type='sumit'>SUBMIT</button>
               </form>
             </div>
-        </ReactModal>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div> }        
         <div id="transporter-summary" className={toggleState === 'paymentledger' ? "content  active-content" : "content"}>
             <table class="table table-fixed" className="ledger-table">
               <thead className="thead-tag">
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">RefId | Date</th>
+                  <th scope="col">Ref ID</th>
                   <th scope="col">Paid(&#8377;)</th>
                   <th scope="col">To Be Paid(&#8377;)</th>
                   <th scope="col">Ledger Balance(&#8377;)</th>
@@ -375,7 +383,7 @@ const TransportoLedger = () => {
                           <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
                           {moment(item.date).format("DD-MMM-YY")}</td>
                           <td>{item.paidRcvd ? item.paidRcvd.toFixed(2)  : 0}</td>
-                          <td><span className='paid-coloring'>&#8377;{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2)  : 0}</span></td>
+                          <td><span className='paid-coloring'>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2)  : 0}</span></td>
                           <td>{item.balance ? item.balance.toFixed(2) : 0}</td>
                         </tr>
                       )
@@ -391,7 +399,7 @@ const TransportoLedger = () => {
               <thead className="thead-tag">
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">RefId | Date</th>
+                  <th scope="col">Ref ID</th>
                   <th scope="col">Collected</th>
                   <th scope="col">Given</th>
                   <th scope="col">Balance</th>
@@ -432,145 +440,137 @@ const TransportoLedger = () => {
             </table>
           </div>
           <div>
-          <ReactModal isOpen={openInventory} className='modal-tag' 
-            style={
-              {
-                  overlay: {
-                      position: 'absolute',
-                      top: "75px",
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      marginLeft: "350px",
-                      width: "700px",
-                      height: "500px",
-                      transition: 'ease-out',
-                      border:'none',
-                      borderRadius: '10px'
-                  }
-              }
-            }>
-            <div className="add-record">
-              <div className="btn-round">
-                <img src={close_btn} className="closing-btn" onClick={() => setOpenInventory(false)} />
-              </div>
-              <h6 className="inventory-name">Record Inventory</h6>
-              <div className="bloc-tabs">
-                <button 
-                  className={toggleInventory === 'Given' ? "tab active-tab" : "tab"}
-                  onClick={() => toggleTabs('Given')}
-                >
-                   Given
-                </button>
-                <button
-                  className={toggleInventory === 'Collected' ? "tab active-tab" : "tab"}
-                  onClick={() => toggleTabs('Collected')}
-                >
-                  Collected
-                </button>
-              </div>
-              <hr className="hr-tag"/>
-              <div  className={toggleInventory === 'Given' || toggleInventory === 'Collected' ?
-                      "content  active-content" : "content"}>
-              <form onSubmit={postRecordInventory}>
-                <div className="card">
-                  <div className="card-body" id="detail-tag">
-                    {
-                      transporter.map((item, index) => {
-                        if (item.partyId == transId) {
-                            return (
-                                <Fragment>
-                                    <tr>
-                                         <td className='profile-details' key={item.partyName}>
-                                            <p className='name-tag'>{item.partyName}</p><br />
-                                            <p className='profile-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                            {item.profilePic ? item.profilePic
-                                            :<img id="single-img" src={single_bill} alt="img"/>}
-                                            
-                                        </td>
-                                    </tr>
-                                </Fragment>
-                            )
+            {toggleState==='inventoryledger' &&
+            <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
+              <div class="modal-dialog modal-lg transporter_modal modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <div className="add-record">
+                      <div className="btn-round">
+                        <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setOpenInventory(false)} />
+                      </div>
+                      <h6 className="inventory-name">Record Inventory</h6>
+                      <div className="bloc-tabs">
+                        <button 
+                          className={toggleInventory === 'Given' ? "tab active-tab" : "tab"}
+                          onClick={() => toggleTabs('Given')}
+                        >
+                          Given
+                        </button>
+                        <button
+                          className={toggleInventory === 'Collected' ? "tab active-tab" : "tab"}
+                          onClick={() => toggleTabs('Collected')}
+                        >
+                          Collected
+                        </button>
+                      </div>
+                      <span id="horizontal-lines"></span>
+                      <div  className={toggleInventory === 'Given' || toggleInventory === 'Collected' ?
+                              "content  active-content" : "content"}>
+                      <form onSubmit={postRecordInventory}>
+                        <div className="card">
+                          <div className="card-body" id="detail-tag">
+                            {
+                              transporter.map((item, index) => {
+                                if (item.partyId == transId) {
+                                    return (
+                                        <Fragment>
+                                            <tr>
+                                                <td className='profile-details' key={item.partyName}>
+                                                    <p className='name-tag'>{item.partyName}</p><br />
+                                                    <p className='profile-dtl'>{item.mobile}<br />{item.partyAddress}</p>
+                                                    {item.profilePic ? item.profilePic
+                                                    :<img id="single-img" src={single_bill} alt="img"/>}
+                                                    
+                                                </td>
+                                            </tr>
+                                        </Fragment>
+                                    )
+                                }
+                              })
+                            }
+                            <span class="card-text" id="date-tag">
+                              <ReactDatePicker className='date_picker'
+                                selected={selectDate}
+                                onChange={date => { setSelectDate(date) }}
+                                dateFormat='dd-MMM-yy'
+                                maxDate={new Date()}
+                                placeholder="Date"
+                                showMonthYearDropdown={true}
+                                scrollableMonthYearDropdown
+                                required
+                                style=
+                                {{
+                                  width: "400px",
+                                  cursor: "pointer",
+                                  right: "300px",
+                                  marginTop: "30px",
+                                  fontFamily: 'Manrope',
+                                  fontStyle: "normal",
+                                  fontWeight: "600",
+                                  fontSize: "15px",
+                                  lineHeight: "18px"
+                                }}
+                              >
+                              </ReactDatePicker>
+                              <img className="date_icon" src={date_icon} />
+                            </span>
+                          </div>
+                        </div>
+                        <p id='para-tag'>Inventory Balance</p>
+                        {toggleState==='inventoryledger' &&
+                          getInventor.map(item=>{
+                              return(
+                              <p id="recieves-tag">{item.unit}:{item.qty.toFixed(1)}</p>
+                              )
+                          })
                         }
-                      })
-                    }
-                    <span class="card-text" id="date-tag">
-                      <ReactDatePicker className='date_picker'
-                        selected={selectDate}
-                        onChange={date => { setSelectDate(date) }}
-                        dateFormat='dd-MMM-yy'
-                        maxDate={new Date()}
-                        placeholder="Date"
-                        showMonthYearDropdown={true}
-                        scrollableMonthYearDropdown
-                        required
-                        style=
-                        {{
-                          width: "400px",
-                          cursor: "pointer",
-                          right: "300px",
-                          marginTop: "30px",
-                          fontFamily: 'Manrope',
-                          fontStyle: "normal",
-                          fontWeight: "600",
-                          fontSize: "15px",
-                          lineHeight: "18px"
-                        }}
-                       >
-                      </ReactDatePicker>
-                      <img className="date_icon" src={date_icon} />
-                    </span>
+                        {toggleInventory==='Given' ?<p className='select-tag'>Select Given Type</p>
+                          :<p className='select-tag'>Select Collected Type</p>}
+
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CRATES"
+                            onChange={(e) => setUnit(e.target.value)} checked={unit==='CRATES'} required />
+                          <label class="form-check-label" for="inlineRadio1" id="crates">CRATES</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="SACS"
+                            onChange={(e) => setUnit(e.target.value)} required />
+                          <label class="form-check-label" for="inlineRadio2" id="sacs">SACS</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="BOXES"
+                            onChange={(e) => setUnit(e.target.value)} required />
+                          <label class="form-check-label" for="inlineRadio3" id="boxes">BOXES</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="BAGS"
+                            onChange={(e) => setUnit(e.target.value)} required />
+                          <label class="form-check-label" for="inlineRadio4" id="bags">BAGS</label>
+                        </div>
+                        <div class="form-group">
+                          <label hmtlFor="amtRecieved" id="count-tag">Number of {unit}</label>
+                          <input class="form-control" id="amtRecieved"   required
+                            onChange={(e) => setQty(e.target.value)}/>
+                        </div>
+                        <div class="mb-3">
+                          <label for="exampleFormControlTextarea1" class="form-label" id="comments-tag">Comment</label>
+                          <textarea class="form-control" id="comments" rows="2" value={comments}
+                            onChange={(e) => setComments(e.target.value)}></textarea>
+                        </div>
+                        <button className='submit-btn' type='sumit'>SUBMIT</button>
+                      </form>
+                    </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                   </div>
                 </div>
-                <p id='para-tag'>Inventory Balance</p>
-                {toggleState==='inventoryledger' &&
-                  invLedger.balance.map(item=>{
-                    if(item.unit===unit){
-                      return(
-                      <p id="recieves-tag">{unit}:&nbsp;{item.qty.toFixed(1)}</p>
-                      )
-                    }
-                  })
-                }
-                {toggleInventory==='Given' ?<p className='select-tag'>Select Given Type</p>
-                  :<p className='select-tag'>Select Collected Type</p>}
-
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CRATES"
-                    onChange={(e) => setUnit(e.target.value)} checked={unit==='CRATES'} required />
-                  <label class="form-check-label" for="inlineRadio1" id="crates">CRATES</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="SACS"
-                    onChange={(e) => setUnit(e.target.value)} required />
-                  <label class="form-check-label" for="inlineRadio2" id="sacs">SACS</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="BOXES"
-                    onChange={(e) => setUnit(e.target.value)} required />
-                  <label class="form-check-label" for="inlineRadio3" id="boxes">BOXES</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="BAGS"
-                    onChange={(e) => setUnit(e.target.value)} required />
-                  <label class="form-check-label" for="inlineRadio4" id="bags">BAGS</label>
-                </div>
-                <div class="form-group">
-                  <label hmtlFor="amtRecieved" id="count-tag">Number of {unit}</label>
-                  <input class="form-control" id="amtRecieved" value={qty} placeholder="&#8377;" required
-                    onChange={(e) => setQty(e.target.value)}/>
-                </div>
-                <div class="mb-3">
-                  <label for="exampleFormControlTextarea1" class="form-label" id="comments-tag">Comment</label>
-                  <textarea class="form-control" id="comments" rows="2" value={comments}
-                    onChange={(e) => setComments(e.target.value)}></textarea>
-                </div>
-                <button className='submit-btn' type='sumit'>SUBMIT</button>
-              </form>
+              </div>
             </div>
-            </div>
-          </ReactModal>
-          </div>
+            }
+          </div> 
       </div>
       <div className='table-scroll'>
         <table class="table table-fixed" className="ledger-table">
