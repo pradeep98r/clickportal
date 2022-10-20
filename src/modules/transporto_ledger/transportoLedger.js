@@ -10,7 +10,7 @@ import {
   getTransporters,
   postRecordPayment
 } from "../../actions/transporterService";
-import no_data from "../../assets/images/no_data_available.png";
+import no_data from "../../assets/images/no_data_available.svg";
 import add from "../../assets/images/add.svg";
 import ReactModal from "react-modal";
 import close_btn from "../../assets/images/close_btn.svg";
@@ -224,7 +224,7 @@ const TransportoLedger = () => {
               &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd.toFixed(2): 0}</span></p>
             <p className='total-paid'>Total Paid<span id="vertical-line"></span> <br /><span className='coloring'>
               &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid.toFixed(2) : 0}</span> </p>
-            <p className='out-standing'>Outstanding Recievables<br /><span className='coloring'>
+            <p className='out-standing'>Outstanding Paybles<br /><span className='coloring'>
               &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</span></p>
             <span id="horizontal-line"></span>
             {/*<hr style={{
@@ -321,7 +321,7 @@ const TransportoLedger = () => {
                   <input class="form-control" id="amtRecieved"  required
                     onChange={(e) => setPaidRcvd(e.target.value)}/>
                 </div>
-                <p className='payment-tag'>Payment Method</p>
+                <p className='payment-tag'>Payment Mode</p>
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CASH"
                     onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'}required />
@@ -363,6 +363,7 @@ const TransportoLedger = () => {
           </div>
         </div> }        
         <div id="transporter-summary" className={toggleState === 'paymentledger' ? "content  active-content" : "content"}>
+        {ledgerSummary.length > 0 ? (
             <table class="table table-fixed" className="ledger-table">
               <thead className="thead-tag">
                 <tr>
@@ -375,7 +376,6 @@ const TransportoLedger = () => {
               </thead>
               <tbody>
                 {
-                  ledgerSummary.length > 0 ? (
                     ledgerSummary.map((item, index) => {
                       return (
                         <tr className="trs-tags">
@@ -388,13 +388,14 @@ const TransportoLedger = () => {
                         </tr>
                       )
                     })
-                  ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
                 }
               </tbody>
             </table>
+            ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)}
           </div>
           <div id="detailed-inventory" className={toggleState === 'inventoryledger' ?
            "content  active-content" : "content"}>
+            {invDetails.length > 0 ? (
             <table class="table table-fixed" className="ledger-table">
               <thead className="thead-tag">
                 <tr>
@@ -407,7 +408,7 @@ const TransportoLedger = () => {
               </thead>
               <tbody>
                 {
-                  invDetails.length > 0 ? (
+                  
                     invDetails.map((item, index) => {
                       return (
                         <tr className="trs-tags">
@@ -434,11 +435,11 @@ const TransportoLedger = () => {
                         </tr>
                       )
                     }) 
-                  ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
                 }
               </tbody>
             </table>
-          </div>
+          ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)}
+           </div>
           <div>
             {toggleState==='inventoryledger' &&
             <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
