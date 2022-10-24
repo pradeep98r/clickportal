@@ -19,9 +19,9 @@ pipelines:
     dev:
       - step:
           name: 'Build and Push Application Docker Image'
+          size: 2x
           services:
             - docker
-            - memory: 2024
           script:
             - *commonScript
             - echo "Building Docker Image"
