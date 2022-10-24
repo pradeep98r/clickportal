@@ -1,6 +1,8 @@
 image: python:3.9
 
 definitions:
+  docker:
+    memory: 2024
   scripts:
     script: &commonScript
               echo "Setting up environment and required tools ...";
@@ -18,7 +20,8 @@ pipelines:
       - step:
           name: 'Build and Push Application Docker Image'
           services:
-            - docker
+            docker:
+              memory: 2024
           script:
             - *commonScript
             - echo "Building Docker Image"
