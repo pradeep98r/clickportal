@@ -21,7 +21,7 @@ pipelines:
           name: 'Build and Push Application Docker Image'
           services:
             - docker
-                memory: 2024
+            - memory: 2024
           script:
             - *commonScript
             - echo "Building Docker Image"
