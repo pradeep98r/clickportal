@@ -14,7 +14,12 @@
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
-    overflow-y: scroll;
+    height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+.ledger-table{
+    height: calc(100vh - 300px);
+    overflow-y: auto;
 }
 .no_data_found{
     //position: absolute;
@@ -199,26 +204,26 @@ input[type=radio]:checked+label {
     color:  #16A12C;;
 }
 #verticalLines{
-    position: absolute;
-    border-left:1px solid #E4E4E4;
-    height: 50px;
-    top: -10px;
-    margin-left: 70px;
+    // position: absolute;
+    border-right:1px solid #E4E4E4;
+    // height: 50px;
+    // top: -10px;
+    // margin-left: 70px;
 }
-#vertical-line1{
-    top: -5px;
-    position: absolute;
-    border-left:1px solid #E4E4E4;
-    height: 50px;
-    margin-left:30px;
-}
-#vertical-line2{
-    position: absolute;
-    border-left:1px solid #E4E4E4;
-    height: 50px;
-    margin-left: 51px;
-    top: -5px;
-}
+// #vertical-line1{
+//     top: -5px;
+//     position: absolute;
+//     border-left:1px solid #E4E4E4;
+//     height: 50px;
+//     margin-left:30px;
+// }
+// #vertical-line2{
+//     position: absolute;
+//     border-left:1px solid #E4E4E4;
+//     height: 50px;
+//     margin-left: 51px;
+//     top: -5px;
+// }
 .content {
     background: white;
     width: 100%;
@@ -356,13 +361,13 @@ input[type="text"]::placeholder {
 }
 .tabs {
     text-align: center;
-    padding-left:20px;
-    margin-left: 10px;
-    left:-20px;
-    top: 56px;
-    position: absolute;
+    // padding-left:20px;
+    // margin-left: 10px;
+    // left:-20px;
+    // top: 56px;
+    // position: absolute;
     cursor: pointer;
-    position: relative;
+    // position: relative;
     outline: none;
     font-family: 'Manrope';
     font-style: normal;
@@ -396,7 +401,8 @@ input[type="text"]::placeholder {
 }
 .bloc-tab {
     display: flex;
-    position: absolute;
+    // position: absolute;
+    margin-bottom: 30px;
 }
 .tabers{
     //position: absolute;
@@ -726,9 +732,9 @@ text-decoration: underline solid  #16A02C 50% ;
     color: #16A02C;
 }
 #date_icon{
-    margin-top:40px;
-    position: absolute;
-    margin-left:600px;
+    // margin-top:40px;
+    // position: absolute;
+    // margin-left:600px;
     cursor: pointer;
 }
 .react-datepicker-popper{
@@ -893,10 +899,10 @@ text-decoration: underline solid  #16A02C 50% ;
 
 }
 .paid{
-    position: absolute;
-    top:5px;
+    // position: absolute;
+    // top:5px;
     font-size: 12px;
-    margin-left: 160px;
+    // margin-left: 160px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -907,10 +913,10 @@ text-decoration: underline solid  #16A02C 50% ;
     color: #1C1C1C;
 }
 .total-paid{
-    position: absolute;
+    // position: absolute;
     font-size: 12px;
-    top:5px;
-    margin-left: 300px;
+    // top:5px;
+    // margin-left: 300px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -921,10 +927,10 @@ text-decoration: underline solid  #16A02C 50% ;
     color: #1C1C1C;
 }
 .out-standing{
-    position: absolute;
-    top:5px;
+    // position: absolute;
+    // top:5px;
     font-size: 12px;
-    margin-left: 420px;
+    // margin-left: 420px;
     margin-top:10px;
     justify-content: space-between;
     font-family: 'Manrope';
@@ -935,11 +941,11 @@ text-decoration: underline solid  #16A02C 50% ;
     color: #1C1C1C;
 }
 .profile-details{
-    position: absolute;
-    padding-left: 70px;
+    // position: absolute;
+    // padding-left: 70px;
 }
 .address{
-    position: absolute;
+    // position: absolute;
     top: 25px;
     font-size: 12px;
 }

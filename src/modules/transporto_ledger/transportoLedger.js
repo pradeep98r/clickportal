@@ -241,8 +241,10 @@ const TransportoLedger = () => {
                                          <td className='profile-details' key={item.partyName}>
                                             <p className='name-tag'>{item.partyName}</p><br />
                                             <p className='profile-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                            {item.profilePic ? item.profilePic
-                                            :<img id="single-img" src={single_bill} alt="img"/>}
+                                            {/* {item.profilePic ? item.profilePic
+                                            :<img id="single-img"
+                                            //  src={single_bill}
+                                              alt="img"/>} */}
                                             
                                         </td>
                                     </tr>
