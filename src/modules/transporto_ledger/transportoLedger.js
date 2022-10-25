@@ -10,7 +10,7 @@ import {
   getTransporters,
   postRecordPayment
 } from "../../actions/transporterService";
-import no_data from "../../assets/images/no_data_available.svg";
+import no_data from "../../assets/images/no_data.svg";
 import add from "../../assets/images/add.svg";
 import ReactModal from "react-modal";
 import close_btn from "../../assets/images/close_btn.svg";
@@ -183,7 +183,7 @@ const TransportoLedger = () => {
       console.log(error);
     })
   }
-  transId=JSON.parse(localStorage.getItem('transId'));
+  //transId=JSON.parse(localStorage.getItem('transId'));
   return (
     <Fragment>
       <nav class="navbar navbar-expand-lg ">
@@ -196,10 +196,12 @@ const TransportoLedger = () => {
         </div>
       </nav>
       <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
+        {isActive!==-1 &&
         <div class="card" className='transport-details'>
           <div class="card-body">
             {
               transporter.map((item, index) => {
+                transId=JSON.parse(localStorage.getItem('transId'));
                 if (item.partyId == transId) {
                     return (
                         <Fragment>
@@ -254,9 +256,11 @@ const TransportoLedger = () => {
             </div>
           </div>
         </div>
+        }
         {toggleState==='paymentledger' &&
         <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
-          <div class="modal-dialog modal-lg transporter_modal modal-dialog-centered" id="modal-dailoges">
+          <div class="modal-dialog modal-lg transporter_modal d" id="modal-dailoges"
+            style={{height:'500px',width:'748px',marginLeft:'270px',top:'50px'}}>
             <div class="modal-content" id="modal-content">
               <div class="modal-body" id="body-modal">
               <div className="add-record">
@@ -443,7 +447,8 @@ const TransportoLedger = () => {
           <div>
             {toggleState==='inventoryledger' &&
             <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
-              <div class="modal-dialog modal-lg transporter_modal modal-dialog-centered">
+              <div class="modal-dialog modal-lg transporter_modal"
+                style={{height:'500px',width:'748px',marginLeft:'270px',top:'50px'}}>
                 <div class="modal-content">
                   <div class="modal-body">
                     <div className="add-record">
