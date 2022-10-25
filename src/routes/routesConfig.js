@@ -71,24 +71,24 @@ const RoutesConfig = () => {
                     <Route path="/bill_view/:billId" element={<BillView />} />
                     <Route path="/calender" element={<Calender />} />
                     <Route path="buyerledger" element={<BuyerLedger />}>
-                      <Route
+                      {/* <Route
                         path="ledgersummary/:partyId"
                         element={<LedgerSummary />}
                       />
                       <Route
                         path="detailedledger/:partyId"
                         element={<DetailedLedger />}
-                      />
+                      /> */}
                     </Route>
                     <Route path="sellerledger" element={<SellerLedger />}>
-                      <Route
+                      {/* <Route
                         path="sellerledgersummary/:partyId"
                         element={<SellerLedgerSummary />}
                       />
                       <Route
                         path="sellerdetailedledger/:partyId"
                         element={<SellerDetailedLedger />}
-                      />
+                      /> */}
                     </Route>
                     <Route path="/partner" element={<Partner />} />
                     <Route path="/myprofile" element={<MyProfile />} />
@@ -122,24 +122,24 @@ const RoutesConfig = () => {
                 <Route path="/bill_view/:billId" element={<BillView />} />
                 <Route path="/calender" element={<Calender />} />
                 <Route path="buyerledger" element={<BuyerLedger />}>
-                  <Route
+                  {/* <Route
                     path="ledgersummary/:partyId"
                     element={<LedgerSummary />}
                   />
                   <Route
                     path="detailedledger/:partyId"
                     element={<DetailedLedger />}
-                  />
+                  /> */}
                 </Route>
                 <Route path="sellerledger" element={<SellerLedger />}>
-                  <Route
+                  {/* <Route
                     path="sellerledgersummary/:partyId"
                     element={<SellerLedgerSummary />}
                   />
                   <Route
                     path="sellerdetailedledger/:partyId"
                     element={<SellerDetailedLedger />}
-                  />
+                  /> */}
                 </Route>
                 <Route path="/partner" element={<Partner />} />
                 <Route path="/myprofile" element={<MyProfile />} />

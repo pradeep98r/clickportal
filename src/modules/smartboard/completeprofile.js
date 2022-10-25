@@ -396,7 +396,7 @@ const CompleteProfile = (props) => {
         <button
           type="button"
           className="primary_btn"
-          onClick={props.close}
+          // onClick={props.close}
           onClick={() => onSubmit()}
         >
           Submit

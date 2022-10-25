@@ -328,7 +328,7 @@ const SmartBoard = () => {
 
                     <div onClick={DateModalPopup} className="selected_date m-0">
                       <div className="d-flex align-items-center">
-                        <span className="date_icon">
+                        <span className="date_icon m-0">
                           <img src={date_icon} alt="icon" className="mr-2" />
                         </span>
                         {(() => {
