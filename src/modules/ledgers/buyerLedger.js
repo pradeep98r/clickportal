@@ -221,8 +221,8 @@ const BuyerLedger = () => {
   partyId=JSON.parse(localStorage.getItem('partyId'));
   return (
     <Fragment>
-      <div className='no_data_found' style={{ display: openTabs ? 'none' : 'block' }}>
-        <img src={no_data} className='no-data-img' /></div>
+      <div class="row">
+        <div class="col-lg-4">
         <nav class="navbar navbar-expand-lg ">
            <div class="container-fluid">
            <form class="d-flex">
@@ -232,7 +232,71 @@ const BuyerLedger = () => {
            <div className='searchicon'><img src={search_img} alt="search" /></div>
          </div>
        </nav>
-       <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
+        <div className='table-scroll'>
+         <table class="table table-fixed" className="ledger-table">
+           <thead className="thead-tag">
+             <tr>
+               <th scope="col">#</th>
+               <th scope="col">Date</th>
+               <th scope="col">Transporter Name</th>
+               <th scope="col">To Be Paid</th>
+             </tr>
+           </thead>
+           <tbody>
+             {
+               ledger.length > 0 ? (
+                 ledger.filter((item) => {
+                   if (search === " ") return <p>Not Found</p>;
+                   else if (item.partyName===search) {
+                     console.log(item.partyName);
+                     console.log(search)
+                     return (<p>item.partyName</p>);
+                   }
+                   else {
+                     return <p>Not Found</p>
+                   }
+                 })
+                   .map((item, index) => {
+                     return (
+                       <Fragment>
+                         <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
+                          className={isActive===index?"tabRowSelected":"tr-tags"}>
+                           <td scope="row">{index + 1}</td>
+                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
+                           <td key={item.partyName}><span className="namedtl-tag">
+                             {item.partyName}<br /></span>
+                             <span className="address-tag">{item.partyAddress?item.partyAddress:''}</span><br />
+                             <span className="mobile-tag">{item.mobile}</span>
+                             {item.profilePic? item.profilePic
+                               :<img className="profile-img" src={single_bill} alt="img"/>}
+                           </td>
+                           <td key={item.tobePaidRcvd}><span className='coloring'>&#8377;
+                             {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
+                         </tr>
+                       </Fragment>
+                     )
+                   })
+               ) :
+                 (<div>
+                   <img src={no_data} />
+                   <p>No Data Available</p>
+                 </div>
+                 )
+ 
+             }
+           </tbody>
+         </table>
+         <div className="outstanding-pay">
+           <p className="pat-tag">Outstanding Recievables:</p>
+           <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
+         </div>
+       </div>
+        </div>
+        <div class="col-lg-8">
+        <div className='no_data_found' style={{ display: openTabs ? 'none' : 'block' }}>
+        <img src={no_data} className='no-data-img' />
+      </div>
+        <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
           <div className="bloc-tab">
               <button href={"#All"}
                   className={toggleAC === 'all' ? "tabers active-tab" : "tabers"}
@@ -668,65 +732,8 @@ const BuyerLedger = () => {
                 </div>
             </div>
         </div>
-        <div className='table-scroll'>
-         <table class="table table-fixed" className="ledger-table">
-           <thead className="thead-tag">
-             <tr>
-               <th scope="col">#</th>
-               <th scope="col">Date</th>
-               <th scope="col">Transporter Name</th>
-               <th scope="col">To Be Paid</th>
-             </tr>
-           </thead>
-           <tbody>
-             {
-               ledger.length > 0 ? (
-                 ledger.filter((item) => {
-                   if (search === " ") return <p>Not Found</p>;
-                   else if (item.partyName===search) {
-                     console.log(item.partyName);
-                     console.log(search)
-                     return (<p>item.partyName</p>);
-                   }
-                   else {
-                     return <p>Not Found</p>
-                   }
-                 })
-                   .map((item, index) => {
-                     return (
-                       <Fragment>
-                         <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
-                          className={isActive===index?"tabRowSelected":"tr-tags"}>
-                           <td scope="row">{index + 1}</td>
-                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
-                           <td key={item.partyName}><span className="namedtl-tag">
-                             {item.partyName}<br /></span>
-                             <span className="address-tag">{item.partyAddress?item.partyAddress:''}</span><br />
-                             <span className="mobile-tag">{item.mobile}</span>
-                             {item.profilePic? item.profilePic
-                               :<img className="profile-img" src={single_bill} alt="img"/>}
-                           </td>
-                           <td key={item.tobePaidRcvd}><span className='coloring'>&#8377;
-                             {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
-                         </tr>
-                       </Fragment>
-                     )
-                   })
-               ) :
-                 (<div>
-                   <img src={no_data} />
-                   <p>No Data Available</p>
-                 </div>
-                 )
- 
-             }
-           </tbody>
-         </table>
-         <div className="outstanding-pay">
-           <p className="pat-tag">Outstanding Recievables:</p>
-           <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
-         </div>
-       </div>
+        </div>
+      </div>
     </Fragment>
   )
 }
