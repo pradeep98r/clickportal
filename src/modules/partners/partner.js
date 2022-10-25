@@ -85,7 +85,7 @@ const Partner = () => {
 
   const [nameField, setNameField] = useState("");
   const handleName = (e) => {
-    setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e);
     setRequiredNameField("");
   };
@@ -100,7 +100,7 @@ const Partner = () => {
   };
   const [shortNameField, setShortNameField] = useState("");
   const handleShortName = (e) => {
-    setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e);
     setRequiredshortNameField("");
   };
@@ -114,7 +114,7 @@ const Partner = () => {
   };
   const [streetVillage, setStreetVillage] = useState("");
   const handleStreetName = (e) => {
-    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e);
   };
   const [startDate, setStartDate] = useState(new Date());

@@ -20,6 +20,8 @@ import NoDataText from "../../components/noDataText";
 import loading from "../../assets/images/loading.gif";
 import prev_icon from "../../assets/images/prev_icon.png";
 import next_icon from "../../assets/images/next_icon.png";
+import CompleteProfile from "./completeprofile";
+import Modal from "react-modal/lib/components/Modal";
 const SmartBoard = () => {
   const [tabType, setTabType] = useState("Daily");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -258,642 +260,691 @@ const SmartBoard = () => {
       getDateValue(new Date(yesterdayDate));
     }
   };
+  const [showModal, setShowModal] = useState(false);
+  console.log(loginData);
+  const businessCreatedStatus =
+    localStorage.getItem("businessCreatedStatus") != null
+      ? localStorage.getItem("businessCreatedStatus")
+      : "noo";
+  console.log(businessCreatedStatus);
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          <ul className="nav nav-tabs" id="myTab" role="tablist">
-            {links.map((link) => {
-              return (
-                <li key={link.id} className="nav-item ">
-                  <a
-                    className={
-                      "nav-link" + (tabType == link.to ? " active" : "")
-                    }
-                    href={"#" + tabType}
-                    role="tab"
-                    aria-controls="home"
-                    data-bs-toggle="tab"
-                    onClick={() => tabChange(link.to)}
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <div className="tab-content ps-0 pt-3">
-            <div
-              className="tab-pane active"
-              id={tabType}
-              role="tabpanel"
-              aria-labelledby="home-tab"
-            >
-              <div className="smartboard_date">
-                {tabType == "Daily" ? (
-                  <span className="" onClick={onPrevDate}>
-                    <img src={prev_icon} alt="icon" className="mr-2" />
-                  </span>
-                ) : (
-                  ""
-                )}
-
-                <div onClick={DateModalPopup} className="selected_date m-0">
-                  <div className="d-flex align-items-center">
-                    <span className="date_icon">
-                      <img src={date_icon} alt="icon" className="mr-2" />
-                    </span>
-                    {(() => {
-                      if (tabType == "Daily") {
-                        return <p>{partnerSelectDate}</p>;
-                      } else if (tabType == "Weekly") {
-                        return (
-                          <p>
-                            <span id="startWeekDate">{weekStartDate}</span> to{" "}
-                            <span id="endWeekDate">{weekEndDate}</span>
-                          </p>
-                        );
-                      } else if (tabType == "Monthly") {
-                        return <p>{monthSelectDate}</p>;
-                      } else if (tabType == "Yearly") {
-                        return <p>{yearSelectDate}</p>;
-                      }
-                    })()}
-                  </div>
+          {loginData.businessCreated === false  && businessCreatedStatus == 'noo' ? (
+            <div className="row">
+              <div className="col-lg-9 smartboard_div p-0">
+                <div className="complete_profile d-flex justify-content-between align-items-center">
+                  <p>Complete your Mandi Setup</p>
+                  <button onClick={() => setShowModal(true)}>
+                    Complete Now
+                  </button>
+                  <CompleteProfile
+                    show={showModal}
+                    close={() => setShowModal(false)}
+                  />
                 </div>
-                {tabType == "Daily" ? (
-                  <span className="" onClick={onNextDate}>
-                    <img src={next_icon} alt="icon" className="ml-2" />
-                  </span>
-                ) : (
-                  ""
-                )}
+                <NoDataAvailable />
               </div>
-              {isLoading ? (
-                <div className="">
-                  <img src={loading} alt="my-gif" className="gif_img" />
-                </div>
-              ) : (
-                <div>
-                  {smartboardData != null ? (
-                    // {tabType}
-                    <div className="row smartboard_row" id="scroll_style">
-                      {/* left side */}
-                      <div className="col-lg-9 smartboard_div p-0">
-                        <div className="outstanding_balance margin_bottom">
-                          <h4 className="smartboard_main_header">
-                            Outstanding Balances
-                          </h4>
-                          <div className="row">
-                            <div className="col-lg-6 p-0">
-                              <div className="card pending_rec_card green_card">
-                                <div className="row">
-                                  <div className="col-lg-6 col_left_border">
-                                    <h5 className="color_head_subtext">
-                                      Pending Receivables{" "}
-                                    </h5>
-                                    {outStandingBal.pendingRecievables == 0 ? (
-                                      <p className="nodata">
-                                        No Data Available
-                                      </p>
-                                    ) : (
-                                      <h6 className="color_head_subtext">
-                                        {outStandingBal.pendingRecievables}
-                                      </h6>
-                                    )}
-                                    <p>
-                                      {outStandingBal.pendingRecievables == 0
-                                        ? ""
-                                        : "See Buyer Ledger"}
-                                    </p>
-                                  </div>
-                                  <div className="col-lg-6 col2">
-                                    <h5 className="color_head_subtext">
-                                      Sell Bills{" "}
-                                    </h5>
-                                    {outStandingBal.totalSellBills == 0 ? (
-                                      <p className="nodata">
-                                        No Data Available
-                                      </p>
-                                    ) : (
-                                      <h6 className="color_head_subtext">
-                                        {outStandingBal.totalSellBills}
-                                      </h6>
-                                    )}
+              <div className="col-lg-3"></div>
+            </div>
+          ) : (
+            <div>
+              <ul className="nav nav-tabs" id="myTab" role="tablist">
+                {links.map((link) => {
+                  return (
+                    <li key={link.id} className="nav-item ">
+                      <a
+                        className={
+                          "nav-link" + (tabType == link.to ? " active" : "")
+                        }
+                        href={"#" + tabType}
+                        role="tab"
+                        aria-controls="home"
+                        data-bs-toggle="tab"
+                        onClick={() => tabChange(link.to)}
+                      >
+                        {link.name}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="tab-content ps-0 pt-3">
+                <div
+                  className="tab-pane active"
+                  id={tabType}
+                  role="tabpanel"
+                  aria-labelledby="home-tab"
+                >
+                  <div className="smartboard_date">
+                    {tabType == "Daily" ? (
+                      <span className="" onClick={onPrevDate}>
+                        <img src={prev_icon} alt="icon" className="mr-2" />
+                      </span>
+                    ) : (
+                      ""
+                    )}
 
-                                    <p>
-                                      {outStandingBal.totalSellBills == 0
-                                        ? ""
-                                        : "See All"}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-lg-6">
-                              <div className="card pending_rec_card pending_pay_card warning_card">
-                                <div className="row">
-                                  <div className="col-lg-6 col_left_border">
-                                    <h5 className="">Pending Payables </h5>
-                                    {outStandingBal.pendingPaybles == 0 ? (
-                                      <p className="nodata color_black">
-                                        No Data Available
-                                      </p>
-                                    ) : (
-                                      <h6 className="color_red">
-                                        {outStandingBal.pendingPaybles}
-                                      </h6>
-                                    )}
-
-                                    <p className="color_blue">
-                                      {outStandingBal.pendingPaybles == 0
-                                        ? ""
-                                        : "See Buyer Ledger"}
-                                    </p>
-                                  </div>
-                                  <div className="col-lg-6 col2">
-                                    <h5 className="">Buy Bills </h5>
-                                    {outStandingBal.totalBuyBills == 0 ? (
-                                      <p className="nodata color_black">
-                                        No Data Available
-                                      </p>
-                                    ) : (
-                                      <h6 className="color_red">
-                                        {outStandingBal.totalBuyBills}
-                                      </h6>
-                                    )}
-
-                                    <p className="color_blue">
-                                      {outStandingBal.totalBuyBills == 0
-                                        ? ""
-                                        : "See All"}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="reports_cards margin_bottom">
-                          <div className="row margin_bottom">
-                            <div className="col-lg-6 col_left">
+                    <div onClick={DateModalPopup} className="selected_date m-0">
+                      <div className="d-flex align-items-center">
+                        <span className="date_icon">
+                          <img src={date_icon} alt="icon" className="mr-2" />
+                        </span>
+                        {(() => {
+                          if (tabType == "Daily") {
+                            return <p>{partnerSelectDate}</p>;
+                          } else if (tabType == "Weekly") {
+                            return (
+                              <p>
+                                <span id="startWeekDate">{weekStartDate}</span>{" "}
+                                to <span id="endWeekDate">{weekEndDate}</span>
+                              </p>
+                            );
+                          } else if (tabType == "Monthly") {
+                            return <p>{monthSelectDate}</p>;
+                          } else if (tabType == "Yearly") {
+                            return <p>{yearSelectDate}</p>;
+                          }
+                        })()}
+                      </div>
+                    </div>
+                    {tabType == "Daily" ? (
+                      <span className="" onClick={onNextDate}>
+                        <img src={next_icon} alt="icon" className="ml-2" />
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  {isLoading ? (
+                    <div className="">
+                      <img src={loading} alt="my-gif" className="gif_img" />
+                    </div>
+                  ) : (
+                    <div>
+                      {smartboardData != null ? (
+                        // {tabType}
+                        <div className="row smartboard_row" id="scroll_style">
+                          {/* left side */}
+                          <div className="col-lg-9 smartboard_div p-0">
+                            <div className="outstanding_balance margin_bottom">
                               <h4 className="smartboard_main_header">
-                                Sales Reports
+                                Outstanding Balances
                               </h4>
-                              <div className="card default_card">
-                                <div className="row">
-                                  <div className="col-lg-6 col_left_border">
-                                    <h5 className="">Total Sales </h5>
-                                    <h6 className="">
-                                      {salesReprtData.totalBusiness == 0
-                                        ? ""
-                                        : salesReprtData.totalBusiness}
-                                    </h6>
-                                  </div>
-                                  <div className="col-lg-6 col2">
-                                    <h5 className="">Total Quantity </h5>
-                                    <h6 className="">
-                                      {salesReprtData.totalUnits == 0
-                                        ? ""
-                                        : salesReprtData.totalUnits}
-                                    </h6>
+                              <div className="row">
+                                <div className="col-lg-6 p-0">
+                                  <div className="card pending_rec_card green_card">
+                                    <div className="row">
+                                      <div className="col-lg-6 col_left_border">
+                                        <h5 className="color_head_subtext">
+                                          Pending Receivables{" "}
+                                        </h5>
+                                        {outStandingBal.pendingRecievables ==
+                                        0 ? (
+                                          <p className="nodata">
+                                            No Data Available
+                                          </p>
+                                        ) : (
+                                          <h6 className="color_head_subtext">
+                                            {outStandingBal.pendingRecievables}
+                                          </h6>
+                                        )}
+                                        <p>
+                                          {outStandingBal.pendingRecievables ==
+                                          0
+                                            ? ""
+                                            : "See Buyer Ledger"}
+                                        </p>
+                                      </div>
+                                      <div className="col-lg-6 col2">
+                                        <h5 className="color_head_subtext">
+                                          Sell Bills{" "}
+                                        </h5>
+                                        {outStandingBal.totalSellBills == 0 ? (
+                                          <p className="nodata">
+                                            No Data Available
+                                          </p>
+                                        ) : (
+                                          <h6 className="color_head_subtext">
+                                            {outStandingBal.totalSellBills}
+                                          </h6>
+                                        )}
+
+                                        <p>
+                                          {outStandingBal.totalSellBills == 0
+                                            ? ""
+                                            : "See All"}
+                                        </p>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                                {salesReprtData.totalBusiness == 0 ? (
-                                  <NoDataText />
-                                ) : (
-                                  <div className="row top_border">
-                                    <p className="color_blue text-center">
-                                      See All
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                            <div className="col-lg-6 col_right">
-                              <h4 className="smartboard_main_header">
-                                Purchase Reports
-                              </h4>
-                              <div className="card default_card">
-                                <div className="row">
-                                  <div className="col-lg-6 col_left_border">
-                                    <h5 className="">Total Purchases </h5>
-                                    <h6 className="">
-                                      {purchaseReprtData.totalBusiness == 0
-                                        ? ""
-                                        : purchaseReprtData.totalBusiness}
-                                    </h6>
-                                  </div>
-                                  <div className="col-lg-6 col2">
-                                    <h5 className="">Total Quantity </h5>
-                                    <h6 className="">
-                                      {purchaseReprtData.totalUnits == 0
-                                        ? ""
-                                        : purchaseReprtData.totalUnits}
-                                    </h6>
+                                <div className="col-lg-6">
+                                  <div className="card pending_rec_card pending_pay_card warning_card">
+                                    <div className="row">
+                                      <div className="col-lg-6 col_left_border">
+                                        <h5 className="">Pending Payables </h5>
+                                        {outStandingBal.pendingPaybles == 0 ? (
+                                          <p className="nodata color_black">
+                                            No Data Available
+                                          </p>
+                                        ) : (
+                                          <h6 className="color_red">
+                                            {outStandingBal.pendingPaybles}
+                                          </h6>
+                                        )}
+
+                                        <p className="color_blue">
+                                          {outStandingBal.pendingPaybles == 0
+                                            ? ""
+                                            : "See Buyer Ledger"}
+                                        </p>
+                                      </div>
+                                      <div className="col-lg-6 col2">
+                                        <h5 className="">Buy Bills </h5>
+                                        {outStandingBal.totalBuyBills == 0 ? (
+                                          <p className="nodata color_black">
+                                            No Data Available
+                                          </p>
+                                        ) : (
+                                          <h6 className="color_red">
+                                            {outStandingBal.totalBuyBills}
+                                          </h6>
+                                        )}
+
+                                        <p className="color_blue">
+                                          {outStandingBal.totalBuyBills == 0
+                                            ? ""
+                                            : "See All"}
+                                        </p>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                                {purchaseReprtData.totalBusiness == 0 ? (
-                                  <NoDataText />
-                                ) : (
-                                  <div className="row top_border">
-                                    <p className="color_blue text-center">
-                                      See All
-                                    </p>
-                                  </div>
-                                )}
                               </div>
                             </div>
-                          </div>
-                          <div className="row margin_bottom">
-                            <div className="col-lg-6 col_left">
-                              <div className="card default_card">
-                                <h5 className="text-center mb-2">
-                                  Sales by Crop
-                                </h5>
-                                {cropSalesData.length != 0 ? (
-                                  <div>
-                                    <div className="d-flex crop_data">
-                                      {cropSalesData.map((sellCrop, index) => {
-                                        return (
-                                          <div className="" key={index}>
-                                            <div
-                                              className={
-                                                "crop_div" +
-                                                (cropItem == sellCrop
-                                                  ? " active"
-                                                  : "")
-                                              }
-                                              onClick={() =>
-                                                cropOnclick(sellCrop)
-                                              }
-                                            >
-                                              <img src={sellCrop.imageUrl} />
-                                              <p className="crop_text">
-                                                {sellCrop.cropName}
+                            <div className="reports_cards margin_bottom">
+                              <div className="row margin_bottom">
+                                <div className="col-lg-6 col_left">
+                                  <h4 className="smartboard_main_header">
+                                    Sales Reports
+                                  </h4>
+                                  <div className="card default_card">
+                                    <div className="row">
+                                      <div className="col-lg-6 col_left_border">
+                                        <h5 className="">Total Sales </h5>
+                                        <h6 className="">
+                                          {salesReprtData.totalBusiness == 0
+                                            ? ""
+                                            : salesReprtData.totalBusiness}
+                                        </h6>
+                                      </div>
+                                      <div className="col-lg-6 col2">
+                                        <h5 className="">Total Quantity </h5>
+                                        <h6 className="">
+                                          {salesReprtData.totalUnits == 0
+                                            ? ""
+                                            : salesReprtData.totalUnits}
+                                        </h6>
+                                      </div>
+                                    </div>
+                                    {salesReprtData.totalBusiness == 0 ? (
+                                      <NoDataText />
+                                    ) : (
+                                      <div className="row top_border">
+                                        <p className="color_blue text-center">
+                                          See All
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="col-lg-6 col_right">
+                                  <h4 className="smartboard_main_header">
+                                    Purchase Reports
+                                  </h4>
+                                  <div className="card default_card">
+                                    <div className="row">
+                                      <div className="col-lg-6 col_left_border">
+                                        <h5 className="">Total Purchases </h5>
+                                        <h6 className="">
+                                          {purchaseReprtData.totalBusiness == 0
+                                            ? ""
+                                            : purchaseReprtData.totalBusiness}
+                                        </h6>
+                                      </div>
+                                      <div className="col-lg-6 col2">
+                                        <h5 className="">Total Quantity </h5>
+                                        <h6 className="">
+                                          {purchaseReprtData.totalUnits == 0
+                                            ? ""
+                                            : purchaseReprtData.totalUnits}
+                                        </h6>
+                                      </div>
+                                    </div>
+                                    {purchaseReprtData.totalBusiness == 0 ? (
+                                      <NoDataText />
+                                    ) : (
+                                      <div className="row top_border">
+                                        <p className="color_blue text-center">
+                                          See All
+                                        </p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="row margin_bottom">
+                                <div className="col-lg-6 col_left">
+                                  <div className="card default_card">
+                                    <h5 className="text-center mb-2">
+                                      Sales by Crop
+                                    </h5>
+                                    {cropSalesData.length != 0 ? (
+                                      <div>
+                                        <div className="d-flex crop_data">
+                                          {cropSalesData.map(
+                                            (sellCrop, index) => {
+                                              return (
+                                                <div className="" key={index}>
+                                                  <div
+                                                    className={
+                                                      "crop_div" +
+                                                      (cropItem == sellCrop
+                                                        ? " active"
+                                                        : "")
+                                                    }
+                                                    onClick={() =>
+                                                      cropOnclick(sellCrop)
+                                                    }
+                                                  >
+                                                    <img
+                                                      src={sellCrop.imageUrl}
+                                                    />
+                                                    <p className="crop_text">
+                                                      {sellCrop.cropName}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                        {cropItem != null && (
+                                          <div>
+                                            <div className="row mt-3">
+                                              <div className="col-lg-6 col_left_border">
+                                                <h5 className="">
+                                                  {" "}
+                                                  Total Sales{" "}
+                                                </h5>
+                                                <h6 className="">
+                                                  {cropItem.totalBusiness}
+                                                </h6>
+                                              </div>
+                                              <div className="col-lg-6 col2">
+                                                <h5 className="">
+                                                  Total Quantity{" "}
+                                                </h5>
+                                                <h6 className="">
+                                                  {cropItem.totalQty}
+                                                </h6>
+                                              </div>
+                                            </div>
+                                            <div className="row top_border">
+                                              <p className="color_blue text-center">
+                                                See All
                                               </p>
                                             </div>
                                           </div>
-                                        );
-                                      })}
-                                    </div>
-                                    {cropItem != null && (
-                                      <div>
-                                        <div className="row mt-3">
-                                          <div className="col-lg-6 col_left_border">
-                                            <h5 className=""> Total Sales </h5>
-                                            <h6 className="">
-                                              {cropItem.totalBusiness}
-                                            </h6>
-                                          </div>
-                                          <div className="col-lg-6 col2">
-                                            <h5 className="">
-                                              Total Quantity{" "}
-                                            </h5>
-                                            <h6 className="">
-                                              {cropItem.totalQty}
-                                            </h6>
-                                          </div>
-                                        </div>
-                                        <div className="row top_border">
-                                          <p className="color_blue text-center">
-                                            See All
-                                          </p>
-                                        </div>
+                                        )}
                                       </div>
+                                    ) : (
+                                      <NoDataText />
                                     )}
                                   </div>
-                                ) : (
-                                  <NoDataText />
-                                )}
+                                </div>
+                                <div className="col-lg-6 col_right">
+                                  <div className="card default_card">
+                                    <h5 className="text-center mb-2">
+                                      Sales by Crop
+                                    </h5>
+                                    {cropSalesData.length != 0 ? (
+                                      <div>
+                                        <div className="d-flex crop_data">
+                                          {cropPurchaseData.map(
+                                            (buyCrop, index) => {
+                                              return (
+                                                <div className="" key={index}>
+                                                  <div
+                                                    className={
+                                                      "crop_div" +
+                                                      (buycropItem == buyCrop
+                                                        ? " active"
+                                                        : "")
+                                                    }
+                                                    onClick={() =>
+                                                      buyCropOnclick(buyCrop)
+                                                    }
+                                                  >
+                                                    <img
+                                                      src={buyCrop.imageUrl}
+                                                    />
+                                                    <p className="crop_text">
+                                                      {buyCrop.cropName}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                        {buycropItem != null && (
+                                          <div>
+                                            <div className="row mt-3">
+                                              <div className="col-lg-6 col_left_border">
+                                                <h5 className="">
+                                                  {" "}
+                                                  Total Purchases{" "}
+                                                </h5>
+                                                <h6 className="">
+                                                  {buycropItem.totalBusiness}
+                                                </h6>
+                                              </div>
+                                              <div className="col-lg-6 col2">
+                                                <h5 className="">
+                                                  Total Quantity{" "}
+                                                </h5>
+                                                <h6 className="">
+                                                  {buycropItem.totalQty}
+                                                </h6>
+                                              </div>
+                                            </div>
+                                            <div className="row top_border">
+                                              <p className="color_blue text-center">
+                                                See All
+                                              </p>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <NoDataText />
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                            <div className="col-lg-6 col_right">
-                              <div className="card default_card">
-                                <h5 className="text-center mb-2">
-                                  Sales by Crop
-                                </h5>
-                                {cropSalesData.length != 0 ? (
-                                  <div>
-                                    <div className="d-flex crop_data">
-                                      {cropPurchaseData.map(
-                                        (buyCrop, index) => {
+                              <div className="row margin_bottom">
+                                <div className="col-lg-6 col_left">
+                                  <div className="card default_card">
+                                    <h5 className="text-center mb-2">
+                                      Sales By Buyer{" "}
+                                    </h5>
+                                    {buyerData.length != 0 ? (
+                                      <OwlCarousel
+                                        className="owl-theme owl_car"
+                                        items={1}
+                                        stagePadding={30}
+                                        margin={20}
+                                        responsive={car.responsive}
+                                      >
+                                        {buyerData.map((buyerItem, index) => {
                                           return (
-                                            <div className="" key={index}>
-                                              <div
-                                                className={
-                                                  "crop_div" +
-                                                  (buycropItem == buyCrop
-                                                    ? " active"
-                                                    : "")
-                                                }
-                                                onClick={() =>
-                                                  buyCropOnclick(buyCrop)
-                                                }
-                                              >
-                                                <img src={buyCrop.imageUrl} />
-                                                <p className="crop_text">
-                                                  {buyCrop.cropName}
-                                                </p>
+                                            <div key={index}>
+                                              <div className="d-flex item_div align-items-center">
+                                                <img
+                                                  src={single_bill}
+                                                  alt="image"
+                                                  className="userIcon"
+                                                />
+                                                <div>
+                                                  <h4>{buyerItem.partyName}</h4>
+                                                  <h5>{buyerItem.mobile}</h5>
+                                                  <h6>
+                                                    {buyerItem.trader
+                                                      ? "Trader"
+                                                      : "Buyer"}
+                                                  </h6>
+                                                </div>
                                               </div>
                                             </div>
                                           );
-                                        }
-                                      )}
-                                    </div>
-                                    {buycropItem != null && (
-                                      <div>
-                                        <div className="row mt-3">
-                                          <div className="col-lg-6 col_left_border">
-                                            <h5 className="">
-                                              {" "}
-                                              Total Purchases{" "}
-                                            </h5>
-                                            <h6 className="">
-                                              {buycropItem.totalBusiness}
-                                            </h6>
-                                          </div>
-                                          <div className="col-lg-6 col2">
-                                            <h5 className="">
-                                              Total Quantity{" "}
-                                            </h5>
-                                            <h6 className="">
-                                              {buycropItem.totalQty}
-                                            </h6>
-                                          </div>
-                                        </div>
-                                        <div className="row top_border">
-                                          <p className="color_blue text-center">
-                                            See All
-                                          </p>
-                                        </div>
-                                      </div>
+                                        })}
+                                      </OwlCarousel>
+                                    ) : (
+                                      <NoDataText />
                                     )}
                                   </div>
-                                ) : (
-                                  <NoDataText />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="row margin_bottom">
-                            <div className="col-lg-6 col_left">
-                              <div className="card default_card">
-                                <h5 className="text-center mb-2">
-                                  Sales By Buyer{" "}
-                                </h5>
-                                {buyerData.length != 0 ? (
-                                  <OwlCarousel
-                                    className="owl-theme owl_car"
-                                    items={1}
-                                    stagePadding={30}
-                                    margin={20}
-                                    responsive={car.responsive}
-                                  >
-                                    {buyerData.map((buyerItem, index) => {
-                                      return (
-                                        <div key={index}>
-                                          <div className="d-flex item_div align-items-center">
-                                            <img
-                                              src={single_bill}
-                                              alt="image"
-                                              className="userIcon"
-                                            />
-                                            <div>
-                                              <h4>{buyerItem.partyName}</h4>
-                                              <h5>{buyerItem.mobile}</h5>
-                                              <h6>
-                                                {buyerItem.trader
-                                                  ? "Trader"
-                                                  : "Buyer"}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </OwlCarousel>
-                                ) : (
-                                  <NoDataText />
-                                )}
-                              </div>
-                            </div>
-                            <div className="col-lg-6 col_right">
-                              <div className="card default_card">
-                                <h5 className="text-center mb-2">
-                                  Purchase By Seller{" "}
-                                </h5>
-                                {farmerData.length != 0 ? (
-                                  <OwlCarousel
-                                    className="owl-theme owl_car"
-                                    items={1}
-                                    stagePadding={30}
-                                    margin={20}
-                                    responsive={car.responsive}
-                                  >
-                                    {farmerData.map((farmerItem, index) => {
-                                      return (
-                                        <div key={index}>
-                                          <div className="d-flex item_div align-items-center">
-                                            <img
-                                              src={single_bill}
-                                              alt="image"
-                                              className="userIcon"
-                                            />
-                                            <div>
-                                              <h4>{farmerItem.partyName}</h4>
-                                              <h5>{farmerItem.mobile}</h5>
-                                              <h6>
-                                                {farmerItem.trader
-                                                  ? "Trader"
-                                                  : "Seller"}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
-                                  </OwlCarousel>
-                                ) : (
-                                  <NoDataText />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="reports_cards margin_bottom">
-                          <h4 className="smartboard_main_header">
-                            Recent Transactions
-                          </h4>
-                          <div className="row margin_bottom">
-                            <div className="d-flex align-items-center justify-content-between w-100">
-                              <h4 className="trans_title">Buy Transactions</h4>
-                              <p className="trans_title color_blue">
-                                {buyRecentTxs.length != 0 ? "See All" : ""}
-                              </p>
-                            </div>
-                            {buyRecentTxs.length != 0 ? (
-                              <table className="table table-bordered trans_table">
-                                <thead>
-                                  <tr>
-                                    <th className="col-3">Name</th>
-                                    <th className="col-2">Paid</th>
-                                    <th className="col-2">To Be Paid</th>
-                                    <th className="col-2">Past Balance</th>
-                                    <th className="col-3">
-                                      Total Outstanding Payables
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {buyRecentTxs.map((item, index) => {
-                                    return (
-                                      <tr key={index}>
-                                        <td className="name_data">
-                                          <div className="d-flex">
-                                            <img
-                                              src={single_bill}
-                                              alt="image"
-                                              className="userIcon"
-                                            />
-                                            <div>
-                                              <h4>{item.farmerName}</h4>
-                                              <h4>Bill No {item.billId}</h4>
-                                            </div>
-                                          </div>
-                                        </td>
-                                        <td>0</td>
-                                        <td>{item.totalPayble}</td>
-                                        <td>{item.pastBal}</td>
-                                        <td>{item.totalOutstdPay}</td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            ) : (
-                              <div className="default_card w-100">
-                                <NoDataText />
-                              </div>
-                            )}
-                            <div className="d-flex align-items-center justify-content-between w-100 mt-4">
-                              <h4 className="trans_title">Sell Transactions</h4>
-                              <p className="trans_title color_blue">
-                                {sellRecentTxs.length != 0 ? "See All" : ""}
-                              </p>
-                            </div>
-                            {sellRecentTxs.length != 0 ? (
-                              <table className="table table-bordered trans_table">
-                                <thead>
-                                  <tr>
-                                    <th className="col-3">Name</th>
-                                    <th className="col-2">Received</th>
-                                    <th className="col-2">To Be Received</th>
-                                    <th className="col-2">Past Balance</th>
-                                    <th className="col-3">
-                                      Total Outstanding Receivables
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {sellRecentTxs.map((item, index) => {
-                                    return (
-                                      <tr key={index}>
-                                        <td className="name_data">
-                                          <div className="d-flex ">
-                                            <img
-                                              src={single_bill}
-                                              alt="image"
-                                              className="userIcon"
-                                            />
-                                            <div>
-                                              <h4>{item.buyerName}</h4>
-                                              <h4>Bill No {item.billId}</h4>
-                                            </div>
-                                          </div>
-                                        </td>
-                                        <td>0</td>
-                                        <td>{item.totalReceivable}</td>
-                                        <td>{item.pastBal}</td>
-                                        <td>{item.totalOutstdRcv}</td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            ) : (
-                              <div className="default_card w-100">
-                                <NoDataText />
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      {/* right side */}
-                      <div className="col-lg-3 smartboard_div">
-                        <div className="smartboard_right_cards">
-                          <div className="comission margin_bottom">
-                            <h4 className="smartboard_main_header">
-                              My Commissions
-                            </h4>
-                            <div className="card default_card">
-                              <div className="row">
-                                <div className="col-lg-6 col_left_border">
-                                  <h5 className="">Earned </h5>
-                                  <h6 className="">
-                                    {commissionEarns.totalComm == 0
-                                      ? ""
-                                      : commissionEarns.totalComm}
-                                  </h6>
                                 </div>
-                                <div className="col-lg-6 pr-0">
-                                  <h5 className="">Net Commissions </h5>
-                                  <h6 className="">
-                                    {commissionEarns.netComm == 0
-                                      ? ""
-                                      : commissionEarns.netComm}
-                                  </h6>
+                                <div className="col-lg-6 col_right">
+                                  <div className="card default_card">
+                                    <h5 className="text-center mb-2">
+                                      Purchase By Seller{" "}
+                                    </h5>
+                                    {farmerData.length != 0 ? (
+                                      <OwlCarousel
+                                        className="owl-theme owl_car"
+                                        items={1}
+                                        stagePadding={30}
+                                        margin={20}
+                                        responsive={car.responsive}
+                                      >
+                                        {farmerData.map((farmerItem, index) => {
+                                          return (
+                                            <div key={index}>
+                                              <div className="d-flex item_div align-items-center">
+                                                <img
+                                                  src={single_bill}
+                                                  alt="image"
+                                                  className="userIcon"
+                                                />
+                                                <div>
+                                                  <h4>
+                                                    {farmerItem.partyName}
+                                                  </h4>
+                                                  <h5>{farmerItem.mobile}</h5>
+                                                  <h6>
+                                                    {farmerItem.trader
+                                                      ? "Trader"
+                                                      : "Seller"}
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
+                                      </OwlCarousel>
+                                    ) : (
+                                      <NoDataText />
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                              {(commissionEarns.totalComm &&
-                                commissionEarns.netComm) == 0 ? (
-                                <NoDataText />
-                              ) : (
-                                <p className="color_blue see_all">See All</p>
-                              )}
+                            </div>
+                            <div className="reports_cards margin_bottom">
+                              <h4 className="smartboard_main_header">
+                                Recent Transactions
+                              </h4>
+                              <div className="row margin_bottom">
+                                <div className="d-flex align-items-center justify-content-between w-100">
+                                  <h4 className="trans_title">
+                                    Buy Transactions
+                                  </h4>
+                                  <p className="trans_title color_blue">
+                                    {buyRecentTxs.length != 0 ? "See All" : ""}
+                                  </p>
+                                </div>
+                                {buyRecentTxs.length != 0 ? (
+                                  <table className="table table-bordered trans_table">
+                                    <thead>
+                                      <tr>
+                                        <th className="col-3">Name</th>
+                                        <th className="col-2">Paid</th>
+                                        <th className="col-2">To Be Paid</th>
+                                        <th className="col-2">Past Balance</th>
+                                        <th className="col-3">
+                                          Total Outstanding Payables
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {buyRecentTxs.map((item, index) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td className="name_data">
+                                              <div className="d-flex">
+                                                <img
+                                                  src={single_bill}
+                                                  alt="image"
+                                                  className="userIcon"
+                                                />
+                                                <div>
+                                                  <h4>{item.farmerName}</h4>
+                                                  <h4>Bill No {item.billId}</h4>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td>0</td>
+                                            <td>{item.totalPayble}</td>
+                                            <td>{item.pastBal}</td>
+                                            <td>{item.totalOutstdPay}</td>
+                                          </tr>
+                                        );
+                                      })}
+                                    </tbody>
+                                  </table>
+                                ) : (
+                                  <div className="default_card w-100">
+                                    <NoDataText />
+                                  </div>
+                                )}
+                                <div className="d-flex align-items-center justify-content-between w-100 mt-4">
+                                  <h4 className="trans_title">
+                                    Sell Transactions
+                                  </h4>
+                                  <p className="trans_title color_blue">
+                                    {sellRecentTxs.length != 0 ? "See All" : ""}
+                                  </p>
+                                </div>
+                                {sellRecentTxs.length != 0 ? (
+                                  <table className="table table-bordered trans_table">
+                                    <thead>
+                                      <tr>
+                                        <th className="col-3">Name</th>
+                                        <th className="col-2">Received</th>
+                                        <th className="col-2">
+                                          To Be Received
+                                        </th>
+                                        <th className="col-2">Past Balance</th>
+                                        <th className="col-3">
+                                          Total Outstanding Receivables
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {sellRecentTxs.map((item, index) => {
+                                        return (
+                                          <tr key={index}>
+                                            <td className="name_data">
+                                              <div className="d-flex ">
+                                                <img
+                                                  src={single_bill}
+                                                  alt="image"
+                                                  className="userIcon"
+                                                />
+                                                <div>
+                                                  <h4>{item.buyerName}</h4>
+                                                  <h4>Bill No {item.billId}</h4>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td>0</td>
+                                            <td>{item.totalReceivable}</td>
+                                            <td>{item.pastBal}</td>
+                                            <td>{item.totalOutstdRcv}</td>
+                                          </tr>
+                                        );
+                                      })}
+                                    </tbody>
+                                  </table>
+                                ) : (
+                                  <div className="default_card w-100">
+                                    <NoDataText />
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                          <div className="margin_bottom">
-                            <h4 className="smartboard_main_header">
-                              Quick Actions
-                            </h4>
-                            <div className="card default_card">
-                              <h4 className="smartboard_main_header">
-                                Sell Bill Book
-                              </h4>
-                              <Link to="/buy_bill_book">
-                                <OutlineButton text="Add Sell Bill" />
-                              </Link>
-                            </div>
-                            <div className="card default_card mt-3">
-                              <h4 className="smartboard_main_header">
-                                Buy Bill Book
-                              </h4>
-                              <Link to="/buy_bill_book">
-                                <OutlineButton text="Add Purchase Bill" />
-                              </Link>
+                          {/* right side */}
+                          <div className="col-lg-3 smartboard_div">
+                            <div className="smartboard_right_cards">
+                              <div className="comission margin_bottom">
+                                <h4 className="smartboard_main_header">
+                                  My Commissions
+                                </h4>
+                                <div className="card default_card">
+                                  <div className="row">
+                                    <div className="col-lg-6 col_left_border">
+                                      <h5 className="">Earned </h5>
+                                      <h6 className="">
+                                        {commissionEarns.totalComm == 0
+                                          ? ""
+                                          : commissionEarns.totalComm}
+                                      </h6>
+                                    </div>
+                                    <div className="col-lg-6 pr-0">
+                                      <h5 className="">Net Commissions </h5>
+                                      <h6 className="">
+                                        {commissionEarns.netComm == 0
+                                          ? ""
+                                          : commissionEarns.netComm}
+                                      </h6>
+                                    </div>
+                                  </div>
+                                  {(commissionEarns.totalComm &&
+                                    commissionEarns.netComm) == 0 ? (
+                                    <NoDataText />
+                                  ) : (
+                                    <p className="color_blue see_all">
+                                      See All
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="margin_bottom">
+                                <h4 className="smartboard_main_header">
+                                  Quick Actions
+                                </h4>
+                                <div className="card default_card">
+                                  <h4 className="smartboard_main_header">
+                                    Sell Bill Book
+                                  </h4>
+                                  <Link to="/buy_bill_book">
+                                    <OutlineButton text="Add Sell Bill" />
+                                  </Link>
+                                </div>
+                                <div className="card default_card mt-3">
+                                  <h4 className="smartboard_main_header">
+                                    Buy Bill Book
+                                  </h4>
+                                  <Link to="/buy_bill_book">
+                                    <OutlineButton text="Add Purchase Bill" />
+                                  </Link>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      ) : (
+                        <NoDataAvailable />
+                      )}
                     </div>
-                  ) : (
-                    <NoDataAvailable />
                   )}
                 </div>
-              )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
       <div className="modal fade" id="datePopupmodalPopup">

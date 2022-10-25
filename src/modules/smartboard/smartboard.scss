@@ -360,3 +360,21 @@
 .smartboard_date img:hover{
   cursor: pointer;
 }
+.complete_profile{
+  background-color: #16a02c;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  p{
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+  button{
+    font-size: 15px;
+    padding: 10px;
+    color: #121212;
+    border: none;
+    border-radius: 10px;
+  }
+}

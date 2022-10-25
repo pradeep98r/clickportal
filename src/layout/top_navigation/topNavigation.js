@@ -25,7 +25,7 @@ function TopNavigation() {
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
     localStorage.removeItem("LinkPath");
-    localStorage.removeItem("languageData")
+    localStorage.removeItem("languageData");
     localStorage.setItem("LinkPath", "/smartboard");
     console.log(loginUserDetails, "after clearing");
   };
@@ -79,16 +79,27 @@ function TopNavigation() {
                   data-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  {loginUserDetails.profile.profile.fullName}
+                  {loginUserDetails.profile.profile != null
+                    ? loginUserDetails.profile.profile.fullName
+                    : ""}
                 </div>
                 <div className="dropdown-menu">
                   <a className="dropdown-item" href="#">
                     {" "}
-                    <p>Click Id:{loginUserDetails.profile.profile.clickId}</p>
+                    <p>
+                      Click Id:
+                      {loginUserDetails.profile.profile != null
+                        ? loginUserDetails.profile.profile.clickId
+                        : loginUserDetails.clickId}
+                    </p>
                   </a>
                   <a className="dropdown-item" href="#">
                     {" "}
-                    <p>{loginUserDetails.profile.profile.mobile}</p>
+                    <p>
+                      {loginUserDetails.profile.profile != null
+                        ? loginUserDetails.profile.profile.mobile
+                        : "kk"}
+                    </p>
                   </a>
                   <a className="dropdown-item" href="#">
                     {" "}

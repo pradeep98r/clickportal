@@ -45,67 +45,77 @@ const RoutesConfig = () => {
       const loginData = JSON.parse(localStorage.getItem("loginResponse"));
       // console.log(localStorage.getItem("registerData"),"bef data")
       if (loginData.useStatus == "USER_REGISTRATION_PENDING") {
-        const id = localStorage.getItem("registerData") == null ? '0' :localStorage.getItem("registerData");
-        console.log(loginData.clickId, id, "login data before registration");
+        const id =
+          localStorage.getItem("registerData") == null
+            ? "0"
+            : localStorage.getItem("registerData");
+        // console.log(loginData.clickId, id, "login data before registration");
         if (id !== loginData.clickId.toString()) {
-          return (
-          <BrowserRouter>
-            <Routes>
-              <Route path="/registration" element={<Registration />} />
-            </Routes>
-          </BrowserRouter>)
-        } 
-        else if (id === loginData.clickId.toString()) {
-          console.log(id);
           return (
             <BrowserRouter>
               <Routes>
-                <Route path="/preferredCrops" element={<PreferredCrops />} />
+                <Route path="/registration" element={<Registration />} />
               </Routes>
-              {/* <Layout>
-              <Routes>
-                <Route path="/smartboard" element={<SmartBoard />} />
-                <Route path="/buy_bill_book" element={<BuyBillBook />} />
-                <Route path="/bill_creation" element={<BillCreation />} />
-                <Route path="/bill_view/:billId" element={<BillView />} />
-                <Route path="/calender" element={<Calender />} />
-                <Route path="buyerledger" element={<BuyerLedger />}>
-                  <Route
-                    path="ledgersummary/:partyId"
-                    element={<LedgerSummary />}
-                  />
-                  <Route
-                    path="detailedledger/:partyId"
-                    element={<DetailedLedger />}
-                  />
-                </Route>
-                <Route path="sellerledger" element={<SellerLedger />}>
-                  <Route
-                    path="sellerledgersummary/:partyId"
-                    element={<SellerLedgerSummary />}
-                  />
-                  <Route
-                    path="sellerdetailedledger/:partyId"
-                    element={<SellerDetailedLedger />}
-                  />
-                </Route>
-                <Route path="/partner" element={<Partner />} />
-                <Route path="/myprofile" element={<MyProfile />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/sellbillbook" element={<SellBillBook />} />
-                <Route path="/smartchart" element={<SmartChart />} />
-                <Route
-                  path="/transportoledger"
-                  element={<TransportoLedger />}
-                />
-              </Routes>
-            </Layout> */}
+            </BrowserRouter>
+          );
+        } else if (id === loginData.clickId.toString()) {
+          // console.log(loginData, localStorage.getItem("status"));
+          const savePref =
+            localStorage.getItem("status") == null
+              ? ""
+              : localStorage.getItem("status");
+          return (
+            <BrowserRouter>
+              {savePref == "SUCCESS" ? (
+                <Layout>
+                  <Routes>
+                    <Route path="/smartboard" element={<SmartBoard />} />
+                    <Route path="/buy_bill_book" element={<BuyBillBook />} />
+                    <Route path="/bill_creation" element={<BillCreation />} />
+                    <Route path="/bill_view/:billId" element={<BillView />} />
+                    <Route path="/calender" element={<Calender />} />
+                    <Route path="buyerledger" element={<BuyerLedger />}>
+                      <Route
+                        path="ledgersummary/:partyId"
+                        element={<LedgerSummary />}
+                      />
+                      <Route
+                        path="detailedledger/:partyId"
+                        element={<DetailedLedger />}
+                      />
+                    </Route>
+                    <Route path="sellerledger" element={<SellerLedger />}>
+                      <Route
+                        path="sellerledgersummary/:partyId"
+                        element={<SellerLedgerSummary />}
+                      />
+                      <Route
+                        path="sellerdetailedledger/:partyId"
+                        element={<SellerDetailedLedger />}
+                      />
+                    </Route>
+                    <Route path="/partner" element={<Partner />} />
+                    <Route path="/myprofile" element={<MyProfile />} />
+                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/sellbillbook" element={<SellBillBook />} />
+                    <Route path="/smartchart" element={<SmartChart />} />
+                    <Route
+                      path="/transportoledger"
+                      element={<TransportoLedger />}
+                    />
+                  </Routes>
+                </Layout>
+              ) : (
+                <Routes>
+                  <Route path="/preferredCrops" element={<PreferredCrops />} />
+                </Routes>
+              )}
             </BrowserRouter>
           );
         }
       } else {
-        console.log(loginData, "login data after succesful registration");
-        console.log(localStorage.getItem("registerData"), "aftter data");
+        // console.log(loginData, "login data after succesful registration");
+        // console.log(localStorage.getItem("registerData"), "aftter data");
         return (
           <BrowserRouter>
             <Layout>

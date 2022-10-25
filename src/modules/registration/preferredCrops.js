@@ -49,6 +49,8 @@ const PreferredCrops = () => {
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toastr.success(response.data.status.description);
+          localStorage.setItem('status',response.data.status.type);
+          navigate('/smartboard');
         }
       },
       (error) => {

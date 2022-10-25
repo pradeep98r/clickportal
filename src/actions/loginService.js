@@ -16,4 +16,7 @@ export function createProfile(obj) {
 export function saveCropPreference(obj,clickId) {
     return axiosCommon.post(`/account/preferences/caId/${clickId}`, obj);
 }
+export function completeMandiSetup(obj, clickId){
+    return axiosCommon.post(`/account/business/onboard/clickId/${clickId}`, obj);
+}
 export default {doLogin, validateOTP, langSelection, createProfile}
