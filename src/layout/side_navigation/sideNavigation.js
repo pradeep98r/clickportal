@@ -101,7 +101,7 @@ class SideNavigation extends Component {
       {
         id: 10,
         name: "Transporto",
-        to: "/cms",
+        to: "/transportoledger",
         className: "side_nav_item",
         img: transporto,
       },

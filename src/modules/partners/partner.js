@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
+import { Component, useState, useEffect } from "react";
+import Navigation from "../../components/navigation";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import OutlineButton from "../../components/outlineButton";
 import "../partners/partner.scss";
-import {
-  getPartnerData,
-  addPartner,
-  deletePartnerId,
-  editPartnerItem,
-} from "../../actions/billCreationService";
+import { getPartnerData, addPartner } from "../../actions/billCreationService";
 import $ from "jquery";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import edit from "../../assets/images/edit_round.svg";
@@ -15,60 +12,24 @@ import close from "../../assets/images/close.svg";
 import NoDataAvailable from "../../components/noDataAvailable";
 import InputField from "../../components/inputField";
 import toastr from "toastr";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
-import date_icon from "../../assets/images/date_icon.svg";
-import { Modal, Button } from "react-bootstrap";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const [partnerData, setPartnerData] = useState([]);
-  const [partyType, setPartyType] = useState("FARMER");
+  const [partyType, setPartyType] = useState("");
+  const [linkType, setLinksType] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const cityValue = localStorage.getItem("cityValue");
   const [file, setFile] = useState("");
+  console.log(cityValue);
   const [nameError, setNameError] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const [showModal, setShow] = useState(false);
-  const [partyIdVal, setPartyIdVal] = useState(0);
-  const handleClose = () => setShow(false);
-  const handleDelete = (partyId) => {
-    //   const deletePartner = (partyId) => {
-    deletePartnerId(partyId, clickId).then(
-      (response) => {
-        if (response.data.status.type === "SUCCESS") {
-          console.log(response, "delete partner");
-          tabEvent(partyType);
-        }
-      },
-      (error) => {
-        toastr.error(error.response.data.status.description);
-      }
-    );
-    setShow(false);
-  };
-  //   };
-  const handleShow = (partyid) => {
-    setShow(true);
-    setPartyIdVal(partyid);
-  };
-
   useEffect(() => {
-    tabEvent(partyType);
+    tabEvent();
+    setLinksType(links);
   }, []);
-  const [mobileNumber, setmobileNumber] = useState("");
-  const [requiredNameField, setRequiredNameField] = useState("");
-  const [requiredshortNameField, setRequiredshortNameField] = useState("");
-  const [requiredNumberField, setRequiredNumberField] = useState("");
+  const [mobileNumber, setmobileNumber] = useState("0");
   const handleMobileNumber = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
-    if(e.target.value.length < 10){
-      setRequiredNumberField("Minimum mobile number length should be 10");
-      console.log("het")
-    }
-    else{
-    setRequiredNumberField("");
-    }
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
   };
@@ -153,115 +114,54 @@ const Partner = () => {
 
     $("#Mymodal").modal("show");
   };
-
   const obj = {
     aadharNum: aadharNumber,
     address: {
-      addressLine: streetVillage,
-      city: cityVal,
-      dist: cityVal,
-      pincode: pincode,
-      state: stateVal,
-      type: "PERSONAL",
+      addressLine: "apps",
+      city: "ap",
+      dist: "string",
+      pincode: 535580,
+      state: "ap",
+      type: "",
     },
-    caId: isEdit ? clickId : 0,
+    caId: 0,
     createdOn: "2022-10-03T10:55:33.895Z",
     mobile: mobileNumber,
     openingBal: openingBalance,
-    openingBalDate: partnerSelectDate,
-    partyId: isEdit ? partnerItem.partyId : 0,
+    openingBalDate: "",
+    partyId: 0,
     partyName: nameField,
     partyType: partyType,
-    profilePic: single_bill,
+    profilePic: "string",
     seqNum: 0,
     shortName: shortNameField,
-    trader:(radioValue.trim().length !== 0) ? (radioValue == "FARMER" || radioValue == "BUYER") ? false : true : false,
+    trader: true,
     vehicleInfo: {
       vehicleNum: "string",
-      vehicleType: vehicleType,
+      vehicleType: "string",
     },
   };
-  //   file ? URL.createObjectURL(file) :
-  
   const onSubmit = () => {
-    console.log(obj);
-    if (
-      nameField.trim().length !== 0 &&
-      mobileNumber.trim().length !== 0 &&
-      shortNameField.trim().length !== 0
-    ) {
-      addEditPartnerApiCall();
-    } else if (nameField.trim().length === 0) {
-      setRequiredNameField("Please Enter Name");
-      // alert("hii")
-    } else if (mobileNumber.trim().length === 0) {
-      setRequiredNumberField("Please Enter Mobile Number");
-    } else if (shortNameField.trim().length === 0) {
-      setRequiredshortNameField("Please Enter Short Name");
-    }
-  };
-  const addEditPartnerApiCall = () => {
-    if (isEdit) {
-      editPartnerItem(obj).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            console.log(response, "edit partner");
-            tabEvent(partyType);
-          }
-        },
-        (error) => {
-          toastr.error(error.response.data.status.description);
-        }
-      );
-    } else {
+    if (obj.mobile != 0 && obj.name) {
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "add partner");
-            tabEvent(partyType);
           }
         },
         (error) => {
           toastr.error(error.response.data.status.description);
         }
       );
-    }
-    closeAddModal();
-  };
-  const searchItems = (searchValue) => {
-    setSearchInput(searchValue);
-    if (searchInput !== "") {
-      const filteredData = partnerData.filter((item) => {
-        return (
-          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.partyId
-            .toString()
-            .toLowerCase()
-            .includes(searchInput.toLowerCase())
-        );
-      });
-      setFilteredResults(filteredData);
     } else {
-      setFilteredResults(partnerData);
+      alert("fields requirde");
     }
+  };
+  const locationFetch = () => {
+    console.log(cityValue);
   };
   const tabEvent = (type) => {
     setPartyType(type);
-    console.log(type);
-    setAadharNumber("");
-    setCityVal("");
-    setNameField("");
-    setOpeningBalance("");
-    setmobileNumber("");
-    setStateVal("");
-    setShortNameField("");
-    setStreetVillage("");
-    setradioValue("");
-    setIsEdit(false);
-    setPincode();
-    setCityVal("");
-    setStateVal("");
     getPartnerData(clickId, type)
       .then((response) => {
         console.log(response.data, "data");
@@ -338,12 +238,10 @@ const Partner = () => {
     var pincodeValue = pincode.replace(/\D/g, "");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[4].short_name;
+    let postal = address.results[5].address_components[0].short_name;
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
-    setPincode(pincodeValue);
-    setCityVal(city);
-    setStateVal(state);
     localStorage.setItem("cityValue", city);
     var $input;
     var $text = $(document.createElement("input"));
@@ -356,7 +254,6 @@ const Partner = () => {
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
-    setPincode(zip);
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
@@ -390,9 +287,9 @@ const Partner = () => {
         for (var j = 0; j < result.address_components.length; j++) {
           var types = result.address_components[j].types;
           for (var k = 0; k < types.length; k++) {
-            if (types[k] === "locality") {
+            if (types[k] == "locality") {
               locality.city = result.address_components[j].long_name;
-            } else if (types[k] === "administrative_area_level_1") {
+            } else if (types[k] == "administrative_area_level_1") {
               locality.state = result.address_components[j].short_name;
             }
           }
@@ -420,8 +317,7 @@ const Partner = () => {
     $("#state").val(locality.state);
     var $input;
     var city = localities[0].city;
-    setCityVal(city);
-    setStateVal(locality.state);
+    console.log(city);
     var $text = $(document.createElement("input"));
     $text.attr("value", city);
     $text.attr("type", "text");
@@ -465,9 +361,9 @@ const Partner = () => {
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             {links.map((link) => {
               return (
-                <li key={link.id} className="nav-item ">
+                <li key={link.id} className="nav-item active">
                   <a
-                    className={"nav-link" + (partyType == link.to ? ' active' : '')}
+                    className="nav-link"
                     href={"#" + partyType}
                     role="tab"
                     aria-controls="home"
@@ -489,16 +385,10 @@ const Partner = () => {
             >
               <div className="row">
                 <div className="col-lg-9 ps-0">
-                  <input
-                    icon="search"
-                    placeholder="Search"
-                    onChange={(e) => searchItems(e.target.value)}
-                    className="search_text"
-                  />
-                  <div>
-                    {searchInput.length > 1 ? (
-                      filteredResults.map((partner, index) => {
-                        return (
+                  {partnerData.length > 0 ? (
+                    <div>
+                      <div className="partner_div" id="scroll_style">
+                        {partnerData.map((partner, index) => (
                           <div className="card partner_card" key={index}>
                             <div className="d-flex partner_card_flex justify-content-between align-items-center">
                               <div className="d-flex align-items-center">
@@ -517,75 +407,17 @@ const Partner = () => {
                                 </div>
                               </div>
                               <div className="d-flex edit_delete_icons">
-                                <img
-                                  src={edit}
-                                  alt="img"
-                                  className=""
-                                  onClick={() => editPartner(partner)}
-                                />
-                                <img
-                                  src={delete_icon}
-                                  alt="img"
-                                  onClick={() => handleShow(partner.partyId)}
-                                />
+                                <img src={edit} alt="img" className="" />
+                                <img src={delete_icon} alt="img" />
                               </div>
                             </div>
                           </div>
-                        );
-                      })
-                    ) : partnerData.length > 0 ? (
-                      <div>
-                        <div className="partner_div" id="scroll_style">
-                          {partnerData.map((partner, index) => (
-                            <div className="card partner_card" key={index}>
-                              <div className="d-flex partner_card_flex justify-content-between align-items-center">
-                                <div className="d-flex align-items-center">
-                                  <img
-                                    src={single_bill}
-                                    alt="img"
-                                    className="user_img"
-                                  />
-                                  <div>
-                                    <h5>
-                                      {partner.partyName +
-                                        " " +
-                                        partner.shortName}
-                                    </h5>
-                                    <h6>
-                                      {partner.partyType} - {partner.partyId} |{" "}
-                                      {partner.mobile}
-                                    </h6>
-                                    <p>{partner.address.addressLine}</p>
-                                  </div>
-                                </div>
-                                <div className="d-flex edit_delete_icons">
-                                  <img
-                                    src={edit}
-                                    alt="img"
-                                    className=""
-                                    onClick={() => editPartner(partner)}
-                                  />
-                                  <img
-                                    src={delete_icon}
-                                    alt="img"
-                                    // onClick={() =>
-                                    //   handleOpenDeleteModal(partner.partyId)
-                                    // }
-                                    onClick={() => handleShow(partner.partyId)}
-                                    // onClick={() =>
-                                    //   deletePartner(partner.partyId)
-                                    // }
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                        ))}
                       </div>
-                    ) : (
-                      <NoDataAvailable />
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <NoDataAvailable />
+                  )}
                 </div>
                 <div className="col-lg-3">
                   <div className="card default_card add_partner">
@@ -606,7 +438,7 @@ const Partner = () => {
                           : partyType.toLowerCase()}
                       </button>
                     </div>
-                    {/* <OutlineButton text="Add Seller" /> */}
+                    <OutlineButton text="Add Seller" />
                   </div>
                 </div>
               </div>
@@ -614,327 +446,187 @@ const Partner = () => {
           </div>
         </div>
       </div>
-
-      <div className="modal fade" id="Mymodal">
+      <div
+        className="modal fade"
+        id="staticBackdrop1"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {addeditText}{" "}
-                {partyType == "FARMER" ? "seller" : partyType.toLowerCase()}
+                Add {partyType}
               </h5>
               <img
                 src={close}
                 alt="image"
                 className="close_icon"
-                onClick={closeAddModal}
+                data-bs-dismiss="modal"
               />
             </div>
             <div className="modal-body partner_model_body" id="scroll_style">
               <form>
-                {partyType == "FARMER" || partyType == "BUYER" ? (
-                  <div onChange={onChangeValue}>
-                    <input
-                      type="radio"
-                      value={partyType.toLowerCase()}
-                      name="radioValue"
-                      defaultChecked={(radioValue.trim().length !== 0) ? radioValue === partyType.toLowerCase() : partyType.toLowerCase()}
-                    />{" "}
-                    {partyType.toLowerCase()}
-                    <input
-                      type="radio"
-                      value="trader"
-                      name="radioValue"
-                      defaultChecked={radioValue === "trader"}
-                      className="radioBtnVal"
-                    />{" "}
-                    Trader
-                  </div>
-                ) : (
-                  <div></div>
-                )}
-                {partyType == "COOLIE" ? (
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <InputField
-                        type="text"
-                        value={mobileNumber}
-                        label="Mobile Number*"
-                        name="mobileNumber"
-                        id="mobileNumber"
-                        onChange={(e) => {
-                          handleMobileNumber(e);
-                        }}
-                      />
-                      <span className="text-danger">{requiredNumberField}</span>
-                      <InputField
-                        type="text"
-                        value={nameField}
-                        label="Name*"
-                        name="name"
-                        id="inputName"
-                        onChange={(e) => {
-                          handleName(e);
-                        }}
-                      />
-                      <span className="text-danger">{nameError}</span>
-                      <span className="text-danger">{requiredNameField}</span>
-                      <InputField
-                        type="text"
-                        value={aadharNumber}
-                        label="Aadhar"
-                        name="name"
-                        onChange={(e) => {
-                          handleNumber(e);
-                        }}
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div></div>
-                )}
                 <div className="row">
                   <div className="col-lg-6">
-                    {partyType == "FARMER" ||
-                    partyType == "BUYER" ||
-                    partyType == "TRANSPORTER" ? (
-                      <div>
-                        <InputField
-                          type="text"
-                          value={mobileNumber}
-                          label="Mobile Number*"
-                          name="mobileNumber"
-                          id="mobileNumber"
-                          onChange={(e) => {
-                            handleMobileNumber(e);
-                          }}
-                        />
+                    <InputField
+                      type="text"
+                      value={mobileNumber}
+                      label="Mobile Number*"
+                      name="mobileNumber"
+                      id="mobileNumber"
+                      onChange={(e) => {
+                        handleMobileNumber(e);
+                      }}
+                    />
+                    <InputField
+                      type="text"
+                      value={nameField}
+                      label="Name*"
+                      name="name"
+                      id="inputName"
+                      onChange={(e) => {
+                        handleName(e);
+                      }}
+                    />
+                    <span className="text-danger">{nameError}</span>
+                    <InputField
+                      type="text"
+                      value={aadharNumber}
+                      label="Aadhar"
+                      name="name"
+                      onChange={(e) => {
+                        handleNumber(e);
+                      }}
+                    />
 
-                        <span className="text-danger">
-                          {requiredNumberField}
-                        </span>
-                        <InputField
-                          type="text"
-                          value={nameField}
-                          label="Name*"
-                          name="name"
-                          id="inputName"
-                          onChange={(e) => {
-                            handleName(e);
-                          }}
-                        />
-                        <span className="text-danger">{nameError}</span>
-                        <span className="text-danger">{requiredNameField}</span>
-                        <InputField
-                          type="text"
-                          value={aadharNumber}
-                          label="Aadhar"
-                          name="name"
-                          onChange={(e) => {
-                            handleNumber(e);
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
-                    {partyType == "FARMER" ||
-                    partyType == "BUYER" ||
-                    partyType == "TRANSPORTER" ? (
-                      <InputField
-                        type="text"
-                        value={openingBalance}
-                        label="Opening Balance"
-                        name="name"
-                        onChange={(e) => {
-                          handleOpeninngBal(e);
-                        }}
-                      />
-                    ) : (
-                      <div></div>
-                    )}
+                    <InputField
+                      type="text"
+                      value={openingBalance}
+                      label="Opening Balance"
+                      name="name"
+                      onChange={(e) => {
+                        handleOpeninngBal(e);
+                      }}
+                    />
                     {/* <LocationFetch onClick={locationFetch} /> */}
                     <label className="input_field address_text mt-0">
-                      Address
-                    </label>
+                        Address
+                      </label>
                     <div>
                       <label htmlFor="zip" className="input_field">
                         Pincode
                       </label>
-                      <div>
-                        <input
-                          id="zip"
-                          className="form-control"
-                          type="text"
-                          label="pincode"
-                          name="zip"
-                          onChange={(e) => {
-                            onZip(e);
-                          }}
-                          value={pincode}
-                        />
-                      </div>
+                      <input
+                        id="zip"
+                        className="form-control"
+                        type="text"
+                        label="pincode"
+                        name="zip"
+                        onChange={(e) => {
+                          onZip(e);
+                        }}
+                      />
                     </div>
                     <div>
                       <label htmlFor="city" className="input_field">
                         City
                       </label>
                       <div id="city-input-wrapper">
-                        {isEdit ? (
-                          <div>
-                            <InputField
-                              type="text"
-                              id="city"
-                              name="city"
-                              value={cityVal}
-                            />
-                          </div>
-                        ) : (
-                          <InputField type="text" id="city" name="city" />
-                        )}
+                        <InputField type="text" id="city" name="city" />
                       </div>
                     </div>
                   </div>
                   <div className="col-lg-6">
-                    {partyType != "TRANSPORTER" ? (
-                      partyType != "COOLIE" ? (
-                        <div>
-                         <div>
-                         <InputField
-                            type="text"
-                            value={shortNameField}
-                            label="Initials (Short Name)*"
-                            name="name"
-                            onChange={(e) => {
-                              handleShortName(e);
-                            }}
+                    <InputField
+                      type="text"
+                      value={shortNameField}
+                      label="Initials (Short Name)*"
+                      name="name"
+                      onChange={(e) => {
+                        handleShortName(e);
+                      }}
+                    />
+                    <span className="text-danger">{nameError}</span>
+                    <label htmlFor="pic" className="input_field">
+                      Profile Pic
+                    </label>
+                    <div class="file-input">
+                      <div className="d-flex align-items-center">
+                        <div className="input_file">
+                          <img
+                            src={file ? URL.createObjectURL(file) : single_bill}
+                            alt=""
                           />
-                          <span className="text-danger">{nameError}</span>
-                          <span className="text-danger">
-                            {requiredshortNameField}
-                          </span>
-                           </div>
-                          <label htmlFor="pic" className="input_field">
-                            Profile Pic
-                          </label>
-                          <div className="file-input">
-                            <div className="d-flex align-items-center">
-                              <div className="input_file">
-                                <img
-                                  src={
-                                    file
-                                      ? URL.createObjectURL(file)
-                                      : single_bill
-                                  }
-                                  alt=""
-                                />
-                              </div>
-                              <div>
-                                <input
-                                  type="file"
-                                  id="file"
-                                  onChange={(e) => setFile(e.target.files[0])}
-                                />
-                                <label htmlFor="file" className="file">
-                                  Choose from library
-                                </label>
-                              </div>
-                            </div>
-                          </div>
                         </div>
-                      ) : (
-                        <div></div>
-                      )
-                    ) : (
-                      <div>
-                        <InputField
-                          type="text"
-                          value={vehicleType}
-                          label="Vehicle Type"
-                          name="vehicleType"
-                          onChange={(e) => {
-                            handlevehicleType(e);
-                          }}
-                        />
-
-                        <InputField
-                          type="text"
-                          value={vehicleNum}
-                          label="Vehicle Number"
-                          name="name"
-                          onChange={(e) => {
-                            handlevehicleNum(e);
-                          }}
-                        />
-                      </div>
-                    )}
-                    {partyType == "FARMER" ||
-                    partyType == "BUYER" ||
-                    partyType == "TRANSPORTER" ? (
-                      <div>
-                        <label htmlFor="pic" className="input_field">
-                          As on Date
-                        </label>
-                        <label
-                          className="d-flex align-items-baseline date_label"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <span className="date_icon">
-                            <img src={date_icon} alt="icon" />
-                          </span>
-                          <DatePicker
-                            dateFormat="yyyy-MM-dd"
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            className="form-control"
-                            placeholder="Date"
-                            maxDate={new Date()}
+                        <div>
+                          <input
+                            type="file"
+                            id="file"
+                            onChange={(e) => setFile(e.target.files[0])}
                           />
-                        </label>
+                          <label htmlFor="file" className="file">
+                            Choose from library
+                          </label>
+                        </div>
                       </div>
-                    ) : (
-                      <div></div>
-                    )}
-
-                    {partyType != "TRANSPORTER" ? (
-                      <div></div>
-                    ) : (
-                      <div className="transpo_height"></div>
-                    )}
-                    <div
-                      onClick={() => getPosition()}
-                      className="location mt-0"
-                    >
+                    </div>
+                    <InputField
+                      type="text"
+                      value={shortNameField}
+                      label="As on Date"
+                      name="name"
+                      onChange={(e) => {
+                        handleShortName(e);
+                      }}
+                    />
+                    <div onClick={() => getPosition()} className="location">
                       Select Current Location
                     </div>
                     <div>
                       <label htmlFor="state" className="input_field">
                         State
                       </label>
-                      {isEdit ? (
-                        <input
-                          id="state"
-                          className="form-control"
-                          name="state"
-                          value={stateVal}
-                        />
-                      ) : (
-                        <input
-                          id="state"
-                          className="form-control"
-                          name="state"
-                        />
-                      )}
+                      <input id="state" className="form-control" name="state" />
                     </div>
                     <InputField
                       type="text"
-                      value={streetVillage}
+                      value={shortNameField}
                       label="Street & Village"
                       name="name"
                       onChange={(e) => {
-                        handleStreetName(e);
+                        handleShortName(e);
                       }}
                     />
+                    {/* <div>
+                      <h1>Upload and Display Image usign React Hook's</h1>
+                      {selectedImage && (
+                        <div>
+                          <img
+                            alt="not fount"
+                            width={"250px"}
+                            src={URL.createObjectURL(selectedImage)}
+                          />
+                          <br />
+                          <button onClick={() => setSelectedImage(null)}>
+                            Remove
+                          </button>
+                        </div>
+                      )}
+                      <br />
+
+                      <br />
+                      <input
+                        type="file"
+                        name="myImage"
+                        onChange={(event) => {
+                          console.log(event.target.files[0]);
+                          setSelectedImage(event.target.files[0]);
+                        }}
+                      />
+                    </div> */}
                   </div>
                 </div>
               </form>
@@ -942,9 +634,15 @@ const Partner = () => {
             <div className="modal-footer">
               <button
                 type="button"
+                className="secondary_btn"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
                 className="primary_btn"
                 onClick={() => onSubmit()}
-                // id="close_modal"
                 data-bs-dismiss="modal"
               >
                 Submit
@@ -953,43 +651,6 @@ const Partner = () => {
           </div>
         </div>
       </div>
-
-      <Modal
-        show={showModal}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        className="delete_modal_dialog modal-dialog-centered"
-      >
-        <Modal.Header>
-          <Modal.Title>Delete Partner</Modal.Title>
-          <img
-            src={close}
-            alt="image"
-            onClick={handleClose}
-            className="close_icon"
-          />
-        </Modal.Header>
-        <Modal.Body className="partner_model_body">
-          Are you sure you want to delete partner
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            className="secondary_btn"
-            onClick={handleClose}
-          >
-            No
-          </Button>
-          <Button
-            variant="primary"
-            className="primary_btn"
-            onClick={() => handleDelete(partyIdVal)}
-          >
-            Yes
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

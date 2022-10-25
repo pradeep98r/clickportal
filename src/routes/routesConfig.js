@@ -12,12 +12,8 @@ import Calender from "../modules/buy_bill_book/calender";
 import LanguageSelection from "../modules/login/languageSelection";
 
 import BuyerLedger from "../modules/ledgers/buyerLedger";
-import LedgerSummary from "../modules/ledgers/ledgerSummary";
-import DetailedLedger from "../modules/ledgers/detailedLedger";
 import Partner from "../modules/partners/partner";
 import SellerLedger from "../modules/ledgers/sellerLedger";
-import SellerLedgerSummary from "../modules/ledgers/sellerLedgerSummary";
-import SellerDetailedLedger from "../modules/ledgers/sellerDetailedLedger";
 import MyProfile from "../modules/my_profile/myProfile";
 import Reports from "../modules/reports/reports";
 import SellBillBook from "../modules/sell_bill_book/sellBillBook";
