@@ -53,9 +53,6 @@ const BuyerLedger = () => {
   const [toggleState, setToggleState] = useState("ledgersummary");
   const toggleTab = (type) => {
     setToggleState(type);
-    if (toggleAC === "custom") {
-      setToggleState("ledgersummary");
-    }
   };
   const [toggleAC, setToggleAC] = useState("all");
   const toggleAllCustom = (type) => {
@@ -63,10 +60,25 @@ const BuyerLedger = () => {
     if (type === "custom") {
       console.log(type);
       setDateDisplay(!dateDisplay);
+      setToggleState("ledgersummary")
     } else if (type === "all") {
       setDateDisplay(false);
     }
   };
+
+  const [isValid, setIsValid]=useState(false);
+    const [valid,setValid]=useState(false)
+    const handleInputVale=e=>{
+      setPaidRcvd(e.target.value);
+      if(e.target.value==0){
+        setIsValid(true);
+        console.log(e.target.value)
+      }
+      if(e.target.value>data.totalOutStgAmt && e.target.value!=0){
+        setValid(true);
+        console.log(e.target.value)
+      }
+    }
 
   let partyId = 0;
   let fromDate = null;
@@ -227,10 +239,9 @@ const BuyerLedger = () => {
     <Fragment>
       <div class="row">
         <div class="col-lg-4">
-          <nav class="navbar navbar-expand-lg ">
-            <div class="container-fluid">
+          <div id="search-field">
               <form class="d-flex">
-                <input
+                <input class="form-control me-2"
                   id="searchbar"
                   type="text"
                   value={search}
@@ -243,17 +254,16 @@ const BuyerLedger = () => {
               </form>
               <div className="searchicon">
                 <img src={search_img} alt="search" />
-              </div>
             </div>
-          </nav>
+          </div>
           <div className="table-scroll" id="scroll_style">
             <table class="table table-fixed" className="ledger-table">
               <thead className="thead-tag">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Date</th>
-                  <th scope="col">Transporter Name</th>
-                  <th scope="col">To Be Paid</th>
+                  <th scope="col">Buyer Name</th>
+                  <th scope="col">To Be Recieved</th>
                 </tr>
               </thead>
               <tbody>
@@ -285,24 +295,29 @@ const BuyerLedger = () => {
                               {moment(item.date).format("DD-MMM-YY")}
                             </td>
                             <td key={item.partyName}>
-                              <span className="namedtl-tag">
-                                {item.partyName}
-                                <br />
-                              </span>
-                              <span className="address-tag">
-                                {item.partyAddress ? item.partyAddress : ""}
-                              </span>
-                              <br />
-                              <span className="mobile-tag">{item.mobile}</span>
-                              {item.profilePic ? (
-                                item.profilePic
-                              ) : (
-                                <img
-                                  className="profile-img"
-                                  src={single_bill}
-                                  alt="img"
-                                />
-                              )}
+                              <div className="d-flex">
+                                <div>
+                                  {item.profilePic ? (
+                                    <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                  ) : (
+                                    <img
+                                      className="profile-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                  </div>
+                                  <div>
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                      <br />
+                                    </p>
+                                    <p className="address-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                    <p className="mobile-tag">{item.mobile}</p>
+                                  </div>
+                              </div>
                             </td>
                             <td key={item.tobePaidRcvd}>
                               <span className="coloring">
@@ -324,14 +339,14 @@ const BuyerLedger = () => {
                 )}
               </tbody>
             </table>
-            <div className="outstanding-pay">
+          </div>
+          <div className="outstanding-pay">
               <p className="pat-tag">Outstanding Recievables:</p>
               <p className="values-tag">
                 &#8377;
                 {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
               </p>
             </div>
-          </div>
         </div>
         <div class="col-lg-8">
           <div
@@ -345,17 +360,32 @@ const BuyerLedger = () => {
             id="tabsEvents"
             style={{ display: openTabs ? "block" : "none" }}
           >
-            
+            <div className="recordbtn-style">
+                <button
+                  className="add-record-btns"
+                  onClick={() => {
+                    (toggleState === "ledgersummary" ||
+                      toggleState === "detailedledger") &&
+                      setIsOpen(!open);
+                  }}
+                  data-toggle="modal"
+                  data-target="#myModal"
+                >
+                  Add Record
+                </button>
+                
+                  <div className="add-pay-btn">
+                      <img src={add} id="addrecord-img" />
+                  </div>
+              </div>
             <div className="bloc-tab">
               <button
-                href={"#All"}
                 className={toggleAC === "all" ? "tabers active-tab" : "tabers"}
                 onClick={() => toggleAllCustom("all")}
               >
                 All
               </button>
               <button
-                href={"#Custom"}
                 className={
                   toggleAC === "custom" ? "tabers active-tab" : "tabers"
                 }
@@ -363,13 +393,15 @@ const BuyerLedger = () => {
               >
                 Custom
               </button>
+              <span id="horizontal-line-tag"></span>
             </div>
+            
             <div
               className="dateRangePicker"
               style={{ display: dateDisplay ? "block" : "none" }}
             >
               <div className="flex">
-                <div onClick={DateModal}>
+                <div onClick={DateModal} id="date_range_picker">
                   <img id="date_icon" src={date_icon} />
                 </div>
               </div>
@@ -505,37 +537,40 @@ const BuyerLedger = () => {
               </div>
             </div>
             <div class="card" className="details-tag">
-              <div class="card-body">
+              <div class="card-body" id="card-details">
                 <div className="row">
                   <div className="col-lg-3" id="verticalLines">
                     {ledger.map((item, index) => {
                       if (item.partyId == partyId) {
                         return (
                           <Fragment>
-                            <tr>
-                              <td
+                              <div
                                 className="profile-details"
                                 key={item.partyName}
                               >
-                                <p className="names-tag">{item.partyName}</p>
-                                <br />
-                                <p className="profiles-dtl">
-                                  {item.mobile}
-                                  <br />
-                                  {item.partyAddress}
-                                </p>
-                                {/* {item.profilePic ? (
-                                  item.profilePic
-                                ) : (
-                                  <img
-                                    id="singles-img"
-                                    src={single_bill}
-                                    alt="img"
-                                  />
-                                )} */}
-                                {/* <span id="verticalLines"></span> */}
-                              </td>
-                            </tr>
+                                <div class="d-flex">
+                                <div>
+                                  {item.profilePic ? (
+                                  <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                    ) : (
+                                    <img
+                                      id="singles-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                </div>
+                                  <div>
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                    </p>
+                                    <p className="mobilee-tag">{item.mobile}</p>
+                                    <p className="addres-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
                           </Fragment>
                         );
                       } else {
@@ -545,44 +580,41 @@ const BuyerLedger = () => {
                   </div>
                   <div className="col-lg-3" id="verticalLines">
                     <p class="card-text" className="paid">
-                      Total Business<span id="vertical-line1"></span>
-                      <br />{" "}
-                      <span className="coloring">
+                      Total Business
+                      <p className="coloring">
                         &#8377;
                         {summaryData.totalTobePaidRcvd
                           ? summaryData.totalTobePaidRcvd.toFixed(2)
                           : 0}
-                      </span>
+                      </p>
                     </p>
                   </div>
                   <div className="col-lg-3" id="verticalLines">
                     <p className="total-paid">
-                      Total Paid<span id="vertical-line2"></span> <br />
-                      <span className="coloring">
+                      Total Paid
+                      <p className="coloring">
                         &#8377;
                         {summaryData.totalRcvdPaid
                           ? summaryData.totalRcvdPaid.toFixed(2)
                           : 0}
-                      </span>{" "}
+                      </p>
                     </p>
                   </div>
                   <div className="col-lg-3">
                     <p className="out-standing">
-                      Outstanding Recievables <br />
-                      <span className="coloring">
+                      Outstanding Recievables
+                      <p className="coloring">
                         &#8377;
                         {summaryData.outStdRcvPayble
                           ? summaryData.outStdRcvPayble.toFixed(2)
                           : 0}
-                      </span>
+                      </p>
                     </p>
                   </div>
                 </div>
-
-                <span id="horizontal-line"></span>
                 <div className="bloc-tabs">
                   <button
-                    href={"#ledgersummary"}
+                    
                     className={
                       toggleState === "ledgersummary"
                         ? "tabs active-tabs"
@@ -593,7 +625,7 @@ const BuyerLedger = () => {
                     Ledger Summary
                   </button>
                   <button
-                    href={"#detailedledger"}
+                    
                     className={
                       toggleState === "detailedledger"
                         ? "tabs active-tabs"
@@ -611,26 +643,10 @@ const BuyerLedger = () => {
                             <img src={print} className="print"/>
                             </div>*/}
               </div>
+              <span id="horizontal-line"></span>
             </div>
-            <div className="recordbtn-style">
-              <button
-                className="add-record-btns"
-                onClick={() => {
-                  (toggleState === "ledgersummary" ||
-                    toggleState === "detailedledger") &&
-                    setIsOpen(!open);
-                }}
-                data-toggle="modal"
-                data-target="#myModal"
-              >
-                <div className="add-pay-btn">
-                  <img src={add} id="addrecord-img" />
-                </div>{" "}
-                Add Record
-              </button>
-            </div>
-            <span id="horizontal-line-tag"></span>
             {toggleAC === "all" && toggleState === "ledgersummary" && (
+              <div className="ledgerSummary" id="scroll_style">
               <div
                 id="ledger-summary"
                 className={
@@ -638,14 +654,15 @@ const BuyerLedger = () => {
                     ? "content  active-content"
                     : "content"
                 }
+               
               >
-                <table class="table table-fixed ledger-table" id="scroll_style">
+                <table class="table table-fixed ledger-table">{/*ledger-table*/}
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">RefId | Date</th>
-                      <th scope="col">Paid(&#8377;)</th>
-                      <th scope="col">To Be Paid(&#8377;)</th>
+                      <th scope="col">Received(&#8377;)</th>
+                      <th scope="col">To Be Received(&#8377;)</th>
                       <th scope="col">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
@@ -656,11 +673,10 @@ const BuyerLedger = () => {
                           <tr className="tr-tags">
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId}
-                              </span>{" "}
-                              <br />
-                              {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td>
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
@@ -684,8 +700,10 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             {toggleAC === "all" && toggleState === "detailedledger" && (
+              <div className="detailedLedger" id="scroll_style">
               <div
                 id="detailed-ledger"
                 className={
@@ -694,7 +712,7 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed ledger-table" id="scroll_style">
+                <table class="table table-fixed ledger-table">
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
@@ -715,15 +733,23 @@ const BuyerLedger = () => {
                           <tr className="tr-tags">
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId}
-                              </span>{" "}
-                              <br />
-                              {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td>
-                              {item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;
-                              {item.rate}
+                              <p style={{ fontSize: "12px" }}>
+                                {item.itemName}
+                              </p>
+                              <span style={{ fontSize: "13px" }}>
+                                {item.qty ? item.qty.toFixed(1) : 0}{" "}
+                                {(item.unit!==null ? item.unit : "")
+                                  .charAt(item)
+                                  .toUpperCase()}
+                                &nbsp;|&nbsp;{item.kg ? item.kg : 0}
+                                &nbsp;|&nbsp;{item.rate ? item.rate : 0}
+                              </span>
                             </td>
                             <td>
                               {item.recieved ? item.recieved.toFixed(2) : 0}
@@ -747,8 +773,10 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             {toggleAC === "custom" && toggleState === "ledgersummary" && (
+              <div className="ledgerSummary" id="scroll_style">
               <div
                 id="ledger-summary"
                 className={
@@ -757,13 +785,13 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed" className="ledger-table">
+                <table class="table table-fixed ledger-table">
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">RefId | Date</th>
-                      <th scope="col">Paid(&#8377;)</th>
-                      <th scope="col">To Be Paid(&#8377;)</th>
+                      <th scope="col">Recieved(&#8377;)</th>
+                      <th scope="col">To Be Recieved(&#8377;)</th>
                       <th scope="col">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
@@ -774,11 +802,10 @@ const BuyerLedger = () => {
                           <tr className="tr-tags">
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId ? item.refId : ""}
-                              </span>{" "}
-                              <br />
-                              {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td>
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
@@ -802,8 +829,10 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             {toggleAC === "custom" && toggleState === "detailedledger" && (
+              <div className="detailedLedger" id="scroll_style">
               <div
                 id="detailed-ledger"
                 className={
@@ -812,7 +841,7 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed" className="ledger-table">
+                <table class="table table-fixed ledger-table">
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
@@ -833,17 +862,15 @@ const BuyerLedger = () => {
                           <tr className="tr-tags">
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId ? item.refId : ""}
-                              </span>{" "}
-                              <br />
+                              </p>{" "}
                               {moment(item.date).format("DD-MMM-YY")}
                             </td>
                             <td>
-                              <span style={{ fontSize: "12px" }}>
+                              <p style={{ fontSize: "12px" }}>
                                 {item.itemName}
-                              </span>
-                              <br />
+                              </p>
                               <span style={{ fontSize: "13px" }}>
                                 {item.qty ? item.qty.toFixed(1) : 0}{" "}
                                 {(item.unit ? item.unit : "")
@@ -875,6 +902,7 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             <div
               id="myModal"
@@ -882,7 +910,8 @@ const BuyerLedger = () => {
               role="dialog"
               data-backdrop="static"
             >
-              <div class="modal-dialog modal-lg ledger_modal modal-dialog-centered">
+              <div class="modal-dialog modal-lg ledger_modal "
+              style={{height:'500px',width:'760px',marginLeft:'320px',top:'30px'}}>
                 <div class="modal-content">
                   <div class="modal-body">
                     <div className="add-record">
@@ -902,38 +931,40 @@ const BuyerLedger = () => {
                               if (item.partyId == partyId) {
                                 return (
                                   <Fragment>
-                                    <tr>
-                                      <td
-                                        className="profile-details"
-                                        key={item.partyName}
+                                    <div
+                                      className="profile-details"
+                                      key={item.partyName}
                                       >
-                                        <p className="names-tag">
-                                          {item.partyName}
-                                        </p>
-                                        <br />
-                                        <p className="profiles-dtl">
-                                          {item.mobile}
-                                          <br />
-                                          {item.partyAddress}
-                                        </p>
-                                        {/* {item.profilePic ? (
-                                          item.profilePic
-                                        ) : (
+                                      <div class="d-flex">
+                                      <div>
+                                        {item.profilePic ? (
+                                        <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                          ) : (
                                           <img
                                             id="singles-img"
-                                            // src={single_bill}
+                                            src={single_bill}
                                             alt="img"
                                           />
-                                        )} */}
-                                      </td>
-                                    </tr>
+                                        )}
+                                      </div>
+                                        <div>
+                                          <p className="namedtl-tag">
+                                            {item.partyName}
+                                          </p>
+                                          <p className="mobilee-tag">{item.mobile}</p>
+                                          <p className="addres-tag">
+                                            {item.partyAddress ? item.partyAddress : ""}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </Fragment>
                                 );
                               }
                             })}
                             <span class="card-text" id="date-tag">
                               <ReactDatePicker
-                                id="date_picker"
+                                id="date_pickers"
                                 selected={selectDate}
                                 onChange={(date) => {
                                   setSelectDate(date);
@@ -975,9 +1006,16 @@ const BuyerLedger = () => {
                             class="form-control"
                             id="amountRecieved"
                             required
-                            onChange={(e) => setPaidRcvd(e.target.value)}
+                            onChange={(e) =>{handleInputVale(e)}}
                           />
                         </div>
+                        {isValid?
+                        <p id="valid-cond">Amount Received cannot be empty</p>:''
+                          }
+                        {valid?
+                        <p id="valid-cond">
+                        Entered Amount  cannot more than Outstanding Balance</p>:''
+                        }
                         <p className="payments-tag">Payment Mode</p>
                         <div class="form-check form-check-inline">
                           <input
