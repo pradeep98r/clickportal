@@ -6,7 +6,7 @@ import "../../modules/ledgers/buyerLedger.scss";
 import {getLedgerSummary, getLedgerSummaryByDate, getSelleLedgers, getSellerDetailedLedger, getSellerDetailedLedgerByDate, postRecordPayment} from '../../actions/billCreationService';
 import { useEffect } from 'react';
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import no_data from "../../assets/images/no_data.svg";
+import no_data from "../../assets/images/no_data_available.png";
 import add from "../../assets/images/add.svg";
 import ReactDatePicker from 'react-datepicker';
 import close_btn from "../../assets/images/close_btn.svg";
@@ -54,12 +54,25 @@ const SellerLedger = () => {
         if(type==='custom'){
             console.log(type);
             setDateDisplay(!dateDisplay);
+            setToggleState("ledgersummary")
         }
         else if(type==='all'){
             setDateDisplay(false);
         }
     };
-
+    const [isValid, setIsValid]=useState(false);
+    const [valid,setValid]=useState(false)
+    const handleInputVale=e=>{
+      setPaidRcvd(e.target.value);
+      if(e.target.value==0){
+        setIsValid(true);
+        console.log(e.target.value)
+      }
+      if(e.target.value>data.totalOutStgAmt && e.target.value!=0){
+        setValid(true);
+        console.log(e.target.value)
+      }
+    }
     let partyId=0;
     let fromDate=null;
     let toDate=null;
@@ -148,6 +161,8 @@ const SellerLedger = () => {
         navigate("/sellerledger")
         setIsOpen(false);
         localStorage.removeItem("partyId");
+        setIsValid(false);
+        setValid(false)
     }
     //Fetch Ledger Summary By Date
     const fetchLedgerSummaryByDate=(clickId,partyId,fromDate,toDate)=>{
@@ -212,515 +227,711 @@ const SellerLedger = () => {
     partyId=JSON.parse(localStorage.getItem('partyId'));
   return (
     <Fragment>
-      <div className='no_data_found' style={{ display: openTabs ? 'none' : 'block' }}>
-        <img src={no_data} className='no-data-img' /></div>
-        <nav class="navbar navbar-expand-lg ">
-           <div class="container-fluid">
-           <form class="d-flex">
-             <input id="searchbar" type="text" value={search} placeholder='Search by Name / Short Code'
-               onChange={(e) => { setSearch(e.target.value) }} className='searchbar-input'
-               />
-           </form>
-           <div className='searchicon'><img src={search_img} alt="search" /></div>
-         </div>
-       </nav>
-       <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
-            <div className="bloc-tab">
-            <button href={"#All"}
-                className={toggleAC === 'all' ? "tabers active-tabs" : "tabers"}
-                onClick={() => toggleAllCustom('all')}
-            >All</button>
-            <button href={"#Custom"}
-                className={toggleAC === 'custom' ? "tabers active-tab" : "tabers"}
-                onClick={() => toggleAllCustom('custom')}
-            >Custom</button>
+      <div class="row">
+        <div class="col-lg-4">
+        <div id="search-field">
+            <form class="d-flex">
+                <input class="form-control me-2"
+                  id="searchbar"
+                  type="text"
+                  value={search}
+                  placeholder="Search by Name / Short Code"
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
+                  className="searchbar-input"
+                />
+              </form>
+              <div className="searchicon">
+                <img src={search_img} alt="search" />
             </div>
-            <div class="card" className='details-tag'>
-                <div class="card-body">
-                    {
-                        ledger.map((item, index) => {
-                            partyId=JSON.parse(localStorage.getItem('partyId'));
-                            if (item.partyId == partyId) {
-                                return (
-                                    <Fragment>
-                                        <tr>
-                                            <td className='profile-details' key={item.partyName}>
-                                                <p className='names-tag'>{item.partyName}</p><br />
-                                                <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                                {item.profilePic ? item.profilePic
-                                                :<img id="singles-img" src={single_bill} alt="img"/>}
-                                                <span id="verticalLines"></span>
-                                                
-                                            </td>
-                                        </tr>
-                                    </Fragment>
-                                    )
-                                }
-                                else {
-                                    <p>No Data Found</p>
-                                }
-                            })
+          </div>
+          <div className='table-scroll' id="scroll_style">
+          <table class="table table-fixed" className="ledger-table">
+              <thead className="thead-tag">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Seller Name</th>
+                  <th scope="col">To Be Paid</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ledger.length > 0 ? (
+                  ledger
+                    .filter((item) => {
+                      if (search === " ") return <p>Not Found</p>;
+                      else if (item.partyName === search) {
+                        console.log(item.partyName);
+                        console.log(search);
+                        return <p>item.partyName</p>;
+                      } else {
+                        return <p>Not Found</p>;
+                      }
+                    })
+                    .map((item, index) => {
+                      return (
+                        <Fragment>
+                          <tr
+                            onClick={(id, indexs) => {
+                              particularLedger(item.partyId, index);
+                            }}
+                            className={
+                              isActive === index ? "tabRowSelected" : "tr-tags"
+                            }
+                          >
+                            <td scope="row">{index + 1}</td>
+                            <td key={item.date}>
+                              {moment(item.date).format("DD-MMM-YY")}
+                            </td>
+                            <td key={item.partyName}>
+                            <div className="d-flex">
+                                <div>
+                                  {item.profilePic ? (
+                                    <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                  ) : (
+                                    <img
+                                      className="profile-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                  </div>
+                                  <div>
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                      <br />
+                                    </p>
+                                    <p className="address-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                    <p className="mobile-tag">{item.mobile}</p>
+                                  </div>
+                              </div>
+                            </td>
+                            <td key={item.tobePaidRcvd}>
+                              <span className="coloring">
+                                &#8377;
+                                {item.tobePaidRcvd
+                                  ? item.tobePaidRcvd.toFixed(2)
+                                  : 0}
+                              </span>
+                            </td>
+                          </tr>
+                        </Fragment>
+                      );
+                    })
+                ) : (
+                  <div>
+                    <img src={no_data} />
+                    <p>No Data Available</p>
+                  </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="outstanding-pay">
+              <p className="pat-tag">Outstanding Payables:</p>
+              <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
+            </div>
+        </div>
+        <div class="col-lg-8">
+          <div
+            className="no_data_found"
+            style={{ display: openTabs ? "none" : "block" }}
+          >
+            <img src={no_data} className="no-data-img" />
+          </div>
+          <div
+            className="container-fluid px-0"
+            id="tabsEvents"
+            style={{ display: openTabs ? "block" : "none" }}
+          > 
+            <div className="recordbtn-style">
+              <button
+                className="add-record-btns"
+                onClick={() => {
+                  (toggleState === "ledgersummary" ||
+                    toggleState === "detailedledger") &&
+                    setIsOpen(!open);
+                }}
+                data-toggle="modal"
+                data-target="#myModal"
+              >
+                Add Record
+              </button>
+              <div className="add-pay-btn">
+                    <img src={add} id="addrecord-img" />
+                </div>
+            </div>
+            <div className="bloc-tab">
+              <button
+                className={toggleAC === "all" ? "tabers active-tab" : "tabers"}
+                onClick={() => toggleAllCustom("all")}
+              >
+                All
+              </button>
+              <button
+                className={
+                  toggleAC === "custom" ? "tabers active-tab" : "tabers"
+                }
+                onClick={() => toggleAllCustom("custom")}
+              >
+                Custom
+              </button>
+            </div>
+              <div className='dateRangePicker' style={{ display: dateDisplay ? 'block' : 'none' }}>
+                  <div className="flex">
+                      <div onClick={DateModal} id="date_range_picker"><img id="date_icon" src={date_icon} /></div>
+                  </div>
+                  <div className="modal fade" id="datePopupmodal">
+                      <div className="modal-dialog modal-dialog-centered date_modal_dialog">
+                          <div className="modal-content">
+                              <div className="modal-header date_modal_header">
+                                  <h5 className="modal-title header2_text" id="staticBackdropLabel">Select Dates</h5>
+                                  <img src={close_btn} alt="image" className="close_icon" data-bs-dismiss="modal"/>
+                              </div>
+                              <div className="modal-body date_modal_mody">
+                                  <div className="calender_popup">
+                                      <div className="row">
+                                          <div className="dates_div">
+                                              <div className="flex_class">
+                                                  <input type="radio" id="tab1" name="tab" defaultChecked />
+                                                  <label htmlFor="tab1">Daily</label>
+                                              </div>
+                                              <div className="flex_class">
+                                                  <input type="radio" id="tab2" name="tab" />
+                                                  <label htmlFor="tab2">Monthly</label>
+                                              </div>
+                                              <div className="flex_class">
+                                                  {" "}
+                                                  <input type="radio" id="tab3" name="tab" />
+                                                  <label htmlFor="tab3">Yearly</label>
+                                              </div>
+                                              <div className="flex_class">
+                                                  <input type="radio" id="tab4" name="tab" />
+                                                  <label htmlFor="tab4">Weekly</label>
+                                              </div>
+                                              <div className="flex_class">
+                                                  <input type="radio" id="tab5" name="tab" />
+                                                  <label htmlFor="tab5">Custom</label>
+                                              </div>
+                                          </div>
+                                          <article className="date_picker">
+                                              <ReactDatePicker
+                                                  dateFormat="yyyy-MM-dd"
+                                                  selected={startDate}
+                                                  onChange={(date) => setStartDate(date)}
+                                                  className="form-control"
+                                                  placeholder="Date"
+                                                  maxDate={new Date()}
+                                                  inline
+                                              />
+                                          </article>
+                                          <article className="month_picker">
+                                              <ReactDatePicker
+                                                  dateFormat="MM/yyyy"
+                                                  showMonthYearPicker
+                                                  showFullMonthYearPicker
+                                                  selected={startDate}
+                                                  onChange={(date) => setStartDate(date)}
+                                                  className="form-control"
+                                                  placeholder="Date"
+                                                  maxDate={new Date()}
+                                                  showThreeColumnMonthYearPicker
+                                                  inline
+                                              />
+                                          </article>
+                                          <article>
+                                              <h2>
+                                                  <ReactDatePicker
+                                                      selected={startDate}
+                                                      onChange={(date) => setStartDate(date)}
+                                                      showYearPicker
+                                                      dateFormat="yyyy"
+                                                      className="form-control"
+                                                      maxDate={new Date()}
+                                                      inline
+                                                      // showThreeColumnYearPicker
+                                                      yearItemNumber={9}
+                                                  />
+                                              </h2>
+                                          </article>
+                                          <article className="week_picker">
+                                              {/* <WeeklyCalendar
+                                              onWeekPick={handleWeekPick}
+                                              max={moment().format("DD-MM-YYYY")}
+                                              /> */}
+                                          </article>
+                                          <article className="custom_picker">
+                                              <div className="flex_class custom_input_div">
+                                                  <ReactDatePicker
+                                                      selected={startDate}
+                                                      onChange={(date) => setStartDate(date)}
+                                                      popperClassName="d-none"
+                                                      dateFormat="yyyy-MM-dd"
+                                                      placeholderText="Select from date"
+                                                  />
+                                                  <ReactDatePicker
+                                                      selected={endDate}
+                                                      onChange={(date) => setEndDate(date)}
+                                                      popperClassName="d-none"
+                                                      dateFormat="yyyy-MM-dd"
+                                                      placeholderText="Select to date"
+                                                  />
+                                              </div>
+                                              <ReactDatePicker
+                                                  selected={startDate}
+                                                  onChange={onChangeDate}
+                                                  startDate={startDate}
+                                                  endDate={endDate}
+                                              selectsRange
+                                              inline
+                                              maxDate={new Date()}
+                                              />
+                                          </article>
+                                      </div>
+                                  </div>
+                                  <button className='continue-btn' onClick={getDate}>CONTINUE</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="card" className="details-tag">
+              <div class="card-body"  id="card-details">
+                <div className="row">
+                  <div className="col-lg-3" id="verticalLines">
+                    {ledger.map((item, index) => {
+                      if (item.partyId == partyId) {
+                        return (
+                          <Fragment>
+                            <div
+                                className="profile-details"
+                                key={item.partyName}
+                              >
+                                <div class="d-flex">
+                                <div>
+                                  {item.profilePic ? (
+                                  <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                    ) : (
+                                    <img
+                                      id="singles-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                </div>
+                                  <div>
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                    </p>
+                                    <p className="mobilee-tag">{!item.trader?"Seller":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                    <p className="addres-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                          </Fragment>
+                        );
+                      } else {
+                        <p>No Data Found</p>;
+                      }
+                    })}
+                  </div>
+                  <div className="col-lg-3" id="verticalLines">
+                    <p class="card-text" className="paid">
+                      Total Business<span id="vertical-line1"></span>
+                      <br />{" "}
+                      <span className="coloring">
+                        &#8377;
+                        {summaryData.totalTobePaidRcvd
+                          ? summaryData.totalTobePaidRcvd.toFixed(2)
+                          : 0}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="col-lg-3" id="verticalLines">
+                    <p className="total-paid">
+                      Total Paid<span id="vertical-line2"></span> <br />
+                      <span className="coloring">
+                        &#8377;
+                        {summaryData.totalRcvdPaid
+                          ? summaryData.totalRcvdPaid.toFixed(2)
+                          : 0}
+                      </span>
+                    </p>
+                  </div>
+                  <div className="col-lg-3">
+                    <p className="out-standing">
+                      Outstanding Payables <br />
+                      <span className="coloring">
+                        &#8377;
+                        {summaryData.outStdRcvPayble
+                          ? summaryData.outStdRcvPayble.toFixed(2)
+                          : 0}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="bloc-tabs">
+                  <button
+                    
+                    className={
+                      toggleState === "ledgersummary"
+                        ? "tabs active-tabs"
+                        : "tabs"
                     }
-                    <p class="card-text" className='paid'>Total Business<span id="vertical-line1"></span><br /> <span className='coloring'>
-                        &#8377;{summaryData.totalTobePaidRcvd ? summaryData.totalTobePaidRcvd.toFixed(2) : 0}</span></p>
-                    <p className='total-paid'>Total Paid<span id="vertical-line2"></span> <br /><span className='coloring'>
-                        &#8377;{summaryData.totalRcvdPaid ? summaryData.totalRcvdPaid.toFixed(2) : 0}</span> </p>
-                    <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
-                        &#8377;{summaryData.outStdRcvPayble ? summaryData.outStdRcvPayble.toFixed(2) : 0}</span></p>
-                    <span id="horizontal-line"></span>
-                    <div className="bloc-tabs">
-                        <button href={"#ledgersummary"}
-                            className={toggleState === 'ledgersummary' ? "tabs active-tabs" : "tabs"}
-                            onClick={() => toggleTab('ledgersummary')}
-                        >
-                            Ledger Summary
-                        </button>
-                        <button href={"#detailedledger"}
-                            className={toggleState === 'detailedledger' ? "tabs active-tabs" : "tabs"}
-                            onClick={() => toggleTab('detailedledger')}
-                        >
-                            Detailed Ledger
-                        </button>
-                    </div>
-                    {/*<hr style={{color:"blue", marginTop:"25px"}}/>
+                    onClick={() => toggleTab("ledgersummary")}
+                  >
+                    Ledger Summary
+                  </button>
+                  <button
+                    
+                    className={
+                      toggleState === "detailedledger"
+                        ? "tabs active-tabs"
+                        : "tabs"
+                    }
+                    onClick={() => toggleTab("detailedledger")}
+                  >
+                    Detailed Ledger
+                  </button>
+                  <span id="horizontal-line-tag"></span>
+                </div>
+                {/*<hr style={{color:"blue", marginTop:"25px"}}/>
                             <div className="images">
                             <img src={pdf} className="pdf"/>
                             <img src={share} className="share" />
                             <img src={print} className="print"/>
                             </div>*/}
-                </div>
+              </div>
+              <span id="horizontal-line"></span>
             </div>
-         <div className="recordbtn-style">
-            <button className="add-record-btns" onClick={() =>
-            {(toggleState === 'ledgersummary' || toggleState === 'detailedledger')
-             && setIsOpen(!open)}} data-toggle="modal" data-target="#myModal"><div className='add-pay-btn'>
-              <img src={add} id='addrecord-img'/></div> Add Record</button>
-         </div>
-         <span id="horizontal-line-tag"></span>
-         {toggleAC==='all' &&
-         <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
-            <table class="table table-fixed" className="ledger-table">
-               <thead className="thead-tag">
-                 <tr>
-                   <th scope="col">#</th>
-                   <th scope="col">RefId | Date</th>
-                   <th scope="col">Paid(&#8377;)</th>
-                   <th scope="col">To Be Paid(&#8377;)</th>
-                  <th scope="col">Ledger Balance(&#8377;)</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 {
-                   ledgerSummary.length > 0 ? (
-                     ledgerSummary.map((item, index) => {
-                       return (
-                         <tr className="tr-tags">
-                           <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
-                           {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td>{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
-                           <td>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
-                           <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
-                         </tr>
-                        )
-                     })
-                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
-                 }
-               </tbody>
-             </table>
-           </div>}
-           {toggleAC==='all' &&
-           <div id="detailed-ledger" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
-            <table class="table table-fixed" className="ledger-table">
-               <thead className="thead-tag">
-                 <tr>
-                   <th scope="col">#</th>
-                   <th scope="col">RefId | Date</th>
-                   <th scope="col">Item<br/> Unit | Kgs | Rate</th>
-                   <th scope="col">Recieved(&#8377;)</th>
-                   <th scope='col'>To Be Recieved(&#8377;)</th>
-                  <th scope="col">Ledger Balance(&#8377;)</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 {
-                   details.length > 0 ? (
-                     details.map((item, index) => {
-                       return (
-                         <tr className="tr-tags">
-                           <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
-                           {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
-                           <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
-                            &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
-                           <td>{item.recieved ? item.recieved.toFixed(2) : 0}</td>
-                           <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
-                           <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
-                         </tr>
-                        )
-                     })
-                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
-                 }
-               </tbody>
-             </table>
-           </div>
-          }
-          {toggleAC==='custom' &&
+
+          {toggleAC==='all' && toggleState === "ledgersummary" &&
+          <div className="ledgerSummary" id="scroll_style">
           <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
-            <table class="table table-fixed" className="ledger-table">
-               <thead className="thead-tag">
-                 <tr>
-                   <th scope="col">#</th>
-                   <th scope="col">RefId | Date</th>
-                   <th scope="col">Paid(&#8377;)</th>
-                   <th scope="col">To Be Paid(&#8377;)</th>
-                  <th scope="col">Ledger Balance(&#8377;)</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 {
-                   ledgerSummaryByDate.length > 0 ? (
-                    ledgerSummaryByDate.map((item, index) => {
-                       return (
-                         <tr className="tr-tags">
-                           <th scope="row">{index + 1}</th>
-                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
-                           {moment(item.date).format("DD-MMM-YY")}</td>
-                           <td>{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
-                           <td>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
-                           <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
-                         </tr>
-                        )
-                     })
-                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
-                 }
-               </tbody>
-             </table>
-           </div>
-           } 
-          {toggleAC==='custom' &&
-           <div id="detailed-ledger" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
-            <table class="table table-fixed" className="ledger-table">
-               <thead className="thead-tag">
-                 <tr>
-                   <th scope="col">#</th>
-                   <th scope="col">RefId | Date</th>
-                   <th scope="col">Item<br/> Unit | Kgs | Rate</th>
-                   <th scope="col">Recieved(&#8377;)</th>
-                   <th scope='col'>To Be Recieved(&#8377;)</th>
-                  <th scope="col">Ledger Balance(&#8377;)</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 {
-                   sellerDetailed.length > 0 ? (
-                     sellerDetailed.map((item, index) => {
-                       return (
-                        <tr className="tr-tags">
-                          <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
-                          {moment(item.date).format("DD-MMM-YY")}</td>
-                          <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
-                          <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
-                          &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
-                          <td>{item.recieved ? item.recieved.toFixed(2) : 0}</td>
-                          <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
-                          <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
-                        </tr>
-                        )
-                     })
-                   ) : (<p>No Data Available!</p>)
-                 }
-               </tbody>
-             </table>
-           </div>
-          }
-          <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
-            <div class="modal-dialog modal-lg ledger_modal modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <div className="add-record">
-                      <div className="btn-round">
-                        <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setIsOpen(false)} />
-                      </div>
-                      <h6 className="record-name">Add Record Recievable</h6>
-                      <form onSubmit={addRecordPayment}>
-                        <div className="card">
-                          <div className="card-body" id="pref-details-tag">
-                            {
-                              ledger.map((item, index) => {
-                                if (item.partyId == partyId) {
-                                    return (
-                                        <Fragment>
-                                            <tr>
-                                                  <td className='profile-details' key={item.partyName}>
-                                                    <p className='names-tag'>{item.partyName}</p><br />
-                                                    <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                                    {item.profilePic ? item.profilePic
-                                                    :<img id="singles-img" src={single_bill} alt="img"/>}
-                                                    
-                                                </td>
-                                            </tr>
-                                        </Fragment>
-                                    )
-                                }
-                              })
-                            }
-                            <span class="card-text" id="date-tag">
-                              <ReactDatePicker id='date_picker'
-                                selected={selectDate}
-                                onChange={date => { setSelectDate(date) }}
-                                dateFormat='dd-MMM-yy'
-                                maxDate={new Date()}
-                                placeholder="Date"
-                                showMonthYearDropdown={true}
-                                scrollableMonthYearDropdown
-                                required
-                                style=
-                                {{
-                                  width: "400px",
-                                  cursor: "pointer",
-                                  right: "300px",
-                                  marginTop: "30px",
-                                  fontFamily: 'Manrope',
-                                  fontStyle: "normal",
-                                  fontWeight: "600",
-                                  fontSize: "15px",
-                                  lineHeight: "18px"
-                                }}
-                                >
-                              </ReactDatePicker>
-                              <img className="date_icons" src={date_icon} />
-                            </span>
+              <table class="table table-fixed ledger-table">
+                <thead className="thead-tag">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">RefId | Date</th>
+                    <th scope="col">Paid(&#8377;)</th>
+                    <th scope="col">To Be Paid(&#8377;)</th>
+                    <th scope="col">Ledger Balance(&#8377;)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    ledgerSummary.length > 0 ? (
+                      ledgerSummary.map((item, index) => {
+                        return (
+                          <tr className="tr-tags">
+                            <th scope="row">{index + 1}</th>
+                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                            {moment(item.date).format("DD-MMM-YY")}</td>
+                            <td>{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
+                            <td>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
+                            <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                          </tr>
+                          )
+                      })
+                    ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                  }
+                </tbody>
+              </table>
+            </div>
+            </div>
+            }
+            {toggleAC==='all' && toggleState === 'detailedledger' &&
+            <div className="detailedLedger" id="scroll_style">
+            <div id="detailed-ledger" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
+              <table class="table table-fixed ledger-table">
+                <thead className="thead-tag">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">RefId | Date</th>
+                    <th scope="col">Item<br/> Unit | Kgs | Rate</th>
+                    <th scope="col">Paid(&#8377;)</th>
+                    <th scope='col'>To Be Paid(&#8377;)</th>
+                    <th scope="col">Ledger Balance(&#8377;)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    details.length > 0 ? (
+                      details.map((item, index) => {
+                        return (
+                          <tr className="tr-tags">
+                            <th scope="row">{index + 1}</th>
+                            <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                            {moment(item.date).format("DD-MMM-YY")}</td>
+                            <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
+                            <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
+                              &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
+                            <td>{item.recieved ? item.recieved.toFixed(2) : 0}</td>
+                            <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
+                            <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                          </tr>
+                          )
+                      })
+                    ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                  }
+                </tbody>
+              </table>
+            </div>
+            </div>
+            }
+            {toggleAC==='custom' && toggleState === "ledgersummary" &&
+            <div className="ledgerSummary" id="scroll_style">
+            <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
+              <table class="table table-fixed ledger-table">
+                <thead className="thead-tag">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">RefId | Date</th>
+                    <th scope="col">Paid(&#8377;)</th>
+                    <th scope="col">To Be Paid(&#8377;)</th>
+                    <th scope="col">Ledger Balance(&#8377;)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    ledgerSummaryByDate.length > 0 ? (
+                      ledgerSummaryByDate.map((item, index) => {
+                        return (
+                          <tr className="tr-tags">
+                            <th scope="row">{index + 1}</th>
+                            <td>
+                              <p style={{ color: "#0066FF" }}>
+                                {item.refId ? item.refId : ""}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                            </td>
+                            <td>
+                              {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
+                            </td>
+                            <td>
+                              {item.tobePaidRcvd
+                                ? item.tobePaidRcvd.toFixed(2)
+                                : 0}
+                            </td>
+                            <td>
+                              <span className="coloring">
+                                {item.balance ? item.balance.toFixed(2) : 0}
+                              </span>
+                            </td>
+                          </tr>
+                          )
+                      })
+                    ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                  }
+                </tbody>
+              </table>
+            </div>
+            </div>
+            } 
+            {toggleAC==='custom' && toggleState === 'detailedledger' &&
+            <div className="detailedLedger" id="scroll_style">
+            <div id="detailed-ledger" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
+              <table class="table table-fixed ledger-table">
+                <thead className="thead-tag">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">RefId | Date</th>
+                    <th scope="col">Item<br/> Unit | Kgs | Rate</th>
+                    <th scope="col">Paid(&#8377;)</th>
+                    <th scope='col'>To Be Paid(&#8377;)</th>
+                    <th scope="col">Ledger Balance(&#8377;)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    sellerDetailed.length > 0 ? (
+                      sellerDetailed.map((item, index) => {
+                        return (
+                          <tr className="tr-tags">
+                            <th scope="row">{index + 1}</th>
+                            <td>
+                              <p style={{ color: "#0066FF" }}>
+                                {item.refId ? item.refId : ""}
+                              </p>{" "}
+                              {moment(item.date).format("DD-MMM-YY")}
+                            </td>
+                            <td>
+                              <p style={{ fontSize: "12px" }}>
+                                {item.itemName}
+                              </p>
+                              <span style={{ fontSize: "13px" }}>
+                                {item.qty ? item.qty.toFixed(1) : 0}{" "}
+                                {(item.unit ? item.unit : "")
+                                  .charAt(item)
+                                  .toUpperCase()}
+                                &nbsp;|&nbsp;{item.kg ? item.kg : 0}
+                                &nbsp;|&nbsp;{item.rate ? item.rate : 0}
+                              </span>
+                            </td>
+                            <td>
+                              {item.recieved ? item.recieved.toFixed(2) : 0}
+                            </td>
+                            <td>
+                              {item.toBeRecieved
+                                ? item.toBeRecieved.toFixed(2)
+                                : 0}
+                            </td>
+                            <td>
+                              <span className="coloring">
+                                {item.balance ? item.balance.toFixed(2) : 0}
+                              </span>
+                            </td>
+                          </tr>
+                          )
+                      })
+                    ) : (<p>No Data Available!</p>)
+                  }
+                </tbody>
+              </table>
+            </div>
+            </div>
+            }
+            <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
+              <div class="modal-dialog modal-lg ledger_modal"
+              style={{height:'500px',width:'760px',marginLeft:'320px',top:'30px'}}>
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <div className="add-record">
+                        <div className="btn-round">
+                          <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setIsOpen(false)} />
+                        </div>
+                        <h6 className="record-name">Add Record Recievable</h6>
+                        <form onSubmit={addRecordPayment}>
+                          <div className="card">
+                            <div className="card-body" id="pref-details-tag">
+                              {
+                                ledger.map((item, index) => {
+                                  if (item.partyId == partyId) {
+                                      return (
+                                          <Fragment>
+                                              <div
+                                              className="profile-details"
+                                              key={item.partyName}
+                                            >
+                                              <div class="d-flex">
+                                              <div>
+                                                {item.profilePic ? (
+                                                <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                                  ) : (
+                                                  <img
+                                                    id="singles-img"
+                                                    src={single_bill}
+                                                    alt="img"
+                                                  />
+                                                )}
+                                              </div>
+                                                <div>
+                                                  <p className="namedtl-tag">
+                                                    {item.partyName}
+                                                  </p>
+                                                  <p className="mobilee-tag">{item.mobile}</p>
+                                                  <p className="addres-tag">
+                                                    {item.partyAddress ? item.partyAddress : ""}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </Fragment>
+                                      )
+                                  }
+                                })
+                              }
+                              <span class="card-text" id="date-tag">
+                                <ReactDatePicker id='date_pickers'
+                                  selected={selectDate}
+                                  onChange={date => { setSelectDate(date) }}
+                                  dateFormat='dd-MMM-yy'
+                                  maxDate={new Date()}
+                                  placeholder="Date"
+                                  showMonthYearDropdown={true}
+                                  scrollableMonthYearDropdown
+                                  required
+                                  style=
+                                  {{
+                                    width: "400px",
+                                    cursor: "pointer",
+                                    right: "300px",
+                                    marginTop: "30px",
+                                    fontFamily: 'Manrope',
+                                    fontStyle: "normal",
+                                    fontWeight: "600",
+                                    fontSize: "15px",
+                                    lineHeight: "18px"
+                                  }}
+                                  >
+                                </ReactDatePicker>
+                                <img className="date_icons" src={date_icon} />
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                        <p id='out-tag'>Total Outstanding Recievables</p>
-                        <p id="recieved-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
-                        <div class="form-group">
-                          <label hmtlFor="amtRecieved" id="amount-tag">Amount Recieved</label>
-                          <input class="form-control" id="amountRecieved" required
-                            onChange={(e) => setPaidRcvd(e.target.value)}/>
-                        </div>
-                        <p className='payments-tag'>Payment Mode</p>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadios1" value="CASH"
-                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'} required />
-                          <label class="form-check-label" for="inlineRadio1">CASH</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
-                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
-                          <label class="form-check-label" for="inlineRadio2">UPI</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
-                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
-                          <label class="form-check-label" for="inlineRadio3">NEFT</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
-                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
-                          <label class="form-check-label" for="inlineRadio4">RTGS</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
-                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
-                          <label class="form-check-label" for="inlineRadio5">IMPS</label>
-                        </div>
-                        <div class="mb-3">
-                          <label for="exampleFormControlTextarea1" class="form-label" id="commenting-tag">Comment</label>
-                          <textarea class="form-control" id="commenters1" rows="2" value={comments}
-                            onChange={(e) => setComments(e.target.value)}></textarea>
-                        </div>
-                        <button className='submit-btn' type='sumit'>SUBMIT</button>
-                      </form>
+                          <p id='out-tag'>Total Outstanding Recievables</p>
+                          <p id="recieved-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
+                          <div class="form-group">
+                            <label hmtlFor="amtRecieved" id="amount-tag">Amount Recieved</label>
+                            <input class="form-control" id="amountRecieved" required
+                              onChange={(e) =>{handleInputVale(e)}}/>
+                              {isValid?
+                              <p id="valid-cond">Amount Received cannot be empty</p>:''
+                              }
+                              {valid?
+                              <p id="valid-cond">
+                              Entered Amount  cannot more than Outstanding Balance</p>:''
+                              }
+                          </div>
+                          <p className='payments-tag'>Payment Mode</p>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio" id="inlineRadios1" value="CASH"
+                              onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'} required />
+                            <label class="form-check-label" for="inlineRadio1">CASH</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
+                              onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
+                            <label class="form-check-label" for="inlineRadio2">UPI</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
+                              onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
+                            <label class="form-check-label" for="inlineRadio3">NEFT</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
+                              onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
+                            <label class="form-check-label" for="inlineRadio4">RTGS</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
+                              onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
+                            <label class="form-check-label" for="inlineRadio5">IMPS</label>
+                          </div>
+                          <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label" id="commenting-tag">Comment</label>
+                            <textarea class="form-control" id="commenters1" rows="2" value={comments}
+                              onChange={(e) => setComments(e.target.value)}></textarea>
+                          </div>
+                          <button className='submit-btn' type='sumit'>SUBMIT</button>
+                        </form>
+                      </div>
                     </div>
-                  </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-             <div className='dateRangePicker' style={{ display: dateDisplay ? 'block' : 'none' }}>
-                <div className="flex">
-                    <div onClick={DateModal}><img id="date_icon" src={date_icon} /></div>
-                </div>
-                <div className="modal fade" id="datePopupmodal">
-                    <div className="modal-dialog modal-dialog-centered date_modal_dialog">
-                        <div className="modal-content">
-                            <div className="modal-header date_modal_header">
-                                <h5 className="modal-title header2_text" id="staticBackdropLabel">Select Dates</h5>
-                                <img src={close_btn} alt="image" className="close_icon" data-bs-dismiss="modal"/>
-                            </div>
-                            <div className="modal-body date_modal_mody">
-                                <div className="calender_popup">
-                                    <div className="row">
-                                        <div className="dates_div">
-                                            <div className="flex_class">
-                                                <input type="radio" id="tab1" name="tab" defaultChecked />
-                                                <label htmlFor="tab1">Daily</label>
-                                            </div>
-                                            <div className="flex_class">
-                                                <input type="radio" id="tab2" name="tab" />
-                                                <label htmlFor="tab2">Monthly</label>
-                                            </div>
-                                            <div className="flex_class">
-                                                {" "}
-                                                <input type="radio" id="tab3" name="tab" />
-                                                <label htmlFor="tab3">Yearly</label>
-                                            </div>
-                                            <div className="flex_class">
-                                                <input type="radio" id="tab4" name="tab" />
-                                                <label htmlFor="tab4">Weekly</label>
-                                            </div>
-                                            <div className="flex_class">
-                                                <input type="radio" id="tab5" name="tab" />
-                                                <label htmlFor="tab5">Custom</label>
-                                            </div>
-                                        </div>
-                                        <article className="date_picker">
-                                            <ReactDatePicker
-                                                dateFormat="yyyy-MM-dd"
-                                                selected={startDate}
-                                                onChange={(date) => setStartDate(date)}
-                                                className="form-control"
-                                                placeholder="Date"
-                                                maxDate={new Date()}
-                                                inline
-                                            />
-                                        </article>
-                                        <article className="month_picker">
-                                            <ReactDatePicker
-                                                dateFormat="MM/yyyy"
-                                                showMonthYearPicker
-                                                showFullMonthYearPicker
-                                                selected={startDate}
-                                                onChange={(date) => setStartDate(date)}
-                                                className="form-control"
-                                                placeholder="Date"
-                                                maxDate={new Date()}
-                                                showThreeColumnMonthYearPicker
-                                                inline
-                                            />
-                                        </article>
-                                        <article>
-                                            <h2>
-                                                <ReactDatePicker
-                                                    selected={startDate}
-                                                    onChange={(date) => setStartDate(date)}
-                                                    showYearPicker
-                                                    dateFormat="yyyy"
-                                                    className="form-control"
-                                                    maxDate={new Date()}
-                                                    inline
-                                                    // showThreeColumnYearPicker
-                                                    yearItemNumber={9}
-                                                />
-                                            </h2>
-                                        </article>
-                                        <article className="week_picker">
-                                            {/* <WeeklyCalendar
-                                            onWeekPick={handleWeekPick}
-                                            max={moment().format("DD-MM-YYYY")}
-                                            /> */}
-                                        </article>
-                                        <article className="custom_picker">
-                                            <div className="flex_class custom_input_div">
-                                                <ReactDatePicker
-                                                    selected={startDate}
-                                                    onChange={(date) => setStartDate(date)}
-                                                    popperClassName="d-none"
-                                                    dateFormat="yyyy-MM-dd"
-                                                    placeholderText="Select from date"
-                                                />
-                                                <ReactDatePicker
-                                                    selected={endDate}
-                                                    onChange={(date) => setEndDate(date)}
-                                                    popperClassName="d-none"
-                                                    dateFormat="yyyy-MM-dd"
-                                                    placeholderText="Select to date"
-                                                />
-                                            </div>
-                                            <ReactDatePicker
-                                                selected={startDate}
-                                                onChange={onChangeDate}
-                                                startDate={startDate}
-                                                endDate={endDate}
-                                            selectsRange
-                                            inline
-                                            maxDate={new Date()}
-                                            />
-                                        </article>
-                                    </div>
-                                </div>
-                                <button className='continue-btn' onClick={getDate}>CONTINUE</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-        <div className='table-scroll'>
-         <table class="table table-fixed" className="ledger-table">
-           <thead className="thead-tag">
-             <tr>
-               <th scope="col">#</th>
-               <th scope="col">Date</th>
-               <th scope="col">Transporter Name</th>
-               <th scope="col">To Be Paid</th>
-             </tr>
-           </thead>
-           <tbody>
-             {
-               ledger.length > 0 ? (
-                 ledger.filter((item) => {
-                   if (search === " ") return <p>Not Found</p>;
-                   else if (item.partyName===search) {
-                     console.log(item.partyName);
-                     console.log(search)
-                     return (<p>item.partyName</p>);
-                   }
-                   else {
-                     return <p>Not Found</p>
-                   }
-                 })
-                   .map((item, index) => {
-                     return (
-                       <Fragment>
-                         <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
-                          className={isActive===index?'tabRowSelected':"tr-tags"}>
-                           <td scope="row">{index + 1}</td>
-                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
-                           <td key={item.partyName}><span className="namedtl-tag">
-                             {item.partyName}<br /></span>
-                             <span className="address-tag">{item.partyAddress?item.partyAddress:''}<br /></span>
-                             <span className="mobile-tag">{item.mobile}</span>
-                             {item.profilePic? item.profilePic
-                               :<img className="profile-img" src={single_bill} alt="img"/>}
-                           </td>
-                           <td key={item.tobePaidRcvd}><span className='coloring'>&#8377;
-                             {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
-                         </tr>
-                       </Fragment>
-                     )
-                   })
-               ) :
-                 (<div>
-                   <img src={no_data} />
-                   <p>No Data Available</p>
-                 </div>
-                 )
- 
-             }
-           </tbody>
-         </table>
-         <div className="outstanding-pay">
-           <p className="pat-tag">Outstanding Recievable:</p>
-           <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
-         </div>
-       </div>
+      </div>
     </Fragment>
   )
 }
