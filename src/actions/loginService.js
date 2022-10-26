@@ -3,7 +3,6 @@ import axiosCommon from "../axios";
 export function doLogin(obj) {
     return axios.post('https://dev-api.onoark.com/v1/account/click/sign-in', obj);
 }
-
 export function validateOTP(obj) {
     return axios.post('https://dev-api.onoark.com/v1/account/click/sign-in/validate',obj);
 }
@@ -18,5 +17,8 @@ export function saveCropPreference(obj,clickId) {
 }
 export function completeMandiSetup(obj, clickId){
     return axiosCommon.post(`/account/business/onboard/clickId/${clickId}`, obj);
+}
+export function editMandiSetup(obj, clickId){
+    return axiosCommon.put(`/account/business/onboard/clickId/${clickId}`, obj);
 }
 export default {doLogin, validateOTP, langSelection, createProfile}

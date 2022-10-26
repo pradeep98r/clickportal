@@ -12,9 +12,13 @@ function TopNavigation() {
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
   const logOutFunction = () => {
+    console.log("hey")
     caches.keys().then((names) => {
+
+      console.log("hey")
       names.forEach((name) => {
         caches.delete(name);
+        alert("hii")
       });
     });
     localStorage.setItem("isauth", false);
