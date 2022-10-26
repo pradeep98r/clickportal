@@ -9,6 +9,8 @@ import loading from "../../assets/images/loading.gif";
 import { langSelection } from "../../actions/loginService";
 import { getLanguagesData } from "../../actions/profileService";
 import CompleteProfile from "../smartboard/completeprofile";
+import { mandiInfoActions } from "../../reducers/mandiProfile";
+import { useDispatch } from "react-redux";
 const MyProfile = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -19,8 +21,12 @@ const MyProfile = () => {
   const [langResponse, setLanguage] = useState([]);
   const [languageId, setLanguageId] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
+  const [isMandiEdit, setIsMandiEdit] = useState(false);
+  const submitStatus = localStorage.getItem("submitStatus") ;
+  const dispatch = useDispatch();
   useEffect(() => {
     getProfileDetails();
+   
     langSelection().then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -41,6 +47,9 @@ const MyProfile = () => {
         console.log(error);
       });
   };
+  // if(submitStatus){
+  //   getProfileDetails();
+  // }
   const langOnclick = (id) => {
     setLanguageId(id);
   };
@@ -73,6 +82,13 @@ const MyProfile = () => {
       ? localStorage.getItem("businessCreatedStatus")
       : "noo";
   const [showModal, setShowModal] = useState(false);
+  const editMandiData = (mandiDetails)=>{
+    setShowModal(true);
+    setIsMandiEdit(true);
+    localStorage.setItem("mandiEditStatus",true);
+    dispatch(mandiInfoActions.mandiSuccess(mandiDetails));
+    localStorage.setItem("mandiEditDetails",JSON.stringify(mandiDetails));
+  }
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -100,8 +116,8 @@ const MyProfile = () => {
                                     <div className="d-flex align-items-center">
                                       <img src={icon} alt="image" />
                                       <h6>
-                                        {/* Personal deatails */}
-                                        {langFullData.hello}
+                                        Personal deatails
+                                        {/* {langFullData.hello} */}
                                       </h6>
                                     </div>
                                   </div>
@@ -141,13 +157,15 @@ const MyProfile = () => {
                                         <img src={icon} alt="image" />
                                         <h6>Business Details</h6>
                                       </div>
-                                      <p onClick={() => setShowModal(true)}>
+                                      <p onClick={() => editMandiData( profileData.businessDtls)} className="edit_text">
                                         Edit
                                       </p>
-                                      <CompleteProfile
+                                      {
+                                        isMandiEdit ? <CompleteProfile
                                         show={showModal}
                                         close={() => setShowModal(false)}
-                                      />
+                                      /> : <div className="d-none"></div>
+                                      }
                                     </div>
                                   </div>
                                   <div className="card_body">

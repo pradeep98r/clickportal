@@ -8,7 +8,7 @@ const Registration = () => {
   const [fullName, setFullNameField] = useState("");
   const [caValue, setCaValue] = useState("");
   const handleNameChange = (e) => {
-    setFullNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setFullNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
   };
   const navigate = useNavigate();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));

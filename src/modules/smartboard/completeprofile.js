@@ -6,27 +6,41 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import InputField from "../../components/inputField";
 import { useState } from "react";
 import toastr from "toastr";
-import { completeMandiSetup } from "../../actions/loginService";
-
+import { completeMandiSetup, editMandiSetup } from "../../actions/loginService";
+import $ from "jquery";
+import { useSelector } from "react-redux";
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
-  // mandi name
-  const [mandiNameField, setMandiNameField] = useState("");
+  const mandiEditStatus = localStorage.getItem("mandiEditStatus");
+  const data = localStorage.getItem("mandiEditDetails");
+  const mandiData = JSON.parse(data);
+    const mandiUserDetails = useSelector((state) => state.mandiInfo.isMandiDetails);
+  // console.log(mandiUserDetails)
+  // console.log(mandiEditStatus,mandiUserDetails);
+    // mandi name
+  const [mandiNameField, setMandiNameField] = useState(
+    mandiEditStatus ? mandiUserDetails.businessName : ""
+  );
   const [mandiNameError, setMandiNameError] = useState("");
   const handleMandiName = (e) => {
+    e.preventDefault();
     setMandiNameField(e.target.value);
     commonValidation(e, "mandiname");
   };
   //   mandi type
-  const [mandiTypeField, setMandiTypeField] = useState("");
+  const [mandiTypeField, setMandiTypeField] = useState(
+    mandiEditStatus ? mandiData.businessType : ""
+  );
   const [mandiTypeError, setMandiTypeError] = useState("");
   const handleMandiType = (e) => {
     setMandiTypeField(e.target.value);
     commonValidation(e, "manditype");
   };
   //   mandi short code
-  const [mandiShortCode, setMandiShortCode] = useState("");
+  const [mandiShortCode, setMandiShortCode] = useState(
+    mandiEditStatus ? mandiData.shortCode : ""
+  );
   const [mandiShortCodeError, setMandiShortCodeError] = useState("");
   const handleMandiShortCode = (e) => {
     setMandiShortCode(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
@@ -42,7 +56,9 @@ const CompleteProfile = (props) => {
     }
   };
   //   shop number
-  const [shopNumberField, setShopNumberField] = useState("");
+  const [shopNumberField, setShopNumberField] = useState(
+    mandiEditStatus ? mandiData.shopNum : ""
+  );
   const [shopNumberError, setShopNumberError] = useState("");
   const handleShopNumber = (e) => {
     setShopNumberField(e.target.value);
@@ -58,25 +74,39 @@ const CompleteProfile = (props) => {
     }
   };
   //   contact name
-  const [contactName, setContactName] = useState("");
+  const [contactName, setContactName] = useState(
+    mandiEditStatus ? mandiData.contactName : ""
+  );
   const [contactNameError, setContactNameError] = useState("");
   const handleContactName = (e) => {
     setContactName(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e, "contactname");
   };
   //   mobile number
-  const [mobileNumber, setmobileNumber] = useState("");
+  const [mobileNumber, setmobileNumber] = useState(
+    mandiEditStatus ? mandiData.mobile : ""
+  );
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
   };
-  const [alternateMobileNumber, setAlternateMobileNumber] = useState("");
+  const [alternateMobileNumber, setAlternateMobileNumber] = useState(
+    mandiEditStatus ? mandiData.altMobile : ""
+  );
   const [alternateMobileNumberError, setAlternateMobileNumberError] =
     useState("");
   const handleAlternateMobileNumber = (e) => {
     mobileNumberValidation(e, "alternateMobile");
   };
-
+  const [pincode, setPincode] = useState(
+    mandiEditStatus ? mandiData.businessAddress.pincode : ""
+  );
+  const [cityVal, setCityVal] = useState(
+    mandiEditStatus ? mandiData.businessAddress.dist : ""
+  );
+  const [stateVal, setStateVal] = useState(
+    mandiEditStatus ? mandiData.businessAddress.state : ""
+  );
   //   common mobilenumber validation
   const mobileNumberValidation = (e, type) => {
     var string1 = "Minimum mobile number length should be 10";
@@ -98,6 +128,14 @@ const CompleteProfile = (props) => {
     if (type == "mobile") setmobileNumber(number);
     else setAlternateMobileNumber(number);
   };
+  const [streetVillage, setStreetVillage] = useState(
+    mandiEditStatus ? mandiData.businessAddress.addressLine : ""
+  );
+  const [streetvillageError, setStreetvillageError] = useState("");
+  const handleStreetName = (e) => {
+    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
+    commonValidation(e, "streetvillage");
+  };
   //  common validatioon
   const commonValidation = (e, type) => {
     var string1 = "Name should be min 2 characters";
@@ -107,6 +145,8 @@ const CompleteProfile = (props) => {
         setMandiNameError(string1);
       } else if (type == "manditype") {
         setMandiTypeError(string1);
+      } else if (type == "streetvillage") {
+        setStreetvillageError(string1);
       } else {
         setContactNameError(string1);
       }
@@ -115,6 +155,8 @@ const CompleteProfile = (props) => {
         setMandiNameError(string2);
       } else if (type == "manditype") {
         setMandiTypeError(string2);
+      } else if (type == "streetvillage") {
+        setStreetvillageError(string2);
       } else {
         setContactNameError(string2);
       }
@@ -123,22 +165,25 @@ const CompleteProfile = (props) => {
         setMandiNameError("");
       } else if (type == "manditype") {
         setMandiTypeError("");
+      } else if (type == "streetvillage") {
+        setStreetvillageError("");
       } else {
         setContactNameError("");
       }
     }
   };
+  const [submitStatus, setSubmitStatus] = useState(false);
   const onSubmit = () => {
     if (
-        mandiNameField.trim().length !== 0 
-    //   mobileNumber.trim().length !== 0 &&
-    //   shortNameField.trim().length !== 0
+      mandiNameField.trim().length !== 0
+      //   mobileNumber.trim().length !== 0 &&
+      //   shortNameField.trim().length !== 0
     ) {
       addEditMandiSetupApiCall();
     } else if (mandiNameField.trim().length === 0) {
-        mandiNameError("Please Enter Name");
+      mandiNameError("Please Enter Name");
       // alert("hii")
-    } 
+    }
     // else if (mobileNumber.trim().length === 0) {
     //     requiredNumberField("Please Enter Mobile Number");
     // } else if (shortNameField.trim().length === 0) {
@@ -146,38 +191,195 @@ const CompleteProfile = (props) => {
     // }
   };
   const obj = {
-    "altMobile": alternateMobileNumber,
-    "businessAddress": {
-      "addressLine": "string",
-      "city": "string",
-      "dist": "string",
-      "pincode": 0,
-      "state": "string",
-      "type": "string"
+    altMobile: mandiEditStatus ? mandiData.altMobile : alternateMobileNumber,
+    businessAddress: {
+      addressLine: streetVillage,
+      city: cityVal,
+      dist: cityVal,
+      pincode: pincode,
+      state: stateVal,
+      type: "BUSINESS",
     },
-    "businessId": 0,
-    "businessName": mandiNameField,
-    "businessType": mandiTypeField,
-    "contactName": contactName,
-    "imageUrl": "string",
-    "marketId": 0,
-    "mobile": mobileNumber,
-    "otherMarket": "string",
-    "shopNum": shopNumberField,
-    "shortCode": mandiShortCode
-  }
-  const addEditMandiSetupApiCall = ()=>{
-    completeMandiSetup(obj, clickId).then(
-      (response) => {
-        if (response.data.status.type === "SUCCESS") {
-          console.log(response, "add partner");
-          localStorage.setItem("businessCreatedStatus",response.data.status.message)
+    businessId: mandiEditStatus ? mandiData.businessId : 0,
+    businessName: mandiNameField,
+    businessType: mandiTypeField,
+    contactName: contactName,
+    imageUrl: "string",
+    marketId: mandiEditStatus ? mandiData.marketId : 0,
+    mobile: mobileNumber,
+    otherMarket: "string",
+    shopNum: shopNumberField,
+    shortCode: mandiShortCode,
+  };
+  const addEditMandiSetupApiCall = () => {
+    if (mandiEditStatus) {
+      editMandiSetup(obj, clickId).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            console.log(response, "update partner");
+            toastr.success(response.data.status.message);
+            localStorage.setItem("submitStatus",true)
+          }
+        },
+        (error) => {
+          toastr.error(error.response.data.status.description);
         }
-      },
-      (error) => {
-        toastr.error(error.response.data.status.description);
+      );
+    } else {
+      completeMandiSetup(obj, clickId).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            console.log(response, "add partner");
+            setMandiNameField(mandiNameField);
+            localStorage.setItem(
+              "businessCreatedStatus",
+              response.data.status.message
+            );
+          }
+        },
+        (error) => {
+          toastr.error(error.response.data.status.description);
+        }
+      );
+    }
+  };
+  // address details
+  const getPosition = () => {
+    console.log("hey");
+    if (navigator.geolocation) {
+      console.log("heyr");
+      navigator.geolocation.getCurrentPosition(showPosition, posError);
+    } else {
+      alert("Sorry, Geolocation is not supported by this browser.");
+      // Alert is browser does not support geolocation
+    }
+  };
+  const posError = () => {
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: "geolocation" }).then((res) => {
+        if (res.state === "denied") {
+          alert(
+            "Enable location permissions for this website in your browser settings."
+          );
+        }
+      });
+    } else {
+      alert(
+        "Unable to access your location. You can continue by submitting location manually."
+      ); // Obtaining Lat/long from address necessary
+    }
+  };
+  const showPosition = async (position) => {
+    console.log("hey after", position);
+    let lat = position.coords.latitude; // You have obtained latitude coordinate!
+    let long = position.coords.longitude; // You have obtained
+    await getAddress(lat, long, "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A");
+  };
+  // Converting lat/long from browser geolocation into city, state, and zip code using Google Geocoding API
+  const getAddress = (lat, long, googleKey) => {
+    fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${googleKey}`
+    )
+      .then((res) => res.json())
+      .then((address) => setZip(address));
+  };
+  // Dispatching city, state, and zip code to store state
+  const setZip = (address) => {
+    let pincode = address.results[0].formatted_address;
+    var pincodeValue = pincode.replace(/\D/g, "");
+    let city = address.results[5].address_components[2].short_name;
+    let state = address.results[5].address_components[4].short_name;
+    $("#city").val(city);
+    $("#state").val(state);
+    $("#zip").val(pincodeValue);
+    setPincode(pincodeValue);
+    setCityVal(city);
+    setStateVal(state);
+    localStorage.setItem("cityValue", city);
+    var $input;
+    var $text = $(document.createElement("input"));
+    $text.attr("value", city);
+    $text.attr("type", "text");
+    $text.attr("type", "text");
+    $text.attr("class", "form-control");
+    $input = $text;
+    $("#city-input-wrapper").html($input);
+  };
+  const onZip = (event) => {
+    var zip = $("#zip").val().replace(/[^\d]/g, "");
+    setPincode(zip);
+    var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
+    if (zip.length) {
+      //make a request to the google geocode api with the zipcode as the address parameter and your api key
+      $.get(
+        "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+          zip +
+          "&key=" +
+          api_key
+      ).then(function (response) {
+        //parse the response for a list of matching city/state
+        var possibleLocalities = geocodeResponseToCityState(response);
+        fillCityAndStateFields(possibleLocalities);
+      });
+    }
+  };
+
+  function fillCityAndStateFields(localities) {
+    var locality = localities[0]; //use the first city/state object
+
+    $("#city").val(locality.city);
+    $("#state").val(locality.state);
+  }
+
+  function geocodeResponseToCityState(geocodeJSON) {
+    //will return and array of matching {city,state} objects
+    var parsedLocalities = [];
+    if (geocodeJSON.results.length) {
+      for (var i = 0; i < geocodeJSON.results.length; i++) {
+        var result = geocodeJSON.results[i];
+        var locality = {};
+        for (var j = 0; j < result.address_components.length; j++) {
+          var types = result.address_components[j].types;
+          for (var k = 0; k < types.length; k++) {
+            if (types[k] === "locality") {
+              locality.city = result.address_components[j].long_name;
+            } else if (types[k] === "administrative_area_level_1") {
+              locality.state = result.address_components[j].short_name;
+            }
+          }
+        }
+        parsedLocalities.push(locality);
+
+        //check for additional cities within this zip code
+        if (result.postcode_localities) {
+          for (var l = 0; l < result.postcode_localities.length; l++) {
+            parsedLocalities.push({
+              city: result.postcode_localities[l],
+              state: locality.state,
+            });
+          }
+        }
       }
-    );
+    } else {
+      console.log("error: no address components found");
+    }
+    return parsedLocalities;
+  }
+  function fillCityAndStateFields(localities) {
+    var locality = localities[0];
+    $("#city").val(locality.city);
+    $("#state").val(locality.state);
+    var $input;
+    var city = localities[0].city;
+    setCityVal(city);
+    setStateVal(locality.state);
+    var $text = $(document.createElement("input"));
+    $text.attr("value", city);
+    $text.attr("type", "text");
+    $text.attr("type", "text");
+    $text.attr("class", "form-control");
+    $input = $text;
+    $("#city-input-wrapper").html($input);
   }
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
@@ -261,9 +463,9 @@ const CompleteProfile = (props) => {
                     label="pincode"
                     name="zip"
                     onChange={(e) => {
-                      // onZip(e);
+                      onZip(e);
                     }}
-                    value=""
+                    value={pincode}
                   />
                 </div>
               </div>
@@ -272,18 +474,18 @@ const CompleteProfile = (props) => {
                   City*
                 </label>
                 <div id="city-input-wrapper">
-                  {/* {isEdit ? (
-                          <div>
-                            <InputField
-                              type="text"
-                              id="city"
-                              name="city"
-                              value={cityVal}
-                            />
-                          </div>
-                        ) : ( */}
-                  <InputField type="text" id="city" name="city" />
-                  {/* // )} */}
+                  {mandiEditStatus ? (
+                    <div>
+                      <InputField
+                        type="text"
+                        id="city"
+                        name="city"
+                        value={cityVal}
+                      />
+                    </div>
+                  ) : (
+                    <InputField type="text" id="city" name="city" />
+                  )}
                 </div>
               </div>
             </div>
@@ -350,37 +552,35 @@ const CompleteProfile = (props) => {
                 }}
               />
               <span className="text-danger">{alternateMobileNumberError}</span>
-              <div
-                //   onClick={() => getPosition()}
-                className="location mt-0"
-              >
+              <div onClick={() => getPosition()} className="location mt-0">
                 Select Current Location
               </div>
-              {/* <label className="input_field address_text mt-0 hidden_field">Address</label> */}
+
               <div>
                 <label htmlFor="state" className="input_field">
                   State*
                 </label>
-                {/* {isEdit ? (
-                        <input
-                          id="state"
-                          className="form-control"
-                          name="state"
-                          value=""
-                        />
-                      ) : ( */}
-                <input id="state" className="form-control" name="state" />
-                {/* )} */}
+                {mandiEditStatus ? (
+                  <input
+                    id="state"
+                    className="form-control"
+                    name="state"
+                    value={stateVal}
+                  />
+                ) : (
+                  <input id="state" className="form-control" name="state" />
+                )}
               </div>
               <InputField
                 type="text"
-                value=""
+                value={streetVillage}
                 label="Street & Village*"
                 name="name"
                 onChange={(e) => {
-                  // handleStreetName(e);
+                  handleStreetName(e);
                 }}
               />
+              <span className="text-danger">{streetvillageError}</span>
             </div>
           </div>
           <div className="row">
