@@ -50,7 +50,8 @@ const PreferredCrops = () => {
         if (response.data.status.type === "SUCCESS") {
           toastr.success(response.data.status.description);
           localStorage.setItem('status',response.data.status.type);
-          navigate('/smartboard');
+          //navigate('/smartboard');
+          navigate('/plans');
         }
       },
       (error) => {
