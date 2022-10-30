@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import ComingSoon from "../../components/comingSoon";
 import search_img from "../../assets/images/search.svg";
 import "../../modules/transporto_ledger/transportoLedger.scss"
+import close from "../../assets/images/close.svg";
 import { 
   addRecordInventory,
   getInventory,
@@ -124,7 +125,11 @@ const TransportoLedger = () => {
         day = ("0" + date.getDate()).slice(-2);
     return [date.getFullYear(), mnth, day].join("-");
   }
+
   //Add Record payment
+  const [isValid, setIsValid]=useState(false);
+  const [valid, setValid]= useState(false);
+
   const addRecordPayment = (transId) => {
     const addRecordData = {
         caId: clickId,
@@ -134,19 +139,20 @@ const TransportoLedger = () => {
         paidRcvd: paidRcvd,
         paymentMode: paymentMode,
     }
-    console.log(selectDate);
     postRecordPayment(addRecordData).then(response => {
         console.log(response.data.data);
         window.location.reload();
         //setRecordDisplay("Record Updated Successfully");
         //setRecord(true);
-    })
-    .catch(error => {
-      console.log(error);
-    })
-    navigate("/transportoledger")
-    setIsOpen(false);
-  }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+      navigate("/transportoledger");
+      localStorage.removeItem("partyId");
+      setIsOpen(false);
+    }
+
 
   //Add Record Inventory
   const postRecordInventory =()=>{
@@ -160,6 +166,14 @@ const TransportoLedger = () => {
         qty:parseInt(qty),
         unit:unit
       }]
+    }
+    if(qty===0){
+      setIsValid(true);
+      console.log(qty);
+    }
+    else if(qty<0){
+      setValid(true)
+      console.log(qty);
     }
     addRecordInventory(inventoryRequest)
     .then(response=>{
@@ -183,460 +197,586 @@ const TransportoLedger = () => {
       console.log(error);
     })
   }
+  const closePopup = () => {
+    $("#myModal").modal("hide");
+  };
   //transId=JSON.parse(localStorage.getItem('transId'));
   return (
     <Fragment>
-      <nav class="navbar navbar-expand-lg ">
-        <div class="container-fluid">
-          <form class="d-flex">
-            <input id="searchbar" type="search" value={searchName} placeholder='Search by Name / Short Code'
-              onChange={(e) => { setSearchName(e.target.value) }} className='searchbar-input' />
-          </form>
-          <div className='searchicon'><img src={search_img} alt="search" /></div>
-        </div>
-      </nav>
-      <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
-        {isActive!==-1 &&
-        <div class="card" className='transport-details'>
-          <div class="card-body">
-            {
-              transporter.map((item, index) => {
-                transId=JSON.parse(localStorage.getItem('transId'));
-                if (item.partyId == transId) {
-                    return (
-                        <Fragment>
-                            <tr>
-                                <td className='profile-details' key={item.partyName}>
-                                    <p className='names-tag'>{item.partyName}</p><br />
-                                    <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                    {item.profilePic ? item.profilePic
-                                    :<img id="singles-img" src={single_bill} alt="img"/>}
-                                    <span id="verticalLine"></span>
-                                </td>
+      <div className="row">
+        <div className="col-lg-4">
+          <div id="search-field">
+            <form class="d-flex">
+              <input class="form-control me-2" id="searchbar" type="search" placeholder='Search by Name / Short Code'
+                onChange={(e) => { setSearchName(e.target.value) }} />
+            </form>
+            <div className='searchicon'><img src={search_img} alt="search" /></div>
+          </div>
+          <div className='table-scroll' id="scroll_style">
+            <table class="table table-fixed" className="ledger-table">
+              <thead className="thead-tag">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Transporter Name</th>
+                  <th scope="col">To Be Paid</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  transporter.length > 0 ? (
+                    transporter.filter((item) => {
+                      if (searchName === '') return <p>Not Found</p>;
+                      else if (item.partyName.toLowerCase().includes(searchName.toLowerCase())) {
+                        console.log(item.partyName.toLowerCase());
+                        console.log(searchName)
+                        return (<p>item.partyName</p>);
+                      }
+                      else {
+                        return <p>Not Found</p>
+                      }
+                    })
+                      .map((item, index) => {
+                        return (
+                          <Fragment>
+                            <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
+                              className={isActive===index?'tableRowActive':"tr-tags"}>
+                              <td key={index}>{index + 1}</td>
+                              <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
+                              <td key={item.partyName}>
+                              <div className="d-flex" id="trans-details">
+                                <div>
+                                  {item.profilePic ? (
+                                    <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                  ) : (
+                                    <img
+                                      className="profile-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                  </div>
+                                  <div>
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                    </p>
+                                    <p className="address-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                    <p className="mobile-tag">{item.mobile}</p>
+                                  </div>
+                              </div>
+                              </td>
+                              <td key={item.tobePaidRcvd}><p className='paid-coloring'>&#8377;
+                                {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</p></td>
                             </tr>
-                        </Fragment>
+                          </Fragment>
                         )
-                    }
-                    else {
-                      <p>No Data Found</p>
-                  }
-              })
-            }
-            <p class="card-text" className='paid'>Total Business<span id="vertical-line1"></span><br /> <span className='coloring'>
-              &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd.toFixed(2): 0}</span></p>
-            <p className='total-paid'>Total Paid<span id="vertical-line"></span> <br /><span className='coloring'>
-              &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid.toFixed(2) : 0}</span> </p>
-            <p className='out-standing'>Outstanding Paybles<br /><span className='coloring'>
-              &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</span></p>
-            <span id="horizontal-line"></span>
-            {/*<hr style={{
-                background: '#FFFFFF', postion: 'absolute',
-                border: '1px solid #E4E4E4', height: '0px', marginTop: '50px', width: '100%',
-                paddingRight: '-40px',
-            }} />*/}
-            <div className="bloc-tabs">
-              <button href={"#paymentledger"}
-                className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
-                onClick={() => toggleTab('paymentledger')}
-              >
-                Payment Ledger
-              </button>
-              <button href={"#inventoryledger"}
-                className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
-                onClick={() => toggleTab('inventoryledger')}
-              >
-                Inventory Ledger
-              </button>
-            </div>
-            <div className="recordbtn-style">
-              <button className="add-record-btn" onClick={() =>
-                {toggleState === 'paymentledger'? setIsOpen(!open)
-                : setOpenInventory(!openInventory)}}  data-toggle="modal" data-target="#myModal">
-                  <div className="add-pay-btn"><img src={add} className='addrecord-img'/></div> Add Record</button>
+                      })
+                  ) :
+                    (<div>
+                      <img src={no_data} />
+                      <p>No Data Available</p>
+                    </div>
+                    )
+    
+                }
+              </tbody>
+            </table>
+          </div>
+          <div className="outstanding-pay">
+            <div className="d-flex">
+              <p className="p-tag">Outstanding Paybles:</p>
+              <p className="value-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
             </div>
           </div>
         </div>
-        }
-        {toggleState==='paymentledger' &&
-        <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
-          <div class="modal-dialog modal-lg transporter_modal d" id="modal-dailoges"
-            style={{height:'500px',width:'748px',marginLeft:'270px',top:'50px'}}>
-            <div class="modal-content" id="modal-content">
-              <div class="modal-body" id="body-modal">
-              <div className="add-record">
-              <div className="btn-round">
-                <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setIsOpen(false)} />
-              </div>
-              <h6 className="record-name">Record Payment</h6>
-              <form onSubmit={addRecordPayment}>
-                <div className="card">
-                  <div className="card-body" id="details-tag">
-                    {
-                      transporter.map((item, index) => {
-                        if (item.partyId == transId) {
-                            return (
-                                <Fragment>
-                                    <tr>
-                                         <td className='profile-details' key={item.partyName}>
-                                            <p className='name-tag'>{item.partyName}</p><br />
-                                            <p className='profile-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                            {item.profilePic ? item.profilePic
-                                            :<img id="single-img" src={single_bill} alt="img"/>}
-                                            
-                                        </td>
-                                    </tr>
-                                </Fragment>
+        <div class="col-lg-8"> 
+        <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
+          {isActive!==-1 &&
+          <div class="card" className='transport-details'>
+            <div class="card-body">
+              <div className="row">
+                <div className="col-lg-3" id="verticalLines">
+                  {
+                  transporter.map((item, index) => {
+                    transId=JSON.parse(localStorage.getItem('transId'));
+                    if (item.partyId == transId) {
+                        return (
+                            <Fragment>
+                                <div
+                                  className="profile-details"
+                                  key={item.partyName}
+                                  >
+                                  <div class="d-flex">
+                                  <div>
+                                    {item.profilePic ? (
+                                    <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                      ) : (
+                                      <img
+                                        id="singles-img"
+                                        src={single_bill}
+                                        alt="img"
+                                      />
+                                    )}
+                                  </div>
+                                    <div id="trans-dtl">
+                                      <p className="namedtl-tag">
+                                        {item.partyName}
+                                      </p>
+                                      <p className="mobilee-tag">{!item.trader?"Trans":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                      <p className="addres-tag">
+                                        {item.partyAddress ? item.partyAddress : ""}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                            </Fragment>
                             )
                         }
-                      })
-                    }
-                    <span class="card-text" id="date-tag">
-                      <ReactDatePicker className='date_picker'
-                        selected={selectDate}
-                        onChange={date => { setSelectDate(date) }}
-                        dateFormat='dd-MMM-yy'
-                        maxDate={new Date()}
-                        placeholder="Date"
-                        showMonthYearDropdown={true}
-                        scrollableMonthYearDropdown
-                        required
-                        style=
-                        {{
-                          width: "400px",
-                          cursor: "pointer",
-                          right: "300px",
-                          marginTop: "30px",
-                          fontFamily: 'Manrope',
-                          fontStyle: "normal",
-                          fontWeight: "600",
-                          fontSize: "15px",
-                          lineHeight: "18px"
-                        }}
-                       >
-                      </ReactDatePicker>
-                      <img className="date_icon" src={date_icon} />
-                    </span>
-                  </div>
-                </div>
-                <p id='p-tag'>Outstanding Paybles</p>
-                <p id="recieve-tag">&#8377;{payLedger.outStdRcvPayble?payLedger.outStdRcvPayble.toFixed(2) :0}</p>
-                <div class="form-group">
-                  <label hmtlFor="amtRecieved" id="amt-tag">Amount</label>
-                  <input class="form-control" id="amtRecieved"  required
-                    onChange={(e) => setPaidRcvd(e.target.value)}/>
-                </div>
-                <p className='payment-tag'>Payment Mode</p>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CASH"
-                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'}required />
-                  <label class="form-check-label" for="inlineRadio1">CASH</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
-                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
-                  <label class="form-check-label" for="inlineRadio2">UPI</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
-                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
-                  <label class="form-check-label" for="inlineRadio3">NEFT</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
-                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
-                  <label class="form-check-label" for="inlineRadio4">RTGS</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
-                    onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
-                  <label class="form-check-label" for="inlineRadio5">IMPS</label>
-                </div>
-                <div class="mb-3">
-                  <label for="exampleFormControlTextarea1" class="form-label" id="comment-tag">Comment</label>
-                  <textarea class="form-control" id="comments" rows="2" value={comments}
-                    onChange={(e) => setComments(e.target.value)}></textarea>
-                </div>
-                <button className='submit-btn' type='sumit'>SUBMIT</button>
-              </form>
-            </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div> }        
-        <div id="transporter-summary" className={toggleState === 'paymentledger' ? "content  active-content" : "content"}>
-        {ledgerSummary.length > 0 ? (
-            <table class="table table-fixed" className="ledger-table">
-              <thead className="thead-tag">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Ref ID</th>
-                  <th scope="col">Paid(&#8377;)</th>
-                  <th scope="col">To Be Paid(&#8377;)</th>
-                  <th scope="col">Ledger Balance(&#8377;)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                    ledgerSummary.map((item, index) => {
-                      return (
-                        <tr className="trs-tags">
-                          <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
-                          {moment(item.date).format("DD-MMM-YY")}</td>
-                          <td>{item.paidRcvd ? item.paidRcvd.toFixed(2)  : 0}</td>
-                          <td><span className='paid-coloring'>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2)  : 0}</span></td>
-                          <td>{item.balance ? item.balance.toFixed(2) : 0}</td>
-                        </tr>
-                      )
-                    })
-                }
-              </tbody>
-            </table>
-            ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)}
-          </div>
-          <div id="detailed-inventory" className={toggleState === 'inventoryledger' ?
-           "content  active-content" : "content"}>
-            {invDetails.length > 0 ? (
-            <table class="table table-fixed" className="ledger-table">
-              <thead className="thead-tag">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Ref ID</th>
-                  <th scope="col">Collected</th>
-                  <th scope="col">Given</th>
-                  <th scope="col">Balance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  
-                    invDetails.map((item, index) => {
-                      return (
-                        <tr className="trs-tags">
-                          <th scope="row">{index + 1}</th>
-                          <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
-                          {moment(item.date).format("DD-MMM-YY")}</td>
-                          <td>{item.collected ? item.collected.toFixed(1) : 0}&nbsp;
-                          {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                            item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                            item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
-                          <td>{item.given ? item.given.toFixed(1) : 0}&nbsp;
-                          {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                            item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                            item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
-                          <td>
-                            {item.unit==='CRATES'?item.cratesBalance.toFixed(1):item.unit==='SACS'?item.sacsBalance.toFixed(1):
-                            item.unit==='BAGS'?item.bagsBalance.toFixed(1):item.unit==='BOXES'?item.boxesBalance.toFixed(1):0}
-                            &nbsp;{
-                            item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                            item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                            item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''
-                            }
-                          </td>
-                        </tr>
-                      )
-                    }) 
-                }
-              </tbody>
-            </table>
-          ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)}
-           </div>
-          <div>
-            {toggleState==='inventoryledger' &&
-            <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
-              <div class="modal-dialog modal-lg transporter_modal"
-                style={{height:'500px',width:'748px',marginLeft:'270px',top:'50px'}}>
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <div className="add-record">
-                      <div className="btn-round">
-                        <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setOpenInventory(false)} />
-                      </div>
-                      <h6 className="inventory-name">Record Inventory</h6>
-                      <div className="bloc-tabs">
-                        <button 
-                          className={toggleInventory === 'Given' ? "tab active-tab" : "tab"}
-                          onClick={() => toggleTabs('Given')}
-                        >
-                          Given
-                        </button>
-                        <button
-                          className={toggleInventory === 'Collected' ? "tab active-tab" : "tab"}
-                          onClick={() => toggleTabs('Collected')}
-                        >
-                          Collected
-                        </button>
-                      </div>
-                      <span id="horizontal-lines"></span>
-                      <div  className={toggleInventory === 'Given' || toggleInventory === 'Collected' ?
-                              "content  active-content" : "content"}>
-                      <form onSubmit={postRecordInventory}>
-                        <div className="card">
-                          <div className="card-body" id="detail-tag">
-                            {
-                              transporter.map((item, index) => {
-                                if (item.partyId == transId) {
-                                    return (
-                                        <Fragment>
-                                            <tr>
-                                                <td className='profile-details' key={item.partyName}>
-                                                    <p className='name-tag'>{item.partyName}</p><br />
-                                                    <p className='profile-dtl'>{item.mobile}<br />{item.partyAddress}</p>
-                                                    {item.profilePic ? item.profilePic
-                                                    :<img id="single-img" src={single_bill} alt="img"/>}
-                                                    
-                                                </td>
-                                            </tr>
-                                        </Fragment>
-                                    )
-                                }
-                              })
-                            }
-                            <span class="card-text" id="date-tag">
-                              <ReactDatePicker className='date_picker'
-                                selected={selectDate}
-                                onChange={date => { setSelectDate(date) }}
-                                dateFormat='dd-MMM-yy'
-                                maxDate={new Date()}
-                                placeholder="Date"
-                                showMonthYearDropdown={true}
-                                scrollableMonthYearDropdown
-                                required
-                                style=
-                                {{
-                                  width: "400px",
-                                  cursor: "pointer",
-                                  right: "300px",
-                                  marginTop: "30px",
-                                  fontFamily: 'Manrope',
-                                  fontStyle: "normal",
-                                  fontWeight: "600",
-                                  fontSize: "15px",
-                                  lineHeight: "18px"
-                                }}
-                              >
-                              </ReactDatePicker>
-                              <img className="date_icon" src={date_icon} />
-                            </span>
-                          </div>
-                        </div>
-                        <p id='para-tag'>Inventory Balance</p>
-                        {toggleState==='inventoryledger' &&
-                          getInventor.map(item=>{
-                              return(
-                              <p id="recieves-tag">{item.unit}:{item.qty.toFixed(1)}</p>
-                              )
-                          })
-                        }
-                        {toggleInventory==='Given' ?<p className='select-tag'>Select Given Type</p>
-                          :<p className='select-tag'>Select Collected Type</p>}
-
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CRATES"
-                            onChange={(e) => setUnit(e.target.value)} checked={unit==='CRATES'} required />
-                          <label class="form-check-label" for="inlineRadio1" id="crates">CRATES</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="SACS"
-                            onChange={(e) => setUnit(e.target.value)} required />
-                          <label class="form-check-label" for="inlineRadio2" id="sacs">SACS</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="BOXES"
-                            onChange={(e) => setUnit(e.target.value)} required />
-                          <label class="form-check-label" for="inlineRadio3" id="boxes">BOXES</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="BAGS"
-                            onChange={(e) => setUnit(e.target.value)} required />
-                          <label class="form-check-label" for="inlineRadio4" id="bags">BAGS</label>
-                        </div>
-                        <div class="form-group">
-                          <label hmtlFor="amtRecieved" id="count-tag">Number of {unit}</label>
-                          <input class="form-control" id="amtRecieved"   required
-                            onChange={(e) => setQty(e.target.value)}/>
-                        </div>
-                        <div class="mb-3">
-                          <label for="exampleFormControlTextarea1" class="form-label" id="comments-tag">Comment</label>
-                          <textarea class="form-control" id="comments" rows="2" value={comments}
-                            onChange={(e) => setComments(e.target.value)}></textarea>
-                        </div>
-                        <button className='submit-btn' type='sumit'>SUBMIT</button>
-                      </form>
-                    </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            }
-          </div> 
-      </div>
-      <div className='table-scroll'>
-        <table class="table table-fixed" className="ledger-table">
-          <thead className="thead-tag">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Date</th>
-              <th scope="col">Transporter Name</th>
-              <th scope="col">To Be Paid</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              transporter.length > 0 ? (
-                transporter.filter((item) => {
-                  if (searchName === '') return <p>Not Found</p>;
-                  else if (item.partyName.toLowerCase().includes(searchName.toLowerCase())) {
-                    console.log(item.partyName.toLowerCase());
-                    console.log(searchName)
-                    return (<p>item.partyName</p>);
-                  }
-                  else {
-                    return <p>Not Found</p>
-                  }
-                })
-                  .map((item, index) => {
-                    return (
-                      <Fragment>
-                        <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
-                           className={isActive===index?'tableRowActive':"tr-tags"}>
-                          <td key={index}>{index + 1}</td>
-                          <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
-                          <td key={item.partyName}><span className="namedtl-tag">
-                            {item.partyName}<br /></span>
-                            <span className="address-tag">{item.partyAddress}<br /></span>
-                            <span className="mobile-tag"></span>{item.mobile}
-                            {item.profilePic? item.profilePic
-                              :<img id="profile-img" src={single_bill} alt="img"/>}
-                          </td>
-                          <td key={item.tobePaidRcvd}><span className='paid-coloring'>&#8377;
-                            {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
-                        </tr>
-                      </Fragment>
-                    )
+                        else {
+                          <p>No Data Found</p>
+                      }
                   })
-              ) :
-                (<div>
-                  <img src={no_data} />
-                  <p>No Data Available</p>
+                  }
                 </div>
-                )
- 
+                <div className="col-lg-3" id="verticalLines">
+                  <p class="card-text" className='paid'>Total Business <p className='coloring'>
+                  &#8377;{payLedger.totalTobePaidRcvd ? payLedger.totalTobePaidRcvd.toFixed(2): 0}</p></p>
+                </div>
+                <div className="col-lg-3" id="verticalLines">
+                  <p className='total-paid'>Total Paid<p className='coloring'>
+                  &#8377;{payLedger.totalRcvdPaid ? payLedger.totalRcvdPaid.toFixed(2) : 0}</p> </p>  
+                </div>
+                <div className="col-lg-3" >
+                  <p className='out-standing'>Outstanding Paybles<p className='coloring'>
+                  &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</p></p>
+                </div>
+                <div className="bloc-tabs">
+                  <button
+                    className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
+                    onClick={() => toggleTab('paymentledger')}
+                  >
+                    Payment Ledger
+                  </button>
+                  <button
+                    className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
+                    onClick={() => toggleTab('inventoryledger')}
+                  >
+                    Inventory Ledger
+                  </button>
+                </div>
+              </div>
+              <div className="d-flex recordbtn-style">
+                <button className="add-record-btn" onClick={() =>
+                  {toggleState === 'paymentledger'? setIsOpen(!open)
+                  : setOpenInventory(!openInventory)}}  data-toggle="modal" data-target="#myModal">
+                  <div className="add-pay-btn"><img src={add} className='addrecord-img'/></div> Add Record</button>
+              </div>
+            </div>
+            <span id="horizontal-line-tag"></span>
+          </div>
+          }
+          {toggleState==='paymentledger' &&
+            <div className="modal fade" id="myModal">
+              <div className="modal-dialog transporter_modal modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title header2_text" id="staticBackdropLabel">
+                      Add Record Payment
+                    </h5>
+                    <img
+                      src={close}
+                      alt="image"
+                      className="close_icon"
+                      onClick={closePopup}
+                    />
+                  </div>
+                  <div className="modal-body transporter_model_body" id="scroll_style">
+                    <form>
+                      <div className="card">
+                        <div className="card-body" id="details-tag">
+                          {
+                            transporter.map((item, index) => {
+                              if (item.partyId == transId) {
+                                  return (
+                                      <Fragment>
+                                          <div
+                                            className="profile-details"
+                                            key={item.partyName}
+                                            >
+                                            <div class="d-flex">
+                                            <div>
+                                              {item.profilePic ? (
+                                              <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                                ) : (
+                                                <img
+                                                  id="singles-img"
+                                                  src={single_bill}
+                                                  alt="img"
+                                                />
+                                              )}
+                                            </div>
+                                              <div>
+                                                <p className="namedtl-tag">
+                                                  {item.partyName}
+                                                </p>
+                                                <p className="mobilee-tag">{!item.trader?"Trans":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                                <p className="addres-tag">
+                                                  {item.partyAddress ? item.partyAddress : ""}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </div>
+                                      </Fragment>
+                                  )
+                              }
+                            })
+                          }
+                          <span class="card-text" id="date-tag">
+                            <ReactDatePicker className='date_picker_in_modal'
+                              selected={selectDate}
+                              onChange={date => { setSelectDate(date) }}
+                              dateFormat='dd-MMM-yy'
+                              maxDate={new Date()}
+                              placeholder="Date"
+                              showMonthYearDropdown={true}
+                              scrollableMonthYearDropdown
+                              required
+                              style=
+                              {{
+                                width: "400px",
+                                cursor: "pointer",
+                                right: "300px",
+                                marginTop: "30px",
+                                fontFamily: 'Manrope',
+                                fontStyle: "normal",
+                                fontWeight: "600",
+                                fontSize: "15px",
+                                lineHeight: "18px"
+                              }}
+                            >
+                            </ReactDatePicker>
+                            <img className="date_icon_in_modal" src={date_icon} />
+                          </span>
+                        </div>
+                      </div>
+                      <div id="out-paybles">
+                      <p id='p-tag'>Outstanding Paybles</p>
+                      <p id="recieve-tag">&#8377;{payLedger.outStdRcvPayble?payLedger.outStdRcvPayble.toFixed(2) :0}</p>
+                      </div>
+                      <div class="form-group" id="input_in_modal">
+                        <label hmtlFor="amtRecieved" id="amt-tag">Amount</label>
+                        <input class="form-control" id="amtRecieved"  required
+                          onChange={(e) =>{setPaidRcvd(e.target.value)}} />
+                      </div>
+                      <div id="radios_in_modal">
+                      <p className='payment-tag'>Payment Mode</p>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CASH"
+                          onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'}required />
+                        <label class="form-check-label" for="inlineRadio1">CASH</label>
+                      </div>
+                      <div class="form-check form-check-inline" id="radio-btn-in_modal">
+                        <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
+                          onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
+                        <label class="form-check-label" for="inlineRadio2">UPI</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
+                          onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
+                        <label class="form-check-label" for="inlineRadio3">NEFT</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
+                          onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
+                        <label class="form-check-label" for="inlineRadio4">RTGS</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
+                          onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
+                        <label class="form-check-label" for="inlineRadio5">IMPS</label>
+                      </div>
+                      </div>
+                      <div id="comment_in_modal">
+                      <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label" id="comment-tag">Comment</label>
+                        <textarea class="form-control" id="comments" rows="2" value={comments}
+                          onChange={(e) => setComments(e.target.value)}></textarea>
+                      </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div className="modal-footer" id="modal_footer">
+                    <button
+                      type="button"
+                      id="submit_btn_in_modal"
+                      className="primary_btn cont_btn w-100"
+                      onClick={addRecordPayment}
+                      // id="close_modal"
+                      data-bs-dismiss="modal"
+                    >
+                      SUBMIT
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+          {toggleState==='paymentledger' &&
+          <div className='transporterSummary' id="scroll_style">      
+            <div id="transporter-summary" className={toggleState === 'paymentledger' ? "content  active-content" : "content"}>
+            {ledgerSummary.length > 0 ? (
+                <table class="table table-fixed ledger-table">
+                  <thead className="thead-tag">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Ref ID</th>
+                      <th scope="col">Paid(&#8377;)</th>
+                      <th scope="col">To Be Paid(&#8377;)</th>
+                      <th scope="col">Ledger Balance(&#8377;)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                        ledgerSummary.map((item, index) => {
+                          return (
+                            <tr className="trs-tags">
+                              <th scope="row">{index + 1}</th>
+                              <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
+                              {moment(item.date).format("DD-MMM-YY")}</td>
+                              <td>{item.paidRcvd ? item.paidRcvd.toFixed(2)  : 0}</td>
+                              <td><span className='paid-coloring'>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2)  : 0}</span></td>
+                              <td>{item.balance ? item.balance.toFixed(2) : 0}</td>
+                            </tr>
+                          )
+                        })
+                    }
+                  </tbody>
+                </table>
+                ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)}
+              </div>
+            </div>
             }
-          </tbody>
-        </table>
-        <div className="outstanding-pay">
-          <p className="p-tag">Outstanding Paybles:</p>
-          <p className="value-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
+            {toggleState==='inventoryledger' &&
+            <div className="transporterDetailed" id="scroll_style">
+              <div id="detailed-inventory" className={toggleState === 'inventoryledger' ?
+              "content  active-content" : "content"}>
+                {invDetails.length > 0 ? (
+                <table class="table table-fixed ledger-table">
+                  <thead className="thead-tag">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Ref ID</th>
+                      <th scope="col">Collected</th>
+                      <th scope="col">Given</th>
+                      <th scope="col">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      
+                        invDetails.map((item, index) => {
+                          return (
+                            <tr className="trs-tags">
+                              <th scope="row">{index + 1}</th>
+                              <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
+                              {moment(item.date).format("DD-MMM-YY")}</td>
+                              <td>{item.collected ? item.collected.toFixed(1) : 0}&nbsp;
+                              {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                                item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                                item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
+                              <td>{item.given ? item.given.toFixed(1) : 0}&nbsp;
+                              {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                                item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                                item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
+                              <td>
+                                {item.unit==='CRATES'?item.cratesBalance.toFixed(1):item.unit==='SACS'?item.sacsBalance.toFixed(1):
+                                item.unit==='BAGS'?item.bagsBalance.toFixed(1):item.unit==='BOXES'?item.boxesBalance.toFixed(1):0}
+                                &nbsp;{
+                                item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                                item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
+                                item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''
+                                }
+                              </td>
+                            </tr>
+                          )
+                        }) 
+                    }
+                  </tbody>
+                </table>
+              ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)}
+              </div>
+              </div>
+              }
+            <div>
+            {toggleState==='inventoryledger' &&
+              <div className="modal fade" id="myModal">
+                <div className="modal-dialog transporter_inventory_modal modal-dialog-centered">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title header2_text" id="staticBackdropLabel">
+                        Add Record Inventory
+                      </h5>
+                      <div className="bloc-tab">
+                          <button 
+                            className={toggleInventory === 'Given' ? "tab active-tab" : "tab"}
+                            onClick={() => toggleTabs('Given')}
+                          >
+                            Given
+                          </button>
+                          <button
+                            className={toggleInventory === 'Collected' ? "tab active-tab" : "tab"}
+                            onClick={() => toggleTabs('Collected')}
+                          >
+                            Collected
+                          </button>
+                      </div>
+                      <img
+                        src={close}
+                        alt="image"
+                        className="close_icon"
+                        onClick={closePopup}
+                      /> 
+                    </div>
+                    <div className="modal-body transporter_inventory_model_body" id="scroll_style">
+                      <div  className={toggleInventory === 'Given' || toggleInventory === 'Collected' ?
+                                  "content  active-content" : "content"}>
+                          <form>
+                            <div className="card">
+                              <div className="card-body" id="details-tag">
+                                {
+                                  transporter.map((item, index) => {
+                                    if (item.partyId == transId) {
+                                        return (
+                                            <Fragment>
+                                                <div
+                                                  className="profile-details"
+                                                  key={item.partyName}
+                                                  >
+                                                  <div class="d-flex">
+                                                  <div>
+                                                    {item.profilePic ? (
+                                                    <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                                      ) : (
+                                                      <img
+                                                        id="singles-img"
+                                                        src={single_bill}
+                                                        alt="img"
+                                                      />
+                                                    )}
+                                                  </div>
+                                                    <div>
+                                                      <p className="namedtl-tag">
+                                                        {item.partyName}
+                                                      </p>
+                                                      <p className="mobilee-tag">{!item.trader?"Trans":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                                      <p className="addres-tag">
+                                                        {item.partyAddress ? item.partyAddress : ""}
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                            </Fragment>
+                                        )
+                                    }
+                                  })
+                                }
+                                <span class="card-text" id="date-tag">
+                                  <ReactDatePicker className='date_picker_in_modal'
+                                    selected={selectDate}
+                                    onChange={date => { setSelectDate(date) }}
+                                    dateFormat='dd-MMM-yy'
+                                    maxDate={new Date()}
+                                    placeholder="Date"
+                                    showMonthYearDropdown={true}
+                                    scrollableMonthYearDropdown
+                                    required
+                                    style=
+                                    {{
+                                      width: "400px",
+                                      cursor: "pointer",
+                                      right: "300px",
+                                      marginTop: "30px",
+                                      fontFamily: 'Manrope',
+                                      fontStyle: "normal",
+                                      fontWeight: "600",
+                                      fontSize: "15px",
+                                      lineHeight: "18px"
+                                    }}
+                                  >
+                                  </ReactDatePicker>
+                                  <img className="date_icon_in_modal" src={date_icon} />
+                                </span>
+                              </div>
+                            </div>
+                            <div id="out-paybles">
+                              <p id='p-tag'>Inventory Balance</p>
+                              {toggleState==='inventoryledger' &&
+                                getInventor.map(item=>{
+                                    return(
+                                    <p id="recieved-tag">{item.unit}:{item.qty.toFixed(1)}</p>
+                                    )
+                                })
+                              }
+                            </div>
+                            <div id="radios_in_modal">
+                            {toggleInventory==='Given' ?<p className='select-tag'>Select Given Type</p>
+                              :<p className='select-tag'>Select Collected Type</p>}
+
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CRATES"
+                                onChange={(e) => setUnit(e.target.value)} checked={unit==='CRATES'} required />
+                              <label class="form-check-label" for="inlineRadio1" id="crates">CRATES</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="SACS"
+                                onChange={(e) => setUnit(e.target.value)} required />
+                              <label class="form-check-label" for="inlineRadio2" id="sacs">SACS</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="BOXES"
+                                onChange={(e) => setUnit(e.target.value)} required />
+                              <label class="form-check-label" for="inlineRadio3" id="boxes">BOXES</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="BAGS"
+                                onChange={(e) => setUnit(e.target.value)} required />
+                              <label class="form-check-label" for="inlineRadio4" id="bags">BAGS</label>
+                            </div>
+                            <div class="form-group">
+                              <label hmtlFor="amtRecieved" id="count-tag">Number of {unit}</label>
+                              <input class="form-control" id="amtRecieved"   required
+                                onChange={(e) => setQty(e.target.value)}/>
+                            </div>
+                            {isValid?
+                              <p>Your Value Is Zero</p>:''
+                            }
+                            <div class="mb-3">
+                              <label for="exampleFormControlTextarea1" class="form-label" id="comments-tag">Comment</label>
+                              <textarea class="form-control" id="comments" rows="2" value={comments}
+                                onChange={(e) => setComments(e.target.value)}></textarea>
+                            </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <div class="modal-footer" id="modal_footer">
+                        <button type="button"
+                          id="submit_btn_in_modal"
+                          className="primary_btn cont_btn w-100"
+                          onClick={postRecordInventory}
+                          // id="close_modal"
+                          /*</div>data-dismiss="modal"*/>SUBMIT</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                }
+            </div> 
         </div>
-      </div>
+        </div>
+      </div> 
     </Fragment>
   );
 };
