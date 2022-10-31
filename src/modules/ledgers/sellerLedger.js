@@ -508,7 +508,7 @@ const SellerLedger = () => {
                           <Fragment>
                             <div
                                 className="profile-details"
-                                key={item.partyName}
+                                key={item.partyId}
                               >
                                 <div class="d-flex">
                                 <div>
@@ -522,11 +522,11 @@ const SellerLedger = () => {
                                     />
                                   )}
                                 </div>
-                                  <div>
+                                  <div id="ptr-dtls">
                                     <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
-                                    <p className="mobilee-tag">{!item.trader?"Seller":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                    <p className="mobilee-tag">{!item.trader?"Seller":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
                                     <p className="addres-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
@@ -628,7 +628,7 @@ const SellerLedger = () => {
                     ledgerSummary.length > 0 ? (
                       ledgerSummary.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                             {moment(item.date).format("DD-MMM-YY")}</td>
@@ -664,7 +664,7 @@ const SellerLedger = () => {
                     details.length > 0 ? (
                       details.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
                             {moment(item.date).format("DD-MMM-YY")}</td>
@@ -702,7 +702,7 @@ const SellerLedger = () => {
                     ledgerSummaryByDate.length > 0 ? (
                       ledgerSummaryByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -752,7 +752,7 @@ const SellerLedger = () => {
                     sellerDetailed.length > 0 ? (
                       sellerDetailed.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -892,27 +892,27 @@ const SellerLedger = () => {
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadios1" value="CASH"
                               onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'} required />
-                            <label class="form-check-label" for="inlineRadio1">CASH</label>
+                            <label class="form-check-label" htmlFor="inlineRadio1">CASH</label>
                           </div>
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
                               onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
-                            <label class="form-check-label" for="inlineRadio2">UPI</label>
+                            <label class="form-check-label" htmlFor="inlineRadio2">UPI</label>
                           </div>
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
                               onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
-                            <label class="form-check-label" for="inlineRadio3">NEFT</label>
+                            <label class="form-check-label" htmlFor="inlineRadio3">NEFT</label>
                           </div>
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
                               onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
-                            <label class="form-check-label" for="inlineRadio4">RTGS</label>
+                            <label class="form-check-label" htmlFor="inlineRadio4">RTGS</label>
                           </div>
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
                               onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
-                            <label class="form-check-label" for="inlineRadio5">IMPS</label>
+                            <label class="form-check-label" htmlFor="inlineRadio5">IMPS</label>
                           </div>
                           <div class="mb-3">
                             <label for="exampleFormControlTextarea1" class="form-label" id="commenting-tag">Comment</label>

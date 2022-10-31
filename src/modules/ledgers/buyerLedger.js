@@ -546,7 +546,7 @@ const BuyerLedger = () => {
                           <Fragment>
                               <div
                                 className="profile-details"
-                                key={item.partyName}
+                                key={index}
                               >
                                 <div class="d-flex">
                                   <div>
@@ -560,11 +560,11 @@ const BuyerLedger = () => {
                                       />
                                     )}
                                   </div>
-                                  <div>
+                                  <div id="ptr-dtls">
                                     <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
-                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
                                     <p className="addres-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
@@ -670,7 +670,7 @@ const BuyerLedger = () => {
                     {ledgerSummary.length > 0 ? (
                       ledgerSummary.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" kery={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -730,7 +730,7 @@ const BuyerLedger = () => {
                     {details.length > 0 ? (
                       details.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -799,7 +799,7 @@ const BuyerLedger = () => {
                     {ledgerSummaryByDate.length > 0 ? (
                       ledgerSummaryByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -859,7 +859,7 @@ const BuyerLedger = () => {
                     {detailsByDate.length > 0 ? (
                       detailsByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -1028,7 +1028,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "CASH"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio1">
+                          <label class="form-check-label" htmlFor="inlineRadio1">
                             CASH
                           </label>
                         </div>
@@ -1043,7 +1043,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "UPI"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio2">
+                          <label class="form-check-label" htmlFor="inlineRadio2">
                             UPI
                           </label>
                         </div>
@@ -1058,7 +1058,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "NEFT"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio3">
+                          <label class="form-check-label" htmlFor="inlineRadio3">
                             NEFT
                           </label>
                         </div>
@@ -1073,7 +1073,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "RTGS"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio4">
+                          <label class="form-check-label" htmlFor="inlineRadio4">
                             RTGS
                           </label>
                         </div>
@@ -1088,7 +1088,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "IMPS"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio5">
+                          <label class="form-check-label" htmlFor="inlineRadio5">
                             IMPS
                           </label>
                         </div>
