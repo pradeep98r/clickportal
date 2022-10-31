@@ -27,8 +27,8 @@ import moment from "moment";
 const BuyerLedger = () => {
   const [search, setSearch] = useState("");
   const [openTabs, setOpenTabs] = useState(false);
-  const [ledger, setLedgeres] = useState([{}]);
-  const [data, setData] = useState({}, ledger);
+  const [ledger, setLedgeres] = useState([]);
+  const [data, setData] = useState({});
   const [error, setError] = useState();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -234,7 +234,24 @@ const BuyerLedger = () => {
     $("#datePopupmodal").modal("hide");
     setIsOpen(false);
   };
-  partyId = JSON.parse(localStorage.getItem("partyId"));
+  const [ledgersData, setLedgersData]= useState([]);
+  //partyId = JSON.parse(localStorage.getItem("partyId"));
+  const searchInput=(searchValue)=>{
+    setSearch(searchValue);
+    if(search!==""){
+      console.log(search);
+      const filterdNames=ledger.filter(item=>{
+        return(
+          item.partyName.toLowerCase().includes(search.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(search.toLowerCase())
+        )
+      })
+      setLedgersData(filterdNames);
+      console.log(filterdNames,"filteredNames");
+    }else{
+      setLedgersData(ledger);
+    }
+  }
   return (
     <Fragment>
       <div class="row">
@@ -244,10 +261,10 @@ const BuyerLedger = () => {
                 <input class="form-control me-2"
                   id="searchbar"
                   type="text"
-                  value={search}
+                  //value={search}
                   placeholder="Search by Name / Short Code"
                   onChange={(e) => {
-                    setSearch(e.target.value);
+                    searchInput(e.target.value);
                   }}
                   className="searchbar-input"
                 />
@@ -267,19 +284,8 @@ const BuyerLedger = () => {
                 </tr>
               </thead>
               <tbody>
-                {ledger.length > 0 ? (
-                  ledger
-                    .filter((item) => {
-                      if (search === " ") return <p>Not Found</p>;
-                      else if (item.partyName === search) {
-                        console.log(item.partyName);
-                        console.log(search);
-                        return <p>item.partyName</p>;
-                      } else {
-                        return <p>Not Found</p>;
-                      }
-                    })
-                    .map((item, index) => {
+                {search.length > 1 ? (
+                   ledgersData.map((item, index) => {
                       return (
                         <Fragment>
                           <tr
@@ -332,11 +338,60 @@ const BuyerLedger = () => {
                       );
                     })
                 ) : (
-                  <div>
-                    <img src={no_data} />
-                    <p>No Data Available</p>
-                  </div>
-                )}
+                  ledger.map((item, index) => {
+                    return (
+                      <Fragment>
+                        <tr
+                          onClick={(id, indexs) => {
+                            particularLedger(item.partyId, index);
+                          }}
+                          className={
+                            isActive === index ? "tabRowSelected" : "tr-tags"
+                          }
+                        >
+                          <td scope="row">{index + 1}</td>
+                          <td key={item.date}>
+                            {moment(item.date).format("DD-MMM-YY")}
+                          </td>
+                          <td key={item.partyName}>
+                            <div className="d-flex">
+                              <div>
+                                {item.profilePic ? (
+                                  <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                ) : (
+                                  <img
+                                    className="profile-img"
+                                    src={single_bill}
+                                    alt="img"
+                                  />
+                                )}
+                                </div>
+                                <div>
+                                  <p className="namedtl-tag">
+                                    {item.partyName}
+                                    <br />
+                                  </p>
+                                  <p className="address-tag">
+                                    {item.partyAddress ? item.partyAddress : ""}
+                                  </p>
+                                  <p className="mobile-tag">{item.mobile}</p>
+                                </div>
+                            </div>
+                          </td>
+                          <td key={item.tobePaidRcvd}>
+                            <span className="coloring">
+                              &#8377;
+                              {item.tobePaidRcvd
+                                ? item.tobePaidRcvd.toFixed(2)
+                                : 0}
+                            </span>
+                          </td>
+                        </tr>
+                      </Fragment>
+                    );
+                  })
+                )
+                }
               </tbody>
             </table>
           </div>
