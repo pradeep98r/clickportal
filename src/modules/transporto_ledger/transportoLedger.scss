@@ -200,7 +200,7 @@ input[type=radio]:checked+label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 290px);
+    height: calc(100vh - 100px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 0px 0px;
@@ -209,7 +209,7 @@ input[type=radio]:checked+label {
 }
 .transporterDetailed{
     width: 100%;
-    height: calc(100vh - 290px);
+    height: calc(100vh - 100px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 0px 0px;
