@@ -19,7 +19,7 @@ h5,
 h6 {
   margin: 0px;
 }
-a {
+a:hover {
   text-decoration: none;
 }
 .card {
@@ -110,8 +110,10 @@ a {
   padding: 8px 25px;
 }
 
-.buttons {
-  margin-top: 30px;
+.buttons:hover {
+  // margin-top: 30px;
+  background-color: var(--ono-primary);
+  color: #fff;
 }
 .para_margin {
   margin-top: 20px;
@@ -201,6 +203,7 @@ a {
   padding: 10px 20px;
   position: absolute;
   bottom: 0;
+  width: 100%;
   .primary_btn {
     margin-left: 20px;
   }
@@ -247,4 +250,9 @@ a {
 }
 .proofilecard_icon{
   margin-left: 50px;
+}
+.no_data_text{
+  font-size: 13px;
+  color: #121212!important;
+  margin-top: 5px;
 }

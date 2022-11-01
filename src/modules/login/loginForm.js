@@ -29,7 +29,6 @@ const LoginForm = () => {
   const [otpValue, setOtpValue] = useState("");
   const [viewOtpForm, setViewOtpForm] = useState(false);
   const [otpError, setotpError] = useState("");
-  const [toDashboard, setoDashboard] = useState(false);
   const handleOtpChange = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 6);
@@ -119,13 +118,18 @@ const LoginForm = () => {
             );
             localStorage.setItem("isauth", true);
             console.log("login success");
-            navigate("/smartboard");
+            if(resp.data.data.useStatus == "USER_REGISTRATION_PENDING"){
+              console.log('registration')
+              navigate("/registration");
+            }
+            else{
+              navigate("/smartboard");
+            }
             window.location.reload();
           } else {
             localStorage.setItem("isauth", false);
           }
           toastr.success(resp.data.status.description);
-          setoDashboard(true);
         } else {
           setotpError("The entered otp is incorrect");
         }

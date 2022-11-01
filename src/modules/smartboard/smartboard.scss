@@ -1,1 +1,380 @@
 @import url("../../assets/css/style.scss");
+.smartboard_row {
+  overflow-y: auto;
+  height: calc(100vh - 160px);
+}
+.smartboard_div {
+  h5,
+  .trans_title {
+    font-size: 12px;
+    font-weight: 500;
+    color: #121212;
+  }
+  .trans_title {
+    margin-bottom: 10px;
+  }
+  h6 {
+    font-size: 16px;
+    color: #121212;
+    font-weight: 700;
+    margin: 5px 0px 15px;
+  }
+  p {
+    color: #eff3ef;
+    font-size: 13px;
+  }
+  .crop_text {
+    font-size: 10px;
+    color: #121212;
+    line-height: 13px;
+    font-weight: 600;
+  }
+  .out_standing_text {
+    font-size: 11px;
+    color: #1c1c1c;
+  }
+  .color_head_subtext {
+    color: #eff3ef;
+  }
+  .col_left_border {
+    border-right: 1px solid #eff3ef;
+    // margin-right: 10px;
+  }
+  .color_red {
+    color: #d43939;
+  }
+  .color_blue {
+    color: #0066ff;
+  }
+  .color_green {
+    color: #16a02c;
+  }
+  .col2 {
+    padding-left: 30px;
+  }
+  .table_haed, .color_black {
+    color: #1c1c1c;
+  }
+}
+.pending_pay_card {
+  .col_left_border {
+    border-right: 1px solid #d43939;
+  }
+}
+.outstanding_balance .card,
+.default_card {
+  padding: 20px 10px;
+}
+.top_border {
+  border-top: 1px solid #eff3ef;
+  display: flex;
+  justify-content: center;
+  p {
+    margin-top: 5px;
+  }
+}
+.transaction_card {
+  padding: 0px;
+  border-radius: 3px;
+  .card_header {
+    padding: 10px;
+    background-color: #d7f3dd;
+    border-radius: 3px 3px 0px 0px;
+  }
+  .card_body {
+    .card_row {
+      padding: 10px;
+      border-bottom: 1px solid #eff3ef;
+    }
+  }
+  h4 {
+    font-size: 10px;
+    font-weight: 600;
+    color: #1c1c1c;
+  }
+  .out_standing_div {
+    padding: 10px 20px;
+  }
+}
+.table-bordered thead th {
+  border-bottom-width: 0px !important;
+}
+.trans_table {
+  margin-bottom: 20px;
+  thead {
+    background-color: #d7f3dd;
+    th {
+      font-weight: 500;
+      color: #1c1c1c;
+      font-size: 12px;
+    }
+  }
+  td {
+    background-color: #fff;
+    font-size: 14px;
+    color: #171717;
+  }
+  .name_data h4 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1c1c1c;
+  }
+}
+.userIcon {
+  width: 30px !important;
+}
+.owl_car .owl-item img {
+  width: auto;
+  width: 60px !important;
+}
+
+.owl_car {
+  h4,
+  h5 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #121212;
+  }
+  h5 {
+    font-weight: 500;
+  }
+  h6 {
+    font-size: 10px;
+    color: #4d4d4d;
+  }
+  .owl-dots {
+    display: none;
+  }
+  .owl-nav.disabled {
+    display: block !important;
+  }
+  .owl-nav {
+    margin-top: 0px !important;
+    position: absolute;
+    top: 40%;
+    width: 100%;
+  }
+  .owl-nav button.owl-prev,
+  .owl-nav button.owl-next {
+    position: absolute;
+    background-color: #fff !important;
+    margin: 0px !important;
+    padding: 10px !important;
+    border-radius: 100%;
+    border: 1px solid #e1e1e1 !important;
+    span {
+      padding: 5px 7px;
+    }
+  }
+  .owl-nav [class*="owl-"]:hover {
+    color: #000 !important;
+  }
+  .owl-nav button.owl-prev {
+    left: 0px;
+  }
+  .owl-nav button.owl-next {
+    right: 0px;
+  }
+}
+
+.item_div {
+  background-color: #f9f9f9;
+  border: 1px solid #16a02c;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.crop_data {
+  img {
+    width: 40px;
+  }
+  overflow-x: scroll;
+  overflow-y: hidden;
+  .crop_div {
+    margin: 0px 10px;
+    text-align: center;
+  }
+  .crop_div.active img {
+    border: 2px solid #16a02c;
+    border-radius: 100%;
+  }
+  .crop_div.active p {
+    color: #16a02c;
+  }
+}
+.see_all {
+  padding-left: 15px;
+}
+.crop_data .crop_div:hover {
+  cursor: pointer;
+}
+.smartboard_date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 15px;
+  .react-datepicker__input-container input {
+    border: none !important;
+    background-color: transparent;
+    padding: 0px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+  }
+  .react-datepicker-wrapper {
+    width: auto;
+  }
+}
+.samrtboard_calender {
+  .react-datepicker {
+    width: 100%;
+  }
+  .react-datepicker__month-container {
+    width: 100%;
+  }
+  .react-datepicker__navigation {
+    top: 20px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 30px;
+  }
+  .react-datepicker__navigation--next {
+    right: 30px;
+  }
+  .modal-content {
+    border: none;
+  }
+}
+.smartboard_modal_mody {
+  height: 325px;
+}
+.smartboard_modal_header {
+  border-bottom: 1px solid #dee2e6 !important;
+  padding-bottom: 10px !important;
+}
+.cont_btn {
+  border-radius: 0px 0px 0.3rem 0.3rem !important;
+}
+.selected_date {
+  color: #0066ff;
+  margin-left: 10px;
+}
+.selected_date:hover {
+  cursor: pointer;
+}
+.daily .react-datepicker__month-container {
+  padding: 30px 40px;
+  padding-top: 10px;
+}
+.weekly .react-datepicker__month-container {
+  // padding: 0px;
+  padding-top: 10px;
+}
+.yearly {
+  .react-datepicker__year-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 435px;
+    justify-content: center;
+  }
+  .react-datepicker__year .react-datepicker__year-text {
+    display: inline-block;
+    margin: 15px;
+    padding: 5px;
+  }
+  .react-datepicker__year-text--selected,
+  .react-datepicker__year-text--selected:hover {
+    background-color: #16a02c;
+  }
+}
+.week_cal {
+  .ui-datepicker-inline {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    border: none;
+  }
+  .ui-datepicker .ui-datepicker-header {
+    background: none;
+    border: none;
+  }
+  .ui-priority-secondary,
+  .ui-widget-content .ui-priority-secondary {
+    opacity: 1;
+  }
+  .ui-datepicker td a {
+    text-align: center;
+    padding: 0px;
+    display: inline;
+    padding: 7px 10px;
+    margin: 5px;
+  }
+  .ui-state-default,
+  .ui-widget-content .ui-state-default {
+    border: none;
+    background: transparent;
+  }
+  .ui-state-highlight,
+  .ui-widget-content .ui-state-highlight {
+    background: #f7f7f7;
+    border-radius: 100%;
+    color: #000;
+  }
+  .ui-datepicker td span {
+    display: inline;
+  }
+  .ui-datepicker td {
+    text-align: center;
+    padding: 7px 0px;
+  }
+  .ui-state-active,
+  .ui-widget-content .ui-state-active {
+    background-color: #16a02c;
+    border-radius: 100%;
+    color: #fff;
+  }
+  .ui-datepicker-prev-hover, .ui-state-hover
+   {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0px;
+    left: 2px;
+    top: 2px;
+  }
+  .ui-state-hover{
+    right:  2px;
+  }
+  .ui-widget-header{
+   font-weight: normal;
+   color: #0066ff;
+  }
+  .ui-datepicker th{
+    font-weight: normal!important;
+  }
+  .ui-widget-header .ui-icon {
+    // background-image: url(images/ui-icons_222222_256x240.png)/*{iconsHeader}*/;
+}
+}
+.nodata{
+  margin-top: 5px;
+}
+.smartboard_date img:hover{
+  cursor: pointer;
+}
+.complete_profile{
+  background-color: #16a02c;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  p{
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+  button{
+    font-size: 15px;
+    padding: 10px;
+    color: #121212;
+    border: none;
+    border-radius: 10px;
+  }
+}
