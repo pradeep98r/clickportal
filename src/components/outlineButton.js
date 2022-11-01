@@ -1,7 +1,7 @@
 function OutlineButton(props) {
   return (
     <button
-      className="outline_btn buttons d-flex mx-auto"
+      className="outline_btn buttons"
       onClick={props.handleClick}>
       {props.text}
     </button>

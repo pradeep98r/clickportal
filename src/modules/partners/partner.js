@@ -61,7 +61,7 @@ const Partner = () => {
   const [requiredshortNameField, setRequiredshortNameField] = useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
     if(e.target.value.length < 10){
       setRequiredNumberField("Minimum mobile number length should be 10");
       console.log("het")
@@ -75,17 +75,17 @@ const Partner = () => {
   const [aadharNumber, setAadharNumber] = useState("");
   const [openingBalance, setOpeningBalance] = useState("");
   const handleNumber = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
     setAadharNumber(onlyNumbers);
   };
   const handleOpeninngBal = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
     setOpeningBalance(onlyNumbers);
   };
 
   const [nameField, setNameField] = useState("");
   const handleName = (e) => {
-    setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e);
     setRequiredNameField("");
   };
@@ -100,13 +100,13 @@ const Partner = () => {
   };
   const [shortNameField, setShortNameField] = useState("");
   const handleShortName = (e) => {
-    setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e);
     setRequiredshortNameField("");
   };
   const [vehicleType, setVehicleType] = useState("");
   const handlevehicleType = (e) => {
-    setVehicleType(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setVehicleType(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
   };
   const [vehicleNum, setVehicleNum] = useState("");
   const handlevehicleNum = (e) => {
@@ -114,7 +114,7 @@ const Partner = () => {
   };
   const [streetVillage, setStreetVillage] = useState("");
   const handleStreetName = (e) => {
-    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, ""));
+    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
     commonValidation(e);
   };
   const [startDate, setStartDate] = useState(new Date());
@@ -456,6 +456,8 @@ const Partner = () => {
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
   };
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
   return (
     <div>
       <div className="main_div_padding">
@@ -595,7 +597,7 @@ const Partner = () => {
                           ? "seller"
                           : partyType.toLowerCase()}
                       </h6>
-                      <p>Lorem ipsum is placeholder text commonly</p>
+                      <p>Loream iipusm text</p>
 
                       <button className="outline_btn" id="MybtnModal">
                         Add
@@ -877,7 +879,7 @@ const Partner = () => {
                           className="d-flex align-items-baseline date_label"
                           onClick={(e) => e.preventDefault()}
                         >
-                          <span className="date_icon">
+                          <span className="date_icon m-0">
                             <img src={date_icon} alt="icon" />
                           </span>
                           <DatePicker

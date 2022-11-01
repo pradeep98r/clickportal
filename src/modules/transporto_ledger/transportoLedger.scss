@@ -1,6 +1,6 @@
 .searchicon{
-    position: absolute;
-    top: 20px;
+    position:absolute;
+    top: 28px;
     left: 7.33%;
     color: #16A02C;
 }
@@ -48,9 +48,11 @@ th,td{
 .table-scroll {
     height: 440px;
     //position: relative;
+    padding:0px;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    //border-radius: 10px;
-    border: 1px solid #E4E4E4;
 }
 .table-scroll th:nth-child(1){
     padding-left: 5px;
@@ -70,7 +72,6 @@ th,td{
 .table-scroll td:nth-child(4){
     padding-right: 5px;
 }
-
 .ledger-table{
     width: 100%;
     border-radius: 10px;
@@ -85,9 +86,9 @@ th,td{
     font-weight: 500;
     font-size: 12px;
     line-height: 17px;
-    align-items: center;
-    position: relative;
-    text-align: center;
+    //align-items: center;
+    //position: relative;
+    //text-align: center;
     color: #121212;
     cursor: pointer;
     border-bottom: 1px solid #E4E4E4;
@@ -113,7 +114,7 @@ th,td{
     font-size: 13px;
     line-height: 17px;
     align-items: center;
-    text-align: center;
+    //text-align: center;
     color: #121212;
     background: #D7F3DD;
 }
@@ -136,9 +137,9 @@ input[type=radio]:checked+label {
     display: visible;
 }
 .outstanding-pay{
-    //position: fixed;
     padding-top: 0px;
-    //top: 530px;
+    position: relative;
+    top: 0px;
     //float: left;
     padding-bottom: 0px;
     height: 30px;
@@ -155,7 +156,7 @@ input[type=radio]:checked+label {
     background:#FFFFFF;
 }
 .p-tag{
-    padding-top: 5px;
+    padding-top: 0px;
     padding-left: 10px;
     font-family: 'Manrope';
     font-style: normal;
@@ -166,7 +167,7 @@ input[type=radio]:checked+label {
     color: #121212;
 }
 .value-tag{
-    padding-top: 5px;
+    padding-top: 0px;
     padding-left: 50px;
     font-family: 'Manrope';
     font-style: normal;
@@ -439,7 +440,7 @@ input[type=radio]:checked+label {
     position: absolute;
     background: #16A12C;
     margin-top:0px;
-    margin-left: -20px;
+    left: -10px;
     width: 25px;
     height: 25px;
     cursor: pointer;
@@ -484,6 +485,7 @@ input[type=radio]:checked+label {
     position: relative;
     top: -85px;
     left: 330px;
+
 }
 .date_picker_in_modal{
     border: none;
@@ -517,7 +519,7 @@ input[type=radio]:checked+label {
     width: 99.7%;
     margin-top: 65px;
 }*/
-*#horizontal-line-tag{
+#horizontal-line-tag{
     position: absolute;
     border-bottom:1px solid #E4E4E4;
     width: 100%;
@@ -781,6 +783,7 @@ a:hover{
     height: 50px;
 }
 .profile-details{
+
     position: relative;
     left:-20px
 }
@@ -808,12 +811,11 @@ a:hover{
     margin-left: 2px;
     margin-top: -1px;
     width: 10px;
-    height: 10px;
-    
+    height: 10px;    
 }
 .transport-details{
     position: relative;
-    top: 15px;
+    top: 20px;
     padding-bottom: 3px;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
