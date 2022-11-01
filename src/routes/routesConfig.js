@@ -21,6 +21,7 @@ import SmartChart from "../modules/smart_chart/smartChart";
 import TransportoLedger from "../modules/transporto_ledger/transportoLedger";
 import Registration from "../modules/registration/registration";
 import PreferredCrops from "../modules/registration/preferredCrops";
+import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
@@ -70,7 +71,7 @@ const RoutesConfig = () => {
                     <Route path="/bill_creation" element={<BillCreation />} />
                     <Route path="/bill_view/:billId" element={<BillView />} />
                     <Route path="/calender" element={<Calender />} />
-                    <Route path="buyerledger" element={<BuyerLedger />}>
+                    <Route path="/buyerledger" element={<BuyerLedger />}>
                       {/* <Route
                         path="ledgersummary/:partyId"
                         element={<LedgerSummary />}
@@ -80,7 +81,7 @@ const RoutesConfig = () => {
                         element={<DetailedLedger />}
                       /> */}
                     </Route>
-                    <Route path="sellerledger" element={<SellerLedger />}>
+                    <Route path="/sellerledger" element={<SellerLedger />}>
                       {/* <Route
                         path="sellerledgersummary/:partyId"
                         element={<SellerLedgerSummary />}
@@ -116,6 +117,7 @@ const RoutesConfig = () => {
           <BrowserRouter>
             <Layout>
               <Routes>
+                <Route path="/plans" element={<SubscriptionPlans />} />
                 <Route path="/smartboard" element={<SmartBoard />} />
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />

@@ -1,22 +1,32 @@
 .searchicon{
     position: absolute;
-    left: 2.33%;
-    right: 81.35%;
-    top: 110.47%;
-    bottom: 86.57%;
+    left: 7.33%;
+    top: 4.5%;
+    //right: 81.35%;
+    //top: 110.47%;
+    //bottom: 86.57%;
     color: #16A02C;
 }
 #searchbar{
     // position: absolute;
     // width: 350px;
     // height: 40px;
-    left: 10px;
-    top: 10px;
+    //left: 10px;
+    //top: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
 }
+.table td, .table th {
+    padding:0px;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
 .table-scroll {
+    height: 440px;
     /*height: 400px;
     width: 350px;
     left: 238px;
@@ -43,9 +53,9 @@
     font-weight: 500;
     font-size: 12px;
     line-height: 17px;
-    align-items: center;
-    position: relative;
-    text-align: center;
+    //align-items: center;
+    //position: relative;
+    //text-align: center;
     color: #121212;
     cursor: pointer;
 }
@@ -58,7 +68,7 @@
     font-size: 13px;
     line-height: 17px;
     align-items: center;
-    text-align: center;
+    //text-align: center;
     color: #121212;
     background: #D7F3DD;
 }
@@ -258,9 +268,9 @@
     margin-top: 30px;
 }
 .date_icon{
-    margin-top:10px;
-    position: relative;
-    margin-left:460px;
+    //margin-top:10px;
+    //position: relative;
+    //margin-left:460px;
 }
 .date_picker{
     top:10px;
@@ -491,7 +501,7 @@
 
 .tab {
     text-align: center;
-    padding-left:20px;;
+    padding-left:20px;
     top: 65px;
     left: 30px;
     cursor: pointer;
