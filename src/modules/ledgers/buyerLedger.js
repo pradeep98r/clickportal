@@ -27,8 +27,8 @@ import moment from "moment";
 const BuyerLedger = () => {
   const [search, setSearch] = useState("");
   const [openTabs, setOpenTabs] = useState(false);
-  const [ledger, setLedgeres] = useState([{}]);
-  const [data, setData] = useState({}, ledger);
+  const [ledger, setLedgeres] = useState([]);
+  const [data, setData] = useState({});
   const [error, setError] = useState();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -53,9 +53,6 @@ const BuyerLedger = () => {
   const [toggleState, setToggleState] = useState("ledgersummary");
   const toggleTab = (type) => {
     setToggleState(type);
-    if (toggleAC === "custom") {
-      setToggleState("ledgersummary");
-    }
   };
   const [toggleAC, setToggleAC] = useState("all");
   const toggleAllCustom = (type) => {
@@ -63,10 +60,25 @@ const BuyerLedger = () => {
     if (type === "custom") {
       console.log(type);
       setDateDisplay(!dateDisplay);
+      setToggleState("ledgersummary")
     } else if (type === "all") {
       setDateDisplay(false);
     }
   };
+
+  const [isValid, setIsValid]=useState(false);
+    const [valid,setValid]=useState(false)
+    const handleInputVale=e=>{
+      setPaidRcvd(e.target.value);
+      if(e.target.value==0){
+        setIsValid(true);
+        console.log(e.target.value)
+      }
+      if(e.target.value>data.totalOutStgAmt && e.target.value!=0){
+        setValid(true);
+        console.log(e.target.value)
+      }
+    }
 
   let partyId = 0;
   let fromDate = null;
@@ -222,54 +234,58 @@ const BuyerLedger = () => {
     $("#datePopupmodal").modal("hide");
     setIsOpen(false);
   };
-  partyId = JSON.parse(localStorage.getItem("partyId"));
+  const [ledgersData, setLedgersData]= useState([]);
+  //partyId = JSON.parse(localStorage.getItem("partyId"));
+  const searchInput=(searchValue)=>{
+    setSearch(searchValue);
+    if(search!==""){
+      console.log(search);
+      const filterdNames=ledger.filter(item=>{
+        return(
+          item.partyName.toLowerCase().includes(search.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(search.toLowerCase())
+        )
+      })
+      setLedgersData(filterdNames);
+      console.log(filterdNames,"filteredNames");
+    }else{
+      setLedgersData(ledger);
+    }
+  }
   return (
     <Fragment>
       <div class="row">
         <div class="col-lg-4">
-          <nav class="navbar navbar-expand-lg ">
-            <div class="container-fluid">
+          <div id="search-field">
               <form class="d-flex">
-                <input
+                <input class="form-control me-2"
                   id="searchbar"
                   type="text"
-                  value={search}
+                  //value={search}
                   placeholder="Search by Name / Short Code"
                   onChange={(e) => {
-                    setSearch(e.target.value);
+                    searchInput(e.target.value);
                   }}
                   className="searchbar-input"
                 />
               </form>
               <div className="searchicon">
                 <img src={search_img} alt="search" />
-              </div>
             </div>
-          </nav>
+          </div>
           <div className="table-scroll" id="scroll_style">
             <table class="table table-fixed" className="ledger-table">
               <thead className="thead-tag">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Date</th>
-                  <th scope="col">Transporter Name</th>
-                  <th scope="col">To Be Paid</th>
+                  <th scope="col">Buyer Name</th>
+                  <th scope="col">To Be Recieved</th>
                 </tr>
               </thead>
               <tbody>
-                {ledger.length > 0 ? (
-                  ledger
-                    .filter((item) => {
-                      if (search === " ") return <p>Not Found</p>;
-                      else if (item.partyName === search) {
-                        console.log(item.partyName);
-                        console.log(search);
-                        return <p>item.partyName</p>;
-                      } else {
-                        return <p>Not Found</p>;
-                      }
-                    })
-                    .map((item, index) => {
+                {search.length > 1 ? (
+                   ledgersData.map((item, index) => {
                       return (
                         <Fragment>
                           <tr
@@ -285,24 +301,29 @@ const BuyerLedger = () => {
                               {moment(item.date).format("DD-MMM-YY")}
                             </td>
                             <td key={item.partyName}>
-                              <span className="namedtl-tag">
-                                {item.partyName}
-                                <br />
-                              </span>
-                              <span className="address-tag">
-                                {item.partyAddress ? item.partyAddress : ""}
-                              </span>
-                              <br />
-                              <span className="mobile-tag">{item.mobile}</span>
-                              {item.profilePic ? (
-                                item.profilePic
-                              ) : (
-                                <img
-                                  className="profile-img"
-                                  src={single_bill}
-                                  alt="img"
-                                />
-                              )}
+                              <div className="d-flex">
+                                <div>
+                                  {item.profilePic ? (
+                                    <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                  ) : (
+                                    <img
+                                      className="profile-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                  </div>
+                                  <div>
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                      <br />
+                                    </p>
+                                    <p className="address-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                    <p className="mobile-tag">{item.mobile}</p>
+                                  </div>
+                              </div>
                             </td>
                             <td key={item.tobePaidRcvd}>
                               <span className="coloring">
@@ -317,21 +338,70 @@ const BuyerLedger = () => {
                       );
                     })
                 ) : (
-                  <div>
-                    <img src={no_data} />
-                    <p>No Data Available</p>
-                  </div>
-                )}
+                  ledger.map((item, index) => {
+                    return (
+                      <Fragment>
+                        <tr
+                          onClick={(id, indexs) => {
+                            particularLedger(item.partyId, index);
+                          }}
+                          className={
+                            isActive === index ? "tabRowSelected" : "tr-tags"
+                          }
+                        >
+                          <td scope="row">{index + 1}</td>
+                          <td key={item.date}>
+                            {moment(item.date).format("DD-MMM-YY")}
+                          </td>
+                          <td key={item.partyName}>
+                            <div className="d-flex">
+                              <div>
+                                {item.profilePic ? (
+                                  <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                ) : (
+                                  <img
+                                    className="profile-img"
+                                    src={single_bill}
+                                    alt="img"
+                                  />
+                                )}
+                                </div>
+                                <div>
+                                  <p className="namedtl-tag">
+                                    {item.partyName}
+                                    <br />
+                                  </p>
+                                  <p className="address-tag">
+                                    {item.partyAddress ? item.partyAddress : ""}
+                                  </p>
+                                  <p className="mobile-tag">{item.mobile}</p>
+                                </div>
+                            </div>
+                          </td>
+                          <td key={item.tobePaidRcvd}>
+                            <span className="coloring">
+                              &#8377;
+                              {item.tobePaidRcvd
+                                ? item.tobePaidRcvd.toFixed(2)
+                                : 0}
+                            </span>
+                          </td>
+                        </tr>
+                      </Fragment>
+                    );
+                  })
+                )
+                }
               </tbody>
             </table>
-            <div className="outstanding-pay">
+          </div>
+          <div className="outstanding-pay">
               <p className="pat-tag">Outstanding Recievables:</p>
               <p className="values-tag">
                 &#8377;
                 {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
               </p>
             </div>
-          </div>
         </div>
         <div class="col-lg-8">
           <div
@@ -345,17 +415,32 @@ const BuyerLedger = () => {
             id="tabsEvents"
             style={{ display: openTabs ? "block" : "none" }}
           >
-            
+            <div className="recordbtn-style">
+                <button
+                  className="add-record-btns"
+                  onClick={() => {
+                    (toggleState === "ledgersummary" ||
+                      toggleState === "detailedledger") &&
+                      setIsOpen(!open);
+                  }}
+                  data-toggle="modal"
+                  data-target="#myModal"
+                >
+                  Add Record
+                </button>
+                
+                  <div className="add-pay-btn">
+                      <img src={add} id="addrecord-img" />
+                  </div>
+              </div>
             <div className="bloc-tab">
               <button
-                href={"#All"}
                 className={toggleAC === "all" ? "tabers active-tab" : "tabers"}
                 onClick={() => toggleAllCustom("all")}
               >
                 All
               </button>
               <button
-                href={"#Custom"}
                 className={
                   toggleAC === "custom" ? "tabers active-tab" : "tabers"
                 }
@@ -363,13 +448,15 @@ const BuyerLedger = () => {
               >
                 Custom
               </button>
+              <span id="horizontal-line-tag"></span>
             </div>
+            
             <div
               className="dateRangePicker"
               style={{ display: dateDisplay ? "block" : "none" }}
             >
               <div className="flex">
-                <div onClick={DateModal}>
+                <div onClick={DateModal} id="date_range_picker">
                   <img id="date_icon" src={date_icon} />
                 </div>
               </div>
@@ -505,37 +592,40 @@ const BuyerLedger = () => {
               </div>
             </div>
             <div class="card" className="details-tag">
-              <div class="card-body">
+              <div class="card-body" id="card-details">
                 <div className="row">
                   <div className="col-lg-3" id="verticalLines">
                     {ledger.map((item, index) => {
                       if (item.partyId == partyId) {
                         return (
                           <Fragment>
-                            <tr>
-                              <td
+                              <div
                                 className="profile-details"
-                                key={item.partyName}
+                                key={index}
                               >
-                                <p className="names-tag">{item.partyName}</p>
-                                <br />
-                                <p className="profiles-dtl">
-                                  {item.mobile}
-                                  <br />
-                                  {item.partyAddress}
-                                </p>
-                                {/* {item.profilePic ? (
-                                  item.profilePic
-                                ) : (
-                                  <img
-                                    id="singles-img"
-                                    src={single_bill}
-                                    alt="img"
-                                  />
-                                )} */}
-                                {/* <span id="verticalLines"></span> */}
-                              </td>
-                            </tr>
+                                <div class="d-flex">
+                                  <div>
+                                    {item.profilePic ? (
+                                    <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                      ) : (
+                                      <img
+                                        id="singles-img"
+                                        src={single_bill}
+                                        alt="img"
+                                      />
+                                    )}
+                                  </div>
+                                  <div id="ptr-dtls">
+                                    <p className="namedtl-tag">
+                                      {item.partyName}
+                                    </p>
+                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                    <p className="addres-tag">
+                                      {item.partyAddress ? item.partyAddress : ""}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
                           </Fragment>
                         );
                       } else {
@@ -545,44 +635,41 @@ const BuyerLedger = () => {
                   </div>
                   <div className="col-lg-3" id="verticalLines">
                     <p class="card-text" className="paid">
-                      Total Business<span id="vertical-line1"></span>
-                      <br />{" "}
-                      <span className="coloring">
+                      Total Business
+                      <p className="coloring">
                         &#8377;
                         {summaryData.totalTobePaidRcvd
                           ? summaryData.totalTobePaidRcvd.toFixed(2)
                           : 0}
-                      </span>
+                      </p>
                     </p>
                   </div>
                   <div className="col-lg-3" id="verticalLines">
                     <p className="total-paid">
-                      Total Paid<span id="vertical-line2"></span> <br />
-                      <span className="coloring">
+                      Total Paid
+                      <p className="coloring">
                         &#8377;
                         {summaryData.totalRcvdPaid
                           ? summaryData.totalRcvdPaid.toFixed(2)
                           : 0}
-                      </span>{" "}
+                      </p>
                     </p>
                   </div>
                   <div className="col-lg-3">
                     <p className="out-standing">
-                      Outstanding Recievables <br />
-                      <span className="coloring">
+                      Outstanding Recievables
+                      <p className="coloring">
                         &#8377;
                         {summaryData.outStdRcvPayble
                           ? summaryData.outStdRcvPayble.toFixed(2)
                           : 0}
-                      </span>
+                      </p>
                     </p>
                   </div>
                 </div>
-
-                <span id="horizontal-line"></span>
                 <div className="bloc-tabs">
                   <button
-                    href={"#ledgersummary"}
+                    
                     className={
                       toggleState === "ledgersummary"
                         ? "tabs active-tabs"
@@ -593,7 +680,7 @@ const BuyerLedger = () => {
                     Ledger Summary
                   </button>
                   <button
-                    href={"#detailedledger"}
+                    
                     className={
                       toggleState === "detailedledger"
                         ? "tabs active-tabs"
@@ -611,26 +698,10 @@ const BuyerLedger = () => {
                             <img src={print} className="print"/>
                             </div>*/}
               </div>
+              <span id="horizontal-line"></span>
             </div>
-            <div className="recordbtn-style">
-              <button
-                className="add-record-btns"
-                onClick={() => {
-                  (toggleState === "ledgersummary" ||
-                    toggleState === "detailedledger") &&
-                    setIsOpen(!open);
-                }}
-                data-toggle="modal"
-                data-target="#myModal"
-              >
-                <div className="add-pay-btn">
-                  <img src={add} id="addrecord-img" />
-                </div>{" "}
-                Add Record
-              </button>
-            </div>
-            <span id="horizontal-line-tag"></span>
             {toggleAC === "all" && toggleState === "ledgersummary" && (
+              <div className="ledgerSummary" id="scroll_style">
               <div
                 id="ledger-summary"
                 className={
@@ -638,14 +709,15 @@ const BuyerLedger = () => {
                     ? "content  active-content"
                     : "content"
                 }
+               
               >
-                <table class="table table-fixed ledger-table" id="scroll_style">
+                <table class="table table-fixed ledger-table">{/*ledger-table*/}
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">RefId | Date</th>
-                      <th scope="col">Paid(&#8377;)</th>
-                      <th scope="col">To Be Paid(&#8377;)</th>
+                      <th scope="col">Received(&#8377;)</th>
+                      <th scope="col">To Be Received(&#8377;)</th>
                       <th scope="col">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
@@ -653,14 +725,13 @@ const BuyerLedger = () => {
                     {ledgerSummary.length > 0 ? (
                       ledgerSummary.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" kery={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId}
-                              </span>{" "}
-                              <br />
-                              {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td>
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
@@ -684,8 +755,10 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             {toggleAC === "all" && toggleState === "detailedledger" && (
+              <div className="detailedLedger" id="scroll_style">
               <div
                 id="detailed-ledger"
                 className={
@@ -694,7 +767,7 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed ledger-table" id="scroll_style">
+                <table class="table table-fixed ledger-table">
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
@@ -712,18 +785,26 @@ const BuyerLedger = () => {
                     {details.length > 0 ? (
                       details.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId}
-                              </span>{" "}
-                              <br />
-                              {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td>
-                              {item.itemName} {item.unit}&nbsp;{item.kg}&nbsp;
-                              {item.rate}
+                              <p style={{ fontSize: "12px" }}>
+                                {item.itemName}
+                              </p>
+                              <span style={{ fontSize: "13px" }}>
+                                {item.qty ? item.qty.toFixed(1) : 0}{" "}
+                                {(item.unit!==null ? item.unit : "")
+                                  .charAt(item)
+                                  .toUpperCase()}
+                                &nbsp;|&nbsp;{item.kg ? item.kg : 0}
+                                &nbsp;|&nbsp;{item.rate ? item.rate : 0}
+                              </span>
                             </td>
                             <td>
                               {item.recieved ? item.recieved.toFixed(2) : 0}
@@ -747,8 +828,10 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             {toggleAC === "custom" && toggleState === "ledgersummary" && (
+              <div className="ledgerSummary" id="scroll_style">
               <div
                 id="ledger-summary"
                 className={
@@ -757,13 +840,13 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed" className="ledger-table">
+                <table class="table table-fixed ledger-table">
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
                       <th scope="col">RefId | Date</th>
-                      <th scope="col">Paid(&#8377;)</th>
-                      <th scope="col">To Be Paid(&#8377;)</th>
+                      <th scope="col">Recieved(&#8377;)</th>
+                      <th scope="col">To Be Recieved(&#8377;)</th>
                       <th scope="col">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
@@ -771,14 +854,13 @@ const BuyerLedger = () => {
                     {ledgerSummaryByDate.length > 0 ? (
                       ledgerSummaryByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId ? item.refId : ""}
-                              </span>{" "}
-                              <br />
-                              {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td>
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
@@ -802,8 +884,10 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             {toggleAC === "custom" && toggleState === "detailedledger" && (
+              <div className="detailedLedger" id="scroll_style">
               <div
                 id="detailed-ledger"
                 className={
@@ -812,7 +896,7 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed" className="ledger-table">
+                <table class="table table-fixed ledger-table">
                   <thead className="thead-tag">
                     <tr>
                       <th scope="col">#</th>
@@ -830,20 +914,18 @@ const BuyerLedger = () => {
                     {detailsByDate.length > 0 ? (
                       detailsByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
-                              <span style={{ color: "#0066FF" }}>
+                              <p style={{ color: "#0066FF" }}>
                                 {item.refId ? item.refId : ""}
-                              </span>{" "}
-                              <br />
+                              </p>{" "}
                               {moment(item.date).format("DD-MMM-YY")}
                             </td>
                             <td>
-                              <span style={{ fontSize: "12px" }}>
+                              <p style={{ fontSize: "12px" }}>
                                 {item.itemName}
-                              </span>
-                              <br />
+                              </p>
                               <span style={{ fontSize: "13px" }}>
                                 {item.qty ? item.qty.toFixed(1) : 0}{" "}
                                 {(item.unit ? item.unit : "")
@@ -875,6 +957,7 @@ const BuyerLedger = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
             )}
             <div
               id="myModal"
@@ -882,7 +965,8 @@ const BuyerLedger = () => {
               role="dialog"
               data-backdrop="static"
             >
-              <div class="modal-dialog modal-lg ledger_modal modal-dialog-centered">
+              <div class="modal-dialog modal-lg ledger_modal "
+              style={{height:'500px',width:'760px',marginLeft:'320px',top:'30px'}}>
                 <div class="modal-content">
                   <div class="modal-body">
                     <div className="add-record">
@@ -902,38 +986,40 @@ const BuyerLedger = () => {
                               if (item.partyId == partyId) {
                                 return (
                                   <Fragment>
-                                    <tr>
-                                      <td
-                                        className="profile-details"
-                                        key={item.partyName}
+                                    <div
+                                      className="profile-details"
+                                      key={item.partyName}
                                       >
-                                        <p className="names-tag">
-                                          {item.partyName}
-                                        </p>
-                                        <br />
-                                        <p className="profiles-dtl">
-                                          {item.mobile}
-                                          <br />
-                                          {item.partyAddress}
-                                        </p>
-                                        {/* {item.profilePic ? (
-                                          item.profilePic
-                                        ) : (
+                                      <div class="d-flex">
+                                      <div>
+                                        {item.profilePic ? (
+                                        <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                          ) : (
                                           <img
                                             id="singles-img"
-                                            // src={single_bill}
+                                            src={single_bill}
                                             alt="img"
                                           />
-                                        )} */}
-                                      </td>
-                                    </tr>
+                                        )}
+                                      </div>
+                                        <div>
+                                          <p className="namedtl-tag">
+                                            {item.partyName}
+                                          </p>
+                                          <p className="mobilee-tag">{item.mobile}</p>
+                                          <p className="addres-tag">
+                                            {item.partyAddress ? item.partyAddress : ""}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </Fragment>
                                 );
                               }
                             })}
                             <span class="card-text" id="date-tag">
                               <ReactDatePicker
-                                id="date_picker"
+                                id="date_pickers"
                                 selected={selectDate}
                                 onChange={(date) => {
                                   setSelectDate(date);
@@ -975,9 +1061,16 @@ const BuyerLedger = () => {
                             class="form-control"
                             id="amountRecieved"
                             required
-                            onChange={(e) => setPaidRcvd(e.target.value)}
+                            onChange={(e) =>{handleInputVale(e)}}
                           />
                         </div>
+                        {isValid?
+                        <p id="valid-cond">Amount Received cannot be empty</p>:''
+                          }
+                        {valid?
+                        <p id="valid-cond">
+                        Entered Amount  cannot more than Outstanding Balance</p>:''
+                        }
                         <p className="payments-tag">Payment Mode</p>
                         <div class="form-check form-check-inline">
                           <input
@@ -990,7 +1083,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "CASH"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio1">
+                          <label class="form-check-label" htmlFor="inlineRadio1">
                             CASH
                           </label>
                         </div>
@@ -1005,7 +1098,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "UPI"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio2">
+                          <label class="form-check-label" htmlFor="inlineRadio2">
                             UPI
                           </label>
                         </div>
@@ -1020,7 +1113,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "NEFT"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio3">
+                          <label class="form-check-label" htmlFor="inlineRadio3">
                             NEFT
                           </label>
                         </div>
@@ -1035,7 +1128,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "RTGS"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio4">
+                          <label class="form-check-label" htmlFor="inlineRadio4">
                             RTGS
                           </label>
                         </div>
@@ -1050,7 +1143,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "IMPS"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio5">
+                          <label class="form-check-label" htmlFor="inlineRadio5">
                             IMPS
                           </label>
                         </div>
