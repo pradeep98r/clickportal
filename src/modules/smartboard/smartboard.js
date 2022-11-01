@@ -125,6 +125,7 @@ const SmartBoard = () => {
     },
   ];
   useEffect(() => {
+    localStorage.setItem("mandiEditStatus",false);
     tabChange(tabType);
   }, []);
   const [cropItem, setCropItem] = useState(null);

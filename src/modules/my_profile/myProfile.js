@@ -26,7 +26,6 @@ const MyProfile = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     getProfileDetails();
-   
     langSelection().then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {

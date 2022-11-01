@@ -4,23 +4,35 @@ import "../smartboard/completeprofile.scss";
 import close from "../../assets/images/close.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import InputField from "../../components/inputField";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toastr from "toastr";
 import { completeMandiSetup, editMandiSetup } from "../../actions/loginService";
 import $ from "jquery";
 import { useSelector } from "react-redux";
+import { getAllMarkets } from "../../actions/loginService";
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
-    const mandiUserDetails = useSelector((state) => state.mandiInfo.isMandiDetails);
-  // console.log(mandiUserDetails)
-  // console.log(mandiEditStatus,mandiUserDetails);
-    // mandi name
+  const mandiUserDetails = useSelector(
+    (state) => state.mandiInfo.isMandiDetails
+  );
+  const [allMarketsData, setAllMarketsData] = useState([]);
+  useEffect(() => {
+    getAllMarkets().then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          setAllMarketsData(response.data.data);
+        }
+      },
+      (error) => {}
+    );
+  }, []);
+  // mandi name
   const [mandiNameField, setMandiNameField] = useState(
-    mandiEditStatus ? mandiUserDetails.businessName : ""
+    mandiEditStatus ? mandiData.businessName : ""
   );
   const [mandiNameError, setMandiNameError] = useState("");
   const handleMandiName = (e) => {
@@ -205,7 +217,7 @@ const CompleteProfile = (props) => {
     businessType: mandiTypeField,
     contactName: contactName,
     imageUrl: "string",
-    marketId: mandiEditStatus ? mandiData.marketId : 0,
+    marketId: mandiEditStatus ? mandiData.marketId : selectMarketId,
     mobile: mobileNumber,
     otherMarket: "string",
     shopNum: shopNumberField,
@@ -218,7 +230,7 @@ const CompleteProfile = (props) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "update partner");
             toastr.success(response.data.status.message);
-            localStorage.setItem("submitStatus",true)
+            localStorage.setItem("submitStatus", true);
           }
         },
         (error) => {
@@ -245,9 +257,7 @@ const CompleteProfile = (props) => {
   };
   // address details
   const getPosition = () => {
-    console.log("hey");
     if (navigator.geolocation) {
-      console.log("heyr");
       navigator.geolocation.getCurrentPosition(showPosition, posError);
     } else {
       alert("Sorry, Geolocation is not supported by this browser.");
@@ -270,7 +280,6 @@ const CompleteProfile = (props) => {
     }
   };
   const showPosition = async (position) => {
-    console.log("hey after", position);
     let lat = position.coords.latitude; // You have obtained latitude coordinate!
     let long = position.coords.longitude; // You have obtained
     await getAddress(lat, long, "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A");
@@ -381,6 +390,18 @@ const CompleteProfile = (props) => {
     $input = $text;
     $("#city-input-wrapper").html($input);
   }
+  const [selectMarket, setSelectedOption] = useState("marke name");
+  const [selectMarketId, setSelectedMarketId] = useState(0);
+  const selectedValue = (e) => {
+    console.log(e.target.value);
+    setSelectedOption(e.target.value);
+    allMarketsData.map((item) => {
+      if (item.marketName == e.target.value) {
+        console.log(item.marketId,"id");
+        setSelectedMarketId(item.marketId)
+      }
+    });
+  };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
@@ -398,14 +419,27 @@ const CompleteProfile = (props) => {
         <form>
           <div className="row">
             <div className="col-lg-6">
-              <InputField
+              <label htmlFor="zip" className="input_field">
+                Market Name*
+              </label>
+              <select
+                className="form-control"
+                value={selectMarket}
+                onChange={selectedValue}
+              >
+                {allMarketsData.map((market) => (
+                  <option value={market.marketName}>{market.marketName}</option>
+                ))}
+              </select>
+
+              {/* <InputField
                 type="text"
                 value=""
                 label="Market Name*"
                 name="marketName"
                 id="marketName"
                 onChange={(e) => {}}
-              />
+              /> */}
               <InputField
                 type="text"
                 value={mandiTypeField}
