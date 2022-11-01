@@ -248,20 +248,10 @@ const SellerLedger = () => {
         <div class="col-lg-4">
         <div id="search-field">
             <form class="d-flex">
-                <input class="form-control me-2"
-                  id="searchbar"
-                  type="text"
-                  value={search}
-                  placeholder="Search by Name / Short Code"
-                  onChange={(e) => {
-                    searchInput(e.target.value);
-                  }}
-                  className="searchbar-input"
-                />
-              </form>
-              <div className="searchicon">
-                <img src={search_img} alt="search" />
-            </div>
+              <input class="form-control me-2" id="searchbar" type="search" placeholder='Search by Name / Short Code'
+                onChange={(e) => { searchInput(e.target.value) }} />
+            </form>
+            <div className='searchicon'><img src={search_img} alt="search" /></div>
           </div>
           <div className='table-scroll' id="scroll_style">
           <table class="table table-fixed" className="ledger-table">
@@ -416,11 +406,11 @@ const SellerLedger = () => {
               >
                 Add Record
               </button>
-              <div className="add-pay-btn">
+              <div className="add-pays-btn">
                     <img src={add} id="addrecord-img" />
                 </div>
             </div>
-            <div className="bloc-tab">
+            <div className="blockers-tab">
               <button
                 className={toggleAC === "all" ? "tabers active-tab" : "tabers"}
                 onClick={() => toggleAllCustom("all")}
@@ -557,13 +547,15 @@ const SellerLedger = () => {
               <div class="card" className="details-tag">
               <div class="card-body"  id="card-details">
                 <div className="row">
+                  {isActive!==-1 &&
                   <div className="col-lg-3" id="verticalLines">
                     {ledger.map((item, index) => {
+                      partyId=JSON.parse(localStorage.getItem('partyId'));
                       if (item.partyId == partyId) {
                         return (
                           <Fragment>
                             <div
-                                className="profile-details"
+                                className="profilers-details"
                                 key={item.partyId}
                               >
                                 <div class="d-flex">
@@ -596,6 +588,7 @@ const SellerLedger = () => {
                       }
                     })}
                   </div>
+                  }
                   <div className="col-lg-3" id="verticalLines">
                     <p class="card-text" className="paid">
                       Total Business<span id="vertical-line1"></span>
@@ -636,8 +629,8 @@ const SellerLedger = () => {
                     
                     className={
                       toggleState === "ledgersummary"
-                        ? "tabs active-tabs"
-                        : "tabs"
+                        ? "tabsl active-tabs"
+                        : "tabsl"
                     }
                     onClick={() => toggleTab("ledgersummary")}
                   >
@@ -647,14 +640,14 @@ const SellerLedger = () => {
                     
                     className={
                       toggleState === "detailedledger"
-                        ? "tabs active-tabs"
-                        : "tabs"
+                        ? "tabsl active-tabs"
+                        : "tabsl"
                     }
                     onClick={() => toggleTab("detailedledger")}
                   >
                     Detailed Ledger
                   </button>
-                  <span id="horizontal-line-tag"></span>
+                  <span id="horizontal-lines-tag"></span>
                 </div>
                 {/*<hr style={{color:"blue", marginTop:"25px"}}/>
                             <div className="images">
@@ -871,7 +864,7 @@ const SellerLedger = () => {
                                       return (
                                           <Fragment>
                                               <div
-                                              className="profile-details"
+                                              className="profilers-details"
                                               key={item.partyName}
                                             >
                                               <div class="d-flex">

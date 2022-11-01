@@ -91,18 +91,10 @@ input[type=radio]:checked+label {
     border-radius: 10px 10px 0px 0px;
 }
 #ledger-summary{
-    //height: 330px;
-    //width: 617px;
-    //left: 140px;
-    //top: 200px;//151
     border-radius: 10px;
     box-sizing: border-box;
-    //border-bottom: 20px;
-    //position: absolute;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    //border: 1px solid #E4E4E4;
-    //overflow-y: scroll;
 }
 #ledger-summary th:nth-child(1){
     padding-right: 10px;
@@ -256,7 +248,7 @@ input[type=radio]:checked+label {
     //height: 10px;
     width: 100%;
 }
-#horizontal-line-tag{
+#horizontal-lines-tag{
     position: absolute;
     //position: relative;
     border-bottom:1px solid#E4E4E4;
@@ -270,7 +262,7 @@ input[type=radio]:checked+label {
     float: right;
     display: block;
 }
-.add-pay-btn{
+.add-pays-btn{
     position: absolute;
     background: #16A12C;
     top: 14px;
@@ -385,10 +377,10 @@ input[type=radio]:checked+label {
     color: #1C1C1C;
 }
 .outstanding-pay{
-    position: fixed;
+    //position: fixed;
     bottom:0px;
-    width: 100%;
-    float: left;
+    //width: 100%;
+    //float: left;
     border: 1px solid #E4E4E4;
     background:#FFFFFF;
     border-bottom-left-radius: 10px;
@@ -432,18 +424,18 @@ input[type="text"]::placeholder {
     line-height: 17px;
     color: #939393;
 } 
-.searchicon{
+/*.searchicon{
     color: #16A02C;
 }
 #searchbar{
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
-}
+}*/
 .bloc-tabs {
     display: flex;
 }
-.tabs {
+.tabsl {
     position: relative;
     padding-right: 15px;
     padding-left: 15px;
@@ -477,7 +469,7 @@ input[type="text"]::placeholder {
     letter-spacing: 0.02em;
     color: #4D4D4D;
 }
-.bloc-tab {
+.blockers-tab {
     display: flex;
     // position: absolute;
     margin-bottom: 30px;
@@ -485,7 +477,8 @@ input[type="text"]::placeholder {
 .tabers{
     padding-top: 20px;
     text-align: center;
-    padding-right: 20px;
+    padding-right: 25px;
+    padding-left: 25px;
     cursor: pointer;
     outline: none;
     font-family: 'Manrope';
@@ -979,7 +972,7 @@ thead{
 #ptr-dtls{
     white-space: nowrap;
 }
-.profile-details{
+.profilers-details{
     position: relative;
     left:-20px;
     white-space: nowrap;
