@@ -1,64 +1,95 @@
 import React from 'react'
-import { useEffect } from 'react';
 import { useState } from 'react';
 import { Fragment } from 'react'
-import ReactDatePicker from 'react-datepicker';
-import ReactModal from 'react-modal';
-import { Link, Navigate, Outlet, useNavigate, useParams } from 'react-router-dom';
-import { getLedgerSummary, getSelleLedgers, postRecordPayment } from '../../actions/billCreationService';
-import "./buyerLedger.scss";
-import date_icon from "../../assets/images/date_icon.svg";
-import close_btn from "../../assets/images/close_btn.svg";
-import add from "../../assets/images/add.svg";
+import search_img from "../../assets/images/search.svg";
+import "../../modules/ledgers/buyerLedger.scss";
+import {getLedgerSummary, getLedgerSummaryByDate, getSelleLedgers, getSellerDetailedLedger, getSellerDetailedLedgerByDate, postRecordPayment} from '../../actions/billCreationService';
+import { useEffect } from 'react';
+import single_bill from "../../assets/images/bills/single_bill.svg";
 import no_data from "../../assets/images/no_data.svg";
-import pdf from "../../assets/images/pdf.svg";
-import share from "../../assets/images/share.svg";
-import print from "../../assets/images/print.svg";
-
+import add from "../../assets/images/add.svg";
+import ReactDatePicker from 'react-datepicker';
+import close_btn from "../../assets/images/close_btn.svg";
+import date_icon from "../../assets/images/date_icon.svg";
+import ReactModal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 import right_click from "../../assets/images/right_click.svg";
-
+import $ from "jquery";
+import "../../modules/buy_bill_book/buyBillBook.scss";
+import moment from 'moment';
 const SellerLedger = () => {
-    
+    const [search, setSearch] = useState("");
+    const [openTabs, setOpenTabs] = useState(false);
     const [ledger, setLedgeres] = useState([{}]);
     const [data, setData] = useState({}, ledger);
-    const [search, setSearch] = useState(" ");
     const [error, setError] = useState();
-    const navigate = useNavigate();
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.clickId;
-    const [isOpen, setIsOpen] = useState(false);
+    const [ledgerSummary, setSummary] = useState([{}]);
+    const [summaryData, setSummaryData] = useState({}, ledgerSummary);
+    const [details, setDetails] = useState([{}]);
+    const [detailedData, setDetailedData] = useState({}, details);
+    
+    const [open, setIsOpen] = useState(false);
     const [selectDate, setSelectDate] = useState(new Date());
     const [paidRcvd, setPaidRcvd] = useState(0);
     const [comments, setComments] = useState(" ");
-    const [paymentMode, setPaymentMode] = useState(" ");
+    const [paymentMode, setPaymentMode] = useState('CASH');
+    const [dateDisplay, setDateDisplay] = useState(false);
+    
+    const [ledgerSummaryByDate, setSummaryByDate] = useState([{}]);
+    //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummary);
 
-    const [displayLink, setDisplayLink]=useState(false);
-    const { partyId } = useParams();
-    const [sellerSummaryData, setSellerSummaryData] = useState({});
-    const [recordDisplay, setRecordDisplay]=useState("");
-    const [record, setRecord]=useState(false);
+    const[sellerDetailed, setSellerDetailed]= useState([]);
+    const [isActive, setIsActive]= useState(-1);
 
+    const navigate=useNavigate();
+    const [toggleState, setToggleState] = useState("ledgersummary");
+    const toggleTab = (type) => {
+        setToggleState(type);
+    };
+    const [toggleAC, setToggleAC] = useState("all");
+    const toggleAllCustom = (type) => {
+        setToggleAC(type);
+        if(type==='custom'){
+            console.log(type);
+            setDateDisplay(!dateDisplay);
+        }
+        else if(type==='all'){
+            setDateDisplay(false);
+        }
+    };
+
+    let partyId=0;
+    let fromDate=null;
+    let toDate=null;
+    //Fetch ledger by party Type
     useEffect(() => {
         fetchSellerLedger();
-    }, []);
+    }, [clickId]);
     const fetchSellerLedger = () => {
         getSelleLedgers(clickId).then(response => {
             setData(response.data.data);
             setLedgeres(response.data.data.ledgers);
             console(response.data.data, "Buyer Details");
-        })
-            .catch(error => {
-                setError(error.message);
-            })
+    })
+    .catch(error => {
+        setError(error.message);
+    })
     }
-
-    const particularLedger = (id) => {
+    //Get partner By partyId
+    const particularLedger = (id,indexs) => {
         console.log(id);
+        //getBuyerLedgerSummary(clickId, id);
+        setOpenTabs(true);
+        setIsActive(indexs)
         ledger.filter((item) => {
             if (item.partyId === id) {
-                setDisplayLink(!displayLink);
-                navigate(`sellerledgersummary/${id}`);
-                return item;
+                partyId=id;
+                localStorage.setItem('partyId', JSON.stringify(partyId));
+                getSellerLedgerSummary(clickId, id);
+                fetchSellerLedgerDetails(clickId, id);
+                return item.partyId;
                 //navigate("ledgerSummary");
             }
             else {
@@ -66,255 +97,632 @@ const SellerLedger = () => {
             }
         });
     }
-    useEffect(() => {
-        addRecordPayment();
-    }, []);
-    const addRecordPayment = (e) => {
+    //Get Seller Ledger Summary
+    const getSellerLedgerSummary = (clickId,partyId) => {
+        getLedgerSummary(clickId,partyId).then(response => {
+            setSummaryData(response.data.data);
+            setSummary(response.data.data.ledgerSummary)
+        }).catch(error => {
+          setError(error.message);
+       });
+    }
+       
+
+    //Get Seller Detailed Ledger
+    const fetchSellerLedgerDetails = (clickId,partyId) => {
+        getSellerDetailedLedger(clickId,partyId).then(response => {
+            setDetailedData(response.data.data);
+            setDetails(response.data.data.details);
+            //console.log(details[0].itemName);
+        })
+        .catch(error => {
+          setError(error.message);
+        })
+    }
+    //Convert standard date to date
+    function convert(str) {
+        var date = new Date(str),
+            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+            day = ("0" + date.getDate()).slice(-2);
+        return [date.getFullYear(), mnth, day].join("-");
+    }
+     //Add Record payment
+    const addRecordPayment = (transId) => {
         const addRecordData = {
             caId: clickId,
-            date: new Date(),
+            partyId:JSON.parse(localStorage.getItem("partyId")),
+            date: convert(selectDate),
             comments: comments,
             paidRcvd: paidRcvd,
             paymentMode: paymentMode,
-            partyId: partyId
         }
         console.log(selectDate);
         postRecordPayment(addRecordData).then(response => {
-            console.log(response.data.data);
-        })
-        .catch(error => {
-            console.log(error);
-        })
+             console.log(response.data.data);
+             window.location.reload();
+            
+         })
+         .catch(error => {
+           console.log(error);
+         })
         navigate("/sellerledger")
         setIsOpen(false);
+        localStorage.removeItem("partyId");
     }
-    useEffect(() => {
-        getSellerLedgerSummary();
-      }, []);
+    //Fetch Ledger Summary By Date
+    const fetchLedgerSummaryByDate=(clickId,partyId,fromDate,toDate)=>{
+        getLedgerSummaryByDate(clickId,partyId,fromDate,toDate)
+        .then(response=>{
+            setSummaryByDate(response.data.data.ledgerSummary);
+            //setSummaryDataByDate(response.data.data);
+        }).catch(error => {
+            console.log(error);
+          })
+    }
     
-      const getSellerLedgerSummary = () => {
-        getLedgerSummary(clickId,partyId).then(response => {
-            setSellerSummaryData(response.data.data);
-        })
-        .catch(error => {
-           setError(error.message);
-        });
-      }
+    //Fetch Detailed Ledger By Date
+    const fetchDetailedLedgerByDate=(clickId, partyId,fromDate, toDate)=>{
+      getSellerDetailedLedgerByDate(clickId,partyId,fromDate,toDate)
+      .then(response=>{
+        setSellerDetailed(response.data.data.details);
+      })
+      .catch(error=>{setError(error)});
+    }
+    //Date Range Select
+    $("[name=tab]").each(function (i, d) {
+        var p = $(this).prop("checked");
+        if (p) {
+            $("article").eq(i).addClass("on");
+        }
+    });
+    $("[name=tab]").on("change", function () {
+        var p = $(this).prop("checked");
+
+        // $(type).index(this) == nth-of-type
+        var i = $("[name=tab]").index(this);
+
+        $("article").removeClass("on");
+        $("article").eq(i).addClass("on");
+    });
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    const onChangeDate = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+    };
+
+    const handleWeekPick = (startDate, endDate) => {
+        console.log(`${startDate} to ${endDate}`);
+    };
+    const DateModal = () => {
+        $("#datePopupmodal").modal("show");
+    };
+    const getDate = () => {
+        fromDate = convert(startDate);
+        toDate = convert(endDate);
+        localStorage.setItem('fromDate', JSON.stringify(fromDate))
+        localStorage.setItem('toDate', JSON.stringify(toDate))
+        fetchLedgerSummaryByDate(clickId,partyId,fromDate,toDate);
+        fetchDetailedLedgerByDate(clickId, partyId, fromDate,toDate);
+        $("#datePopupmodal").modal("hide");
+        setIsOpen(false);
+    }
+    partyId=JSON.parse(localStorage.getItem('partyId'));
   return (
     <Fragment>
-        <div className='seller-ledgers'>
-        <div className='record-update' style={{display: record?'block':'none'}}>
-                <p>{recordDisplay}</p>
-                <img src={right_click} className="right-click" />
-                <img src={close_btn} className="recordclose-btn" onClick={()=>setRecord(false)}/>
+      <div className='no_data_found' style={{ display: openTabs ? 'none' : 'block' }}>
+        <img src={no_data} className='no-data-img' /></div>
+        <nav class="navbar navbar-expand-lg ">
+           <div class="container-fluid">
+           <form class="d-flex">
+             <input id="searchbar" type="text" value={search} placeholder='Search by Name / Short Code'
+               onChange={(e) => { setSearch(e.target.value) }} className='searchbar-input'
+               />
+           </form>
+           <div className='searchicon'><img src={search_img} alt="search" /></div>
+         </div>
+       </nav>
+       <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
+            <div className="bloc-tab">
+            <button href={"#All"}
+                className={toggleAC === 'all' ? "tabers active-tabs" : "tabers"}
+                onClick={() => toggleAllCustom('all')}
+            >All</button>
+            <button href={"#Custom"}
+                className={toggleAC === 'custom' ? "tabers active-tab" : "tabers"}
+                onClick={() => toggleAllCustom('custom')}
+            >Custom</button>
             </div>
-        <div>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <div className="container-fluid">
-                    <form className="d-flex">
-                        <span><img src={search} /></span>
-                        <input id="searchbar" className="form-control me-12" type="search" placeholder="Search" aria-label="Search"
-                            onChange={(e) => { setSearch(e.target.value) }} />
-                    </form>
-                </div>
-                <div className="collapse navbar-collapse links-tag" id="navbarNavAltMarkup" 
-                style={{display: displayLink ? 'block' : 'none' }}>
-                    <div className="card details">
-                        <div className="card-body">
-                        {
-                                ledger.map((item,index)=>{
-                                    if(item.partyId==partyId){
-                                        return(
-                                            <div>
-                                            <p className='profile-details'>
-                                            {item.profilePic}{item.partyName}</p>
-                                            <p className='address'>{item.partyAddress}{item.mobile}</p>
-                                            </div>
-                                        )
-                                    }
-                                    else{
-                                        <p>No Data Found</p>
-                                    }
-                                })
-                            }
-                            <p className="card-text paid">Total Business<br/> <span className='coloring'>
-                            &#8377;{sellerSummaryData.totalTobePaidRcvd? sellerSummaryData.totalTobePaidRcvd:0}</span></p>
-                            <p className='total-paid'>Total Paid <br/><span className='coloring'>
-                            &#8377;{sellerSummaryData.totalRcvdPaid? sellerSummaryData.totalRcvdPaid:0}</span> </p> 
-                            <p className='out-standing'>Outstanding Paybles <br /><span className='coloring'>
-                            &#8377;{sellerSummaryData.outStdRcvPayble?sellerSummaryData.outStdRcvPayble:0}</span></p>
-                            
-                            <hr style={{color:"blue", marginTop:"25px"}}/>
-                            <Link to={`sellerledgersummary/${partyId}`} className="ledgersummary">LedgerSummary</Link>
-                            <Link to={`sellerdetailedledger/${partyId}`} className="detailedledger">Detailed Ledger</Link>
-                            <Outlet />
+            <div class="card" className='details-tag'>
+                <div class="card-body">
+                    {
+                        ledger.map((item, index) => {
+                            partyId=JSON.parse(localStorage.getItem('partyId'));
+                            if (item.partyId == partyId) {
+                                return (
+                                    <Fragment>
+                                        <tr>
+                                            <td className='profile-details' key={item.partyName}>
+                                                <p className='names-tag'>{item.partyName}</p><br />
+                                                <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
+                                                {item.profilePic ? item.profilePic
+                                                :<img id="singles-img" src={single_bill} alt="img"/>}
+                                                <span id="verticalLines"></span>
+                                                
+                                            </td>
+                                        </tr>
+                                    </Fragment>
+                                    )
+                                }
+                                else {
+                                    <p>No Data Found</p>
+                                }
+                            })
+                    }
+                    <p class="card-text" className='paid'>Total Business<span id="vertical-line1"></span><br /> <span className='coloring'>
+                        &#8377;{summaryData.totalTobePaidRcvd ? summaryData.totalTobePaidRcvd.toFixed(2) : 0}</span></p>
+                    <p className='total-paid'>Total Paid<span id="vertical-line2"></span> <br /><span className='coloring'>
+                        &#8377;{summaryData.totalRcvdPaid ? summaryData.totalRcvdPaid.toFixed(2) : 0}</span> </p>
+                    <p className='out-standing'>Outstanding Recievables <br /><span className='coloring'>
+                        &#8377;{summaryData.outStdRcvPayble ? summaryData.outStdRcvPayble.toFixed(2) : 0}</span></p>
+                    <span id="horizontal-line"></span>
+                    <div className="bloc-tabs">
+                        <button href={"#ledgersummary"}
+                            className={toggleState === 'ledgersummary' ? "tabs active-tabs" : "tabs"}
+                            onClick={() => toggleTab('ledgersummary')}
+                        >
+                            Ledger Summary
+                        </button>
+                        <button href={"#detailedledger"}
+                            className={toggleState === 'detailedledger' ? "tabs active-tabs" : "tabs"}
+                            onClick={() => toggleTab('detailedledger')}
+                        >
+                            Detailed Ledger
+                        </button>
+                    </div>
+                    {/*<hr style={{color:"blue", marginTop:"25px"}}/>
                             <div className="images">
                             <img src={pdf} className="pdf"/>
                             <img src={share} className="share" />
                             <img src={print} className="print"/>
-                            </div>
-                        </div>
-                        <button className="record-btn" onClick={() => setIsOpen(!isOpen)}><img src={add} className="add"/>Add Record</button>
-                    </div>
-                </div>    
-                <ReactModal isOpen={isOpen}
-                    style={
-                        {
-                            overlay: {
-                                position: 'absolute',
-                                top: "85px",
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                marginLeft: "350px",
-                                width: "750px",
-                                height: "540px",
-                                overflow: 'visible',
-                                transition: 'ease-out'
-                            }
-                        }
-                    }>
-                    <img src={close_btn} className="close-btn" onClick={() => setIsOpen(false)} />
-                    <h5>Add Record Recivable</h5>
-                    <form onSubmit={addRecordPayment}>
-                        <div className="card" id="recievable-card">
-                            <div className="card-body">
-                                {
-                                    ledger.map((item,index)=>{
-                                        return(
-                                            <Fragment>
-                                            <tr>
-                                            <td scope="row">{index}</td>
-                                            <th key={item.date}>{item.date}</th>
-                                            <td key={item.partyName}><span className="name-tag">
-                                                {item.partyName}<br />
-                                                {item.partyAddress}
-                                                {item.mobile}
-                                                {item.profilePic}
-                                            </span>
-                                            </td>
-                                            </tr>
-                                        </Fragment>
-                                        )
-                                    })
-                                }
-                                <p className="card-text" id="date-tag">
-                                    <ReactDatePicker className='date_picker'
-                                        selected={selectDate}
-                                        onChange={date => { setSelectDate(date) }}
-                                        dateFormat='dd/MM/yyyy'
-                                        maxDate={new Date()}
-                                        showMonthYearDropdown={true}
-                                        scrollableMonthYearDropdown
-                                        style=
-                                        {{
-                                            width: "400px",
-                                            cursor: "pointer",
-                                            right: "300px"
-                                        }}
-                                    >
-                                    </ReactDatePicker>
-                                    <img id="date_icon" src={date_icon} />
-                                </p>
-                            </div>
-                        </div> 
-                        <p id='p-tag'>Total Outstanding Recievables</p>
-                        <p id="recieve-tag">&#8377;{sellerSummaryData.outStdRcvPayble}</p>
-
-                        <div className="form-group">
-                            <label for="amtRecieved" id="amt-tag">Amount Recieved</label>
-                            <input className="form-control" id="amtRecieved" value={paidRcvd} placeholder="&#8377;"
-                                onChange={(e) => setPaidRcvd(e.target.value)} />
-                        </div>
-                        <p className='payment-tag'>Payment Method</p>
-
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio1" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label className="form-check-label" for="inlineRadio1">Cash</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio2" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label className="form-check-label" for="inlineRadio2">UPI</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio3" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label className="form-check-NEFT" for="inlineRadio3">NEFT</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="radio" id="inlineRadio4" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label className="form-check-label" for="inlineRadio4">RTGS</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio5" value={paymentMode}
-                                onChange={(e) => setPaymentMode(e.target.value)} />
-                            <label className="form-check-label" for="inlineRadio5">IMPS</label>
-                        </div>
-                        <div className="mb-3">
-                            <label for="exampleFormControlTextarea1" className="form-label" id="comment-tag">Comment</label>
-                            <textarea className="form-control" id="exampleFormControlTextarea1" rows="2" value={comments}
-                                onChange={(e) => setComments(e.target.value)}></textarea>
-                        </div>
-                        <button className='submit-btn' type='sumit'>SUBMIT</button>
-                    </form>
-                </ReactModal>
-            </nav>
-            <table className="table" id="ledger-table">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Seller Name</th>
-                        <th scope="col">To Be Paid</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        ledger.length > 0 ? (
-                            ledger.filter((value) => {
-                                if (search === " ") return <p>Not Found</p>;
-                                else if (value.partyName.toLowerCase().includes(search.toLowerCase())) {
-                                    return value;
-                                }
-                                else {
-                                    return <p>Not Found</p>
-                                }
-                            })
-                                .map((item, index) => {
+                            </div>*/}
+                </div>
+            </div>
+         <div className="recordbtn-style">
+            <button className="add-record-btns" onClick={() =>
+            {(toggleState === 'ledgersummary' || toggleState === 'detailedledger')
+             && setIsOpen(!open)}} data-toggle="modal" data-target="#myModal"><div className='add-pay-btn'>
+              <img src={add} id='addrecord-img'/></div> Add Record</button>
+         </div>
+         <span id="horizontal-line-tag"></span>
+         {toggleAC==='all' &&
+         <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
+            <table class="table table-fixed" className="ledger-table">
+               <thead className="thead-tag">
+                 <tr>
+                   <th scope="col">#</th>
+                   <th scope="col">RefId | Date</th>
+                   <th scope="col">Paid(&#8377;)</th>
+                   <th scope="col">To Be Paid(&#8377;)</th>
+                  <th scope="col">Ledger Balance(&#8377;)</th>
+                 </tr>
+              </thead>
+              <tbody>
+                 {
+                   ledgerSummary.length > 0 ? (
+                     ledgerSummary.map((item, index) => {
+                       return (
+                         <tr className="tr-tags">
+                           <th scope="row">{index + 1}</th>
+                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                           {moment(item.date).format("DD-MMM-YY")}</td>
+                           <td>{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
+                           <td>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
+                           <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                         </tr>
+                        )
+                     })
+                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                 }
+               </tbody>
+             </table>
+           </div>}
+           {toggleAC==='all' &&
+           <div id="detailed-ledger" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
+            <table class="table table-fixed" className="ledger-table">
+               <thead className="thead-tag">
+                 <tr>
+                   <th scope="col">#</th>
+                   <th scope="col">RefId | Date</th>
+                   <th scope="col">Item<br/> Unit | Kgs | Rate</th>
+                   <th scope="col">Recieved(&#8377;)</th>
+                   <th scope='col'>To Be Recieved(&#8377;)</th>
+                  <th scope="col">Ledger Balance(&#8377;)</th>
+                 </tr>
+              </thead>
+              <tbody>
+                 {
+                   details.length > 0 ? (
+                     details.map((item, index) => {
+                       return (
+                         <tr className="tr-tags">
+                           <th scope="row">{index + 1}</th>
+                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                           {moment(item.date).format("DD-MMM-YY")}</td>
+                           <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
+                           <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
+                            &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
+                           <td>{item.recieved ? item.recieved.toFixed(2) : 0}</td>
+                           <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
+                           <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                         </tr>
+                        )
+                     })
+                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                 }
+               </tbody>
+             </table>
+           </div>
+          }
+          {toggleAC==='custom' &&
+          <div id="ledger-summary" className={toggleState === 'ledgersummary' ? "content  active-content" : "content"}>
+            <table class="table table-fixed" className="ledger-table">
+               <thead className="thead-tag">
+                 <tr>
+                   <th scope="col">#</th>
+                   <th scope="col">RefId | Date</th>
+                   <th scope="col">Paid(&#8377;)</th>
+                   <th scope="col">To Be Paid(&#8377;)</th>
+                  <th scope="col">Ledger Balance(&#8377;)</th>
+                 </tr>
+              </thead>
+              <tbody>
+                 {
+                   ledgerSummaryByDate.length > 0 ? (
+                    ledgerSummaryByDate.map((item, index) => {
+                       return (
+                         <tr className="tr-tags">
+                           <th scope="row">{index + 1}</th>
+                           <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                           {moment(item.date).format("DD-MMM-YY")}</td>
+                           <td>{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</td>
+                           <td>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</td>
+                           <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                         </tr>
+                        )
+                     })
+                   ) : (<p style={{ fontSize: "20px" }}>No Data Available!</p>)
+                 }
+               </tbody>
+             </table>
+           </div>
+           } 
+          {toggleAC==='custom' &&
+           <div id="detailed-ledger" className={toggleState === 'detailedledger' ? "content  active-content" : "content"}>
+            <table class="table table-fixed" className="ledger-table">
+               <thead className="thead-tag">
+                 <tr>
+                   <th scope="col">#</th>
+                   <th scope="col">RefId | Date</th>
+                   <th scope="col">Item<br/> Unit | Kgs | Rate</th>
+                   <th scope="col">Recieved(&#8377;)</th>
+                   <th scope='col'>To Be Recieved(&#8377;)</th>
+                  <th scope="col">Ledger Balance(&#8377;)</th>
+                 </tr>
+              </thead>
+              <tbody>
+                 {
+                   sellerDetailed.length > 0 ? (
+                     sellerDetailed.map((item, index) => {
+                       return (
+                        <tr className="tr-tags">
+                          <th scope="row">{index + 1}</th>
+                          <td><span style={{'color':'#0066FF'}}>{item.refId}</span> <br />
+                          {moment(item.date).format("DD-MMM-YY")}</td>
+                          <td><span style={{fontSize:'12px'}}>{item.itemName}</span><br/>
+                          <span style={{fontSize:'13px'}}>{item.qty?item.qty.toFixed(1):0} {(item.unit?item.unit:'').charAt(item).toUpperCase()}
+                          &nbsp;|&nbsp;{item.kg?item.kg.toFixed(1) :0}&nbsp;|&nbsp;{item.rate?item.rate.toFixed(1):0}</span></td>
+                          <td>{item.recieved ? item.recieved.toFixed(2) : 0}</td>
+                          <td>{item.toBeRecieved ? item.toBeRecieved.toFixed(2) : 0}</td>
+                          <td><span className='coloring'>{item.balance ? item.balance.toFixed(2) : 0}</span></td>
+                        </tr>
+                        )
+                     })
+                   ) : (<p>No Data Available!</p>)
+                 }
+               </tbody>
+             </table>
+           </div>
+          }
+          <div id="myModal" class="modal fade" role="dialog" data-backdrop="static">
+            <div class="modal-dialog modal-lg ledger_modal modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div className="add-record">
+                      <div className="btn-round">
+                        <img src={close_btn} className="closing-btn" data-dismiss="modal" onClick={() => setIsOpen(false)} />
+                      </div>
+                      <h6 className="record-name">Add Record Recievable</h6>
+                      <form onSubmit={addRecordPayment}>
+                        <div className="card">
+                          <div className="card-body" id="pref-details-tag">
+                            {
+                              ledger.map((item, index) => {
+                                if (item.partyId == partyId) {
                                     return (
                                         <Fragment>
-                                        <tr onClick={(id) => { particularLedger(item.partyId) }}>
-                                            <td scope="row">{index}</td>
-                                            <th key={item.date}>{item.date}</th>
-                                            <td key={item.partyName}><span className="name-tag">
-                                                {item.partyName}<br />
-                                                {item.partyAddress}
-                                                {item.mobile}
-                                            </span>
-                                            </td>
-                                            <td key={item.toBePaid}><span className="recieved-tag">&#8377;
-                                                {item.toBePaid ? item.toBePaid : 0}</span></td>
-                                        </tr>                    
+                                            <tr>
+                                                  <td className='profile-details' key={item.partyName}>
+                                                    <p className='names-tag'>{item.partyName}</p><br />
+                                                    <p className='profiles-dtl'>{item.mobile}<br />{item.partyAddress}</p>
+                                                    {item.profilePic ? item.profilePic
+                                                    :<img id="singles-img" src={single_bill} alt="img"/>}
+                                                    
+                                                </td>
+                                            </tr>
                                         </Fragment>
                                     )
-                                })
-                        ) : (
-                        <div>
-                        <img src={no_data}/>
-                        <p>No Data Available</p>
+                                }
+                              })
+                            }
+                            <span class="card-text" id="date-tag">
+                              <ReactDatePicker id='date_picker'
+                                selected={selectDate}
+                                onChange={date => { setSelectDate(date) }}
+                                dateFormat='dd-MMM-yy'
+                                maxDate={new Date()}
+                                placeholder="Date"
+                                showMonthYearDropdown={true}
+                                scrollableMonthYearDropdown
+                                required
+                                style=
+                                {{
+                                  width: "400px",
+                                  cursor: "pointer",
+                                  right: "300px",
+                                  marginTop: "30px",
+                                  fontFamily: 'Manrope',
+                                  fontStyle: "normal",
+                                  fontWeight: "600",
+                                  fontSize: "15px",
+                                  lineHeight: "18px"
+                                }}
+                                >
+                              </ReactDatePicker>
+                              <img className="date_icons" src={date_icon} />
+                            </span>
+                          </div>
                         </div>
-                        )
-                    }
-                </tbody>
-            </table>
+                        <p id='out-tag'>Total Outstanding Recievables</p>
+                        <p id="recieved-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
+                        <div class="form-group">
+                          <label hmtlFor="amtRecieved" id="amount-tag">Amount Recieved</label>
+                          <input class="form-control" id="amountRecieved" required
+                            onChange={(e) => setPaidRcvd(e.target.value)}/>
+                        </div>
+                        <p className='payments-tag'>Payment Mode</p>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadios1" value="CASH"
+                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'} required />
+                          <label class="form-check-label" for="inlineRadio1">CASH</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="UPI"
+                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='UPI'} required />
+                          <label class="form-check-label" for="inlineRadio2">UPI</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio3" value="NEFT"
+                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='NEFT'} required />
+                          <label class="form-check-label" for="inlineRadio3">NEFT</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio4" value="RTGS"
+                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='RTGS'} required />
+                          <label class="form-check-label" for="inlineRadio4">RTGS</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="radio" id="inlineRadio5" value="IMPS"
+                            onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='IMPS'} required />
+                          <label class="form-check-label" for="inlineRadio5">IMPS</label>
+                        </div>
+                        <div class="mb-3">
+                          <label for="exampleFormControlTextarea1" class="form-label" id="commenting-tag">Comment</label>
+                          <textarea class="form-control" id="commenters1" rows="2" value={comments}
+                            onChange={(e) => setComments(e.target.value)}></textarea>
+                        </div>
+                        <button className='submit-btn' type='sumit'>SUBMIT</button>
+                      </form>
+                    </div>
+                  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+             <div className='dateRangePicker' style={{ display: dateDisplay ? 'block' : 'none' }}>
+                <div className="flex">
+                    <div onClick={DateModal}><img id="date_icon" src={date_icon} /></div>
+                </div>
+                <div className="modal fade" id="datePopupmodal">
+                    <div className="modal-dialog modal-dialog-centered date_modal_dialog">
+                        <div className="modal-content">
+                            <div className="modal-header date_modal_header">
+                                <h5 className="modal-title header2_text" id="staticBackdropLabel">Select Dates</h5>
+                                <img src={close_btn} alt="image" className="close_icon" data-bs-dismiss="modal"/>
+                            </div>
+                            <div className="modal-body date_modal_mody">
+                                <div className="calender_popup">
+                                    <div className="row">
+                                        <div className="dates_div">
+                                            <div className="flex_class">
+                                                <input type="radio" id="tab1" name="tab" defaultChecked />
+                                                <label htmlFor="tab1">Daily</label>
+                                            </div>
+                                            <div className="flex_class">
+                                                <input type="radio" id="tab2" name="tab" />
+                                                <label htmlFor="tab2">Monthly</label>
+                                            </div>
+                                            <div className="flex_class">
+                                                {" "}
+                                                <input type="radio" id="tab3" name="tab" />
+                                                <label htmlFor="tab3">Yearly</label>
+                                            </div>
+                                            <div className="flex_class">
+                                                <input type="radio" id="tab4" name="tab" />
+                                                <label htmlFor="tab4">Weekly</label>
+                                            </div>
+                                            <div className="flex_class">
+                                                <input type="radio" id="tab5" name="tab" />
+                                                <label htmlFor="tab5">Custom</label>
+                                            </div>
+                                        </div>
+                                        <article className="date_picker">
+                                            <ReactDatePicker
+                                                dateFormat="yyyy-MM-dd"
+                                                selected={startDate}
+                                                onChange={(date) => setStartDate(date)}
+                                                className="form-control"
+                                                placeholder="Date"
+                                                maxDate={new Date()}
+                                                inline
+                                            />
+                                        </article>
+                                        <article className="month_picker">
+                                            <ReactDatePicker
+                                                dateFormat="MM/yyyy"
+                                                showMonthYearPicker
+                                                showFullMonthYearPicker
+                                                selected={startDate}
+                                                onChange={(date) => setStartDate(date)}
+                                                className="form-control"
+                                                placeholder="Date"
+                                                maxDate={new Date()}
+                                                showThreeColumnMonthYearPicker
+                                                inline
+                                            />
+                                        </article>
+                                        <article>
+                                            <h2>
+                                                <ReactDatePicker
+                                                    selected={startDate}
+                                                    onChange={(date) => setStartDate(date)}
+                                                    showYearPicker
+                                                    dateFormat="yyyy"
+                                                    className="form-control"
+                                                    maxDate={new Date()}
+                                                    inline
+                                                    // showThreeColumnYearPicker
+                                                    yearItemNumber={9}
+                                                />
+                                            </h2>
+                                        </article>
+                                        <article className="week_picker">
+                                            {/* <WeeklyCalendar
+                                            onWeekPick={handleWeekPick}
+                                            max={moment().format("DD-MM-YYYY")}
+                                            /> */}
+                                        </article>
+                                        <article className="custom_picker">
+                                            <div className="flex_class custom_input_div">
+                                                <ReactDatePicker
+                                                    selected={startDate}
+                                                    onChange={(date) => setStartDate(date)}
+                                                    popperClassName="d-none"
+                                                    dateFormat="yyyy-MM-dd"
+                                                    placeholderText="Select from date"
+                                                />
+                                                <ReactDatePicker
+                                                    selected={endDate}
+                                                    onChange={(date) => setEndDate(date)}
+                                                    popperClassName="d-none"
+                                                    dateFormat="yyyy-MM-dd"
+                                                    placeholderText="Select to date"
+                                                />
+                                            </div>
+                                            <ReactDatePicker
+                                                selected={startDate}
+                                                onChange={onChangeDate}
+                                                startDate={startDate}
+                                                endDate={endDate}
+                                            selectsRange
+                                            inline
+                                            maxDate={new Date()}
+                                            />
+                                        </article>
+                                    </div>
+                                </div>
+                                <button className='continue-btn' onClick={getDate}>CONTINUE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div className='table-scroll'>
+         <table class="table table-fixed" className="ledger-table">
+           <thead className="thead-tag">
+             <tr>
+               <th scope="col">#</th>
+               <th scope="col">Date</th>
+               <th scope="col">Transporter Name</th>
+               <th scope="col">To Be Paid</th>
+             </tr>
+           </thead>
+           <tbody>
+             {
+               ledger.length > 0 ? (
+                 ledger.filter((item) => {
+                   if (search === " ") return <p>Not Found</p>;
+                   else if (item.partyName===search) {
+                     console.log(item.partyName);
+                     console.log(search)
+                     return (<p>item.partyName</p>);
+                   }
+                   else {
+                     return <p>Not Found</p>
+                   }
+                 })
+                   .map((item, index) => {
+                     return (
+                       <Fragment>
+                         <tr onClick={(id,indexs) => { particularLedger(item.partyId,index) }}
+                          className={isActive===index?'tabRowSelected':"tr-tags"}>
+                           <td scope="row">{index + 1}</td>
+                           <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
+                           <td key={item.partyName}><span className="namedtl-tag">
+                             {item.partyName}<br /></span>
+                             <span className="address-tag">{item.partyAddress?item.partyAddress:''}<br /></span>
+                             <span className="mobile-tag">{item.mobile}</span>
+                             {item.profilePic? item.profilePic
+                               :<img className="profile-img" src={single_bill} alt="img"/>}
+                           </td>
+                           <td key={item.tobePaidRcvd}><span className='coloring'>&#8377;
+                             {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</span></td>
+                         </tr>
+                       </Fragment>
+                     )
+                   })
+               ) :
+                 (<div>
+                   <img src={no_data} />
+                   <p>No Data Available</p>
+                 </div>
+                 )
+ 
+             }
+           </tbody>
+         </table>
+         <div className="outstanding-pay">
+           <p className="pat-tag">Outstanding Recievable:</p>
+           <p className="values-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
+         </div>
+       </div>
     </Fragment>
-
   )
 }
 
-export default SellerLedger
+export default SellerLedger;

@@ -4,13 +4,16 @@ function Navigation(props) {
   const [navigationHeader, setNavigationHeader] = useState('');
   useEffect(() => {
     if(props.login_type === "login_type_selection"){
-      setNavigationHeader("Login as a ")
+      setNavigationHeader("Login as a ");
     }
     else if(props.login_type == "login_form"){
-      setNavigationHeader("Account Login")
+      setNavigationHeader("Account Login");
+    }
+    else if(props.login_type == "registration"){
+      setNavigationHeader("User Details");
     }
     else{
-      setNavigationHeader("Select your preferred language")
+      setNavigationHeader("Select your preferred language");
     }
   }, []);
 

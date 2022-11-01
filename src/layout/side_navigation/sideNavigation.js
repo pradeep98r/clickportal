@@ -101,7 +101,7 @@ class SideNavigation extends Component {
       {
         id: 10,
         name: "Transporto",
-        to: "/cms",
+        to: "/transportoledger",
         className: "side_nav_item",
         img: transporto,
       },
@@ -159,10 +159,13 @@ class SideNavigation extends Component {
                       onClick={() => this.handleClick(link.id,link.to)}
                       className={
                         link.className + 
+                        // (link.to.replace('/', '') === link.name.toLowerCase()) 
+                        // ? ( " active_item" ) : 
                         (link.id === (activeLink != null ? activeLink : 1) ? " active_item" : "")
                       }
                       to={link.to}
                     >
+                      {/* {link.to.replace('/', '')} */}
                       <div className="flex_class">
                         <div className="icons">
                           <img src={link.img} className="flex_class mx-auto" />

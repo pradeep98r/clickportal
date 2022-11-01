@@ -52,7 +52,7 @@ function BillCreation() {
   };
   // allcrops displaying in model popup when click on other crop
   const allCropData = () => {
-    getAllCrops(clientId, clientSecret).then((response) => {
+    getAllCrops().then((response) => {
       allCropResponseData(response.data.data);
     });
   };
