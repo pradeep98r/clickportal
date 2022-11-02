@@ -4,23 +4,39 @@ import "../smartboard/completeprofile.scss";
 import close from "../../assets/images/close.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import InputField from "../../components/inputField";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toastr from "toastr";
 import { completeMandiSetup, editMandiSetup } from "../../actions/loginService";
 import $ from "jquery";
 import { useSelector } from "react-redux";
+import { getAllMarkets } from "../../actions/loginService";
+import search_img from "../../assets/images/search.svg";
+import markets from "../../assets/images/markets_img.png"
+import { Fragment } from "react";
+
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
-    const mandiUserDetails = useSelector((state) => state.mandiInfo.isMandiDetails);
-  // console.log(mandiUserDetails)
-  // console.log(mandiEditStatus,mandiUserDetails);
-    // mandi name
+  const mandiUserDetails = useSelector(
+    (state) => state.mandiInfo.isMandiDetails
+  );
+  const [allMarketsData, setAllMarketsData] = useState([]);
+  useEffect(() => {
+    getAllMarkets().then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          setAllMarketsData(response.data.data);
+        }
+      },
+      (error) => {}
+    );
+  }, []);
+  // mandi name
   const [mandiNameField, setMandiNameField] = useState(
-    mandiEditStatus ? mandiUserDetails.businessName : ""
+    mandiEditStatus ? mandiData.businessName : ""
   );
   const [mandiNameError, setMandiNameError] = useState("");
   const handleMandiName = (e) => {
@@ -86,6 +102,7 @@ const CompleteProfile = (props) => {
   const [mobileNumber, setmobileNumber] = useState(
     mandiEditStatus ? mandiData.mobile : ""
   );
+  const [marketname, setMarketName]= useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
@@ -205,9 +222,9 @@ const CompleteProfile = (props) => {
     businessType: mandiTypeField,
     contactName: contactName,
     imageUrl: "string",
-    marketId: mandiEditStatus ? mandiData.marketId : 0,
+    marketId: mandiEditStatus ? mandiData.marketId : selectMarketId,
     mobile: mobileNumber,
-    otherMarket: "string",
+    otherMarket: marketname ? marketname:'',//"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
   };
@@ -218,7 +235,7 @@ const CompleteProfile = (props) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "update partner");
             toastr.success(response.data.status.message);
-            localStorage.setItem("submitStatus",true)
+            localStorage.setItem("submitStatus", true);
           }
         },
         (error) => {
@@ -245,9 +262,7 @@ const CompleteProfile = (props) => {
   };
   // address details
   const getPosition = () => {
-    console.log("hey");
     if (navigator.geolocation) {
-      console.log("heyr");
       navigator.geolocation.getCurrentPosition(showPosition, posError);
     } else {
       alert("Sorry, Geolocation is not supported by this browser.");
@@ -270,7 +285,6 @@ const CompleteProfile = (props) => {
     }
   };
   const showPosition = async (position) => {
-    console.log("hey after", position);
     let lat = position.coords.latitude; // You have obtained latitude coordinate!
     let long = position.coords.longitude; // You have obtained
     await getAddress(lat, long, "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A");
@@ -381,6 +395,73 @@ const CompleteProfile = (props) => {
     $input = $text;
     $("#city-input-wrapper").html($input);
   }
+  const [selectMarket, setSelectedOption] = useState("marke name");
+  const [selectMarketId, setSelectedMarketId] = useState(0);
+  const selectedValue = (e) => {
+    console.log(e.target.value);
+    setSelectedOption(e.target.value);
+    allMarketsData.map((item) => {
+      if (item.marketName == e.target.value) {
+        console.log(item.marketId,"id");
+        setSelectedMarketId(item.marketId)
+      }
+    });
+  };
+  const openMarketNamePopUpModal = () => {
+      $("#marketNamePopUpModal").modal("show");
+  };
+  const closePopup = () => {
+      $("#marketNamePopUpModal").modal("hide");
+  };
+
+  const openOtheModalPopUp=()=>{
+    $("#otherModalPopUp").modal("show");
+  }
+  const closeOtheModalPopUp=()=>{
+    $("#otherModalPopUp").modal("hide");
+  }
+  const handleMarketName=()=>{
+    openMarketNamePopUpModal();
+    console.log("Drop Down Cicked");
+  }
+  const [search, setSearch]= useState("");
+  const [marketName, setMarketname]=useState([]);
+  const searchMarketName=(searchValue)=>{
+    setSearch(searchValue);
+    if(search!==""){
+      const filteredNames=allMarketsData.filter(item=>{
+        return(
+          item.marketName.toLowerCase().includes(search.toLowerCase())
+        )
+      })
+      setMarketname(filteredNames);
+    }
+    else{
+      setMarketname(allMarketsData);
+    }
+  }
+
+  const handleOtherName=()=>{
+    openOtheModalPopUp();
+    setMarketName(marketname)
+  }
+  const handleMarketSelection=(name)=>{
+    if(name.toLowerCase().includes("other")){
+      //openOtheModalPopUp();
+      //setMarketName(marketname)
+      handleOtherName();
+      console.log("other");
+    }else{
+      setMarketName(name);
+      console.log(name,"mkName")
+      closePopup();
+    }
+  }
+  const handleOtherMarketName=e=>{
+    setMarketname(e.target.value);
+    closeOtheModalPopUp();
+    closePopup();
+  }
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
@@ -398,14 +479,167 @@ const CompleteProfile = (props) => {
         <form>
           <div className="row">
             <div className="col-lg-6">
-              <InputField
+              <label htmlFor="zip" className="input_field">
+                Market Name*
+              </label>
+              {/*<select*/}
+              <input
+                className="form-control"
+                //value={selectMarket}
+                placeholder="Select Market Name"
+                value={marketname}
+                //onChange={selectedValue}
+                onClick={handleMarketName}
+              />
+                {/*</div>{allMarketsData.map((market) => (
+                  <option value={market.marketName}>{market.marketName}</option>
+                ))}
+              </select>*/}
+              <div className="modal fade" id="marketNamePopUpModal">
+                <div className="modal-dialog modal-dialog-centered market_modal_dialog market_name_popup">
+                  <div className="modal-content" id="market-modal-content">
+                    <div className="modal-header date_modal_header market_modal_header">
+                      <h5 className="modal-title header2_text" id="mk-header">
+                        Select Market
+                      </h5>
+                      <img
+                          src={close}
+                          alt="image"
+                          className="close_icon"
+                          onClick={closePopup}
+                        />
+                    </div>
+                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                      <div className="col-lg-6" id="market-div">
+                        <div id="search-mk-field">
+                          <form class="d-flex">
+                            <input class="form-control me-2"
+                                id="searchbar-mk"
+                                type="text"
+                                value={search}
+                                placeholder="Search by Name / Short Code"
+                                onChange={(e) => {
+                                  searchMarketName(e.target.value);
+                                }}
+                                className="searchbar-input"
+                            />
+                          </form>
+                          <div className="searchicon">
+                            <img src={search_img} alt="search" />
+                          </div>
+                        </div>
+                        <div className="market-names" id="scroll_style">
+                          {allMarketsData.map((item,index)=>{
+                            if(index===allMarketsData.length-1)
+                            return(
+                              <div id="mk-other-name" onClick={(e)=>{handleOtherName(e)}}>
+                                <div class="d-flex" id="ot-m-img">
+                                <img src={markets} alt="markets" />
+                                <p id="mk-other-Name">{item.marketName}</p>
+                              </div>
+                              </div>
+                            )
+                          })}
+                          {search.length>1 ?(
+                            marketName.map(item=>{
+                              return(
+                              <div id="mk-name" onClick={(name)=>{handleMarketSelection(item.marketName)}}>
+                                <div class="d-flex">
+                                <img src={markets} alt="markets" />
+                                <p key={item.id} id="mk-Name">{item.marketName}</p>
+                                </div>
+                                <span id="hr-lines"></span>
+                              </div>
+                              )
+                            })
+                          ):(
+                            allMarketsData.map(item=>{ 
+                            return(
+                              <Fragment>
+                              <div id="mk-name" onClick={(name)=>{handleMarketSelection(item.marketName)}}>
+                                <div class="d-flex">
+                                <img src={markets} alt="markets" />
+                                <p key={item.id} id="mk-Name">{item.marketName}</p>
+                                </div>
+                                
+                                <span id="hr-lines"></span>
+                              </div>
+                              </Fragment>
+                            )
+                          }))
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal fade" id="otherModalPopUp">
+                <div className="modal-dialog modal-dialog-centered date_modal_dialog market_name_popup">
+                  <div className="modal-content" id="other-modal-content">
+                    <div className="modal-header date_modal_header market_modal_header">
+                      <h5 className="modal-title header2_text" id="mk-header">
+                        Select Market
+                      </h5>
+                      <img
+                          src={close}
+                          alt="image"
+                          className="close_icon"
+                          onClick={closeOtheModalPopUp}
+                        />
+                    </div>
+                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                      <div className="col-lg-6" id="market-div">
+                        <div id="search-mk-field">
+                          <form class="d-flex">
+                            <input class="form-control me-2"
+                                id="searchbar-mk"
+                                type="text"
+                                value={"OTHER"}
+                                onChange={(e) => {
+                                  searchMarketName(e.target.value);
+                                }}
+                                className="searchbar-input"
+                            />
+                          </form>
+                        </div>
+                        <div id="search-mk-field">
+                          <InputField
+                              type="text"
+                              //value={mandiTypeField}
+                              label="Market Name"
+                              name="marketName"
+                              id="marketName"
+                              onChange={(e) => {
+                                setMarketName(e.target.value);
+                              }}
+                            />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer p-0">
+                      <button
+                        type="button"
+                        className="primary_btn cont_btn w-100 m-0"
+                        onClick={(e) =>{handleOtherMarketName(e)}
+                        }
+                      >
+                        Continue
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* <InputField
                 type="text"
                 value=""
                 label="Market Name*"
                 name="marketName"
                 id="marketName"
                 onChange={(e) => {}}
-              />
+              /> */}
               <InputField
                 type="text"
                 value={mandiTypeField}

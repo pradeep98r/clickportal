@@ -21,4 +21,7 @@ export function completeMandiSetup(obj, clickId){
 export function editMandiSetup(obj, clickId){
     return axiosCommon.put(`/account/business/onboard/clickId/${clickId}`, obj);
 }
+export function getAllMarkets(){
+    return axiosCommon.get('/common/markets');
+}
 export default {doLogin, validateOTP, langSelection, createProfile}
