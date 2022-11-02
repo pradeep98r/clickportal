@@ -22,7 +22,8 @@ function Calender() {
   });
   const [startDate, setStartDate] = useState(new Date());
   // const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  <div className="calender_popup">
+  return(
+    <div className="calender_popup">
     <div className="row">
       <div className="dates_div"></div>
       <div>
@@ -70,6 +71,7 @@ function Calender() {
         </h2>
       </article>
     </div>
-  </div>;
+  </div>
+  )
 }
 export default Calender;

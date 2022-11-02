@@ -253,9 +253,10 @@ const BuyerLedger = () => {
     }
   }
   return (
-    <Fragment>
+    <Fragment class="">
+      <div className="main_div_padding">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-4 p-0">
         <div id="search-field">
             <form class="d-flex">
               <input class="form-control me-2" id="searchbar" type="search" placeholder='Search by Name / Short Code'
@@ -385,7 +386,7 @@ const BuyerLedger = () => {
               </tbody>
             </table>
           </div>
-          <div className="outstanding-pay">
+          <div className="outstanding-pay d-flex align-items-center justify-content-between">
               <p className="pat-tag">Outstanding Recievables:</p>
               <p className="values-tag">
                 &#8377;
@@ -1178,6 +1179,8 @@ const BuyerLedger = () => {
           </div>
         </div>
       </div>
+      </div>
+      
     </Fragment>
   );
 };

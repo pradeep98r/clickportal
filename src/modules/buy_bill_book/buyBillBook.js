@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
+import DatePickerModel from "../smartboard/datePicker";
 // import { WeeklyCalendar } from "react-week-picker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
@@ -62,7 +63,8 @@ function BuyBillBook() {
   };
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-
+  const [showDatepickerModal, setShowDatepickerModal] = useState(false);
+  const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   const onChangeDate = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -71,6 +73,10 @@ function BuyBillBook() {
   const handleWeekPick = (startDate, endDate) => {
     console.log(`${startDate} to ${endDate}`);
   };
+  const onclickDate = ()=>{
+    setShowDatepickerModal1(true);
+    setShowDatepickerModal(true);
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -133,7 +139,7 @@ function BuyBillBook() {
                       </ul>
                     </div>
                     <div className="d-flex">
-                      <div onClick={DateModal}>date</div>
+                      <div onClick={onclickDate}>date</div>
                       <div className="d-flex me-3" role="search">
                         <input
                           className="form-control search"
@@ -385,13 +391,17 @@ function BuyBillBook() {
           )}
         </div>
       </div>
+      {
+        showDatepickerModal1 ? <DatePickerModel
+        show={showDatepickerModal}
+        close={() => setShowDatepickerModal(false)}
+      /> : <p></p>
+      }
+      
+
       <div
         className="modal fade"
         id="datePopupmodal"
-        // data-bs-backdrop="static"
-        // data-bs-keyboard="false"
-        // aria-labelledby="staticBackdropLabel"
-        // aria-hidden="true"
       >
         <div className="modal-dialog modal-dialog-centered date_modal_dialog">
           <div className="modal-content">

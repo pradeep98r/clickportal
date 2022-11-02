@@ -7,6 +7,7 @@
     //border: 1px solid #E4E4E4;
     height: calc(100vh - 210px);
     overflow-y: auto;
+    border: 1px solid #E4E4E4;
 }
 .table td, .table th {
     /* padding: .75rem; */
@@ -15,28 +16,27 @@
     //border-top: 1px solid #dee2e6;
 }
 
-.table-scroll th:nth-child(1){
-    padding-left:5px;
-}
-.table-scroll td:nth-child(1){
-    padding-left:5px;
-}
-.table-scroll th:nth-child(2){
-    padding-left:5px;
-}
-.table-scroll td:nth-child(2){
-    padding-left:5px;
-}
-.table-scroll th:nth-child(3){
-    padding-left:10px;
-}
-.table-scroll td:nth-child(3){
-    padding-right:10px;
-}
+// .table-scroll th:nth-child(1){
+//     padding-left:5px;
+// }
+// .table-scroll td:nth-child(1){
+//     padding-left:5px;
+// }
+// .table-scroll th:nth-child(2){
+//     padding-left:5px;
+// }
+// .table-scroll td:nth-child(2){
+//     padding-left:5px;
+// }
+// .table-scroll th:nth-child(3){
+//     padding-left:10px;
+// }
+// .table-scroll td:nth-child(3){
+//     padding-right:10px;
+// }
 
 #search-field{
-    padding-top: 15px;
-    padding-bottom: 10px;
+    // padding-bottom: 10px;
     
 }
 .ledger-table{
@@ -226,18 +226,15 @@ input[type=radio]:checked+label {
 }
 .tabRowSelected{
     background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 12px;
-    line-height: 17px;
     color: white;
     cursor: pointer;
-    .coloring{
+    .coloring, .address-tag, .mobile-tag, .namedtl-tag{
         color: white;
     }
-    .namedtl-tag{
-        color: white;
+    td{
+        padding: 10px;
     }
 }
 #horizontal-line{
@@ -292,27 +289,34 @@ input[type=radio]:checked+label {
 }
 .ledger-table{
     width: 100%;
-    border: 1px solid #E4E4E4;
+    // border: 1px solid #E4E4E4;
 }
 .tr-tags{
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
     font-size: 12px;
-    line-height: 17px;
+    // line-height: 17px;
     color: #121212;
     border-bottom: 1px solid #E4E4E4;
+    td{
+    padding: 10px;
+    }
 }
 .thead-tag{
     width: 100%;
-    height: 30px;
+    // height: 30px;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
-    line-height: 17px;
+    // line-height: 17px;
     color: #121212;
     background: #D7F3DD;
+    padding: 10px;
+    th{
+        padding: 10px;
+    }
 }
 #singles-img{
     width: 50px;
@@ -339,42 +343,29 @@ input[type=radio]:checked+label {
     cursor: pointer;
 }
 .namedtl-tag{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 13px;
-    line-height: 18px;
     color: #121212;
 }
 .address-tag{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 12px;
-    line-height: 13px;
+    color: #121212;
 }
 .mobile-tag{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 12px;
-    line-height: 13px;
+    color: #4D4D4D;
 }
 .addres-tag{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 11px;
-    line-height: 13px;
     color: #4D4D4D;
 }
 .mobilee-tag{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 11px;
-    line-height: 13px;
-    color: #1C1C1C;
+    color: #4D4D4D;
 }
 .outstanding-pay{
     //position: fixed;
@@ -383,9 +374,10 @@ input[type=radio]:checked+label {
     //float: left;
     border: 1px solid #E4E4E4;
     background:#FFFFFF;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
+    border-top: 0px;
+    border-radius: 0px 0px 10px 10px;
     //border-radius: 10px;
+    padding: 10px;
 }
 #card-details{
     flex: 1 1 auto;
@@ -394,24 +386,13 @@ input[type=radio]:checked+label {
 }
 .pat-tag{
     font-size: 12px;
-    font-family: sans-serif;
-    margin-top: 5px;
-    margin-left: 10px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 13px;
-    line-height: 17px;
 }
 .values-tag{
-    margin-top: -15px;
-    margin-left: 200px;
-    position: absolute;
-    font-family: 'Manrope';
-    font-style: normal;
+   
     font-weight: 600;
     font-size: 13px;
-    line-height: 17px;
     text-align: left;
     color: #121212;
     color: #16A12C;
@@ -622,13 +603,13 @@ a:hover{
     background: #E5E5E5;
 }
 
-thead{
-    border-radius: 10px 10px 0px 0px;
-    background: #D7F3DD;
-    border: 1px solid #E4E4E4;
-    box-sizing: border-box;
-    position: sticky;
-}
+// thead{
+//     border-radius: 10px 10px 0px 0px;
+//     background: #D7F3DD;
+//     border: 1px solid #E4E4E4;
+//     box-sizing: border-box;
+//     position: sticky;
+// }
 
 .names-tag{
     position: absolute;
@@ -654,11 +635,11 @@ thead{
 }
 
 #searchbar{
-    width:350px;
+    // width:350px;
 }
 .d-flex{
-    padding-top: 5px;
-    padding-bottom: 5px;
+    // padding-top: 5px;
+    // padding-bottom: 5px;
 }
 .date-byledgers{
     position: absolute;
@@ -780,8 +761,8 @@ thead{
     margin-top: 32px;
 }
 .react-datepicker{
-    margin-left: -50px;
-    margin-top: -70px;
+    // margin-left: -50px;
+    // margin-top: -70px;
 }
 .react-datepicker__input-container input{
     border: none;
