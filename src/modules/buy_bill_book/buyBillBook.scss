@@ -615,10 +615,13 @@ border-bottom-color: #fff;
 .Toastify__toast-theme--dark {
   background-color: red;
 }
-
+.samrtboard_calender .react-datepicker__navigation {
+     top: 10px; 
+}
 article {
   display: none;
-  height: 380px;
+  height: 350px;
+  width: 100%;
 }
 article.on {
   display: block;
@@ -831,6 +834,7 @@ article.on {
     color: #4D4D4D;
     // margin-right: 25px;
     margin-left: 5px;
+    margin-bottom: 0px;
   }
   display: flex;
   padding: 20px;
