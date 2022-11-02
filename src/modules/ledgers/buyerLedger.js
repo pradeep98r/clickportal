@@ -27,8 +27,8 @@ import moment from "moment";
 const BuyerLedger = () => {
   const [search, setSearch] = useState("");
   const [openTabs, setOpenTabs] = useState(false);
-  const [ledger, setLedgeres] = useState([{}]);
-  const [data, setData] = useState({}, ledger);
+  const [ledger, setLedgeres] = useState([]);
+  const [data, setData] = useState({});
   const [error, setError] = useState();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -234,27 +234,34 @@ const BuyerLedger = () => {
     $("#datePopupmodal").modal("hide");
     setIsOpen(false);
   };
-  partyId = JSON.parse(localStorage.getItem("partyId"));
+  const [ledgersData, setLedgersData]= useState([]);
+  //partyId = JSON.parse(localStorage.getItem("partyId"));
+  const searchInput=(searchValue)=>{
+    setSearch(searchValue);
+    if(search!==""){
+      console.log(search);
+      const filterdNames=ledger.filter(item=>{
+        return(
+          item.partyName.toLowerCase().includes(search.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(search.toLowerCase())
+        )
+      })
+      setLedgersData(filterdNames);
+      console.log(filterdNames,"filteredNames");
+    }else{
+      setLedgersData(ledger);
+    }
+  }
   return (
     <Fragment>
       <div class="row">
         <div class="col-lg-4">
-          <div id="search-field">
-              <form class="d-flex">
-                <input class="form-control me-2"
-                  id="searchbar"
-                  type="text"
-                  value={search}
-                  placeholder="Search by Name / Short Code"
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                  }}
-                  className="searchbar-input"
-                />
-              </form>
-              <div className="searchicon">
-                <img src={search_img} alt="search" />
-            </div>
+        <div id="search-field">
+            <form class="d-flex">
+              <input class="form-control me-2" id="searchbar" type="search" placeholder='Search by Name / Short Code'
+                onChange={(e) => { searchInput(e.target.value) }} />
+            </form>
+            <div className='searchicon'><img src={search_img} alt="search" /></div>
           </div>
           <div className="table-scroll" id="scroll_style">
             <table class="table table-fixed" className="ledger-table">
@@ -267,19 +274,8 @@ const BuyerLedger = () => {
                 </tr>
               </thead>
               <tbody>
-                {ledger.length > 0 ? (
-                  ledger
-                    .filter((item) => {
-                      if (search === " ") return <p>Not Found</p>;
-                      else if (item.partyName === search) {
-                        console.log(item.partyName);
-                        console.log(search);
-                        return <p>item.partyName</p>;
-                      } else {
-                        return <p>Not Found</p>;
-                      }
-                    })
-                    .map((item, index) => {
+                {search.length > 1 ? (
+                   ledgersData.map((item, index) => {
                       return (
                         <Fragment>
                           <tr
@@ -332,11 +328,60 @@ const BuyerLedger = () => {
                       );
                     })
                 ) : (
-                  <div>
-                    <img src={no_data} />
-                    <p>No Data Available</p>
-                  </div>
-                )}
+                  ledger.map((item, index) => {
+                    return (
+                      <Fragment>
+                        <tr
+                          onClick={(id, indexs) => {
+                            particularLedger(item.partyId, index);
+                          }}
+                          className={
+                            isActive === index ? "tabRowSelected" : "tr-tags"
+                          }
+                        >
+                          <td scope="row">{index + 1}</td>
+                          <td key={item.date}>
+                            {moment(item.date).format("DD-MMM-YY")}
+                          </td>
+                          <td key={item.partyName}>
+                            <div className="d-flex">
+                              <div>
+                                {item.profilePic ? (
+                                  <img className="profile-img" src={item.profilePic} alt="pref-img" />
+                                ) : (
+                                  <img
+                                    className="profile-img"
+                                    src={single_bill}
+                                    alt="img"
+                                  />
+                                )}
+                                </div>
+                                <div>
+                                  <p className="namedtl-tag">
+                                    {item.partyName}
+                                    <br />
+                                  </p>
+                                  <p className="address-tag">
+                                    {item.partyAddress ? item.partyAddress : ""}
+                                  </p>
+                                  <p className="mobile-tag">{item.mobile}</p>
+                                </div>
+                            </div>
+                          </td>
+                          <td key={item.tobePaidRcvd}>
+                            <span className="coloring">
+                              &#8377;
+                              {item.tobePaidRcvd
+                                ? item.tobePaidRcvd.toFixed(2)
+                                : 0}
+                            </span>
+                          </td>
+                        </tr>
+                      </Fragment>
+                    );
+                  })
+                )
+                }
               </tbody>
             </table>
           </div>
@@ -374,11 +419,11 @@ const BuyerLedger = () => {
                   Add Record
                 </button>
                 
-                  <div className="add-pay-btn">
+                  <div className="add-pays-btn">
                       <img src={add} id="addrecord-img" />
                   </div>
               </div>
-            <div className="bloc-tab">
+            <div className="blockers-tab">
               <button
                 className={toggleAC === "all" ? "tabers active-tab" : "tabers"}
                 onClick={() => toggleAllCustom("all")}
@@ -393,7 +438,7 @@ const BuyerLedger = () => {
               >
                 Custom
               </button>
-              <span id="horizontal-line-tag"></span>
+              <span id="horizontal-lines-tag"></span>
             </div>
             
             <div
@@ -539,32 +584,34 @@ const BuyerLedger = () => {
             <div class="card" className="details-tag">
               <div class="card-body" id="card-details">
                 <div className="row">
+                {isActive!==-1 &&
                   <div className="col-lg-3" id="verticalLines">
                     {ledger.map((item, index) => {
+                      partyId=JSON.parse(localStorage.getItem('partyId'));
                       if (item.partyId == partyId) {
                         return (
                           <Fragment>
                               <div
-                                className="profile-details"
-                                key={item.partyName}
+                                className="profilers-details"
+                                key={index}
                               >
                                 <div class="d-flex">
-                                <div>
-                                  {item.profilePic ? (
-                                  <img className="singles-img" src={item.profilePic} alt="buy-img" />
-                                    ) : (
-                                    <img
-                                      id="singles-img"
-                                      src={single_bill}
-                                      alt="img"
-                                    />
-                                  )}
-                                </div>
                                   <div>
+                                    {item.profilePic ? (
+                                    <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                      ) : (
+                                      <img
+                                        id="singles-img"
+                                        src={single_bill}
+                                        alt="img"
+                                      />
+                                    )}
+                                  </div>
+                                  <div id="ptr-dtls">
                                     <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
-                                    <p className="mobilee-tag">{item.mobile}</p>
+                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
                                     <p className="addres-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
@@ -576,8 +623,9 @@ const BuyerLedger = () => {
                       } else {
                         <p>No Data Found</p>;
                       }
-                    })}
+                    })}  
                   </div>
+                  }
                   <div className="col-lg-3" id="verticalLines">
                     <p class="card-text" className="paid">
                       Total Business
@@ -617,8 +665,8 @@ const BuyerLedger = () => {
                     
                     className={
                       toggleState === "ledgersummary"
-                        ? "tabs active-tabs"
-                        : "tabs"
+                        ? "tabsl active-tabs"
+                        : "tabsl"
                     }
                     onClick={() => toggleTab("ledgersummary")}
                   >
@@ -628,8 +676,8 @@ const BuyerLedger = () => {
                     
                     className={
                       toggleState === "detailedledger"
-                        ? "tabs active-tabs"
-                        : "tabs"
+                        ? "tabsl active-tabs"
+                        : "tabsl"
                     }
                     onClick={() => toggleTab("detailedledger")}
                   >
@@ -670,7 +718,7 @@ const BuyerLedger = () => {
                     {ledgerSummary.length > 0 ? (
                       ledgerSummary.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" kery={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -730,7 +778,7 @@ const BuyerLedger = () => {
                     {details.length > 0 ? (
                       details.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -799,7 +847,7 @@ const BuyerLedger = () => {
                     {ledgerSummaryByDate.length > 0 ? (
                       ledgerSummaryByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -859,7 +907,7 @@ const BuyerLedger = () => {
                     {detailsByDate.length > 0 ? (
                       detailsByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags">
+                          <tr className="tr-tags" key={item.partyId}>
                             <th scope="row">{index + 1}</th>
                             <td>
                               <p style={{ color: "#0066FF" }}>
@@ -1028,7 +1076,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "CASH"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio1">
+                          <label class="form-check-label" htmlFor="inlineRadio1">
                             CASH
                           </label>
                         </div>
@@ -1043,7 +1091,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "UPI"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio2">
+                          <label class="form-check-label" htmlFor="inlineRadio2">
                             UPI
                           </label>
                         </div>
@@ -1058,7 +1106,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "NEFT"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio3">
+                          <label class="form-check-label" htmlFor="inlineRadio3">
                             NEFT
                           </label>
                         </div>
@@ -1073,7 +1121,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "RTGS"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio4">
+                          <label class="form-check-label" htmlFor="inlineRadio4">
                             RTGS
                           </label>
                         </div>
@@ -1088,7 +1136,7 @@ const BuyerLedger = () => {
                             checked={paymentMode === "IMPS"}
                             required
                           />
-                          <label class="form-check-label" for="inlineRadio5">
+                          <label class="form-check-label" htmlFor="inlineRadio5">
                             IMPS
                           </label>
                         </div>

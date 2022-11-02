@@ -16,7 +16,7 @@ import postbuybillApi from "../../actions/preferencesService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectSearch from "./selectSearch";
-import Select from "react-select";
+// import Select from "react-select";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import DatePicker from "react-datepicker";
@@ -223,7 +223,7 @@ function BillCreation() {
             <div className="col-lg-7 col_left">
               <div className="row row_margin_botton">
                 <div className="col-lg-5 column">
-                  {partnerData.length > 0 ? (
+                  {/* {partnerData.length > 0 ? (
                     <div>
                       <Select
                         name="partner"
@@ -248,7 +248,7 @@ function BillCreation() {
                     </div>
                   ) : (
                     <Select placeholder="Select Farmer" />
-                  )}
+                  )} */}
                 </div>
                 <div className="col-lg-3 col_right">
                   <label

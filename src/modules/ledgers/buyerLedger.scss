@@ -4,7 +4,7 @@
     position: relative;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    border: 1px solid #E4E4E4;
+    //border: 1px solid #E4E4E4;
     height: calc(100vh - 210px);
     overflow-y: auto;
 }
@@ -79,41 +79,34 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 290px);
+    height: calc(100vh - 100px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 0px 0px;
 }
 .detailedLedger{
-    height: calc(100vh - 290px);
+    height: calc(100vh - 100px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 0px 0px;
 }
 #ledger-summary{
-    //height: 330px;
-    //width: 617px;
-    //left: 140px;
-    //top: 200px;//151
     border-radius: 10px;
     box-sizing: border-box;
-    //border-bottom: 20px;
-    //position: absolute;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    border: 1px solid #E4E4E4;
-    //overflow-y: scroll;
 }
 #ledger-summary th:nth-child(1){
     padding-right: 10px;
     padding-left: 10px;
     padding-top: 10px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #ledger-summary th:nth-child(2){
     padding-right: 20px;
     padding-left: 10px;
-    padding-bottom: 3px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #ledger-summary td:nth-child(2){
@@ -126,6 +119,7 @@ input[type=radio]:checked+label {
 #ledger-summary th:nth-child(3){
     padding-right: 50px;
     padding-left: 10px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #ledger-summary td:nth-child(3){
@@ -137,6 +131,7 @@ input[type=radio]:checked+label {
 #ledger-summary th:nth-child(4){
     padding-right: 20px;
     padding-left: 10px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #ledger-summary td:nth-child(4){
@@ -147,6 +142,7 @@ input[type=radio]:checked+label {
 }
 #ledger-summary th:nth-child(5){
     padding-left: 10px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #ledger-summary td:nth-child(5){
@@ -159,17 +155,19 @@ input[type=radio]:checked+label {
     box-sizing: border-box;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    border: 1px solid #E4E4E4;
+    //border: 1px solid #E4E4E4;
 }
 #detailed-ledger th:nth-child(1){
     padding-right: 2px;
     padding-left: 5px;
     padding-top: 10px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #detailed-ledger th:nth-child(2){
     padding-left: 5px;
     border-right: 1px solid #E4E4E4;
+    padding-bottom: 5px;
 }
 #detailed-ledger td:nth-child(2){
     padding-left: 5px;
@@ -180,6 +178,7 @@ input[type=radio]:checked+label {
 #detailed-ledger th:nth-child(3){
     padding-right: 5px;
     padding-left: 5px;
+    padding-bottom: 3px;
     border-right: 1px solid #E4E4E4;
 }
 #detailed-ledger td:nth-child(3){
@@ -192,6 +191,7 @@ input[type=radio]:checked+label {
 #detailed-ledger th:nth-child(4){
     padding-right: 30px;
     padding-left: 5px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #detailed-ledger td:nth-child(4){
@@ -203,6 +203,7 @@ input[type=radio]:checked+label {
 #detailed-ledger th:nth-child(5){
     padding-right: 5px;
     padding-left: 5px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #detailed-ledger td:nth-child(5){
@@ -214,6 +215,7 @@ input[type=radio]:checked+label {
 #detailed-ledger th:nth-child(6){
     padding-right: 5px;
     padding-left: 5px;
+    padding-bottom: 5px;
     border-right: 1px solid #E4E4E4;
 }
 #detailed-ledger td:nth-child(6){
@@ -246,7 +248,7 @@ input[type=radio]:checked+label {
     //height: 10px;
     width: 100%;
 }
-#horizontal-line-tag{
+#horizontal-lines-tag{
     position: absolute;
     //position: relative;
     border-bottom:1px solid#E4E4E4;
@@ -260,7 +262,7 @@ input[type=radio]:checked+label {
     float: right;
     display: block;
 }
-.add-pay-btn{
+.add-pays-btn{
     position: absolute;
     background: #16A12C;
     top: 14px;
@@ -362,7 +364,7 @@ input[type=radio]:checked+label {
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 13px;
     color: #4D4D4D;
 }
@@ -370,15 +372,15 @@ input[type=radio]:checked+label {
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 13px;
     color: #1C1C1C;
 }
 .outstanding-pay{
-    position: fixed;
+    //position: fixed;
     bottom:0px;
-    width: 100%;
-    float: left;
+    //width: 100%;
+    //float: left;
     border: 1px solid #E4E4E4;
     background:#FFFFFF;
     border-bottom-left-radius: 10px;
@@ -422,18 +424,18 @@ input[type="text"]::placeholder {
     line-height: 17px;
     color: #939393;
 } 
-.searchicon{
+/*.searchicon{
     color: #16A02C;
 }
 #searchbar{
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
-}
+}*/
 .bloc-tabs {
     display: flex;
 }
-.tabs {
+.tabsl {
     position: relative;
     padding-right: 15px;
     padding-left: 15px;
@@ -467,7 +469,7 @@ input[type="text"]::placeholder {
     letter-spacing: 0.02em;
     color: #4D4D4D;
 }
-.bloc-tab {
+.blockers-tab {
     display: flex;
     // position: absolute;
     margin-bottom: 30px;
@@ -475,7 +477,8 @@ input[type="text"]::placeholder {
 .tabers{
     padding-top: 20px;
     text-align: center;
-    padding-right: 20px;
+    padding-right: 25px;
+    padding-left: 25px;
     cursor: pointer;
     outline: none;
     font-family: 'Manrope';
@@ -966,9 +969,13 @@ thead{
     line-height: 17px;
     color: #1C1C1C;
 }
-.profile-details{
+#ptr-dtls{
+    white-space: nowrap;
+}
+.profilers-details{
     position: relative;
-    left:-20px
+    left:-20px;
+    white-space: nowrap;
 }
 .address{
     // position: absolute;

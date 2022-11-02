@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "../buy_bill_book/buyBillBook.scss";
-import Select from "react-select";
+// import Select from "react-select";
 import click_logo from "../../assets/images/click_logo_green.svg";
 import click_logo_y from "../../assets/images/click_logo_yellow.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
@@ -51,7 +51,7 @@ class SelectSearch extends Component {
                 </button>
               }
             >
-              <Select
+              {/* <Select
                 autoFocus
                 backspaceRemovesValue={false}
                 components={{
@@ -73,7 +73,7 @@ class SelectSearch extends Component {
                     <span>{e.value}</span>
                   </div>
                 )}
-              />
+              /> */}
             </Dropdown>
             <div>
 
