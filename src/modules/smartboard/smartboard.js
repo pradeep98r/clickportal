@@ -262,6 +262,7 @@ const SmartBoard = () => {
     }
   };
   const [showModal, setShowModal] = useState(false);
+  const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   console.log(loginData);
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
@@ -948,6 +949,8 @@ const SmartBoard = () => {
           )}
         </div>
       </div>
+      <DatePickerModel   show={showDatepickerModal}
+                    close={() => setShowDatepickerModal(false)}/>
       <div className="modal fade" id="datePopupmodalPopup">
         <div className="modal-dialog modal-dialog-centered date_modal_dialog samrtboard_calender">
           <div className="modal-content">
