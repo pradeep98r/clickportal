@@ -8,9 +8,88 @@
         visibility: hidden;
     }
 }
+#market-modal-content{
+    position: absolute;
+    margin-top: -100px;
+    margin-left: 0px;
+}
+#other-modal-content{
+    position: absolute;
+    margin-top: -5px;
+    margin-left: 0px;
+    max-width: 750px;
+}
+.searchicon{
+    padding-top: 5px;
+}
 .note_text{
     font-size: 12px;
 }
 .custom-select{
     padding: 18px;
+}
+#searchbar-mk{
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#search-mk-field{
+    padding-bottom: 10px;
+}
+
+.market-names{
+    width: 100%;
+    margin: auto;
+    overflow: auto;
+    max-height: calc(100vh - 290px);
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 4px;
+}
+#market-div{
+    margin: auto;
+}
+#mk-name{
+    padding:10px 10px;
+    width: 100%;
+    position: relative;
+    #mk-Name{
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 16px;
+        color: #1C1C1C;
+        cursor: pointer;
+        padding: 10px 15px;
+    }
+}
+#mk-header{
+   padding-left: 200px;
+}
+#hr-lines{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E4E4E4;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+}
+#mk-other-name{
+    border:1px solid #E4E4E4;
+}
+#ot-m-img{
+    padding-left: 10px;
+}
+#mk-other-Name{
+    padding: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+    color: #1C1C1C;
+    cursor: pointer;   
 }
