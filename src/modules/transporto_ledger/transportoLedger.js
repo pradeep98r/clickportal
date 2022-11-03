@@ -217,21 +217,11 @@ const TransportoLedger = () => {
       setLedgersData(transporter);
     }
   }
-  //get Inventory
-  /*const getInventoryRecord=()=>{
-    getInventory(clickId,transId).then(response=>{
-      console.log(response.data.data);
-      setGetInventory(response.data.data)
-    })
-    .catch(error=>{
-      console.log(error);
-    })
-  }*/
-  //transId=JSON.parse(localStorage.getItem('transId'));
   return (
     <Fragment>
+      <div className="main_div_padding">
       <div className="row">
-        <div className="col-lg-4">
+        <div className="col-lg-4  p-0">
           <div id="search-field">
             <form class="d-flex">
               <input class="form-control me-2" id="searchbar" type="search" placeholder='Search by Name / Short Code'
@@ -241,12 +231,12 @@ const TransportoLedger = () => {
           </div>
           <div className='table-scroll' id="scroll_style">
             <table class="table table-fixed" className="ledger-table">
-              <thead className="thead-tag">
+              <thead className="theadr-tag">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Date</th>
                   <th scope="col">Transporter Name</th>
-                  <th scope="col">To Be Paid</th>
+                  <th scope="col">To Be Paid(&#8377;)</th>
                 </tr>
               </thead>
               <tbody>
@@ -284,7 +274,7 @@ const TransportoLedger = () => {
                                   </div>
                               </div>
                               </td>
-                              <td key={item.tobePaidRcvd}><p className='paid-coloring'>&#8377;
+                              <td key={item.tobePaidRcvd}><p className='paid-coloring'>
                                 {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</p></td>
                             </tr>
                           </Fragment>
@@ -301,7 +291,7 @@ const TransportoLedger = () => {
                               <td key={item.date}>{moment(item.date).format("DD-MMM-YY")}</td>
                               <td key={item.partyName}>
                               <div className="d-flex" id="trans-details">
-                                <div>
+                                <div id="c-img">
                                   {item.profilePic ? (
                                     <img className="profile-img" src={item.profilePic} alt="pref-img" />
                                   ) : (
@@ -316,14 +306,16 @@ const TransportoLedger = () => {
                                     <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
+                                    <p className="mobilee-tag">{!item.trader?"Transporter":"Trader"} - {item.partyId}&nbsp;</p>
+                                    <p className="mobilee-tag">{item.mobile}</p>
                                     <p className="address-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
-                                    <p className="mobile-tag">{item.mobile}</p>
+                                    
                                   </div>
                               </div>
                               </td>
-                              <td key={item.tobePaidRcvd}><p className='paid-coloring'>&#8377;
+                              <td key={item.tobePaidRcvd}><p className='paid-coloring'>
                                 {item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2) : 0}</p></td>
                             </tr>
                           </Fragment>
@@ -335,18 +327,19 @@ const TransportoLedger = () => {
               </tbody>
             </table>
           </div>
-          <div className="outstanding-pay">
-            <div className="d-flex">
-              <p className="p-tag">Outstanding Paybles:</p>
-              <p className="value-tag">&#8377;{data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}</p>
-            </div>
+          <div className="outstanding-pay d-flex align-items-center justify-content-between">
+              <p className="pat-tag">Outstanding Paybles:</p>
+              <p className="values-tag">
+                &#8377;
+                {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
+              </p>
           </div>
         </div>
         <div class="col-lg-8"> 
           <div className="container-fluid px-0" id="tabsEvents" style={{ display: openTabs ? 'block' : 'none' }}>
             {isActive!==-1 &&
-            <div class="card" className='transport-details'>
-              <div class="card-body">
+            <div class="card" className='details-tag'>
+              <div class="card-body" id="card-details">
                 <div className="row">
                   <div className="col-lg-3" id="verticalLines">
                     {
@@ -375,7 +368,7 @@ const TransportoLedger = () => {
                                         <p className="namedtl-tag">
                                           {item.partyName}
                                         </p>
-                                        <p className="mobilee-tag">{!item.trader?"Trans":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                        <p className="mobilee-tag">{!item.trader?"Transporter":"Trader"} - {item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
                                         <p className="addres-tag">
                                           {item.partyAddress ? item.partyAddress : ""}
                                         </p>
@@ -403,29 +396,31 @@ const TransportoLedger = () => {
                     <p className='out-standing'>Outstanding Paybles<p className='coloring'>
                     &#8377;{payLedger.outStdRcvPayble ? payLedger.outStdRcvPayble.toFixed(2): 0}</p></p>
                   </div>
-                  <div className="bloc-tabs">
-                    <button
-                      className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
-                      onClick={() => toggleTab('paymentledger')}
-                    >
-                      Payment Ledger
-                    </button>
-                    <button
-                      className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
-                      onClick={() => toggleTab('inventoryledger')}
-                    >
-                      Inventory Ledger
-                    </button>
-                  </div>
-                </div>
-                <div className="d-flex recordbtn-style">
-                  <button className="add-record-btn" onClick={() =>
-                    {toggleState === 'paymentledger'? setIsOpen(!open)
-                    : setOpenInventory(!openInventory)}}  data-toggle="modal" data-target="#myModal">
-                    <div className="add-pay-btn"><img src={add} className='addrecord-img'/></div> Add Record</button>
                 </div>
               </div>
-              <span id="horizontal-line-tag"></span>
+              <span id="horizontal-line-card"></span>
+              <div className="d-flex">
+                <div className="bloc-tabs">
+                      <button
+                        className={toggleState === 'paymentledger' ? "tabs active-tabs" : "tabs"}
+                        onClick={() => toggleTab('paymentledger')}
+                      >
+                        Payment Ledger
+                      </button>
+                      <button
+                        className={toggleState === 'inventoryledger' ? "tabs active-tabs" : "tabs"}
+                        onClick={() => toggleTab('inventoryledger')}
+                      >
+                        Inventory Ledger
+                      </button>
+                </div>
+                <div className="d-flex recordbtns-style">
+                    <button className="add-record-btn" onClick={() =>
+                      {toggleState === 'paymentledger'? setIsOpen(!open)
+                      : setOpenInventory(!openInventory)}}  data-toggle="modal" data-target="#myModal">
+                      <div className="add-pay-btn"><img src={add} className='addrecord-img'/></div> Add Record</button>
+                </div>
+              </div>
             </div>
             }
             {toggleState==='paymentledger' &&
@@ -468,11 +463,11 @@ const TransportoLedger = () => {
                                                   />
                                                 )}
                                               </div>
-                                                <div>
+                                                <div id="trans-dtl">
                                                   <p className="namedtl-tag">
                                                     {item.partyName}
                                                   </p>
-                                                  <p className="mobilee-tag">{!item.trader?"Trans":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                                  <p className="mobilee-tag">{!item.trader?"Trans":"Trader"} - {item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
                                                   <p className="addres-tag">
                                                     {item.partyAddress ? item.partyAddress : ""}
                                                   </p>
@@ -578,30 +573,45 @@ const TransportoLedger = () => {
               <div className='transporterSummary' id="scroll_style">      
               <div id="transporter-summary" className={toggleState === 'paymentledger' ? "content  active-content" : "content"}>
               {ledgerSummary.length > 0 ? (
-                  <table class="table table-fixed ledger-table">
+                  <table class="table table-bordered ledger-table">
                     <thead className="thead-tag">
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Ref ID</th>
-                        <th scope="col">Paid(&#8377;)</th>
-                        <th scope="col">To Be Paid(&#8377;)</th>
-                        <th scope="col">Ledger Balance(&#8377;)</th>
+                        <th className="col-1" id="sno">#</th>
+                        <th className="col-2">Ref ID</th>
+                        <th className="col-3">Paid(&#8377;)</th>
+                        <th className="col-3">To Be Paid(&#8377;)</th>
+                        <th className="col-3">Ledger Balance(&#8377;)</th>
                       </tr>
                     </thead>
                     <tbody>
                       {
                           ledgerSummary.map((item, index) => {
                             return (
-                              <tr className="trs-tags">
-                                <th scope="row">{index + 1}</th>
-                                <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
-                                {moment(item.date).format("DD-MMM-YY")}</td>
-                                <td>{item.paidRcvd ? item.paidRcvd.toFixed(2)  : 0}</td>
-                                <td><span className='paid-coloring'>{item.tobePaidRcvd ? item.tobePaidRcvd.toFixed(2)  : 0}</span></td>
-                                <td>{item.balance ? item.balance.toFixed(2) : 0}</td>
+                              <tr className="tr-tags" scope="row" kery={item.partyId}>
+                                <td className="col-1"><p id="p-common-sno">{index + 1}</p></td>
+                                <td className="col-2">
+                                  <p style={{ color: "#0066FF" }}>
+                                    {item.refId}
+                                  </p>
+                                  <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                                </td>
+                                <td className="col-3">
+                                  <p id="p-common">{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</p>
+                                </td>
+                                <td className="col-3">
+                                  <p id="p-common">{item.tobePaidRcvd
+                                    ? item.tobePaidRcvd.toFixed(2)
+                                    : 0}</p>
+                                </td>
+                                <td className="col-3">
+                                  <p className="coloring" id="p-common">
+                                    {item.balance ? item.balance.toFixed(2) : 0}
+                                  </p>
+                                </td>
                               </tr>
-                            )
+                            );
                           })
+                        
                       }
                     </tbody>
                   </table>
@@ -614,14 +624,14 @@ const TransportoLedger = () => {
                 <div id="detailed-inventory" className={toggleState === 'inventoryledger' ?
                 "content  active-content" : "content"}>
                   {invDetails.length > 0 ? (
-                  <table class="table table-fixed ledger-table">
+                  <table class="table table-bordered ledger-table">
                     <thead className="thead-tag">
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Ref ID</th>
-                        <th scope="col">Collected</th>
-                        <th scope="col">Given</th>
-                        <th scope="col">Balance</th>
+                        <th class="col-1" id="p-common-sno">#</th>
+                        <th class="col-2">Ref ID</th>
+                        <th class="col-3">Collected</th>
+                        <th class="col-3">Given</th>
+                        <th class="col-3">Balance</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -629,26 +639,26 @@ const TransportoLedger = () => {
                         
                           invDetails.map((item, index) => {
                             return (
-                              <tr className="trs-tags">
-                                <th scope="row">{index + 1}</th>
-                                <td><span style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</span> <br />
-                                {moment(item.date).format("DD-MMM-YY")}</td>
-                                <td>{item.collected ? item.collected.toFixed(1) : 0}&nbsp;
+                              <tr className="trs-tags" key={item.partyId}>
+                                <td class="col-1" id="p-common-sno">{index + 1}</td>
+                                <td class="col-2"><p style={{'color':'#0066FF',cursor:'pointer'}}>{item.refId}</p>
+                                <p>{moment(item.date).format("DD-MMM-YY")}</p></td>
+                                <td class="col-3"><p id="p-common">{item.collected ? item.collected.toFixed(1) : 0}&nbsp;
                                 {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
                                   item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                                  item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
-                                <td>{item.given ? item.given.toFixed(1) : 0}&nbsp;
+                                  item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</p></td>
+                                <td class="col-3"><p id="p-common">{item.given ? item.given.toFixed(1) : 0}&nbsp;
                                 {item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
                                   item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
-                                  item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</td>
-                                <td>
-                                  {item.unit==='CRATES'?item.cratesBalance.toFixed(1):item.unit==='SACS'?item.sacsBalance.toFixed(1):
+                                  item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''}</p></td>
+                                <td class="col-3">
+                                <p id="p-common">{item.unit==='CRATES'?item.cratesBalance.toFixed(1):item.unit==='SACS'?item.sacsBalance.toFixed(1):
                                   item.unit==='BAGS'?item.bagsBalance.toFixed(1):item.unit==='BOXES'?item.boxesBalance.toFixed(1):0}
                                   &nbsp;{
                                   item.unit==='BAGS'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
                                   item.unit==='BOXES'?item.unit.charAt(0).toUpperCase()+item.unit.slice(2,3).toLowerCase():
                                   item.unit==='CRATES'||'SACS'?item.unit.charAt(item).toUpperCase():''
-                                  }
+                                  }</p>
                                 </td>
                               </tr>
                             )
@@ -717,11 +727,11 @@ const TransportoLedger = () => {
                                                         />
                                                       )}
                                                     </div>
-                                                      <div>
+                                                      <div id="trans-dtl">
                                                         <p className="namedtl-tag">
                                                           {item.partyName}
                                                         </p>
-                                                        <p className="mobilee-tag">{!item.trader?"Trans":"Trader"}|{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
+                                                        <p className="mobilee-tag">{!item.trader?"Transporter":"Trader"} - {item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
                                                         <p className="addres-tag">
                                                           {item.partyAddress ? item.partyAddress : ""}
                                                         </p>
@@ -763,14 +773,16 @@ const TransportoLedger = () => {
                               </div>
                               <div id="out-paybles">
                                 <p id='p-tag'>Inventory Balance</p>
+                              </div>
+                              <div id="cbbk-tag">
                                 {toggleState==='inventoryledger' &&
                                   getInventor.map(item=>{
                                       return(
-                                      <p id="recieved-tag">{item.unit}:{item.qty.toFixed(1)}</p>
+                                      <p id="cbbsk-tag">{item.unit}:{item.qty.toFixed(1)}<span>&nbsp;/&nbsp;</span></p>
                                       )
                                   })
                                 }
-                              </div>
+                                </div>
                               <div id="radios_in_modal">
                               {toggleInventory==='Given' ?<p className='select-tag'>Select Given Type</p>
                                 :<p className='select-tag'>Select Collected Type</p>}
@@ -828,6 +840,7 @@ const TransportoLedger = () => {
           </div> 
         </div>
       </div> 
+      </div>
     </Fragment>
   );
 };

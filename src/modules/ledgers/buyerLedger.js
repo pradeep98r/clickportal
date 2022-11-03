@@ -253,7 +253,7 @@ const BuyerLedger = () => {
     }
   }
   return (
-    <Fragment class="">
+    <Fragment>
       <div className="main_div_padding">
       <div class="row">
         <div class="col-lg-4 p-0">
@@ -266,12 +266,12 @@ const BuyerLedger = () => {
           </div>
           <div className="table-scroll" id="scroll_style">
             <table class="table table-fixed" className="ledger-table">
-              <thead className="thead-tag">
+              <thead className="theadr-tag">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Date</th>
                   <th scope="col">Buyer Name</th>
-                  <th scope="col">To Be Recieved</th>
+                  <th scope="col">To Be Recieved(&#8377;)</th>
                 </tr>
               </thead>
               <tbody>
@@ -293,36 +293,35 @@ const BuyerLedger = () => {
                             </td>
                             <td key={item.partyName}>
                               <div className="d-flex">
-                                <div>
+                                <div class="c-img">
                                   {item.profilePic ? (
                                     <img className="profile-img" src={item.profilePic} alt="pref-img" />
-                                  ) : (
+                                    ) : (
                                     <img
                                       className="profile-img"
                                       src={single_bill}
                                       alt="img"
                                     />
-                                  )}
+                                    )}
                                   </div>
                                   <div>
                                     <p className="namedtl-tag">
                                       {item.partyName}
-                                      <br />
                                     </p>
+                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"} - {item.partyId}&nbsp;</p>
+                                    <p className="mobilee-tag">{item.mobile}</p>
                                     <p className="address-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
-                                    <p className="mobile-tag">{item.mobile}</p>
                                   </div>
                               </div>
                             </td>
                             <td key={item.tobePaidRcvd}>
-                              <span className="coloring">
-                                &#8377;
+                              <p className="coloring">
                                 {item.tobePaidRcvd
                                   ? item.tobePaidRcvd.toFixed(2)
                                   : 0}
-                              </span>
+                              </p>
                             </td>
                           </tr>
                         </Fragment>
@@ -346,7 +345,7 @@ const BuyerLedger = () => {
                           </td>
                           <td key={item.partyName}>
                             <div className="d-flex">
-                              <div>
+                              <div class="c-img">
                                 {item.profilePic ? (
                                   <img className="profile-img" src={item.profilePic} alt="pref-img" />
                                 ) : (
@@ -360,22 +359,21 @@ const BuyerLedger = () => {
                                 <div>
                                   <p className="namedtl-tag">
                                     {item.partyName}
-                                    <br />
                                   </p>
+                                  <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"} - {item.partyId}&nbsp;</p>
+                                  <p className="mobilee-tag">{item.mobile}</p>
                                   <p className="address-tag">
                                     {item.partyAddress ? item.partyAddress : ""}
                                   </p>
-                                  <p className="mobile-tag">{item.mobile}</p>
                                 </div>
                             </div>
                           </td>
                           <td key={item.tobePaidRcvd}>
-                            <span className="coloring">
-                              &#8377;
+                            <p className="coloring">
                               {item.tobePaidRcvd
                                 ? item.tobePaidRcvd.toFixed(2)
                                 : 0}
-                            </span>
+                            </p>
                           </td>
                         </tr>
                       </Fragment>
@@ -392,7 +390,7 @@ const BuyerLedger = () => {
                 &#8377;
                 {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
               </p>
-            </div>
+          </div>
         </div>
         <div class="col-lg-8">
           <div
@@ -440,143 +438,142 @@ const BuyerLedger = () => {
                 Custom
               </button>
               <span id="horizontal-lines-tag"></span>
-            </div>
-            
-            <div
-              className="dateRangePicker"
-              style={{ display: dateDisplay ? "block" : "none" }}
-            >
-              <div className="flex">
-                <div onClick={DateModal} id="date_range_picker">
-                  <img id="date_icon" src={date_icon} />
+              <div
+                className="dateRangePicker"
+                style={{ display: dateDisplay ? "block" : "none" }}
+                >
+                <div className="flex">
+                  <div onClick={DateModal} id="date_range_picker">
+                    <img id="date_icon" src={date_icon} />
+                  </div>
                 </div>
-              </div>
-              <div className="modal fade" id="datePopupmodal">
-                <div className="modal-dialog modal-dialog-centered date_modal_dialog">
-                  <div className="modal-content">
-                    <div className="modal-header date_modal_header">
-                      <h5
-                        className="modal-title header2_text"
-                        id="staticBackdropLabel"
-                      >
-                        Select Dates
-                      </h5>
-                      <img
-                        src={close_btn}
-                        alt="image"
-                        className="close_icon"
-                        data-bs-dismiss="modal"
-                      />
-                    </div>
-                    <div className="modal-body date_modal_mody">
-                      <div className="calender_popup">
-                        <div className="row">
-                          <div className="dates_div">
-                            <div className="flex_class">
-                              <input
-                                type="radio"
-                                id="tab1"
-                                name="tab"
-                                defaultChecked
-                              />
-                              <label htmlFor="tab1">Daily</label>
+                <div className="modal fade" id="datePopupmodal">
+                  <div className="modal-dialog modal-dialog-centered date_modal_dialog">
+                    <div className="modal-content">
+                      <div className="modal-header date_modal_header">
+                        <h5
+                          className="modal-title header2_text"
+                          id="staticBackdropLabel"
+                        >
+                          Select Dates
+                        </h5>
+                        <img
+                          src={close_btn}
+                          alt="image"
+                          className="close_icon"
+                          data-bs-dismiss="modal"
+                        />
+                      </div>
+                      <div className="modal-body date_modal_mody">
+                        <div className="calender_popup">
+                          <div className="row">
+                            <div className="dates_div">
+                              <div className="flex_class">
+                                <input
+                                  type="radio"
+                                  id="tab1"
+                                  name="tab"
+                                  defaultChecked
+                                />
+                                <label htmlFor="tab1">Daily</label>
+                              </div>
+                              <div className="flex_class">
+                                <input type="radio" id="tab2" name="tab" />
+                                <label htmlFor="tab2">Monthly</label>
+                              </div>
+                              <div className="flex_class">
+                                {" "}
+                                <input type="radio" id="tab3" name="tab" />
+                                <label htmlFor="tab3">Yearly</label>
+                              </div>
+                              <div className="flex_class">
+                                <input type="radio" id="tab4" name="tab" />
+                                <label htmlFor="tab4">Weekly</label>
+                              </div>
+                              <div className="flex_class">
+                                <input type="radio" id="tab5" name="tab" />
+                                <label htmlFor="tab5">Custom</label>
+                              </div>
                             </div>
-                            <div className="flex_class">
-                              <input type="radio" id="tab2" name="tab" />
-                              <label htmlFor="tab2">Monthly</label>
-                            </div>
-                            <div className="flex_class">
-                              {" "}
-                              <input type="radio" id="tab3" name="tab" />
-                              <label htmlFor="tab3">Yearly</label>
-                            </div>
-                            <div className="flex_class">
-                              <input type="radio" id="tab4" name="tab" />
-                              <label htmlFor="tab4">Weekly</label>
-                            </div>
-                            <div className="flex_class">
-                              <input type="radio" id="tab5" name="tab" />
-                              <label htmlFor="tab5">Custom</label>
-                            </div>
-                          </div>
-                          <article className="date_picker">
-                            <ReactDatePicker
-                              dateFormat="yyyy-MM-dd"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              className="form-control"
-                              placeholder="Date"
-                              maxDate={new Date()}
-                              inline
-                            />
-                          </article>
-                          <article className="month_picker">
-                            <ReactDatePicker
-                              dateFormat="MM/yyyy"
-                              showMonthYearPicker
-                              showFullMonthYearPicker
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              className="form-control"
-                              placeholder="Date"
-                              maxDate={new Date()}
-                              showThreeColumnMonthYearPicker
-                              inline
-                            />
-                          </article>
-                          <article>
-                            <h2>
+                            <article className="date_picker">
                               <ReactDatePicker
+                                dateFormat="yyyy-MM-dd"
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
-                                showYearPicker
-                                dateFormat="yyyy"
                                 className="form-control"
+                                placeholder="Date"
                                 maxDate={new Date()}
                                 inline
-                                // showThreeColumnYearPicker
-                                yearItemNumber={9}
                               />
-                            </h2>
-                          </article>
-                          <article className="week_picker">
-                            {/* <WeeklyCalendar
-                                            onWeekPick={handleWeekPick}
-                                            max={moment().format("DD-MM-YYYY")}
-                                            /> */}
-                          </article>
-                          <article className="custom_picker">
-                            <div className="flex_class custom_input_div">
+                            </article>
+                            <article className="month_picker">
                               <ReactDatePicker
+                                dateFormat="MM/yyyy"
+                                showMonthYearPicker
+                                showFullMonthYearPicker
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
-                                popperClassName="d-none"
-                                dateFormat="yyyy-MM-dd"
-                                placeholderText="Select from date"
+                                className="form-control"
+                                placeholder="Date"
+                                maxDate={new Date()}
+                                showThreeColumnMonthYearPicker
+                                inline
                               />
+                            </article>
+                            <article>
+                              <h2>
+                                <ReactDatePicker
+                                  selected={startDate}
+                                  onChange={(date) => setStartDate(date)}
+                                  showYearPicker
+                                  dateFormat="yyyy"
+                                  className="form-control"
+                                  maxDate={new Date()}
+                                  inline
+                                  // showThreeColumnYearPicker
+                                  yearItemNumber={9}
+                                />
+                              </h2>
+                            </article>
+                            <article className="week_picker">
+                              {/* <WeeklyCalendar
+                                              onWeekPick={handleWeekPick}
+                                              max={moment().format("DD-MM-YYYY")}
+                                              /> */}
+                            </article>
+                            <article className="custom_picker">
+                              <div className="flex_class custom_input_div">
+                                <ReactDatePicker
+                                  selected={startDate}
+                                  onChange={(date) => setStartDate(date)}
+                                  popperClassName="d-none"
+                                  dateFormat="yyyy-MM-dd"
+                                  placeholderText="Select from date"
+                                />
+                                <ReactDatePicker
+                                  selected={endDate}
+                                  onChange={(date) => setEndDate(date)}
+                                  popperClassName="d-none"
+                                  dateFormat="yyyy-MM-dd"
+                                  placeholderText="Select to date"
+                                />
+                              </div>
                               <ReactDatePicker
-                                selected={endDate}
-                                onChange={(date) => setEndDate(date)}
-                                popperClassName="d-none"
-                                dateFormat="yyyy-MM-dd"
-                                placeholderText="Select to date"
+                                selected={startDate}
+                                onChange={onChangeDate}
+                                startDate={startDate}
+                                endDate={endDate}
+                                selectsRange
+                                inline
+                                maxDate={new Date()}
                               />
-                            </div>
-                            <ReactDatePicker
-                              selected={startDate}
-                              onChange={onChangeDate}
-                              startDate={startDate}
-                              endDate={endDate}
-                              selectsRange
-                              inline
-                              maxDate={new Date()}
-                            />
-                          </article>
+                            </article>
+                          </div>
                         </div>
+                        <button className="continue-btn" onClick={getDate}>
+                          CONTINUE
+                        </button>
                       </div>
-                      <button className="continue-btn" onClick={getDate}>
-                        CONTINUE
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -705,40 +702,40 @@ const BuyerLedger = () => {
                 }
                
               >
-                <table class="table table-fixed ledger-table">{/*ledger-table*/}
+                <table class="table table-bordered ledger-table">{/*ledger-table*/}
                   <thead className="thead-tag">
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">RefId | Date</th>
-                      <th scope="col">Received(&#8377;)</th>
-                      <th scope="col">To Be Received(&#8377;)</th>
-                      <th scope="col">Ledger Balance(&#8377;)</th>
+                      <th className="col-1" id="sno">#</th>
+                      <th className="col-2">RefId | Date</th>
+                      <th className="col-3">Received(&#8377;)</th>
+                      <th className="col-3">To Be Received(&#8377;)</th>
+                      <th className="col-3">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ledgerSummary.length > 0 ? (
                       ledgerSummary.map((item, index) => {
                         return (
-                          <tr className="tr-tags" kery={item.partyId}>
-                            <th scope="row">{index + 1}</th>
-                            <td>
+                          <tr className="tr-tags" scope="row" kery={item.partyId}>
+                            <td className="col-1"><p id="p-common-sno">{index + 1}</p></td>
+                            <td className="col-2">
                               <p style={{ color: "#0066FF" }}>
                                 {item.refId}
                               </p>
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
-                            <td>
-                              {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
+                            <td className="col-3">
+                              <p id="p-common">{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</p>
                             </td>
-                            <td>
-                              {item.tobePaidRcvd
+                            <td className="col-3">
+                              <p id="p-common">{item.tobePaidRcvd
                                 ? item.tobePaidRcvd.toFixed(2)
-                                : 0}
+                                : 0}</p>
                             </td>
-                            <td>
-                              <span className="coloring">
+                            <td className="col-3">
+                              <p className="coloring" id="p-common">
                                 {item.balance ? item.balance.toFixed(2) : 0}
-                              </span>
+                              </p>
                             </td>
                           </tr>
                         );
@@ -761,18 +758,18 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed ledger-table">
+                <table class="table table-bordered ledger-table" id="ledger-sum">
                   <thead className="thead-tag">
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">RefId | Date</th>
-                      <th scope="col">
-                        Item
-                        <br /> Unit | Kgs | Rate
+                      <th class="col-1" id="sno">#</th>
+                      <th class="col-2">RefId | Date</th>
+                      <th class="col-3">
+                        <p>Item</p>
+                        <p> Unit | Kgs | Rate</p>
                       </th>
-                      <th scope="col">Recieved(&#8377;)</th>
-                      <th scope="col">To Be Recieved(&#8377;)</th>
-                      <th scope="col">Ledger Balance(&#8377;)</th>
+                      <th class="col-2">Recieved(&#8377;)</th>
+                      <th class="col-2">To Be Recieved(&#8377;)</th>
+                      <th class="col-2">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -780,14 +777,14 @@ const BuyerLedger = () => {
                       details.map((item, index) => {
                         return (
                           <tr className="tr-tags" key={item.partyId}>
-                            <th scope="row">{index + 1}</th>
-                            <td>
+                            <td class="col-1" id="p-common-sno">{index + 1}</td>
+                            <td class="col-2">
                               <p style={{ color: "#0066FF" }}>
                                 {item.refId}
                               </p>
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
-                            <td>
+                            <td class="col-3">
                               <p style={{ fontSize: "12px" }}>
                                 {item.itemName}
                               </p>
@@ -800,18 +797,19 @@ const BuyerLedger = () => {
                                 &nbsp;|&nbsp;{item.rate ? item.rate : 0}
                               </span>
                             </td>
-                            <td>
-                              {item.recieved ? item.recieved.toFixed(2) : 0}
+                            <td className="col-2">
+                              <p id="p-common"
+                              >{item.recieved ? item.recieved.toFixed(2) : 0}</p>
                             </td>
-                            <td>
-                              {item.toBeRecieved
+                            <td class="col-2">
+                              <p id="p-common">{item.toBeRecieved
                                 ? item.toBeRecieved.toFixed(2)
-                                : 0}
+                                : 0}</p>
                             </td>
-                            <td>
-                              <span className="coloring">
+                            <td className="col-2">
+                              <p className="coloring" id="p-common">
                                 {item.balance ? item.balance.toFixed(2) : 0}
-                              </span>
+                              </p>
                             </td>
                           </tr>
                         );
@@ -834,40 +832,40 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed ledger-table">
+                <table class="table table-bordered ledger-table">{/*ledger-table*/}
                   <thead className="thead-tag">
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">RefId | Date</th>
-                      <th scope="col">Recieved(&#8377;)</th>
-                      <th scope="col">To Be Recieved(&#8377;)</th>
-                      <th scope="col">Ledger Balance(&#8377;)</th>
+                      <th className="col-1" id="sno">#</th>
+                      <th className="col-2">RefId | Date</th>
+                      <th className="col-3">Received(&#8377;)</th>
+                      <th className="col-3">To Be Received(&#8377;)</th>
+                      <th className="col-3">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ledgerSummaryByDate.length > 0 ? (
                       ledgerSummaryByDate.map((item, index) => {
                         return (
-                          <tr className="tr-tags" key={item.partyId}>
-                            <th scope="row">{index + 1}</th>
-                            <td>
+                          <tr className="tr-tags" scope="row" kery={item.partyId}>
+                            <td className="col-1"><p id="p-common-sno">{index + 1}</p></td>
+                            <td className="col-2">
                               <p style={{ color: "#0066FF" }}>
-                                {item.refId ? item.refId : ""}
+                                {item.refId}
                               </p>
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
-                            <td>
-                              {item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}
+                            <td className="col-3">
+                              <p id="p-common">{item.paidRcvd ? item.paidRcvd.toFixed(2) : 0}</p>
                             </td>
-                            <td>
-                              {item.tobePaidRcvd
+                            <td className="col-3">
+                              <p id="p-common">{item.tobePaidRcvd
                                 ? item.tobePaidRcvd.toFixed(2)
-                                : 0}
+                                : 0}</p>
                             </td>
-                            <td>
-                              <span className="coloring">
+                            <td className="col-3">
+                              <p className="coloring" id="p-common">
                                 {item.balance ? item.balance.toFixed(2) : 0}
-                              </span>
+                              </p>
                             </td>
                           </tr>
                         );
@@ -890,18 +888,18 @@ const BuyerLedger = () => {
                     : "content"
                 }
               >
-                <table class="table table-fixed ledger-table">
+                <table class="table table-bordered ledger-table">
                   <thead className="thead-tag">
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">RefId | Date</th>
-                      <th scope="col">
-                        Item
-                        <br /> Unit | Kgs | Rate
+                    <th class="col-1" id="sno">#</th>
+                      <th class="col-2">RefId | Date</th>
+                      <th class="col-3">
+                        <p>Item</p>
+                        <p> Unit | Kgs | Rate</p>
                       </th>
-                      <th scope="col">Recieved(&#8377;)</th>
-                      <th scope="col">To Be Recieved(&#8377;)</th>
-                      <th scope="col">Ledger Balance(&#8377;)</th>
+                      <th class="col-2">Recieved(&#8377;)</th>
+                      <th class="col-2">To Be Recieved(&#8377;)</th>
+                      <th class="col-2">Ledger Balance(&#8377;)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -909,14 +907,14 @@ const BuyerLedger = () => {
                       detailsByDate.map((item, index) => {
                         return (
                           <tr className="tr-tags" key={item.partyId}>
-                            <th scope="row">{index + 1}</th>
-                            <td>
+                            <td class="col-1" id="p-common-sno">{index + 1}</td>
+                            <td class="col-2">
                               <p style={{ color: "#0066FF" }}>
                                 {item.refId ? item.refId : ""}
                               </p>{" "}
                               {moment(item.date).format("DD-MMM-YY")}
                             </td>
-                            <td>
+                            <td class="col-3">
                               <p style={{ fontSize: "12px" }}>
                                 {item.itemName}
                               </p>
@@ -929,18 +927,18 @@ const BuyerLedger = () => {
                                 &nbsp;|&nbsp;{item.rate ? item.rate : 0}
                               </span>
                             </td>
-                            <td>
-                              {item.recieved ? item.recieved.toFixed(2) : 0}
+                            <td class="col-3">
+                              <p id="p-common">{item.recieved ? item.recieved.toFixed(2) : 0}</p>
                             </td>
-                            <td>
-                              {item.toBeRecieved
+                            <td class="col-3">
+                              <p id="p-common">{item.toBeRecieved
                                 ? item.toBeRecieved.toFixed(2)
-                                : 0}
+                                : 0}</p>
                             </td>
-                            <td>
-                              <span className="coloring">
+                            <td class="col-3">
+                              <p className="coloring" id="p-common">
                                 {item.balance ? item.balance.toFixed(2) : 0}
-                              </span>
+                              </p>
                             </td>
                           </tr>
                         );
@@ -996,11 +994,11 @@ const BuyerLedger = () => {
                                           />
                                         )}
                                       </div>
-                                        <div>
+                                        <div id="trans-dtl">
                                           <p className="namedtl-tag">
                                             {item.partyName}
                                           </p>
-                                          <p className="mobilee-tag">{item.mobile}</p>
+                                          <p className="mobile-tag">{item.mobile}</p>
                                           <p className="addres-tag">
                                             {item.partyAddress ? item.partyAddress : ""}
                                           </p>

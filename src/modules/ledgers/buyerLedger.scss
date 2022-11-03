@@ -1,44 +1,15 @@
 .table-scroll {
-    height: 440px;
     border-radius: 10px;
-    position: relative;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    //border: 1px solid #E4E4E4;
     height: calc(100vh - 210px);
     overflow-y: auto;
-    border: 1px solid #E4E4E4;
+    border: 0.5px solid #E4E4E4;
 }
 .table td, .table th {
-    /* padding: .75rem; */
-    padding:0px;
     vertical-align: top;
-    //border-top: 1px solid #dee2e6;
 }
 
-// .table-scroll th:nth-child(1){
-//     padding-left:5px;
-// }
-// .table-scroll td:nth-child(1){
-//     padding-left:5px;
-// }
-// .table-scroll th:nth-child(2){
-//     padding-left:5px;
-// }
-// .table-scroll td:nth-child(2){
-//     padding-left:5px;
-// }
-// .table-scroll th:nth-child(3){
-//     padding-left:10px;
-// }
-// .table-scroll td:nth-child(3){
-//     padding-right:10px;
-// }
-
-#search-field{
-    // padding-bottom: 10px;
-    
-}
 .ledger-table{
     height: calc(100vh - 606px);
     overflow-y: auto;
@@ -46,8 +17,7 @@
 .no_data_found{
     padding-top: 200px;
     display: block;
-    margin: auto;
-    
+    margin: auto;   
 }
 .no-data-img{
     display: block;
@@ -79,16 +49,22 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 100px);
+    height: calc(100vh - 67px);
     overflow-y: auto;
     background: #FFFFFF;
-    border-radius: 10px 10px 0px 0px;
+    width: 100%;
+    border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 100px);
+    height: calc(100vh - 67px);
     overflow-y: auto;
     background: #FFFFFF;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 10px 10px 10px 10px;
+}
+#ledger-sum{
+    thead,th{
+        padding-top: 0px;
+    }
 }
 #ledger-summary{
     border-radius: 10px;
@@ -96,133 +72,11 @@ input[type=radio]:checked+label {
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
 }
-#ledger-summary th:nth-child(1){
-    padding-right: 10px;
-    padding-left: 10px;
-    padding-top: 10px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary th:nth-child(2){
-    padding-right: 20px;
-    padding-left: 10px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary td:nth-child(2){
-    padding-right: 20px;
-    padding-left: 10px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary th:nth-child(3){
-    padding-right: 50px;
-    padding-left: 10px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary td:nth-child(3){
-    padding-right: 50px;
-    padding-left: 10px;
-    padding-top: 10px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary th:nth-child(4){
-    padding-right: 20px;
-    padding-left: 10px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary td:nth-child(4){
-    padding-right: 20px;
-    padding-left: 10px;
-    padding-top: 10px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary th:nth-child(5){
-    padding-left: 10px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#ledger-summary td:nth-child(5){
-    padding-left: 10px;
-    padding-top:10px;
-    border-right: 1px solid #E4E4E4;
-}
 #detailed-ledger{
     border-radius: 10px;
     box-sizing: border-box;
     border-radius: 10px 10px 0px 0px;
     background: #FFFFFF;
-    //border: 1px solid #E4E4E4;
-}
-#detailed-ledger th:nth-child(1){
-    padding-right: 2px;
-    padding-left: 5px;
-    padding-top: 10px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger th:nth-child(2){
-    padding-left: 5px;
-    border-right: 1px solid #E4E4E4;
-    padding-bottom: 5px;
-}
-#detailed-ledger td:nth-child(2){
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger th:nth-child(3){
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-bottom: 3px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger td:nth-child(3){
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger th:nth-child(4){
-    padding-right: 30px;
-    padding-left: 5px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger td:nth-child(4){
-    padding-right: 30px;
-    padding-left: 5px;
-    padding-top: 10px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger th:nth-child(5){
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger td:nth-child(5){
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-top: 10px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger th:nth-child(6){
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-bottom: 5px;
-    border-right: 1px solid #E4E4E4;
-}
-#detailed-ledger td:nth-child(6){
-    padding-right: 5px;
-    padding-left: 5px;
-    padding-top: 10px;
-    border-right: 1px solid #E4E4E4;
 }
 .tabRowSelected{
     background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
@@ -230,7 +84,7 @@ input[type=radio]:checked+label {
     font-size: 12px;
     color: white;
     cursor: pointer;
-    .coloring, .address-tag, .mobile-tag, .namedtl-tag{
+    .coloring, .address-tag, .mobilee-tag, .namedtl-tag{
         color: white;
     }
     td{
@@ -239,31 +93,26 @@ input[type=radio]:checked+label {
 }
 #horizontal-line{
     position: relative;
-    top: -35px;
+    top: -25px;
     border-bottom:1px solid#E4E4E4;
     display: flex;
-    //height: 10px;
     width: 100%;
 }
 #horizontal-lines-tag{
-    position: absolute;
-    //position: relative;
     border-bottom:1px solid#E4E4E4;
     float: left;
     width: 100%;
-    top: 42px;
 }
 .recordbtn-style{
     position: relative;
-    padding-top: 12px;
     float: right;
     display: block;
 }
 .add-pays-btn{
-    position: absolute;
+    position: relative;
     background: #16A12C;
-    top: 14px;
-    left: -10px;
+    top: 2px;
+    left: 15px;
     width: 25px;
     height: 25px;
     text-align: center;
@@ -289,33 +138,46 @@ input[type=radio]:checked+label {
 }
 .ledger-table{
     width: 100%;
-    // border: 1px solid #E4E4E4;
 }
 .tr-tags{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 12px;
-    // line-height: 17px;
     color: #121212;
     border-bottom: 1px solid #E4E4E4;
     td{
     padding: 10px;
     }
 }
-.thead-tag{
-    width: 100%;
-    // height: 30px;
-    font-family: 'Manrope';
-    font-style: normal;
+.table-bordered thead th{
+    padding: 5px 5px;
+}
+.table-bordered tr td{
+    padding:5px 5px;
+}
+#p-common{
+    padding-top:8px;
+}
+#p-common-sno,#sno{
+    text-align: center;
+}
+.theadr-tag{ 
     font-weight: 500;
     font-size: 13px;
-    // line-height: 17px;
     color: #121212;
     background: #D7F3DD;
     padding: 10px;
     th{
         padding: 10px;
+    }
+}
+.thead-tag{ 
+    font-weight: 500;
+    font-size: 13px;
+    color: #121212;
+    background: #D7F3DD;
+    padding: 10px;
+    th{
+        padding: 0px;
     }
 }
 #singles-img{
@@ -347,15 +209,18 @@ input[type=radio]:checked+label {
     font-size: 13px;
     color: #121212;
 }
+.c-img{
+    padding-top: 5px;
+}
 .address-tag{
     font-weight: 500;
     font-size: 12px;
-    color: #121212;
+    color: #4D4D4D;;
 }
 .mobile-tag{
     font-weight: 500;
     font-size: 12px;
-    color: #4D4D4D;
+    color: #121212;;
 }
 .addres-tag{
     font-weight: 500;
@@ -365,32 +230,27 @@ input[type=radio]:checked+label {
 .mobilee-tag{
     font-weight: 500;
     font-size: 11px;
-    color: #4D4D4D;
+    color: #121212;;
 }
 .outstanding-pay{
-    //position: fixed;
-    bottom:0px;
-    //width: 100%;
-    //float: left;
+    bottom:0px;;
     border: 1px solid #E4E4E4;
     background:#FFFFFF;
     border-top: 0px;
     border-radius: 0px 0px 10px 10px;
-    //border-radius: 10px;
     padding: 10px;
 }
 #card-details{
     flex: 1 1 auto;
     min-height: 1px;
-    padding-top: 10px;
+    padding:10px 10px;
 }
 .pat-tag{
     font-size: 12px;
     font-weight: 500;
     font-size: 13px;
 }
-.values-tag{
-   
+.values-tag{ 
     font-weight: 600;
     font-size: 13px;
     text-align: left;
@@ -399,35 +259,21 @@ input[type=radio]:checked+label {
 }
 input[type="text"]::placeholder {  
     padding-left: 35px; 
-    font-family: 'Manrope';
     font-weight: 500;
     font-size: 13px;
-    line-height: 17px;
     color: #939393;
 } 
-/*.searchicon{
-    color: #16A02C;
-}
-#searchbar{
-    background: #FFFFFF;
-    border: 1px solid #E4E4E4;
-    border-radius: 10px;
-}*/
 .bloc-tabs {
     display: flex;
 }
 .tabsl {
     position: relative;
-    padding-right: 15px;
-    padding-left: 15px;
-    top: 21px;
+    padding:0px 10px;
+    top: 11.5px;
     cursor: pointer;
     outline: none;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 700;
     font-size: 12px;
-    line-height: 18px;
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
@@ -441,32 +287,22 @@ input[type="text"]::placeholder {
 .active-tabs::before {
     content: "";
     display: block;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 700;
     font-size: 12px;
-    line-height: 18px;
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
 }
 .blockers-tab {
     display: flex;
-    // position: absolute;
     margin-bottom: 30px;
 }
 .tabers{
-    padding-top: 20px;
-    text-align: center;
     padding-right: 25px;
     padding-left: 25px;
     cursor: pointer;
-    outline: none;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 700;
     font-size: 12px;
-    line-height: 18px;
     letter-spacing: 0.02em;
     color: #4D4D4D;
     background: none;
@@ -482,11 +318,8 @@ input[type="text"]::placeholder {
     position: absolute;
     top: -5px;
     left: 50%;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 700;
     font-size: 12px;
-    line-height: 18px;
     align-items: center;
     letter-spacing: 0.02em;
     color: #4D4D4D;
@@ -494,15 +327,6 @@ input[type="text"]::placeholder {
 a:hover{
     text-decoration: none;
 }
-/*tr{
-    color: #121212;
-    font-family: 'Manrope';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 13px;
-    align-items: center
-}*/
 #addrecord-img{
     border-radius: 100%;
     width: 10px;
@@ -513,19 +337,12 @@ a:hover{
     position: relative;
     width: 118px;
     height: 29px;
-    //margin-top:25px;
-    //position: absolute;
-    //top:50px;
     background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
     border: 1px solid #D1D1D1;
     border-radius: 10px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 15px;
     color: #16A12C;
-    //float: right;
-    //text-align: center;
 }
 .add-record{
     position: absolute;
@@ -602,31 +419,17 @@ a:hover{
 .ledger{
     background: #E5E5E5;
 }
-
-// thead{
-//     border-radius: 10px 10px 0px 0px;
-//     background: #D7F3DD;
-//     border: 1px solid #E4E4E4;
-//     box-sizing: border-box;
-//     position: sticky;
-// }
-
 .names-tag{
     position: absolute;
     top: -5px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 13px;
-    line-height: 18px;
     color: #1C1C1C;
     left: 35px;
 }
 .profiles-dtl{
     top:12px;
     position: absolute;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 12px;
     line-height: 13px;
@@ -634,13 +437,6 @@ a:hover{
     left: 35px;
 }
 
-#searchbar{
-    // width:350px;
-}
-.d-flex{
-    // padding-top: 5px;
-    // padding-bottom: 5px;
-}
 .date-byledgers{
     position: absolute;
     top:55px;
@@ -649,17 +445,6 @@ a:hover{
     cursor: pointer;
     display: none;
 }
-/*.record-img{
-    position: absolute;
-    top: 2px;
-    margin-left: -28px;
-    background: #16A02C;
-    border-radius: 50%;
-    width:20px;
-    height:25px;
-    border:1px solid #16A02C;
-    transform: rotate(-90deg);
-}*/
 .record-btn{
     width: 118px;
     height: 29px;
@@ -669,8 +454,6 @@ a:hover{
     background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
     border: 1px solid #D1D1D1;
     border-radius: 10px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 15px;
     color: #16A12C;
@@ -729,40 +512,23 @@ a:hover{
     border: 1px solid gray;
     font-weight: bold;
 }
-
 .dateRangePicker{
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 15px;
-    line-height: 18px;
     color: #16A02C;
-    float: center;
 }
 #date_range_picker{
     display: block;
     margin: auto;
     padding: 5px 5px;
 }
-#date_icon{
-    // margin-top:40px;
-    // position: absolute;
-    // margin-left:600px;
-    //position: relative;
-    //left: 300px;
-    //top: -10px;
+#date_icon_picker{
     cursor: pointer;
-    float: center;
-    border-bottom: 10px;
-    //text-align: center;
+    margin: auto;
 }
 .react-datepicker-popper{
     margin-left: 320px;
     margin-top: 32px;
-}
-.react-datepicker{
-    // margin-left: -50px;
-    // margin-top: -70px;
 }
 .react-datepicker__input-container input{
     border: none;
@@ -775,26 +541,16 @@ a:hover{
     cursor: pointer;
 }
 #out-tag{
-    font-size: 12px;
     font-family: sans-serif;
     margin-top: 180px;
     margin-left: 100px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
-    font-size: 13px;
-    line-height: 17px;
 } 
 #recieved-tag{
-    font-size: 17px;
     margin-left: 100px;
-    font-weight: bold;
     margin-top: 5px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 20px;
-    line-height: 27px;
     color: #121212;
 }
 #amount-tag{
@@ -802,22 +558,13 @@ a:hover{
     font-family: sans-serif;
     margin-top:10px;
     margin-left: 100px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
-    font-size: 13px;
-    line-height: 17px;
 }
 .payments-tag{
-    font-size: 13px;
     font-family: sans-serif;
     margin-top: 5px;
     margin-left: 100px;
-    font-family: 'Manrope';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 17px;
+    font-weight: 500;;
     color: #1C1C1C;
 }
 #commenting-tag{
@@ -825,17 +572,10 @@ a:hover{
     font-family: sans-serif;
     margin-top: 15px;
     margin-left: 100px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
-    font-size: 13px;
-    line-height: 17px;
     color: #1C1C1C;
 }
 .form-check-label{
-    font-size: 11px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 13px;
     line-height: 17px;
@@ -866,13 +606,9 @@ a:hover{
     font-size: 17px;
     font-weight: bold;
     margin-top: 2px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 20px;
-    line-height: 27px;
     color: #121212;
-
 }
 #receivable-tag{
     text-align: center;
@@ -885,17 +621,12 @@ a:hover{
     font-size: 13px;
     font-family: sans-serif;
     margin-top: 15px;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 500;
     font-size: 13px;
-    line-height: 17px;
     color: #1C1C1C;
 }
-
 .form-check-label{
     font-size: 11px;
-
 }
 #amountRecieved{
     background: #FFFFFF;
@@ -965,11 +696,8 @@ a:hover{
 }
 .coloring{
     color: #16A12C;
-    font-family: 'Manrope';
-    font-style: normal;
     font-weight: 600;
     font-size: 13px;
-    line-height: 17px;
     display: visible;
 }
 .record-update{
