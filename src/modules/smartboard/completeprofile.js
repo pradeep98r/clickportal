@@ -10,6 +10,10 @@ import { completeMandiSetup, editMandiSetup } from "../../actions/loginService";
 import $ from "jquery";
 import { useSelector } from "react-redux";
 import { getAllMarkets } from "../../actions/loginService";
+import search_img from "../../assets/images/search.svg";
+import markets from "../../assets/images/markets_img.png"
+import { Fragment } from "react";
+
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -98,6 +102,7 @@ const CompleteProfile = (props) => {
   const [mobileNumber, setmobileNumber] = useState(
     mandiEditStatus ? mandiData.mobile : ""
   );
+  const [marketname, setMarketName]= useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
@@ -219,7 +224,7 @@ const CompleteProfile = (props) => {
     imageUrl: "string",
     marketId: mandiEditStatus ? mandiData.marketId : selectMarketId,
     mobile: mobileNumber,
-    otherMarket: "string",
+    otherMarket: marketname ? marketname:'',//"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
   };
@@ -402,6 +407,61 @@ const CompleteProfile = (props) => {
       }
     });
   };
+  const openMarketNamePopUpModal = () => {
+      $("#marketNamePopUpModal").modal("show");
+  };
+  const closePopup = () => {
+      $("#marketNamePopUpModal").modal("hide");
+  };
+
+  const openOtheModalPopUp=()=>{
+    $("#otherModalPopUp").modal("show");
+  }
+  const closeOtheModalPopUp=()=>{
+    $("#otherModalPopUp").modal("hide");
+  }
+  const handleMarketName=()=>{
+    openMarketNamePopUpModal();
+    console.log("Drop Down Cicked");
+  }
+  const [search, setSearch]= useState("");
+  const [marketName, setMarketname]=useState([]);
+  const searchMarketName=(searchValue)=>{
+    setSearch(searchValue);
+    if(search!==""){
+      const filteredNames=allMarketsData.filter(item=>{
+        return(
+          item.marketName.toLowerCase().includes(search.toLowerCase())
+        )
+      })
+      setMarketname(filteredNames);
+    }
+    else{
+      setMarketname(allMarketsData);
+    }
+  }
+
+  const handleOtherName=()=>{
+    openOtheModalPopUp();
+    setMarketName(marketname)
+  }
+  const handleMarketSelection=(name)=>{
+    if(name.toLowerCase().includes("other")){
+      //openOtheModalPopUp();
+      //setMarketName(marketname)
+      handleOtherName();
+      console.log("other");
+    }else{
+      setMarketName(name);
+      console.log(name,"mkName")
+      closePopup();
+    }
+  }
+  const handleOtherMarketName=e=>{
+    setMarketname(e.target.value);
+    closeOtheModalPopUp();
+    closePopup();
+  }
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
@@ -422,16 +482,156 @@ const CompleteProfile = (props) => {
               <label htmlFor="zip" className="input_field">
                 Market Name*
               </label>
-              <select
+              {/*<select*/}
+              <input
                 className="form-control"
-                value={selectMarket}
-                onChange={selectedValue}
-              >
-                {allMarketsData.map((market) => (
+                //value={selectMarket}
+                placeholder="Select Market Name"
+                value={marketname}
+                //onChange={selectedValue}
+                onClick={handleMarketName}
+              />
+                {/*</div>{allMarketsData.map((market) => (
                   <option value={market.marketName}>{market.marketName}</option>
                 ))}
-              </select>
+              </select>*/}
+              <div className="modal fade" id="marketNamePopUpModal">
+                <div className="modal-dialog modal-dialog-centered market_modal_dialog market_name_popup">
+                  <div className="modal-content" id="market-modal-content">
+                    <div className="modal-header date_modal_header market_modal_header">
+                      <h5 className="modal-title header2_text" id="mk-header">
+                        Select Market
+                      </h5>
+                      <img
+                          src={close}
+                          alt="image"
+                          className="close_icon"
+                          onClick={closePopup}
+                        />
+                    </div>
+                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                      <div className="col-lg-6" id="market-div">
+                        <div id="search-mk-field">
+                          <form class="d-flex">
+                            <input class="form-control me-2"
+                                id="searchbar-mk"
+                                type="text"
+                                value={search}
+                                placeholder="Search by Name / Short Code"
+                                onChange={(e) => {
+                                  searchMarketName(e.target.value);
+                                }}
+                                className="searchbar-input"
+                            />
+                          </form>
+                          <div className="searchicon">
+                            <img src={search_img} alt="search" />
+                          </div>
+                        </div>
+                        <div className="market-names" id="scroll_style">
+                          {allMarketsData.map((item,index)=>{
+                            if(index===allMarketsData.length-1)
+                            return(
+                              <div id="mk-other-name" onClick={(e)=>{handleOtherName(e)}}>
+                                <div class="d-flex" id="ot-m-img">
+                                <img src={markets} alt="markets" />
+                                <p id="mk-other-Name">{item.marketName}</p>
+                              </div>
+                              </div>
+                            )
+                          })}
+                          {search.length>1 ?(
+                            marketName.map(item=>{
+                              return(
+                              <div id="mk-name" onClick={(name)=>{handleMarketSelection(item.marketName)}}>
+                                <div class="d-flex">
+                                <img src={markets} alt="markets" />
+                                <p key={item.id} id="mk-Name">{item.marketName}</p>
+                                </div>
+                                <span id="hr-lines"></span>
+                              </div>
+                              )
+                            })
+                          ):(
+                            allMarketsData.map(item=>{ 
+                            return(
+                              <Fragment>
+                              <div id="mk-name" onClick={(name)=>{handleMarketSelection(item.marketName)}}>
+                                <div class="d-flex">
+                                <img src={markets} alt="markets" />
+                                <p key={item.id} id="mk-Name">{item.marketName}</p>
+                                </div>
+                                
+                                <span id="hr-lines"></span>
+                              </div>
+                              </Fragment>
+                            )
+                          }))
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
+              <div className="modal fade" id="otherModalPopUp">
+                <div className="modal-dialog modal-dialog-centered date_modal_dialog market_name_popup">
+                  <div className="modal-content" id="other-modal-content">
+                    <div className="modal-header date_modal_header market_modal_header">
+                      <h5 className="modal-title header2_text" id="mk-header">
+                        Select Market
+                      </h5>
+                      <img
+                          src={close}
+                          alt="image"
+                          className="close_icon"
+                          onClick={closeOtheModalPopUp}
+                        />
+                    </div>
+                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                      <div className="col-lg-6" id="market-div">
+                        <div id="search-mk-field">
+                          <form class="d-flex">
+                            <input class="form-control me-2"
+                                id="searchbar-mk"
+                                type="text"
+                                value={"OTHER"}
+                                onChange={(e) => {
+                                  searchMarketName(e.target.value);
+                                }}
+                                className="searchbar-input"
+                            />
+                          </form>
+                        </div>
+                        <div id="search-mk-field">
+                          <InputField
+                              type="text"
+                              //value={mandiTypeField}
+                              label="Market Name"
+                              name="marketName"
+                              id="marketName"
+                              onChange={(e) => {
+                                setMarketName(e.target.value);
+                              }}
+                            />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer p-0">
+                      <button
+                        type="button"
+                        className="primary_btn cont_btn w-100 m-0"
+                        onClick={(e) =>{handleOtherMarketName(e)}
+                        }
+                      >
+                        Continue
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               {/* <InputField
                 type="text"
                 value=""
