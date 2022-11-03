@@ -326,6 +326,7 @@ const TransportoLedger = () => {
                 }
               </tbody>
             </table>
+            {/* ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)} */}
           </div>
           <div className="outstanding-pay d-flex align-items-center justify-content-between">
               <p className="pat-tag">Outstanding Paybles:</p>
