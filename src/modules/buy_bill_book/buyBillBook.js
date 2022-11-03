@@ -157,7 +157,7 @@ function BuyBillBook() {
                         </button>
 
                         <div className="dropdown-menu">
-                          <a className="dropdown-item" href="/bill_creation">
+                          <a className="dropdown-item" href="/step1">
                             Single Bill
                           </a>
                           <a className="dropdown-item" href="#">
@@ -359,7 +359,7 @@ function BuyBillBook() {
                           Lorem ipsum is placeholder text commonly used in the
                           graphic
                         </p>
-                        <Link to="/bill_creation">
+                        <Link to="/step1">
                           <Button text="Single Bill" />
                         </Link>
                       </div>

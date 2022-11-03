@@ -22,7 +22,7 @@ import TransportoLedger from "../modules/transporto_ledger/transportoLedger";
 import Registration from "../modules/registration/registration";
 import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
-
+import Step1 from "../modules/buy_bill_book/step1";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
 
@@ -72,24 +72,10 @@ const RoutesConfig = () => {
                     <Route path="/bill_view/:billId" element={<BillView />} />
                     <Route path="/calender" element={<Calender />} />
                     <Route path="/buyerledger" element={<BuyerLedger />}>
-                      {/* <Route
-                        path="ledgersummary/:partyId"
-                        element={<LedgerSummary />}
-                      />
-                      <Route
-                        path="detailedledger/:partyId"
-                        element={<DetailedLedger />}
-                      /> */}
+                    
                     </Route>
                     <Route path="/sellerledger" element={<SellerLedger />}>
-                      {/* <Route
-                        path="sellerledgersummary/:partyId"
-                        element={<SellerLedgerSummary />}
-                      />
-                      <Route
-                        path="sellerdetailedledger/:partyId"
-                        element={<SellerDetailedLedger />}
-                      /> */}
+                     
                     </Route>
                     <Route path="/partner" element={<Partner />} />
                     <Route path="/myprofile" element={<MyProfile />} />
@@ -99,6 +85,10 @@ const RoutesConfig = () => {
                     <Route
                       path="/transportoledger"
                       element={<TransportoLedger />}
+                    />
+                    <Route
+                      path="/step1"
+                      element={<Step1 />}
                     />
                   </Routes>
                 </Layout>
@@ -124,24 +114,9 @@ const RoutesConfig = () => {
                 <Route path="/bill_view/:billId" element={<BillView />} />
                 <Route path="/calender" element={<Calender />} />
                 <Route path="buyerledger" element={<BuyerLedger />}>
-                  {/* <Route
-                    path="ledgersummary/:partyId"
-                    element={<LedgerSummary />}
-                  />
-                  <Route
-                    path="detailedledger/:partyId"
-                    element={<DetailedLedger />}
-                  /> */}
                 </Route>
                 <Route path="sellerledger" element={<SellerLedger />}>
-                  {/* <Route
-                    path="sellerledgersummary/:partyId"
-                    element={<SellerLedgerSummary />}
-                  />
-                  <Route
-                    path="sellerdetailedledger/:partyId"
-                    element={<SellerDetailedLedger />}
-                  /> */}
+               
                 </Route>
                 <Route path="/partner" element={<Partner />} />
                 <Route path="/myprofile" element={<MyProfile />} />
@@ -152,6 +127,10 @@ const RoutesConfig = () => {
                   path="/transportoledger"
                   element={<TransportoLedger />}
                 />
+                  <Route
+                      path="/step1"
+                      element={<Step1 />}
+                    />
               </Routes>
             </Layout>
           </BrowserRouter>
