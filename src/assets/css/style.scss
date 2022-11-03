@@ -80,6 +80,7 @@ ul {
 .flex_class {
   display: flex;
   align-items: center;
+  margin-right: 30px;
 }
 .primary_btn,
 .btn_white,
@@ -261,4 +262,25 @@ ul {
   font-size: 13px;
   color: #121212!important;
   margin-top: 5px;
+}
+// calender
+.samrtboard_calender {
+  .react-datepicker {
+    width: 100%;
+  }
+  .react-datepicker__month-container {
+    width: 100%;
+  }
+  .react-datepicker__navigation {
+    top: 20px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 30px;
+  }
+  .react-datepicker__navigation--next {
+    right: 30px;
+  }
+  .modal-content {
+    border: none;
+  }
 }
