@@ -92,6 +92,7 @@
 #rightMark{
     padding-left: 10px;
     padding-top: 5px;
+    color: #16A12C;;
 }
 .markers{
     position: relative;
@@ -189,12 +190,9 @@
     }
     #plan1,#an-price,.markers{
         background: #16A12C;
-        #perMonth,#value,#anaul-price{
+        #perMonth,#value,#anaul-price,#rightMark{
             color: #FFFFFF;
         }
-    }
-    #rightMark{
-        background-image: url("C:\works\ono\click-portal\src\assets\images\right_mark1.svg");
     }
     .markers{
         border-bottom-left-radius: 10px;
@@ -203,4 +201,7 @@
     #features{
         color: #FFFFFF;
     }
+}
+input[type="radio"]{
+    background-color: #16A12C;
 }

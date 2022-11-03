@@ -6,9 +6,11 @@ import "../registration/subscriptionPlans.scss";
 import right_mark from "../../assets/images/right_mark.svg";
 import { Fragment } from 'react';
 import $ from "jquery";
-import "jquery-ui";
 import close from "../../assets/images/close.svg";
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+
 const SubscriptionPlans = (props) => {
 
     const [plans, setPlans]= useState([]);
@@ -53,16 +55,15 @@ const SubscriptionPlans = (props) => {
     }
     const closePopup = () => {
         $("#termsAndConditions").modal("hide");
-      };
+    };
+    let checkedValue=1;
     const agreeTerms=()=>{
         closePopup();
         navigate('/smartboard');
     }
     const handleRadioEvent=(indexes)=>{
-        console.log("radio checked");
         setIsActive(indexes);
-        console.log(indexes)
-    }
+    }       
   return (
     <div>
         <div className='row'>
@@ -72,11 +73,12 @@ const SubscriptionPlans = (props) => {
             {plans.map((item,index)=>{
             return(
             <div className='col-lg-3'>
-                <div id="plan1" className={isActive===index?'change-background':''}>
+                <div id="plan1" onClick={(e)=>{handleRadioEvent(index)}} className={isActive===index ? 'change-background':''}>
                     <div id="header-tag">
                         <div id="radio-tag">
                             <input type="radio" name="radio"  id={item.id} value={item.name} 
-                                onChange={(indexes)=>{handleRadioEvent(index)}}/>
+                                class="radio-check"
+                                checked={isActive===index} />
                             <label htmlFor="flexRadioDefault1" id="lable-name">{item.name.replace(" "," - ")}
                             </label>
                         </div>
@@ -93,7 +95,7 @@ const SubscriptionPlans = (props) => {
                                 <Fragment>
                                 <div>
                                     <span id="rightMark">
-                                    <img  src={right_mark} alt="rightmark" id="rightmark"/></span>
+                                    <FontAwesomeIcon icon={faCheck} size="xs"/></span>
                                     <span id="features">{item.name}</span>
                                 </div>
                                 </Fragment>
