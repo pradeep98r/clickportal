@@ -16,7 +16,7 @@ import postbuybillApi from "../../actions/preferencesService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectSearch from "./selectSearch";
-import Select from "react-select";
+// import Select from "react-select";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import DatePicker from "react-datepicker";
