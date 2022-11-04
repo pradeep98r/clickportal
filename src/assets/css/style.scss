@@ -29,7 +29,13 @@ a:hover {
   background-color: var(--ono-white);
 }
 .main_div_padding {
-  padding: 20px;
+  padding:25px 20px 20px;
+}
+ul {
+  li{
+    list-style: none;
+  }
+  padding-left: 0px;
 }
 :root {
   --ono-primary: #16a12c;
@@ -54,7 +60,7 @@ a:hover {
   color: var(--ono-primary-text);
 }
 .main_div {
-  width: calc(100% - 210px);
+  width: calc(100% - 210px)!important;
   overflow-x: hidden;
 }
 .main_wrapper {
