@@ -1,0 +1,41 @@
+.cropmodal_poopup{
+    .modal-dialog{
+        max-width: 1300px;
+    }
+}
+.backdrop {
+    display: none;
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: black;
+    opacity: 0.5;
+    z-index: 1;
+  }
+  .crop_search{
+      input::placeholder{
+          padding-left: 0px;
+          text-align: left;
+          color: #16a12c;
+      }
+  }
+  .crop_table{
+    height: calc(100vh - 280px);
+    overflow-y: auto;
+  }
+  .allCrops_modal{
+      .modal-content{
+        box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+      }
+  }
+  .crop:hover{
+      cursor: pointer;
+  }
+  .crop.active {
+      img{
+          border:2px solid #16a12c;
+          border-radius: 100%;
+      }
+      P{
+          font-weight: 600;
+      }
+  }
