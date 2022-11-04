@@ -59,6 +59,32 @@ const PreferredCrops = () => {
       }
     );
   };
+  
+  const [active, setIsActive] =useState(false);
+  const [cropsData, setFilteredCrops] =useState([]);
+  const searchCrop =(search)=>{
+    setSelectCrop(search);
+    if(cropItem!==""){
+      const filteredCropName=allCropsData.filter(item=>{
+        if(item.cropName.toLowerCase().includes(cropItem.toLowerCase())){
+        return(
+          item.cropName.toLowerCase().includes(cropItem.toLowerCase())
+        )}
+        else if(search==""){
+          return setIsActive(false);
+        }
+        else{
+          return setIsActive(true);
+        } 
+      })
+      setFilteredCrops(filteredCropName);
+    }
+    else{
+      //console.log(false);
+      setIsActive(false);
+      setFilteredCrops(allCropsData);
+    }
+  }
   return (
     <div>
       <div className="login_nav">
@@ -72,24 +98,14 @@ const PreferredCrops = () => {
             type="search"
             placeholder="Search"
             aria-label="Search"
-            onChange={(event) => setSelectCrop(event.target.value)}
+            onChange={(event) => searchCrop(event.target.value)}
           />
         </div>
-        {allCropsData.length > 0 && (
+        <div style={{display:active?"block":"none"}}><p>Crop Not Found</p></div>
+        {cropItem.length > 1 ? (
           <div className="cropdiv" id="scroll_style">
             <div className="d-flex flex_width">
-              {allCropsData
-                .filter((crop_item) => {
-                  if (cropItem === "") {
-                    return crop_item;
-                  } else if (
-                    crop_item.cropName
-                      .toLowerCase()
-                      .includes(cropItem.toLowerCase())
-                  ) {
-                    return crop_item;
-                  }
-                })
+              {cropsData
                 .map((crop_item, index) => (
                   <div className="cropItem_div" key={index}>
                     <div
@@ -109,7 +125,29 @@ const PreferredCrops = () => {
                 ))}
             </div>
           </div>
-        )}
+        ):(<div className="cropdiv" id="scroll_style">
+        <div className="d-flex flex_width">
+          {allCropsData
+            .map((crop_item, index) => (
+              <div className="cropItem_div" key={index}>
+                <div
+                  className={`text-center crop_div crop ${
+                    selected.includes(crop_item) ? "active" : ""
+                  }`}
+                  onClick={() => addCropOnclick(crop_item)}
+                >
+                  {/* <img src={`${selected.includes(crop_item) ? right_click : ''}`} /> */}
+                  <img
+                    src={crop_item.imageUrl}
+                    className="flex_class mx-auto crop_img"
+                  />
+                  <p>{crop_item.cropName}</p>
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+      )}
       </div>
       <div className="bottom_div pref_bottom_div">
         <button
