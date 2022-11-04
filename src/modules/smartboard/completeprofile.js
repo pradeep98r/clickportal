@@ -19,10 +19,9 @@ const CompleteProfile = (props) => {
   const clickId = loginData.clickId;
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
+
   const mandiData = JSON.parse(data);
-  const mandiUserDetails = useSelector(
-    (state) => state.mandiInfo.isMandiDetails
-  );
+  console.log(mandiEditStatus);
   const [allMarketsData, setAllMarketsData] = useState([]);
   useEffect(() => {
     getAllMarkets().then(
@@ -35,8 +34,9 @@ const CompleteProfile = (props) => {
     );
   }, []);
   // mandi name
+  console.log(mandiEditStatus,"editstatsus")
   const [mandiNameField, setMandiNameField] = useState(
-    mandiEditStatus ? mandiData.businessName : ""
+    (mandiEditStatus === true || mandiEditStatus ) ? mandiData.businessName : "g"
   );
   const [mandiNameError, setMandiNameError] = useState("");
   const handleMandiName = (e) => {
@@ -46,7 +46,7 @@ const CompleteProfile = (props) => {
   };
   //   mandi type
   const [mandiTypeField, setMandiTypeField] = useState(
-    mandiEditStatus ? mandiData.businessType : ""
+    (mandiEditStatus == true) ? mandiData.businessType : ""
   );
   const [mandiTypeError, setMandiTypeError] = useState("");
   const handleMandiType = (e) => {
@@ -55,7 +55,7 @@ const CompleteProfile = (props) => {
   };
   //   mandi short code
   const [mandiShortCode, setMandiShortCode] = useState(
-    mandiEditStatus ? mandiData.shortCode : ""
+    (mandiEditStatus == true) ? mandiData.shortCode : ""
   );
   const [mandiShortCodeError, setMandiShortCodeError] = useState("");
   const handleMandiShortCode = (e) => {
@@ -73,7 +73,7 @@ const CompleteProfile = (props) => {
   };
   //   shop number
   const [shopNumberField, setShopNumberField] = useState(
-    mandiEditStatus ? mandiData.shopNum : ""
+    (mandiEditStatus == true) ? mandiData.shopNum : ""
   );
   const [shopNumberError, setShopNumberError] = useState("");
   const handleShopNumber = (e) => {
@@ -91,7 +91,7 @@ const CompleteProfile = (props) => {
   };
   //   contact name
   const [contactName, setContactName] = useState(
-    mandiEditStatus ? mandiData.contactName : ""
+    (mandiEditStatus == true) ? mandiData.contactName : ""
   );
   const [contactNameError, setContactNameError] = useState("");
   const handleContactName = (e) => {
@@ -100,7 +100,7 @@ const CompleteProfile = (props) => {
   };
   //   mobile number
   const [mobileNumber, setmobileNumber] = useState(
-    mandiEditStatus ? mandiData.mobile : ""
+    (mandiEditStatus == true) ? mandiData.mobile : ""
   );
   const [marketname, setMarketName]= useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
@@ -108,7 +108,7 @@ const CompleteProfile = (props) => {
     mobileNumberValidation(e, "mobile");
   };
   const [alternateMobileNumber, setAlternateMobileNumber] = useState(
-    mandiEditStatus ? mandiData.altMobile : ""
+    (mandiEditStatus == true) ? mandiData.altMobile : ""
   );
   const [alternateMobileNumberError, setAlternateMobileNumberError] =
     useState("");
@@ -116,13 +116,13 @@ const CompleteProfile = (props) => {
     mobileNumberValidation(e, "alternateMobile");
   };
   const [pincode, setPincode] = useState(
-    mandiEditStatus ? mandiData.businessAddress.pincode : ""
+    (mandiEditStatus == true) ? mandiData.businessAddress.pincode : ""
   );
   const [cityVal, setCityVal] = useState(
-    mandiEditStatus ? mandiData.businessAddress.dist : ""
+    (mandiEditStatus == true) ? mandiData.businessAddress.dist : ""
   );
   const [stateVal, setStateVal] = useState(
-    mandiEditStatus ? mandiData.businessAddress.state : ""
+    (mandiEditStatus == true) ? mandiData.businessAddress.state : ""
   );
   //   common mobilenumber validation
   const mobileNumberValidation = (e, type) => {
@@ -146,7 +146,7 @@ const CompleteProfile = (props) => {
     else setAlternateMobileNumber(number);
   };
   const [streetVillage, setStreetVillage] = useState(
-    mandiEditStatus ? mandiData.businessAddress.addressLine : ""
+    (mandiEditStatus == true) ? mandiData.businessAddress.addressLine : ""
   );
   const [streetvillageError, setStreetvillageError] = useState("");
   const handleStreetName = (e) => {
@@ -208,7 +208,7 @@ const CompleteProfile = (props) => {
     // }
   };
   const obj = {
-    altMobile: mandiEditStatus ? mandiData.altMobile : alternateMobileNumber,
+    altMobile: (mandiEditStatus == true) ? mandiData.altMobile : alternateMobileNumber,
     businessAddress: {
       addressLine: streetVillage,
       city: cityVal,
@@ -217,19 +217,19 @@ const CompleteProfile = (props) => {
       state: stateVal,
       type: "BUSINESS",
     },
-    businessId: mandiEditStatus ? mandiData.businessId : 0,
+    businessId: (mandiEditStatus == true) ? mandiData.businessId : 0,
     businessName: mandiNameField,
     businessType: mandiTypeField,
     contactName: contactName,
     imageUrl: "string",
-    marketId: mandiEditStatus ? mandiData.marketId : selectMarketId,
+    //marketId: (mandiEditStatus == true) ? mandiData.marketId : selectMarketId,
     mobile: mobileNumber,
     otherMarket: marketname ? marketname:'',//"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
   };
   const addEditMandiSetupApiCall = () => {
-    if (mandiEditStatus) {
+    if (mandiEditStatus == true) {
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -708,7 +708,7 @@ const CompleteProfile = (props) => {
                   City*
                 </label>
                 <div id="city-input-wrapper">
-                  {mandiEditStatus ? (
+                  {(mandiEditStatus == true) ? (
                     <div>
                       <InputField
                         type="text"
@@ -794,7 +794,7 @@ const CompleteProfile = (props) => {
                 <label htmlFor="state" className="input_field">
                   State*
                 </label>
-                {mandiEditStatus ? (
+                {(mandiEditStatus == true) ? (
                   <input
                     id="state"
                     className="form-control"
@@ -830,7 +830,7 @@ const CompleteProfile = (props) => {
         <button
           type="button"
           className="primary_btn"
-          // onClick={props.close}
+          // onClick={props.close onSubmit()}
           onClick={() => onSubmit()}
         >
           Submit

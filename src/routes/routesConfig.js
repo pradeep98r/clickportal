@@ -57,13 +57,16 @@ const RoutesConfig = () => {
           );
         } else if (id === loginData.clickId.toString()) {
           // console.log(loginData, localStorage.getItem("status"));
-          const savePref =
+          /*const savePref =
             localStorage.getItem("status") == null
               ? ""
-              : localStorage.getItem("status");
+              : localStorage.getItem("status");*/
+              const planStatus=localStorage.getItem("statusPlan") == "FAILURE"?
+              "" : localStorage.getItem("statusPlan");
+              console.log(planStatus);
           return (
             <BrowserRouter>
-              {savePref == "SUCCESS" ? (
+              {planStatus === "SUCCESS" ? (
                 <Layout>
                   <Routes>
                     <Route path="/smartboard" element={<SmartBoard />} />
@@ -95,6 +98,7 @@ const RoutesConfig = () => {
               ) : (
                 <Routes>
                   <Route path="/preferredCrops" element={<PreferredCrops />} />
+                  <Route path="/plans" element={<SubscriptionPlans />} />
                 </Routes>
               )}
             </BrowserRouter>
@@ -107,7 +111,6 @@ const RoutesConfig = () => {
           <BrowserRouter>
             <Layout>
               <Routes>
-                <Route path="/plans" element={<SubscriptionPlans />} />
                 <Route path="/smartboard" element={<SmartBoard />} />
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />
