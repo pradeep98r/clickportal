@@ -261,18 +261,17 @@ const SmartBoard = () => {
     }
   };
   const [showModal, setShowModal] = useState(false);
-  console.log(loginData);
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
       : "noo";
-  console.log(businessCreatedStatus);
 
   const [showModalStatus, setShowModalStatus] = useState(false);
   const onClickProfiles=()=>{
     setShowModal(true);
     setShowModalStatus(true);
-    localStorage.setItem("mandiEditStatus",false)
+    localStorage.removeItem("mandiEditStatus")
+    localStorage.setItem("mandiEditStatus",false)   
   }
   return (
     <div>
