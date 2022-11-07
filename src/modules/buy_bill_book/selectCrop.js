@@ -16,7 +16,6 @@ const SelectCrop = (props) => {
     });
   };
   const addCropOnclick = (crop_item) => {
-    console.log(crop_item);
     if (!selected.includes(crop_item)) {
       let newSelected = [...selected, crop_item];
       setSelected(newSelected);
