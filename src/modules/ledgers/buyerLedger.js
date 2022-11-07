@@ -235,16 +235,26 @@ const BuyerLedger = () => {
     setIsOpen(false);
   };
   const [ledgersData, setLedgersData]= useState([]);
+  const [valueActive, setIsValueActive] =useState(false);
   //partyId = JSON.parse(localStorage.getItem("partyId"));
   const searchInput=(searchValue)=>{
     setSearch(searchValue);
     if(search!==""){
       console.log(search);
       const filterdNames=ledger.filter(item=>{
-        return(
-          item.partyName.toLowerCase().includes(search.toLowerCase()) ||
-          item.shortName.toLowerCase().includes(search.toLowerCase())
-        )
+        if(item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(searchValue.toLowerCase())){
+          return(
+            item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.shortName.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        }
+        else if(search=="" || searchValue===""){
+          return setIsValueActive(false);
+        }
+        else{
+          return setIsValueActive(true);
+        } 
       })
       setLedgersData(filterdNames);
       console.log(filterdNames,"filteredNames");
@@ -383,6 +393,7 @@ const BuyerLedger = () => {
                 }
               </tbody>
             </table>
+            <div id="search-no-data" style={{display:valueActive && search.length>0?"block":"none"}}><p>No Data Found</p></div>
           </div>
           <div className="outstanding-pay d-flex align-items-center justify-content-between">
               <p className="pat-tag">Outstanding Recievables:</p>
@@ -606,11 +617,12 @@ const BuyerLedger = () => {
                                     )}
                                   </div>
                                   <div id="ptr-dtls">
-                                    <p className="namedtl-tag">
+                                  <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
-                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
-                                    <p className="addres-tag">
+                                    <p className="mobilee-tag">{!item.trader?"Buyer":"Trader"} - {item.partyId}&nbsp;</p>
+                                    <p className="mobilee-tag">{item.mobile}</p>
+                                    <p className="address-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
                                   </div>

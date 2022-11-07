@@ -1,6 +1,6 @@
 .searchicon {
     position: absolute;
-    top: 6px;
+    top: 4px;
     left: 12px;
     color: #16A02C;
 }
@@ -81,6 +81,9 @@ input[type="search"]::placeholder {
     font-size: 13px;
     color: #939393;
 }
+input[type="search"]{  
+    padding-left: 35px; 
+}
 input[type=radio]:checked+label {
         color:#16A02C;;
 }
@@ -140,7 +143,7 @@ input[type=radio]:checked+label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 30px);
+    height: calc(100vh - 47px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;

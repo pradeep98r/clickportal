@@ -225,20 +225,31 @@ const SellerLedger = () => {
         setIsOpen(false);
     }
   const [ledgersData, setLedgersData]= useState([]);
+  const [valueActive, setIsValueActive] =useState(false);
   //partyId = JSON.parse(localStorage.getItem("partyId"));
   const searchInput=(searchValue)=>{
     setSearch(searchValue);
     if(search!==""){
       console.log(search);
       const filterdNames=ledger.filter(item=>{
+        if(item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.shortName.toLowerCase().includes(searchValue.toLowerCase())){
         return(
-          item.partyName.toLowerCase().includes(search.toLowerCase()) ||
-          item.shortName.toLowerCase().includes(search.toLowerCase())
+          item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(searchValue.toLowerCase())
         )
+        }
+        else if(search=="" || searchValue===""){
+          return setIsValueActive(false);
+        }
+        else{
+          return setIsValueActive(true);
+        } 
       })
       setLedgersData(filterdNames);
       console.log(filterdNames,"filteredNames");
     }else{
+      setIsValueActive(false);
       setLedgersData(ledger);
     }
   }
@@ -255,7 +266,7 @@ const SellerLedger = () => {
             <div className='searchicon'><img src={search_img} alt="search" /></div>
           </div>
           <div className='table-scroll' id="scroll_style">
-          <table class="table table-fixed" className="ledger-table">
+            <table class="table table-fixed" className="ledger-table">
               <thead className="theadr-tag">
                 <tr>
                   <th scope="col">#</th>
@@ -374,6 +385,7 @@ const SellerLedger = () => {
                 )}
               </tbody>
             </table>
+            <div id="search-no-data" style={{display:valueActive && search.length>0?"block":"none"}}><p>No Data Found</p></div>
           </div>
           <div className="outstanding-pay d-flex align-items-center justify-content-between">
               <p className="pat-tag">Outstanding Payables:</p>
@@ -571,11 +583,12 @@ const SellerLedger = () => {
                                     )}
                                   </div>
                                   <div id="ptr-dtls">
-                                    <p className="namedtl-tag">
+                                  <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
-                                    <p className="mobile-tag">{!item.trader?"Seller":"Trader"}-{item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
-                                    <p className="addres-tag">
+                                    <p className="mobilee-tag">{!item.trader?"Seller":"Trader"} - {item.partyId}&nbsp;</p>
+                                    <p className="mobilee-tag">{item.mobile}</p>
+                                    <p className="address-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
                                   </div>

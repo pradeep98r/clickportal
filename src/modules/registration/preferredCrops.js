@@ -101,7 +101,7 @@ const PreferredCrops = () => {
             onChange={(event) => searchCrop(event.target.value)}
           />
         </div>
-        <div style={{display:active?"block":"none"}}><p>Crop Not Found</p></div>
+        <div  id="search-no-data" style={{display:active && cropItem.length>0?"block":"none"}}><p>Crop Not Found</p></div>
         {cropItem.length > 1 ? (
           <div className="cropdiv" id="scroll_style">
             <div className="d-flex flex_width">

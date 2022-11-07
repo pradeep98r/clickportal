@@ -49,14 +49,14 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 67px);
+    height: calc(100vh - 82px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 67px);
+    height: calc(100vh - 82px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -539,6 +539,10 @@ a:hover{
     margin-left:375px;
     display: flex;
     cursor: pointer;
+}
+
+#search-no-data{
+    padding:200px 100px;
 }
 #out-tag{
     font-family: sans-serif;

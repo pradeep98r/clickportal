@@ -396,14 +396,14 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
-                                            {outStandingBal.pendingRecievables}
+                                            &#8377;{outStandingBal.pendingRecievables}
                                           </h6>
                                         )}
                                         <p>
                                           {outStandingBal.pendingRecievables ==
                                           0
                                             ? ""
-                                            : "See Buyer Ledger"}
+                                            :<a href="/buyerledger">See Buyer Ledger</a>}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -416,7 +416,7 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
-                                            {outStandingBal.totalSellBills}
+                                            &#8377;{outStandingBal.totalSellBills}
                                           </h6>
                                         )}
 
@@ -440,14 +440,14 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
-                                            {outStandingBal.pendingPaybles}
+                                            &#8377;{outStandingBal.pendingPaybles}
                                           </h6>
                                         )}
 
                                         <p className="color_blue">
                                           {outStandingBal.pendingPaybles == 0
                                             ? ""
-                                            : "See Buyer Ledger"}
+                                            :<a href="/sellerledger">See Seller Ledger</a> }
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -458,7 +458,7 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
-                                            {outStandingBal.totalBuyBills}
+                                            &#8377;{outStandingBal.totalBuyBills}
                                           </h6>
                                         )}
 
@@ -484,7 +484,7 @@ const SmartBoard = () => {
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="">Total Sales </h5>
                                         <h6 className="">
-                                          {salesReprtData.totalBusiness == 0
+                                        &#8377;{salesReprtData.totalBusiness == 0
                                             ? ""
                                             : salesReprtData.totalBusiness}
                                         </h6>
@@ -492,7 +492,7 @@ const SmartBoard = () => {
                                       <div className="col-lg-6 col2">
                                         <h5 className="">Total Quantity </h5>
                                         <h6 className="">
-                                          {salesReprtData.totalUnits == 0
+                                        &#8377;{salesReprtData.totalUnits == 0
                                             ? ""
                                             : salesReprtData.totalUnits}
                                         </h6>
@@ -518,7 +518,7 @@ const SmartBoard = () => {
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="">Total Purchases </h5>
                                         <h6 className="">
-                                          {purchaseReprtData.totalBusiness == 0
+                                        &#8377;{purchaseReprtData.totalBusiness == 0
                                             ? ""
                                             : purchaseReprtData.totalBusiness}
                                         </h6>
@@ -526,7 +526,7 @@ const SmartBoard = () => {
                                       <div className="col-lg-6 col2">
                                         <h5 className="">Total Quantity </h5>
                                         <h6 className="">
-                                          {purchaseReprtData.totalUnits == 0
+                                        &#8377;{purchaseReprtData.totalUnits == 0
                                             ? ""
                                             : purchaseReprtData.totalUnits}
                                         </h6>
@@ -589,7 +589,7 @@ const SmartBoard = () => {
                                                   Total Sales{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {cropItem.totalBusiness}
+                                                &#8377;{cropItem.totalBusiness}
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
@@ -597,7 +597,7 @@ const SmartBoard = () => {
                                                   Total Quantity{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {cropItem.totalQty}
+                                                &#8377;{cropItem.totalQty}
                                                 </h6>
                                               </div>
                                             </div>
@@ -658,7 +658,7 @@ const SmartBoard = () => {
                                                   Total Purchases{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {buycropItem.totalBusiness}
+                                                &#8377;{buycropItem.totalBusiness}
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
@@ -666,7 +666,7 @@ const SmartBoard = () => {
                                                   Total Quantity{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {buycropItem.totalQty}
+                                                &#8377;{buycropItem.totalQty}
                                                 </h6>
                                               </div>
                                             </div>
@@ -789,11 +789,11 @@ const SmartBoard = () => {
                                     <thead>
                                       <tr>
                                         <th className="col-3">Name</th>
-                                        <th className="col-2">Paid</th>
-                                        <th className="col-2">To Be Paid</th>
-                                        <th className="col-2">Past Balance</th>
+                                        <th className="col-2">Paid(&#8377;)</th>
+                                        <th className="col-2">To Be Paid(&#8377;)</th>
+                                        <th className="col-2">Past Balance(&#8377;)</th>
                                         <th className="col-3">
-                                          Total Outstanding Payables
+                                          Total Outstanding Payables(&#8377;)
                                         </th>
                                       </tr>
                                     </thead>
@@ -841,13 +841,13 @@ const SmartBoard = () => {
                                     <thead>
                                       <tr>
                                         <th className="col-3">Name</th>
-                                        <th className="col-2">Received</th>
+                                        <th className="col-2">Received(&#8377;)</th>
                                         <th className="col-2">
-                                          To Be Received
+                                          To Be Received(&#8377;)
                                         </th>
-                                        <th className="col-2">Past Balance</th>
+                                        <th className="col-2">Past Balance(&#8377;)</th>
                                         <th className="col-3">
-                                          Total Outstanding Receivables
+                                          Total Outstanding Receivables(&#8377;)
                                         </th>
                                       </tr>
                                     </thead>
@@ -897,7 +897,7 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 col_left_border">
                                       <h5 className="">Earned </h5>
                                       <h6 className="">
-                                        {commissionEarns.totalComm == 0
+                                      &#8377;{commissionEarns.totalComm == 0
                                           ? ""
                                           : commissionEarns.totalComm}
                                       </h6>
@@ -905,7 +905,7 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 pr-0">
                                       <h5 className="">Net Commissions </h5>
                                       <h6 className="">
-                                        {commissionEarns.netComm == 0
+                                      &#8377;{commissionEarns.netComm == 0
                                           ? ""
                                           : commissionEarns.netComm}
                                       </h6>
@@ -984,7 +984,7 @@ const SmartBoard = () => {
                     return (
                       <div className="daily">
                         <DatePicker
-                          dateFormat="yyyy-MM-dd"
+                          dateFormat="dd-MMM-yy"
                           selected={selectedDate}
                           onChange={(date) => setStartDate(date)}
                           className="form-control"
@@ -1004,7 +1004,7 @@ const SmartBoard = () => {
                     return (
                       <div className="weekly">
                         <DatePicker
-                          dateFormat="MM/yyyy"
+                          dateFormat="dd-MMM-yy"
                           showMonthYearPicker
                           showFullMonthYearPicker
                           selected={selectedMonthDate}
