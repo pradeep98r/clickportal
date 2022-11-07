@@ -125,7 +125,6 @@ const SmartBoard = () => {
     },
   ];
   useEffect(() => {
-    localStorage.setItem("mandiEditStatus",false);
     tabChange(tabType);
   }, []);
   const [cropItem, setCropItem] = useState(null);
@@ -262,12 +261,18 @@ const SmartBoard = () => {
     }
   };
   const [showModal, setShowModal] = useState(false);
-  console.log(loginData);
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
       : "noo";
-  console.log(businessCreatedStatus);
+
+  const [showModalStatus, setShowModalStatus] = useState(false);
+  const onClickProfiles=()=>{
+    setShowModal(true);
+    setShowModalStatus(true);
+    localStorage.removeItem("mandiEditStatus")
+    localStorage.setItem("mandiEditStatus",false)   
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -277,13 +282,15 @@ const SmartBoard = () => {
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
                   <p>Complete your Mandi Setup</p>
-                  <button onClick={() => setShowModal(true)}>
+                  <button onClick={onClickProfiles}>
                     Complete Now
                   </button>
+                  {showModalStatus ?
                   <CompleteProfile
                     show={showModal}
                     close={() => setShowModal(false)}
                   />
+                  :("")}
                 </div>
                 <NoDataAvailable />
               </div>

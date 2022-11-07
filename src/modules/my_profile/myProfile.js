@@ -86,6 +86,7 @@ const MyProfile = () => {
     setIsMandiEdit(true);
     localStorage.setItem("mandiEditStatus",true);
     dispatch(mandiInfoActions.mandiSuccess(mandiDetails));
+    console.log(mandiDetails)
     localStorage.setItem("mandiEditDetails",JSON.stringify(mandiDetails));
   }
   return (

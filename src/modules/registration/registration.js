@@ -37,6 +37,7 @@ const Registration = () => {
           console.log(localStorage.getItem("registerData"))
           toastr.success(response.data.status.description);
          navigate('/preferredCrops');
+         window.location.reload();
         } else if (response.data.status === "FAILURE") {
         } else {
         }
