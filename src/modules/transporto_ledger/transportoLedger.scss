@@ -30,7 +30,7 @@
     }
 }
 .table-scroll {
-    height: calc(100vh - 0px);
+    height: calc(100vh - 150px);
     padding:0px;
     vertical-align: top;
     border-radius: 10px 10px 0px 0px;
@@ -143,14 +143,14 @@ input[type=radio]:checked+label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 47px);
+    height: calc(100vh - 203px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
 }
 .transporterDetailed{
     width: 100%;
-    height: calc(100vh - 30px);
+    height: calc(100vh - 203px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -424,7 +424,7 @@ input[type=radio]:checked+label {
 }
 .bloc-tabs {
     display: flex;
-    padding-left: 10px;
+    padding-left: 5px;
 }
 .bloc-tab {
     display: flex;

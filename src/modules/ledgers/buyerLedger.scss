@@ -49,14 +49,14 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 82px);
+    height: calc(100vh - 233px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 82px);
+    height: calc(100vh - 233px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -521,14 +521,16 @@ a:hover{
     display: block;
     margin: auto;
     padding: 5px 5px;
+    position: relative;
+    left: -300px;
 }
 #date_icon_picker{
     cursor: pointer;
     margin: auto;
 }
 .react-datepicker-popper{
-    // margin-left: 320px;
-    // margin-top: 32px;
+    margin-left: 320px;
+    margin-top: -40px;
 }
 .react-datepicker__input-container input{
     border: none;
