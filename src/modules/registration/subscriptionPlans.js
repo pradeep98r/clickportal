@@ -21,7 +21,7 @@ const SubscriptionPlans = (props) => {
     const clickId = loginData.clickId;
 
     const navigate=useNavigate();
-
+    const [statusPlan, setStatusPlan]= useState("FAILURE");
     useEffect(()=>{
         getPlans();
         getAllPromotions();
@@ -56,10 +56,13 @@ const SubscriptionPlans = (props) => {
     const closePopup = () => {
         $("#termsAndConditions").modal("hide");
     };
-    let checkedValue=1;
+
     const agreeTerms=()=>{
         closePopup();
+        setStatusPlan("SUCCESS");
+        localStorage.setItem("statusPlan", "SUCCESS");
         navigate('/smartboard');
+        window.location.reload();
     }
     const handleRadioEvent=(indexes)=>{
         setIsActive(indexes);
