@@ -15,15 +15,20 @@ const SelectCrop = (props) => {
       allCropResponseData(response.data.data);
     });
   };
+  
+  const [stat, setStat]= useState(false);
   const addCropOnclick = (crop_item) => {
     if (!selected.includes(crop_item)) {
       let newSelected = [...selected, crop_item];
       setSelected(newSelected);
-      props.cropCallback(crop_item);
+      setStat(true)
+      props.cropCallback(crop_item,true);
     }
      else {
+      setStat(false);
       let newSelected = selected.filter((t) => t.cropId !== crop_item.cropId);
       setSelected(newSelected);
+      props.cropCallback(crop_item, false);
       console.log(newSelected,"new Selected");
     }
   };

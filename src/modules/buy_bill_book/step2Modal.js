@@ -53,12 +53,18 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  const cropDataFunction = (childData,id) => {
-    setPreferedCropsData([...preferedCropsData, childData]);
-    if(id>0){
-      let deSelectedCrop=preferedCropsData.filter(item=>item.cropId!==id)
+  
+  const cropDataFunction = (childData,status) => {
+    if(status===true){
+      console.log(status,"stat-true")
+      setPreferedCropsData([...preferedCropsData, childData]);
+    }
+    else{
+      console.log(status,"stat-false");
+      let deSelectedCrop=preferedCropsData.filter(item=>item.cropId!==childData.cropId)
       setPreferedCropsData(deSelectedCrop);
     }
+
   };
   const [selectedOption, setSelectedOption] = useState();
   const [selectedratetype, setSelectedratetype] = useState(
