@@ -448,7 +448,7 @@ const BuyerLedger = () => {
               >
                 Custom
               </button>
-              <span id="horizontal-lines-tag"></span>
+              <div id="horizontal-lines-tag"></div>
               <div
                 className="dateRangePicker"
                 style={{ display: dateDisplay ? "block" : "none" }}
@@ -590,6 +590,7 @@ const BuyerLedger = () => {
                 </div>
               </div>
             </div>
+            
             <div class="card" className="details-tag">
               <div class="card-body" id="card-details">
                 <div className="row">

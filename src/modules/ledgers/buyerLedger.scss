@@ -100,7 +100,6 @@ input[type=radio]:checked+label {
 }
 #horizontal-lines-tag{
     border-bottom:1px solid#E4E4E4;
-    float: left;
     width: 100%;
 }
 .recordbtn-style{
@@ -294,7 +293,7 @@ input[type="text"]::placeholder {
     color: #4D4D4D;
 }
 .blockers-tab {
-    display: flex;
+    //display: flex;
     margin-bottom: 30px;
 }
 .tabers{
@@ -518,11 +517,11 @@ a:hover{
     color: #16A02C;
 }
 #date_range_picker{
-    display: block;
+    //display: block;
     margin: auto;
-    padding: 5px 5px;
-    position: relative;
-    left: -300px;
+    //padding: 5px 5px;
+    //position: relative;
+    //left: -300px;
 }
 #date_icon_picker{
     cursor: pointer;

@@ -436,7 +436,7 @@ const SellerLedger = () => {
               >
                 Custom
               </button>
-              <span id="horizontal-lines-tag"></span>
+              <div id="horizontal-lines-tag"></div>
               <div className='dateRangePicker' style={{ display: dateDisplay ? 'block' : 'none' }}>
                   <div className="flex">
                       <div onClick={DateModal} id="date_range_picker"><img id="date_icon" src={date_icon} /></div>
@@ -554,9 +554,9 @@ const SellerLedger = () => {
                           </div>
                       </div>
                   </div>
+              </div>
             </div>
-            </div>
-          <div class="card" className="details-tag">
+            <div class="card" className="details-tag">
               <div class="card-body" id="card-details">
                 <div className="row">
                 {isActive!==-1 &&
