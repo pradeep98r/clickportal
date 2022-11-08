@@ -18,11 +18,23 @@ const Step2Modal = (props) => {
   const [cropInfoModal, setCropInfoModal] = useState(false);
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
+  const [count, setCount]= useState(0);
+  const [prevCount, setPrevCount]= useState(0);
   const cropOnclick = (crop, id, index) => {
     setCropId(id);
+    setState({activeCount:id});
+    if(crop.cropId===id){
+      setCount(count+1);
+      setPrevCount(0);
+    }
+    else{
+      setCount(0);
+      setPrevCount(count); 
+    }
     cropResponseData([...cropData, crop]);
     console.log(crop.units)
     preferedCropsData[index].units='Crates';
+
   };
   const allCropData = () => {
     setCropInfoModalStatus(true);
@@ -41,8 +53,12 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  const cropDataFunction = (childData) => {
+  const cropDataFunction = (childData,id) => {
     setPreferedCropsData([...preferedCropsData, childData]);
+    if(id>0){
+      let deSelectedCrop=preferedCropsData.filter(item=>item.cropId!==id)
+      setPreferedCropsData(deSelectedCrop);
+    }
   };
   const [selectedOption, setSelectedOption] = useState();
   const [selectedratetype, setSelectedratetype] = useState(
@@ -56,6 +72,7 @@ const Step2Modal = (props) => {
     total: "",
     activeLink: "",
     activeLinkRatettype: "",
+    activeCount:"",
   });
   const getQuantityInputValues = (event, index) => {
     const { name } = event.target;
@@ -119,6 +136,7 @@ const Step2Modal = (props) => {
                   key={crop.cropId}
                   onClick={() => cropOnclick(crop, crop.cropId, index)}
                 >
+                  {crop.cropId===state.activeCount?<p>{count}</p>:<p>{prevCount}</p>}
                   <img src={crop.imageUrl} className="flex_class mx-auto" />
                   <p>{crop.cropName}</p>
                 </div>

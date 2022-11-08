@@ -20,9 +20,11 @@ const SelectCrop = (props) => {
       let newSelected = [...selected, crop_item];
       setSelected(newSelected);
       props.cropCallback(crop_item);
-    } else {
-      let newSelected = selected.filter((t) => t !== crop_item);
+    }
+     else {
+      let newSelected = selected.filter((t) => t.cropId !== crop_item.cropId);
       setSelected(newSelected);
+      console.log(newSelected,"new Selected");
     }
   };
 
