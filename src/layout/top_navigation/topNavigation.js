@@ -38,7 +38,8 @@ function TopNavigation() {
       <div className="container-fluid">
         <div className="page_header">
           <h2>
-            {linkPath == "/smartboard" && "Smartboard"}
+            {/* {linkPath == "/smartboard" && "Smartboard"} */}
+            {linkValue ==1 && "Smartboard"}
             {linkValue == 2 && "Smartchart"}
             {linkValue == 3 && "Sell Bill Book"}
             {linkPath == "/buy_bill_book" && "Buy Bill Book"}

@@ -22,7 +22,7 @@ class SideNavigation extends Component {
   handleToggle = () => {
     this.setState({ isActive: !this.state.isActive });
     // console.log(isActive);
-    localStorage.setItem("isActiveMenu",!this.state.isActive);
+    localStorage.setItem("isActiveMenu", !this.state.isActive);
     // console.log("hjjj",this.state.isActive)
 
   };
@@ -122,17 +122,55 @@ class SideNavigation extends Component {
     ],
     // activeLink: null,
   };
-  
-  handleClick = (id,path) => {
+
+  handleClick = (id, path) => {
     this.setState({ activeLink: id });
     console.log(path)
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);
   };
-  componentDidMount() {}
+  getPathsId = () => {
+    var id = 1;
+    var linkPath = localStorage.getItem("LinkPath");
+    console.log(localStorage.getItem("LinkPath"));
+    switch (linkPath) {
+      case '/smartboard':
+        id = 1;
+        break;
+      case '/smartchart':
+        id = 2;
+        break;
+      case '/sellbillbook':
+        id = 3;
+        break;
+      case "/buy_bill_book":
+        id = 4;
+        break;
+      case "/buyerledger":
+        id = 5;
+        break;
+      case "/sellerledger":
+        id = 6;
+        break;
+      case "/partner":
+        id = 7;
+        break;
+      case "/myprofile":
+        id = 8;
+        break;
+      case "/reports":
+        id = 9;
+        break;
+      case "/transportoledger":
+        id = 10;
+        break;
+    }
+    return id;
+  }
+  componentDidMount() { }
   render() {
     const isActive = this.state.isActive;
-   
+
     const { links, activeLink } = this.state;
     return (
       <div>
@@ -156,12 +194,12 @@ class SideNavigation extends Component {
                 return (
                   <li key={link.id}>
                     <Link
-                      onClick={() => this.handleClick(link.id,link.to)}
+                      onClick={() => this.handleClick(link.id, link.to)}
                       className={
-                        link.className + 
+                        link.className +
                         // (link.to.replace('/', '') === link.name.toLowerCase()) 
                         // ? ( " active_item" ) : 
-                        (link.id === (activeLink != null ? activeLink : 1) ? " active_item" : "")
+                        (link.id === (activeLink != null ? activeLink : this.getPathsId()) ? " active_item" : "")
                       }
                       to={link.to}
                     >

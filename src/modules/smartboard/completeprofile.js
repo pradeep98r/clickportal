@@ -204,6 +204,8 @@ const CompleteProfile = (props) => {
     //   setRequiredshortNameField("Please Enter Short Name");
     // }
   };
+  console.log(mandiData.businessId);
+  console.log(mandiData.marketId);
   const obj = {
     altMobile: (mandiEditStatus == 'true') ? mandiData.altMobile : alternateMobileNumber,
     businessAddress: {
@@ -398,7 +400,7 @@ const CompleteProfile = (props) => {
     console.log(e.target.value);
     setSelectedOption(e.target.value);
     allMarketsData.map((item) => {
-      if (item.marketName == e.target.value) {
+      if (item.marketName === e.target.value) {
         console.log(item.marketId,"id");
         setSelectedMarketId(item.marketId)
       }
@@ -483,8 +485,8 @@ const CompleteProfile = (props) => {
               <input
                 className="form-control"
                 //value={selectMarket}
-                placeholder="Select Market Name"
-                value={marketname}
+                //placeholder="Select Market Name"
+                value={marketname?marketname:"Select Market Name"}
                 //onChange={selectedValue}
                 onClick={handleMarketName}
               />
