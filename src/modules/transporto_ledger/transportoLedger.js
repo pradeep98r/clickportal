@@ -202,14 +202,24 @@ const TransportoLedger = () => {
   };
   //transId=JSON.parse(localStorage.getItem('transId'));
   const [ledgersData, setLedgersData]= useState([]);
+  const [valueActive, setIsValueActive] =useState(false);
   const searchInput=(searchValue)=>{
     setSearch(searchValue);
     if(search!==""){
       const filterdNames=transporter.filter(item=>{
-        return(
-          item.partyName.toLowerCase().includes(search.toLowerCase()) ||
-          item.shortName.toLowerCase().includes(search.toLowerCase())
-        )
+        if(item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.shortName.toLowerCase().includes(searchValue.toLowerCase())){
+          return(
+            item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.shortName.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        }
+        else if(search=="" || searchValue===""){
+          return setIsValueActive(false);
+        }
+        else{
+          return setIsValueActive(true);
+        } 
       })
       setLedgersData(filterdNames);
       console.log(filterdNames,"filteredNames");
@@ -264,13 +274,14 @@ const TransportoLedger = () => {
                                   )}
                                   </div>
                                   <div>
-                                    <p className="namedtl-tag">
+                                  <p className="namedtl-tag">
                                       {item.partyName}
                                     </p>
+                                    <p className="mobilee-tag">{!item.trader?"Transporter":"Trader"} - {item.partyId}&nbsp;</p>
+                                    <p className="mobilee-tag">{item.mobile}</p>
                                     <p className="address-tag">
                                       {item.partyAddress ? item.partyAddress : ""}
                                     </p>
-                                    <p className="mobile-tag">{item.mobile}</p>
                                   </div>
                               </div>
                               </td>
@@ -326,6 +337,7 @@ const TransportoLedger = () => {
                 }
               </tbody>
             </table>
+            <div id="search-no-data" style={{display:valueActive && search.length>0?"block":"none"}}><p>No Data Found</p></div>
             {/* ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)} */}
           </div>
           <div className="outstanding-pay d-flex align-items-center justify-content-between">
@@ -366,13 +378,14 @@ const TransportoLedger = () => {
                                       )}
                                     </div>
                                       <div id="trans-dtl">
-                                        <p className="namedtl-tag">
-                                          {item.partyName}
-                                        </p>
-                                        <p className="mobilee-tag">{!item.trader?"Transporter":"Trader"} - {item.partyId}&nbsp;|&nbsp;{item.mobile}</p>
-                                        <p className="addres-tag">
-                                          {item.partyAddress ? item.partyAddress : ""}
-                                        </p>
+                                      <p className="namedtl-tag">
+                                      {item.partyName}
+                                      </p>
+                                      <p className="mobilee-tag">{!item.trader?"Transporter":"Trader"} - {item.partyId}&nbsp;</p>
+                                      <p className="mobilee-tag">{item.mobile}</p>
+                                      <p className="address-tag">
+                                        {item.partyAddress ? item.partyAddress : ""}
+                                      </p>
                                       </div>
                                     </div>
                                   </div>

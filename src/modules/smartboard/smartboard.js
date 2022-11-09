@@ -39,10 +39,10 @@ const SmartBoard = () => {
   const [commissionEarns, setcommissionEarns] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [weekFirstDate, setWeekFirstDate] = useState(
-    moment(new Date()).format("YYYY-MM-DD")
+    moment(new Date()).format("YYYY-MMM-DD")
   );
   const [weekLastDate, setWeekLastDate] = useState(
-    moment(new Date()).format("YYYY-MM-DD")
+    moment(new Date()).format("YYYY-MMM-DD")
   );
   const [weekStartDate, setweekStartDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
@@ -51,7 +51,7 @@ const SmartBoard = () => {
     moment(new Date()).format("DD-MMM-YYYY")
   );
   $(function () {
-    var startWeekDate = moment(new Date()).format("YYYY-MM-DD");
+    var startWeekDate = moment(new Date()).format("YYYY-MMM-DD");
     var endWeekDate = new Date();
     var selectCurrentWeek = function () {
       window.setTimeout(function () {
@@ -79,8 +79,8 @@ const SmartBoard = () => {
         );
         var dateFormat =
           inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-        var weekFdate = moment(startWeekDate).format("YYYY-MM-DD");
-        var weekLdate = moment(endWeekDate).format("YYYY-MM-DD");
+        var weekFdate = moment(startWeekDate).format("YYYY-MMM-DD");
+        var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
         setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
@@ -132,7 +132,7 @@ const SmartBoard = () => {
   const [selectedMonthDate, setSelectedMonthDate] = useState(new Date());
   const [selectedYearDate, setSelectedyearDate] = useState(new Date());
   const partnerSelectDate = moment(selectedDate).format("DD-MMM-YYYY");
-  const monthSelectDate = moment(selectedMonthDate).format("MMMM yyyy");
+  const monthSelectDate = moment(selectedMonthDate).format("MMM yyyy");
   const yearSelectDate = moment(selectedYearDate).format("yyyy");
   var fromDate = "";
   var toDate = "";
@@ -267,17 +267,17 @@ const SmartBoard = () => {
       : "noo";
 
   const [showModalStatus, setShowModalStatus] = useState(false);
-  const onClickProfiles=()=>{
+  const onClickProfiles = () => {
     setShowModal(true);
     setShowModalStatus(true);
     localStorage.removeItem("mandiEditStatus")
-    localStorage.setItem("mandiEditStatus",false)   
+    localStorage.setItem("mandiEditStatus", false)
   }
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {loginData.businessCreated === false  && businessCreatedStatus == 'noo' ? (
+          {loginData.businessCreated === false && businessCreatedStatus == 'noo' ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
@@ -286,11 +286,11 @@ const SmartBoard = () => {
                     Complete Now
                   </button>
                   {showModalStatus ?
-                  <CompleteProfile
-                    show={showModal}
-                    close={() => setShowModal(false)}
-                  />
-                  :("")}
+                    <CompleteProfile
+                      show={showModal}
+                      close={() => setShowModal(false)}
+                    />
+                    : ("")}
                 </div>
                 <NoDataAvailable />
               </div>
@@ -389,20 +389,24 @@ const SmartBoard = () => {
                                           Pending Receivables{" "}
                                         </h5>
                                         {outStandingBal.pendingRecievables ==
-                                        0 ? (
+                                          0 ? (
                                           <p className="nodata">
                                             No Data Available
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
-                                            {outStandingBal.pendingRecievables}
+                                            {outStandingBal.pendingRecievables.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                           </h6>
                                         )}
                                         <p>
                                           {outStandingBal.pendingRecievables ==
-                                          0
+                                            0
                                             ? ""
-                                            : "See Buyer Ledger"}
+                                            : <a id="buyer-link" href="/buyerledger">See Buyer Ledger</a>}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -415,7 +419,11 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
-                                            {outStandingBal.totalSellBills}
+                                            {outStandingBal.totalSellBills.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                           </h6>
                                         )}
 
@@ -439,14 +447,18 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
-                                            {outStandingBal.pendingPaybles}
+                                            {outStandingBal.pendingPaybles.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                           </h6>
                                         )}
 
                                         <p className="color_blue">
                                           {outStandingBal.pendingPaybles == 0
                                             ? ""
-                                            : "See Buyer Ledger"}
+                                            : <a href="/sellerledger">See Seller Ledger</a>}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -457,7 +469,11 @@ const SmartBoard = () => {
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
-                                            {outStandingBal.totalBuyBills}
+                                            {outStandingBal.totalBuyBills.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                           </h6>
                                         )}
 
@@ -485,7 +501,11 @@ const SmartBoard = () => {
                                         <h6 className="">
                                           {salesReprtData.totalBusiness == 0
                                             ? ""
-                                            : salesReprtData.totalBusiness}
+                                            : salesReprtData.totalBusiness.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -493,7 +513,11 @@ const SmartBoard = () => {
                                         <h6 className="">
                                           {salesReprtData.totalUnits == 0
                                             ? ""
-                                            : salesReprtData.totalUnits}
+                                            : salesReprtData.totalUnits.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                         </h6>
                                       </div>
                                     </div>
@@ -519,7 +543,11 @@ const SmartBoard = () => {
                                         <h6 className="">
                                           {purchaseReprtData.totalBusiness == 0
                                             ? ""
-                                            : purchaseReprtData.totalBusiness}
+                                            : purchaseReprtData.totalBusiness.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -527,7 +555,11 @@ const SmartBoard = () => {
                                         <h6 className="">
                                           {purchaseReprtData.totalUnits == 0
                                             ? ""
-                                            : purchaseReprtData.totalUnits}
+                                            : purchaseReprtData.totalUnits.toLocaleString('en-IN', {
+                                              maximumFractionDigits: 2,
+                                              style: 'currency',
+                                              currency: 'INR'
+                                            })}
                                         </h6>
                                       </div>
                                     </div>
@@ -588,7 +620,11 @@ const SmartBoard = () => {
                                                   Total Sales{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {cropItem.totalBusiness}
+                                                  {cropItem.totalBusiness.toLocaleString('en-IN', {
+                                                    maximumFractionDigits: 2,
+                                                    style: 'currency',
+                                                    currency: 'INR'
+                                                  })}
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
@@ -596,7 +632,11 @@ const SmartBoard = () => {
                                                   Total Quantity{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {cropItem.totalQty}
+                                                  {cropItem.totalQty.toLocaleString('en-IN', {
+                                                    maximumFractionDigits: 2,
+                                                    style: 'currency',
+                                                    currency: 'INR'
+                                                  })}
                                                 </h6>
                                               </div>
                                             </div>
@@ -657,7 +697,11 @@ const SmartBoard = () => {
                                                   Total Purchases{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {buycropItem.totalBusiness}
+                                                  {buycropItem.totalBusiness.toLocaleString('en-IN', {
+                                                    maximumFractionDigits: 2,
+                                                    style: 'currency',
+                                                    currency: 'INR'
+                                                  })}
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
@@ -665,7 +709,11 @@ const SmartBoard = () => {
                                                   Total Quantity{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {buycropItem.totalQty}
+                                                  {buycropItem.totalQty.toLocaleString('en-IN', {
+                                                    maximumFractionDigits: 2,
+                                                    style: 'currency',
+                                                    currency: 'INR'
+                                                  })}
                                                 </h6>
                                               </div>
                                             </div>
@@ -788,11 +836,11 @@ const SmartBoard = () => {
                                     <thead>
                                       <tr>
                                         <th className="col-3">Name</th>
-                                        <th className="col-2">Paid</th>
-                                        <th className="col-2">To Be Paid</th>
-                                        <th className="col-2">Past Balance</th>
+                                        <th className="col-2">Paid(&#8377;)</th>
+                                        <th className="col-2">To Be Paid(&#8377;)</th>
+                                        <th className="col-2">Past Balance(&#8377;)</th>
                                         <th className="col-3">
-                                          Total Outstanding Payables
+                                          Total Outstanding Payables(&#8377;)
                                         </th>
                                       </tr>
                                     </thead>
@@ -840,13 +888,13 @@ const SmartBoard = () => {
                                     <thead>
                                       <tr>
                                         <th className="col-3">Name</th>
-                                        <th className="col-2">Received</th>
+                                        <th className="col-2">Received(&#8377;)</th>
                                         <th className="col-2">
-                                          To Be Received
+                                          To Be Received(&#8377;)
                                         </th>
-                                        <th className="col-2">Past Balance</th>
+                                        <th className="col-2">Past Balance(&#8377;)</th>
                                         <th className="col-3">
-                                          Total Outstanding Receivables
+                                          Total Outstanding Receivables(&#8377;)
                                         </th>
                                       </tr>
                                     </thead>
@@ -896,7 +944,7 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 col_left_border">
                                       <h5 className="">Earned </h5>
                                       <h6 className="">
-                                        {commissionEarns.totalComm == 0
+                                        &#8377;{commissionEarns.totalComm == 0
                                           ? ""
                                           : commissionEarns.totalComm}
                                       </h6>
@@ -904,7 +952,7 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 pr-0">
                                       <h5 className="">Net Commissions </h5>
                                       <h6 className="">
-                                        {commissionEarns.netComm == 0
+                                        &#8377;{commissionEarns.netComm == 0
                                           ? ""
                                           : commissionEarns.netComm}
                                       </h6>
@@ -964,10 +1012,10 @@ const SmartBoard = () => {
                 {tabType == "Daily"
                   ? "Date"
                   : tabType == "Weekly"
-                  ? "Week"
-                  : tabType == "Monthly"
-                  ? "Month"
-                  : "Year"}
+                    ? "Week"
+                    : tabType == "Monthly"
+                      ? "Month"
+                      : "Year"}
               </h5>
               <img
                 src={close}
@@ -983,7 +1031,7 @@ const SmartBoard = () => {
                     return (
                       <div className="daily">
                         <DatePicker
-                          dateFormat="yyyy-MM-dd"
+                          dateFormat="dd-MMM-yy"
                           selected={selectedDate}
                           onChange={(date) => setStartDate(date)}
                           className="form-control"
@@ -1003,7 +1051,7 @@ const SmartBoard = () => {
                     return (
                       <div className="weekly">
                         <DatePicker
-                          dateFormat="MM/yyyy"
+                          dateFormat="dd-MMM-yy"
                           showMonthYearPicker
                           showFullMonthYearPicker
                           selected={selectedMonthDate}
@@ -1044,8 +1092,8 @@ const SmartBoard = () => {
                     tabType == "Daily"
                       ? selectedDate
                       : tabType == "Yearly"
-                      ? selectedYearDate
-                      : selectedMonthDate
+                        ? selectedYearDate
+                        : selectedMonthDate
                   )
                 }
               >

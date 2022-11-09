@@ -1,6 +1,6 @@
 .searchicon {
     position: absolute;
-    top: 6px;
+    top: 4px;
     left: 12px;
     color: #16A02C;
 }
@@ -30,7 +30,7 @@
     }
 }
 .table-scroll {
-    height: calc(100vh - 0px);
+    height: calc(100vh - 150px);
     padding:0px;
     vertical-align: top;
     border-radius: 10px 10px 0px 0px;
@@ -80,6 +80,9 @@ input[type="search"]::placeholder {
     font-weight: 500;
     font-size: 13px;
     color: #939393;
+}
+input[type="search"]{  
+    padding-left: 35px; 
 }
 input[type=radio]:checked+label {
         color:#16A02C;;
@@ -140,14 +143,14 @@ input[type=radio]:checked+label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 30px);
+    height: calc(100vh - 203px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
 }
 .transporterDetailed{
     width: 100%;
-    height: calc(100vh - 30px);
+    height: calc(100vh - 203px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -421,7 +424,7 @@ input[type=radio]:checked+label {
 }
 .bloc-tabs {
     display: flex;
-    padding-left: 10px;
+    padding-left: 5px;
 }
 .bloc-tab {
     display: flex;

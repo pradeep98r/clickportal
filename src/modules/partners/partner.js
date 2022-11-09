@@ -228,18 +228,34 @@ const Partner = () => {
     }
     closeAddModal();
   };
+  const [valueActive, setIsValueActive] =useState(false);
   const searchItems = (searchValue) => {
     setSearchInput(searchValue);
     if (searchInput !== "") {
       const filteredData = partnerData.filter((item) => {
-        return (
-          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.partyId
-            .toString()
-            .toLowerCase()
-            .includes(searchInput.toLowerCase())
-        );
+        if(item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
+            item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
+            item.partyId
+              .toString()
+              .toLowerCase()
+              .includes(searchInput.toLowerCase())
+          )
+          {
+            return (
+              item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
+              item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
+              item.partyId
+                .toString()
+                .toLowerCase()
+                .includes(searchInput.toLowerCase())
+            );
+          }
+          else if(searchInput=="" || searchValue===""){
+            return setIsValueActive(false);
+          }
+          else{
+            return setIsValueActive(true);
+          } 
       });
       setFilteredResults(filteredData);
     } else {
@@ -586,6 +602,7 @@ const Partner = () => {
                       <NoDataAvailable />
                     )}
                   </div>
+                  <div id="search-no-data" style={{display:valueActive && searchInput.length>0?"block":"none"}}><p>No Data Found</p></div>
                 </div>
                 <div className="col-lg-3">
                   <div className="card default_card add_partner">
