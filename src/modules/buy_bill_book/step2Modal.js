@@ -18,18 +18,16 @@ const Step2Modal = (props) => {
   const [cropInfoModal, setCropInfoModal] = useState(false);
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
-  const [count, setCount]= useState(0);
-  const [prevCount, setPrevCount]= useState(0);
+
+  //const[activeCrop, setActiveCrop]= useState(false);
   const cropOnclick = (crop, id, index) => {
     setCropId(id);
-    setState({activeCount:id});
+    console.log(crop);
     if(crop.cropId===id){
-      setCount(count+1);
-      setPrevCount(0);
-    }
-    else{
-      setCount(0);
-      setPrevCount(count); 
+      crop.count=crop.count+1;
+      crop.cropActive=true;
+      console.log(crop.cropActive);
+      console.log(crop.count,"after click");
     }
     cropResponseData([...cropData, crop]);
     console.log(crop.units)
@@ -43,6 +41,9 @@ const Step2Modal = (props) => {
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
+        response.data.data.map(item=>{
+          Object.assign(item,{count:0},{cropActive:false});
+        })
         setPreferedCropsData(response.data.data);
         console.log(response.data.data, "crops preferred");
       })
@@ -53,14 +54,31 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  
+  // const [cValue, setCValue] = useState(1)
   const cropDataFunction = (childData,status) => {
     if(status===true){
-      console.log(status,"stat-true")
-      setPreferedCropsData([...preferedCropsData, childData]);
+      //Object.assign(childData, {count:1},{cropActive:true});
+      //console.log(preferedCropsData,childData,"bboth");
+      preferedCropsData.map(item=>{
+        if(item.cropId===childData.cropId){
+          //console.log(item.count,"itemCount");
+          console.log(item.count,"Beforecount");
+          item.count++;
+          console.log(item.count,"Afetercount");
+          console.log(item);
+          setPreferedCropsData(preferedCropsData);
+        }
+        else{
+          Object.assign(childData, {count:1},{cropActive:true});
+          setPreferedCropsData([...preferedCropsData, childData]);
+          //console.log(item.count,"preferedCropsLength");
+        }
+      })
+      //console.log(preferedCropsData,"after pushed");  
     }
     else{
       console.log(status,"stat-false");
+      Object.assign(childData, {count: 1},{cropActive:false});
       let deSelectedCrop=preferedCropsData.filter(item=>item.cropId!==childData.cropId)
       setPreferedCropsData(deSelectedCrop);
     }
@@ -78,7 +96,6 @@ const Step2Modal = (props) => {
     total: "",
     activeLink: "",
     activeLinkRatettype: "",
-    activeCount:"",
   });
   const getQuantityInputValues = (event, index) => {
     const { name } = event.target;
@@ -142,7 +159,8 @@ const Step2Modal = (props) => {
                   key={crop.cropId}
                   onClick={() => cropOnclick(crop, crop.cropId, index)}
                 >
-                  {crop.cropId===state.activeCount?<p>{count}</p>:<p>{prevCount}</p>}
+                  <div style={{display:preferedCropsData[index].cropActive===true?
+                    'block':'none'}}>{preferedCropsData[index].count}</div>
                   <img src={crop.imageUrl} className="flex_class mx-auto" />
                   <p>{crop.cropName}</p>
                 </div>
