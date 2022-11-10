@@ -3,6 +3,11 @@ import { getProfile } from "../../actions/profileService";
 import NoDataAvailable from "../../components/noDataAvailable";
 import "../my_profile/myProfile.scss";
 import icon from "../../assets/images/icon.svg";
+import single_bill from "../../assets/images/bills/single_bill.svg";
+import edit from "../../assets/images/edit.svg";
+import globe from "../../assets/images/Vector.png";
+import contact from "../../assets/images/contact_img.png";
+import market_img from "../../assets/images/markets_img.png";
 import ProfileCard from "../../components/profileCard";
 import ProfileCardWithoutIcon from "../../components/profileCardWithoutIcon";
 import loading from "../../assets/images/loading.gif";
@@ -129,7 +134,7 @@ const MyProfile = () => {
                                           subTitle={
                                             profileData.personalDtls.ownerName
                                           }
-                                          imageTag={icon}
+                                          imageTag={single_bill}
                                         />
                                       </div>
                                       <div className="col-lg-4 p-0">
@@ -138,7 +143,7 @@ const MyProfile = () => {
                                           subTitle={
                                             profileData.personalDtls.contactNum
                                           }
-                                          imageTag={icon}
+                                          imageTag={contact}
                                         />
                                       </div>
                                     </div>
@@ -154,11 +159,12 @@ const MyProfile = () => {
                                   <div className="card_header">
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
-                                        <img src={icon} alt="image" />
+                                        <img src={market_img} alt="image" id="market-img"/>
                                         <h6>Business Details</h6>
                                       </div>
                                       <p onClick={() => editMandiData( profileData.businessDtls)} className="edit_text">
-                                        Edit
+                                        <img src={edit} alt="edit-img" />
+                                        {/* Edit */}
                                       </p>
                                       {
                                         isMandiEdit ? <CompleteProfile
@@ -177,7 +183,7 @@ const MyProfile = () => {
                                             profileData.businessDtls
                                               .businessName
                                           }
-                                          imageTag={icon}
+                                          imageTag={single_bill}
                                         />
                                       </div>
                                       <div className="col-lg-6 p-0">
@@ -196,7 +202,7 @@ const MyProfile = () => {
                                             profileData.businessDtls
                                               .businessAddress.pincode
                                           }
-                                          imageTag={icon}
+                                          imageTag={market_img}
                                         />
                                       </div>
                                     </div>
@@ -226,7 +232,7 @@ const MyProfile = () => {
                                           subTitle={
                                             profileData.businessDtls.marketName
                                           }
-                                          imageTag={icon}
+                                          imageTag={market_img}
                                         />
                                       </div>
                                       <div className="col-lg-6 p-0">
@@ -258,7 +264,7 @@ const MyProfile = () => {
                                           subTitle={
                                             profileData.businessDtls.mobile
                                           }
-                                          imageTag={icon}
+                                          imageTag={contact}
                                         />
                                       </div>
                                       <div className="col-lg-6 p-0">
@@ -282,14 +288,14 @@ const MyProfile = () => {
                                   <div className="card_header">
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
-                                        <img src={icon} alt="image" />
+                                        <img src={globe} alt="image" />
                                         <h6>Select your preferred language</h6>
                                       </div>
                                       <p
                                         onClick={isEdit ? onSave : onEdit}
                                         className="editsave_text"
                                       >
-                                        {isEdit ? "Save" : "Edit"}
+                                        {isEdit ? "Save" : <img src={edit} alt="edit-img" />}
                                       </p>
                                       {/* <p onClick={onSave}>save</p> */}
                                     </div>

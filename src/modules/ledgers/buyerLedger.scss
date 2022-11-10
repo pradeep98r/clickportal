@@ -49,14 +49,14 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 67px);
+    height: calc(100vh - 233px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 67px);
+    height: calc(100vh - 233px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -100,7 +100,6 @@ input[type=radio]:checked+label {
 }
 #horizontal-lines-tag{
     border-bottom:1px solid#E4E4E4;
-    float: left;
     width: 100%;
 }
 .recordbtn-style{
@@ -294,7 +293,7 @@ input[type="text"]::placeholder {
     color: #4D4D4D;
 }
 .blockers-tab {
-    display: flex;
+    //display: flex;
     margin-bottom: 30px;
 }
 .tabers{
@@ -518,17 +517,19 @@ a:hover{
     color: #16A02C;
 }
 #date_range_picker{
-    display: block;
+    //display: block;
     margin: auto;
-    padding: 5px 5px;
+    //padding: 5px 5px;
+    //position: relative;
+    //left: -300px;
 }
 #date_icon_picker{
     cursor: pointer;
     margin: auto;
 }
 .react-datepicker-popper{
-    // margin-left: 320px;
-    // margin-top: 32px;
+    margin-left: 320px;
+    margin-top: -40px;
 }
 .react-datepicker__input-container input{
     border: none;
@@ -539,6 +540,10 @@ a:hover{
     margin-left:375px;
     display: flex;
     cursor: pointer;
+}
+
+#search-no-data{
+    padding:200px 100px;
 }
 #out-tag{
     font-family: sans-serif;
