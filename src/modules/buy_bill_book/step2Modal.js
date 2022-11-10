@@ -23,15 +23,15 @@ const Step2Modal = (props) => {
   const cropOnclick = (crop, id, index) => {
     setCropId(id);
     console.log(crop);
-    if(crop.cropId===id){
-      crop.count=crop.count+1;
-      crop.cropActive=true;
+    if (crop.cropId === id) {
+      crop.count = crop.count + 1;
+      crop.cropActive = true;
       console.log(crop.cropActive);
-      console.log(crop.count,"after click");
+      console.log(crop.count, "after click");
     }
     cropResponseData([...cropData, crop]);
     console.log(crop.units)
-    preferedCropsData[index].units='Crates';
+    preferedCropsData[index].units = 'Crates';
 
   };
   const allCropData = () => {
@@ -41,8 +41,8 @@ const Step2Modal = (props) => {
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
-        response.data.data.map(item=>{
-          Object.assign(item,{count:0},{cropActive:false});
+        response.data.data.map(item => {
+          Object.assign(item, { count: 0 }, { cropActive: false });
         })
         setPreferedCropsData(response.data.data);
         console.log(response.data.data, "crops preferred");
@@ -54,32 +54,28 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  // const [cValue, setCValue] = useState(1)
-  const cropDataFunction = (childData,status) => {
-    if(status===true){
-      //Object.assign(childData, {count:1},{cropActive:true});
-      //console.log(preferedCropsData,childData,"bboth");
-      preferedCropsData.map(item=>{
-        if(item.cropId===childData.cropId){
-          //console.log(item.count,"itemCount");
-          console.log(item.count,"Beforecount");
-          item.count++;
-          console.log(item.count,"Afetercount");
-          console.log(item);
-          setPreferedCropsData(preferedCropsData);
-        }
-        else{
-          Object.assign(childData, {count:1},{cropActive:true});
-          setPreferedCropsData([...preferedCropsData, childData]);
-          //console.log(item.count,"preferedCropsLength");
-        }
-      })
-      //console.log(preferedCropsData,"after pushed");  
+  
+  const cropDataFunction = (childData, status) => {
+    if (status === true) {
+      var indexVal = preferedCropsData.findIndex((element) => {
+        return element.cropId == childData.cropId;
+      });
+      if (indexVal == -1) {
+        Object.assign(childData, { count: 1 }, { cropActive: true });
+        setPreferedCropsData([...preferedCropsData, childData]);
+      } else {
+        var existedItem = preferedCropsData[indexVal];
+        existedItem.count += 1;
+        preferedCropsData[indexVal] = existedItem;
+        console.log(preferedCropsData[indexVal]);
+        setPreferedCropsData([...preferedCropsData]);
+
+      }
     }
-    else{
-      console.log(status,"stat-false");
-      Object.assign(childData, {count: 1},{cropActive:false});
-      let deSelectedCrop=preferedCropsData.filter(item=>item.cropId!==childData.cropId)
+    else {
+      console.log(status, "stat-false");
+      Object.assign(childData, { count: 1 }, { cropActive: false });
+      let deSelectedCrop = preferedCropsData.filter(item => item.cropId !== childData.cropId)
       setPreferedCropsData(deSelectedCrop);
     }
 
@@ -121,15 +117,15 @@ const Step2Modal = (props) => {
   const [selectedOptionNnew1, setSelectedOptionNew1] = useState('Crates');
   const getQuantity = (id, index, cropitem) => (e) => {
     setState({ activeLink: id });
-    if(cropitem[index].cropId == id){
-      if(e.target.value =='kgs'){
+    if (cropitem[index].cropId == id) {
+      if (e.target.value == 'kgs') {
         setSelectedOptionNew1('kgs')
       }
-      else{
+      else {
         setSelectedOption(e.target.value);
       }
 
-      cropitem[index].units= e.target.value;
+      cropitem[index].units = e.target.value;
     }
     // setSelectedOption(e.target.value);
     setCropId(id);
@@ -159,8 +155,10 @@ const Step2Modal = (props) => {
                   key={crop.cropId}
                   onClick={() => cropOnclick(crop, crop.cropId, index)}
                 >
-                  <div style={{display:preferedCropsData[index].cropActive===true?
-                    'block':'none'}}>{preferedCropsData[index].count}</div>
+                  <div style={{
+                    display: preferedCropsData[index].cropActive === true ?
+                      'block' : 'none'
+                  }}>{preferedCropsData[index].count}</div>
                   <img src={crop.imageUrl} className="flex_class mx-auto" />
                   <p>{crop.cropName}</p>
                 </div>
@@ -189,9 +187,9 @@ const Step2Modal = (props) => {
                     >
                       {/* table */}
                       <div className="crop_table_view">
-                       
+
                         {selectedOption == "kgs" &&
-                        selectedOptionNnew1 == "kgs" ? (
+                          selectedOptionNnew1 == "kgs" ? (
                           <table
                             className="table table-bordered mb-0"
                             key={cropData[index].cropId}
@@ -255,7 +253,7 @@ const Step2Modal = (props) => {
                                 </td>
 
                                 {selectedOption == "kgs" ||
-                                cropId == cropData[index].cropId ? (
+                                  cropId == cropData[index].cropId ? (
                                   <td className="col-2">
                                     <input
                                       type="text"
@@ -298,8 +296,8 @@ const Step2Modal = (props) => {
                                 <td className="col-2">
                                   {state.quantity
                                     ? index +
-                                      (state.quantity - state.wastage) *
-                                        state.rate
+                                    (state.quantity - state.wastage) *
+                                    state.rate
                                     : 0}
                                 </td>
                               </tr>
@@ -327,7 +325,7 @@ const Step2Modal = (props) => {
                                   Wastage(
                                   {crop.cropId == state.activeLink
                                     ? selectedOption
-                                    :cropData[index].units}
+                                    : cropData[index].units}
                                   )
                                 </th>
                                 <th>Rate</th>
@@ -374,7 +372,7 @@ const Step2Modal = (props) => {
                                     className="form-control qty_dropdown dropdown"
                                     value={
                                       cropData[index].cropId ==
-                                      state.activeLinkRatettype
+                                        state.activeLinkRatettype
                                         ? selectedratetype
                                         : "kgs"
                                     }
@@ -385,7 +383,7 @@ const Step2Modal = (props) => {
                                     <option value="Crates">
                                       {" "}
                                       {cropData[index].cropId ==
-                                      state.activeLink
+                                        state.activeLink
                                         ? selectedOption
                                         : "Crates"}
                                     </option>
@@ -424,8 +422,8 @@ const Step2Modal = (props) => {
                                 <td className="col-2">
                                   {state.quantity
                                     ? index +
-                                      (state.quantity - state.wastage) *
-                                        state.rate
+                                    (state.quantity - state.wastage) *
+                                    state.rate
                                     : 0}
                                 </td>
                               </tr>
@@ -500,7 +498,7 @@ const Step2Modal = (props) => {
                                     className="form-control qty_dropdown dropdown"
                                     value={
                                       cropData[index].cropId ==
-                                      state.activeLinkRatettype
+                                        state.activeLinkRatettype
                                         ? selectedratetype
                                         : "kgs"
                                     }
@@ -511,7 +509,7 @@ const Step2Modal = (props) => {
                                     <option value="Crates">
                                       {" "}
                                       {cropData[index].cropId ==
-                                      state.activeLink
+                                        state.activeLink
                                         ? selectedOption
                                         : "Crates"}
                                     </option>
@@ -550,8 +548,8 @@ const Step2Modal = (props) => {
                                 <td className="col-2">
                                   {state.quantity
                                     ? index +
-                                      (state.quantity - state.wastage) *
-                                        state.rate
+                                    (state.quantity - state.wastage) *
+                                    state.rate
                                     : 0}
                                 </td>
                               </tr>
