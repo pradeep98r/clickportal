@@ -12,6 +12,9 @@ const SelectCrop = (props) => {
   }, []);
   const fetchCropData = () => {
     getAllCrops().then((response) => {
+      response.data.data.map(item=>{
+        Object.assign(item,{cropSelect:""});
+      })
       allCropResponseData(response.data.data);
     });
   };
@@ -20,10 +23,11 @@ const SelectCrop = (props) => {
   const addCropOnclick = (crop_item) => {
     if (!selected.includes(crop_item)) {
       let newSelected = [...selected, crop_item];
+      newSelected.map(item=>{
+        item.cropSelect="active";
+      })
       setSelected(newSelected);
       setStat(true)
-      //console.log(newSelected,"new Selected");
-      //props.cropCallback(crop_item,true);
     }
      else {
       setStat(false);
@@ -38,19 +42,14 @@ const SelectCrop = (props) => {
     console.log(selected,"to Mereged");
     if(stat===true){
       props.cropCallback(selected,true);
+      while(selected.length>0){
+        selected.pop();
+      }
     }
     else{
       props.cropCallback(selected,false);
     }
   }
-  /*const clearSelectedCrops=(e)=>{
-    console.log("clear");
-    while(selected.length > 0) {
-      selected.pop();
-    }
-    console.log(selected,"cleard Crops")
-  }*/
-
   return (
     <Modal
       show={props.show}
@@ -96,7 +95,7 @@ const SelectCrop = (props) => {
                 <div className="col-lg-2">
                   <div
                     className={`text-center crop_div mr-0 crop ${
-                      selected.includes(crop_item) ? "active" : ""
+                      selected.includes(crop_item) && crop_item.cropSelect==="active" ? "active" : ""
                     }`}
                     key={index}
                     onClick={() => addCropOnclick(crop_item)}
