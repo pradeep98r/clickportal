@@ -26,7 +26,6 @@ const Step2Modal = (props) => {
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
-      console.log(crop.cropActive);
       console.log(crop.count, "after click");
     }
     cropResponseData([...cropData, crop]);
@@ -54,27 +53,54 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const cropDataFunction = (childData, status) => {
     if (status === true) {
-      var indexVal = preferedCropsData.findIndex((element) => {
-        return element.cropId == childData.cropId;
-      });
-      if (indexVal == -1) {
-        Object.assign(childData, { count: 1 }, { cropActive: true });
-        setPreferedCropsData([...preferedCropsData, childData]);
-      } else {
-        var existedItem = preferedCropsData[indexVal];
-        existedItem.count += 1;
-        preferedCropsData[indexVal] = existedItem;
-        console.log(preferedCropsData[indexVal]);
-        setPreferedCropsData([...preferedCropsData]);
+      var list = preferedCropsData;
+      childData.map((i, ind) => {
+        var index = list.findIndex(obj => obj.cropId == i.cropId);
+        if (index != -1) {
+          var existedItem = list[index];
+          existedItem.count += 1;
+          list[index] = existedItem;
+          console.log(list[index]);
+          setPreferedCropsData([...list]);
+        } else {
+          childData.map(item => {
+            Object.assign(item, { count: 1 }, { cropActive: true });
+          })
+          setPreferedCropsData([...preferedCropsData, ...childData]);
+        }
 
-      }
+      })
+      // setPreferedCropsData(list);
+
+      // preferedCropsData.map((i,index)=>{
+      //   childData.map((f,j)=>{
+      //     console.log(i.cropName,"existing one");
+      //     if(i.cropId === f.cropId){
+      //       console.log(i.cropName,f.cropName,"checking same");
+      //       var existedItem = preferedCropsData[index];
+      //       existedItem.count += 1;
+      //       preferedCropsData[index] = existedItem;
+      //       console.log(preferedCropsData[index]);
+      //       setPreferedCropsData([...preferedCropsData]);
+      //       console.log(preferedCropsData);
+      //       //indexVal=index;
+      //       //console.group(indexVal);
+      //     }
+      //     else{
+      //       childData.map(item=>{
+      //         Object.assign(item,{count:1},{cropActive:true});
+      //       })
+      //       //Object.assign(childData, { count: 1 }, { cropActive: true });
+      //       setPreferedCropsData([...preferedCropsData,...childData]);
+      //     }
+      //   })
+      // })
     }
     else {
-      console.log(status, "stat-false");
-      Object.assign(childData, { count: 1 }, { cropActive: false });
+      //Object.assign(childData, { count: 1 }, { cropActive: false });
       let deSelectedCrop = preferedCropsData.filter(item => item.cropId !== childData.cropId)
       setPreferedCropsData(deSelectedCrop);
     }

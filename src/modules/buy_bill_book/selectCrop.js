@@ -22,25 +22,34 @@ const SelectCrop = (props) => {
       let newSelected = [...selected, crop_item];
       setSelected(newSelected);
       setStat(true)
-      console.log(newSelected,"new Selected");
-      props.cropCallback(crop_item,true);
+      //console.log(newSelected,"new Selected");
+      //props.cropCallback(crop_item,true);
     }
      else {
       setStat(false);
       let newSelected = selected.filter((t) => t.cropId !== crop_item.cropId);
       setSelected(newSelected);
-      props.cropCallback(crop_item,false);
+      //props.cropCallback(crop_item,false);
       console.log(newSelected,"new Selected");
     }
   };
 
-  const clearSelectedCrops=(e)=>{
+  const addCropClickNext=(event)=>{
+    console.log(selected,"to Mereged");
+    if(stat===true){
+      props.cropCallback(selected,true);
+    }
+    else{
+      props.cropCallback(selected,false);
+    }
+  }
+  /*const clearSelectedCrops=(e)=>{
     console.log("clear");
     while(selected.length > 0) {
       selected.pop();
     }
     console.log(selected,"cleard Crops")
-  }
+  }*/
 
   return (
     <Modal
@@ -56,7 +65,7 @@ const SelectCrop = (props) => {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={e=>{clearSelectedCrops(e);props.close()}}
+          onClick={e=>{props.close()}}
         />
         <div className="d-flex crop_search" role="search">
           <input
@@ -110,7 +119,7 @@ const SelectCrop = (props) => {
         <button
           type="button"
           className="primary_btn ml-3"
-          onClick={e=>{clearSelectedCrops(e);props.close()}}
+          onClick={e=>{addCropClickNext(e);props.close()}}
         >
           Next
         </button>
