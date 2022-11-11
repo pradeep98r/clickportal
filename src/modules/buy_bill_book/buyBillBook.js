@@ -241,10 +241,10 @@ function BuyBillBook() {
                                 key={index}
                               >
                                 <div className="row bills_rows bg_white bottom_space">
-                                  <div className="col-lg-4 col ps-0 flex_class">
+                                  <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
                                     <div className="row full_width">
                                       <div className="col-lg-7 col-sm-12 p-0 col">
-                                        <div className="bill_user_details flex_class">
+                                        <div className="bill_user_details flex_class mr-0">
                                           <img
                                             src={single_bill}
                                             className="user_icon"

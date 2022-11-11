@@ -12,21 +12,44 @@ const SelectCrop = (props) => {
   }, []);
   const fetchCropData = () => {
     getAllCrops().then((response) => {
+      response.data.data.map(item=>{
+        Object.assign(item,{cropSelect:""});
+      })
       allCropResponseData(response.data.data);
     });
   };
+  
+  const [stat, setStat]= useState(false);
   const addCropOnclick = (crop_item) => {
-    console.log(crop_item);
     if (!selected.includes(crop_item)) {
       let newSelected = [...selected, crop_item];
+      newSelected.map(item=>{
+        item.cropSelect="active";
+      })
       setSelected(newSelected);
-      props.cropCallback(crop_item);
-    } else {
-      let newSelected = selected.filter((t) => t !== crop_item);
+      setStat(true)
+    }
+     else {
+      setStat(false);
+      let newSelected = selected.filter((t) => t.cropId !== crop_item.cropId);
       setSelected(newSelected);
+      //props.cropCallback(crop_item,false);
+      console.log(newSelected,"new Selected");
     }
   };
 
+  const addCropClickNext=(event)=>{
+    console.log(selected,"to Mereged");
+    if(stat===true){
+      props.cropCallback(selected,true);
+      while(selected.length>0){
+        selected.pop();
+      }
+    }
+    else{
+      props.cropCallback(selected,false);
+    }
+  }
   return (
     <Modal
       show={props.show}
@@ -41,7 +64,7 @@ const SelectCrop = (props) => {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={props.close}
+          onClick={e=>{props.close()}}
         />
         <div className="d-flex crop_search" role="search">
           <input
@@ -72,7 +95,7 @@ const SelectCrop = (props) => {
                 <div className="col-lg-2">
                   <div
                     className={`text-center crop_div mr-0 crop ${
-                      selected.includes(crop_item) ? "active" : ""
+                      selected.includes(crop_item) && crop_item.cropSelect==="active" ? "active" : ""
                     }`}
                     key={index}
                     onClick={() => addCropOnclick(crop_item)}
@@ -95,7 +118,7 @@ const SelectCrop = (props) => {
         <button
           type="button"
           className="primary_btn ml-3"
-          onClick={props.close}
+          onClick={e=>{addCropClickNext(e);props.close()}}
         >
           Next
         </button>
