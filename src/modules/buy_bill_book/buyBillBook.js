@@ -40,9 +40,9 @@ function BuyBillBook() {
     getAllBuyBills();
   }, []);
   const getAllBuyBills = () => {
-    console.log("get");
     getBuyBills(clickId)
       .then((response) => {
+        console.log(response, "billsss");
         setBuyBillData(response.data.data);
         setLoading(false);
         console.log(response.data.data, "billsss");
@@ -87,7 +87,7 @@ function BuyBillBook() {
             </div>
           ) : (
             <div>
-              {buyBillData.length > 0 ? (
+              {/* {buyBillData.length > 0 ? (
                 <div>
                   <div className="d-flex justify-content-between bills_div">
                     <div className="d-flex">
@@ -351,7 +351,8 @@ function BuyBillBook() {
                     </div>
                   </div>
                 </div>
-              ) : (
+              ) 
+              : ( */}
                 <div className="card default_card text-center">
                   <div className="row no_data_row">
                     <div className="col-lg-6 col1">
@@ -386,7 +387,7 @@ function BuyBillBook() {
                     </div>
                   </div>
                 </div>
-              )}
+              {/* )} */}
             </div>
           )}
         </div>
