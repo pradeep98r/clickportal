@@ -82,6 +82,7 @@ const Step2Modal = (props) => {
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
+          cropResponseData([...arr])
           console.log(arr, "pushed arr");
         }
       });
