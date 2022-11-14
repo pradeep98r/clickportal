@@ -52,7 +52,8 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
   }, []);
-  var newarray = [];
+
+  var arr = [];
   const cropDataFunction = (childData, status) => {
     if (status === true) {
       var list = preferedCropsData;
@@ -62,26 +63,26 @@ const Step2Modal = (props) => {
           var existedItem = list[index];
           existedItem.count += 1;
           list[index] = existedItem;
-          console.log(list[index],list,"if");
-          setPreferedCropsData([...list, ...newarray]);
+          console.log(list[index], "if");
+          setPreferedCropsData([...list, ...arr]);
+          Object.assign(list[index], { cropActive: true });
         } else {
-          console.log(i,"else")
-            Object.assign(
-              i,
-              { count: 1 },
-              { wastageValue: 0 },
-              { unitValue: 0 },
-              { rateType: "kgs" },
-              { weightValue: 0 },
-              { rateValue: 0 },
-              { totalValue: 0 },
-              { cropActive: true },
-              { cropSelect: "" }
-            );
-            i.units = "Crates";
-            newarray.push(i);
-         setPreferedCropsData([...list, ...newarray]); 
-         cropResponseData([...childData])
+          console.log(i, "else");
+          Object.assign(
+            i,
+            { count: 1 },
+            { cropActive: true },
+            { cropSelect: "active" },
+            { wastageValue: 0 },
+            { unitValue: 0 },
+            { rateType: "kgs" },
+            { weightValue: 0 },
+            { rateValue: 0 },
+            { totalValue: 0 }
+          );
+          arr.push(i);
+          setPreferedCropsData([...preferedCropsData, ...arr]);
+          console.log(arr, "pushed arr");
         }
       });
     } else {
@@ -376,9 +377,10 @@ const Step2Modal = (props) => {
                             "lll"
                           )
                         ) : (cropData[index].cropId === state.activeLink &&
-                          cropData[index].units === selectedOptionNnew1) || 
+                            cropData[index].units === selectedOptionNnew1) ||
                           (cropData[index].cropId === cropId &&
-                          cropData[index].units === cropData[index].rateType) ? (
+                            cropData[index].units ===
+                              cropData[index].rateType) ? (
                           <table
                             className="table table-bordered mb-0"
                             key={cropData[index].cropId}
@@ -555,14 +557,20 @@ const Step2Modal = (props) => {
                               </tr>
                             </tbody>
                           </table>
-                        ) : (cropData[index].units == "kgs" && cropData[index].rateType != 'kgs') ? (
+                        ) : cropData[index].units == "kgs" &&
+                          cropData[index].rateType != "kgs" ? (
                           <table
                             className="table table-bordered mb-0"
                             key={cropData[index].cropId}
                           >
                             <thead>
                               <tr>
-                                <th>Crop {cropData[index].units + 'f' + cropData[index].rateType}</th>
+                                <th>
+                                  Crop{" "}
+                                  {cropData[index].units +
+                                    "f" +
+                                    cropData[index].rateType}
+                                </th>
                                 <th>Unit Type</th>
 
                                 <th>
@@ -683,7 +691,9 @@ const Step2Modal = (props) => {
                               <tr>
                                 <th>
                                   Crop otherr
-                                  {selectedOption + cropData[index].units + cropData[index].rateType}
+                                  {selectedOption +
+                                    cropData[index].units +
+                                    cropData[index].rateType}
                                 </th>
                                 <th>Unit Type</th>
 
@@ -790,9 +800,11 @@ const Step2Modal = (props) => {
                                     >
                                       <option value="kgs">kgs</option>
                                       <option
-                                        value={cropData[index].rateType == "kgs"
-                                        ? cropData[index].units
-                                        : cropData[index].rateType}
+                                        value={
+                                          cropData[index].rateType == "kgs"
+                                            ? cropData[index].units
+                                            : cropData[index].rateType
+                                        }
                                       >
                                         {cropData[index].rateType == "kgs"
                                           ? cropData[index].units
