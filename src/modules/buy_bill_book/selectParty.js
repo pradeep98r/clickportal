@@ -9,6 +9,10 @@ const SelectPartner = (props) => {
   const clickId = loginData.clickId;
   let [partnerData, setpartnerData] = useState([]);
   const navigate = useNavigate();
+  console.log("Select search");
+  const [getPartyItem, setGetPartyItem] = useState(null);
+  // const partyItem = localStorage.getItem("partnerSelected");
+  // console.log(localStorage.getItem("partnerSelected"));
   const fetchPertnerData = () => {
     var partnerType = "Seller";
     if (props.partyType == "Seller") {
@@ -31,13 +35,18 @@ const SelectPartner = (props) => {
   const selectParty = () => {
     setGetPartyName(true);
   };
-  const [getPartyItem, setGetPartyItem] = useState(null);
   const partySelect = (item) => {
     console.log(item);
     setGetPartyItem(item);
     setGetPartyName(false);
     props.parentCallback(item);
-    // navigate("/step1");
+    if(props.partyType == 'Seller'){
+      localStorage.setItem("selectedPartner", JSON.stringify(item));
+    }
+    else if(props.partyType == "Transporter"){
+      console.log(item)
+      localStorage.setItem("selectedTransporter", JSON.stringify(item));
+    }
   };
   useEffect(() => {
     fetchPertnerData();
