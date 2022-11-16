@@ -73,10 +73,28 @@ function BuyBillBook() {
   const handleWeekPick = (startDate, endDate) => {
     console.log(`${startDate} to ${endDate}`);
   };
-  const onclickDate = ()=>{
+  const onclickDate = () => {
     setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
-  }
+  };
+  const getCropUnit = (unit) => {
+    var unitType = "";
+    switch (unit) {
+      case "Crates":
+        unitType = "C";
+        break;
+      case "Boxes":
+        unitType = "BX";
+        break;
+      case "Bags":
+        unitType = "BG";
+        break;
+      case "Sacs":
+        unitType = "S";
+        break;
+    }
+    return unitType;
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -87,7 +105,7 @@ function BuyBillBook() {
             </div>
           ) : (
             <div>
-              {/* {buyBillData.length > 0 ? (
+              {buyBillData.length > 0 ? (
                 <div>
                   <div className="d-flex justify-content-between bills_div">
                     <div className="d-flex">
@@ -140,7 +158,7 @@ function BuyBillBook() {
                     </div>
                     <div className="d-flex">
                       <div onClick={onclickDate}>date</div>
-                      <div className="d-flex me-3" role="search">
+                      <div className="d-flex mx-3" role="search">
                         <input
                           className="form-control search"
                           type="search"
@@ -290,11 +308,20 @@ function BuyBillBook() {
                                         </div>
                                         <div className="col-lg-4 col-sm-12 col flex_class">
                                           <p className="crop_name">
-                                            {crop.qtyUnit + ":" + crop.qty} |
+                                            {crop.qty +
+                                              getCropUnit(crop.qtyUnit)}{" "}
+                                            | {crop.weight + "KGS"}
+                                            <span className="color_red">
+                                              {crop.wastage != 0
+                                                ? " - " + crop.wastage + "KGS"
+                                                : ""}{" "}
+                                            </span>
+                                            {/* {crop.qtyUnit + ":" + crop.qty}  */}
+                                            {/* |
                                             Weight:{" "}
                                             {crop.weight == null
                                               ? "0"
-                                              : crop.weight}
+                                              : crop.weight} */}
                                           </p>
                                         </div>
                                         <div className="col-lg-2 col-sm-12 col flex_class">
@@ -314,7 +341,7 @@ function BuyBillBook() {
                                     <div className="row">
                                       <div className="col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
-                                          {bill.totalPayables}
+                                          {bill.actualPaybles}
                                         </p>
                                       </div>
                                     </div>
@@ -351,8 +378,7 @@ function BuyBillBook() {
                     </div>
                   </div>
                 </div>
-              ) 
-              : ( */}
+              ) : (
                 <div className="card default_card text-center">
                   <div className="row no_data_row">
                     <div className="col-lg-6 col1">
@@ -387,23 +413,21 @@ function BuyBillBook() {
                     </div>
                   </div>
                 </div>
-              {/* )} */}
+              )}
             </div>
           )}
         </div>
       </div>
-      {
-        showDatepickerModal1 ? <DatePickerModel
-        show={showDatepickerModal}
-        close={() => setShowDatepickerModal(false)}
-      /> : <p></p>
-      }
-      
+      {showDatepickerModal1 ? (
+        <DatePickerModel
+          show={showDatepickerModal}
+          close={() => setShowDatepickerModal(false)}
+        />
+      ) : (
+        <p></p>
+      )}
 
-      <div
-        className="modal fade"
-        id="datePopupmodal"
-      >
+      <div className="modal fade" id="datePopupmodal">
         <div className="modal-dialog modal-dialog-centered date_modal_dialog">
           <div className="modal-content">
             <div className="modal-header date_modal_header">

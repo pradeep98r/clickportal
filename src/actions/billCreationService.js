@@ -49,15 +49,13 @@ export function getSellerDetailedLedgerByDate(clickId,partyId,fromDate,toDate,cl
 export function getBuyerDetailedLedger(
   clickId,
   partyId,
-  clientId,
-  clientSecre
 ) {
   return axiosCommon.get(
     `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
 
-export function getSelleLedgers(clickId, clientId, clientSecre){
+export function getSelleLedgers(clickId){
   return axiosCommon.get(
     `/click/ledgers/caId/${clickId}/type/SELLER`
   );
@@ -66,23 +64,15 @@ export function getSelleLedgers(clickId, clientId, clientSecre){
 export function getSellerDetailedLedger(
   clickId,
   partyId,
-  clientId,
-  clientSecret
 ) {
   return axiosCommon.get(
     `/account/reports/seller-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
-export function getPreferredCrops(clickId, clientId, clientSecret) {
-  return axios.get(
-    `https://dev-api.onoark.com/v1/account/preferences/caId/${clickId}/prefType/CROP`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "client-id": clientId,
-        "client-secret": clientSecret,
-      },
-    }
+export function getPreferredCrops(clickId) {
+  return axiosCommon.get(
+    `/account/preferences/caId/${clickId}/prefType/CROP`,
+   
   );
 }
 export function getAllCrops() {
@@ -109,10 +99,17 @@ export function getMandiDetails(clickId, clientId, clientSecret) {
     config
   );
 }
-export function postRecordPayment(addRecordPaymentReq, clientId, clientSecret) {
+export function postRecordPayment(addRecordPaymentReq) {
   return axiosCommon.post(
-    `https://dev-api.onoark.com/v1/click/ledgers/payment/record`,
+    `/click/ledgers/payment/record`,
     addRecordPaymentReq
+  );
+}
+export function postbuybillApi(billRequestObj) {
+  console.log(billRequestObj,"object");
+  return axiosCommon.post(
+    "/click/bills/buy-bill",
+    billRequestObj,  
   );
 }
 export default {
@@ -130,7 +127,8 @@ export default {
   postRecordPayment,
   getLedgerSummaryByDate,
   getDetailedLedgerByDate,
-  getSellerDetailedLedgerByDate
+  getSellerDetailedLedgerByDate,
+  postbuybillApi
 };
 
 // export function getBuyBills(clickId, clientId, clientSecret) {

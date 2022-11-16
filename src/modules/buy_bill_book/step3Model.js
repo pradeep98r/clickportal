@@ -5,50 +5,59 @@ import { useState, useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
-import { getPartnerData, getSystemSettings } from "../../actions/billCreationService";
+import {
+  getPartnerData,
+  getSystemSettings,
+} from "../../actions/billCreationService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
+import { postbuybillApi } from "../../actions/billCreationService";
+import { toast } from "react-toastify";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 const Step3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
+  const navigate = useNavigate();
   const partnerSelectedData = JSON.parse(
     localStorage.getItem("selectedPartner")
   );
   const transpoSelectedData = JSON.parse(
     localStorage.getItem("selectedTransporter")
   );
-
   const [partyType, setPartnerType] = useState("Seller");
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
+    getGrossTotalValue(props.slectedCropsArray);
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-      for (var i = 0; i < response.length; i++) {    
-        if(
-          response[i].billType==='BUY'){
-            if(response[i].settingName === 'COMMISSION'){
-              console.log(response[i].includeInLedger,"commiss");
-              setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-             }
-             else if(response[i].settingName === 'RETURN_COMMISSION'){
-              console.log(response[i].includeInLedger, 
-                response[i].addToGt,"return");
-                setAddRetComm(response[i].addToGt == 1 ? true : false);
-                setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
-             }  
+      for (var i = 0; i < response.length; i++) {
+        if (response[i].billType === "BUY") {
+          if (response[i].settingName === "COMMISSION") {
+            console.log(response[i].includeInLedger, "commiss");
+            setIncludeComm(response[i].includeInLedger == 1 ? true : false);
+          } else if (response[i].settingName === "RETURN_COMMISSION") {
+            console.log(
+              response[i].includeInLedger,
+              response[i].addToGt,
+              "return"
+            );
+            setAddRetComm(response[i].addToGt == 1 ? true : false);
+            setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
-         
-    }
+        }
+      }
     });
   }, []);
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
+  const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
   const fetchPertnerData = (type) => {
     var partnerType = "Seller";
     if (type == "Seller") {
@@ -90,31 +99,150 @@ const Step3Modal = (props) => {
       fetchPertnerData(type);
     }
   };
-  var grossTotal = 11880;
-  const [commValue, getCommInput] = useState("");
-  const [retcommValue, getRetCommInput] = useState("");
-  const [mandifeeValue, getMandiFeeInput] = useState("");
-  const [transportationValue, getTransportationValue] = useState("");
-  const [laborChargeValue, getLaborChargeValue] = useState("");
-  const [rentValue, getRentValue] = useState("");
-  const [levisValue, getlevisValue] = useState("");
+
+  const [grossTotal, setGrossTotal] = useState(0);
+  const [totalUnits, setTotalUnits] = useState(0);
+  const getGrossTotalValue = (items) => {
+    var total = 0;
+    var totalunitvalue = 0;
+    console.log(items);
+    for (var i = 0; i < items.length; i++) {
+      total += items[i].totalValue;
+      console.log(typeof(items[i].unitValue),"unit")
+      totalunitvalue += parseInt(items[i].unitValue);
+      console.log(totalunitvalue,"lopp");
+      setGrossTotal(total);
+      setTotalUnits(totalunitvalue);
+    }
+  };
+
+  const [commValue, getCommInput] = useState(0);
+  const [retcommValue, getRetCommInput] = useState(0);
+  const [mandifeeValue, getMandiFeeInput] = useState(0);
+  const [transportationValue, getTransportationValue] = useState(0);
+  const [laborChargeValue, getLaborChargeValue] = useState(0);
+  const [rentValue, getRentValue] = useState(0);
+  const [levisValue, getlevisValue] = useState(0);
+  const [otherfeeValue, getOtherfeeValue] = useState(0);
+  const [cashpaidValue, getCashpaidValue] = useState(0);
+  const [advancesValue, getAdvancesValue] = useState(0);
   const getTotalValue = (value) => {
-    return (value / 100) * 11880;
+    return (value / 100) * grossTotal;
   };
   const getTotalUnits = (val) => {
-    // (20 = "no of total units")
-    return val * 20;
+    return val * totalUnits;
   };
-  const getTotalBillAmount = () =>{
-    let totalValue = (grossTotal -(getTotalValue(commValue) + 
-    getTotalUnits(transportationValue) + getTotalUnits(laborChargeValue) + getTotalUnits(rentValue) + getTotalValue(mandifeeValue)));
-    if(addRetComm){
+  const getTotalBillAmount = () => {
+    var t =  parseInt((getTotalValue(commValue) +
+    getTotalUnits(transportationValue) +
+    getTotalUnits(laborChargeValue) +
+    getTotalUnits(rentValue) +
+    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)))
+    let totalValue =
+      grossTotal - t;
+    if (addRetComm) {
+      console.log(grossTotal,t,totalValue,getTotalValue(retcommValue))
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
+    } else {
+      return (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
-    else{
-      return (totalValue - getTotalValue(retcommValue)).toFixed(2); 
-    } 
+  };
+  const getFinalLedgerbalance = () =>{
+    var t =  parseInt((
+    getTotalUnits(transportationValue) +
+    getTotalUnits(laborChargeValue) +
+    getTotalUnits(rentValue) +
+    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)));
+    var finalValue = grossTotal - t;
+    if(includeComm){
+      finalValue = finalValue + getTotalValue(commValue);
+    }
+    if (addRetComm) {
+      if(includeRetComm){
+        return (finalValue + getTotalValue(retcommValue)).toFixed(2);
+      }
+    } else {
+      if(includeRetComm){
+        return (finalValue - getTotalValue(retcommValue)).toFixed(2);
+      }
+    }
+    console.log(finalValue,"final ledger bal")
   }
+  var lineItemsArray = [];
+  var cropArray = props.slectedCropsArray;
+  var len = cropArray.length;
+  for (var i = 0; i < len; i++) {
+    lineItemsArray.push({
+      cropId: cropArray[i].cropId,
+      qty: cropArray[i].unitValue,
+      qtyUnit: cropArray[i].units,
+      rate: cropArray[i].rateValue,
+      total: cropArray[i].totalValue,
+      wastage: cropArray[i].wastageValue,
+      weight: cropArray[i].weightValue,
+      rateType:
+        cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+    });
+  }
+  const billRequestObj = 
+  {
+    actualPayble: getTotalBillAmount(),
+    advance: advancesValue,
+    billDate: partnerSelectDate,
+    billStatus: "Completed",
+    caId: clickId,
+    cashPaid: cashpaidValue,
+    comm: getTotalValue(commValue),
+    commIncluded: includeComm,
+    commShown: true,
+    comments: "hi",
+    createdBy: 0,
+    farmerId: partnerSelectedData.partyId,
+    govtLevies: levisValue,
+    grossTotal: grossTotal,
+    labourCharges: getTotalUnits(laborChargeValue),
+    less: addRetComm,
+    lineItems: lineItemsArray,
+    mandiFee: mandifeeValue,
+    misc: otherfeeValue,
+    outStBal: 0,
+    paidTo: 100,
+    rent: getTotalUnits(rentValue),
+    rtComm: getTotalValue(retcommValue),
+    rtCommIncluded: includeRetComm,
+    totalPayble: 0,
+    transportation: getTotalUnits(transportationValue),
+    transporterId: transpoSelectedData.partyId,
+    updatedOn: "",
+    writerId: 0,
+    timeStamp: "",
+  };
+  // post bill request api call
+  const postbuybill = () => {
+    postbuybillApi(billRequestObj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.description, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          console.log("bill created", response.data);
+          props.closeStep3Modal();
+          // props.closeCropModal();
+          navigate('/buy_bill_book');
+          // props.cl();
+        } 
+      },
+      (error) => {
+        toast.error(error.response.data.status.description);
+      }
+    );
+  };
   return (
     <Modal
       show={props.show}
@@ -416,6 +544,7 @@ const Step3Modal = (props) => {
                 inputValue={transportationValue}
                 totalTitle="Total"
                 unitsTitle="Number of Units"
+                units={totalUnits}
               />
               <CommonCard
                 title="Labour Charges"
@@ -427,6 +556,7 @@ const Step3Modal = (props) => {
                 inputValue={laborChargeValue}
                 totalTitle="Total"
                 unitsTitle="Number of Units"
+                units={totalUnits}
               />
               <CommonCard
                 title="Rent"
@@ -438,6 +568,7 @@ const Step3Modal = (props) => {
                 inputValue={rentValue}
                 totalTitle="Total"
                 unitsTitle="Number of Units"
+                units={totalUnits}
               />
               <CommissionCard
                 title="Mandi Fee"
@@ -475,7 +606,16 @@ const Step3Modal = (props) => {
                       <h5 className="comm_card_title mb-0">Other Fee</h5>
                     </div>
                     <div className="col-lg-9 col-sm-12 col_left_border">
-                      <input type="text" placeholder="" />
+                      <input
+                        type="text"
+                        placeholder=""
+                        value={otherfeeValue}
+                        onChange={(event) =>
+                          getOtherfeeValue(
+                            event.target.value.replace(/\D/g, "")
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
@@ -487,7 +627,16 @@ const Step3Modal = (props) => {
                       <h5 className="comm_card_title mb-0">Cash Paid</h5>
                     </div>
                     <div className="col-lg-9 col-sm-12 col_left_border">
-                      <input type="text" placeholder="" />
+                      <input
+                        type="text"
+                        placeholder=""
+                        value={cashpaidValue}
+                        onChange={(event) =>
+                          getCashpaidValue(
+                            event.target.value.replace(/\D/g, "")
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
@@ -499,7 +648,16 @@ const Step3Modal = (props) => {
                       <h5 className="comm_card_title mb-0">Advances</h5>
                     </div>
                     <div className="col-lg-9 col-sm-12 col_left_border">
-                      <input type="text" placeholder="" />
+                      <input
+                        type="text"
+                        placeholder=""
+                        value={advancesValue}
+                        onChange={(event) =>
+                          getAdvancesValue(
+                            event.target.value.replace(/\D/g, "")
+                          )
+                        }
+                      />
                     </div>
                   </div>
                 </div>
@@ -523,9 +681,16 @@ const Step3Modal = (props) => {
               </div>
               <div className="totals_value">
                 <h5>Final Ledger Balance (₹)</h5>
-                <h6>{getTotalBillAmount() + 10}</h6>
+                <h6>{getFinalLedgerbalance()}</h6>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="bottom_div main_div popup_bottom_div">
+          <div className="d-flex align-items-center justify-content-end">
+            <button className="primary_btn" onClick={postbuybill}>
+              Next
+            </button>
           </div>
         </div>
       </div>
