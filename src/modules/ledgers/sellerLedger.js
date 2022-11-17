@@ -573,7 +573,7 @@ const SellerLedger = () => {
                                 <div class="d-flex">
                                   <div>
                                     {item.profilePic ? (
-                                    <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                    <img id="singles-img" src={item.profilePic} alt="buy-img" />
                                       ) : (
                                       <img
                                         id="singles-img"
@@ -624,7 +624,7 @@ const SellerLedger = () => {
                       </p>
                     </p>
                   </div>
-                  <div className="col-lg-3">
+                  <div className="col-lg-3 d-flex align-items-center">
                     <p className="out-standing">
                       Outstanding Payables
                       <p className="coloring">
@@ -636,6 +636,7 @@ const SellerLedger = () => {
                     </p>
                   </div>
                 </div>
+              <span id="horizontal-line"></span>
                 <div className="bloc-tabs">
                   <button
                     
@@ -667,7 +668,6 @@ const SellerLedger = () => {
                             <img src={print} className="print"/>
                             </div>*/}
               </div>
-              <span id="horizontal-line"></span>
           </div>
           {toggleAC==='all' && toggleState === "ledgersummary" &&
           <div className="ledgerSummary" id="scroll_style">
@@ -925,7 +925,7 @@ const SellerLedger = () => {
                                               <div class="d-flex">
                                               <div>
                                                 {item.profilePic ? (
-                                                <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                                <img id="singles-img" src={item.profilePic} alt="buy-img" />
                                                   ) : (
                                                   <img
                                                     id="singles-img"
