@@ -382,7 +382,7 @@ const SmartBoard = () => {
                               </h4>
                               <div className="row">
                                 <div className="col-lg-6 p-0">
-                                  <div className="card pending_rec_card green_card">
+                                  <div className="card pending_rec_card green_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="color_head_subtext">
@@ -437,7 +437,7 @@ const SmartBoard = () => {
                                   </div>
                                 </div>
                                 <div className="col-lg-6">
-                                  <div className="card pending_rec_card pending_pay_card warning_card">
+                                  <div className="card pending_rec_card pending_pay_card warning_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="">Pending Payables </h5>
@@ -494,7 +494,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     Sales Reports
                                   </h4>
-                                  <div className="card default_card">
+                                  <div className="card default_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="">Total Sales </h5>
@@ -536,7 +536,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     Purchase Reports
                                   </h4>
-                                  <div className="card default_card">
+                                  <div className="card default_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="">Total Purchases </h5>
@@ -577,7 +577,7 @@ const SmartBoard = () => {
                               </div>
                               <div className="row margin_bottom">
                                 <div className="col-lg-6 col_left">
-                                  <div className="card default_card">
+                                  <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
                                       Sales by Crop
                                     </h5>
@@ -654,11 +654,11 @@ const SmartBoard = () => {
                                   </div>
                                 </div>
                                 <div className="col-lg-6 col_right">
-                                  <div className="card default_card">
+                                  <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
-                                      Sales by Crop
+                                      Purchase by Crop
                                     </h5>
-                                    {cropSalesData.length != 0 ? (
+                                    {cropPurchaseData.length != 0 ? (
                                       <div>
                                         <div className="d-flex crop_data">
                                           {cropPurchaseData.map(
@@ -733,7 +733,7 @@ const SmartBoard = () => {
                               </div>
                               <div className="row margin_bottom">
                                 <div className="col-lg-6 col_left">
-                                  <div className="card default_card">
+                                  <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
                                       Sales By Buyer{" "}
                                     </h5>
@@ -774,7 +774,7 @@ const SmartBoard = () => {
                                   </div>
                                 </div>
                                 <div className="col-lg-6 col_right">
-                                  <div className="card default_card">
+                                  <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
                                       Purchase By Seller{" "}
                                     </h5>

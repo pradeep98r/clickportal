@@ -3,6 +3,17 @@
   overflow-y: auto;
   height: calc(100vh - 160px);
 }
+.smartboard_row{
+  .empty_card{
+    height: 120px;
+  }
+  .empty_card1{
+    height: 240px;
+  }
+  .empty_card2{
+    height: 140px;
+  }
+}
 .smartboard_div {
   h5,
   .trans_title {
