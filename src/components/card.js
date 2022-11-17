@@ -8,6 +8,7 @@ const CommonCard = ({
   totalTitle,
   unitsTitle,
   inputValue,
+  units
 }) => (
   <div>
     {title == "Transportation" || "Labor Charges" || "Rent" ? (
@@ -39,7 +40,7 @@ const CommonCard = ({
               />
             </div>
             <div className="col-lg-3 col-sm-12 col_left_border">
-              <input type="text" placeholder="" onChange={onChange} />
+              <input type="text" placeholder="" onChange={onChange} value={units}/>
             </div>
             <div className="col-lg-3 col-sm-12 col_left_border">
               <p className="text-center">{inputText ? inputText : 0.0}</p>

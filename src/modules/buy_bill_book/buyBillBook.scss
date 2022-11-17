@@ -6,6 +6,14 @@
   align-items: center;
   position: relative;
 }
+.bills_rows{
+  .flex_class{
+    margin-right: 0px!important;
+  }
+}
+.color_red{
+  color: var(--ono-red);
+}
 .nav-tabs {
   border-bottom: 0px;
   position: relative;

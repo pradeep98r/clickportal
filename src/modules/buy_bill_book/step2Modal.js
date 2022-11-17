@@ -14,7 +14,6 @@ const Step2Modal = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   let [preferedCropsData, setPreferedCropsData] = useState([]);
-  let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
   const [cropInfoModal, setCropInfoModal] = useState(false);
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
@@ -136,9 +135,8 @@ const Step2Modal = (props) => {
     }
     setCropId(id);
   };
-
+  const [selectedCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem);
     if (cropitem[index].cropId == id) {
       setrateValue(e.target.value);
       cropitem[index].rateValue = e.target.value;
@@ -150,9 +148,12 @@ const Step2Modal = (props) => {
         cropitem[index].totalValue =
           (cropitem[index].unitValue - cropitem[index].wastageValue) *
           cropitem[index].rateValue;
+          console.log(cropitem[index].totalValue)
       }
     }
     setCropId(id);
+    console.log(cropitem)
+    setSelectedCropsData(cropitem);
   };
   const [selectedOptionNnew1, setSelectedOptionNew1] = useState("Crates");
   const getQuantity = (id, index, cropitem) => (e) => {
@@ -199,7 +200,7 @@ const Step2Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Add Crop Information
         </h5>
-        <img alt="image" onClick={props.close} />
+        <img alt="image" onClick={props.closeCropModal} />
       </div>
 
       <div className="modal-body">
@@ -715,7 +716,7 @@ const Step2Modal = (props) => {
                                   Number of{" "}
                                   {crop.cropId == state.activeLink
                                     ? selectedOption
-                                    : cropData[index].units}
+                                    : (cropData[index].units == 'Per Kg' ?'Crates': cropData[index].units)}
                                 </th>
                                 {cropData[index].rateType == "kgs" ? (
                                   <th>
@@ -915,17 +916,20 @@ const Step2Modal = (props) => {
       ) : (
         ""
       )}
-       <div className="bottom_div main_div">
+       {cropData.length > 0 && (
+       <div className="bottom_div main_div popup_bottom_div">
             <div className="d-flex align-items-center justify-content-end">
               <button className="primary_btn" onClick={addStep3Modal}>
                 Next
               </button>
             </div>
-          </div>
+          </div>)}
           {showStep3ModalStatus ? (
           <Step3Modal
             show={showStep3Modal}
             closeStep3Modal={() => setShowStep3Modal(false)}
+            slectedCropsArray = {selectedCropsData}
+            // cl={props.closeCropModal()}
           />
         ) : (
           ""
