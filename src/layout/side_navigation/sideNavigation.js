@@ -122,10 +122,12 @@ class SideNavigation extends Component {
     ],
     // activeLink: null,
   };
-
   handleClick = (id, path) => {
     this.setState({ activeLink: id });
-    console.log(path)
+    if(path === '/buy_bill_book'){
+      localStorage.setItem("billViewStatus",false);
+    }
+    console.log(path,localStorage.getItem('billViewStatus'))
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);
   };
@@ -145,6 +147,7 @@ class SideNavigation extends Component {
         break;
       case "/buy_bill_book":
         id = 4;
+        localStorage.setItem("stepOne",false);
         break;
       case "/buyerledger":
         id = 5;
