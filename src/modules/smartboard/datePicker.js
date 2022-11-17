@@ -100,10 +100,17 @@ function DatePickerModel(props) {
       },
     });
   });
-  const onclickContinue = () =>{
+  
+  const [selectedDate, setSelectedDate] = useState("");
+  const onclickContinue = (date) =>{
     setLoading(false);
-    // props.close
+    console.log(date)
+    setSelectedDate(moment(date).format("YYYY-MM-DD"));
+    var d = moment(date).format("YYYY-MM-DD") == '' ? moment(new Date()).format("YYYY-MM-DD") :moment(date).format("YYYY-MM-DD")
+    props.parentCallback(d);
+    props.close();
   }
+
   return (
      
        <Modal show={props.show} close={props.close} id="datePopupmodal"  aria-labelledby="contained-modal-title-vcenter"
@@ -222,19 +229,15 @@ function DatePickerModel(props) {
                   </article>
                 </div>
               </div>
-            </div>
-            <div className="modal-footer p-0">
               <button
                 type="button"
                 className="primary_btn cont_btn w-100 m-0"
-                onClick={
-                    onclickContinue
-                    // props.close
-                }
+                onClick={()=>{ onclickContinue(startDate)}}
               >
                 Continue
               </button>
             </div>
+            
 
         </Modal>
   );

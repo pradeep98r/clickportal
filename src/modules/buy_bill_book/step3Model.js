@@ -14,7 +14,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import { postbuybillApi } from "../../actions/billCreationService";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 const Step3Modal = (props) => {
@@ -230,16 +231,15 @@ const Step3Modal = (props) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            toastId:'success1'
           });
           console.log("bill created", response.data);
           props.closeStep3Modal();
-          // props.closeCropModal();
           navigate('/buy_bill_book');
-          // props.cl();
         } 
       },
       (error) => {
-        toast.error(error.response.data.status.description);
+        toast.error(error.response.data.status.description, { toastId: "error1"});
       }
     );
   };
@@ -686,14 +686,16 @@ const Step3Modal = (props) => {
             </div>
           </div>
         </div>
-        <div className="bottom_div main_div popup_bottom_div">
+      
+      </div>
+      <div className="bottom_div main_div popup_bottom_div">
           <div className="d-flex align-items-center justify-content-end">
             <button className="primary_btn" onClick={postbuybill}>
               Next
             </button>
           </div>
         </div>
-      </div>
+      <ToastContainer />
     </Modal>
   );
 };

@@ -15,32 +15,18 @@ import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
 function BuyBillBook() {
-  $("[name=tab]").each(function (i, d) {
-    var p = $(this).prop("checked");
-    if (p) {
-      $("article").eq(i).addClass("on");
-    }
-  });
-  $("[name=tab]").on("change", function () {
-    var p = $(this).prop("checked");
-
-    // $(type).index(this) == nth-of-type
-    var i = $("[name=tab]").index(this);
-
-    $("article").removeClass("on");
-    $("article").eq(i).addClass("on");
-  });
+  
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
-  const clientId = loginData.authKeys.clientId;
-  const clientSecret = loginData.authKeys.clientSecret;
   const [buyBillData, setBuyBillData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
     getAllBuyBills();
   }, []);
+
+  const [dateValue, setDateValue]= useState(moment(new Date()).format("YYYY-MM-DD"));
   const getAllBuyBills = () => {
-    getBuyBills(clickId)
+    getBuyBills(clickId,dateValue)
       .then((response) => {
         console.log(response, "billsss");
         setBuyBillData(response.data.data.singleBills);
@@ -53,6 +39,10 @@ function BuyBillBook() {
   };
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
+  };
+  const callbackFunction = (childData) => {
+    console.log(childData, "child");
+    setDateValue(childData);
   };
   const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
@@ -70,9 +60,7 @@ function BuyBillBook() {
     setStartDate(start);
     setEndDate(end);
   };
-  const handleWeekPick = (startDate, endDate) => {
-    console.log(`${startDate} to ${endDate}`);
-  };
+
   const onclickDate = () => {
     setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
@@ -121,43 +109,12 @@ function BuyBillBook() {
                             All
                           </a>
                         </li>
-                        <li className="nav-item">
-                          <a
-                            className="nav-link"
-                            href="#profile"
-                            role="tab"
-                            aria-controls="profile"
-                            data-bs-toggle="tab"
-                          >
-                            Completed
-                          </a>
-                        </li>
-                        <li className="nav-item">
-                          <a
-                            className="nav-link"
-                            href="#messages"
-                            role="tab"
-                            aria-controls="messages"
-                            data-bs-toggle="tab"
-                          >
-                            Pending
-                          </a>
-                        </li>
-                        <li className="nav-item">
-                          <a
-                            className="nav-link"
-                            href="#settings"
-                            role="tab"
-                            aria-controls="settings"
-                            data-bs-toggle="tab"
-                          >
-                            Cancelled
-                          </a>
-                        </li>
+                        
                       </ul>
                     </div>
+
+                    <div onClick={onclickDate}>date</div>
                     <div className="d-flex">
-                      <div onClick={onclickDate}>date</div>
                       <div className="d-flex mx-3" role="search">
                         <input
                           className="form-control search"
@@ -351,30 +308,7 @@ function BuyBillBook() {
                             ))}
                         </div>
                       </div>
-                      <div
-                        className="tab-pane"
-                        id="profile"
-                        role="tabpanel"
-                        aria-labelledby="profile-tab"
-                      >
-                        Profile...
-                      </div>
-                      <div
-                        className="tab-pane"
-                        id="messages"
-                        role="tabpanel"
-                        aria-labelledby="messages-tab"
-                      >
-                        Messages...
-                      </div>
-                      <div
-                        className="tab-pane"
-                        id="settings"
-                        role="tabpanel"
-                        aria-labelledby="settings-tab"
-                      >
-                        Settings...
-                      </div>
+                     
                     </div>
                   </div>
                 </div>
@@ -422,6 +356,7 @@ function BuyBillBook() {
         <DatePickerModel
           show={showDatepickerModal}
           close={() => setShowDatepickerModal(false)}
+          parentCallback={callbackFunction}
         />
       ) : (
         <p></p>
