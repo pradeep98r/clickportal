@@ -92,8 +92,7 @@ input[type=radio]:checked+label {
     }
 }
 #horizontal-line{
-    position: relative;
-    top: -25px;
+    margin: 10px 0px;
     border-bottom:1px solid#E4E4E4;
     display: flex;
     width: 100%;
@@ -125,6 +124,8 @@ input[type=radio]:checked+label {
 }
 #verticalLines{
     border-right:1px solid #E4E4E4;
+    display: flex;
+    align-items: center;
 }
 .content {
     background: white;
@@ -242,7 +243,7 @@ input[type=radio]:checked+label {
 #card-details{
     flex: 1 1 auto;
     min-height: 1px;
-    padding:10px 10px;
+    padding:10px 10px 0px;
 }
 .pat-tag{
     font-size: 12px;
@@ -266,18 +267,16 @@ input[type="text"]::placeholder {
     display: flex;
 }
 .tabsl {
-    position: relative;
-    padding:0px 10px;
-    top: 11.5px;
+    padding: 0px;
     cursor: pointer;
     outline: none;
     font-weight: 700;
     font-size: 12px;
     align-items: center;
-    letter-spacing: 0.02em;
     color: #4D4D4D;
     border: none;
     background: none;
+    margin-right: 20px;
 }
 .active-tabs  {
     color: green;
