@@ -7,6 +7,9 @@ import SelectCrop from "./selectCrop";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import Step3Modal from "./step3Model";
+import toastr from "toastr";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -22,6 +25,15 @@ const Step2Modal = (props) => {
   const cropOnclick = (crop, id, index) => {
     setCropId(id);
     console.log(crop);
+    Object.assign(
+      crop,
+      { wastageValue: 0 },
+      { unitValue: 0 },
+      { rateType: "kgs" },
+      { weightValue: 0 },
+      { rateValue: 0 },
+      { totalValue: 0 }
+    );
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
@@ -65,7 +77,7 @@ const Step2Modal = (props) => {
           list[index] = existedItem;
           console.log(list[index], "if");
           setPreferedCropsData([...list, ...arr]);
-          cropResponseData([...arr]);
+          cropResponseData([...cropData, ...arr]);
           Object.assign(list[index], { cropActive: true });
         } else {
           console.log(i, "else");
@@ -83,7 +95,7 @@ const Step2Modal = (props) => {
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
-          cropResponseData([...arr]);
+          cropResponseData([...cropData, ...arr]);
           console.log(arr, "pushed arr");
         }
       });
@@ -188,20 +200,71 @@ const Step2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
-    setShowStep3ModalStatus(true);
-    setShowStep3Modal(true);
-    if (true) {
-      // props.closeCropModal();
-    }
+    cropData.map((item, index) => {
+      console.log(cropData[index].unitValue)
+      if(cropData[index].unitValue == 0){
+        toast.error('Please enter Quantity', {
+          toastId: "error1" ,
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      else if(cropData[index].weightValue == 0){
+        toast.error('Please enter weight', {
+          toastId: "error2" ,
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      else if(cropData[index].rateValue == 0){
+        toast.error('Please enter rate', {
+          toastId: "error3" ,
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      else if(cropData[index].unitValue != 0 && cropData[index].weightValue != 0 &&cropData[index].rateValue != 0){
+        setShowStep3ModalStatus(true);
+        setShowStep3Modal(true);
+      }
+    })
+  
   };
   const cloneCrop = (crop) => {
-    cropResponseData([...cropData, crop]);
+    var list = preferedCropsData;
+      var index = list.findIndex((obj) => obj == crop);
+      if (index != -1) {
+        list[index].count += 1;
+      console.log(list[index].count,list[index],"count")
+      }
+      cropResponseData([...cropData, crop]);
   };
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
+    var list = preferedCropsData;
     if (index != -1) {
       console.log(index, crop);
       cropArray.splice(index, 1);
+      var index1 = list.findIndex((obj) => obj == crop);
+      if (index1 != -1) {
+        list[index1].count -= 1;
+      console.log(list[index1].count,list[index1],"count")
+      }
     }
     cropResponseData([...cropArray]);
   };
@@ -225,7 +288,7 @@ const Step2Modal = (props) => {
             <div className="d-flex total_crops_div">
               {preferedCropsData.map((crop, index) => (
                 <div
-                  className="text-center crop_div"
+                  className="text-center crop_div crop_div_ui"
                   key={crop.cropId}
                   onClick={() => cropOnclick(crop, crop.cropId, index)}
                 >
@@ -233,13 +296,13 @@ const Step2Modal = (props) => {
                     style={{
                       display:
                         preferedCropsData[index].cropActive === true
-                          ? "block"
+                          ? preferedCropsData[index].count == 0 ? 'none': "block"
                           : "none",
-                    }}
+                    }} className="crp_count"
                   >
-                    {preferedCropsData[index].count}
+                    {preferedCropsData[index].count == 0 ? '': preferedCropsData[index].count}
                   </div>
-                  <img src={crop.imageUrl} className="flex_class mx-auto" />
+                  <img src={crop.imageUrl} className="flex_class mx-auto " />
                   <p>{crop.cropName}</p>
                 </div>
               ))}
@@ -939,8 +1002,9 @@ const Step2Modal = (props) => {
                             </table>
                           )}
                         </div>
+                        <div className="delete_copy_div d-flex">
                         <div
-                          className="flex_class sub_icons_div"
+                          className="flex_class mr-0 sub_icons_div"
                           onClick={cloneCrop.bind(this, crop)}
                         >
                           <img
@@ -950,7 +1014,7 @@ const Step2Modal = (props) => {
                           />
                         </div>
                         <div
-                          className="flex_class sub_icons_div"
+                          className="flex_class mr-0 sub_icons_div"
                           onClick={deleteCrop.bind(this, crop, cropData)}
                         >
                           <img
@@ -959,6 +1023,7 @@ const Step2Modal = (props) => {
                             alt="image"
                           />
                         </div>
+                          </div>
                       </div>
                     </div>
                   ))}
@@ -996,6 +1061,7 @@ const Step2Modal = (props) => {
       ) : (
         ""
       )}
+      <ToastContainer />
     </Modal>
   );
 };
