@@ -8,9 +8,9 @@ export function deletePartnerId(partyId, clickId) {
     `/common/reset/caId/${clickId}/partyId/${partyId}?clearPartner=true`
   );
 }
-export function getBuyBills(clickId) {
+export function getBuyBills(clickId,date) {
   return axiosCommon.get(
-    `/click/bills/buy-bill/caId/${clickId}?fromDate=2022-01-01&toDate=2022-12-30`
+    `/click/bills/buy-bill/caId/${clickId}?fromDate=${date}&toDate=${date}`
   );
 }
 export function editPartnerItem(obj) {

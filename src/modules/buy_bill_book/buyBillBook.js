@@ -23,8 +23,10 @@ function BuyBillBook() {
   useEffect(() => {
     getAllBuyBills();
   }, []);
+
+  const [dateValue, setDateValue]= useState(moment(new Date()).format("YYYY-MM-DD"));
   const getAllBuyBills = () => {
-    getBuyBills(clickId)
+    getBuyBills(clickId,dateValue)
       .then((response) => {
         console.log(response, "billsss");
         setBuyBillData(response.data.data);
@@ -37,6 +39,10 @@ function BuyBillBook() {
   };
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
+  };
+  const callbackFunction = (childData) => {
+    console.log(childData, "child");
+    setDateValue(childData);
   };
   const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
@@ -350,6 +356,7 @@ function BuyBillBook() {
         <DatePickerModel
           show={showDatepickerModal}
           close={() => setShowDatepickerModal(false)}
+          parentCallback={callbackFunction}
         />
       ) : (
         <p></p>
