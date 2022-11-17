@@ -10,7 +10,7 @@ export function deletePartnerId(partyId, clickId) {
 }
 export function getBuyBills(clickId) {
   return axiosCommon.get(
-    `/click/bills/buy-bill/caId/${clickId}?fromDate=2022-01-01&toDate=2022-12-30`
+    `/click/bills/buy-bills/caId/${clickId}?fromDate=2022-01-01&toDate=2022-12-30`
   );
 }
 export function editPartnerItem(obj) {
@@ -90,30 +90,15 @@ export function getAllCrops() {
 
   });
 }
-export function getSystemSettings(clickId, clientId, clientSecret) {
-  return axios.get(
-    `https://dev-api.onoark.com/v1/click/bcp-settings/caId/371`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "client-id": "klT68w3ey9apljo",
-        "client-secret": "cqFHj2glsqVLHq0bA80zmNqzu",
-      },
-    }
+export function getSystemSettings(clickId) {
+  return axiosCommon.get(
+    `/click/bcp-settings/caId/${clickId}`
   );
 }
 
-export function getMandiDetails(clickId, clientId, clientSecret) {
-  let config = {
-    headers: {
-      "Content-Type": "application/json",
-      "client-id": clientId,
-      "client-secret": clientSecret,
-    },
-  };
-  return axios.get(
-    `https://dev-api.onoark.com/v1/account/click/profiles/caId/${clickId}`,
-    config
+export function getMandiDetails(clickId) {
+  return axiosCommon.get(
+    `/account/click/profiles/caId/${clickId}`
   );
 }
 export function postRecordPayment(addRecordPaymentReq, clientId, clientSecret) {
