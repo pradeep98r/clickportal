@@ -899,6 +899,7 @@ const Partner = () => {
                           <span className="date_icon m-0">
                             <img src={date_icon} alt="icon" />
                           </span>
+                          <div className="date_field partner_date">
                           <DatePicker
                             dateFormat="yyyy-MM-dd"
                             selected={startDate}
@@ -907,6 +908,7 @@ const Partner = () => {
                             placeholder="Date"
                             maxDate={new Date()}
                           />
+                          </div>
                         </label>
                       </div>
                     ) : (

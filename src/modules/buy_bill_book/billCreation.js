@@ -12,7 +12,7 @@ import CommissionCard from "../../components/commissionCard";
 import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
-import postbuybillApi from "../../actions/preferencesService";
+import postbuybillApi from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectSearch from "./selectSearch";
@@ -191,7 +191,7 @@ function BillCreation() {
   };
   // post bill request api call
   const postbuybill = () => {
-    postbuybillApi(billRequestObj, clientId, clientSecret).then(
+    postbuybillApi(billRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.description, {

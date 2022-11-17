@@ -368,7 +368,7 @@ const TransportoLedger = () => {
                                     <div class="d-flex">
                                     <div>
                                       {item.profilePic ? (
-                                      <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                      <img id="singles-img" src={item.profilePic} alt="buy-img" />
                                         ) : (
                                         <img
                                           id="singles-img"
@@ -468,7 +468,7 @@ const TransportoLedger = () => {
                                               <div class="d-flex">
                                               <div>
                                                 {item.profilePic ? (
-                                                <img className="singles-img" src={item.profilePic} alt="buy-img" />
+                                                <img id="singles-img" src={item.profilePic} alt="buy-img" />
                                                   ) : (
                                                   <img
                                                     id="singles-img"

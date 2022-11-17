@@ -6,6 +6,17 @@
   align-items: center;
   position: relative;
 }
+.bills_rows{
+  .flex_class{
+    margin-right: 0px!important;
+  }
+}
+.bills_rows:hover{
+  cursor: pointer;
+}
+.color_red{
+  color: var(--ono-red);
+}
 .nav-tabs {
   border-bottom: 0px;
   position: relative;
@@ -392,14 +403,31 @@ option[value=""][disabled] {
 }
 // addition/deduction css
 .comm_cards {
+  .col-sm-12{
+    padding: 10px;
+  }
   .comm_card_title {
     font-size: var(--body-text);
     color: var(--ono-primary-text);
     margin-bottom: 10px;
+    line-height: normal;
+  }
+  .title_bg{
+    background-color: #E7F8EB;
+    border-radius: 10px 0px 0px 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 0px;
   }
   .comm_card_sub_title {
     font-size: var(--body-small-text);
     color: var(--ono-subtext);
+    z-index: 99;
+    position: absolute;
+    bottom: -11px;
+    background: #fff;
+    padding: 0px 2px;
   }
   margin-bottom: 20px;
 }
@@ -428,6 +456,9 @@ input:focus-visible {
   padding: 15px;
   overflow-y: auto;
   height: calc(100vh - 210px);
+}
+.total_bal{
+  height: auto;
 }
 .table_row {
   overflow-y: auto;

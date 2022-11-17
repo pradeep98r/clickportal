@@ -21,9 +21,7 @@ class SideNavigation extends Component {
 
   handleToggle = () => {
     this.setState({ isActive: !this.state.isActive });
-    // console.log(isActive);
     localStorage.setItem("isActiveMenu", !this.state.isActive);
-    // console.log("hjjj",this.state.isActive)
 
   };
   state = {
