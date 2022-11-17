@@ -82,21 +82,13 @@ export function getAllCrops() {
 }
 export function getSystemSettings(clickId) {
   return axiosCommon.get(
-    `https://dev-api.onoark.com/v1/click/bcp-settings/caId/${clickId}`,
+    `/click/bcp-settings/caId/${clickId}`
   );
 }
 
-export function getMandiDetails(clickId, clientId, clientSecret) {
-  let config = {
-    headers: {
-      "Content-Type": "application/json",
-      "client-id": clientId,
-      "client-secret": clientSecret,
-    },
-  };
-  return axios.get(
-    `https://dev-api.onoark.com/v1/account/click/profiles/caId/${clickId}`,
-    config
+export function getMandiDetails(clickId) {
+  return axiosCommon.get(
+    `/account/click/profiles/caId/${clickId}`
   );
 }
 export function postRecordPayment(addRecordPaymentReq) {

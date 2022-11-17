@@ -29,9 +29,9 @@ function BuyBillBook() {
     getBuyBills(clickId,dateValue)
       .then((response) => {
         console.log(response, "billsss");
-        setBuyBillData(response.data.data);
+        setBuyBillData(response.data.data.singleBills);
         setLoading(false);
-        console.log(response.data.data, "billsss");
+        console.log(response.data.data.singleBills, "billsss");
       })
       .catch((error) => {
         console.log(error);

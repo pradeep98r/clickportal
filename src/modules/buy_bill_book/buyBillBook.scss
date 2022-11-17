@@ -812,8 +812,68 @@ article.on {
     font-weight: 700;
   }
 }
+.total-qty{
+  color: #121212;
+  font-weight: 700;
+font-size: 10px;
+}
 .partner_info_padding {
   padding: 5px 20px;
+}
+.more-inf-tag{
+background: #FFFFFF;
+border: 1px solid #E4E4E4;
+border-radius: 10px;
+}
+.more-info{
+  padding:20px 20px;
+}
+.buy-dtl{
+  padding-top: 10px;
+  width: 100%;
+}
+.actions{
+  padding: 5px 20px;
+}
+.more-p-tag{
+  font-weight: 600;
+font-size: 15px;
+color: #1C1C1C;
+}
+.buyer_img{
+  width: 40px;
+  height: 40px;
+}
+.b-cr-by,.d-a-time{
+  color: #4D4D4D;
+  font-weight: 600;
+  font-size: 10px
+}
+.b-name{
+  font-weight: 600;
+font-size: 13px;
+color: #121212;
+}
+.d-a-value{
+  font-weight: 600;
+font-size: 13px;
+color: #121212;
+word-wrap: normal;
+}
+.hr-line{
+  border-bottom: 1px solid  #EFF3EF;
+  width: 100%;
+}
+.table-bordered th{
+  color: #121212;
+  font-size: 9px;
+}
+.crop-tbl{
+  td{
+    font-size: 10px;
+    color: #121212;
+  }
+  
 }
 // .table > :not(:first-child) {
 //   border-top: 0;
@@ -830,9 +890,9 @@ article.on {
   width: 35px;
   margin-right: 10px;
 }
-.red_text {
-  color: var(--ono-red);
-}
+// .red_text {
+//   color: var(--ono-red);
+// }
 .total_value {
   font-size: 12px;
   color: #121212;
@@ -858,7 +918,38 @@ article.on {
 }
 .buy_bills_view {
   overflow-y: auto;
-  height: calc(100vh - 260px);
+  height: calc(100vh - 72px);
+}
+.groups_value{
+  font-weight: 700;
+font-size: 10px;
+color: #121212;
+}
+.align-items{
+  text-align: left;
+}
+.group-one-total{
+  padding-left: 250px;
+}
+.total-pay{
+  padding-left: 70px;
+}
+.total-pay p{
+  color: #121212;
+  font-weight: 700;
+font-size: 10px;
+}
+.pay-value{
+  padding-left: 107px;
+}
+.out-value{
+  padding-left: 58px;
+}
+.out-st-bal{
+  background: #D7F3DD;
+}
+.out-st{
+  padding: 5px 5px;
 }
 // calenderr popup styles
 .dates_div {
