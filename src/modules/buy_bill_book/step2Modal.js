@@ -6,6 +6,7 @@ import { getPreferredCrops } from "../../actions/billCreationService";
 import SelectCrop from "./selectCrop";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
+import Step3Modal from "./step3Model";
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -65,6 +66,7 @@ const Step2Modal = (props) => {
           list[index] = existedItem;
           console.log(list[index], "if");
           setPreferedCropsData([...list, ...arr]);
+          cropResponseData([...arr])
           Object.assign(list[index], { cropActive: true });
         } else {
           console.log(i, "else");
@@ -182,8 +184,17 @@ const Step2Modal = (props) => {
     }
     setCropId(id);
   };
+  const [showStep3Modal, setShowStep3Modal] = useState(false);
+  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
+  const addStep3Modal = ()=>{
+    setShowStep3ModalStatus(true);
+    setShowStep3Modal(true);
+    if(true){
+      // props.closeCropModal();
+    }
+  }
   return (
-    <Modal show={props.show} close={props.close} className="cropmodal_poopup">
+    <Modal show={props.show} close={props.closeCropModal} className="cropmodal_poopup">
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Add Crop Information
@@ -904,6 +915,21 @@ const Step2Modal = (props) => {
       ) : (
         ""
       )}
+       <div className="bottom_div main_div">
+            <div className="d-flex align-items-center justify-content-end">
+              <button className="primary_btn" onClick={addStep3Modal}>
+                Next
+              </button>
+            </div>
+          </div>
+          {showStep3ModalStatus ? (
+          <Step3Modal
+            show={showStep3Modal}
+            closeStep3Modal={() => setShowStep3Modal(false)}
+          />
+        ) : (
+          ""
+        )}
     </Modal>
   );
 };

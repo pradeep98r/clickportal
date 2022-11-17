@@ -57,7 +57,8 @@ const Step1 = () => {
               </div>
             </div>
             <div className="col-lg-3 p-0">
-              <SelectPartner partyType="Transporter" />
+              <SelectPartner partyType="Transporter"  
+              parentCallback={callbackFunction}/>
             </div>
           </div>
         </div>
@@ -77,7 +78,7 @@ const Step1 = () => {
         {showCropModalStatus ? (
           <Step2Modal
             show={showCropModal}
-            close={() => setShowCropModal(false)}
+            closeCropModal={() => setShowCropModal(false)}
           />
         ) : (
           ""
