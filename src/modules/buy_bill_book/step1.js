@@ -21,6 +21,17 @@ const Step1 = () => {
     setShowCropModalStatus(true);
     setShowCropModal(true);
   };
+  const [checked, setChecked] = useState(false);
+  const handleCheckEvent = () =>{
+    setChecked(!checked);
+    if(!checked){
+      console.log("checked");
+      setStartDate(selectedDate);
+    } else{
+      console.log(new Date())
+      setStartDate(new Date());
+    }
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -48,6 +59,7 @@ const Step1 = () => {
                     className="custom-control-input"
                     id="modal_checkbox"
                     value="my-value"
+                    onChange={handleCheckEvent}
                   />
                   <span className="custom-control-indicator"></span>
                   <span className="custom-control-description">
