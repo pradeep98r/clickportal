@@ -73,7 +73,7 @@ function BuyBillBook() {
     stepOneHeader=true;
     localStorage.setItem("stepOne",stepOneHeader); 
   }
-  };
+
   const getCropUnit = (unit) => {
     var unitType = "";
     switch (unit) {

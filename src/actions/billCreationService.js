@@ -10,7 +10,7 @@ export function deletePartnerId(partyId, clickId) {
 }
 export function getBuyBills(clickId,date) {
   return axiosCommon.get(
-    `/click/bills/buy-bill/caId/${clickId}?fromDate=${date}&toDate=${date}`
+    `/click/bills/buy-bills/caId/${clickId}?fromDate=${date}&toDate=${date}`
   );
 }
 export function editPartnerItem(obj) {

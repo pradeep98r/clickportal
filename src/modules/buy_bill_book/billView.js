@@ -5,7 +5,7 @@ import {
 } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
-
+var groupOne = [];
 const BillView = ()=> {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -14,7 +14,6 @@ const BillView = ()=> {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
@@ -164,7 +163,43 @@ const BillView = ()=> {
     return groupFourTotal;
   }
 
-
+  const getCropUnit = (unit) => {
+    var unitType = "";
+    switch (unit) {
+      case "CRATES":
+        unitType = "C";
+        break;
+      case "BOXES":
+        unitType = "BX";
+        break;
+      case "BAGS":
+        unitType = "Bg";
+        break;
+      case "SACS":
+        unitType = "S";
+        break;
+    }
+    return unitType;
+  };
+  const handleSettingName = (item) =>{
+    item = "";
+    switch(item){
+      case "COMM_INCLUDE":
+        item="";
+        break;
+      case "DEFAULT_RATE_TYPE":
+        item="";
+        break;
+      case "SKIP_INDIVIDUAL_EXP":
+        item = "";
+        break;
+      case "BILL_EDIT":
+        item = "";
+        break;
+    }
+    console.log(item);
+    return item;
+  }
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -290,13 +325,13 @@ const BillView = ()=> {
                                 src={item.imageUrl}
                                 className="crop_image_bill"
                               />
-                              <p> {item.cropName}</p>
+                              <p className="crop-name"> {item.cropName}</p>
                             </div>
                           </td>
                           <td className="col-3">
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
-                            <p>{item.qty == null ? "" : item.qty + " " + item.qtyUnit.charAt(item) + " | "}
+                            <p>{item.qty == null ? "" : item.qty + " " + getCropUnit(item.qtyUnit) + " | "}
                               {item.weight == null ? "" : item.weight + " KGS  - "} <span className="red_text">
                                 {item.wastage == null ? "" : item.wastage + " KGS "}</span></p>
                           </td>
@@ -351,7 +386,7 @@ const BillView = ()=> {
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6 align-items">
                             <p className="groups_value"> 
-                            {(item.settingName)} : </p>
+                            {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -359,7 +394,7 @@ const BillView = ()=> {
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupOneTotals().toFixed(2)}</p>
+                        <p>{groupOneTotals().toFixed(2) == 0 ? '':groupOneTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div>
@@ -367,7 +402,7 @@ const BillView = ()=> {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName)} : </p>
+                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -383,7 +418,7 @@ const BillView = ()=> {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName)} : </p>
+                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -399,7 +434,7 @@ const BillView = ()=> {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName)} : </p>
+                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
