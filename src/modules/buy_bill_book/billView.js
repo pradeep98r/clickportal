@@ -6,10 +6,7 @@ import {
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 var groupOne = [];
-var grouptwo = [];
-var groupthree = [];
-var groupfour =[];
-function BillView() {
+const BillView = ()=> {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const clientId = loginData.authKeys.clientId;
@@ -17,7 +14,10 @@ function BillView() {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  console.log(singleBillData);
+  var grouptwo = [];
+  var groupthree = [];
+  var groupfour = [];
+  // console.log(singleBillData);
   useEffect(() => {
     getBusinessDetails();
     getBuyBillsById();
@@ -33,40 +33,41 @@ function BillView() {
   };
   const [groupone, setGroupOne] = useState([]);
   const [groupTwo, setGroupTwo] = useState([]);
-  const [groupThree, setGroupThre] = useState([]);
+  const [groupThree, setGroupThree] = useState([]);
   const [groupFour, setGroupFour] = useState([]);
-
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      groupOne=[];
-      grouptwo=[];
-      groupthree=[];
-      groupfour=[];
+      // groupOne = [];
+      // grouptwo = [];
+      // groupthree = [];
+      // groupfour = [];
       billSettingData(res.data.data.billSetting);
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
         if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
-          groupOne.push(res.data.data.billSetting[i]);
-          setGroupOne([...groupone, ...groupOne])
+          groupOne=[res.data.data.billSetting[i],...groupOne];
+          setGroupOne([groupone,...groupOne]);
+          console.log(groupOne,"main Group");
         }
-        else if (res.data.data.billSetting[i].groupId == 2 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
-          grouptwo.push(res.data.data.billSetting[i]);
-          setGroupTwo([...groupTwo,...grouptwo]);
+        else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+          grouptwo=[res.data.data.billSetting[i],...grouptwo];
+          setGroupTwo([groupTwo,...grouptwo]);
+          console.log(grouptwo,"Group2");
         }
-        else if (res.data.data.billSetting[i].groupId == 3 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
-          groupthree.push(res.data.data.billSetting[i]);
-          setGroupThre([...groupThree,...groupthree]);
+        else if (res.data.data.billSetting[i].groupId === 3 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+          groupthree=[res.data.data.billSetting[i],...groupthree];
+          setGroupThree([groupThree,...groupthree]);
         }
-        else if(res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
-          groupfour.push(res.data.data.billSetting[i]);
-          setGroupFour([...groupFour,...groupfour]);
+        else if (res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+          groupfour=[res.data.data.billSetting[i],...groupfour];
+          setGroupFour([groupFour,...groupfour]);
         }
       }
     });
   };
-  // console.log(groupOne);
-  const handleGroupNames = (name) =>{
+  console.log(groupone);
+  const handleGroupNames = (name) => {
     var value = 0;
-    switch(name){
+    switch (name) {
       case "COMMISSION":
         value = singleBillData?.comm;
         break;
@@ -89,7 +90,7 @@ function BillView() {
         value = singleBillData?.otherFee;
         break;
       case "GOVT_LEVIES":
-        value= singleBillData?.govtLevies;
+        value = singleBillData?.govtLevies;
         break;
       case "CASH_PAID":
         value = singleBillData?.cashPaid;
@@ -98,29 +99,29 @@ function BillView() {
         value = singleBillData?.advance;
         break;
       case "CUSTOM_FIELD1":
-        value = singleBillData.customFields.map(item=>{
-          if(item.field === name){
+        value = singleBillData.customFields.map(item => {
+          if (item.field === name) {
             return item.fee;
           }
         });
         break;
       case "CUSTOM_FIELD2":
-        value = singleBillData.customFields.map(item=>{
-          if(item.field === name){
+        value = singleBillData.customFields.map(item => {
+          if (item.field === name) {
             return item.fee;
           }
         });
         break;
       case "CUSTOM_FIELD3":
-        value = singleBillData.customFields.map(item=>{
-          if(item.field === name){
+        value = singleBillData.customFields.map(item => {
+          if (item.field === name) {
             return item.fee;
           }
         });
         break;
       case "CUSTOM_FIELD4":
-        value = singleBillData.customFields.map(item=>{
-          if(item.field === name){
+        value = singleBillData.customFields.map(item => {
+          if (item.field === name) {
             return item.fee;
           }
         });
@@ -131,43 +132,79 @@ function BillView() {
   var cratesTotal = 0;
   var sacsTotal = 0;
   var bagsTotal = 0;
-  var boxesTotal =0;
+  var boxesTotal = 0;
   var kgsTotal = 0;
   var groupOneTotal = 0;
   var groupTwoTotal = 0;
   var groupThreeTotal = 0;
   var groupFourTotal = 0;
-  const groupOneTotals = () =>{
-    groupone.map(item=>{
+  const groupOneTotals = () => {
+    groupone.map(item => {
       groupOneTotal += handleGroupNames(item.settingName);
     })
     return groupOneTotal;
   }
-  const groupTwoTotals = () =>{
-    groupTwo.map(item=>{
+  const groupTwoTotals = () => {
+    groupTwo.map(item => {
       groupTwoTotal += handleGroupNames(item.settingName);
     })
     return groupTwoTotal;
   }
-  const groupThreeTotals = () =>{
-    groupThree.map(item=>{
+  const groupThreeTotals = () => {
+    groupThree.map(item => {
       groupThreeTotal += handleGroupNames(item.settingName);
     })
     return groupThreeTotal;
   }
-  const groupFourTotals = () =>{
-    groupFour.map(item=>{
+  const groupFourTotals = () => {
+    groupFour.map(item => {
       groupFourTotal += handleGroupNames(item.settingName);
     })
     return groupFourTotal;
   }
-  
-  
+
+  const getCropUnit = (unit) => {
+    var unitType = "";
+    switch (unit) {
+      case "CRATES":
+        unitType = "C";
+        break;
+      case "BOXES":
+        unitType = "BX";
+        break;
+      case "BAGS":
+        unitType = "Bg";
+        break;
+      case "SACS":
+        unitType = "S";
+        break;
+    }
+    return unitType;
+  };
+  const handleSettingName = (item) =>{
+    item = "";
+    switch(item){
+      case "COMM_INCLUDE":
+        item="";
+        break;
+      case "DEFAULT_RATE_TYPE":
+        item="";
+        break;
+      case "SKIP_INDIVIDUAL_EXP":
+        item = "";
+        break;
+      case "BILL_EDIT":
+        item = "";
+        break;
+    }
+    console.log(item);
+    return item;
+  }
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
         <div className="row">
-          <div className="col-lg-8 col_left">
+          <div className="col-lg-7 col_left">
             <div className="bill_view_card buy_bills_view" id="scroll_style">
               <div className="bill_view_header">
                 <div className="row bill_view_top_header">
@@ -180,7 +217,8 @@ function BillView() {
                   <div className="col-lg-6 text-center credit_bill">
                     Cash / Credit Bill
                   </div>
-                  <div className="col-lg-3 text-end">
+                  <div className="col-lg-1"></div>
+                  <div className="col-lg-2 text-end">
                     <p className="small_text">
                       {mandiData.businessDtls?.contactName}
                     </p>
@@ -238,7 +276,7 @@ function BillView() {
               </div>
               <div className="bill_crop_details">
                 <div className="row partner_info_padding">
-                  <div className="col-lg-4">
+                  <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">
                         Bill To {singleBillData.partyType}:{" "}
@@ -248,7 +286,7 @@ function BillView() {
                       </h6>
                     </div>
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">Address: </p>
                       <h6 className="small_text">
@@ -256,7 +294,7 @@ function BillView() {
                       </h6>
                     </div>
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">Transporter :</p>
                       <h6 className="small_text">
@@ -269,38 +307,36 @@ function BillView() {
                 <table className="table table-bordered mb-0">
                   <thead>
                     <tr>
-                      <th>#</th>
-                      <th>Particulars</th>
-                      <th>Qty. </th>
-                      <th>Rate (₹)</th>
-                      <th>Total (₹)</th>
+                      <th className="col-1">#</th>
+                      <th className="col-4">Particulars</th>
+                      <th className="col-3">Qty. </th>
+                      <th className="col-2">Rate (₹)</th>
+                      <th className="col-2">Total (₹)</th>
                     </tr>
                   </thead>
                   <tbody className="crop-tbl">
                     {singleBillData.lineItems.map((item, key) => {
                       return (
                         <tr key={item}>
-                          <td>{key + 1}</td>
-                          <td>
+                          <td className="col-1">{key + 1}</td>
+                          <td className="col-4">
                             <div className="flex_class crop_name">
                               <img
                                 src={item.imageUrl}
                                 className="crop_image_bill"
                               />
-                              <p> {item.cropName}</p>
+                              <p className="crop-name"> {item.cropName}</p>
                             </div>
                           </td>
-                          <td>
+                          <td className="col-3">
                             {" "}
-                            <p>{item.qtyUnit + ":" + item.qty}</p>
-                            <p>{item.rate}</p>
-                            <p>{item.weight}</p>
-                            <p className="red_text">
-                              {item.wastage == null ? "0" : item.wastage}
-                            </p>
+                            {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
+                            <p>{item.qty == null ? "" : item.qty + " " + getCropUnit(item.qtyUnit) + " | "}
+                              {item.weight == null ? "" : item.weight + " KGS  - "} <span className="red_text">
+                                {item.wastage == null ? "" : item.wastage + " KGS "}</span></p>
                           </td>
-                          <td>{item.rate.toFixed(2)}</td>
-                          <td>{item.total.toFixed(2)}</td>
+                          <td className="col-2">{item.rate.toFixed(2)}</td>
+                          <td className="col-2">{item.total.toFixed(2)}</td>
                         </tr>
                       );
                     })}
@@ -310,22 +346,22 @@ function BillView() {
                   <div className="col-lg-2"></div>
                   <div className="col-lg-4">
                     {
-                      singleBillData.lineItems.map(item =>{
-                        if(item.qtyUnit === 'CRATES'){
+                      singleBillData.lineItems.map(item => {
+                        if (item.qtyUnit === 'CRATES') {
                           cratesTotal += item.qty;
-                        }else if(item.qtyUnit === 'SACS'){
+                        } else if (item.qtyUnit === 'SACS') {
                           sacsTotal += item.qty;
-                        }else if(item.qtyUnit === 'BAGS'){
+                        } else if (item.qtyUnit === 'BAGS') {
                           bagsTotal += item.qty;
-                        }else if(item.qtyUnit === 'BOXES'){
+                        } else if (item.qtyUnit === 'BOXES') {
                           boxesTotal += item.qty;
-                        }else{
+                        } else {
                           kgsTotal += item.qty;
                         }
                       })
                     }
-                    <p className="total-qty">{cratesTotal?cratesTotal.toFixed(2) + 'C |':''}  {sacsTotal?sacsTotal.toFixed(2) + 'S |':''}  {bagsTotal?bagsTotal.toFixed(2) + 'Bg |':''}
-                      {boxesTotal?boxesTotal.toFixed(2) + 'BX |':''}  {kgsTotal?kgsTotal.toFixed(2) + 'KGS':''}</p>
+                    <p className="total-qty">{cratesTotal ? cratesTotal.toFixed(2) + 'C |' : ''}  {sacsTotal ? sacsTotal.toFixed(2) + 'S |' : ''}  {bagsTotal ? bagsTotal.toFixed(2) + 'Bg |' : ''}
+                      {boxesTotal ? boxesTotal.toFixed(2) + 'BX |' : ''}  {kgsTotal ? kgsTotal.toFixed(2) + 'KGS' : ''}</p>
                   </div>
                   <div className="col-lg-6 ">
                     <div className="row">
@@ -345,11 +381,12 @@ function BillView() {
                   <div className="col-lg-6"></div>
                   <div className="col-lg-6 col_border_left">
                     <div>
-                      {groupOne.map((item, index) => {
+                      {groupone.map((item, index) => {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6 align-items">
-                            <p className="groups_value"> {(item.settingName).replace('_',' ').toUpperCase()} : </p>
+                            <p className="groups_value"> 
+                            {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -357,7 +394,7 @@ function BillView() {
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupOneTotals()}</p>
+                        <p>{groupOneTotals().toFixed(2) == 0 ? '':groupOneTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div>
@@ -365,7 +402,7 @@ function BillView() {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName).replace('_',' ').toUpperCase()} : </p>
+                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -373,7 +410,7 @@ function BillView() {
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupTwoTotals()}</p>
+                        <p>{groupTwoTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div>
@@ -381,7 +418,7 @@ function BillView() {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName).replace('_',' ').toUpperCase()} : </p>
+                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -389,7 +426,7 @@ function BillView() {
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupThreeTotals()}</p>
+                        <p>{groupThreeTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div>
@@ -397,7 +434,7 @@ function BillView() {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName).replace('_',' ').toUpperCase()} : </p>
+                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
                           </div>
                           <div className="col-lg-4">
                             <p className="groups_value">{handleGroupNames(item.settingName)}</p>
@@ -405,21 +442,25 @@ function BillView() {
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupFourTotals()}</p>
+                        <p>{groupFourTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div className="d-flex total-pay">
-                      <p>Total Paybles : </p>
-                      <p className="pay-value">{singleBillData?.totalPayables}</p>
+                      <p>Total Bill Amount : </p>
+                      <p className="pay-value">{singleBillData?.totalPayables.toFixed(2)}</p>
+                    </div>
+                    <div className="d-flex total-pay">
+                      <p className="out-st">Outstanding Balance : </p>
+                      <p className="out-value">{singleBillData?.outStBal.toFixed(2)}</p>
                     </div>
                   </div>
                 </div>
                 <div className="row out-st-bal">
                   <div className="col-lg-6"></div>
                   <div className="col-lg-6">
-                  <div className="d-flex total-pay">
-                      <p className="out-st">Outstanding Balance : </p>
-                      <p className="out-value">{singleBillData?.outStBal}</p>
+                    <div className="d-flex total-pay">
+                      <p className="out-st">Final Ledger Balance : </p>
+                      <p className="out-value">0</p>
                     </div>
                   </div>
                 </div>
@@ -427,7 +468,7 @@ function BillView() {
               </div>
             </div>
           </div>
-          <div className="col-lg-4">
+          <div className="col-lg-5">
             <div className="row more-inf-tag">
               <div className="more-info">
                 <p class-className="more-p-tag">More Info</p>
@@ -452,14 +493,10 @@ function BillView() {
                 </div>
                 <div className="col-lg-6">
                   {/* <div className="date-and-time"> */}
-                    <p className="d-a-time">Date And Time</p>
-                    <p className="d-a-value">{moment((singleBillData?.timeStamp)).format("DD-MMM-YY | hh:mm:ss:A")}</p>
+                  <p className="d-a-time">Date And Time</p>
+                  <p className="d-a-value">{moment((singleBillData?.timeStamp)).format("DD-MMM-YY | hh:mm:ss:A")}</p>
                   {/* </div> */}
                 </div>
-              </div>
-              <div className="hr-line"></div>
-              <div className="actions">
-                <p class-className="more-p-tag">Actions</p>
               </div>
               <div className="hr-line"></div>
             </div>

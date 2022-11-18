@@ -790,9 +790,10 @@ article.on {
   }
 }
 .bill_crop_details {
-  border: 1px solid var(--ono-primary);
+  border: 2px solid var(--ono-primary);
   border-top: 0px;
   border-radius: 0px 0px 10px 10px;
+  background:#FFFFFF ;
 }
 .small_text {
   font-size: 10px;
@@ -869,11 +870,11 @@ word-wrap: normal;
 }
 .table-bordered th{
   color: #121212;
-  font-size: 9px;
+  font-size: 12px;
 }
 .crop-tbl{
   td{
-    font-size: 10px;
+    font-size: 12px;
     color: #121212;
   }
   
@@ -893,9 +894,9 @@ word-wrap: normal;
   width: 35px;
   margin-right: 10px;
 }
-// .red_text {
-//   color: var(--ono-red);
-// }
+.red_text {
+  color: var(--ono-red);
+}
 .total_value {
   font-size: 12px;
   color: #121212;
@@ -932,7 +933,7 @@ color: #121212;
   text-align: left;
 }
 .group-one-total{
-  padding-left: 250px;
+  padding-left: 215px;
 }
 .total-pay{
   padding-left: 70px;
@@ -943,16 +944,19 @@ color: #121212;
 font-size: 10px;
 }
 .pay-value{
-  padding-left: 107px;
+  padding-left: 87px;
 }
 .out-value{
-  padding-left: 58px;
+  padding-top: 5px;
+  padding-left: 65px;
 }
 .out-st-bal{
   background: #D7F3DD;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 .out-st{
-  padding: 5px 5px;
+  padding: 5px 0px;
 }
 // calenderr popup styles
 .dates_div {

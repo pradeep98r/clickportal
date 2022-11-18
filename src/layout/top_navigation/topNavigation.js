@@ -1,13 +1,15 @@
 import bell from "../../assets/images/navbar/Bell.svg";
 import help from "../../assets/images/navbar/Help.svg";
+import leftClick from "../../assets/images/left_click.png";
 import "./topNavigation.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 function TopNavigation() {
   const linkValue = localStorage.getItem("LinkId");
-  const linkPath = localStorage.getItem("LinkPath");
+  var linkPath = localStorage.getItem("LinkPath");
+  console.log(linkPath);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
@@ -33,16 +35,41 @@ function TopNavigation() {
     localStorage.setItem("LinkPath", "/smartboard");
     console.log(loginUserDetails, "after clearing");
   };
+  const singleBill = JSON.parse(localStorage.getItem("selectedBillData"));
+  var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
+  var stepone = JSON.parse(localStorage.getItem("stepOne"));
+  console.log(stepone,"stepOne");
+  console.log(billStatus,localStorage.getItem("billViewStatus"),"billStatus");
+  const backToBuyBillBook = () => {
+    localStorage.setItem("billViewStatus",false);
+    localStorage.setItem("stepOne",false);
+    navigate('/buy_bill_book');
+  }
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
         <div className="page_header">
           <h2>
             {/* {linkPath == "/smartboard" && "Smartboard"} */}
-            {linkValue ==1 && "Smartboard"}
+            {linkValue == 1 && "Smartboard"}
             {linkValue == 2 && "Smartchart"}
             {linkValue == 3 && "Sell Bill Book"}
-            {linkPath == "/buy_bill_book" && "Buy Bill Book"}
+            {linkPath == "/buy_bill_book" && (
+             
+              billStatus === true ? (
+                <div className="d-flex">
+                  <img src={leftClick} alt="left_click_img" onClick={backToBuyBillBook} id="left_click_img" />
+                  <p id="bill_id">Bill ID : {singleBill.billId}</p>
+                </div>)
+                : (stepone === true ? (
+                  <div className="d-flex">
+                    <img src={leftClick} alt="left_click_img" onClick={backToBuyBillBook} id="left_click_img" />
+                    <p id="bill_id">Add Purchase Bill</p>
+                  </div>
+                ) : (<p>Buy Bill Book</p>)
+                )
+            ) 
+            }
             {linkValue == 5 && "Buyer Ledger"}
             {linkValue == 6 && "Seller Ledger"}
             {linkPath == "/partner" && "Partners"}

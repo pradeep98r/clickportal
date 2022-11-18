@@ -46,7 +46,10 @@ function BuyBillBook() {
   };
   const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
+  var billViewStatus = false
   const billOnClick = (id, bill) => {
+    billViewStatus = true;
+    localStorage.setItem("billViewStatus",billViewStatus);
     navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
@@ -64,7 +67,13 @@ function BuyBillBook() {
   const onclickDate = () => {
     setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
-  };
+  }
+  var stepOneHeader=false
+  const handleStep1Header = () =>{
+    stepOneHeader=true;
+    localStorage.setItem("stepOne",stepOneHeader); 
+  }
+
   const getCropUnit = (unit) => {
     var unitType = "";
     switch (unit) {
@@ -138,7 +147,7 @@ function BuyBillBook() {
                         </button>
 
                         <div className="dropdown-menu">
-                          <a className="dropdown-item" href="/step1">
+                          <a className="dropdown-item" href="/step1" onClick={handleStep1Header}>
                             Single Bill
                           </a>
                           <a className="dropdown-item" href="#">

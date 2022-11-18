@@ -67,7 +67,7 @@ const RoutesConfig = () => {
               console.log(planStatus);
           return (
             <BrowserRouter>
-              {planStatus === "SUCCESS" ? (
+              {planStatus === "SUCCESS" ? (                
                 <Layout>
                   <Routes>
                     <Route path="/smartboard" element={<SmartBoard />} />
