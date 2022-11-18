@@ -113,7 +113,7 @@ function BuyBillBook() {
                       </ul>
                     </div>
 
-                    <div onClick={onclickDate}>date</div>
+                    <div onClick={onclickDate} className="color_blue">{dateValue}</div>
                     <div className="d-flex">
                       <div className="d-flex mx-3" role="search">
                         <input

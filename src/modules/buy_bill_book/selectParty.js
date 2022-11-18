@@ -21,6 +21,9 @@ const SelectPartner = (props) => {
     else if(props.partyType == "Transporter"){
         partnerType = "TRANSPORTER";
     }
+    else if(props.partyType == "Buyer"){
+      partnerType = "BUYER";
+  }
     getPartnerData(clickId, partnerType)
       .then((response) => {
         setpartnerData(response.data.data);
@@ -46,6 +49,10 @@ const SelectPartner = (props) => {
     else if(props.partyType == "Transporter"){
       console.log(item)
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+    }
+    else if(props.partyType == "Buyer"){
+      console.log(item)
+      localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
   };
   useEffect(() => {

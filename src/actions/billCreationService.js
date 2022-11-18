@@ -10,7 +10,12 @@ export function deletePartnerId(partyId, clickId) {
 }
 export function getBuyBills(clickId,date) {
   return axiosCommon.get(
-    `/click/bills/buy-bill/caId/${clickId}?fromDate=${date}&toDate=${date}`
+    `/click/bills/buy-bills/caId/${clickId}?fromDate=2022-11-16&toDate=2022-11-16`
+  );
+}
+export function getSellBills(clickId) {
+  return axiosCommon.get(
+    `/click/bills/sell-bills/caId/${clickId}?fromDate=2022-08-22&toDate=2022-08-22`
   );
 }
 export function editPartnerItem(obj) {
@@ -122,17 +127,3 @@ export default {
   getSellerDetailedLedgerByDate,
   postbuybillApi
 };
-
-// export function getBuyBills(clickId, clientId, clientSecret) {
-//   let config = {
-//     headers: {
-//       "Content-Type": "application/json",
-//       "client-id": clientId,
-//       "client-secret": clientSecret,
-//     },
-//     params: { fromDate: "2022-06-27", toDate: "2022-06-27" },
-//   }
-//   return axios.get(
-//     `https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/${clickId}`,config
-//   );
-// }
