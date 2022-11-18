@@ -23,6 +23,7 @@ import Registration from "../modules/registration/registration";
 import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import Step1 from "../modules/buy_bill_book/step1";
+import SellebillStep1 from "../modules/sell_bill_book/step1";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
 
@@ -93,6 +94,10 @@ const RoutesConfig = () => {
                       path="/step1"
                       element={<Step1 />}
                     />
+                     <Route
+                      path="/sellbillstep1"
+                      element={<SellebillStep1 />}
+                    />
                   </Routes>
                 </Layout>
               ) : (
@@ -133,6 +138,10 @@ const RoutesConfig = () => {
                   <Route
                       path="/step1"
                       element={<Step1 />}
+                    />
+                       <Route
+                      path="/sellbillstep1"
+                      element={<SellebillStep1 />}
                     />
               </Routes>
             </Layout>
