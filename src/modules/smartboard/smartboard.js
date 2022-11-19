@@ -273,6 +273,7 @@ const SmartBoard = () => {
     localStorage.removeItem("mandiEditStatus")
     localStorage.setItem("mandiEditStatus", false)
   }
+
   return (
     <div>
       <div className="main_div_padding">
@@ -976,7 +977,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     Sell Bill Book
                                   </h4>
-                                  <Link to="/buy_bill_book">
+                                  <Link to="/sellbillbook" >
                                     <OutlineButton text="Add Sell Bill" />
                                   </Link>
                                 </div>
@@ -984,7 +985,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     Buy Bill Book
                                   </h4>
-                                  <Link to="/buy_bill_book">
+                                  <Link to="/buy_bill_book" >
                                     <OutlineButton text="Add Purchase Bill" />
                                   </Link>
                                 </div>

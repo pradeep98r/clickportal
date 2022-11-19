@@ -213,7 +213,7 @@ function DatePickerModel(props) {
                   </div>
                   <article className="date_picker">
                     <DatePicker
-                      dateFormat="yyyy-MM-dd"
+                      dateFormat="yyyy-MMM-dd"
                       selected={selectedDate}
                       onChange={(date) => setStartDate(date)}
                       className="form-control"

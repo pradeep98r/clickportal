@@ -14,9 +14,9 @@ export function getBuyBills(clickId, fromDate, toDate) {
     `/click/bills/buy-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
-export function getSellBills(clickId) {
+export function getSellBills(clickId, fromDate, toDate) {
   return axiosCommon.get(
-    `/click/bills/sell-bills/caId/${clickId}?fromDate=2022-08-22&toDate=2022-08-22`
+    `/click/bills/sell-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
 export function editPartnerItem(obj) {
