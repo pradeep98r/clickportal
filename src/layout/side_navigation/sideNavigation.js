@@ -136,7 +136,7 @@ class SideNavigation extends Component {
   getPathsId = () => {
     var id = 1;
     var linkPath = localStorage.getItem("LinkPath");
-    console.log(localStorage.getItem("LinkPath"));
+    //console.log(localStorage.getItem("LinkPath"));
     
     if(linkPath === "/"){
       id=1;

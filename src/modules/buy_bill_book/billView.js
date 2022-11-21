@@ -5,7 +5,7 @@ import {
 } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
-var groupOne = [];
+
 const BillView = ()=> {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -14,11 +14,13 @@ const BillView = ()=> {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
+
+  var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
 
-  // console.log(singleBillData);
+  console.log(singleBillData);
   useEffect(() => {
     getBusinessDetails();
     getBuyBillsById();
@@ -36,36 +38,67 @@ const BillView = ()=> {
   const [groupTwo, setGroupTwo] = useState([]);
   const [groupThree, setGroupThree] = useState([]);
   const [groupFour, setGroupFour] = useState([]);
+  const [grone, setGrOne] = useState([]);
+  const [grtwo, setGrTwo] = useState([]);
+  const [grthree, setGrThree] = useState([]);
+  const [grfour, setGrFour] = useState([]);
+
+  var grOne=[];
+  var grTwo =[];
+  var grThree=[];
+  var grFour=[];
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      // groupOne = [];
-      // grouptwo = [];
-      // groupthree = [];
-      // groupfour = [];
       billSettingData(res.data.data.billSetting);
+      console.log(res.data.data.billSetting)
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
-        if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+        if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'BUY'
+          && res.data.data.billSetting[i].formStatus === 1) {
           groupOne=[res.data.data.billSetting[i],...groupOne];
           setGroupOne([groupone,...groupOne]);
-          console.log(groupOne,"main Group");
         }
-        else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+          && res.data.data.billSetting[i].formStatus === 1){
+            grOne=[res.data.data.billSetting[i], ...grOne];
+            setGrOne([grone, ...grOne]);
+        }
+        else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'BUY' 
+        && res.data.data.billSetting[i].formStatus === 1) {
           grouptwo=[res.data.data.billSetting[i],...grouptwo];
           setGroupTwo([groupTwo,...grouptwo]);
-          console.log(grouptwo,"Group2");
         }
-        else if (res.data.data.billSetting[i].groupId === 3 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+          && res.data.data.billSetting[i].formStatus === 1){
+            grTwo=[res.data.data.billSetting[i], ...grTwo];
+            setGrTwo([grtwo,...grTwo]);
+            console.log(grTwo);
+        }
+        else if (res.data.data.billSetting[i].groupId === 3 && res.data.data.billSetting[i].billType === 'BUY' && 
+        res.data.data.billSetting[i].formStatus === 1) {
           groupthree=[res.data.data.billSetting[i],...groupthree];
           setGroupThree([groupThree,...groupthree]);
         }
-        else if (res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'BUY' && res.data.data.billSetting[i].value != 0) {
+        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+          && res.data.data.billSetting[i].formStatus === 1){
+            grThree=[res.data.data.billSetting[i], ...grThree];
+            setGrThree([grthree, ...grThree]);
+        }
+        else if (res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'BUY' && 
+        res.data.data.billSetting[i].formStatus === 1) {
           groupfour=[res.data.data.billSetting[i],...groupfour];
           setGroupFour([groupFour,...groupfour]);
         }
-      }
+        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+          && res.data.data.billSetting[i].formStatus === 1){
+            grFour=[res.data.data.billSetting[i], ...grFour];
+            setGrFour([grfour,...grFour]);
+            
+        }
+       }
+       
     });
   };
-  console.log(groupone);
+
   const handleGroupNames = (name) => {
     var value = 0;
     switch (name) {
@@ -88,7 +121,12 @@ const BillView = ()=> {
         value = singleBillData?.mandiFee;
         break;
       case "OTHER_FEE":
-        value = singleBillData?.otherFee;
+        if(singleBillData.partyType ==="BUYER"){
+          value=singleBillData?.otherFee;
+        }
+        else{
+          value = singleBillData?.misc;
+        }
         break;
       case "GOVT_LEVIES":
         value = singleBillData?.govtLevies;
@@ -96,34 +134,37 @@ const BillView = ()=> {
       case "CASH_PAID":
         value = singleBillData?.cashPaid;
         break;
+      case "CASH_RECEIVED":
+        value = singleBillData?.cashRcvd;
+        break;
       case "ADVANCES":
         value = singleBillData?.advance;
         break;
       case "CUSTOM_FIELD1":
         value = singleBillData.customFields.map(item => {
           if (item.field === name) {
-            return item.fee;
+            value=item.fee;
           }
         });
         break;
       case "CUSTOM_FIELD2":
         value = singleBillData.customFields.map(item => {
           if (item.field === name) {
-            return item.fee;
+            value=item.fee;
           }
         });
         break;
       case "CUSTOM_FIELD3":
         value = singleBillData.customFields.map(item => {
           if (item.field === name) {
-            return item.fee;
+            value= item.fee;
           }
         });
         break;
       case "CUSTOM_FIELD4":
         value = singleBillData.customFields.map(item => {
           if (item.field === name) {
-            return item.fee;
+            value= item.fee;
           }
         });
         break;
@@ -163,7 +204,31 @@ const BillView = ()=> {
     })
     return groupFourTotal;
   }
-
+  const grOneTotals = () => {
+    groupone.map(item => {
+      groupOneTotal += handleGroupNames(item.settingName);
+    })
+    console.log(groupOneTotal)
+    return groupOneTotal;
+  }
+  const grTwoTotals = () => {
+    groupTwo.map(item => {
+      groupTwoTotal += handleGroupNames(item.settingName);
+    })
+    return groupTwoTotal;
+  }
+  const grThreeTotals = () => {
+    groupThree.map(item => {
+      groupThreeTotal += handleGroupNames(item.settingName);
+    })
+    return groupThreeTotal;
+  }
+  const grFourTotals = () => {
+    groupFour.map(item => {
+      groupFourTotal += handleGroupNames(item.settingName);
+    })
+    return groupFourTotal;
+  }
   const getCropUnit = (unit) => {
     var unitType = "";
     switch (unit) {
@@ -183,7 +248,6 @@ const BillView = ()=> {
     return unitType;
   };
   const handleSettingName = (item) =>{
-    item = "";
     switch(item){
       case "COMM_INCLUDE":
         item="";
@@ -197,8 +261,10 @@ const BillView = ()=> {
       case "BILL_EDIT":
         item = "";
         break;
+      case "WASTAGE":
+        item = "";
+        break;
     }
-    console.log(item);
     return item;
   }
   return (
@@ -381,22 +447,29 @@ const BillView = ()=> {
                 </div>
                 <div className="row">
                   <div className="col-lg-6"></div>
-                  <div className="col-lg-6 col_border_left">
+                  <div className="pl-0 col-lg-6 col_border_left pr-0">
                     <div>
                       {groupone.map((item, index) => {
-                        return <div className="row" key={index}>
+                        return <div>
+                        <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6 align-items">
                             <p className="groups_value"> 
-                            {handleSettingName(item.settingName)} : </p>
+                            {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')} </p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
                           </div>
-                        </div>;
+                        </div>
+                        <div className="hrs-line"></div>
+                      </div>
+                        
                       })}
                       <div className="group-one-total">
-                        <p>{groupOneTotals().toFixed(2) == 0 ? '':groupOneTotals().toFixed(2)}</p>
+                        <p>{groupOneTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div>
@@ -404,10 +477,13 @@ const BillView = ()=> {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
+                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')} </p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
                           </div>
                         </div>;
                       })}
@@ -420,10 +496,13 @@ const BillView = ()=> {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
+                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')} </p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
                           </div>
                         </div>;
                       })}
@@ -436,23 +515,28 @@ const BillView = ()=> {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
+                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')}</p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
                           </div>
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupFourTotals().toFixed(2)}</p>
+                        <p>{groupFourTotals() === 0? '':groupFourTotal().toFixed(2)}</p>
                       </div>
                     </div>
                     <div className="d-flex total-pay">
-                      <p>Total Bill Amount : </p>
-                      <p className="pay-value">{singleBillData?.totalPayables.toFixed(2)}</p>
+                      {
+                        singleBillData.totalPayables === 0 ? ' ':<div><p>Total Bill Amount </p>
+                        <p className="pay-value">{singleBillData.totalPayables.toFixed(2)}</p></div>
+                      }
                     </div>
                     <div className="d-flex total-pay">
-                      <p className="out-st">Outstanding Balance : </p>
+                      <p className="out-st">Outstanding Balance  </p>
                       <p className="out-value">{singleBillData?.outStBal.toFixed(2)}</p>
                     </div>
                   </div>
@@ -681,75 +765,91 @@ const BillView = ()=> {
                 </div>
                 <div className="row">
                   <div className="col-lg-6"></div>
-                  <div className="col-lg-6 col_border_left">
+                  <div className="pl-0 col-lg-6 col_border_left pr-0">
                     <div>
-                      {groupone.map((item, index) => {
+                      {grone.map((item, index) => {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6 align-items">
                             <p className="groups_value"> 
-                            {handleSettingName(item.settingName)} : </p>
+                            {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0 || null || " ")?' ':
+                            item.settingName?.replaceAll('_', ' ')}</p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
                           </div>
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupOneTotals().toFixed(2) == 0 ? '':groupOneTotals().toFixed(2)}</p>
+                        <p>{grOneTotals()===0 || NaN?'':grOneTotals()}</p>
                       </div>
                     </div>
                     <div>
-                      {groupTwo.map((item, index) => {
+                      {grtwo.map((item, index) => {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
+                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')}</p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
                           </div>
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupTwoTotals().toFixed(2)}</p>
+                        <p>{grTwoTotals()===0?'':grTwoTotals()}</p>
                       </div>
                     </div>
                     <div>
-                      {groupThree.map((item, index) => {
+                      {grthree.map((item, index) => {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
+                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')} </p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
                           </div>
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupThreeTotals().toFixed(2)}</p>
+                        <p>{grThreeTotals()===0?'':grThreeTotals().toFixed(2)}</p>
                       </div>
                     </div>
                     <div>
-                      {groupFour.map((item, index) => {
+                      {grfour.map((item, index) => {
                         return <div className="row" key={index}>
                           <div className="col-lg-2"></div>
                           <div className="col-lg-6">
-                            <p className="groups_value"> {handleSettingName(item.settingName)} : </p>
+                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')}</p>
                           </div>
                           <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(item.settingName)}</p>
+                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
                           </div>
                         </div>;
                       })}
                       <div className="group-one-total">
-                        <p>{groupFourTotals().toFixed(2)}</p>
+                        <p>{grFourTotals()===0?'':grFourTotals().toFixed(2)}</p>
                       </div>
                     </div>
-                    <div className="d-flex total-pay">
-                      <p>Total Bill Amount : </p>
-                      <p className="pay-value">{singleBillData?.totalReceivable.toFixed(2)}</p>
+                    <div className="d -flex total-pay">
+                    {
+                        singleBillData.totalReceivable === 0 || null ? ' ':<div><p>Total Bill Amount </p>
+                        <p className="pay-value">{singleBillData.totalReceivable}</p></div>
+                      }
+                      {/* <p>Total Bill Amount : </p>
+                      <p className="pay-value">{singleBillData?.totalReceivable}</p> */}
                     </div>
                     <div className="d-flex total-pay">
                       <p className="out-st">Outstanding Balance : </p>
