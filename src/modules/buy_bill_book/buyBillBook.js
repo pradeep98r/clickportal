@@ -55,7 +55,7 @@ function BuyBillBook() {
     .then((response) => {
       console.log(response, "billsss");
       console.log(response.data.data, "billsss");
-      setBuyBillData(response.data.data.singleBills);
+      setBuyBillData(response.data.data);
       setLoading(false);
     })
     .catch((error) => {
@@ -120,8 +120,10 @@ function BuyBillBook() {
             </div>
           ) : (
             <div>
-              {buyBillData.length > 0 ? (
-                <div>
+              {buyBillData != null ? (
+                buyBillData.singleBills.length > 0 &&
+                (
+                  <div>
                   <div className="d-flex justify-content-between bills_div">
                     <div className="d-flex">
                       <ul className="nav nav-tabs" id="myTab" role="tablist">
@@ -218,7 +220,7 @@ function BuyBillBook() {
                           </div>
                         </div>
                         <div className="buy_bills" id="scroll_style">
-                          {buyBillData
+                          {buyBillData.singleBills
                             .filter((bill) => {
                               if (billItem === "") {
                                 return bill;
@@ -338,6 +340,7 @@ function BuyBillBook() {
                     </div>
                   </div>
                 </div>
+                )
               ) : (
                 <div className="card default_card text-center">
                   <div className="row no_data_row">

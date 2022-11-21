@@ -2,9 +2,8 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
-import moment from "moment";
-import Step2Modal from "../buy_bill_book/step2Modal";
 import SelectPartner from "../buy_bill_book/selectParty";
+import SellbillStep2Modal from "./step2";
 const SellebillStep1 = () => {
   const [selectedDate, setStartDate] = useState(new Date());
   useEffect(() => {
@@ -14,6 +13,12 @@ const SellebillStep1 = () => {
   const callbackFunction = (childData) => {
     console.log(childData, "child");
     setPartnerData(childData);
+    if(childData.partyType != 'Transporter'){
+        localStorage.removeItem("selectedTransporter");
+      }
+      else{
+        localStorage.setItem("selectedTransporter", JSON.stringify(childData));
+      }
   };
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
@@ -92,9 +97,9 @@ const SellebillStep1 = () => {
           </div>
         )}
         {showCropModalStatus ? (
-          <Step2Modal
+          <SellbillStep2Modal
             show={showCropModal}
-            closeCropModal={() => setShowCropModal(false)}
+            closeStep2CropModal={() => setShowCropModal(false)}
           />
         ) : (
           ""

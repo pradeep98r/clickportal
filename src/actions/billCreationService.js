@@ -110,6 +110,13 @@ export function postbuybillApi(billRequestObj) {
     billRequestObj,  
   );
 }
+export function postsellbillApi(billRequestObj) {
+  console.log(billRequestObj,"object");
+  return axiosCommon.post(
+    "/click/bills/sales-bill",
+    billRequestObj,  
+  );
+}
 export default {
   getPartnerData,
   getPreferredCrops,

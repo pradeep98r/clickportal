@@ -14,6 +14,12 @@ const Step1 = () => {
   const callbackFunction = (childData) => {
     console.log(childData, "child");
     setPartnerData(childData);
+    if(childData.partyType != 'Transporter'){
+      localStorage.removeItem("selectedTransporter");
+    }
+    else{
+      localStorage.setItem("selectedTransporter", JSON.stringify(childData));
+    }
   };
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);

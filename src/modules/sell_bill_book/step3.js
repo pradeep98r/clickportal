@@ -1,6 +1,6 @@
 import { Modal } from "react-bootstrap";
 import "../../modules/buy_bill_book/step2.scss";
-import "../../modules/buy_bill_book/step3.scss";
+import "../sell_bill_book/step3.scss"
 import { useState, useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
@@ -13,23 +13,20 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
-import { postbuybillApi } from "../../actions/billCreationService";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { postsellbillApi } from "../../actions/billCreationService";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-const Step3Modal = (props) => {
+const SellbillStep3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const navigate = useNavigate();
-  const partnerSelectedData = JSON.parse(
-    localStorage.getItem("selectedPartner")
-  );
+  const partnerSelectedData = JSON.parse(localStorage.getItem("selectedBuyer"));
   const transpoSelectedData = JSON.parse(
     localStorage.getItem("selectedTransporter")
   );
-  console.log(transpoSelectedData)
-  const [partyType, setPartnerType] = useState("Seller");
+  const [partyType, setPartnerType] = useState("Buyer");
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
@@ -43,13 +40,16 @@ const Step3Modal = (props) => {
   const [otherformStatusvalue, setOtherFormStatus] = useState(false);
   const [cashformStatusvalue, setCashFormStatus] = useState(false);
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
+  console.log(props.slectedSellCropsArray);
+  var hi = false;
   useEffect(() => {
     fetchPertnerData(partyType);
-    getGrossTotalValue(props.slectedCropsArray);
+    getGrossTotalValue(props.slectedSellCropsArray);
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
       for (var i = 0; i < response.length; i++) {
-        if (response[i].billType === "BUY") {
+        if (response[i].billType === "SELL") {
+         
           if (response[i].formStatus === 1) {
             if (response[i].settingName === "COMMISSION") {
               setFormStatus(true);
@@ -94,11 +94,11 @@ const Step3Modal = (props) => {
   const [selectedDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
   const fetchPertnerData = (type) => {
-    var partnerType = "Seller";
-    if (type == "Seller") {
-      partnerType = "FARMER";
-    } else if (type == "Transporter") {
+    var partnerType = "Buyer";
+    if (type == "Transporter") {
       partnerType = "TRANSPORTER";
+    } else if (type == "Buyer") {
+      partnerType = "BUYER";
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
@@ -111,12 +111,12 @@ const Step3Modal = (props) => {
   const partySelect = (item, type) => {
     console.log(item);
     setGetPartyItem(item);
-    if (type == "Seller") {
-      setPartnerDataStatus(false);
-      localStorage.setItem("selectedPartner", JSON.stringify(item));
-    } else if (type == "Transporter") {
+    if (type == "Transporter") {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+    } else if (type == "Buyer") {
+      setTranspoDataStatus(false);
+      localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
     setPartnerType(type);
   };
@@ -124,7 +124,7 @@ const Step3Modal = (props) => {
   const [partnerDataStatus, setPartnerDataStatus] = useState(false);
   const [transpoDataStatus, setTranspoDataStatus] = useState(false);
   const partnerClick = (type) => {
-    if (type == "Seller") {
+    if (type == "Buyer") {
       setPartnerDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
@@ -143,9 +143,9 @@ const Step3Modal = (props) => {
     console.log(items);
     for (var i = 0; i < items.length; i++) {
       total += items[i].totalValue;
-      console.log(typeof(items[i].unitValue),"unit")
+      console.log(typeof items[i].unitValue, "unit");
       totalunitvalue += parseInt(items[i].unitValue);
-      console.log(totalunitvalue,"lopp");
+      console.log(totalunitvalue, "lopp");
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
@@ -168,43 +168,51 @@ const Step3Modal = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
-    var t =  parseInt((getTotalValue(commValue) +
-    getTotalUnits(transportationValue) +
-    getTotalUnits(laborChargeValue) +
-    getTotalUnits(rentValue) +
-    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)))
-    let totalValue =
-      grossTotal - t;
+    var t = parseInt(
+      getTotalValue(commValue) +
+        getTotalUnits(transportationValue) +
+        getTotalUnits(laborChargeValue) +
+        getTotalUnits(rentValue) +
+        getTotalValue(mandifeeValue) +
+        parseInt(levisValue) +
+        parseInt(otherfeeValue) +
+        parseInt(advancesValue)
+    );
+    let totalValue = grossTotal - t;
     if (addRetComm) {
-      console.log(grossTotal,t,totalValue,getTotalValue(retcommValue))
+      console.log(grossTotal, t, totalValue, getTotalValue(retcommValue));
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
   };
-  const getFinalLedgerbalance = () =>{
-    var t =  parseInt((
-    getTotalUnits(transportationValue) +
-    getTotalUnits(laborChargeValue) +
-    getTotalUnits(rentValue) +
-    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)));
+  const getFinalLedgerbalance = () => {
+    var t = parseInt(
+      getTotalUnits(transportationValue) +
+        getTotalUnits(laborChargeValue) +
+        getTotalUnits(rentValue) +
+        getTotalValue(mandifeeValue) +
+        parseInt(levisValue) +
+        parseInt(otherfeeValue) +
+        parseInt(advancesValue)
+    );
     var finalValue = grossTotal - t;
-    if(includeComm){
-      finalValue = finalValue + getTotalValue(commValue);
+    if (includeComm) {
+      return (finalValue = finalValue + getTotalValue(commValue));
     }
     if (addRetComm) {
-      if(includeRetComm){
+      if (includeRetComm) {
         return (finalValue + getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
-      if(includeRetComm){
+      if (includeRetComm) {
         return (finalValue - getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    console.log(finalValue,"final ledger bal")
-  }
+    console.log(finalValue, "final ledger bal");
+  };
   var lineItemsArray = [];
-  var cropArray = props.slectedCropsArray;
+  var cropArray = props.slectedSellCropsArray;
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -219,9 +227,8 @@ const Step3Modal = (props) => {
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
     });
   }
-  const billRequestObj = 
-  {
-    actualPayble: getTotalBillAmount(),
+  const sellBillRequestObj = {
+    actualReceivable: getTotalBillAmount(),
     advance: advancesValue,
     billDate: partnerSelectDate,
     billStatus: "Completed",
@@ -232,7 +239,7 @@ const Step3Modal = (props) => {
     commShown: true,
     comments: "hi",
     createdBy: 0,
-    farmerId: partnerSelectedData.partyId,
+    buyerId: partnerSelectedData.partyId,
     govtLevies: levisValue,
     grossTotal: grossTotal,
     labourCharges: getTotalUnits(laborChargeValue),
@@ -253,10 +260,10 @@ const Step3Modal = (props) => {
     timeStamp: "",
   };
   // post bill request api call
-  const postbuybill = () => {
-    postbuybillApi(billRequestObj).then(
+  const postsellbill = () => {
+    postsellbillApi(sellBillRequestObj).then(
       (response) => {
-        if (response.data.status.type === "SUCCESS") {
+        if (response.data.status.message === "SUCCESS") {
           toast.success(response.data.status.description, {
             position: "top-right",
             autoClose: 5000,
@@ -265,32 +272,20 @@ const Step3Modal = (props) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            toastId:'success1'
+            toastId: "success1",
           });
           console.log("bill created", response.data);
           props.closeStep3Modal();
-          navigate('/buy_bill_book');
-        } 
+          navigate("/sellbillbook");
+        }
       },
       (error) => {
-        toast.error(error.response.data.status.description, { toastId: "error1"});
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
       }
     );
   };
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () =>{
-    if(!checked){
-      console.log("checked");
-      setChecked(!checked)
-      localStorage.setItem("defaultDate",true);
-      setStartDate(selectedDate);
-    } else{
-      console.log(new Date());
-      setChecked(!checked);
-      localStorage.removeItem("defaultDate");
-      setStartDate(new Date());
-    }
-  }
   return (
     <Modal
       show={props.show}
@@ -312,7 +307,7 @@ const Step3Modal = (props) => {
             <div className="party_div">
               <div
                 className="selectparty_field d-flex align-items-center justify-content-between"
-                onClick={() => partnerClick("Seller")}
+                onClick={() => partnerClick("Buyer")}
               >
                 <div className="partner_card">
                   <div className="d-flex align-items-center">
@@ -377,7 +372,7 @@ const Step3Modal = (props) => {
                               return (
                                 <li
                                   key={item.partyId}
-                                  onClick={() => partySelect(item, "Seller")}
+                                  onClick={() => partySelect(item, "Buyer")}
                                   className={
                                     "nav-item " +
                                     (item == getPartyItem ? "active_class" : "")
@@ -428,11 +423,9 @@ const Step3Modal = (props) => {
                 <label className="custom-control custom-checkbox mb-0">
                   <input
                     type="checkbox"
-                    checked={checked && localStorage.getItem("defaultDate")}
                     className="custom-control-input"
                     id="modal_checkbox"
                     value="my-value"
-                    onChange={handleCheckEvent}
                   />
                   <span className="custom-control-indicator"></span>
                   <span className="custom-control-description">
@@ -779,17 +772,16 @@ const Step3Modal = (props) => {
             </div>
           </div>
         </div>
-      
       </div>
       <div className="bottom_div main_div popup_bottom_div">
-          <div className="d-flex align-items-center justify-content-end">
-            <button className="primary_btn" onClick={postbuybill}>
-              Next
-            </button>
-          </div>
+        <div className="d-flex align-items-center justify-content-end">
+          <button className="primary_btn" onClick={postsellbill}>
+            Next
+          </button>
         </div>
+      </div>
       <ToastContainer />
     </Modal>
   );
 };
-export default Step3Modal;
+export default SellbillStep3Modal;
