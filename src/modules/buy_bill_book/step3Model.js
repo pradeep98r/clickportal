@@ -277,6 +277,20 @@ const Step3Modal = (props) => {
       }
     );
   };
+  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
+  const handleCheckEvent = () =>{
+    if(!checked){
+      console.log("checked");
+      setChecked(!checked)
+      localStorage.setItem("defaultDate",true);
+      setStartDate(selectedDate);
+    } else{
+      console.log(new Date());
+      setChecked(!checked);
+      localStorage.removeItem("defaultDate");
+      setStartDate(new Date());
+    }
+  }
   return (
     <Modal
       show={props.show}
@@ -414,9 +428,11 @@ const Step3Modal = (props) => {
                 <label className="custom-control custom-checkbox mb-0">
                   <input
                     type="checkbox"
+                    checked={checked && localStorage.getItem("defaultDate")}
                     className="custom-control-input"
                     id="modal_checkbox"
                     value="my-value"
+                    onChange={handleCheckEvent}
                   />
                   <span className="custom-control-indicator"></span>
                   <span className="custom-control-description">

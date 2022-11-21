@@ -29,13 +29,16 @@ function DatePickerModel(props) {
   }, []);
 
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartsDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const onChangeDate = (dates) => {
     const [start, end] = dates;
-    setStartDate(start);
+    setStartsDate(start);
     setEndDate(end);
   };
+  const [selectedMonthDate, setSelectedMonthDate] = useState(new Date());
+  const [selectedYearDate, setSelectedyearDate] = useState(new Date());
+
   const [weekFirstDate, setWeekFirstDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
   );
@@ -49,7 +52,7 @@ function DatePickerModel(props) {
     moment(new Date()).format("DD-MMM-YYYY")
   );
   $(function () {
-    var startWeekDate = moment(new Date()).format("YYYY-MM-DD");
+    var startWeekDate = moment(new Date()).format("YYYY-MMM-DD");
     var endWeekDate = new Date();
     var selectCurrentWeek = function () {
       window.setTimeout(function () {
@@ -77,8 +80,8 @@ function DatePickerModel(props) {
         );
         var dateFormat =
           inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-        var weekFdate = moment(startWeekDate).format("YYYY-MM-DD");
-        var weekLdate = moment(endWeekDate).format("YYYY-MM-DD");
+        var weekFdate = moment(startWeekDate).format("YYYY-MMM-DD");
+        var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
         setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
@@ -101,16 +104,65 @@ function DatePickerModel(props) {
     });
   });
   
-  const [selectedDate, setSelectedDate] = useState("");
-  const onclickContinue = (date) =>{
-    setLoading(false);
-    console.log(date)
-    setSelectedDate(moment(date).format("YYYY-MM-DD"));
-    var d = moment(date).format("YYYY-MM-DD") == '' ? moment(new Date()).format("YYYY-MM-DD") :moment(date).format("YYYY-MM-DD")
-    props.parentCallback(d);
-    props.close();
+  const [dateTabs, setDateTabs] = useState("Daily");
+  const [selectedDate, setStartDate] = useState("");
+  const onclickContinue = async(dateValue) =>{
+    var lastDay = new Date(
+      dateValue.getFullYear(),
+      dateValue.getMonth() + 1,
+      0
+    );
+    var firstDate = moment(dateValue).format("YYYY-MM-DD");
+    var lastDate = moment(lastDay).format("YYYY-MM-DD");
+    if (dateTabs == "Daily") {
+      lastDate = firstDate;
+      props.parentCallback(firstDate,lastDate);
+      props.close();
+      
+    } else if (dateTabs == "Yearly") {
+      console.log(dateValue,"dateValue");
+      const currentYear = dateValue.getFullYear();
+      const firstDay = new Date(currentYear, 0, 1);
+      lastDay = new Date(currentYear, 11, 31);
+      firstDate = moment(firstDay).format("YYYY-MM-DD");
+      lastDate = moment(lastDay).format("YYYY-MM-DD");
+      console.log(firstDate,lastDate);
+      props.parentCallback(firstDate,lastDate);
+      props.close();
+    } else if( dateTabs == "Monthly"){
+      const currentYear = dateValue.getFullYear();
+      const firstDay = new Date(currentYear, dateValue.getMonth(), 1);
+      lastDay = new Date(currentYear, dateValue.getMonth()+1, 0);
+      firstDate = moment(firstDay).format("YYYY-MM-DD");
+      lastDate = moment(lastDay).format("YYYY-MM-DD");
+      console.log(firstDate,lastDate);
+      props.parentCallback(firstDate,lastDate);
+      props.close();
+    }else if (dateTabs == "Weekly") {
+      firstDate = weekFirstDate;
+      lastDate = weekLastDate;
+      console.log(firstDate,lastDate);
+      props.parentCallback(firstDate,lastDate);
+      props.close();
+    } else if(dateTabs == "Custom"){
+      firstDate = moment(startDate).format("YYYY-MM-DD");
+      lastDate = moment(endDate).format("YYYY-MM-DD");
+      props.parentCallback(firstDate, lastDate);
+      props.close();
+    }
+    // props.parentCallback();
+    // props.close();
+    //window.location.reload();
   }
-
+  // const onclickContinue = (date) =>{
+  //   setLoading(false);
+  //   console.log(date)
+  //   //setSelectedDate(moment(date).format("YYYY-MM-DD"));
+  //   var d = moment(date).format("YYYY-MM-DD") == '' ? moment(new Date()).format("YYYY-MM-DD") :moment(date).format("YYYY-MM-DD")
+  //   props.parentCallback(d);
+  //   props.close();
+  //   window.location.reload();
+  // }
   return (
      
        <Modal show={props.show} close={props.close} id="datePopupmodal"  aria-labelledby="contained-modal-title-vcenter"
@@ -132,32 +184,37 @@ function DatePickerModel(props) {
                 <div className="row">
                   <div className="dates_div">
                     <p className="flex_class">
-                      <input type="radio" id="tab1" name="tab" defaultChecked />
+                      <input type="radio" id="tab1" name="tab" value="Daily"
+                      onChange={(e)=>{setDateTabs(e.target.value)}} defaultChecked />
                       <label htmlFor="tab1">Daily</label>
                     </p>
                     <div className="flex_class">
-                      <input type="radio" id="tab4" name="tab" />
+                      <input type="radio" id="tab4" name="tab" value={"Weekly"}
+                      onChange={(e)=>{setDateTabs(e.target.value)}} />
                       <label htmlFor="tab4">Weekly</label>
                     </div>
                     <div className="flex_class">
-                      <input type="radio" id="tab2" name="tab" />
+                      <input type="radio" id="tab2" name="tab" value={"Monthly"}
+                      onChange={(e)=>{setDateTabs(e.target.value)}}/>
                       <label htmlFor="tab2">Monthly</label>
                     </div>
                     <div className="flex_class">
                       {" "}
-                      <input type="radio" id="tab3" name="tab" />
+                      <input type="radio" id="tab3" name="tab" value={"Yearly"}
+                      onChange={(e)=>{setDateTabs(e.target.value)}}/>
                       <label htmlFor="tab3">Yearly</label>
                     </div>
                    
                     <div className="flex_class">
-                      <input type="radio" id="tab5" name="tab" />
+                      <input type="radio" id="tab5" name="tab" value={"Custom"}
+                      onChange={(e)=>{setDateTabs(e.target.value)}}/>
                       <label htmlFor="tab5">Custom</label>
                     </div>
                   </div>
                   <article className="date_picker">
                     <DatePicker
-                      dateFormat="yyyy-MM-dd"
-                      selected={startDate}
+                      dateFormat="yyyy-MMM-dd"
+                      selected={selectedDate}
                       onChange={(date) => setStartDate(date)}
                       className="form-control"
                       placeholder="Date"
@@ -175,8 +232,8 @@ function DatePickerModel(props) {
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
                       showFullMonthYearPicker
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
+                      selected={selectedMonthDate}
+                      onChange={(date) => setSelectedMonthDate(date)}
                       className="form-control"
                       placeholder="Date"
                       maxDate={new Date()}
@@ -187,8 +244,8 @@ function DatePickerModel(props) {
                   <article className="yearly">
                     <h2>
                     <DatePicker
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
+                          selected={selectedYearDate}
+                          onChange={(date) => setSelectedyearDate(date)}
                           showYearPicker
                           dateFormat="yyyy"
                           className="form-control"
@@ -203,7 +260,7 @@ function DatePickerModel(props) {
                     <div className="flex_class custom_input_div">
                       <DatePicker
                         selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        onChange={(date) => setStartsDate(date)}
                         popperClassName="d-none"
                         dateFormat="yyyy-MM-dd"
                         placeholderText="Select from date"
@@ -232,7 +289,13 @@ function DatePickerModel(props) {
               <button
                 type="button"
                 className="primary_btn cont_btn w-100 m-0"
-                onClick={()=>{ onclickContinue(startDate)}}
+                onClick={()=>{ onclickContinue(
+                  dateTabs == "Daily"
+                      ? selectedDate
+                      : dateTabs == "Yearly"
+                        ? selectedYearDate
+                        : selectedMonthDate
+                        )}}
               >
                 Continue
               </button>

@@ -21,28 +21,46 @@ function BuyBillBook() {
   const [buyBillData, setBuyBillData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
-    getAllBuyBills();
+    callbackFunction();
   }, []);
 
-  const [dateValue, setDateValue]= useState(moment(new Date()).format("YYYY-MM-DD"));
-  const getAllBuyBills = () => {
-    getBuyBills(clickId,dateValue)
-      .then((response) => {
-        console.log(response, "billsss");
-        console.log(response.data.data, "billsss");
-        setBuyBillData(response.data.data.singleBills);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  
+  // const [fromDate, setFromDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+  // const [toDate, setToDate]= useState(moment(new Date()).format("YYYY-MM-DD"));
+  var dateValue = moment(new Date()).format("YYYY-MM-DD");
+  
+  // const getAllBuyBills = () => {
+    // getBuyBills(clickId,fromDate,toDate)
+    //   .then((response) => {
+    //     console.log(response, "billsss");
+    //     console.log(response.data.data, "billsss");
+    //     setBuyBillData(response.data.data.singleBills);
+    //     setLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  // };
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
   };
-  const callbackFunction = (childData) => {
-    console.log(childData, "child");
-    setDateValue(childData);
+  const callbackFunction = (startDate, endDate) => {
+    console.log(startDate,endDate, "child");
+    var fromDate = moment(startDate).format("YYYY-MM-DD");
+    var toDate = moment(endDate).format("YYYY-MM-DD");
+    dateValue=fromDate
+    // setFromDate(startDate);
+    // setToDate(toDate);
+    getBuyBills(clickId,fromDate, toDate)
+    .then((response) => {
+      console.log(response, "billsss");
+      console.log(response.data.data, "billsss");
+      setBuyBillData(response.data.data.singleBills);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
   const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
@@ -121,7 +139,6 @@ function BuyBillBook() {
                         
                       </ul>
                     </div>
-
                     <div onClick={onclickDate} className="color_blue">{dateValue}</div>
                     <div className="d-flex">
                       <div className="d-flex mx-3" role="search">

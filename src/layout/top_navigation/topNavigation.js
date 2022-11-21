@@ -36,24 +36,48 @@ function TopNavigation() {
     console.log(loginUserDetails, "after clearing");
   };
   const singleBill = JSON.parse(localStorage.getItem("selectedBillData"));
+  
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));
   console.log(stepone,"stepOne");
+  var stepOneSingleBill =JSON.parse(localStorage.getItem("stepOneSingleBook"));
   console.log(billStatus,localStorage.getItem("billViewStatus"),"billStatus");
+
   const backToBuyBillBook = () => {
     localStorage.setItem("billViewStatus",false);
     localStorage.setItem("stepOne",false);
     navigate('/buy_bill_book');
+  }
+  const backToSellBillBook = () => {
+    localStorage.setItem("billViewStatus",false);
+    localStorage.setItem("stepOneSingleBook",false);
+    navigate('/sellbillbook');
   }
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
         <div className="page_header">
           <h2>
+            {console.log(linkValue)}
             {/* {linkPath == "/smartboard" && "Smartboard"} */}
             {linkValue == 1 && "Smartboard"}
             {linkValue == 2 && "Smartchart"}
-            {linkValue == 3 && "Sell Bill Book"}
+            {linkValue == 3 && "Sell Bill Book" && (
+              billStatus === true ? (
+                <div className="d-flex">
+                  <img src={leftClick} alt="left_click_img" onClick={backToSellBillBook} id="left_click_img" />
+                  <p id="bill_id">Bill ID : {singleBill.billId}</p>
+                </div>
+                ): 
+                (stepOneSingleBill === true ?(
+                <div className="d-flex">
+                    <img src={leftClick} alt="left_click_img" onClick={backToSellBillBook} id="left_click_img" />
+                    <p id="bill_id">Add Sell Bill</p>
+                  </div>
+                ) : (<p>Sell Bill Book</p>)
+                )
+              )
+            }
             {linkPath == "/buy_bill_book" && (
              
               billStatus === true ? (

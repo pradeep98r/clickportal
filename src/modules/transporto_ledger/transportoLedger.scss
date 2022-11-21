@@ -327,7 +327,7 @@ input[type=radio]:checked+label {
 #input_in_modal{
     margin: auto;
     padding-left: 40px;
-    padding-top: 10px;
+    //padding-top: 10px;
 }
 #amt-tag{
     font-weight: 500;
@@ -344,6 +344,7 @@ input[type=radio]:checked+label {
     border: 1px solid #CCCCCC;
     border-radius: 10px;
     width: 540px;
+    padding-top: 5px;
 }
 #submit_btn_in_modal{
     border-radius: 0px;
@@ -384,10 +385,11 @@ input[type=radio]:checked+label {
 }
 #radios_in_modal{
     margin: auto;
-    padding-top: 10px;
+    //padding-top: 10px;
     padding-left: 40px;
 }
-.payment-tag{
+.payments-tag{
+    padding-top: 5px;
     font-weight: 500;
     font-size: 13px;
     color: #1C1C1C;
@@ -410,6 +412,7 @@ input[type=radio]:checked+label {
 .select-tag{
     font-weight: 500;
     font-size: 13px;
+    padding-top: 5px;
 }
 #comments-tag{
     font-weight: 500;
@@ -425,6 +428,10 @@ input[type=radio]:checked+label {
 .bloc-tabs {
     display: flex;
     padding-left: 5px;
+}
+.text-valid{
+    color: #dc3545!important;
+    font-size: 10px;
 }
 .bloc-tab {
     display: flex;
