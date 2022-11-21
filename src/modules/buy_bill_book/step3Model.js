@@ -47,6 +47,7 @@ const Step3Modal = (props) => {
     fetchPertnerData(partyType);
     getGrossTotalValue(props.slectedCropsArray);
     getSystemSettings(clickId).then((res) => {
+      console.log(response)
       var response = res.data.data.billSetting;
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {

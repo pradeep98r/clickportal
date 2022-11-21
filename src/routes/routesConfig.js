@@ -99,6 +99,7 @@ const RoutesConfig = () => {
                       path="/sellbillstep1"
                       element={<SellebillStep1 />}
                     />
+                   
                   </Routes>
                 </Layout>
               ) : (
@@ -118,8 +119,8 @@ const RoutesConfig = () => {
           <BrowserRouter>
             <Layout>
               <Routes>
-                {localStorage.removeItem("LinkPath") ||
-                  localStorage.setItem("LinkId","1")
+                {
+                  // localStorage.setItem("LinkId","1")
                 }
                 <Route path="/" element={<SmartBoard />} />
                 <Route path="/smartboard" element={<SmartBoard />} />

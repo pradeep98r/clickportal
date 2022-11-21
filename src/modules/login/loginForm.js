@@ -11,7 +11,8 @@ import toastr from "toastr";
 import { authActions } from "../../reducers/authSlice";
 import { userInfoActions } from "../../reducers/userInfoSlice";
 import OtpTimer from "otp-timer";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
@@ -66,7 +67,7 @@ const LoginForm = () => {
         }
       },
       (error) => {
-        toastr.error(error.response.data.status.description);
+        toast.error(error.response.data.status.description,{toastId:'errorr1'});
       }
     );
   };
@@ -83,13 +84,22 @@ const LoginForm = () => {
         if (response.data.status.type === "SUCCESS") {
           setViewOtpForm(true);
           setOtpId(response.data.data.otpReqId);
-          toastr.success(response.data.status.description);
+          toast.success(response.data.status.description, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            toastId: "success1",
+          })
         } else if (response.data.status === "FAILURE") {
         } else {
         }
       },
       (error) => {
-        toastr.error(error.response.data.status.description);
+        toast.error(error.response.data.status.description,{toastId:"error2"});
       }
     );
   };
@@ -129,7 +139,9 @@ const LoginForm = () => {
           } else {
             localStorage.setItem("isauth", false);
           }
-          toastr.success(resp.data.status.description);
+          toast.success(resp.data.status.description, {
+            toastId: "success2",
+          })
         } else {
           setotpError("The entered otp is incorrect");
         }
@@ -225,6 +237,7 @@ const LoginForm = () => {
           </div>
         </div>
         <Logo />
+        <ToastContainer />
       </div>
     </div>
   );

@@ -9,18 +9,14 @@ import React, { useState, useEffect } from "react";
 function TopNavigation() {
   const linkValue = localStorage.getItem("LinkId");
   var linkPath = localStorage.getItem("LinkPath");
-  console.log(linkPath);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
   const logOutFunction = () => {
-    console.log("hey")
     caches.keys().then((names) => {
-
-      console.log("hey")
       names.forEach((name) => {
         caches.delete(name);
-        alert("hii")
+        alert("hii");
       });
     });
     localStorage.setItem("isauth", false);
@@ -33,67 +29,83 @@ function TopNavigation() {
     localStorage.removeItem("LinkPath");
     localStorage.removeItem("languageData");
     localStorage.setItem("LinkPath", "/smartboard");
-    console.log(loginUserDetails, "after clearing");
+    localStorage.setItem("statusPlan", "FAILURE");
+    localStorage.setItem("LinkId", "1");
+    localStorage.removeItem("businessCreatedStatus");
   };
   const singleBill = JSON.parse(localStorage.getItem("selectedBillData"));
-  
+
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));
-  console.log(stepone,"stepOne");
-  var stepOneSingleBill =JSON.parse(localStorage.getItem("stepOneSingleBook"));
-  console.log(billStatus,localStorage.getItem("billViewStatus"),"billStatus");
+  var stepOneSingleBill = JSON.parse(localStorage.getItem("stepOneSingleBook"));
 
   const backToBuyBillBook = () => {
-    localStorage.setItem("billViewStatus",false);
-    localStorage.setItem("stepOne",false);
-    navigate('/buy_bill_book');
-  }
+    localStorage.setItem("billViewStatus", false);
+    localStorage.setItem("stepOne", false);
+    navigate("/buy_bill_book");
+  };
   const backToSellBillBook = () => {
-    localStorage.setItem("billViewStatus",false);
-    localStorage.setItem("stepOneSingleBook",false);
-    navigate('/sellbillbook');
-  }
+    localStorage.setItem("billViewStatus", false);
+    localStorage.setItem("stepOneSingleBook", false);
+    navigate("/sellbillbook");
+  };
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
         <div className="page_header">
           <h2>
-            {console.log(linkValue)}
-            {/* {linkPath == "/smartboard" && "Smartboard"} */}
+            {/* {(linkValue == 1 || linkPath == "/smartboard") && "Smartboard"} */}
             {linkValue == 1 && "Smartboard"}
             {linkValue == 2 && "Smartchart"}
-            {linkValue == 3 && "Sell Bill Book" && (
-              billStatus === true ? (
+            {linkValue == 3 &&
+              "Sell Bill Book" &&
+              (billStatus === true ? (
                 <div className="d-flex">
-                  <img src={leftClick} alt="left_click_img" onClick={backToSellBillBook} id="left_click_img" />
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToSellBillBook}
+                    id="left_click_img"
+                  />
                   <p id="bill_id">Bill ID : {singleBill.billId}</p>
                 </div>
-                ): 
-                (stepOneSingleBill === true ?(
+              ) : stepOneSingleBill === true ? (
                 <div className="d-flex">
-                    <img src={leftClick} alt="left_click_img" onClick={backToSellBillBook} id="left_click_img" />
-                    <p id="bill_id">Add Sell Bill</p>
-                  </div>
-                ) : (<p>Sell Bill Book</p>)
-                )
-              )
-            }
-            {linkPath == "/buy_bill_book" && (
-             
-              billStatus === true ? (
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToSellBillBook}
+                    id="left_click_img"
+                  />
+                  <p id="bill_id">Add Sell Bill</p>
+                </div>
+              ) : (
+                "Sell Bill Book"
+              ))}
+            {linkPath == "/buy_bill_book" &&
+              (billStatus === true ? (
                 <div className="d-flex">
-                  <img src={leftClick} alt="left_click_img" onClick={backToBuyBillBook} id="left_click_img" />
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToBuyBillBook}
+                    id="left_click_img"
+                  />
                   <p id="bill_id">Bill ID : {singleBill.billId}</p>
-                </div>)
-                : (stepone === true ? (
-                  <div className="d-flex">
-                    <img src={leftClick} alt="left_click_img" onClick={backToBuyBillBook} id="left_click_img" />
-                    <p id="bill_id">Add Purchase Bill</p>
-                  </div>
-                ) : (<p>Buy Bill Book</p>)
-                )
-            ) 
-            }
+                </div>
+              ) : stepone === true ? (
+                <div className="d-flex">
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToBuyBillBook}
+                    id="left_click_img"
+                  />
+                  <p id="bill_id">Add Purchase Bill</p>
+                </div>
+              ) : (
+                "Buy Bill Book"
+              ))}
             {linkValue == 5 && "Buyer Ledger"}
             {linkValue == 6 && "Seller Ledger"}
             {linkPath == "/partner" && "Partners"}
@@ -107,14 +119,14 @@ function TopNavigation() {
           <ul className="navbar-nav flex_class">
             <li className="nav-item">
               <div className="nav-link active" aria-current="page" href="#">
-                <form className="d-flex" role="search">
+                {/* <form className="d-flex" role="search">
                   <input
                     className="form-control search"
                     type="search"
                     placeholder="Search"
                     aria-label="Search"
                   />
-                </form>
+                </form> */}
               </div>
             </li>
             <li className="nav-item">
@@ -154,7 +166,7 @@ function TopNavigation() {
                     <p>
                       {loginUserDetails.profile.profile != null
                         ? loginUserDetails.profile.profile.mobile
-                        : "kk"}
+                        : ""}
                     </p>
                   </a>
                   <a className="dropdown-item" href="#">

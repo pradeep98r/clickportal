@@ -264,8 +264,8 @@ const SmartBoard = () => {
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
-      : "noo";
-
+      : "";
+console.log(localStorage.getItem("businessCreatedStatus"))
   const [showModalStatus, setShowModalStatus] = useState(false);
   const onClickProfiles = () => {
     setShowModal(true);
@@ -273,12 +273,12 @@ const SmartBoard = () => {
     localStorage.removeItem("mandiEditStatus")
     localStorage.setItem("mandiEditStatus", false)
   }
-
+  console.log(loginData.businessCreated,businessCreatedStatus)
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {loginData.businessCreated === false && businessCreatedStatus == 'noo' ? (
+          {loginData.businessCreated === false && businessCreatedStatus == '' ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
@@ -945,17 +945,17 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 col_left_border">
                                       <h5 className="">Earned </h5>
                                       <h6 className="">
-                                        &#8377;{commissionEarns.totalComm == 0
+                                       {commissionEarns.totalComm == 0
                                           ? ""
-                                          : commissionEarns.totalComm}
+                                          :  '₹' +commissionEarns.totalComm}
                                       </h6>
                                     </div>
                                     <div className="col-lg-6 pr-0">
                                       <h5 className="">Net Commissions </h5>
                                       <h6 className="">
-                                        &#8377;{commissionEarns.netComm == 0
+                                        {commissionEarns.netComm == 0
                                           ? ""
-                                          : commissionEarns.netComm}
+                                          : '₹'+commissionEarns.netComm}
                                       </h6>
                                     </div>
                                   </div>
