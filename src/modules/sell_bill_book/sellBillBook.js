@@ -19,7 +19,7 @@ const SellBillBook = () => {
 
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
-  const [buyBillData, setBuyBillData] = useState([]);
+  const [sellBillData, setSellBillData] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const SellBillBook = () => {
       .then((response) => {
         console.log(response, "billsss");
         console.log(response.data.data, "billsss");
-        setBuyBillData(response.data.data.singleBills);
+        setSellBillData(response.data.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -103,7 +103,8 @@ const SellBillBook = () => {
             </div>
           ) : (
             <div>
-              {buyBillData.length > 0 ? (
+              {sellBillData != null ? (
+                sellBillData.singleBills.length > 0 &&
                 <div>
                   <div className="d-flex justify-content-between bills_div">
                     <div className="d-flex">
@@ -199,7 +200,7 @@ const SellBillBook = () => {
                           </div>
                         </div>
                         <div className="buy_bills" id="scroll_style">
-                          {buyBillData
+                          {sellBillData.singleBills
                             .filter((bill) => {
                               if (billItem === "") {
                                 return bill;
