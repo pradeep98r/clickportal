@@ -70,6 +70,7 @@ const RoutesConfig = () => {
               {planStatus === "SUCCESS" ? (                
                 <Layout>
                   <Routes>
+                    <Route path="/" element={<SmartBoard />} />
                     <Route path="/smartboard" element={<SmartBoard />} />
                     <Route path="/buy_bill_book" element={<BuyBillBook />} />
                     <Route path="/bill_creation" element={<BillCreation />} />
@@ -116,6 +117,7 @@ const RoutesConfig = () => {
           <BrowserRouter>
             <Layout>
               <Routes>
+                <Route path="/" element={<SmartBoard />} />
                 <Route path="/smartboard" element={<SmartBoard />} />
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />

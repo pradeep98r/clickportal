@@ -133,6 +133,10 @@ class SideNavigation extends Component {
     var id = 1;
     var linkPath = localStorage.getItem("LinkPath");
     console.log(localStorage.getItem("LinkPath"));
+    
+    if(linkPath === "/"){
+      id=1;
+    }
     switch (linkPath) {
       case '/smartboard':
         id = 1;
