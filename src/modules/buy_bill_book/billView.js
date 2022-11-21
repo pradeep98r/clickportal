@@ -14,13 +14,12 @@ const BillView = ()=> {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-
+  console.log(singleBillData,"Data");
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
 
-  console.log(singleBillData);
   useEffect(() => {
     getBusinessDetails();
     getBuyBillsById();
@@ -56,18 +55,20 @@ const BillView = ()=> {
           && res.data.data.billSetting[i].formStatus === 1) {
           groupOne=[res.data.data.billSetting[i],...groupOne];
           setGroupOne([groupone,...groupOne]);
+          console.log(groupOne,"Buy")
         }
         else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
           && res.data.data.billSetting[i].formStatus === 1){
             grOne=[res.data.data.billSetting[i], ...grOne];
             setGrOne([grone, ...grOne]);
+            console.log(grOne,"Sell");
         }
         else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'BUY' 
         && res.data.data.billSetting[i].formStatus === 1) {
           grouptwo=[res.data.data.billSetting[i],...grouptwo];
           setGroupTwo([groupTwo,...grouptwo]);
         }
-        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+        else if(res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'SELL'
           && res.data.data.billSetting[i].formStatus === 1){
             grTwo=[res.data.data.billSetting[i], ...grTwo];
             setGrTwo([grtwo,...grTwo]);
@@ -78,7 +79,7 @@ const BillView = ()=> {
           groupthree=[res.data.data.billSetting[i],...groupthree];
           setGroupThree([groupThree,...groupthree]);
         }
-        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+        else if(res.data.data.billSetting[i].groupId === 3 && res.data.data.billSetting[i].billType === 'SELL'
           && res.data.data.billSetting[i].formStatus === 1){
             grThree=[res.data.data.billSetting[i], ...grThree];
             setGrThree([grthree, ...grThree]);
@@ -88,7 +89,7 @@ const BillView = ()=> {
           groupfour=[res.data.data.billSetting[i],...groupfour];
           setGroupFour([groupFour,...groupfour]);
         }
-        else if(res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
+        else if(res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'SELL'
           && res.data.data.billSetting[i].formStatus === 1){
             grFour=[res.data.data.billSetting[i], ...grFour];
             setGrFour([grfour,...grFour]);
@@ -123,6 +124,7 @@ const BillView = ()=> {
       case "OTHER_FEE":
         if(singleBillData.partyType ==="BUYER"){
           value=singleBillData?.otherFee;
+          console.log(value)
         }
         else{
           value = singleBillData?.misc;
@@ -136,6 +138,7 @@ const BillView = ()=> {
         break;
       case "CASH_RECEIVED":
         value = singleBillData?.cashRcvd;
+        console.log(value)
         break;
       case "ADVANCES":
         value = singleBillData?.advance;
@@ -205,31 +208,32 @@ const BillView = ()=> {
     return groupFourTotal;
   }
   const grOneTotals = () => {
-    groupone.map(item => {
+    grone.map(item => {
       groupOneTotal += handleGroupNames(item.settingName);
     })
     console.log(groupOneTotal)
     return groupOneTotal;
   }
   const grTwoTotals = () => {
-    groupTwo.map(item => {
+    grtwo.map(item => {
       groupTwoTotal += handleGroupNames(item.settingName);
     })
     return groupTwoTotal;
   }
   const grThreeTotals = () => {
-    groupThree.map(item => {
+    grthree.map(item => {
       groupThreeTotal += handleGroupNames(item.settingName);
     })
     return groupThreeTotal;
   }
   const grFourTotals = () => {
-    groupFour.map(item => {
+    grfour.map(item => {
       groupFourTotal += handleGroupNames(item.settingName);
     })
     return groupFourTotal;
   }
   const getCropUnit = (unit) => {
+    console.log(unit);
     var unitType = "";
     switch (unit) {
       case "CRATES":
@@ -262,6 +266,9 @@ const BillView = ()=> {
         item = "";
         break;
       case "WASTAGE":
+        item = "";
+        break;
+      case "OUT_ST_BALANCE":
         item = "";
         break;
     }
@@ -464,69 +471,108 @@ const BillView = ()=> {
                             ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
                           </div>
                         </div>
-                        <div className="hrs-line"></div>
-                      </div>
-                        
+                        <div className={(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
+
+                        </div>
+                      </div>    
                       })}
-                      <div className="group-one-total">
-                        <p>{groupOneTotals().toFixed(2)}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{groupOneTotals().toFixed(2)}</p>
+                        </div>
+                        
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div>
                       {groupTwo.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
-                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
-                            item.settingName?.replaceAll('_', ' ')} </p>
+                        return <div>
+                          <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6">
+                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')} </p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
+                            </div>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
+
                           </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{groupTwoTotals().toFixed(2)}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{groupTwoTotals().toFixed(2)}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div>
                       {groupThree.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                        return <div>
+                          <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6">
+                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')} </p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
+                            </div>
+                          </div>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
                             ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
-                            item.settingName?.replaceAll('_', ' ')} </p>
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName).toFixed(2)}</p>
-                          </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{groupThreeTotals().toFixed(2)}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{groupThreeTotals().toFixed(2)}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div>
                       {groupFour.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                        return <div>
+                          <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6">
+                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')}</p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                            </div>
+                          </div>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
                             ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
-                            item.settingName?.replaceAll('_', ' ')}</p>
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
-                          </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{groupFourTotals() === 0? '':groupFourTotal().toFixed(2)}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{groupFourTotals().toFixed(2)}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div className="d-flex total-pay">
@@ -717,7 +763,7 @@ const BillView = ()=> {
                           <td className="col-3">
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
-                            <p>{item.qty == null ? "" : item.qty + " " + getCropUnit(item.qtyUnit) + " | "}
+                            <p>{item.qty == null ? "" : item.qty + getCropUnit(item.qtyUnit) + " | "}
                               {item.weight == null ? "" : item.weight + " KGS  - "} <span className="red_text">
                                 {item.wastage == null ? "" : item.wastage + " KGS "}</span></p>
                           </td>
@@ -768,91 +814,131 @@ const BillView = ()=> {
                   <div className="pl-0 col-lg-6 col_border_left pr-0">
                     <div>
                       {grone.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6 align-items">
-                            <p className="groups_value"> 
-                            {(item.settingName !== handleSettingName(item.settingName)
-                            ? ' ':(handleGroupNames(item.settingName)) === 0 || null || " ")?' ':
-                            item.settingName?.replaceAll('_', ' ')}</p>
+                        return <div>
+                          <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6 align-items">
+                              <p className="groups_value"> 
+                              {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === null || 0 )?' ':
+                              item.settingName?.replaceAll('_', ' ')}</p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                            </div>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
+                            ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
                           </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{grOneTotals()===0 || NaN?'':grOneTotals()}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{grOneTotals()}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div>
                       {grtwo.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                        return <div>
+                        <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6">
+                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')}</p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                            </div>
+                          </div>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
                             ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
-                            item.settingName?.replaceAll('_', ' ')}</p>
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
-                          </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{grTwoTotals()===0?'':grTwoTotals()}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{grTwoTotals().toFixed(2)}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div>
                       {grthree.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                        return <div>
+                          <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6">
+                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')} </p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                            </div>
+                          </div>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
                             ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
-                            item.settingName?.replaceAll('_', ' ')} </p>
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
-                          </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{grThreeTotals()===0?'':grThreeTotals().toFixed(2)}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{grThreeTotals().toFixed(2)}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div>
                       {grfour.map((item, index) => {
-                        return <div className="row" key={index}>
-                          <div className="col-lg-2"></div>
-                          <div className="col-lg-6">
-                            <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                        return <div>
+                          <div className="row" key={index}>
+                            <div className="col-lg-2"></div>
+                            <div className="col-lg-6">
+                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
+                              ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
+                              item.settingName?.replaceAll('_', ' ')}</p>
+                            </div>
+                            <div className="col-lg-4">
+                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
+                              ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                            </div>
+                          </div>
+                          <div className={(item.settingName !== handleSettingName(item.settingName)
                             ? ' ':(handleGroupNames(item.settingName)) === 0)?' ':
-                            item.settingName?.replaceAll('_', ' ')}</p>
+                            item.settingName?.replaceAll('_', ' ')?'hrs-line':''}>
                           </div>
-                          <div className="col-lg-4">
-                            <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                            ===0 ? ' ':handleGroupNames(item.settingName)}</p>
-                          </div>
-                        </div>;
+                        </div>
                       })}
-                      <div className="group-one-total">
-                        <p>{grFourTotals()===0?'':grFourTotals().toFixed(2)}</p>
+                      <div className="row group-one-total">
+                        <div className="pl-0 col-lg-8 pr-0"></div>
+                        <div className="col-lg-4">
+                            <p>{grFourTotals().toFixed(2)}</p>
+                        </div>
+                        <div className="hr-line-in-totals"></div>
                       </div>
                     </div>
                     <div className="d -flex total-pay">
                     {
-                        singleBillData.totalReceivable === 0 || null ? ' ':<div><p>Total Bill Amount </p>
+                        singleBillData.totalReceivable === null  || 0  ? '':<div><p>Total Bill Amount </p>
                         <p className="pay-value">{singleBillData.totalReceivable}</p></div>
-                      }
+                    }
                       {/* <p>Total Bill Amount : </p>
                       <p className="pay-value">{singleBillData?.totalReceivable}</p> */}
                     </div>
                     <div className="d-flex total-pay">
-                      <p className="out-st">Outstanding Balance : </p>
+                      <p className="out-st">Outstanding Balance </p>
                       <p className="out-value">{singleBillData?.outStBal.toFixed(2)}</p>
                     </div>
                   </div>
