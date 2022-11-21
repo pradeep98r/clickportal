@@ -481,9 +481,8 @@ const BillView = ()=> {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                            <p>{groupOneTotals().toFixed(2)}</p>
+                            <p>{groupOneTotals()!==0?groupOneTotals().toFixed(2):''}</p>
                         </div>
-                        
                         <div className="hr-line-in-totals"></div>
                       </div>
                     </div>

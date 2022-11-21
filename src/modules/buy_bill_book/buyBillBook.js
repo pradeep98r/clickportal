@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
+import date_icon from "../../assets/images/date_icon.svg";
 import DatePickerModel from "../smartboard/datePicker";
 // import { WeeklyCalendar } from "react-week-picker";
 import "../../assets/css/calender.scss";
@@ -23,32 +24,27 @@ function BuyBillBook() {
   useEffect(() => {
     callbackFunction();
   }, []);
-
-  
-  // const [fromDate, setFromDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
-  // const [toDate, setToDate]= useState(moment(new Date()).format("YYYY-MM-DD"));
-  var dateValue = moment(new Date()).format("YYYY-MM-DD");
-  
-  // const getAllBuyBills = () => {
-    // getBuyBills(clickId,fromDate,toDate)
-    //   .then((response) => {
-    //     console.log(response, "billsss");
-    //     console.log(response.data.data, "billsss");
-    //     setBuyBillData(response.data.data.singleBills);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-  // };
+ 
+  var [dateValue, setDateValue] = useState(moment(new Date()).format("DD-MMM-YYYY"));
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
   };
-  const callbackFunction = (startDate, endDate) => {
-    console.log(startDate,endDate, "child");
+  const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue=fromDate
+    if(dateTab === "Daily"){
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if(dateTab === "Weekly"){
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY")+" to "+moment(toDate).format("DD-MMM-YYYY"))
+    } else if(dateTab === "Monthly"){
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if(dateTab === "Yearly"){
+      console.log("yearly",dateTab)
+      setDateValue(moment(fromDate).format("YYYY"));
+    }else{
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY")+" to "+moment(toDate).format("DD-MMM-YYYY"))
+    }
     // setFromDate(startDate);
     // setToDate(toDate);
     getBuyBills(clickId,fromDate, toDate)
@@ -141,7 +137,9 @@ function BuyBillBook() {
                         
                       </ul>
                     </div>
-                    <div onClick={onclickDate} className="color_blue">{dateValue}</div>
+                    <div onClick={onclickDate} className="color_blue">
+                    <span className="date_icon m-0"><img src={date_icon} alt="icon" className="mr-2" />
+                    </span>{dateValue}</div>
                     <div className="d-flex">
                       <div className="d-flex mx-3" role="search">
                         <input
