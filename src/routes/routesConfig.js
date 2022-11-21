@@ -70,6 +70,7 @@ const RoutesConfig = () => {
               {planStatus === "SUCCESS" ? (                
                 <Layout>
                   <Routes>
+                    <Route path="/" element={<SmartBoard />} />
                     <Route path="/smartboard" element={<SmartBoard />} />
                     <Route path="/buy_bill_book" element={<BuyBillBook />} />
                     <Route path="/bill_creation" element={<BillCreation />} />
@@ -112,10 +113,15 @@ const RoutesConfig = () => {
       } else {
         // console.log(loginData, "login data after succesful registration");
         // console.log(localStorage.getItem("registerData"), "aftter data");
+        
         return (
           <BrowserRouter>
             <Layout>
               <Routes>
+                {localStorage.removeItem("LinkPath") ||
+                  localStorage.setItem("LinkId","1")
+                }
+                <Route path="/" element={<SmartBoard />} />
                 <Route path="/smartboard" element={<SmartBoard />} />
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />

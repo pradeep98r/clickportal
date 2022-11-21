@@ -58,6 +58,7 @@ function TopNavigation() {
       <div className="container-fluid">
         <div className="page_header">
           <h2>
+            {console.log(linkValue)}
             {/* {linkPath == "/smartboard" && "Smartboard"} */}
             {linkValue == 1 && "Smartboard"}
             {linkValue == 2 && "Smartchart"}

@@ -128,30 +128,60 @@ const TransportoLedger = () => {
   //Add Record payment
   const [isValid, setIsValid]=useState(false);
   const [valid, setValid]= useState(false);
+  const [requiredCondition, setRequiredCondition] = useState("");
 
-  const addRecordPayment = (transId) => {
+  const onSubmitRecordPayment = (transId) => {
+    if(paidRcvd<0){
+      setRequiredCondition("Amount Recieved Cannot be negative");
+    } else if(parseInt(paidRcvd) === 0){
+      setRequiredCondition("Amount Received cannot be empty");
+    } else if(isNaN(paidRcvd)){
+      setRequiredCondition("Invalid Amount");
+    }
+    else if(paidRcvd.trim().length !== 0 && paidRcvd!=0
+     && paidRcvd<payLedger.outStdRcvPayble && !(paidRcvd<0)){
+      addRecordPayment();
+    }
+     else if(paidRcvd>payLedger.outStdRcvPayble){
+      setRequiredCondition("Entered Amount  cannot more than Outstanding Balance");
+    }
+    
+  }
+  const addRecordPayment =() =>{
     const addRecordData = {
-        caId: clickId,
-        partyId:JSON.parse(localStorage.getItem("transId")),
-        date: convert(selectDate),
-        comments: comments,
-        paidRcvd: paidRcvd,
-        paymentMode: paymentMode,
+      caId: clickId,
+      partyId:JSON.parse(localStorage.getItem("transId")),
+      date: convert(selectDate),
+      comments: comments,
+      paidRcvd: paidRcvd,
+      paymentMode: paymentMode,
     }
     postRecordPayment(addRecordData).then(response => {
-        console.log(response.data.data);
-        window.location.reload();
-        //setRecordDisplay("Record Updated Successfully");
-        //setRecord(true);
-      })
-      .catch(error => {
-        console.log(error);
-      })
-      navigate("/transportoledger");
-      localStorage.removeItem("partyId");
-      setIsOpen(false);
-    }
+      console.log(response.data.data);
+      window.location.reload();
+      //setRecordDisplay("Record Updated Successfully");
+      //setRecord(true);
+    })
+    .catch(error => {
+      console.log(error);
+    })
+    navigate("/transportoledger");
+    localStorage.removeItem("partyId");
+    setIsOpen(false);
+  }
 
+  const onSubmitRecordInventory = () =>{
+    if(qty<0){
+      setRequiredCondition("Quantity Recieved Cannot be negative");
+    } else if(parseInt(qty) === 0){
+      setRequiredCondition("Quantity Received cannot be empty");
+    } else if(isNaN(qty)){
+      setRequiredCondition("Invalid Quantity");
+    }
+    else if(qty.trim().length !== 0 && !(qty<0)){
+      postRecordInventory();
+    }
+  }
   //Add Record Inventory
   const postRecordInventory =()=>{
     const inventoryRequest={
@@ -164,15 +194,6 @@ const TransportoLedger = () => {
         qty:parseInt(qty),
         unit:unit
       }]
-    }
-
-    if(qty===0){
-      setIsValid(true);
-      console.log(qty);
-    }
-    else if(qty<0){
-      setValid(true)
-      console.log(qty);
     }
     addRecordInventory(inventoryRequest)
     .then(response=>{
@@ -527,11 +548,12 @@ const TransportoLedger = () => {
                         </div>
                         <div class="form-group" id="input_in_modal">
                           <label hmtlFor="amtRecieved" id="amt-tag">Amount</label>
-                          <input class="form-control" id="amtRecieved"  required
+                          <input class="form-cont" id="amtRecieved"  required
                             onChange={(e) =>{setPaidRcvd(e.target.value)}} />
+                          <p className="text-valid">{requiredCondition}</p>
                         </div>
                         <div id="radios_in_modal">
-                        <p className='payment-tag'>Payment Mode</p>
+                        <p className='payments-tag'>Payment Mode</p>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="CASH"
                             onChange={(e) => setPaymentMode(e.target.value)} checked={paymentMode==='CASH'}required />
@@ -572,7 +594,7 @@ const TransportoLedger = () => {
                         type="button"
                         id="submit_btn_in_modal"
                         className="primary_btn cont_btn w-100"
-                        onClick={addRecordPayment}
+                        onClick={onSubmitRecordPayment}
                         // id="close_modal"
                         data-bs-dismiss="modal"
                       >
@@ -821,14 +843,13 @@ const TransportoLedger = () => {
                                   onChange={(e) => setUnit(e.target.value)} required />
                                 <label class="form-check-label" for="inlineRadio4" id="bags">BAGS</label>
                               </div>
-                              <div class="form-group">
+                              <div class="form-gro">
                                 <label hmtlFor="amtRecieved" id="count-tag">Number of {unit}</label>
-                                <input class="form-control" id="amtRecieved"   required
+                                <input class="form-cond" id="amtRecieved"   required
                                   onChange={(e) => setQty(e.target.value)}/>
+                                <p className="text-valid">{requiredCondition}</p>
                               </div>
-                              {isValid?
-                                <p>Your Value Is Zero</p>:''
-                              }
+                              
                               <div class="mb-3">
                                 <label for="exampleFormControlTextarea1" class="form-label" id="comments-tag">Comment</label>
                                 <textarea class="form-control" id="comments" rows="2" value={comments}
@@ -842,7 +863,7 @@ const TransportoLedger = () => {
                           <button type="button"
                             id="submit_btn_in_modal"
                             className="primary_btn cont_btn w-100"
-                            onClick={postRecordInventory}
+                            onClick={onSubmitRecordInventory}
                             // id="close_modal"
                             /*</div>data-dismiss="modal"*/>SUBMIT</button>
                         </div>
