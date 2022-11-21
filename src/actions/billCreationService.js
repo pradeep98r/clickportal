@@ -15,7 +15,7 @@ export function getBuyBills(clickId,date) {
 }
 export function getSellBills(clickId) {
   return axiosCommon.get(
-    `/click/bills/sell-bills/caId/${clickId}?fromDate=2022-08-22&toDate=2022-08-22`
+    `/click/bills/sell-bills/caId/${clickId}?fromDate=2022-08-19&toDate=2022-08-19`
   );
 }
 export function editPartnerItem(obj) {
@@ -106,6 +106,13 @@ export function postbuybillApi(billRequestObj) {
   console.log(billRequestObj,"object");
   return axiosCommon.post(
     "/click/bills/buy-bill",
+    billRequestObj,  
+  );
+}
+export function postsellbillApi(billRequestObj) {
+  console.log(billRequestObj,"object");
+  return axiosCommon.post(
+    "/click/bills/sales-bill",
     billRequestObj,  
   );
 }
