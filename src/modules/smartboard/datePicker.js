@@ -164,7 +164,8 @@ function DatePickerModel(props) {
   // }
   return (
      
-       <Modal show={props.show} close={props.close} id="datePopupmodal"  aria-labelledby="contained-modal-title-vcenter"
+       <Modal show={props.show} close={props.close} id="datePopupmodal"
+       aria-labelledby="contained-modal-title-vcenter"
        centered className="samrtboard_calender">
             <div className="modal-header date_modal_header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">

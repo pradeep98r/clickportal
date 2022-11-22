@@ -202,7 +202,7 @@ const LoginForm = () => {
                       <label className="form-label mb-0">Enter OTP</label>
                       <div className="timer">
                         <OtpTimer
-                          seconds={30}
+                          seconds={60}
                           minutes={0}
                           resend={handleClick}
                         />

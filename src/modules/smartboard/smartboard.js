@@ -219,6 +219,7 @@ const SmartBoard = () => {
   const getSmartBoardResponse = (tabType, fromDate, toDate) => {
     getSmartboardData(clickId, tabType, fromDate, toDate)
       .then((response) => {
+        console.log(response.data.data);
         const data = response.data.data;
         setSmartboardData(data);
         setOutStandingBal(data.outStandingBal);
@@ -265,33 +266,32 @@ const SmartBoard = () => {
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
       : "";
-console.log(localStorage.getItem("businessCreatedStatus"))
   const [showModalStatus, setShowModalStatus] = useState(false);
   const onClickProfiles = () => {
     setShowModal(true);
     setShowModalStatus(true);
-    localStorage.removeItem("mandiEditStatus")
-    localStorage.setItem("mandiEditStatus", false)
-  }
-  console.log(loginData.businessCreated,businessCreatedStatus)
+    localStorage.removeItem("mandiEditStatus");
+    localStorage.setItem("mandiEditStatus", false);
+  };
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {loginData.businessCreated === false && businessCreatedStatus == '' ? (
+          {loginData.businessCreated === false &&
+          businessCreatedStatus == "" ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
                   <p>Complete your Mandi Setup</p>
-                  <button onClick={onClickProfiles}>
-                    Complete Now
-                  </button>
-                  {showModalStatus ?
+                  <button onClick={onClickProfiles}>Complete Now</button>
+                  {showModalStatus ? (
                     <CompleteProfile
                       show={showModal}
                       close={() => setShowModal(false)}
                     />
-                    : ("")}
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <NoDataAvailable />
               </div>
@@ -376,7 +376,7 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                         // {tabType}
                         <div className="row smartboard_row" id="scroll_style">
                           {/* left side */}
-                          <div className="col-lg-9 smartboard_div p-0">
+                          <div className="col-sm-9 smartboard_div smartboard_div1 p-0">
                             <div className="outstanding_balance margin_bottom">
                               <h4 className="smartboard_main_header">
                                 Outstanding Balances
@@ -390,24 +390,34 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                           Pending Receivables{" "}
                                         </h5>
                                         {outStandingBal.pendingRecievables ==
-                                          0 ? (
+                                        0 ? (
                                           <p className="nodata">
                                             No Data Available
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
-                                            {outStandingBal.pendingRecievables.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            {outStandingBal.pendingRecievables.toLocaleString(
+                                              "en-IN",
+                                              {
+                                                maximumFractionDigits: 2,
+                                                style: "currency",
+                                                currency: "INR",
+                                              }
+                                            )}
                                           </h6>
                                         )}
                                         <p>
                                           {outStandingBal.pendingRecievables ==
-                                            0
-                                            ? ""
-                                            : <a id="buyer-link" href="/buyerledger">See Buyer Ledger</a>}
+                                          0 ? (
+                                            ""
+                                          ) : (
+                                            <a
+                                              id="buyer-link"
+                                              href="/buyerledger"
+                                            >
+                                              See Buyer Ledger
+                                            </a>
+                                          )}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -420,11 +430,12 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
-                                            {outStandingBal.totalSellBills.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            {outStandingBal.totalSellBills.toLocaleString(
+                                              "en-IN",
+                                              {
+                                                currency: "INR",
+                                              }
+                                            )}
                                           </h6>
                                         )}
 
@@ -448,18 +459,26 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
-                                            {outStandingBal.pendingPaybles.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            {outStandingBal.pendingPaybles.toLocaleString(
+                                              "en-IN",
+                                              {
+                                                maximumFractionDigits: 2,
+                                                style: "currency",
+                                                currency: "INR",
+                                              }
+                                            )}
                                           </h6>
                                         )}
 
                                         <p className="color_blue">
-                                          {outStandingBal.pendingPaybles == 0
-                                            ? ""
-                                            : <a href="/sellerledger">See Seller Ledger</a>}
+                                          {outStandingBal.pendingPaybles ==
+                                          0 ? (
+                                            ""
+                                          ) : (
+                                            <a href="/sellerledger">
+                                              See Seller Ledger
+                                            </a>
+                                          )}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -470,11 +489,12 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
-                                            {outStandingBal.totalBuyBills.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            {outStandingBal.totalBuyBills.toLocaleString(
+                                              "en-IN",
+                                              {
+                                                currency: "INR",
+                                              }
+                                            )}
                                           </h6>
                                         )}
 
@@ -502,11 +522,14 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                         <h6 className="">
                                           {salesReprtData.totalBusiness == 0
                                             ? ""
-                                            : salesReprtData.totalBusiness.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            : salesReprtData.totalBusiness.toLocaleString(
+                                                "en-IN",
+                                                {
+                                                  maximumFractionDigits: 2,
+                                                  style: "currency",
+                                                  currency: "INR",
+                                                }
+                                              )}
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -514,11 +537,24 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                         <h6 className="">
                                           {salesReprtData.totalUnits == 0
                                             ? ""
-                                            : salesReprtData.totalUnits.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            : salesReprtData.totalUnits.toLocaleString(
+                                                "en-IN",
+                                                {
+                                                  maximumFractionDigits: 2,
+                                                  currency: "INR",
+                                                }
+                                              ) +
+                                              (salesReprtData.totalWeight
+                                                ? " | " +
+                                                  salesReprtData.totalWeight.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      currency: "INR",
+                                                    }
+                                                  ) +
+                                                  " KGS"
+                                                : "")}
                                         </h6>
                                       </div>
                                     </div>
@@ -544,11 +580,14 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                         <h6 className="">
                                           {purchaseReprtData.totalBusiness == 0
                                             ? ""
-                                            : purchaseReprtData.totalBusiness.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            : purchaseReprtData.totalBusiness.toLocaleString(
+                                                "en-IN",
+                                                {
+                                                  maximumFractionDigits: 2,
+                                                  style: "currency",
+                                                  currency: "INR",
+                                                }
+                                              )}
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -556,11 +595,24 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                         <h6 className="">
                                           {purchaseReprtData.totalUnits == 0
                                             ? ""
-                                            : purchaseReprtData.totalUnits.toLocaleString('en-IN', {
-                                              maximumFractionDigits: 2,
-                                              style: 'currency',
-                                              currency: 'INR'
-                                            })}
+                                            : purchaseReprtData.totalUnits.toLocaleString(
+                                                "en-IN",
+                                                {
+                                                  maximumFractionDigits: 2,
+                                                  currency: "INR",
+                                                }
+                                              ) +
+                                              (purchaseReprtData.totalWeight
+                                                ? " | " +
+                                                  purchaseReprtData.totalWeight.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      currency: "INR",
+                                                    }
+                                                  ) +
+                                                  " KGS"
+                                                : "")}
                                         </h6>
                                       </div>
                                     </div>
@@ -577,7 +629,7 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                 </div>
                               </div>
                               <div className="row margin_bottom">
-                                <div className="col-lg-6 col_left">
+                                <div className="col-sm-6 col_left">
                                   <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
                                       Sales by Crop
@@ -621,11 +673,14 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                                   Total Sales{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {cropItem.totalBusiness.toLocaleString('en-IN', {
-                                                    maximumFractionDigits: 2,
-                                                    style: 'currency',
-                                                    currency: 'INR'
-                                                  })}
+                                                  {cropItem.totalBusiness.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      style: "currency",
+                                                      currency: "INR",
+                                                    }
+                                                  )}
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
@@ -633,11 +688,26 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                                   Total Quantity{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {cropItem.totalQty.toLocaleString('en-IN', {
-                                                    maximumFractionDigits: 2,
-                                                    style: 'currency',
-                                                    currency: 'INR'
-                                                  })}
+                                                  {cropItem.totalQty == 0
+                                                    ? ""
+                                                    : cropItem.totalQty.toLocaleString(
+                                                        "en-IN",
+                                                        {
+                                                          maximumFractionDigits: 2,
+                                                          currency: "INR",
+                                                        }
+                                                      ) +
+                                                      (cropItem.totalWeight
+                                                        ? " | " +
+                                                          cropItem.totalWeight.toLocaleString(
+                                                            "en-IN",
+                                                            {
+                                                              maximumFractionDigits: 2,
+                                                              currency: "INR",
+                                                            }
+                                                          ) +
+                                                          " KGS"
+                                                        : "")}
                                                 </h6>
                                               </div>
                                             </div>
@@ -654,7 +724,7 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                     )}
                                   </div>
                                 </div>
-                                <div className="col-lg-6 col_right">
+                                <div className="col-sm-6 col_right">
                                   <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
                                       Purchase by Crop
@@ -698,11 +768,14 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                                   Total Purchases{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {buycropItem.totalBusiness.toLocaleString('en-IN', {
-                                                    maximumFractionDigits: 2,
-                                                    style: 'currency',
-                                                    currency: 'INR'
-                                                  })}
+                                                  {buycropItem.totalBusiness.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      style: "currency",
+                                                      currency: "INR",
+                                                    }
+                                                  )}
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
@@ -710,11 +783,26 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                                   Total Quantity{" "}
                                                 </h5>
                                                 <h6 className="">
-                                                  {buycropItem.totalQty.toLocaleString('en-IN', {
-                                                    maximumFractionDigits: 2,
-                                                    style: 'currency',
-                                                    currency: 'INR'
-                                                  })}
+                                                  {buycropItem.totalQty == 0
+                                                    ? ""
+                                                    : buycropItem.totalQty.toLocaleString(
+                                                        "en-IN",
+                                                        {
+                                                          maximumFractionDigits: 2,
+                                                          currency: "INR",
+                                                        }
+                                                      ) +
+                                                      (buycropItem.totalWeight
+                                                        ? " | " +
+                                                          buycropItem.totalWeight.toLocaleString(
+                                                            "en-IN",
+                                                            {
+                                                              maximumFractionDigits: 2,
+                                                              currency: "INR",
+                                                            }
+                                                          ) +
+                                                          " KGS"
+                                                        : "")}
                                                 </h6>
                                               </div>
                                             </div>
@@ -758,13 +846,67 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                                 <div>
                                                   <h4>{buyerItem.partyName}</h4>
                                                   <h5>{buyerItem.mobile}</h5>
-                                                  <h6>
+                                                  <h3>
                                                     {buyerItem.trader
                                                       ? "Trader"
                                                       : "Buyer"}
-                                                  </h6>
+                                                  </h3>
                                                 </div>
                                               </div>
+                                                <div>
+                                                  <div className="row mt-3">
+                                                    <div className="col-lg-6 col_left_border">
+                                                      <h5 className="">
+                                                        {" "}
+                                                        Total Purchases{" "}
+                                                      </h5>
+                                                      <h6 className="">
+                                                        {buyerItem.totalBusiness.toLocaleString(
+                                                          "en-IN",
+                                                          {
+                                                            maximumFractionDigits: 2,
+                                                            style: "currency",
+                                                            currency: "INR",
+                                                          }
+                                                        )}
+                                                      </h6>
+                                                    </div>
+                                                    <div className="col-lg-6 col2">
+                                                      <h5 className="">
+                                                        Total Quantity{" "}
+                                                      </h5>
+                                                      <h6 className="">
+                                                        {buyerItem.totalQty ==
+                                                        0
+                                                          ? ""
+                                                          : buyerItem.totalQty.toLocaleString(
+                                                              "en-IN",
+                                                              {
+                                                                maximumFractionDigits: 2,
+                                                                currency: "INR",
+                                                              }
+                                                            ) +
+                                                            (buyerItem.totalWeight
+                                                              ? " | " +
+                                                              buyerItem.totalWeight.toLocaleString(
+                                                                  "en-IN",
+                                                                  {
+                                                                    maximumFractionDigits: 2,
+                                                                    currency:
+                                                                      "INR",
+                                                                  }
+                                                                ) +
+                                                                " KGS"
+                                                              : "")}
+                                                      </h6>
+                                                    </div>
+                                                  </div>
+                                                  <div className="row top_border">
+                                                    <p className="color_blue text-center">
+                                                      See All
+                                                    </p>
+                                                  </div>
+                                                </div>
                                             </div>
                                           );
                                         })}
@@ -801,13 +943,65 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                                     {farmerItem.partyName}
                                                   </h4>
                                                   <h5>{farmerItem.mobile}</h5>
-                                                  <h6>
+                                                  <h3>
                                                     {farmerItem.trader
                                                       ? "Trader"
                                                       : "Seller"}
-                                                  </h6>
+                                                  </h3>
                                                 </div>
                                               </div>
+                                              <div className="row mt-3">
+                                                    <div className="col-lg-6 col_left_border">
+                                                      <h5 className="">
+                                                        {" "}
+                                                        Total Purchases{" "}
+                                                      </h5>
+                                                      <h6 className="">
+                                                        {farmerItem.totalBusiness.toLocaleString(
+                                                          "en-IN",
+                                                          {
+                                                            maximumFractionDigits: 2,
+                                                            style: "currency",
+                                                            currency: "INR",
+                                                          }
+                                                        )}
+                                                      </h6>
+                                                    </div>
+                                                    <div className="col-lg-6 col2">
+                                                      <h5 className="">
+                                                        Total Quantity{" "}
+                                                      </h5>
+                                                      <h6 className="">
+                                                        {farmerItem.totalQty ==
+                                                        0
+                                                          ? ""
+                                                          : farmerItem.totalQty.toLocaleString(
+                                                              "en-IN",
+                                                              {
+                                                                maximumFractionDigits: 2,
+                                                                currency: "INR",
+                                                              }
+                                                            ) +
+                                                            (farmerItem.totalWeight
+                                                              ? " | " +
+                                                              farmerItem.totalWeight.toLocaleString(
+                                                                  "en-IN",
+                                                                  {
+                                                                    maximumFractionDigits: 2,
+                                                                    currency:
+                                                                      "INR",
+                                                                  }
+                                                                ) +
+                                                                " KGS"
+                                                              : "")}
+                                                      </h6>
+                                                    </div>
+                                                  </div>
+                                                  <div className="row top_border">
+                                                    <p className="color_blue text-center">
+                                                      See All
+                                                    </p>
+                                                  </div>
                                             </div>
                                           );
                                         })}
@@ -838,8 +1032,12 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                       <tr>
                                         <th className="col-3">Name</th>
                                         <th className="col-2">Paid(&#8377;)</th>
-                                        <th className="col-2">To Be Paid(&#8377;)</th>
-                                        <th className="col-2">Past Balance(&#8377;)</th>
+                                        <th className="col-2">
+                                          To Be Paid(&#8377;)
+                                        </th>
+                                        <th className="col-2">
+                                          Past Balance(&#8377;)
+                                        </th>
                                         <th className="col-3">
                                           Total Outstanding Payables(&#8377;)
                                         </th>
@@ -889,11 +1087,15 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                     <thead>
                                       <tr>
                                         <th className="col-3">Name</th>
-                                        <th className="col-2">Received(&#8377;)</th>
+                                        <th className="col-2">
+                                          Received(&#8377;)
+                                        </th>
                                         <th className="col-2">
                                           To Be Received(&#8377;)
                                         </th>
-                                        <th className="col-2">Past Balance(&#8377;)</th>
+                                        <th className="col-2">
+                                          Past Balance(&#8377;)
+                                        </th>
                                         <th className="col-3">
                                           Total Outstanding Receivables(&#8377;)
                                         </th>
@@ -945,9 +1147,9 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                     <div className="col-lg-6 col_left_border">
                                       <h5 className="">Earned </h5>
                                       <h6 className="">
-                                       {commissionEarns.totalComm == 0
+                                        {commissionEarns.totalComm == 0
                                           ? ""
-                                          :  '₹' +commissionEarns.totalComm}
+                                          : "₹" + commissionEarns.totalComm}
                                       </h6>
                                     </div>
                                     <div className="col-lg-6 pr-0">
@@ -955,7 +1157,7 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                       <h6 className="">
                                         {commissionEarns.netComm == 0
                                           ? ""
-                                          : '₹'+commissionEarns.netComm}
+                                          : "₹" + commissionEarns.netComm}
                                       </h6>
                                     </div>
                                   </div>
@@ -977,7 +1179,7 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                   <h4 className="smartboard_main_header">
                                     Sell Bill Book
                                   </h4>
-                                  <Link to="/sellbillbook" >
+                                  <Link to="/sellbillbook">
                                     <OutlineButton text="Add Sell Bill" />
                                   </Link>
                                 </div>
@@ -985,7 +1187,7 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                                   <h4 className="smartboard_main_header">
                                     Buy Bill Book
                                   </h4>
-                                  <Link to="/buy_bill_book" >
+                                  <Link to="/buy_bill_book">
                                     <OutlineButton text="Add Purchase Bill" />
                                   </Link>
                                 </div>
@@ -1013,10 +1215,10 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                 {tabType == "Daily"
                   ? "Date"
                   : tabType == "Weekly"
-                    ? "Week"
-                    : tabType == "Monthly"
-                      ? "Month"
-                      : "Year"}
+                  ? "Week"
+                  : tabType == "Monthly"
+                  ? "Month"
+                  : "Year"}
               </h5>
               <img
                 src={close}
@@ -1093,8 +1295,8 @@ console.log(localStorage.getItem("businessCreatedStatus"))
                     tabType == "Daily"
                       ? selectedDate
                       : tabType == "Yearly"
-                        ? selectedYearDate
-                        : selectedMonthDate
+                      ? selectedYearDate
+                      : selectedMonthDate
                   )
                 }
               >
