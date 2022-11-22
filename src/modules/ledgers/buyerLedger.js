@@ -74,10 +74,10 @@ const BuyerLedger = () => {
   //Fetch ledger by party Type
   useEffect(() => {
     fetchBuyerLedger();
-  }, [clickId]);
+  }, []);
   const fetchBuyerLedger = () => {
-    getBuyerLedgers(clickId)
-      .then((response) => {
+    console.log("Ll")
+    getBuyerLedgers(clickId).then((response) => {
         console(response, "Buyer Details");
         setData(response.data.data);
         setLedgeres(response.data.data.ledgers);

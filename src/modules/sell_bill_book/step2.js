@@ -22,24 +22,26 @@ const SellbillStep2Modal = (props) => {
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
   const [cropClear, setCropClear] = useState(false);
-  const cropOnclick = (crop, id, index) => {
+  const cropOnclick = (crop, id, index,preferedCrops) => {
     setCropId(id);
     console.log(crop);
     Object.assign(
-      crop,
+      preferedCrops[index],
       { wastageValue: 0 },
       { unitValue: 0 },
       { rateType: "kgs" },
       { weightValue: 0 },
       { rateValue: 0 },
-      { totalValue: 0 }
+      { totalValue: 0 },
+      // { unitType:  preferedCrops[index2] }
     );
+
+    cropResponseData([...cropData, preferedCrops[index]]);
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
       console.log(crop.count, "after click");
     }
-    cropResponseData([...cropData, crop]);
     console.log(crop.units);
     preferedCropsData[index].units = "Crates";
   };
@@ -52,7 +54,7 @@ const SellbillStep2Modal = (props) => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
         response.data.data.map((item) => {
-          Object.assign(item, { count: 0 }, { cropActive: false });
+          Object.assign(item, { count: 0 }, { cropActive: false }, { unitType: "crates" });
         });
         setPreferedCropsData(response.data.data);
         console.log(response.data.data, "crops preferred");
@@ -78,7 +80,7 @@ const SellbillStep2Modal = (props) => {
           console.log(list[index], "if");
           setPreferedCropsData([...list, ...arr]);
           cropResponseData([...cropData, ...arr]);
-          Object.assign(list[index], { cropActive: true });
+          Object.assign(list[index], { cropActive: true }, { unitType: "crates" });
         } else {
           console.log(i, "else");
           Object.assign(
@@ -91,7 +93,8 @@ const SellbillStep2Modal = (props) => {
             { rateType: "kgs" },
             { weightValue: 0 },
             { rateValue: 0 },
-            { totalValue: 0 }
+            { totalValue: 0 },
+            { unitType: "crates" }
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -106,22 +109,55 @@ const SellbillStep2Modal = (props) => {
       setPreferedCropsData(deSelectedCrop);
     }
   };
-  const [selectedOption, setSelectedOption] = useState("Crates");
-
-  const [state, setState] = useState({
-    quantity: "",
-    rate: "",
-    totalWeight: "",
-    wastage: "",
-    total: "",
-    activeLink: "",
-    activeLinkRatettype: "",
-  });
-
+ 
+  const setQuantityBasedtable = (unitType) => {
+    var t = false;
+    if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
+      t = true;
+    }
+    return t;
+  };
+  var arr1 = [];
+  const getQuantity = (cropData, index1,crop) => (e) => {
+    cropData[index1].rateType = "kgs";
+    var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
+    console.log(index)
+    let updatedItemList = cropData.map((item,i) => {
+      if (i == index1) {
+        console.log(cropData[i],"if");
+        arr1.push({ ...cropData[i], unitType: e.target.value })   
+         return { ...cropData[i], unitType: e.target.value };
+      }
+      else{
+        console.log("else",cropData)
+        cropResponseData([...cropData]);
+        return {...cropData[i]}
+      }
+   });
+   console.log(updatedItemList);
+   cropResponseData([...updatedItemList]);
+  };
+  const getRateType = (cropData, index) => (e) => {
+    cropData[index].rateType = e.target.value;
+    console.log(cropData[index].rateType, cropData);
+    cropResponseData([...cropData]);
+  };
   const [quantityValue, setunitValue] = useState();
   const [wastagesValue, setwastageValue] = useState();
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
+  const getQuantityValue = (id, index, cropitem) => (e) => {
+    console.log(id, index, cropitem, e.target.value);
+    setunitValue(e.target.value);
+    cropitem[index].unitValue = e.target.value;
+    setCropId(id);
+  };
+  const getWeightValue = (id, index, cropitem) => (e) => {
+    console.log(id, index, cropitem);
+    setweightValue(e.target.value);
+    cropitem[index].weightValue = e.target.value;
+    setCropId(id);
+  };
   const getWastageValue = (id, index, cropitem) => (e) => {
     console.log(id, index, cropitem, e.target.value);
     if (cropitem[index].cropId == id) {
@@ -131,23 +167,7 @@ const SellbillStep2Modal = (props) => {
     }
     setCropId(id);
   };
-  const getQuantityValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem, e.target.value);
-    if (cropitem[index].cropId == id) {
-      setunitValue(e.target.value);
-      cropitem[index].unitValue = e.target.value;
-    }
-    setCropId(id);
-  };
-  const getWeightValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem);
-    if (cropitem[index].cropId == id) {
-      setweightValue(e.target.value);
-      cropitem[index].weightValue = e.target.value;
-    }
-    setCropId(id);
-  };
-  const [selectedSellbillCropsData, setSelectedSellbillCropsData] = useState([]);
+  const [selectedSellbillCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
     if (cropitem[index].cropId == id) {
       setrateValue(e.target.value);
@@ -164,38 +184,7 @@ const SellbillStep2Modal = (props) => {
       }
     }
     setCropId(id);
-    console.log(cropitem);
-    setSelectedSellbillCropsData(cropitem);
-  };
-  const [selectedOptionNnew1, setSelectedOptionNew1] = useState("Crates");
-  const getQuantity = (id, index, cropitem) => (e) => {
-    setState({ activeLink: id });
-    console.log(id, index, cropitem);
-    if (cropitem[index].cropId == id) {
-      if (e.target.value == "kgs") {
-        setSelectedOption("kgs");
-        setSelectedOptionNew1("kgs");
-        cropitem[index].units = "kgs";
-        console.log("kgsssss", cropitem[index].units, e.target.value);
-      } else {
-        setSelectedOption(e.target.value);
-        console.log("other");
-        setSelectedOptionNew1(e.target.value);
-      }
-      cropitem[index].units = e.target.value;
-    }
-    setCropId(id);
-  };
-  const [selectedratetype, setSelectedratetype] = useState("kgs");
-  const getRatetypeQuantity = (id, index, cropitem) => (e) => {
-    setState({ activeLink: id, activeLinkRatettype: id });
-    if (cropitem[index].cropId == id) {
-      setSelectedratetype(e.target.value);
-      cropitem[index].rateType = e.target.value;
-      cropitem[index].units = e.target.value;
-      console.log(cropitem[index].rateType, e.target.value, selectedOption);
-    }
-    setCropId(id);
+    setSelectedCropsData(cropitem);
   };
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
@@ -290,7 +279,7 @@ const SellbillStep2Modal = (props) => {
                 <div
                   className="text-center crop_div crop_div_ui"
                   key={crop.cropId}
-                  onClick={() => cropOnclick(crop, crop.cropId, index)}
+                  onClick={() => cropOnclick(crop, crop.cropId, index,preferedCropsData)}
                 >
                   <div
                     style={{
@@ -328,416 +317,106 @@ const SellbillStep2Modal = (props) => {
                       id={cropData[index].cropId}
                       key={index}
                     >
-                      {/* table */}
-                      <div className="d-flex crop_table_delete_div">
-                        <div className="crop_table_view">
-                          {(
-                            (selectedOption === "kgs" ||
-                              selectedOption === "loads") &&
-                            (selectedOptionNnew1 === "kgs" ||
-                              selectedOptionNnew1 === "loads")
-                              ? (cropData[index].units == "kgs" ||
-                                  cropData[index].units == "loads") &&
-                                cropData[index].cropId == state.activeLink
-                              : cropData[index].units == "kgsl"
-                          ) ? (
-                            cropData[index].cropId === state.activeLink &&
-                            cropData[index].units === selectedOptionNnew1 ? (
-                              <table
-                                className="table table-bordered mb-0"
-                                key={cropData[index].cropId}
-                              >
-                                <thead>
-                                  <tr>
-                                    <th>
-                                      Crop{" "}
-                                      {selectedOptionNnew1 + selectedOption}
-                                    </th>
-                                    <th>Unit Type</th>
-
-                                    <th>
-                                      Total Weight (
-                                      {cropData[index].cropId ==
-                                      state.activeLink
-                                        ? selectedOption
-                                        : cropData[index].units}
-                                      )
-                                    </th>
-
-                                    {cropData[index].units == "loads" ? (
-                                      ""
-                                    ) : (
-                                      <th>
-                                        Wastage(
-                                        {cropData[index].cropId ==
-                                        state.activeLink
-                                          ? selectedOption
-                                          : cropData[index].units}
-                                        )
-                                      </th>
-                                    )}
-                                    <th>Rate</th>
-                                    <th>Total</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr>
-                                    <td className="col-2">
-                                      <div className="flex_class mr-0">
-                                        <img
-                                          src={cropData[index].imageUrl}
-                                          className="flex_class mr-2"
-                                        />
-                                        <p className="m-0">
-                                          {cropData[index].cropName}
-                                        </p>
-                                      </div>
-                                    </td>
-                                    <td className="col-1">
-                                      <select
-                                        className="form-control qty_dropdown dropdown"
-                                        value={
-                                          cropData[index].cropId ==
-                                          state.activeLink
-                                            ? selectedOption
-                                            : cropData[index].units
-                                        }
-                                        onChange={getQuantity(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      >
-                                        <option value="Crates">Crates</option>
-                                        <option value="Bags">Bags</option>
-                                        <option value="Sacs">Sacs </option>
-                                        <option value="Boxes">Boxes </option>
-                                        <option value="kgs">Kgs </option>
-                                        <option value="loads">Loads </option>
-                                      </select>
-                                    </td>
-
-                                    <td className="col-2">
-                                      <input
-                                        type="text"
-                                        className="form-control"
-                                        name="weight"
-                                        value={cropData[index].weightValue}
-                                        onChange={getWeightValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                    {cropData[index].units == "loads" ? (
-                                      ""
-                                    ) : (
-                                      <td className="col-2">
-                                        <input
-                                          type="text"
-                                          name="wastage"
-                                          className="form-control wastage_val"
-                                          value={cropData[index].wastageValue}
-                                          onChange={getWastageValue(
-                                            cropData[index].cropId,
-                                            index,
-                                            cropData
-                                          )}
-                                        />
-                                      </td>
-                                    )}
-                                    <td className="col-2">
-                                      <input
-                                        type="text"
-                                        name="rate"
-                                        value={cropData[index].rateValue}
-                                        onChange={getRateValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                    <td className="col-2">
-                                      {(cropData[index].weightValue -
-                                        cropData[index].wastageValue) *
-                                        cropData[index].rateValue}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            ) : (
-                              "lll"
-                            )
-                          ) : (cropData[index].cropId === state.activeLink &&
-                              cropData[index].units === selectedOptionNnew1) ||
-                            (cropData[index].cropId === cropId &&
-                              cropData[index].units ===
-                                cropData[index].rateType) ? (
-                            <table
-                              className="table table-bordered mb-0"
-                              key={cropData[index].cropId}
-                            >
-                              <thead>
-                                <tr>
-                                  <th>Crop onclick + {index}</th>
-                                  <th>Unit Type</th>
-
-                                  <th>Rate Type</th>
-
-                                  <th className="">
-                                    Number of{" "}
-                                    {crop.cropId == state.activeLink
-                                      ? selectedOption + "l"
-                                      : cropData[index].units == "Per Kg"
-                                      ? "Crates"
-                                      : cropData[index].units}
-                                  </th>
-                                  {cropData[index].cropId === cropId &&
-                                  cropData[index].units ==
-                                    cropData[index].rateType &&
-                                  cropData[index].units == selectedOption ? (
-                                    ""
-                                  ) : (
-                                    <th>
-                                      Total Weight (
-                                      {cropData[index].cropId ==
-                                      state.activeLink
-                                        ? "Kgs" +
-                                          cropData[index].units +
-                                          selectedOption +
-                                          cropData[index].rateType
-                                        : "kgs" +
-                                          cropData[index].units +
-                                          selectedOptionNnew1 +
-                                          cropData[index].rateType}
-                                      )
-                                    </th>
-                                  )}
+                      <div className="crop_table_view">
+                        {cropData[index].unitType +
+                          index +
+                          cropData[index].rateType}
+                        {!setQuantityBasedtable(cropData[index].unitType) ? (
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Crop</th>
+                                <th>Unit Type</th>
+                                <th>Rate Type</th>
+                                <th>No of Units({cropData[index].unitType})</th>
+                                {cropData[index].unitType.toLowerCase() !=
+                                cropData[index].rateType ? (
                                   <th>
-                                    Wastage(
-                                    {crop.cropId == state.activeLink
-                                      ? "Kgs"
-                                      : "Kgs"}
+                                    Total Weight(
+                                    {cropData[index].unitType.toLowerCase() !=
+                                    cropData[index].rateType
+                                      ? "kgs"
+                                      : cropData[index].unitType}
                                     )
                                   </th>
-                                  <th>Rate</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td className="col-2">
-                                    <div className="flex_class mr-0">
-                                      <img
-                                        src={cropData[index].imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">
-                                        {cropData[index].cropName}
-                                      </p>
-                                    </div>
-                                  </td>
-                                  <td className="col-1">
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={
-                                        cropData[index].cropId ==
-                                        state.activeLink
-                                          ? selectedOption
-                                          : cropData[index].units
-                                      }
-                                      onChange={getQuantity(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    >
-                                      <option value="Crates">Crates</option>
-                                      <option value="Bags">Bags</option>
-                                      <option value="Sacs">Sacs </option>
-                                      <option value="Boxes">Boxes </option>
-                                      <option value="kgs">Kgs </option>
-                                      <option value="loads">Loads</option>
-                                    </select>
-                                  </td>
+                                ) : (
+                                  ""
+                                )}
 
-                                  <td className="col-1 onclick">
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={cropData[index].rateType}
-                                      onChange={getRatetypeQuantity(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    >
-                                      <option value="kgs">kgs</option>
-                                      <option
-                                        value={
-                                          cropData[index].cropId ==
-                                          state.activeLink
-                                            ? selectedOption
-                                            : cropData[index].rateType
-                                        }
-                                      >
-                                        {cropData[index].cropId ==
-                                        state.activeLink
-                                          ? selectedOption + "l"
-                                          : cropData[index].rateType + "o"}
-                                      </option>
-                                    </select>
-                                  </td>
+                                <th>
+                                  Wastage(
+                                  {cropData[index].unitType.toLowerCase() !=
+                                  cropData[index].rateType
+                                    ? "kgs"
+                                    : cropData[index].unitType}
+                                  )
+                                </th>
 
-                                  <td className="col-2">
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="quantity"
-                                      value={cropData[index].unitValue}
-                                      onChange={getQuantityValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
+                                <th>Rate</th>
+                                <th>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="col-2">
+                                  {" "}
+                                  <div className="flex_class mr-0">
+                                    <img
+                                      src={cropData[index].imageUrl}
+                                      className="flex_class mr-2"
                                     />
-                                  </td>
-                                  {cropData[index].cropId === cropId &&
-                                  cropData[index].units ==
-                                    cropData[index].rateType ? (
-                                    ""
-                                  ) : (
-                                    <td className="col-2">
-                                      <input
-                                        type="text"
-                                        className="form-control"
-                                        name="weight"
-                                        value={cropData[index].weightValue}
-                                        onChange={getWeightValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                  )}
-                                  <td className="col-1">
-                                    <input
-                                      type="text"
-                                      name="wastage"
-                                      className="form-control wastage_val"
-                                      value={cropData[index].wastageValue}
-                                      onChange={getWastageValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    <input
-                                      type="text"
-                                      name="rate"
-                                      className="form-control"
-                                      value={cropData[index].rateValue}
-                                      onChange={getRateValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    {cropData[index].rateType == "kgs"
-                                      ? 
-                                        (cropData[index].weightValue -
-                                          cropData[index].wastageValue) *
-                                          cropData[index].rateValue
-                                      : 
-                                        (cropData[index].unitValue -
-                                          cropData[index].wastageValue) *
-                                          cropData[index].rateValue}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          ) : cropData[index].units == "kgs" ? (
-                            <table
-                              className="table table-bordered mb-0"
-                              key={cropData[index].cropId}
-                            >
-                              <thead>
-                                <tr>
-                                  <th>
-                                    Crop{" "}
-                                    {cropData[index].units +
-                                      "fiii" +
-                                      cropData[index].rateType}
-                                  </th>
-                                  <th>Unit Type</th>
-
-                                  <th>
-                                    Total Weight (
-                                    {cropData[index].cropId == state.activeLink
-                                      ? selectedOption
-                                      : cropData[index].units}
-                                    )
-                                  </th>
-
-                                  {cropData[index].units == "loads" ? (
-                                    ""
-                                  ) : (
-                                    <th>
-                                      Wastage(
-                                      {cropData[index].cropId ==
-                                      state.activeLink
-                                        ? selectedOption
-                                        : cropData[index].units}
-                                      )
-                                    </th>
-                                  )}
-                                  <th>Rate</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td className="col-2">
-                                    <div className="flex_class mr-0">
-                                      <img
-                                        src={cropData[index].imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">
-                                        {cropData[index].cropName}
-                                      </p>
-                                    </div>
-                                  </td>
-                                  <td className="col-1">
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={
-                                        cropData[index].cropId ==
-                                        state.activeLink
-                                          ? selectedOption
-                                          : cropData[index].units
-                                      }
-                                      onChange={getQuantity(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
+                                    <p className="m-0">
+                                      {cropData[index].cropName}
+                                    </p>
+                                  </div>
+                                </td>
+                                <td className="col-1">
+                                  <select
+                                    className="form-control qty_dropdown dropdown"
+                                    value={cropData[index].unitType}
+                                    onChange={getQuantity(cropData, index,crop)}
+                                  >
+                                    <option value="Crates">Crates</option>
+                                    <option value="Bags">Bags</option>
+                                    <option value="Sacs">Sacs </option>
+                                    <option value="Boxes">Boxes </option>
+                                    <option value="kgs">Kgs </option>
+                                    <option value="loads">Loads </option>
+                                    <option value="pieces">Pieces </option>
+                                  </select>
+                                </td>
+                                <td className="col-1">
+                                  <select
+                                    className="form-control qty_dropdown dropdown"
+                                    value={cropData[index].rateType}
+                                    onChange={getRateType(cropData, index)}
+                                  >
+                                    <option
+                                      value={cropData[
+                                        index
+                                      ].unitType.toLowerCase()}
                                     >
-                                      <option value="Crates">Crates</option>
-                                      <option value="Bags">Bags</option>
-                                      <option value="Sacs">Sacs </option>
-                                      <option value="Boxes">Boxes </option>
-                                      <option value="kgs">Kgs </option>
-                                      <option value="loads">Loads </option>
-                                    </select>
-                                  </td>
-
+                                      {cropData[index].unitType}{" "}
+                                    </option>
+                                    <option value="kgs">Kgs </option>
+                                  </select>
+                                </td>
+                                <td className="col-2">
+                                  {" "}
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    name="quantity"
+                                    value={cropData[index].unitValue}
+                                    onChange={getQuantityValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                                {cropData[index].unitType.toLowerCase() !=
+                                cropData[index].rateType ? (
                                   <td className="col-2">
                                     <input
                                       type="text"
@@ -751,216 +430,116 @@ const SellbillStep2Modal = (props) => {
                                       )}
                                     />
                                   </td>
-                                  {cropData[index].units == "loads" ? (
-                                    ""
-                                  ) : (
-                                    <td className="col-2">
-                                      <input
-                                        type="text"
-                                        name="wastage"
-                                        className="form-control wastage_val"
-                                        value={cropData[index].wastageValue}
-                                        onChange={getWastageValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                  )}
-                                  <td className="col-2">
-                                    <input
-                                      type="text"
-                                      name="rate"
-                                      value={cropData[index].rateValue}
-                                      onChange={getRateValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    {(cropData[index].weightValue -
-                                      cropData[index].wastageValue) *
-                                      cropData[index].rateValue}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          ) : (
-                            <table
-                              className="table table-bordered mb-0"
-                              key={cropData[index].cropId}
-                            >
-                              <thead>
-                                <tr>
-                                  <th>
-                                    Crop otherr
-                                    {selectedOption +
-                                      cropData[index].units +
-                                      cropData[index].rateType}
-                                  </th>
-                                  <th>Unit Type</th>
+                                ) : (
+                                  ""
+                                )}
 
-                                  <th>Rate Type</th>
-
-                                  <th className="">
-                                    Number of{" "}
-                                    {crop.cropId == state.activeLink
-                                      ? selectedOption
-                                      : cropData[index].units == "Per Kg"
-                                      ? "Crates"
-                                      : cropData[index].units}
-                                  </th>
-                                  {cropData[index].rateType == "kgs" ? (
-                                    <th>
-                                      Total Weight (
-                                      {cropData[index].cropId ==
-                                      state.activeLink
-                                        ? "Kgs"
-                                        : "Kgs"}
-                                      )
-                                    </th>
-                                  ) : (
-                                    ""
-                                  )}
-                                  <th>
-                                    Wastage(
-                                    {crop.cropId == state.activeLink
-                                      ? "Kgs"
-                                      : "Kgs"}
-                                    )
-                                  </th>
-                                  <th>Rate</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td className="col-2">
-                                    <div className="flex_class mr-0">
-                                      <img
-                                        src={cropData[index].imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">
-                                        {cropData[index].cropName}
-                                      </p>
-                                    </div>
-                                  </td>
-                                  <td className="col-1">
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={
-                                        cropData[index].cropId ==
-                                        state.activeLink
-                                          ? selectedOption
-                                          : cropData[index].units
-                                      }
-                                      onChange={getQuantity(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    >
-                                      <option value="Crates">Crates</option>
-                                      <option value="Bags">Bags</option>
-                                      <option value="Sacs">Sacs </option>
-                                      <option value="Boxes">Boxes </option>
-                                      <option value="kgs">Kgs </option>
-                                      <option value="loads">Loads </option>
-                                    </select>
-                                  </td>
-
-                                  <td className="col-1">
-                                    {cropData[index].cropId === cropId ? (
-                                      <select
-                                        className="form-control qty_dropdown dropdown"
-                                        value={cropData[index].rateType}
-                                        onChange={getRatetypeQuantity(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      >
-                                        <option value="kgs">kgs</option>
-                                        <option
-                                          value={
-                                            cropData[index].rateType == "kgs"
-                                              ? selectedOption
-                                              : cropData[index].rateType
-                                          }
-                                        >
-                                          {cropData[index].rateType == "kgs"
-                                            ? selectedOption +
-                                              "l" +
-                                              cropData[index].rateType
-                                            : cropData[index].rateType + "pk"}
-                                        </option>
-                                      </select>
-                                    ) : (
-                                      <select
-                                        className="form-control qty_dropdown dropdown"
-                                        value={cropData[index].rateType}
-                                        onChange={getRatetypeQuantity(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      >
-                                        <option value="kgs">kgs</option>
-                                        <option
-                                          value={
-                                            cropData[index].rateType == "kgs"
-                                              ? cropData[index].units ==
-                                                "Per Kg"
-                                                ? "Crates"
-                                                : cropData[index].units
-                                              : cropData[index].rateType
-                                          }
-                                        >
-                                          {cropData[index].rateType == "kgs"
-                                            ? cropData[index].units == "Per Kg"
-                                              ? "Crates"
-                                              : cropData[index].units
-                                            : cropData[index].units + "pppp"}
-                                        </option>
-                                      </select>
+                                <td className="col-1">
+                                  {" "}
+                                  <input
+                                    type="text"
+                                    name="wastage"
+                                    className="form-control wastage_val"
+                                    value={cropData[index].wastageValue}
+                                    onChange={getWastageValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
                                     )}
-                                  </td>
+                                  />
+                                </td>
+                                <td className="col-2">
+                                  {" "}
+                                  <input
+                                    type="text"
+                                    name="rate"
+                                    value={cropData[index].rateValue}
+                                    onChange={getRateValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                                <td className="col-2">
+                                  {cropData[index].rateType == "kgs"
+                                    ? (cropData[index].weightValue -
+                                        cropData[index].wastageValue) *
+                                      cropData[index].rateValue
+                                    : (cropData[index].unitValue -
+                                        cropData[index].wastageValue) *
+                                      cropData[index].rateValue}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        ) : (
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Crop</th>
+                                <th>Unit Type</th>
+                                <th>
+                                  Total Weight({cropData[index].unitType})
+                                </th>
+                                {cropData[index].unitType == "loads" ? (
+                                  ""
+                                ) : (
+                                  <th>Wastage({cropData[index].unitType})</th>
+                                )}
 
-                                  <td className="col-2">
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="quantity"
-                                      value={cropData[index].unitValue}
-                                      onChange={getQuantityValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
+                                <th>Rate</th>
+                                <th>Total</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="col-2">
+                                  {" "}
+                                  <div className="flex_class mr-0">
+                                    <img
+                                      src={cropData[index].imageUrl}
+                                      className="flex_class mr-2"
                                     />
-                                  </td>
-                                  {cropData[index].units ==
-                                  cropData[index].rateType ? (
-                                    ""
-                                  ) : (
-                                    <td className="col-2">
-                                      <input
-                                        type="text"
-                                        name="weight"
-                                        value={cropData[index].weightValue}
-                                        onChange={getWeightValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                  )}
-                                  <td className="col-1">
+                                    <p className="m-0">
+                                      {cropData[index].cropName}
+                                    </p>
+                                  </div>
+                                </td>
+                                <td>
+                                  <select
+                                    className="form-control qty_dropdown dropdown"
+                                    value={cropData[index].unitType}
+                                    onChange={getQuantity(cropData, index,crop)}
+                                  >
+                                    <option value="Crates">Crates</option>
+                                    <option value="Bags">Bags</option>
+                                    <option value="Sacs">Sacs </option>
+                                    <option value="Boxes">Boxes </option>
+                                    <option value="kgs">Kgs </option>
+                                    <option value="loads">Loads </option>
+                                    <option value="pieces">Pieces </option>
+                                  </select>
+                                </td>
+                                <td className="col-2">
+                                  {" "}
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    name="weight"
+                                    value={cropData[index].weightValue}
+                                    onChange={getWeightValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                                {cropData[index].unitType == "loads" ? (
+                                  ""
+                                ) : (
+                                  <td className="col-2">
+                                    {" "}
                                     <input
                                       type="text"
                                       name="wastage"
@@ -973,57 +552,31 @@ const SellbillStep2Modal = (props) => {
                                       )}
                                     />
                                   </td>
-                                  <td className="col-2">
-                                    <input
-                                      type="text"
-                                      name="rate"
-                                      className="form-control"
-                                      value={cropData[index].rateValue}
-                                      onChange={getRateValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    {cropData[index].rateType == "kgs"
-                                      ? (cropData[index].totalValue =
-                                          (cropData[index].weightValue -
-                                            cropData[index].wastageValue) *
-                                          cropData[index].rateValue)
-                                      : (cropData[index].totalValue =
-                                          (cropData[index].unitValue -
-                                            cropData[index].wastageValue) *
-                                          cropData[index].rateValue)}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
-                        </div>
-                        <div className="delete_copy_div d-flex">
-                        <div
-                          className="flex_class mr-0 sub_icons_div"
-                          onClick={cloneCrop.bind(this, crop)}
-                        >
-                          <img
-                            src={copy_icon}
-                            className="sub_icons"
-                            alt="image"
-                          />
-                        </div>
-                        <div
-                          className="flex_class mr-0 sub_icons_div"
-                          onClick={deleteCrop.bind(this, crop, cropData)}
-                        >
-                          <img
-                            src={delete_icon}
-                            className="sub_icons"
-                            alt="image"
-                          />
-                        </div>
-                          </div>
+                                )}
+                                <td className="col-2">
+                                  {" "}
+                                  <input
+                                    type="text"
+                                    name="rate"
+                                    value={cropData[index].rateValue}
+                                    onChange={getRateValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                                <td className="col-2">{
+                                  cropData[index].unitType == 'loads' ? (cropData[index].weightValue *
+                                  cropData[index].rateValue) : 
+                                  (cropData[index].weightValue -
+                                    cropData[index].wastageValue) *
+                                  cropData[index].rateValue
+                                }</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        )}
                       </div>
                     </div>
                   ))}
