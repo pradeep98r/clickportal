@@ -21,8 +21,9 @@
   text-align: center;
   p {
     font-size: var(--body-text);
-    padding: 0px 80px;
+    padding: 0px 65px;
     line-height: 17px;
+    height: 50px;
   }
   h5 {
     font-size: var(--header5-text);
@@ -58,7 +59,7 @@
   border-radius: 5px;
   form {
     label {
-      font-size: var(--header2-text);
+      font-size: 18px;
     }
     padding: 25px 45px;
     a {
@@ -99,4 +100,8 @@
 }
 .para_margin{
   margin-bottom: 20px;
+}
+
+.writer{
+  height: 228px;
 }

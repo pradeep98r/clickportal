@@ -13,8 +13,7 @@
     border-radius: 10px;
 }
 .table td, .table th {
-    padding:0px;
-    vertical-align: top;
+    // padding:0px;
 }
 .tableRowActive{
     background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
@@ -30,7 +29,7 @@
     }
 }
 .table-scroll {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 210px);
     padding:0px;
     vertical-align: top;
     border-radius: 10px 10px 0px 0px;

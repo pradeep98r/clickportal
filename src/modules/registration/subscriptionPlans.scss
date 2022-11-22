@@ -2,7 +2,7 @@
 #plan1,#plan2,#plan3,#plan4{
     position: relative;
     top: 10px;
-    height: calc(100vh - 320px);
+    height: calc(100vh - 350px);
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
@@ -16,8 +16,6 @@
 #free-trail-tag{
     position: relative;
     margin: auto;
-    top: 20px;
-    height: 100px;
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 10px;
@@ -97,13 +95,11 @@
 .markers{
     position: relative;
     display: block;
-    height: calc(100vh - 440px);
+    height: calc(100vh - 468px);
     overflow-y: auto;
 }
 #free-trail-tag{
-    padding-left: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  padding: 30px
 }
 #prm-value,#save-tag,#discount-tag{
     color: #121212;
@@ -135,10 +131,8 @@
     text-align: center;
     color: #16A12C;
     background: #FFFFFF;
-    top: 10px;
-    left: 250px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 8px 30px;
+   font-size: 15px;
 }
 #de-flex{
     margin: auto;
@@ -170,20 +164,6 @@
     font-size: 15px;
     line-height: 20px;
 }
-.terms_popup{
-    padding-left: 30px;
-    padding-right: 30px;
-}
-.terms_popup p{
-    padding-top: 5px;
-    font-family: 'Metropolis';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 19px;
-    letter-spacing: -0.01em;
-    color: #434343;
-}
 .change-background{
     #header-tag{
         background: #FFF536;
@@ -204,4 +184,20 @@
 }
 input[type="radio"]{
     background-color: #16A12C;
+}
+#plan1:hover{
+cursor: pointer;
+}
+.free_trail_row{
+    margin-top: 40px;
+}
+.terms_modal_popup{
+    max-width: 1100px;
+    margin-top: 60px;
+    iframe{
+        border: none;
+    }
+    .modal-header, .modal-footer{
+        border: none;
+    }
 }

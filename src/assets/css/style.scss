@@ -74,7 +74,7 @@ ul {
   padding: 25px;
   width: 100%;
   h1 {
-    font-size: var(--main-heading);
+    font-size: 22px;
   }
 }
 .flex_class {
@@ -141,7 +141,7 @@ ul {
   border-radius: 10px;
   p {
     font-size: var(--btn-text);
-    color: var(--ono-primary-text);
+    color: var(--ono-primary-text)!important;
     margin-top: 20px;
   }
 }

@@ -4,6 +4,7 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
 import { useNavigate } from "react-router-dom";
+import NoDataAvailable from "../../components/noDataAvailable";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -11,19 +12,16 @@ const SelectPartner = (props) => {
   const navigate = useNavigate();
   console.log("Select search");
   const [getPartyItem, setGetPartyItem] = useState(null);
-  // const partyItem = localStorage.getItem("partnerSelected");
-  // console.log(localStorage.getItem("partnerSelected"));
   const fetchPertnerData = () => {
-    var partnerType = "Seller";
+    var partnerType = "";
+    console.log(props.partyType);
     if (props.partyType == "Seller") {
       partnerType = "FARMER";
-    }
-    else if(props.partyType == "Transporter"){
-        partnerType = "TRANSPORTER";
-    }
-    else if(props.partyType == "Buyer"){
+    } else if (props.partyType == "Transporter") {
+      partnerType = "TRANSPORTER";
+    } else if (props.partyType == "Buyer") {
       partnerType = "BUYER";
-  }
+    }
     getPartnerData(clickId, partnerType)
       .then((response) => {
         setpartnerData(response.data.data);
@@ -37,21 +35,20 @@ const SelectPartner = (props) => {
   const [getPartyName, setGetPartyName] = useState(false);
   const selectParty = () => {
     setGetPartyName(true);
+    console.log(true);
   };
   const partySelect = (item) => {
     console.log(item);
     setGetPartyItem(item);
     setGetPartyName(false);
     props.parentCallback(item);
-    if(props.partyType == 'Seller'){
+    if (props.partyType == "Seller") {
       localStorage.setItem("selectedPartner", JSON.stringify(item));
-    }
-    else if(props.partyType == "Transporter"){
-      console.log(item)
+    } else if (props.partyType == "Transporter") {
+      console.log(item);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
-    }
-    else if(props.partyType == "Buyer"){
-      console.log(item)
+    } else if (props.partyType == "Buyer") {
+      console.log(item);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
   };
@@ -88,19 +85,18 @@ const SelectPartner = (props) => {
 
       {getPartyName ? (
         <div className="partners_div" id="scroll_style">
-          <div className="d-flex searchparty" role="search">
-            <input
-              className="form-control mb-0"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              onChange={(event) => setSearchPartyItem(event.target.value)}
-            />
-          </div>
-
           <div>
             {partnerData.length > 0 ? (
               <div>
+                <div className="d-flex searchparty" role="search">
+                  <input
+                    className="form-control mb-0"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    onChange={(event) => setSearchPartyItem(event.target.value)}
+                  />
+                </div>
                 <ul>
                   {partnerData
                     .filter((item) => {
@@ -154,7 +150,7 @@ const SelectPartner = (props) => {
                 </ul>
               </div>
             ) : (
-              <p></p>
+              <NoDataAvailable />
             )}
           </div>
         </div>
