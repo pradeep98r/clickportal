@@ -439,7 +439,7 @@ const BuyerLedger = () => {
                   display: valueActive && search.length > 0 ? "block" : "none",
                 }}
               >
-                <p>No Data Found</p>
+                 <NoDataAvailable />
               </div>
             </div>
             <div className="outstanding-pay d-flex align-items-center justify-content-between">

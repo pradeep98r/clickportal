@@ -8,6 +8,11 @@ import NoDataAvailable from "../../components/noDataAvailable";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
+
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   let [partnerData, setpartnerData] = useState([]);
   const navigate = useNavigate();
   console.log("Select search");
@@ -55,6 +60,35 @@ const SelectPartner = (props) => {
   useEffect(() => {
     fetchPertnerData();
   }, []);
+  let [partners, setPartners] = useState([]);
+  const [valueActive, setIsValueActive] = useState(false);
+  const searchInput = (searchValue) => {
+    setSearchPartyItem(searchValue);
+    if (searchPartyItem !== "") {
+      const filterdNames = partnerData.filter((item) => {
+        if (
+          item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.partyId.toString().toLowerCase().includes(searchPartyItem)
+
+        ) {
+          return (
+            item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.partyId.toString().toLowerCase().includes(searchPartyItem)
+          );
+        } else if (searchPartyItem == "" || searchValue === "") {
+          return setIsValueActive(false);
+        } else {
+          return setIsValueActive(true);
+        }
+      });
+      setPartners(filterdNames);
+      console.log(filterdNames, "filteredNames");
+    } else {
+      setPartners(partnerData);
+    }
+  };
   return (
     <div>
       <div onClick={selectParty}>
@@ -94,33 +128,12 @@ const SelectPartner = (props) => {
                     type="search"
                     placeholder="Search"
                     aria-label="Search"
-                    onChange={(event) => setSearchPartyItem(event.target.value)}
+                    onChange={(event) => searchInput(event.target.value)}
                   />
                 </div>
                 <ul>
-                  {partnerData
-                    .filter((item) => {
-                      if (searchPartyItem === "") {
-                        return item;
-                      } else if (
-                        item.partyName
-                          .toLowerCase()
-                          .includes(searchPartyItem.toLowerCase())
-                      ) {
-                        return item;
-                      } else if (
-                        item.mobile.toLowerCase().includes(searchPartyItem)
-                      ) {
-                        return item;
-                      } else if (
-                        item.partyId
-                          .toString()
-                          .toLowerCase()
-                          .includes(searchPartyItem)
-                      ) {
-                        return item;
-                      }
-                    })
+                  {searchPartyItem.length > 1 ?
+                    partners
                     .map((item) => {
                       return (
                         <li
@@ -145,8 +158,44 @@ const SelectPartner = (props) => {
                             </div>
                           </div>
                         </li>
-                      );
-                    })}
+                      )
+                    }):
+                    partnerData
+                    .map((item) => {
+                      return (
+                        <li
+                          key={item.partyId}
+                          onClick={() => partySelect(item)}
+                          className={
+                            "nav-item " +
+                            (item == getPartyItem ? "active_class" : "")
+                          }
+                          >
+                          <div className="partner_card">
+                            <div className="d-flex align-items-center">
+                              <img src={single_bill} className="icon_user" />
+                              <div>
+                                <h5>{item.partyName}</h5>
+                                <h6>
+                                  {item.trader ? "TRADER" : item.partyType} -{" "}
+                                  {item.partyId} | {item.mobile}
+                                </h6>
+                                <p>{item.address.addressLine}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      )
+                    })
+                  }
+                  <div
+                    id="search-data"
+                    style={{
+                    display:searchPartyItem.length > 0 ? "block" : "none",
+                    }}
+                    >
+                    <NoDataAvailable />
+                  </div>
                 </ul>
               </div>
             ) : (

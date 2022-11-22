@@ -430,7 +430,7 @@ const TransportoLedger = () => {
                  display: valueActive && search.length > 0 ? "block" : "none",
                }}
              >
-               <p>No Data Found</p>
+               <NoDataAvailable />
              </div>
              {/* ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)} */}
            </div>

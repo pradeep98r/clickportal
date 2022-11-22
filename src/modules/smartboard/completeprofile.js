@@ -21,6 +21,9 @@ const CompleteProfile = (props) => {
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
   const [allMarketsData, setAllMarketsData] = useState([]);
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
   useEffect(() => {
     getAllMarkets().then(
       (response) => {
@@ -495,7 +498,7 @@ const CompleteProfile = (props) => {
     <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          Mandi Details
+          {langFullData.businessDetails}
         </h5>
         <img
           src={close}
@@ -509,14 +512,14 @@ const CompleteProfile = (props) => {
           <div className="row">
             <div className="col-lg-6">
               <label htmlFor="zip" className="input_field">
-                Market Name*
+                {langFullData.marketName+"*"}
               </label>
               {/*<select*/}
               <input
                 className="form-control"
                 //value={selectMarket}
                 //placeholder="Select Market Name"
-                value={marketname ? marketname : "Select Market Name"}
+                value={marketname ? marketname : langFullData.selectMarketName}
                 //onChange={selectedValue}
                 onClick={handleMarketName}
               />
@@ -547,7 +550,7 @@ const CompleteProfile = (props) => {
                               id="searchbar-mk"
                               type="text"
                               value={search}
-                              placeholder="Search by Name / Short Code"
+                              placeholder={langFullData.searchByNameShortCode}
                               onChange={(e) => {
                                 searchMarketName(e.target.value);
                               }}
@@ -655,7 +658,7 @@ const CompleteProfile = (props) => {
                           <InputField
                             type="text"
                             //value={mandiTypeField}
-                            label="Market Name"
+                            label={langFullData.marketName}
                             name="marketName"
                             id="marketName"
                             onChange={(e) => {
@@ -673,7 +676,7 @@ const CompleteProfile = (props) => {
                           handleOtherMarketName(e);
                         }}
                       >
-                        Continue
+                        {langFullData.continue_}
                       </button>
                     </div>
                   </div>
@@ -691,7 +694,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mandiTypeField}
-                label="Mandi Type"
+                label={langFullData.businessType}
                 name="mandiType"
                 id="mandiType"
                 onChange={(e) => {
@@ -713,7 +716,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={shopNumberField}
-                label="Shop Number*"
+                label={langFullData.shopNumber+"*"}
                 name="shopNumber"
                 id="shopNumber"
                 onChange={(e) => {
@@ -724,7 +727,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mobileNumber}
-                label="Mobile Number*"
+                label={langFullData.mobileNumber+"*"}
                 name="mobileNumber"
                 id="mobileNumber"
                 onChange={(e) => {
@@ -734,10 +737,10 @@ const CompleteProfile = (props) => {
              <div>
              <span className="text-danger">{requiredNumberField}</span>
              </div>
-              <label className="input_field address_text mt-0">Address</label>
+              <label className="input_field address_text mt-0">{langFullData.address}</label>
               <div>
                 <label htmlFor="zip" className="input_field">
-                  Pincode*
+                  {langFullData.pincode+"*"}
                 </label>
                 <div>
                   <input
@@ -779,7 +782,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mandiNameField}
-                label="Mandi Name*"
+                label={langFullData.businessName+"*"}
                 name="mandiName"
                 id="mandiName"
                 onChange={(e) => {
@@ -789,7 +792,7 @@ const CompleteProfile = (props) => {
               <span className="text-danger">{mandiNameError}</span>
               <div>
                 <label htmlFor="pic" className="input_field">
-                  Profile Pic
+                  {langFullData.profilePic}
                 </label>
                 <div className="file-input">
                   <div className="d-flex align-items-center">
@@ -810,7 +813,7 @@ const CompleteProfile = (props) => {
                         //   onChange={(e) => setFile(e.target.files[0])}
                       />
                       <label htmlFor="file" className="file">
-                        Choose from library
+                        {langFullData.chooseFromLibrary}
                       </label>
                     </div>
                   </div>
@@ -819,7 +822,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={contactName}
-                label="Contact Name*"
+                label={langFullData.contactName+"*"}
                 name="contactName"
                 id="contactName"
                 onChange={(e) => {
@@ -830,7 +833,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={alternateMobileNumber}
-                label="Alternative Mobile"
+                label={langFullData.alternativeMobile}
                 name="alternativeMobile"
                 id="alternativeMobile"
                 onChange={(e) => {
@@ -839,12 +842,12 @@ const CompleteProfile = (props) => {
               />
               <span className="text-danger">{alternateMobileNumberError}</span>
               <div onClick={() => getPosition()} className="location mt-0">
-                Select Current Location
+                {langFullData.selectCurrentLocation}
               </div>
 
               <div>
                 <label htmlFor="state" className="input_field">
-                  State*
+                  {langFullData.state}
                 </label>
                 {mandiEditStatus == "true" ? (
                   <input
@@ -861,7 +864,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={streetVillage}
-                label="Street & Village*"
+                label={langFullData.streetVillage+"*"}
                 name="name"
                 onChange={(e) => {
                   handleStreetName(e);
@@ -872,8 +875,7 @@ const CompleteProfile = (props) => {
           </div>
           <div className="row">
             <span className="pl-3 note_text">
-              Please keep correct Business Address as this address is displayed
-              on your cash bills
+              {langFullData.pleaseKeepCorrectBusinessAddressAsThisAddressIsDisplayed}
             </span>
           </div>
         </form>

@@ -38,6 +38,11 @@ const SmartBoard = () => {
   const [cropPurchaseData, setcropPurchaseData] = useState([]);
   const [commissionEarns, setcommissionEarns] = useState({});
   const [isLoading, setLoading] = useState(true);
+
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   const [weekFirstDate, setWeekFirstDate] = useState(
     moment(new Date()).format("YYYY-MMM-DD")
   );
@@ -105,22 +110,22 @@ const SmartBoard = () => {
   const links = [
     {
       id: 1,
-      name: "Daily",
+      name: langFullData.daily,
       to: "Daily",
     },
     {
       id: 2,
-      name: "Weekly",
+      name: langFullData.weekly,
       to: "Weekly",
     },
     {
       id: 3,
-      name: "Monthly",
+      name: langFullData.monthly,
       to: "Monthly",
     },
     {
       id: 4,
-      name: "Yearly",
+      name: langFullData.yearly,
       to: "Yearly",
     },
   ];
@@ -282,8 +287,8 @@ const SmartBoard = () => {
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
-                  <p>Complete your Mandi Setup</p>
-                  <button onClick={onClickProfiles}>Complete Now</button>
+                  <p>{langFullData.completeTheCompanySetup}</p>
+                  <button onClick={onClickProfiles}>{langFullData.completeNow}</button>
                   {showModalStatus ? (
                     <CompleteProfile
                       show={showModal}
@@ -327,7 +332,7 @@ const SmartBoard = () => {
                   aria-labelledby="home-tab"
                 >
                   <div className="smartboard_date">
-                    {tabType == "Daily" ? (
+                    {tabType == langFullData.daily ? (
                       <span className="" onClick={onPrevDate}>
                         <img src={prev_icon} alt="icon" className="mr-2" />
                       </span>
@@ -358,7 +363,7 @@ const SmartBoard = () => {
                         })()}
                       </div>
                     </div>
-                    {tabType == "Daily" ? (
+                    {tabType == langFullData.daily ? (
                       <span className="" onClick={onNextDate}>
                         <img src={next_icon} alt="icon" className="ml-2" />
                       </span>
@@ -379,7 +384,7 @@ const SmartBoard = () => {
                           <div className="col-sm-9 smartboard_div smartboard_div1 p-0">
                             <div className="outstanding_balance margin_bottom">
                               <h4 className="smartboard_main_header">
-                                Outstanding Balances
+                                {langFullData.outstandingBalances}
                               </h4>
                               <div className="row">
                                 <div className="col-lg-6 p-0">
@@ -387,12 +392,12 @@ const SmartBoard = () => {
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="color_head_subtext">
-                                          Pending Receivables{" "}
+                                          {langFullData.pendingReceivables}{" "}
                                         </h5>
                                         {outStandingBal.pendingRecievables ==
                                         0 ? (
                                           <p className="nodata">
-                                            No Data Available
+                                            {langFullData.noDataAvailable}
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
@@ -415,18 +420,18 @@ const SmartBoard = () => {
                                               id="buyer-link"
                                               href="/buyerledger"
                                             >
-                                              See Buyer Ledger
+                                              {langFullData.seeBuyerLedger}
                                             </a>
                                           )}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
                                         <h5 className="color_head_subtext">
-                                          Sell Bills{" "}
+                                          {langData.sellBills}{" "}
                                         </h5>
                                         {outStandingBal.totalSellBills == 0 ? (
                                           <p className="nodata">
-                                            No Data Available
+                                            {langFullData.noDataAvailable}
                                           </p>
                                         ) : (
                                           <h6 className="color_head_subtext">
@@ -442,7 +447,7 @@ const SmartBoard = () => {
                                         <p>
                                           {outStandingBal.totalSellBills == 0
                                             ? ""
-                                            : "See All"}
+                                            : langFullData.seeAll}
                                         </p>
                                       </div>
                                     </div>
@@ -455,7 +460,7 @@ const SmartBoard = () => {
                                         <h5 className="">Pending Payables </h5>
                                         {outStandingBal.pendingPaybles == 0 ? (
                                           <p className="nodata color_black">
-                                            No Data Available
+                                            {langFullData.noDataAvailable}
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
@@ -476,16 +481,16 @@ const SmartBoard = () => {
                                             ""
                                           ) : (
                                             <a href="/sellerledger">
-                                              See Seller Ledger
+                                              {langFullData.seeSellerLedger}
                                             </a>
                                           )}
                                         </p>
                                       </div>
                                       <div className="col-lg-6 col2">
-                                        <h5 className="">Buy Bills </h5>
+                                        <h5 className="">{langFullData.buyBills} </h5>
                                         {outStandingBal.totalBuyBills == 0 ? (
                                           <p className="nodata color_black">
-                                            No Data Available
+                                            {langFullData.noDataAvailable}
                                           </p>
                                         ) : (
                                           <h6 className="color_red">
@@ -501,7 +506,7 @@ const SmartBoard = () => {
                                         <p className="color_blue">
                                           {outStandingBal.totalBuyBills == 0
                                             ? ""
-                                            : "See All"}
+                                            : langFullData.seeAll}
                                         </p>
                                       </div>
                                     </div>
@@ -513,12 +518,12 @@ const SmartBoard = () => {
                               <div className="row margin_bottom">
                                 <div className="col-lg-6 col_left">
                                   <h4 className="smartboard_main_header">
-                                    Sales Reports
+                                    {langFullData.salesReportText}
                                   </h4>
                                   <div className="card default_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
-                                        <h5 className="">Total Sales </h5>
+                                        <h5 className="">{langFullData.totalSales} </h5>
                                         <h6 className="">
                                           {salesReprtData.totalBusiness == 0
                                             ? ""
@@ -533,7 +538,7 @@ const SmartBoard = () => {
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
-                                        <h5 className="">Total Quantity </h5>
+                                        <h5 className="">{langFullData.totalQuantity} </h5>
                                         <h6 className="">
                                           {salesReprtData.totalUnits == 0
                                             ? ""
@@ -563,7 +568,7 @@ const SmartBoard = () => {
                                     ) : (
                                       <div className="row top_border">
                                         <p className="color_blue text-center">
-                                          See All
+                                          {langFullData.seeAll}
                                         </p>
                                       </div>
                                     )}
@@ -571,12 +576,12 @@ const SmartBoard = () => {
                                 </div>
                                 <div className="col-lg-6 col_right">
                                   <h4 className="smartboard_main_header">
-                                    Purchase Reports
+                                    {langFullData.purchaseReports}
                                   </h4>
                                   <div className="card default_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
-                                        <h5 className="">Total Purchases </h5>
+                                        <h5 className="">{langFullData.totalPurchases}</h5>
                                         <h6 className="">
                                           {purchaseReprtData.totalBusiness == 0
                                             ? ""
@@ -591,7 +596,7 @@ const SmartBoard = () => {
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
-                                        <h5 className="">Total Quantity </h5>
+                                        <h5 className="">{langFullData.totalQuantity} </h5>
                                         <h6 className="">
                                           {purchaseReprtData.totalUnits == 0
                                             ? ""
@@ -621,7 +626,7 @@ const SmartBoard = () => {
                                     ) : (
                                       <div className="row top_border">
                                         <p className="color_blue text-center">
-                                          See All
+                                         {langFullData.seeAll}
                                         </p>
                                       </div>
                                     )}
@@ -632,7 +637,7 @@ const SmartBoard = () => {
                                 <div className="col-sm-6 col_left">
                                   <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
-                                      Sales by Crop
+                                      {langFullData.salesByCrop}
                                     </h5>
                                     {cropSalesData.length != 0 ? (
                                       <div>
@@ -670,7 +675,7 @@ const SmartBoard = () => {
                                               <div className="col-lg-6 col_left_border">
                                                 <h5 className="">
                                                   {" "}
-                                                  Total Sales{" "}
+                                                  {langFullData.totalSales}{" "}
                                                 </h5>
                                                 <h6 className="">
                                                   {cropItem.totalBusiness.toLocaleString(
@@ -685,7 +690,7 @@ const SmartBoard = () => {
                                               </div>
                                               <div className="col-lg-6 col2">
                                                 <h5 className="">
-                                                  Total Quantity{" "}
+                                                  {langFullData.totalQuantity}{" "}
                                                 </h5>
                                                 <h6 className="">
                                                   {cropItem.totalQty == 0
@@ -713,7 +718,7 @@ const SmartBoard = () => {
                                             </div>
                                             <div className="row top_border">
                                               <p className="color_blue text-center">
-                                                See All
+                                                {langFullData.seeAll}
                                               </p>
                                             </div>
                                           </div>
@@ -727,7 +732,7 @@ const SmartBoard = () => {
                                 <div className="col-sm-6 col_right">
                                   <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
-                                      Purchase by Crop
+                                      {langFullData.purchaseByCrop}
                                     </h5>
                                     {cropPurchaseData.length != 0 ? (
                                       <div>
@@ -765,7 +770,7 @@ const SmartBoard = () => {
                                               <div className="col-lg-6 col_left_border">
                                                 <h5 className="">
                                                   {" "}
-                                                  Total Purchases{" "}
+                                                  {langFullData.totalPurchases}{" "}
                                                 </h5>
                                                 <h6 className="">
                                                   {buycropItem.totalBusiness.toLocaleString(
@@ -780,7 +785,7 @@ const SmartBoard = () => {
                                               </div>
                                               <div className="col-lg-6 col2">
                                                 <h5 className="">
-                                                  Total Quantity{" "}
+                                                  {langFullData.totalQuantity}{" "}
                                                 </h5>
                                                 <h6 className="">
                                                   {buycropItem.totalQty == 0
@@ -808,7 +813,7 @@ const SmartBoard = () => {
                                             </div>
                                             <div className="row top_border">
                                               <p className="color_blue text-center">
-                                                See All
+                                                {langFullData.seeAll}
                                               </p>
                                             </div>
                                           </div>
@@ -824,7 +829,7 @@ const SmartBoard = () => {
                                 <div className="col-lg-6 col_left">
                                   <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
-                                      Sales By Buyer{" "}
+                                      {langFullData.salesByBuyer}{" "}
                                     </h5>
                                     {buyerData.length != 0 ? (
                                       <OwlCarousel
@@ -848,8 +853,8 @@ const SmartBoard = () => {
                                                   <h5>{buyerItem.mobile}</h5>
                                                   <h3>
                                                     {buyerItem.trader
-                                                      ? "Trader"
-                                                      : "Buyer"}
+                                                      ? langFullData.trader
+                                                      : langFullData.buyer}
                                                   </h3>
                                                 </div>
                                               </div>
@@ -858,7 +863,7 @@ const SmartBoard = () => {
                                                     <div className="col-lg-6 col_left_border">
                                                       <h5 className="">
                                                         {" "}
-                                                        Total Purchases{" "}
+                                                        {langFullData.totalPurchases}{" "}
                                                       </h5>
                                                       <h6 className="">
                                                         {buyerItem.totalBusiness.toLocaleString(
@@ -873,7 +878,7 @@ const SmartBoard = () => {
                                                     </div>
                                                     <div className="col-lg-6 col2">
                                                       <h5 className="">
-                                                        Total Quantity{" "}
+                                                        {langFullData.totalQuantity}{" "}
                                                       </h5>
                                                       <h6 className="">
                                                         {buyerItem.totalQty ==
@@ -903,7 +908,7 @@ const SmartBoard = () => {
                                                   </div>
                                                   <div className="row top_border">
                                                     <p className="color_blue text-center">
-                                                      See All
+                                                      {langFullData.seeAll}
                                                     </p>
                                                   </div>
                                                 </div>
@@ -919,7 +924,7 @@ const SmartBoard = () => {
                                 <div className="col-lg-6 col_right">
                                   <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
-                                      Purchase By Seller{" "}
+                                      {langFullData.totalQuantity}{" "}
                                     </h5>
                                     {farmerData.length != 0 ? (
                                       <OwlCarousel
@@ -945,8 +950,8 @@ const SmartBoard = () => {
                                                   <h5>{farmerItem.mobile}</h5>
                                                   <h3>
                                                     {farmerItem.trader
-                                                      ? "Trader"
-                                                      : "Seller"}
+                                                      ? langFullData.trader
+                                                      : langFullData.seller}
                                                   </h3>
                                                 </div>
                                               </div>
@@ -954,7 +959,7 @@ const SmartBoard = () => {
                                                     <div className="col-lg-6 col_left_border">
                                                       <h5 className="">
                                                         {" "}
-                                                        Total Purchases{" "}
+                                                        {langFullData.totalQuantity}{" "}
                                                       </h5>
                                                       <h6 className="">
                                                         {farmerItem.totalBusiness.toLocaleString(
@@ -969,7 +974,7 @@ const SmartBoard = () => {
                                                     </div>
                                                     <div className="col-lg-6 col2">
                                                       <h5 className="">
-                                                        Total Quantity{" "}
+                                                        {langFullData.totalQuantity}{" "}
                                                       </h5>
                                                       <h6 className="">
                                                         {farmerItem.totalQty ==
@@ -999,7 +1004,7 @@ const SmartBoard = () => {
                                                   </div>
                                                   <div className="row top_border">
                                                     <p className="color_blue text-center">
-                                                      See All
+                                                      {langFullData.seeAll}
                                                     </p>
                                                   </div>
                                             </div>
@@ -1015,31 +1020,31 @@ const SmartBoard = () => {
                             </div>
                             <div className="reports_cards margin_bottom">
                               <h4 className="smartboard_main_header">
-                                Recent Transactions
+                                {langFullData.recentTransactions}
                               </h4>
                               <div className="row margin_bottom">
                                 <div className="d-flex align-items-center justify-content-between w-100">
                                   <h4 className="trans_title">
-                                    Buy Transactions
+                                    {langFullData.buyTransactions}
                                   </h4>
                                   <p className="trans_title color_blue">
-                                    {buyRecentTxs.length != 0 ? "See All" : ""}
+                                    {buyRecentTxs.length != 0 ? langFullData.seeAll : ""}
                                   </p>
                                 </div>
                                 {buyRecentTxs.length != 0 ? (
                                   <table className="table table-bordered trans_table">
                                     <thead>
                                       <tr>
-                                        <th className="col-3">Name</th>
-                                        <th className="col-2">Paid(&#8377;)</th>
+                                        <th className="col-3">{langFullData.name}</th>
+                                        <th className="col-2">{langFullData.paid}(&#8377;)</th>
                                         <th className="col-2">
-                                          To Be Paid(&#8377;)
+                                          {langFullData.toBePaid}(&#8377;)
                                         </th>
                                         <th className="col-2">
-                                          Past Balance(&#8377;)
+                                          {langFullData.pastBalance}(&#8377;)
                                         </th>
                                         <th className="col-3">
-                                          Total Outstanding Payables(&#8377;)
+                                          {langFullData.totalOutstandingPayables}(&#8377;)
                                         </th>
                                       </tr>
                                     </thead>
@@ -1056,7 +1061,7 @@ const SmartBoard = () => {
                                                 />
                                                 <div>
                                                   <h4>{item.farmerName}</h4>
-                                                  <h4>Bill No {item.billId}</h4>
+                                                  <h4>{langFullData.billNo} {item.billId}</h4>
                                                 </div>
                                               </div>
                                             </td>
@@ -1076,28 +1081,28 @@ const SmartBoard = () => {
                                 )}
                                 <div className="d-flex align-items-center justify-content-between w-100 mt-4">
                                   <h4 className="trans_title">
-                                    Sell Transactions
+                                    {langFullData.sellTransactions}
                                   </h4>
                                   <p className="trans_title color_blue">
-                                    {sellRecentTxs.length != 0 ? "See All" : ""}
+                                    {sellRecentTxs.length != 0 ? langFullData.seeAll : ""}
                                   </p>
                                 </div>
                                 {sellRecentTxs.length != 0 ? (
                                   <table className="table table-bordered trans_table">
                                     <thead>
                                       <tr>
-                                        <th className="col-3">Name</th>
+                                        <th className="col-3">{langFullData.name}</th>
                                         <th className="col-2">
-                                          Received(&#8377;)
+                                          {langFullData.received}(&#8377;)
                                         </th>
                                         <th className="col-2">
-                                          To Be Received(&#8377;)
+                                          {langFullData.toBeReceived}(&#8377;)
                                         </th>
                                         <th className="col-2">
-                                          Past Balance(&#8377;)
+                                          {langFullData.pastBalance}(&#8377;)
                                         </th>
                                         <th className="col-3">
-                                          Total Outstanding Receivables(&#8377;)
+                                          {langFullData.totalOutstandingReceivables}(&#8377;)
                                         </th>
                                       </tr>
                                     </thead>
@@ -1114,7 +1119,7 @@ const SmartBoard = () => {
                                                 />
                                                 <div>
                                                   <h4>{item.buyerName}</h4>
-                                                  <h4>Bill No {item.billId}</h4>
+                                                  <h4>{langFullData.billNo} {item.billId}</h4>
                                                 </div>
                                               </div>
                                             </td>
@@ -1140,12 +1145,12 @@ const SmartBoard = () => {
                             <div className="smartboard_right_cards">
                               <div className="comission margin_bottom">
                                 <h4 className="smartboard_main_header">
-                                  My Commissions
+                                  {langFullData.myCommissions}
                                 </h4>
                                 <div className="card default_card">
                                   <div className="row">
                                     <div className="col-lg-6 col_left_border">
-                                      <h5 className="">Earned </h5>
+                                      <h5 className="">{langFullData.commissionEarned} </h5>
                                       <h6 className="">
                                         {commissionEarns.totalComm == 0
                                           ? ""
@@ -1153,7 +1158,7 @@ const SmartBoard = () => {
                                       </h6>
                                     </div>
                                     <div className="col-lg-6 pr-0">
-                                      <h5 className="">Net Commissions </h5>
+                                      <h5 className="">{langFullData.netCommissions} </h5>
                                       <h6 className="">
                                         {commissionEarns.netComm == 0
                                           ? ""
@@ -1166,7 +1171,7 @@ const SmartBoard = () => {
                                     <NoDataText />
                                   ) : (
                                     <p className="color_blue see_all">
-                                      See All
+                                      {langFullData.seeAll}
                                     </p>
                                   )}
                                 </div>
@@ -1177,18 +1182,18 @@ const SmartBoard = () => {
                                 </h4>
                                 <div className="card default_card">
                                   <h4 className="smartboard_main_header">
-                                    Sell Bill Book
+                                    {langFullData.salesBillBook}
                                   </h4>
                                   <Link to="/sellbillbook">
-                                    <OutlineButton text="Add Sell Bill" />
+                                    <OutlineButton text={langFullData.addSalesBill} />
                                   </Link>
                                 </div>
                                 <div className="card default_card mt-3">
                                   <h4 className="smartboard_main_header">
-                                    Buy Bill Book
+                                    {langFullData.buyBillBook}
                                   </h4>
                                   <Link to="/buy_bill_book">
-                                    <OutlineButton text="Add Purchase Bill" />
+                                    <OutlineButton text={langFullData.addPurchaseBill} />
                                   </Link>
                                 </div>
                               </div>
@@ -1218,7 +1223,7 @@ const SmartBoard = () => {
                   ? "Week"
                   : tabType == "Monthly"
                   ? "Month"
-                  : "Year"}
+                  : tabType == "Year"}
               </h5>
               <img
                 src={close}
@@ -1230,7 +1235,7 @@ const SmartBoard = () => {
             <div className="modal-body date_modal_mody smartboard_modal_mody">
               <div className="calender_popup ">
                 {(() => {
-                  if (tabType == "Daily") {
+                  if (tabType == "Dialy") {
                     return (
                       <div className="daily">
                         <DatePicker
@@ -1300,7 +1305,7 @@ const SmartBoard = () => {
                   )
                 }
               >
-                Continue
+                {langFullData.continue_}
               </button>
             </div>
           </div>

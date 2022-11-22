@@ -16,6 +16,10 @@ import transporto from "../../assets/images/sidebar/transporto.svg";
 import menu from "../../assets/images/sidebar/menu.svg";
 import "./sideNavigation.scss";
 import { Link } from "react-router-dom";
+
+const langData = localStorage.getItem("languageData");
+const langFullData = JSON.parse(langData);
+console.log(langFullData);
 class SideNavigation extends Component {
   state = { isActive: false };
 
@@ -28,7 +32,7 @@ class SideNavigation extends Component {
     links: [
       {
         id: 1,
-        name: "Smartboard",
+        name: langFullData.smartBoard,
         to: "/smartboard",
         className: "side_nav_item",
         img: smartboard_icon,
@@ -63,21 +67,21 @@ class SideNavigation extends Component {
       },
       {
         id: 6,
-        name: "Seller Ledger",
+        name: langFullData.sellerLedger,
         to: "/sellerledger",
         className: "side_nav_item",
         img: sellerledger,
       },
       {
         id: 7,
-        name: "Partners",
+        name: langFullData.partners,
         to: "/partner",
         className: "side_nav_item",
         img: partners,
       },
       {
         id: 8,
-        name: "My Profile",
+        name: langFullData.myProfile,
         to: "/myprofile",
         className: "side_nav_item",
         img: myprofile,
@@ -120,6 +124,7 @@ class SideNavigation extends Component {
     ],
     // activeLink: null,
   };
+ 
   handleClick = (id, path) => {
     this.setState({ activeLink: id });
     if(path === '/buy_bill_book'){

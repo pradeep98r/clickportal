@@ -20,6 +20,11 @@ function BuyBillBook() {
   const clickId = loginData.clickId;
   const [buyBillData, setBuyBillData] = useState([]);
   const [isLoading, setLoading] = useState(true);
+
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
@@ -121,6 +126,34 @@ function BuyBillBook() {
     }
     return unitType;
   };
+  const [singleBillData, setSingleBillData] = useState([]);
+  const [valueActive, setIsValueActive] = useState(false);
+
+  const searchInput = (searchValue) => {
+    setSelectBill(searchValue);
+    if(billItem !== ""){
+      const filteredItems = buyBillData.singleBills.filter((item)=>{
+        console.log(item);
+        if(
+          item.farmerName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(searchValue.toLowerCase())
+        ){
+          return(
+            item.farmerName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.shortName.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        }else if (billItem === "" || searchValue === "") {
+          return setIsValueActive(false);
+        } else {
+          return setIsValueActive(true);
+        }
+      })
+      setSingleBillData(filteredItems);
+      console.log(filteredItems);
+    }else{
+      setSingleBillData(buyBillData);
+    }
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -130,7 +163,7 @@ function BuyBillBook() {
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
-                  <p>Complete your Mandi Setup</p>
+                  <p>{langFullData.completeTheCompanySetup}</p>
                 </div>
                 <NoDataAvailable />
               </div>
@@ -143,8 +176,7 @@ function BuyBillBook() {
                   <img src={loading} alt="my-gif" className="gif_img" />
                 </div>
               ) : (
-                <div>
-                  
+                <div>  
                   <div>
                     <div className="d-flex justify-content-between bills_div">
                       <div className="d-flex">
@@ -157,7 +189,7 @@ function BuyBillBook() {
                               aria-controls="home"
                               data-bs-toggle="tab"
                             >
-                              All
+                              {langFullData.all}
                             </a>
                           </li>
                         </ul>
@@ -173,10 +205,10 @@ function BuyBillBook() {
                           <input
                             className="form-control search"
                             type="search"
-                            placeholder="Search"
+                            placeholder={langFullData.search}
                             aria-label="Search"
                             onChange={(event) =>
-                              setSelectBill(event.target.value)
+                              searchInput(event.target.value)
                             }
                           />
                         </div>
@@ -188,7 +220,7 @@ function BuyBillBook() {
                             data-toggle="dropdown"
                             aria-expanded="false"
                           >
-                            Add Bill
+                            {langFullData.addBill}
                           </button>
 
                           <div className="dropdown-menu">
@@ -197,80 +229,162 @@ function BuyBillBook() {
                               href="/step1"
                               onClick={handleStep1Header}
                             >
-                              Single Bill
-                            </a>
-                            <a className="dropdown-item" href="#">
-                              Multi Bills
+                              {langFullData.singleBill}
                             </a>
                           </div>
                         </div>
                       </div>
                     </div>
                     <div>
-                      <div className="tab-content">
-                        {buyBillData != null ? (
-                          buyBillData.singleBills.length > 0 && (
-                            <div
+                      <div className="tab-content">  
+                        <div
                               className="tab-pane active"
                               id="home"
                               role="tabpanel"
                               aria-labelledby="home-tab"
-                            >
+                              >
                               <div className="row header_row">
                                 <div className="col-lg-4">
                                   <div className="row">
                                     <div className="col-lg-7 col-sm-12 p-0">
-                                      <p>Seller</p>
+                                      <p>{langFullData.seller}</p>
                                     </div>
                                     <div className="col-lg-5 col-sm-12">
-                                      <p>Bill ID</p>
+                                      <p>{langFullData.billId}</p>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="col-lg-6 p-0">
                                   <div className="row">
                                     <div className="col-lg-4 col-sm-12">
-                                      <p>Particulars</p>
+                                      <p>{langFullData.particulars}</p>
                                     </div>
                                     <div className="col-lg-4 col-sm-12">
-                                      <p>Qty. </p>
+                                      <p>{langFullData.qty}</p>
                                     </div>
                                     <div className="col-lg-2 col-sm-12">
-                                      <p>Rate (₹) </p>
+                                      <p>{langFullData.rate}(₹) </p>
                                     </div>
                                     <div className="col-lg-2 col-sm-12">
-                                      <p>Total (₹)</p>
+                                      <p>{langFullData.total}(₹)</p>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="col-lg-2">
                                   <div className="row">
                                     <div className="col-lg-12 col-sm-12">
-                                      <p>Total Payables (₹)</p>
+                                      <p>{langFullData.totalPayables} (₹)</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                               <div className="buy_bills" id="scroll_style">
-                                {buyBillData.singleBills
-                                  .filter((bill) => {
-                                    if (billItem === "") {
-                                      return bill;
-                                    } else if (
-                                      bill.farmerName
-                                        .toLowerCase()
-                                        .includes(billItem.toLowerCase())
-                                    ) {
-                                      return bill;
-                                    } else if (
-                                      bill.shortName
-                                        .toLowerCase()
-                                        .includes(billItem.toLowerCase())
-                                    ) {
-                                      return bill;
-                                    }
-                                  })
+                                {billItem.length > 1 && singleBillData!==null
+                                ? singleBillData
                                   .map((bill, index) => (
+                                    <div
+                                      onClick={() =>
+                                        billOnClick(bill.billId, bill)
+                                      }
+                                      key={index}
+                                      >
+                                      <div className="row bills_rows bg_white bottom_space">
+                                        <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                          <div className="row full_width">
+                                            <div className="col-lg-7 col-sm-12 p-0 col">
+                                              <div className="bill_user_details flex_class mr-0">
+                                                <img
+                                                  src={single_bill}
+                                                  className="user_icon"
+                                                  alt="icon"
+                                                />
+                                                <div>
+                                                  <h6 className="userName">
+                                                    {bill.farmerName +
+                                                      "-" +
+                                                      bill.shortName}
+                                                  </h6>
+                                                  <h6 className="mobile">
+                                                    {bill.partyType +
+                                                      "-" +
+                                                      bill.farmerId}
+                                                  </h6>
+                                                  <h6 className="address">
+                                                    {bill.farmerAddress}
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="col-lg-5 col-sm-12 billid_div">
+                                              <p className="biilid">
+                                                {langFullData.billNo} : {bill.billId}{" "}
+                                              </p>
+                                              <p>{bill.billDate}</p>
+                                              <p>{bill.billStatus}</p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="col-lg-6 p-0">
+                                          {bill.lineItems.map((crop, index) => (
+                                            <div className="row" key={index}>
+                                              <div className="col-lg-4 col-sm-12 col">
+                                                <p className="flex_class crop_name">
+                                                  <img
+                                                    src={crop.imageUrl}
+                                                    className="crop_image"
+                                                  />
+                                                  {crop.cropName}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-4 col-sm-12 col flex_class">
+                                                <p className="crop_name">
+                                                  {crop.qty +
+                                                    getCropUnit(
+                                                      crop.qtyUnit
+                                                    )}{" "}
+                                                  | {crop.weight + "KGS"}
+                                                  <span className="color_red">
+                                                    {crop.wastage != 0
+                                                      ? " - " +
+                                                        crop.wastage +
+                                                        langFullData.kgs
+                                                      : ""}{" "}
+                                                  </span>
+                                                  {/* {crop.qtyUnit + ":" + crop.qty}  */}
+                                                  {/* |
+                                            Weight:{" "}
+                                            {crop.weight == null
+                                              ? "0"
+                                              : crop.weight} */}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-2 col-sm-12 col flex_class">
+                                                <p className="number_overflow crop_name">
+                                                  {crop.rate}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-2 col-sm-12 col flex_class">
+                                                <p className="number_overflow crop_name">
+                                                  {crop.total}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          ))}
+                                        </div>
+                                        <div className="col-lg-2 flex_class">
+                                          <div className="row">
+                                            <div className="col-lg-12 col-sm-12 col last_col">
+                                              <p className="crop_name payble_text">
+                                                {bill.actualPaybles}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )):(
+                                    buyBillData.singleBills
+                                    .map((bill, index) => (
                                     <div
                                       onClick={() =>
                                         billOnClick(bill.billId, bill)
@@ -306,7 +420,7 @@ function BuyBillBook() {
                                             </div>
                                             <div className="col-lg-5 col-sm-12 billid_div">
                                               <p className="biilid">
-                                                Bill No : {bill.billId}{" "}
+                                              {langFullData.billNo}: {bill.billId}{" "}
                                               </p>
                                               <p>{bill.billDate}</p>
                                               <p>{bill.billStatus}</p>
@@ -336,7 +450,7 @@ function BuyBillBook() {
                                                     {crop.wastage != 0
                                                       ? " - " +
                                                         crop.wastage +
-                                                        "KGS"
+                                                        langFullData.kgs
                                                       : ""}{" "}
                                                   </span>
                                                   {/* {crop.qtyUnit + ":" + crop.qty}  */}
@@ -371,17 +485,22 @@ function BuyBillBook() {
                                         </div>
                                       </div>
                                     </div>
-                                  ))}
+                                  ))
+                                  )
+                                }
+                                <div
+                                  id="search-data"
+                                  style={{
+                                    display:billItem.length > 0 ? "block" : "none",
+                                  }}
+                                >
+                                  <NoDataAvailable />
+                                </div>
                               </div>
                             </div>
-                          )
-                        ) : (
-                          <NoDataAvailable />
-                        )}
                       </div>
                     </div>
                   </div>
-                  
                 </div>
               )}
             </div>
@@ -404,7 +523,7 @@ function BuyBillBook() {
           <div className="modal-content">
             <div className="modal-header date_modal_header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                Select Dates
+                {langFullData.selectDates}
               </h5>
               <img
                 src={close}
@@ -419,24 +538,24 @@ function BuyBillBook() {
                   <div className="dates_div">
                     <div className="flex_class">
                       <input type="radio" id="tab1" name="tab" defaultChecked />
-                      <label htmlFor="tab1">Daily</label>
+                      <label htmlFor="tab1">{langFullData.daily}</label>
                     </div>
                     <div className="flex_class">
                       <input type="radio" id="tab2" name="tab" />
-                      <label htmlFor="tab2">Monthly</label>
+                      <label htmlFor="tab2">{langFullData.monthly}</label>
                     </div>
                     <div className="flex_class">
                       {" "}
                       <input type="radio" id="tab3" name="tab" />
-                      <label htmlFor="tab3">Yearly</label>
+                      <label htmlFor="tab3">{langFullData.yearly}</label>
                     </div>
                     <div className="flex_class">
                       <input type="radio" id="tab4" name="tab" />
-                      <label htmlFor="tab4">Weekly</label>
+                      <label htmlFor="tab4">{langFullData.weekly}</label>
                     </div>
                     <div className="flex_class">
                       <input type="radio" id="tab5" name="tab" />
-                      <label htmlFor="tab5">Custom</label>
+                      <label htmlFor="tab5">{langFullData.custome}</label>
                     </div>
                   </div>
                   <article className="date_picker">
