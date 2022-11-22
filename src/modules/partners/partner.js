@@ -657,7 +657,8 @@ const Partner = () => {
                       name="radioValue"
                       defaultChecked={(radioValue.trim().length !== 0) ? radioValue === partyType.toLowerCase() : partyType.toLowerCase()}
                     />{" "}
-                    {partyType.toLowerCase()}
+                    {partyType.charAt(0).toUpperCase() + partyType.toLowerCase().slice(1)}
+                    {/* {partyType.toLowerCase()} */}
                     <input
                       type="radio"
                       value="trader"
@@ -711,7 +712,7 @@ const Partner = () => {
                   <div></div>
                 )}
                 <div className="row">
-                  <div className="col-lg-6">
+                  <div className="col-lg-6 pl-0">
                     {partyType == "FARMER" ||
                     partyType == "BUYER" ||
                     partyType == "TRANSPORTER" ? (

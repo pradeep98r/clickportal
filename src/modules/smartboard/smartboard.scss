@@ -11,7 +11,7 @@
     height: 240px;
   }
   .empty_card2{
-    height: 140px;
+    height: 240px;
   }
 }
 .smartboard_div {
@@ -155,7 +155,7 @@
   h5 {
     font-weight: 500;
   }
-  h6 {
+  h3 {
     font-size: 10px;
     color: #4d4d4d;
   }
@@ -168,7 +168,7 @@
   .owl-nav {
     margin-top: 0px !important;
     position: absolute;
-    top: 40%;
+    top: 15%;
     width: 100%;
   }
   .owl-nav button.owl-prev,
@@ -376,4 +376,10 @@
     border-radius: 10px;
     background-color: var(--ono-yellow);
   }
+}
+#bar{
+  color: #4d4d4d;
+}
+.smartboard_div1{
+  // background-color: yellow;
 }

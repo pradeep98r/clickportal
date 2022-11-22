@@ -22,19 +22,22 @@ const SellBillBook = () => {
   const clickId = loginData.clickId;
   const [sellBillData, setSellBillData] = useState([]);
   const [isLoading, setLoading] = useState(true);
-
+console.log(loginData)
   useEffect(() => {
     callbackFunction();
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
   }, []);
 
-  var [dateValue, setDateValue] = useState(moment(new Date()).format("DD-MMM-YYYY"));
-
+  var [dateValue, setDateValue] = useState();
+  console.log(dateValue)
   const callbackFunction = (startDate, endDate,dateTab) => {
+    
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue=fromDate
     if(dateTab === "Daily"){
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+      console.log(fromDate,toDate);
     } else if(dateTab === "Weekly"){
       setDateValue(moment(fromDate).format("DD-MMM-YYYY")+" to "+moment(toDate).format("DD-MMM-YYYY"))
     } else if(dateTab === "Monthly"){
@@ -136,8 +139,7 @@ const SellBillBook = () => {
             </div>
           ) : (
             <div>
-              {sellBillData != null ? (
-                sellBillData.singleBills.length > 0 && (
+              
                   <div>
                     <div className="d-flex justify-content-between bills_div">
                       <div className="d-flex">
@@ -197,6 +199,8 @@ const SellBillBook = () => {
                     </div>
                     <div>
                       <div className="tab-content">
+                      {sellBillData != null ? (
+                sellBillData.singleBills.length > 0 && (
                         <div
                           className="tab-pane active"
                           id="home"
@@ -349,55 +353,12 @@ const SellBillBook = () => {
                               ))}
                           </div>
                         </div>
+                )) : <NoDataAvailable />}
                       </div>
                     </div>
                   </div>
-                )
-              ) : (
-                <div className="card default_card text-center">
-                  <div className="row no_data_row">
-                    <div className="col-lg-6 col1">
-                      <div>
-                        <img
-                          src={single_bill}
-                          alt="image"
-                          className="flex_class"
-                        />
-                        <p>
-                          Lorem ipsum is placeholder text commonly used in the
-                          graphic
-                        </p>
-                        <button
-                          text="Single Bill"
-                          className="primary_btn buttons d-flex mx-auto mt-3"
-                          onClick={handleStep1Header}
-                        >
-                          Single Bill
-                        </button>
-                      </div>
-                    </div>
-                    <div className="col-lg-6">
-                      <div>
-                        <img
-                          src={multi_bills}
-                          alt="image"
-                          className="flex_class"
-                        />
-                        <p>
-                          Lorem ipsum is placeholder text commonly used in the
-                          graphic
-                        </p>
-                        <button
-                          className="primary_btn buttons d-flex mx-auto mt-3"
-                        
-                        >
-                          Multi Bill
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+                
+              
             </div>
           )}
          </div>
