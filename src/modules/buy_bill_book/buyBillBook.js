@@ -11,9 +11,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
 import DatePickerModel from "../smartboard/datePicker";
-// import { WeeklyCalendar } from "react-week-picker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
+import NoDataAvailable from "../../components/noDataAvailable";
 function BuyBillBook() {
   
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -24,23 +24,12 @@ function BuyBillBook() {
     callbackFunction();
   }, []);
 
+  const businessCreatedStatus =
+  localStorage.getItem("businessCreatedStatus") != null
+    ? localStorage.getItem("businessCreatedStatus")
+    : "";
+var dateValue = moment(new Date()).format("YYYY-MM-DD");
   
-  // const [fromDate, setFromDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
-  // const [toDate, setToDate]= useState(moment(new Date()).format("YYYY-MM-DD"));
-  var dateValue = moment(new Date()).format("YYYY-MM-DD");
-  
-  // const getAllBuyBills = () => {
-    // getBuyBills(clickId,fromDate,toDate)
-    //   .then((response) => {
-    //     console.log(response, "billsss");
-    //     console.log(response.data.data, "billsss");
-    //     setBuyBillData(response.data.data.singleBills);
-    //     setLoading(false);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
-  // };
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
   };
@@ -114,7 +103,21 @@ function BuyBillBook() {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {isLoading ? (
+        {loginData.businessCreated === false && businessCreatedStatus == '' ? (
+            <div className="row">
+              <div className="col-lg-9 smartboard_div p-0">
+                <div className="complete_profile d-flex justify-content-between align-items-center">
+                  <p>Complete your Mandi Setup</p>
+                  
+                  
+                </div>
+                <NoDataAvailable />
+              </div>
+              <div className="col-lg-3"></div>
+            </div>
+          ):
+        <div>
+        {isLoading ? (
             <div className="">
               <img src={loading} alt="my-gif" className="gif_img" />
             </div>
@@ -356,7 +359,13 @@ function BuyBillBook() {
                           graphic
                         </p>
                         <Link to="/step1">
-                          <Button text="Single Bill" />
+                        <button
+                          text="Single Bill"
+                          className="primary_btn buttons d-flex mx-auto mt-3"
+                          onClick={handleStep1Header}
+                        >
+                          Single Bill
+                        </button>
                         </Link>
                       </div>
                     </div>
@@ -371,7 +380,12 @@ function BuyBillBook() {
                           Lorem ipsum is placeholder text commonly used in the
                           graphic
                         </p>
-                        <Button text="Multi Bill" />
+                        <button
+                          className="primary_btn buttons d-flex mx-auto mt-3"
+                        
+                        >
+                          Multi Bill
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -380,7 +394,11 @@ function BuyBillBook() {
             </div>
           )}
         </div>
+}
+        </div>
       </div>
+
+
       {showDatepickerModal1 ? (
         <DatePickerModel
           show={showDatepickerModal}

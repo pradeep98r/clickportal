@@ -1,7 +1,7 @@
 @import url("../../assets/css/style.scss");
 .smartboard_row {
   overflow-y: auto;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 220px);
 }
 .smartboard_row{
   .empty_card{
@@ -374,5 +374,6 @@
     color: #121212;
     border: none;
     border-radius: 10px;
+    background-color: var(--ono-yellow);
   }
 }

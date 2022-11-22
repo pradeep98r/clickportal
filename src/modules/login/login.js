@@ -4,7 +4,7 @@ import Button from "../../components/button";
 import Logo from "../../components/logo";
 import "../login/login.scss";
 import ca_avatar from "../../assets/images/login/ca_image.svg";
-import writer_avatar from "../../assets/images/login/writer_image.png";
+import writer_avatar from "../../assets/images/login/writer_avatar.svg";
 import { Link } from "react-router-dom";
 import { getLanguagesData } from "../../actions/profileService";
 const Login = () => {
@@ -64,7 +64,9 @@ const Login = () => {
                 </button>
               </Link>
               <h5>Don't have an account?</h5>
+              <Link to="/login_form">
               <h6>Register Now</h6>
+              </Link>
             </div>
           </div>
           <div className="col-lg-6 col-xs-12">
@@ -72,7 +74,7 @@ const Login = () => {
               <img
                 src={writer_avatar}
                 alt="writer"
-                className="d-flex mx-auto"
+                className="d-flex mx-auto writer"
               />
               <p className="text-center para_margin">
                 I work for a CA and help to run day-to-day Mandi Business

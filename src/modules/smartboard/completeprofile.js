@@ -11,7 +11,7 @@ import $ from "jquery";
 import { useSelector } from "react-redux";
 import { getAllMarkets } from "../../actions/loginService";
 import search_img from "../../assets/images/search.svg";
-import markets from "../../assets/images/markets_img.png"
+import markets from "../../assets/images/markets_img.png";
 import { Fragment } from "react";
 
 const CompleteProfile = (props) => {
@@ -33,7 +33,7 @@ const CompleteProfile = (props) => {
   }, []);
   // mandi name
   const [mandiNameField, setMandiNameField] = useState(
-    mandiEditStatus === 'true' ? mandiData.businessName : ""
+    mandiEditStatus === "true" ? mandiData.businessName : ""
   );
   const [mandiNameError, setMandiNameError] = useState("");
   const handleMandiName = (e) => {
@@ -43,7 +43,7 @@ const CompleteProfile = (props) => {
   };
   //   mandi type
   const [mandiTypeField, setMandiTypeField] = useState(
-    (mandiEditStatus == 'true') ? mandiData.businessType : ""
+    mandiEditStatus == "true" ? mandiData.businessType : ""
   );
   const [mandiTypeError, setMandiTypeError] = useState("");
   const handleMandiType = (e) => {
@@ -52,7 +52,7 @@ const CompleteProfile = (props) => {
   };
   //   mandi short code
   const [mandiShortCode, setMandiShortCode] = useState(
-    (mandiEditStatus == 'true') ? mandiData.shortCode : ""
+    mandiEditStatus == "true" ? mandiData.shortCode : ""
   );
   const [mandiShortCodeError, setMandiShortCodeError] = useState("");
   const handleMandiShortCode = (e) => {
@@ -70,7 +70,7 @@ const CompleteProfile = (props) => {
   };
   //   shop number
   const [shopNumberField, setShopNumberField] = useState(
-    (mandiEditStatus == 'true') ? mandiData.shopNum : ""
+    mandiEditStatus == "true" ? mandiData.shopNum : ""
   );
   const [shopNumberError, setShopNumberError] = useState("");
   const handleShopNumber = (e) => {
@@ -88,7 +88,7 @@ const CompleteProfile = (props) => {
   };
   //   contact name
   const [contactName, setContactName] = useState(
-    (mandiEditStatus == 'true') ? mandiData.contactName : ""
+    mandiEditStatus == "true" ? mandiData.contactName : ""
   );
   const [contactNameError, setContactNameError] = useState("");
   const handleContactName = (e) => {
@@ -97,15 +97,15 @@ const CompleteProfile = (props) => {
   };
   //   mobile number
   const [mobileNumber, setmobileNumber] = useState(
-    (mandiEditStatus == 'true') ? mandiData.mobile : ""
+    mandiEditStatus == "true" ? mandiData.mobile : ""
   );
-  const [marketname, setMarketName]= useState("");
+  const [marketname, setMarketName] = useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
   };
   const [alternateMobileNumber, setAlternateMobileNumber] = useState(
-    (mandiEditStatus == 'true') ? mandiData.altMobile : ""
+    mandiEditStatus == "true" ? mandiData.altMobile : ""
   );
   const [alternateMobileNumberError, setAlternateMobileNumberError] =
     useState("");
@@ -113,13 +113,13 @@ const CompleteProfile = (props) => {
     mobileNumberValidation(e, "alternateMobile");
   };
   const [pincode, setPincode] = useState(
-    (mandiEditStatus == 'true') ? mandiData.businessAddress.pincode : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.pincode : ""
   );
   const [cityVal, setCityVal] = useState(
-    (mandiEditStatus == 'true') ? mandiData.businessAddress.dist : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.dist : ""
   );
   const [stateVal, setStateVal] = useState(
-    (mandiEditStatus == 'true') ? mandiData.businessAddress.state : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.state : ""
   );
   //   common mobilenumber validation
   const mobileNumberValidation = (e, type) => {
@@ -143,7 +143,7 @@ const CompleteProfile = (props) => {
     else setAlternateMobileNumber(number);
   };
   const [streetVillage, setStreetVillage] = useState(
-    (mandiEditStatus == 'true') ? mandiData.businessAddress.addressLine : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.addressLine : ""
   );
   const [streetvillageError, setStreetvillageError] = useState("");
   const handleStreetName = (e) => {
@@ -187,27 +187,54 @@ const CompleteProfile = (props) => {
     }
   };
   const [submitStatus, setSubmitStatus] = useState(false);
+  const [pincodeError, setPincodeError] = useState('');
+  const [cityValError, setCityValError] = useState('');
+  const [stateValError, setStateValError] = useState('');
   const onSubmit = () => {
     if (
-      mandiNameField.trim().length !== 0
-      //   mobileNumber.trim().length !== 0 &&
-      //   shortNameField.trim().length !== 0
+      mandiNameField.trim().length !== 0 &&
+        mobileNumber.trim().length !== 0 &&
+        mandiShortCode.trim().length !== 0 && 
+        shopNumberField.trim().length !==0 && 
+        contactName.trim().length !==0 && marketname.trim().length !==0 && 
+        pincode.trim().length !==0
+        && cityVal.trim().length !==0 && stateVal.trim().length !==0 && 
+        streetVillage.trim().length !==0
     ) {
       addEditMandiSetupApiCall();
     } else if (mandiNameField.trim().length === 0) {
-      mandiNameError("Please Enter Name");
-      // alert("hii")
+      setMandiNameError("Please Enter Name");
     }
-    // else if (mobileNumber.trim().length === 0) {
-    //     requiredNumberField("Please Enter Mobile Number");
-    // } else if (shortNameField.trim().length === 0) {
-    //   setRequiredshortNameField("Please Enter Short Name");
-    // }
+   else if (mandiShortCode.trim().length === 0) {
+      setMandiShortCodeError("Please Enter Short Code");
+    }
+    else if(shopNumberField.trim().length === 0) {
+      setShopNumberError("Please Enter Shop Number");
+    }
+    else if (mobileNumber.trim().length === 0) {
+      setRequiredNumberField("Please Enter Mobile Number");
+    } 
+    else if(contactName.trim().length === 0) {
+      setContactNameError("Please Enter Contact Name");
+    }
+    else if(pincode.trim().length === 0){
+      setPincodeError("Please enter pincode")
+    }
+    else if(cityVal.trim().length === 0){
+      setCityValError("Please enter city/dist")
+    }
+    else if(stateVal.trim().length === 0){
+      setStateValError("Please enter state")
+    }
+    else if(streetVillage.trim().length === 0){
+      setStreetvillageError("Please enter street or village")
+    }
   };
   console.log(mandiData.businessId);
   console.log(mandiData.marketId);
   const obj = {
-    altMobile: (mandiEditStatus == 'true') ? mandiData.altMobile : alternateMobileNumber,
+    altMobile:
+      mandiEditStatus == "true" ? mandiData.altMobile : alternateMobileNumber,
     businessAddress: {
       addressLine: streetVillage,
       city: cityVal,
@@ -216,19 +243,19 @@ const CompleteProfile = (props) => {
       state: stateVal,
       type: "BUSINESS",
     },
-    businessId: (mandiEditStatus == 'true') ? mandiData.businessId : 0,
+    businessId: mandiEditStatus == "true" ? mandiData.businessId : 0,
     businessName: mandiNameField,
     businessType: mandiTypeField,
     contactName: contactName,
     imageUrl: "string",
     //marketId: (mandiEditStatus == 'true') ? mandiData.marketId : selectMarketId,
     mobile: mobileNumber,
-    otherMarket: marketname ? marketname:'',//"string",
+    otherMarket: marketname ? marketname : "", //"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
   };
   const addEditMandiSetupApiCall = () => {
-    if (mandiEditStatus == 'true') {
+    if (mandiEditStatus == "true") {
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -267,6 +294,9 @@ const CompleteProfile = (props) => {
       alert("Sorry, Geolocation is not supported by this browser.");
       // Alert is browser does not support geolocation
     }
+    setPincodeError("");
+    setCityValError("");
+    setStateValError("");
   };
   const posError = () => {
     if (navigator.permissions) {
@@ -335,6 +365,9 @@ const CompleteProfile = (props) => {
         fillCityAndStateFields(possibleLocalities);
       });
     }
+    setPincodeError("");
+    setCityValError("");
+    setStateValError("");
   };
 
   function fillCityAndStateFields(localities) {
@@ -401,66 +434,63 @@ const CompleteProfile = (props) => {
     setSelectedOption(e.target.value);
     allMarketsData.map((item) => {
       if (item.marketName === e.target.value) {
-        console.log(item.marketId,"id");
-        setSelectedMarketId(item.marketId)
+        console.log(item.marketId, "id");
+        setSelectedMarketId(item.marketId);
       }
     });
   };
   const openMarketNamePopUpModal = () => {
-      $("#marketNamePopUpModal").modal("show");
+    $("#marketNamePopUpModal").modal("show");
   };
   const closePopup = () => {
-      $("#marketNamePopUpModal").modal("hide");
+    $("#marketNamePopUpModal").modal("hide");
   };
 
-  const openOtheModalPopUp=()=>{
+  const openOtheModalPopUp = () => {
     $("#otherModalPopUp").modal("show");
-  }
-  const closeOtheModalPopUp=()=>{
+  };
+  const closeOtheModalPopUp = () => {
     $("#otherModalPopUp").modal("hide");
-  }
-  const handleMarketName=()=>{
+  };
+  const handleMarketName = () => {
     openMarketNamePopUpModal();
     console.log("Drop Down Cicked");
-  }
-  const [search, setSearch]= useState("");
-  const [marketName, setMarketname]=useState([]);
-  const searchMarketName=(searchValue)=>{
+  };
+  const [search, setSearch] = useState("");
+  const [marketName, setMarketname] = useState([]);
+  const searchMarketName = (searchValue) => {
     setSearch(searchValue);
-    if(search!==""){
-      const filteredNames=allMarketsData.filter(item=>{
-        return(
-          item.marketName.toLowerCase().includes(search.toLowerCase())
-        )
-      })
+    if (search !== "") {
+      const filteredNames = allMarketsData.filter((item) => {
+        return item.marketName.toLowerCase().includes(search.toLowerCase());
+      });
       setMarketname(filteredNames);
-    }
-    else{
+    } else {
       setMarketname(allMarketsData);
     }
-  }
+  };
 
-  const handleOtherName=()=>{
+  const handleOtherName = () => {
     openOtheModalPopUp();
-    setMarketName(marketname)
-  }
-  const handleMarketSelection=(name)=>{
-    if(name.toLowerCase().includes("other")){
+    setMarketName(marketname);
+  };
+  const handleMarketSelection = (name) => {
+    if (name.toLowerCase().includes("other")) {
       //openOtheModalPopUp();
       //setMarketName(marketname)
       handleOtherName();
       console.log("other");
-    }else{
+    } else {
       setMarketName(name);
-      console.log(name,"mkName")
+      console.log(name, "mkName");
       closePopup();
     }
-  }
-  const handleOtherMarketName=e=>{
+  };
+  const handleOtherMarketName = (e) => {
     setMarketname(e.target.value);
     closeOtheModalPopUp();
     closePopup();
-  }
+  };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
@@ -486,11 +516,11 @@ const CompleteProfile = (props) => {
                 className="form-control"
                 //value={selectMarket}
                 //placeholder="Select Market Name"
-                value={marketname?marketname:"Select Market Name"}
+                value={marketname ? marketname : "Select Market Name"}
                 //onChange={selectedValue}
                 onClick={handleMarketName}
               />
-                {/*</div>{allMarketsData.map((market) => (
+              {/*</div>{allMarketsData.map((market) => (
                   <option value={market.marketName}>{market.marketName}</option>
                 ))}
               </select>*/}
@@ -502,25 +532,26 @@ const CompleteProfile = (props) => {
                         Select Market
                       </h5>
                       <img
-                          src={close}
-                          alt="image"
-                          className="close_icon"
-                          onClick={closePopup}
-                        />
+                        src={close}
+                        alt="image"
+                        className="close_icon"
+                        onClick={closePopup}
+                      />
                     </div>
                     <div className="modal-body marketName_modal_mody market_name_modal_mody">
                       <div className="col-lg-6" id="market-div">
                         <div id="search-mk-field">
-                          <form class="d-flex">
-                            <input class="form-control me-2"
-                                id="searchbar-mk"
-                                type="text"
-                                value={search}
-                                placeholder="Search by Name / Short Code"
-                                onChange={(e) => {
-                                  searchMarketName(e.target.value);
-                                }}
-                                className="searchbar-input"
+                          <form className="d-flex">
+                            <input
+                              className="form-control me-2 searchbar-input"
+                              id="searchbar-mk"
+                              type="text"
+                              value={search}
+                              placeholder="Search by Name / Short Code"
+                              onChange={(e) => {
+                                searchMarketName(e.target.value);
+                              }}
+                              
                             />
                           </form>
                           <div className="searchicon">
@@ -528,45 +559,62 @@ const CompleteProfile = (props) => {
                           </div>
                         </div>
                         <div className="market-names" id="scroll_style">
-                          {allMarketsData.map((item,index)=>{
-                            if(index===allMarketsData.length-1)
-                            return(
-                              <div id="mk-other-name" onClick={(e)=>{handleOtherName(e)}}>
-                                <div class="d-flex" id="ot-m-img">
-                                <img src={markets} alt="markets" />
-                                <p id="mk-other-Name">{item.marketName}</p>
-                              </div>
-                              </div>
-                            )
+                          {allMarketsData.map((item, index) => {
+                            if (index === allMarketsData.length - 1)
+                              return (
+                                <div
+                                  id="mk-other-name"
+                                  onClick={(e) => {
+                                    handleOtherName(e);
+                                  }}
+                                >
+                                  <div className="d-flex" id="ot-m-img">
+                                    <img src={markets} alt="markets" />
+                                    <p id="mk-other-Name">{item.marketName}</p>
+                                  </div>
+                                </div>
+                              );
                           })}
-                          {search.length>1 ?(
-                            marketName.map(item=>{
-                              return(
-                              <div id="mk-name" onClick={(name)=>{handleMarketSelection(item.marketName)}}>
-                                <div class="d-flex">
-                                <img src={markets} alt="markets" />
-                                <p key={item.id} id="mk-Name">{item.marketName}</p>
-                                </div>
-                                <span id="hr-lines"></span>
-                              </div>
-                              )
-                            })
-                          ):(
-                            allMarketsData.map(item=>{ 
-                            return(
-                              <Fragment>
-                              <div id="mk-name" onClick={(name)=>{handleMarketSelection(item.marketName)}}>
-                                <div class="d-flex">
-                                <img src={markets} alt="markets" />
-                                <p key={item.id} id="mk-Name">{item.marketName}</p>
-                                </div>
-                                
-                                <span id="hr-lines"></span>
-                              </div>
-                              </Fragment>
-                            )
-                          }))
-                          }
+                          {search.length > 1
+                            ? marketName.map((item) => {
+                                return (
+                                  <div
+                                    id="mk-name"
+                                    onClick={(name) => {
+                                      handleMarketSelection(item.marketName);
+                                    }}
+                                  >
+                                    <div className="d-flex">
+                                      <img src={markets} alt="markets" />
+                                      <p key={item.id} id="mk-Name">
+                                        {item.marketName}
+                                      </p>
+                                    </div>
+                                    <span id="hr-lines"></span>
+                                  </div>
+                                );
+                              })
+                            : allMarketsData.map((item) => {
+                                return (
+                                  <Fragment>
+                                    <div
+                                      id="mk-name"
+                                      onClick={(name) => {
+                                        handleMarketSelection(item.marketName);
+                                      }}
+                                    >
+                                      <div className="d-flex">
+                                        <img src={markets} alt="markets" />
+                                        <p key={item.id} id="mk-Name">
+                                          {item.marketName}
+                                        </p>
+                                      </div>
+
+                                      <span id="hr-lines"></span>
+                                    </div>
+                                  </Fragment>
+                                );
+                              })}
                         </div>
                       </div>
                     </div>
@@ -582,38 +630,38 @@ const CompleteProfile = (props) => {
                         Select Market
                       </h5>
                       <img
-                          src={close}
-                          alt="image"
-                          className="close_icon"
-                          onClick={closeOtheModalPopUp}
-                        />
+                        src={close}
+                        alt="image"
+                        className="close_icon"
+                        onClick={closeOtheModalPopUp}
+                      />
                     </div>
                     <div className="modal-body marketName_modal_mody market_name_modal_mody">
                       <div className="col-lg-6" id="market-div">
                         <div id="search-mk-field">
-                          <form class="d-flex">
-                            <input class="form-control me-2"
-                                id="searchbar-mk"
-                                type="text"
-                                value={"OTHER"}
-                                onChange={(e) => {
-                                  searchMarketName(e.target.value);
-                                }}
-                                className="searchbar-input"
+                          <form className="d-flex">
+                            <input
+                              className="form-control me-2 searchbar-input"
+                              id="searchbar-mk"
+                              type="text"
+                              value={"OTHER"}
+                              onChange={(e) => {
+                                searchMarketName(e.target.value);
+                              }}
                             />
                           </form>
                         </div>
                         <div id="search-mk-field">
                           <InputField
-                              type="text"
-                              //value={mandiTypeField}
-                              label="Market Name"
-                              name="marketName"
-                              id="marketName"
-                              onChange={(e) => {
-                                setMarketName(e.target.value);
-                              }}
-                            />
+                            type="text"
+                            //value={mandiTypeField}
+                            label="Market Name"
+                            name="marketName"
+                            id="marketName"
+                            onChange={(e) => {
+                              setMarketName(e.target.value);
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -621,8 +669,9 @@ const CompleteProfile = (props) => {
                       <button
                         type="button"
                         className="primary_btn cont_btn w-100 m-0"
-                        onClick={(e) =>{handleOtherMarketName(e)}
-                        }
+                        onClick={(e) => {
+                          handleOtherMarketName(e);
+                        }}
                       >
                         Continue
                       </button>
@@ -630,7 +679,7 @@ const CompleteProfile = (props) => {
                   </div>
                 </div>
               </div>
-              
+
               {/* <InputField
                 type="text"
                 value=""
@@ -682,7 +731,9 @@ const CompleteProfile = (props) => {
                   handleMobileNumber(e);
                 }}
               />
-              <span className="text-danger">{requiredNumberField}</span>
+             <div>
+             <span className="text-danger">{requiredNumberField}</span>
+             </div>
               <label className="input_field address_text mt-0">Address</label>
               <div>
                 <label htmlFor="zip" className="input_field">
@@ -702,12 +753,13 @@ const CompleteProfile = (props) => {
                   />
                 </div>
               </div>
+              <span className="text-danger">{pincodeError}</span>
               <div>
                 <label htmlFor="city" className="input_field">
                   City*
                 </label>
                 <div id="city-input-wrapper">
-                  {(mandiEditStatus == 'true') ? (
+                  {mandiEditStatus == "true" ? (
                     <div>
                       <InputField
                         type="text"
@@ -721,6 +773,7 @@ const CompleteProfile = (props) => {
                   )}
                 </div>
               </div>
+              <span className="text-danger">{cityValError}</span>
             </div>
             <div className="col-lg-6">
               <InputField
@@ -793,7 +846,7 @@ const CompleteProfile = (props) => {
                 <label htmlFor="state" className="input_field">
                   State*
                 </label>
-                {(mandiEditStatus == 'true') ? (
+                {mandiEditStatus == "true" ? (
                   <input
                     id="state"
                     className="form-control"
@@ -804,6 +857,7 @@ const CompleteProfile = (props) => {
                   <input id="state" className="form-control" name="state" />
                 )}
               </div>
+              <span className="text-danger">{stateValError}</span>
               <InputField
                 type="text"
                 value={streetVillage}

@@ -3,7 +3,8 @@ import { getAllCrops } from "../../actions/billCreationService";
 import Navigation from "../../components/navigation";
 import "../registration/prfefered.scss";
 import right_click from "../../assets/images/right_click.svg";
-import toastr from "toastr";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { saveCropPreference } from "../../actions/loginService";
 import { useNavigate } from "react-router-dom";
 const PreferredCrops = () => {
@@ -48,14 +49,14 @@ const PreferredCrops = () => {
     saveCropPreference(obj, clickId).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
-          toastr.success(response.data.status.description);
+          toast.success(response.data.status.description,{toastId:'success1'});
           localStorage.setItem('status',response.data.status.type);
           navigate('/plans');
           //window.location.reload();
         }
       },
       (error) => {
-        toastr.error(error.response.data.status.description);
+        toast.error(error.response.data.status.description,{toastId:'errorr1'});
       }
     );
   };
@@ -73,7 +74,8 @@ const PreferredCrops = () => {
         else if(search==""){
           return setIsActive(false);
         }
-        else{
+        else if(search !== item.cropName.toLowerCase()){
+          console.log("actice",search,item.cropName.toLowerCase())
           return setIsActive(true);
         } 
       })
@@ -119,7 +121,7 @@ const PreferredCrops = () => {
                         src={crop_item.imageUrl}
                         className="flex_class mx-auto crop_img"
                       />
-                      <p>{crop_item.cropName}</p>
+                      <p>{crop_item.cropName + 'hi'}</p>
                     </div>
                   </div>
                 ))}
@@ -157,6 +159,7 @@ const PreferredCrops = () => {
         >
           NEXT
         </button>
+        <ToastContainer />
       </div>
     </div>
   );
