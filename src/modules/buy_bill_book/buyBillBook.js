@@ -10,6 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
+import date_icon from "../../assets/images/date_icon.svg";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
@@ -23,21 +24,33 @@ function BuyBillBook() {
   useEffect(() => {
     callbackFunction();
   }, []);
+ 
+  var [dateValue, setDateValue] = useState(moment(new Date()).format("DD-MMM-YYYY"));
 
   const businessCreatedStatus =
   localStorage.getItem("businessCreatedStatus") != null
     ? localStorage.getItem("businessCreatedStatus")
     : "";
-var dateValue = moment(new Date()).format("YYYY-MM-DD");
   
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
   };
-  const callbackFunction = (startDate, endDate) => {
-    console.log(startDate,endDate, "child");
+  const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue=fromDate
+    if(dateTab === "Daily"){
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if(dateTab === "Weekly"){
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY")+" to "+moment(toDate).format("DD-MMM-YYYY"))
+    } else if(dateTab === "Monthly"){
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if(dateTab === "Yearly"){
+      console.log("yearly",dateTab)
+      setDateValue(moment(fromDate).format("YYYY"));
+    }else{
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY")+" to "+moment(toDate).format("DD-MMM-YYYY"))
+    }
     // setFromDate(startDate);
     // setToDate(toDate);
     getBuyBills(clickId,fromDate, toDate)
@@ -144,7 +157,9 @@ var dateValue = moment(new Date()).format("YYYY-MM-DD");
                         
                       </ul>
                     </div>
-                    <div onClick={onclickDate} className="color_blue">{dateValue}</div>
+                    <div onClick={onclickDate} className="color_blue">
+                    <span className="date_icon m-0"><img src={date_icon} alt="icon" className="mr-2" />
+                    </span>{dateValue}</div>
                     <div className="d-flex">
                       <div className="d-flex mx-3" role="search">
                         <input

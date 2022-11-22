@@ -116,9 +116,8 @@ function DatePickerModel(props) {
     var lastDate = moment(lastDay).format("YYYY-MM-DD");
     if (dateTabs == "Daily") {
       lastDate = firstDate;
-      props.parentCallback(firstDate,lastDate);
+      props.parentCallback(firstDate,lastDate,dateTabs);
       props.close();
-      
     } else if (dateTabs == "Yearly") {
       console.log(dateValue,"dateValue");
       const currentYear = dateValue.getFullYear();
@@ -127,7 +126,7 @@ function DatePickerModel(props) {
       firstDate = moment(firstDay).format("YYYY-MM-DD");
       lastDate = moment(lastDay).format("YYYY-MM-DD");
       console.log(firstDate,lastDate);
-      props.parentCallback(firstDate,lastDate);
+      props.parentCallback(firstDate,lastDate,dateTabs);
       props.close();
     } else if( dateTabs == "Monthly"){
       const currentYear = dateValue.getFullYear();
@@ -135,19 +134,19 @@ function DatePickerModel(props) {
       lastDay = new Date(currentYear, dateValue.getMonth()+1, 0);
       firstDate = moment(firstDay).format("YYYY-MM-DD");
       lastDate = moment(lastDay).format("YYYY-MM-DD");
-      console.log(firstDate,lastDate);
-      props.parentCallback(firstDate,lastDate);
+      console.log(firstDate,lastDate,dateTabs);
+      props.parentCallback(firstDate,lastDate,dateTabs);
       props.close();
     }else if (dateTabs == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
       console.log(firstDate,lastDate);
-      props.parentCallback(firstDate,lastDate);
+      props.parentCallback(firstDate,lastDate,dateTabs);
       props.close();
     } else if(dateTabs == "Custom"){
       firstDate = moment(startDate).format("YYYY-MM-DD");
       lastDate = moment(endDate).format("YYYY-MM-DD");
-      props.parentCallback(firstDate, lastDate);
+      props.parentCallback(firstDate, lastDate,dateTabs);
       props.close();
     }
     // props.parentCallback();
@@ -161,7 +160,7 @@ function DatePickerModel(props) {
   //   var d = moment(date).format("YYYY-MM-DD") == '' ? moment(new Date()).format("YYYY-MM-DD") :moment(date).format("YYYY-MM-DD")
   //   props.parentCallback(d);
   //   props.close();
-  //   window.location.reload();
+  //  window.location.reload();
   // }
   return (
      
