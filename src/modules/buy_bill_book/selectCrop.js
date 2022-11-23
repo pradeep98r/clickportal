@@ -9,7 +9,6 @@ const SelectCrop = (props) => {
   const [selected, setSelected] = useState([]);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   useEffect(() => {
     fetchCropData();
@@ -31,7 +30,8 @@ const SelectCrop = (props) => {
         item.cropSelect="active";
       })
       setSelected(newSelected);
-      setStat(true)
+      setStat(true);
+      console.log(newSelected)
     }
      else {
       setStat(false);
@@ -44,13 +44,19 @@ const SelectCrop = (props) => {
 
   const addCropClickNext=(event)=>{
     if(stat===true){
+      console.log(selected,"true")
       props.cropCallback(selected,true);
       while(selected.length>0){
         selected.pop();
       }
     }
     else{
-      props.cropCallback(selected,false);
+      props.cropCallback(selected,true);
+      selected.map(item=>{
+        item.cropSelect="";
+      })
+      setSelected([]);
+      console.log(selected,"false")
     }
   }
   return (

@@ -38,7 +38,6 @@ const Step2Modal = (props) => {
           // { unitType:  preferedCrops[index2] }
         );
         cropResponseData([...cropData, preferedCrops[index2]]);
-        console.log(cropData,"if")
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
@@ -69,6 +68,7 @@ const Step2Modal = (props) => {
 
   var arr = [];
   const cropDataFunction = (childData, status) => {
+    console.log(childData,status,"parent")
     if (status === true) {
       var list = preferedCropsData;
       childData.map((i, ind) => {
@@ -111,6 +111,7 @@ const Step2Modal = (props) => {
       let deSelectedCrop = preferedCropsData.filter(
         (item) => item.cropId !== childData.cropId
       );
+      console.log(deSelectedCrop)
       setPreferedCropsData(deSelectedCrop);
     }
   };
@@ -118,29 +119,62 @@ const Step2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
-    cropData.map((item, index) => {
-      console.log(cropData[index].unitValue);
-      if (cropData[index].unitValue == 0) {
-        toast.error("Please enter Quantity", {
-          toastId: "error1",
-        });
-      } else if (cropData[index].weightValue == 0) {
-        toast.error("Please enter weight", {
-          toastId: "error2",
-        });
-      } else if (cropData[index].rateValue == 0) {
-        toast.error("Please enter rate", {
-          toastId: "error3",
-        });
-      } else if (
-        cropData[index].unitValue != 0 &&
-        cropData[index].weightValue != 0 &&
-        cropData[index].rateValue != 0
-      ) {
-        setShowStep3ModalStatus(true);
-        setShowStep3Modal(true);
-      }
-    });
+    var h = [];
+    console.log(h);
+    if(cropData.length>0){
+      h =  cropData.map((item, index) => {
+        if (cropData[index].unitValue == 0 && !setQuantityBasedtable(cropData[index].unitType)) {
+          toast.error("Please enter Quantity", {
+            toastId: "error1",
+          });
+          return null;
+        } else if (cropData[index].weightValue == 0) {
+          toast.error("Please enter weight", {
+            toastId: "error2",
+          });
+          return null;
+        } else if (cropData[index].rateValue == 0) {
+          toast.error("Please enter rate", {
+            toastId: "error3",
+          });
+          return null;
+        } 
+        else if (
+          setQuantityBasedtable(cropData[index].unitType) &&
+          cropData[index].weightValue != 0 &&
+          cropData[index].rateValue != 0
+        ) {
+          console.log("cr",cropData[index])
+          return cropData[index];
+        }
+        else if (
+          cropData[index].unitValue != 0 &&
+          cropData[index].weightValue != 0 &&
+          cropData[index].rateValue != 0
+        ) {
+           setShowStep3ModalStatus(true);
+           setShowStep3Modal(true);
+          return cropData[index];
+        }  
+      });
+      console.log(h.length,h)
+     if(h.length > 0){
+     var h1 =  h.map((item, index) => {
+      if(h[index] !=null){
+        if(h.length == cropData.length){  
+          return item; 
+          // console.log(h,"true")
+          // setShowStep3ModalStatus(true);
+          //  setShowStep3Modal(true);
+       }
+       }
+      })
+     console.log(h1)
+     }
+    }
+   
+    
+ 
   };
   const setQuantityBasedtable = (unitType) => {
     var t = false;
@@ -179,24 +213,18 @@ const Step2Modal = (props) => {
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
   const getQuantityValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem, e.target.value);
     setunitValue(e.target.value);
     cropitem[index].unitValue = e.target.value;
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem);
     setweightValue(e.target.value);
     cropitem[index].weightValue = e.target.value;
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem, e.target.value);
-    if (cropitem[index].cropId == id) {
       setwastageValue(e.target.value);
       cropitem[index].wastageValue = e.target.value;
-      console.log(cropitem[index].wastageValue);
-    }
     setCropId(id);
   };
   const [selectedCropsData, setSelectedCropsData] = useState([]);
@@ -287,7 +315,7 @@ const Step2Modal = (props) => {
                           index +
                           cropData[index].rateType}
                         {!setQuantityBasedtable(cropData[index].unitType) ? (
-                          <table class="table table-bordered">
+                          <table className="table table-bordered">
                             <thead>
                               <tr>
                                 <th>Crop</th>
@@ -439,7 +467,7 @@ const Step2Modal = (props) => {
                             </tbody>
                           </table>
                         ) : (
-                          <table class="table table-bordered">
+                          <table className="table table-bordered">
                             <thead>
                               <tr>
                                 <th>Crop</th>

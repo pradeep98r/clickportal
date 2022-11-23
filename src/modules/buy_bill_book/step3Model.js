@@ -7,7 +7,7 @@ import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
 import {
   getPartnerData,
-  getSystemSettings,
+  getSystemSettings,getOutstandingBal
 } from "../../actions/billCreationService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,7 +28,6 @@ const Step3Modal = (props) => {
   const transpoSelectedData = JSON.parse(
     localStorage.getItem("selectedTransporter")
   );
-  console.log(transpoSelectedData)
   const [partyType, setPartnerType] = useState("Seller");
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
@@ -43,8 +42,15 @@ const Step3Modal = (props) => {
   const [otherformStatusvalue, setOtherFormStatus] = useState(false);
   const [cashformStatusvalue, setCashFormStatus] = useState(false);
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
+  const [outBal, setOutsBal] = useState(0);
   useEffect(() => {
     fetchPertnerData(partyType);
+    if(partnerSelectedData != null){
+      getOutstandingBal(clickId,partnerSelectedData.partyId).then((res) => {
+        console.log(res);
+        setOutsBal(res.data.data == null ? 0 : res.data.data);
+      });
+    }
     getGrossTotalValue(props.slectedCropsArray);
     getSystemSettings(clickId).then((res) => {
       console.log(response)
@@ -75,7 +81,6 @@ const Step3Modal = (props) => {
           }
 
           if (response[i].settingName === "COMMISSION") {
-            console.log(response[i].includeInLedger, "commiss");
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
             console.log(
@@ -115,6 +120,10 @@ const Step3Modal = (props) => {
     if (type == "Seller") {
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
+      getOutstandingBal(clickId,item.partyId).then((res) => {
+        console.log(res.data);
+        setOutsBal(res.data.data);
+      });
     } else if (type == "Transporter") {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
@@ -177,7 +186,6 @@ const Step3Modal = (props) => {
     let totalValue =
       grossTotal - t;
     if (addRetComm) {
-      console.log(grossTotal,t,totalValue,getTotalValue(retcommValue))
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
@@ -190,19 +198,24 @@ const Step3Modal = (props) => {
     getTotalUnits(rentValue) +
     getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)));
     var finalValue = grossTotal - t;
+    var finalVal = 0;
     if(includeComm){
-      finalValue = finalValue + getTotalValue(commValue);
+      finalVal = finalValue + getTotalValue(commValue);
     }
     if (addRetComm) {
       if(includeRetComm){
-        return (finalValue + getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
+      }
+      else{
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if(includeRetComm){
-        return (finalValue - getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    console.log(finalValue,"final ledger bal")
+    console.log(parseInt(finalVal),outBal,"final ledger bal")
+    return ((parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashpaidValue));
   }
   var lineItemsArray = [];
   var cropArray = props.slectedCropsArray;
@@ -763,7 +776,7 @@ const Step3Modal = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal}</h6>
+                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
@@ -771,8 +784,12 @@ const Step3Modal = (props) => {
               </div>
               <div className="totals_value">
                 <h5>Outstanding Balance (₹)</h5>
-                <h6>0</h6>
+                <h6>{outBal != 0 ? outBal.toFixed(2) : '0'}</h6>
               </div>
+              {cashpaidValue != 0 ?<div className="totals_value">
+                <h5>Cash Paid</h5>
+                <h6 className="black_color">-{cashpaidValue}</h6>
+              </div> : ''}
               <div className="totals_value">
                 <h5>Final Ledger Balance (₹)</h5>
                 <h6>{getFinalLedgerbalance()}</h6>
@@ -782,7 +799,7 @@ const Step3Modal = (props) => {
         </div>
       
       </div>
-      <div className="bottom_div main_div popup_bottom_div">
+      <div className="bottom_div main_div popup_bottom_div step3_bottom">
           <div className="d-flex align-items-center justify-content-end">
             <button className="primary_btn" onClick={postbuybill}>
               Next
