@@ -81,6 +81,7 @@ const MyProfile = () => {
   };
 
   const langFullData = JSON.parse(langData);
+  console.log(langFullData);
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
@@ -146,8 +147,7 @@ const MyProfile = () => {
                                     <div className="d-flex align-items-center">
                                       <img src={icon} alt="image" />
                                       <h6>
-                                        Personal deatails
-                                        {/* {langFullData.hello} */}
+                                        {langFullData.personalDetails}
                                       </h6>
                                     </div>
                                   </div>
@@ -155,7 +155,7 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Owner Name"
+                                          title={langFullData.ownerName}
                                           subTitle={
                                             profileData.personalDtls.ownerName
                                           }
@@ -164,7 +164,7 @@ const MyProfile = () => {
                                       </div>
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Contact Number"
+                                          title={langFullData.contactNumber}
                                           subTitle={
                                             profileData.personalDtls.contactNum
                                           }
@@ -185,7 +185,7 @@ const MyProfile = () => {
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
                                         <img src={market_img} alt="image" id="market-img"/>
-                                        <h6>Business Details</h6>
+                                        <h6>{langFullData.businessDetails}</h6>
                                       </div>
                                       <p onClick={() => editMandiData( profileData.businessDtls)} className="edit_text">
                                         <img src={edit} alt="edit-img" />
@@ -203,7 +203,7 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Mandi Name"
+                                          title={langFullData.businessName}
                                           subTitle={
                                             profileData.businessDtls
                                               .businessName
@@ -213,7 +213,7 @@ const MyProfile = () => {
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         <ProfileCard
-                                          title="Mandi Address"
+                                          title={langFullData.businessAddress}
                                           subTitle={
                                             profileData.businessDtls
                                               .businessAddress.addressLine +
@@ -234,7 +234,7 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCardWithoutIcon
-                                          title="Mandi Type"
+                                          title={langFullData.businessType}
                                           subTitle={
                                             profileData.businessDtls
                                               .businessType
@@ -253,7 +253,7 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Market Name"
+                                          title={langFullData.marketName}
                                           subTitle={
                                             profileData.businessDtls.marketName
                                           }
@@ -264,7 +264,7 @@ const MyProfile = () => {
                                         <div className="row mb-0">
                                           <div className="col-lg-6 p-0">
                                             <ProfileCardWithoutIcon
-                                              title="Shop Number"
+                                              title={langFullData.shopNumber}
                                               subTitle={
                                                 profileData.businessDtls.shopNum
                                               }
@@ -272,7 +272,7 @@ const MyProfile = () => {
                                           </div>
                                           <div className="col-lg-6 p-0">
                                             <ProfileCardWithoutIcon
-                                              title="Contact Name"
+                                              title={langFullData.contactName}
                                               subTitle={
                                                 profileData.businessDtls
                                                   .contactName
@@ -285,7 +285,7 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Mobile number"
+                                          title={langFullData.mobileNumber}
                                           subTitle={
                                             profileData.businessDtls.mobile
                                           }
@@ -294,7 +294,7 @@ const MyProfile = () => {
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         <ProfileCardWithoutIcon
-                                          title="Alternative Mobile"
+                                          title={langFullData.alternativeMobile}
                                           subTitle={
                                             profileData.businessDtls.altMobile
                                           }
@@ -314,7 +314,7 @@ const MyProfile = () => {
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
                                         <img src={globe} alt="image" />
-                                        <h6>Select your preferred language</h6>
+                                        <h6>{langFullData.selectYourPreferredLanguage}</h6>
                                       </div>
                                       <p
                                         onClick={isEdit ? onSave : onEdit}

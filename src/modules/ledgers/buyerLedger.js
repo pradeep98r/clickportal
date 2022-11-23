@@ -448,14 +448,46 @@ const BuyerLedger = () => {
                           </Fragment>
                         );
                       })}
-                  </tbody>
-                </table>
-                <div
-                  id="search-no-data"
-                  style={{
-                    display: valueActive && search.length > 0 ? "block" : "none",
+                </tbody>
+              </table>
+              <div
+                id="search-no-data"
+                style={{
+                  display: valueActive && search.length > 0 ? "block" : "none",
+                }}
+              >
+                 <NoDataAvailable />
+              </div>
+            </div>
+            <div className="outstanding-pay d-flex align-items-center justify-content-between">
+              <p className="pat-tag">Outstanding Recievables:</p>
+              <p className="values-tag">
+                &#8377;
+                {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
+              </p>
+            </div>
+          </div>
+          <div className="col-lg-8">
+            <div
+              className="no_data_found"
+              style={{ display: openTabs ? "none" : "block" }}
+            >
+              <img src={no_data} className="no-data-img" />
+            </div>
+            <div
+              className="container-fluid px-0"
+              id="tabsEvents"
+              style={{ display: openTabs ? "block" : "none" }}
+            >
+              <div className="recordbtn-style">
+                <button
+                  className="add-record-btns"
+                  onClick={() => {
+                    (toggleState === "ledgersummary" ||
+                      toggleState === "detailedledger") &&
+                      setIsOpen(!open);
                   }}
-                >
+                ></button>
                   <p>No Data Found</p>
                 </div>
               </div>

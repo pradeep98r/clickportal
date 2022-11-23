@@ -6,6 +6,10 @@ import SelectPartner from "../buy_bill_book/selectParty";
 import SellbillStep2Modal from "./step2";
 const SellebillStep1 = () => {
   const [selectedDate, setStartDate] = useState(new Date());
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   useEffect(() => {
     console.log("step1");
   }, []);
@@ -72,7 +76,7 @@ const SellebillStep1 = () => {
                   />
                   <span className="custom-control-indicator"></span>
                   <span className="custom-control-description">
-                    Set as a Default Date
+                  {langFullData.setAsADefault}{langFullData.date}
                   </span>
                 </label>
               </div>
@@ -91,7 +95,7 @@ const SellebillStep1 = () => {
           <div className="bottom_div main_div">
             <div className="d-flex align-items-center justify-content-end">
               <button className="primary_btn" onClick={addCropModal}>
-                Next
+                {langFullData.next}
               </button>
             </div>
           </div>

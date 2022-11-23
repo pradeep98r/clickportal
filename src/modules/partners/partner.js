@@ -32,6 +32,11 @@ const Partner = () => {
   const [showModal, setShow] = useState(false);
   const [partyIdVal, setPartyIdVal] = useState(0);
   const handleClose = () => setShow(false);
+
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   const handleDelete = (partyId) => {
     //   const deletePartner = (partyId) => {
     deletePartnerId(partyId, clickId).then(
@@ -192,10 +197,10 @@ const Partner = () => {
     ) {
       addEditPartnerApiCall();
     } else if (nameField.trim().length === 0) {
-      setRequiredNameField("Please Enter Name");
+      setRequiredNameField(langFullData.pleaseEnterFullName);
       // alert("hii")
     } else if (mobileNumber.trim().length === 0) {
-      setRequiredNumberField("Please Enter Mobile Number");
+      setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
     }
@@ -290,22 +295,22 @@ const Partner = () => {
   const links = [
     {
       id: 1,
-      name: "Seller",
+      name: langFullData.seller,
       to: "FARMER",
     },
     {
       id: 2,
-      name: "Buyer",
+      name: langFullData.buyer,
       to: "BUYER",
     },
     {
       id: 3,
-      name: "Transporter",
+      name: langFullData.transporter,
       to: "TRANSPORTER",
     },
     {
       id: 4,
-      name: "Coolie",
+      name: langFullData.labor,
       to: "COOLIE",
     },
   ];
@@ -472,8 +477,7 @@ const Partner = () => {
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
   };
-  const langData = localStorage.getItem("languageData");
-  const langFullData = JSON.parse(langData);
+  
   return (
     <div>
       <div className="main_div_padding">
@@ -507,7 +511,7 @@ const Partner = () => {
                 <div className="col-lg-9 ps-0">
                   <input
                     icon="search"
-                    placeholder="Search"
+                    placeholder={langFullData.search}
                     onChange={(e) => searchItems(e.target.value)}
                     className="search_text"
                   />
@@ -610,7 +614,7 @@ const Partner = () => {
                       <h6>
                         {" "}
                         Add{" "}
-                        {partyType == "FARMER"
+                        {partyType == langFullData.seller
                           ? "seller"
                           : partyType.toLowerCase()}
                       </h6>
@@ -618,7 +622,7 @@ const Partner = () => {
 
                       <button className="outline_btn" id="MybtnModal">
                         Add
-                        {partyType == "FARMER"
+                        {partyType == langFullData.seller
                           ? "seller"
                           : partyType.toLowerCase()}
                       </button>
@@ -638,7 +642,7 @@ const Partner = () => {
             <div className="modal-header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
                 {addeditText}{" "}
-                {partyType == "FARMER" ? "seller" : partyType.toLowerCase()}
+                {partyType == langFullData.farmer.toUpperCase() ? langFullData.seller : partyType.toLowerCase()}
               </h5>
               <img
                 src={close}
@@ -649,7 +653,7 @@ const Partner = () => {
             </div>
             <div className="modal-body partner_model_body" id="scroll_style">
               <form>
-                {partyType == "FARMER" || partyType == "BUYER" ? (
+                {partyType == langFullData.farmer.toUpperCase() || partyType == langFullData.buyer.toUpperCase() ? (
                   <div onChange={onChangeValue}>
                     <input
                       type="radio"
@@ -661,12 +665,12 @@ const Partner = () => {
                     {/* {partyType.toLowerCase()} */}
                     <input
                       type="radio"
-                      value="trader"
+                      value={langFullData.trader}
                       name="radioValue"
-                      defaultChecked={radioValue === "trader"}
+                      defaultChecked={radioValue === langFullData.trader}
                       className="radioBtnVal"
                     />{" "}
-                    Trader
+                    {langFullData.trader}
                   </div>
                 ) : (
                   <div></div>
@@ -677,7 +681,7 @@ const Partner = () => {
                       <InputField
                         type="text"
                         value={mobileNumber}
-                        label="Mobile Number*"
+                        label={langFullData.mobileNumber+"*"}
                         name="mobileNumber"
                         id="mobileNumber"
                         onChange={(e) => {
@@ -688,7 +692,7 @@ const Partner = () => {
                       <InputField
                         type="text"
                         value={nameField}
-                        label="Name*"
+                        label={langFullData.name+"*"}
                         name="name"
                         id="inputName"
                         onChange={(e) => {
@@ -700,7 +704,7 @@ const Partner = () => {
                       <InputField
                         type="text"
                         value={aadharNumber}
-                        label="Aadhar"
+                        label={langFullData.aadhar}
                         name="name"
                         onChange={(e) => {
                           handleNumber(e);
@@ -720,7 +724,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={mobileNumber}
-                          label="Mobile Number*"
+                          label={langFullData.mobileNumber+"*"}
                           name="mobileNumber"
                           id="mobileNumber"
                           onChange={(e) => {
@@ -734,7 +738,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={nameField}
-                          label="Name*"
+                          label={langFullData.name+"*"}
                           name="name"
                           id="inputName"
                           onChange={(e) => {
@@ -746,7 +750,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={aadharNumber}
-                          label="Aadhar"
+                          label={langFullData.aadhar}
                           name="name"
                           onChange={(e) => {
                             handleNumber(e);
@@ -762,7 +766,7 @@ const Partner = () => {
                       <InputField
                         type="text"
                         value={openingBalance}
-                        label="Opening Balance"
+                        label={langFullData.openingBalance}
                         name="name"
                         onChange={(e) => {
                           handleOpeninngBal(e);
@@ -773,11 +777,11 @@ const Partner = () => {
                     )}
                     {/* <LocationFetch onClick={locationFetch} /> */}
                     <label className="input_field address_text mt-0">
-                      Address
+                      {langFullData.address}
                     </label>
                     <div>
                       <label htmlFor="zip" className="input_field">
-                        Pincode
+                        {langFullData.pincode}
                       </label>
                       <div>
                         <input
@@ -821,7 +825,7 @@ const Partner = () => {
                          <InputField
                             type="text"
                             value={shortNameField}
-                            label="Initials (Short Name)*"
+                            label={langFullData.initialsShortName+"*"}
                             name="name"
                             onChange={(e) => {
                               handleShortName(e);
@@ -833,7 +837,7 @@ const Partner = () => {
                           </span>
                            </div>
                           <label htmlFor="pic" className="input_field">
-                            Profile Pic
+                            {langFullData.profilePic}
                           </label>
                           <div className="file-input">
                             <div className="d-flex align-items-center">
@@ -854,7 +858,7 @@ const Partner = () => {
                                   onChange={(e) => setFile(e.target.files[0])}
                                 />
                                 <label htmlFor="file" className="file">
-                                  Choose from library
+                                  {langFullData.chooseFromLibrary}
                                 </label>
                               </div>
                             </div>
@@ -868,7 +872,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={vehicleType}
-                          label="Vehicle Type"
+                          label={langFullData.vehicleType}
                           name="vehicleType"
                           onChange={(e) => {
                             handlevehicleType(e);
@@ -878,7 +882,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={vehicleNum}
-                          label="Vehicle Number"
+                          label={langFullData.vehicleNumber}
                           name="name"
                           onChange={(e) => {
                             handlevehicleNum(e);
@@ -891,7 +895,7 @@ const Partner = () => {
                     partyType == "TRANSPORTER" ? (
                       <div>
                         <label htmlFor="pic" className="input_field">
-                          As on Date
+                          {langFullData.asOnDate}
                         </label>
                         <label
                           className="d-flex align-items-baseline date_label"
@@ -925,11 +929,11 @@ const Partner = () => {
                       onClick={() => getPosition()}
                       className="location mt-0"
                     >
-                      Select Current Location
+                      {langFullData.selectCurrentLocation}
                     </div>
                     <div>
                       <label htmlFor="state" className="input_field">
-                        State
+                        {langFullData.state}
                       </label>
                       {isEdit ? (
                         <input
@@ -949,7 +953,7 @@ const Partner = () => {
                     <InputField
                       type="text"
                       value={streetVillage}
-                      label="Street & Village"
+                      label={langFullData.streetVillage}
                       name="name"
                       onChange={(e) => {
                         handleStreetName(e);
@@ -967,7 +971,7 @@ const Partner = () => {
                 // id="close_modal"
                 data-bs-dismiss="modal"
               >
-                Submit
+                {langFullData.submit}
               </button>
             </div>
           </div>
@@ -991,7 +995,7 @@ const Partner = () => {
           />
         </Modal.Header>
         <Modal.Body className="partner_model_body">
-          Are you sure you want to delete partner
+          {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -999,14 +1003,14 @@ const Partner = () => {
             className="secondary_btn"
             onClick={handleClose}
           >
-            No
+            {langFullData.no}
           </Button>
           <Button
             variant="primary"
             className="primary_btn"
             onClick={() => handleDelete(partyIdVal)}
           >
-            Yes
+            {langFullData.yes}
           </Button>
         </Modal.Footer>
       </Modal>

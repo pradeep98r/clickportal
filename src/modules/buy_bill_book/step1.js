@@ -7,6 +7,11 @@ import Step2Modal from "./step2Modal";
 const Step1 = () => {
   const [selectedDate, setStartDate] = useState(new Date());
   //   ($("#modal_checkbox").val());
+
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   useEffect(() => {
     console.log("step1");
   }, []);
@@ -73,7 +78,7 @@ const Step1 = () => {
                   />
                   <span className="custom-control-indicator"></span>
                   <span className="custom-control-description">
-                    Set as a Default Date
+                    {langFullData.setAsADefault}{langFullData.date}
                   </span>
                 </label>
               </div>
@@ -92,7 +97,7 @@ const Step1 = () => {
           <div className="bottom_div main_div">
             <div className="d-flex align-items-center justify-content-end">
               <button className="primary_btn" onClick={addCropModal}>
-                Next
+                {langFullData.next}
               </button>
             </div>
           </div>
