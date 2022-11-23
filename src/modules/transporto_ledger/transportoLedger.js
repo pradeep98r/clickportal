@@ -57,7 +57,7 @@ const TransportoLedger = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
+  //console.log(langFullData);
 
   const [toggleState, setToggleState] = useState("paymentledger");
   const toggleTab = (type) => {
@@ -70,19 +70,14 @@ const TransportoLedger = () => {
   };
   useEffect(() => {
     getTransportersData();
-  }, [clickId]);
-
-  const getTransportersData = () => {
-    getTransporters(clickId)
-      .then((response) => {
-        setData(response.data.data);
-        setTransporter(response.data.data.ledgers);
-        console(response.data.data, "Transporter Details");
-      })
-      .catch((error) => {
-        setError(error);
-      });
-  };
+  }, []);
+  const getTransportersData = () =>{
+    getTransporters(clickId).then((response)=>{
+      console.log(response,"response");
+      setData(response.data.data);
+      setTransporter(response.data.data.ledgers);
+    })
+  }
 
   //get Payment Ledger
   const paymentLedger = (clickId, partyId) => {
@@ -137,8 +132,6 @@ const TransportoLedger = () => {
   }
 
   //Add Record payment
-  const [isValid, setIsValid] = useState(false);
-  const [valid, setValid] = useState(false);
   const [requiredCondition, setRequiredCondition] = useState("");
 
   const onSubmitRecordPayment = (transId) => {
@@ -174,8 +167,6 @@ const TransportoLedger = () => {
       .then((response) => {
         console.log(response.data.data);
         window.location.reload();
-        //setRecordDisplay("Record Updated Successfully");
-        //setRecord(true);
       })
       .catch((error) => {
         console.log(error);
@@ -215,8 +206,7 @@ const TransportoLedger = () => {
       .then((response) => {
         console.log(response.data.data);
         window.location.reload();
-        //setRecordDisplay("Record Updated Successfully");
-        //setRecord(true);
+
       })
       .catch((error) => {
         setError(error);
@@ -857,7 +847,7 @@ const TransportoLedger = () => {
                        ? "content  active-content"
                        : "content"
                    }
-                 >
+                    >
                    {ledgerSummary.length > 0 ? (
                      <table className="table table-bordered ledger-table">
                        <thead className="thead-tag">
@@ -913,7 +903,7 @@ const TransportoLedger = () => {
                        </tbody>
                      </table>
                    ) : (
-                     <img src={no_data} alt="no_data" id="nodata-svg" />
+                     <NoDataAvailable />
                    )}
                  </div>
                </div>
@@ -1020,7 +1010,7 @@ const TransportoLedger = () => {
                        </tbody>
                      </table>
                    ) : (
-                     <img src={no_data} alt="no_data" id="nodata-svg" />
+                    <NoDataAvailable />
                    )}
                  </div>
                </div>

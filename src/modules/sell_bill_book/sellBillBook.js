@@ -9,6 +9,7 @@ import close from "../../assets/images/close.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
+import date_icon from "../../assets/images/date_icon.svg";
 import $ from "jquery";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
@@ -28,14 +29,35 @@ const SellBillBook = () => {
 
   useEffect(() => {
     callbackFunction();
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
   }, []);
+  var [dateValue, setDateValue] = useState(
+    );
 
-  var dateValue = moment(new Date()).format("YYYY-MM-DD");
-
-  const callbackFunction = (startDate, endDate) => {
+  const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
-    dateValue=fromDate
+    dateValue=fromDate;
+    if (dateTab === "Daily") { 
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if (dateTab === "Weekly") {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    } else if (dateTab === "Monthly") {
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if (dateTab === "Yearly") {
+      console.log("yearly", dateTab);
+      setDateValue(moment(fromDate).format("YYYY"));
+    } else {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    }
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         console.log(response, "billsss");
@@ -155,7 +177,10 @@ const SellBillBook = () => {
                     </div>
 
                     <div onClick={onclickDate} className="color_blue">
-                      {dateValue}
+                      <span className="date_icon m-0">
+                          <img src={date_icon} alt="icon" className="mr-2" />
+                        </span>
+                        {dateValue}
                     </div>
                     <div className="d-flex">
                       <div className="d-flex mx-3" role="search">
@@ -270,7 +295,7 @@ const SellBillBook = () => {
                                         <p className="biilid">
                                           {langFullData.billNo} : {bill.billId}{" "}
                                         </p>
-                                        <p>{bill.billDate}</p>
+                                        <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
                                         <p>{bill.billStatus}</p>
                                       </div>
                                     </div>
@@ -363,7 +388,7 @@ const SellBillBook = () => {
                                           <p className="biilid">
                                             {langFullData.billNo} : {bill.billId}{" "}
                                           </p>
-                                          <p>{bill.billDate}</p>
+                                          <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
                                           <p>{bill.billStatus}</p>
                                         </div>
                                       </div>

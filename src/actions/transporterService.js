@@ -1,7 +1,7 @@
 import axios from "axios";
 import axiosCommon from "../axios";
 
-export function getTransporters(clickId, clientId, clientSecret) {
+export function getTransporters(clickId) {
     return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/TRANS`);
 }
 //get Particular Transporter
