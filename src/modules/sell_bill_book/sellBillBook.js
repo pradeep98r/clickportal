@@ -122,7 +122,7 @@ const SellBillBook = () => {
         }
       })
       setSingleBillData(filteredItems);
-      console.log(filteredItems);
+      console.log(singleBillData);
     }else{
       setSingleBillData(sellBillData);
     }
