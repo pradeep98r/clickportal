@@ -876,6 +876,9 @@ word-wrap: normal;
   color: #121212;
   // font-size: 12px;
 }
+.bill_view th,td{
+  font-size: 12px;
+}
 .crop-tbl{
   td{
     font-size: 12px;
@@ -958,8 +961,8 @@ word-wrap: normal;
   padding-left: 68px;
 }
 .out-value{
-  padding-top: 5px;
-  padding-left:55px;
+  color:#000;
+   font-size: 12px;
 }
 .hr-line-in-totals{
   border-bottom: 0.5px solid #4D4D4D;
@@ -971,7 +974,9 @@ word-wrap: normal;
   border-bottom-right-radius: 8px;
 }
 .out-st{
-  padding: 5px 5px;
+  padding-left: 60px;
+   color:#000;
+   font-size: 12px;
 }
 // calenderr popup styles
 .dates_div {

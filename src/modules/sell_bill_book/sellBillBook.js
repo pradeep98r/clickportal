@@ -77,7 +77,7 @@ const SellBillBook = () => {
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus",billViewStatus);
-    navigate(generatePath(`/bill_view/${id}`, { id }));
+    navigate(generatePath(`/sell_bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
   };
