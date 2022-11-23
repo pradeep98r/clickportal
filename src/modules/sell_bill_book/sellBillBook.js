@@ -122,7 +122,7 @@ const SellBillBook = () => {
         }
       })
       setSingleBillData(filteredItems);
-      console.log(filteredItems);
+      console.log(singleBillData);
     }else{
       setSingleBillData(sellBillData);
     }
@@ -196,6 +196,7 @@ const SellBillBook = () => {
                         role="tabpanel"
                         aria-labelledby="home-tab"
                       >
+                          {sellBillData != null ? <div>
                         <div className="row header_row">
                           <div className="col-lg-4">
                             <div className="row">
@@ -438,6 +439,7 @@ const SellBillBook = () => {
                             <NoDataAvailable />
                           </div>
                         </div>
+                        </div> : <NoDataAvailable />}
                       </div>
                     </div>
                   </div>

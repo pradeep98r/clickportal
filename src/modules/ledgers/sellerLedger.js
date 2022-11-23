@@ -639,9 +639,9 @@ const SellerLedger = () => {
                              </article>
                            </div>
                          </div>
-                         <button className="continue-btn" onClick={getDate}>
+                         {/* <button className="continue-btn" onClick={getDate}>
                            CONTINUE
-                         </button>
+                         </button> */}
                        </div>
                      </div>
                    </div>

@@ -11,7 +11,6 @@ const SelectPartner = (props) => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   let [partnerData, setpartnerData] = useState([]);
   const navigate = useNavigate();

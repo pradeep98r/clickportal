@@ -68,7 +68,6 @@ const Step2Modal = (props) => {
   }, []);
 
   var arr = [];
-  var a=[]
   const cropDataFunction = (childData, status) => {
     if (status === true) {
       var list = preferedCropsData;
@@ -78,20 +77,16 @@ const Step2Modal = (props) => {
           var existedItem = list[index];
           existedItem.count += 1;
           list[index] = existedItem;
-          console.log(list[index], "if");
-          // arr.push(list[index])
-          
           setPreferedCropsData([...list, ...arr]);
-          a.push(list[index]);
-          cropResponseData([...cropData, ...a]);
-          console.log(arr,list,a)
+          cropData.push(list[index]);
+          cropResponseData([...cropData]);
+          console.log(cropData)
           Object.assign(
             list[index],
             { cropActive: true },
             { unitType: "crates" }
           );
         } else {
-          console.log(i, "else");
           Object.assign(
             i,
             { count: 1 },
@@ -107,11 +102,11 @@ const Step2Modal = (props) => {
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
-          cropResponseData([...cropData, ...arr]);
-          console.log(arr, "pushed arr");
+          cropData.push(i);
+          cropResponseData([...cropData]);
         }
+      
       });
-      console.log(cropData)
     } else {
       let deSelectedCrop = preferedCropsData.filter(
         (item) => item.cropId !== childData.cropId
