@@ -381,10 +381,15 @@ a:hover{
     font-weight: 600;
     font-size: 15px;
     color: #16A02C;
+    margin: auto;
+    //padding-left: 100px;
 }
 #date_icon_picker{
     cursor: pointer;
     margin: auto;
+}
+.date_icon_in_custom{
+    margin-top: -2px;
 }
 
 .react-datepicker__input-container input{

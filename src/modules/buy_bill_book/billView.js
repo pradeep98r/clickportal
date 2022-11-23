@@ -819,8 +819,8 @@ const BillView = ()=> {
                             <div className="col-lg-6 align-items">
                               <p className="groups_value"> 
                               {(item.settingName !== handleSettingName(item.settingName)
-                              ? ' ':(handleGroupNames(item.settingName)) === null || 0 )?' ':
-                              item.settingName?.replaceAll('_', ' ')}</p>
+                            ? ' ':(handleGroupNames(item.settingName)) === null || 0)?' ':
+                            item.settingName?.replaceAll('_', ' ')}</p>
                             </div>
                             <div className="col-lg-4">
                               <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))

@@ -4,6 +4,8 @@ import { Fragment } from "react";
 import search_img from "../../assets/images/search.svg";
 import "../../modules/ledgers/buyerLedger.scss";
 import close from "../../assets/images/close.svg";
+import DatePicker from "react-datepicker";
+import DatePickerModel from "../smartboard/datePicker";
 import {
   getLedgerSummary,
   getLedgerSummaryByDate,
@@ -61,6 +63,7 @@ const SellerLedger = () => {
   const toggleTab = (type) => {
     setToggleState(type);
   };
+
   const [toggleAC, setToggleAC] = useState("all");
   const toggleAllCustom = (type) => {
     setToggleAC(type);
@@ -74,18 +77,34 @@ const SellerLedger = () => {
   };
 
   let partyId = 0;
-  let fromDate = null;
-  let toDate = null;
   //Fetch ledger by party Type
   useEffect(() => {
     fetchSellerLedger();
+    callbackFunction();
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
   }, [clickId]);
+  var [dateValue, setDateValue] = useState();
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showDatepickerModal, setShowDatepickerModal] = useState(false);
+  const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const onChangeDate = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
+  const onclickDate = () => {
+    setShowDatepickerModal1(true);
+    setShowDatepickerModal(true);
+  };
+
   const fetchSellerLedger = () => {
     getSelleLedgers(clickId)
       .then((response) => {
         setData(response.data.data);
         setLedgeres(response.data.data.ledgers);
-        console(response.data.data, "Buyer Details");
       })
       .catch((error) => {
         setError(error.message);
@@ -134,13 +153,7 @@ const SellerLedger = () => {
         setError(error.message);
       });
   };
-  //Convert standard date to date
-  function convert(str) {
-    var date = new Date(str),
-      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-      day = ("0" + date.getDate()).slice(-2);
-    return [date.getFullYear(), mnth, day].join("-");
-  }
+
   //Add Record payment
   const [requiredCondition, setRequiredCondition] = useState("");
   const onSubmitRecordPayment = () => {
@@ -167,7 +180,7 @@ const SellerLedger = () => {
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("partyId")),
-      date: convert(selectDate),
+      date: selectDate,
       comments: comments,
       paidRcvd: paidRcvd,
       paymentMode: paymentMode,
@@ -186,68 +199,58 @@ const SellerLedger = () => {
     localStorage.removeItem("partyId");
   };
   //Fetch Ledger Summary By Date
-  const fetchLedgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
-    getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
-      .then((response) => {
-        setSummaryByDate(response.data.data.ledgerSummary);
-        //setSummaryDataByDate(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  //Fetch Detailed Ledger By Date
-  const fetchDetailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
-    getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
-      .then((response) => {
-        setSellerDetailed(response.data.data.details);
-      })
-      .catch((error) => {
-        setError(error);
-      });
-  };
-  //Date Range Select
-  $("[name=tab]").each(function (i, d) {
-    var p = $(this).prop("checked");
-    if (p) {
-      $("article").eq(i).addClass("on");
+  const callbackFunction = (startDate, endDate, dateTab) => {
+    var fromDate = moment(startDate).format("YYYY-MM-DD");
+    var toDate = moment(endDate).format("YYYY-MM-DD");
+    dateValue = fromDate;
+    if (dateTab === "Daily") {
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if (dateTab === "Weekly") {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
+      );
+    } else if (dateTab === "Monthly") {
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if (dateTab === "Yearly") {
+      console.log("yearly", dateTab);
+      setDateValue(moment(fromDate).format("YYYY"));
+    } else {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
+      );
     }
-  });
-  $("[name=tab]").on("change", function () {
-    var p = $(this).prop("checked");
-
-    // $(type).index(this) == nth-of-type
-    var i = $("[name=tab]").index(this);
-
-    $("article").removeClass("on");
-    $("article").eq(i).addClass("on");
-  });
-
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const onChangeDate = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
-
+    if (toggleState === "ledgersummary") {
+      getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+        .then((response) => {
+          setSummaryByDate(response.data.data.ledgerSummary);
+          setLoading(false);
+          //setSummaryDataByDate(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+        .then((response) => {
+          setSellerDetailed(response.data.data.details);
+        })
+        .catch((error) => {
+          setError(error);
+        });
+    }
+  }
   const handleWeekPick = (startDate, endDate) => {
     console.log(`${startDate} to ${endDate}`);
   };
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
   };
-  const getDate = () => {
-    fromDate = convert(startDate);
-    toDate = convert(endDate);
-    localStorage.setItem("fromDate", JSON.stringify(fromDate));
-    localStorage.setItem("toDate", JSON.stringify(toDate));
-    fetchLedgerSummaryByDate(clickId, partyId, fromDate, toDate);
-    fetchDetailedLedgerByDate(clickId, partyId, fromDate, toDate);
-    $("#datePopupmodal").modal("hide");
-    setIsOpen(false);
-  };
+
   const [ledgersData, setLedgersData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
   //partyId = JSON.parse(localStorage.getItem("partyId"));
