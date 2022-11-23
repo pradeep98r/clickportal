@@ -144,30 +144,34 @@ const BillView = ()=> {
         value = singleBillData?.advance;
         break;
       case "CUSTOM_FIELD1":
-        value = singleBillData.customFields.map(item => {
+        singleBillData.customFields.map(item => {
           if (item.field === name) {
             value=item.fee;
+            return value;
           }
         });
         break;
       case "CUSTOM_FIELD2":
-        value = singleBillData.customFields.map(item => {
+        singleBillData.customFields.map(item => {
           if (item.field === name) {
             value=item.fee;
+            return value;
           }
         });
         break;
       case "CUSTOM_FIELD3":
-        value = singleBillData.customFields.map(item => {
+       singleBillData.customFields.map(item => {
           if (item.field === name) {
             value= item.fee;
+            return value;
           }
         });
         break;
       case "CUSTOM_FIELD4":
-        value = singleBillData.customFields.map(item => {
+        singleBillData.customFields.map(item => {
           if (item.field === name) {
             value= item.fee;
+            return value;
           }
         });
         break;
@@ -187,6 +191,7 @@ const BillView = ()=> {
     groupone.map(item => {
       groupOneTotal += handleGroupNames(item.settingName);
     })
+    console.log(groupOneTotal)
     return groupOneTotal;
   }
   const groupTwoTotals = () => {
@@ -481,7 +486,7 @@ const BillView = ()=> {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                            <p>{groupOneTotals()!==0?groupOneTotals().toFixed(2):''}</p>
+                            <p>{groupOneTotals().toFixed(2)}</p>
                         </div>
                         <div className="hr-line-in-totals"></div>
                       </div>
@@ -557,7 +562,7 @@ const BillView = ()=> {
                             </div>
                             <div className="col-lg-4">
                               <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                              ===0 ? ' ':handleGroupNames(item.settingName)}</p>
+                              === 0 ? ' ':handleGroupNames(item.settingName)}</p>
                             </div>
                           </div>
                           <div className={(item.settingName !== handleSettingName(item.settingName)
@@ -568,9 +573,12 @@ const BillView = ()=> {
                       })}
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
+                        {groupFourTotals() !== 0 &&( 
                         <div className="col-lg-4">
-                            <p>{groupFourTotals().toFixed(2)}</p>
+                          <p>{groupFourTotals()}</p>
                         </div>
+                        )
+                          }
                         <div className="hr-line-in-totals"></div>
                       </div>
                     </div>

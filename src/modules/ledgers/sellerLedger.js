@@ -48,7 +48,7 @@ const SellerLedger = () => {
   const [paymentMode, setPaymentMode] = useState("CASH");
   const [dateDisplay, setDateDisplay] = useState(false);
 
-  const [ledgerSummaryByDate, setSummaryByDate] = useState([{}]);
+  const [ledgerSummaryByDate, setSummaryByDate] = useState([]);
   //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummary);
 
   const [sellerDetailed, setSellerDetailed] = useState([]);
@@ -56,7 +56,6 @@ const SellerLedger = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
@@ -223,20 +222,25 @@ const SellerLedger = () => {
         moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    if (toggleState === "ledgersummary") {
+    if (toggleState === "ledgersummary" && toggleAC === "custom") {
+      var fromDate = moment(startDate).format("YYYY-MM-DD");
+      var toDate = moment(endDate).format("YYYY-MM-DD");
       getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
         .then((response) => {
+          console.log(response,"res")
           setSummaryByDate(response.data.data.ledgerSummary);
           setLoading(false);
-          //setSummaryDataByDate(response.data.data);
         })
         .catch((error) => {
           console.log(error);
         });
     }
     else {
+      var fromDate = moment(startDate).format("YYYY-MM-DD");
+      var toDate = moment(endDate).format("YYYY-MM-DD");
       getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
         .then((response) => {
+          console.log(response);
           setSellerDetailed(response.data.data.details);
         })
         .catch((error) => {
@@ -244,6 +248,7 @@ const SellerLedger = () => {
         });
     }
   }
+  
   const handleWeekPick = (startDate, endDate) => {
     console.log(`${startDate} to ${endDate}`);
   };
@@ -285,6 +290,7 @@ const SellerLedger = () => {
   };
   return (
     <Fragment>
+      <div>
       <div className="main_div_padding">
        {
          ledger.length > 0 ?  <div className="row">
@@ -490,164 +496,36 @@ const SellerLedger = () => {
                </div>
              </div>
              <div className="blockers-tab">
-               <button
-                 className={
-                   toggleAC === "all" ? "tabers active-tab" : "tabers"
-                 }
-                 onClick={() => toggleAllCustom("all")}
-               >
-                 {langFullData.all}
-               </button>
-               <button
-                 className={
-                   toggleAC === "custom" ? "tabers active-tab" : "tabers"
-                 }
-                 onClick={() => toggleAllCustom("custom")}
-               >
-                 {langFullData.custom}
-               </button>
-               <div id="horizontal-lines-tag"></div>
-               <div
-                 className="dateRangePicker"
-                 style={{ display: dateDisplay ? "block" : "none" }}
-               >
-                 <div className="flex">
-                   <div onClick={DateModal} id="date_range_picker">
-                     <img id="date_icon" src={date_icon} />
-                   </div>
-                 </div>
-                 <div className="modal fade" id="datePopupmodal">
-                   <div className="modal-dialog modal-dialog-centered date_modal_dialog">
-                     <div className="modal-content">
-                       <div className="modal-header date_modal_header">
-                         <h5
-                           className="modal-title header2_text"
-                           id="staticBackdropLabel"
-                         >
-                           {langFullData.selectDates}
-                         </h5>
-                         <img
-                           src={close_btn}
-                           alt="image"
-                           className="close_icon"
-                           data-bs-dismiss="modal"
-                         />
-                       </div>
-                       <div className="modal-body date_modal_mody">
-                         <div className="calender_popup">
-                           <div className="row">
-                             <div className="dates_div">
-                               <div className="flex_class">
-                                 <input
-                                   type="radio"
-                                   id="tab1"
-                                   name="tab"
-                                   defaultChecked
-                                 />
-                                 <label htmlFor="tab1">{langFullData.daily}</label>
-                               </div>
-                               <div className="flex_class">
-                                 <input type="radio" id="tab2" name="tab" />
-                                 <label htmlFor="tab2">{langFullData.monthly}</label>
-                               </div>
-                               <div className="flex_class">
-                                 {" "}
-                                 <input type="radio" id="tab3" name="tab" />
-                                 <label htmlFor="tab3">{langFullData.yearly}</label>
-                               </div>
-                               <div className="flex_class">
-                                 <input type="radio" id="tab4" name="tab" />
-                                 <label htmlFor="tab4">{langFullData.weekly}</label>
-                               </div>
-                               <div className="flex_class">
-                                 <input type="radio" id="tab5" name="tab" />
-                                 <label htmlFor="tab5">{langFullData.custom}</label>
-                               </div>
-                             </div>
-                             <article className="date_picker">
-                               <ReactDatePicker
-                                 dateFormat="yyyy-MM-dd"
-                                 selected={startDate}
-                                 onChange={(date) => setStartDate(date)}
-                                 className="form-control"
-                                 placeholder="Date"
-                                 maxDate={new Date()}
-                                 inline
-                               />
-                             </article>
-                             <article className="month_picker">
-                               <ReactDatePicker
-                                 dateFormat="MM/yyyy"
-                                 showMonthYearPicker
-                                 showFullMonthYearPicker
-                                 selected={startDate}
-                                 onChange={(date) => setStartDate(date)}
-                                 className="form-control"
-                                 placeholder="Date"
-                                 maxDate={new Date()}
-                                 showThreeColumnMonthYearPicker
-                                 inline
-                               />
-                             </article>
-                             <article>
-                               <h2>
-                                 <ReactDatePicker
-                                   selected={startDate}
-                                   onChange={(date) => setStartDate(date)}
-                                   showYearPicker
-                                   dateFormat="yyyy"
-                                   className="form-control"
-                                   maxDate={new Date()}
-                                   inline
-                                   // showThreeColumnYearPicker
-                                   yearItemNumber={9}
-                                 />
-                               </h2>
-                             </article>
-                             <article className="week_picker">
-                               {/* <WeeklyCalendar
-                                             onWeekPick={handleWeekPick}
-                                             max={moment().format("DD-MM-YYYY")}
-                                             /> */}
-                             </article>
-                             <article className="custom_picker">
-                               <div className="flex_class custom_input_div">
-                                 <ReactDatePicker
-                                   selected={startDate}
-                                   onChange={(date) => setStartDate(date)}
-                                   popperClassName="d-none"
-                                   dateFormat="yyyy-MM-dd"
-                                   placeholderText="Select from date"
-                                 />
-                                 <ReactDatePicker
-                                   selected={endDate}
-                                   onChange={(date) => setEndDate(date)}
-                                   popperClassName="d-none"
-                                   dateFormat="yyyy-MM-dd"
-                                   placeholderText="Select to date"
-                                 />
-                               </div>
-                               <ReactDatePicker
-                                 selected={startDate}
-                                 onChange={onChangeDate}
-                                 startDate={startDate}
-                                 endDate={endDate}
-                                 selectsRange
-                                 inline
-                                 maxDate={new Date()}
-                               />
-                             </article>
-                           </div>
-                         </div>
-                         {/* <button className="continue-btn" onClick={getDate}>
-                           CONTINUE
-                         </button> */}
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
+                  <div className="d-flex">
+                    <button
+                      className={
+                        toggleAC === "all" ? "tabers active-tab" : "tabers"
+                      }
+                      onClick={() => toggleAllCustom("all")}
+                    >
+                      All
+                    </button>
+                    <button
+                      className={
+                        toggleAC === "custom" ? "tabers active-tab" : "tabers"
+                      }
+                      onClick={() => toggleAllCustom("custom")}
+                    >
+                      Custom
+                    </button>
+                    <div
+                      className="dateRangePicker"
+                      style={{ display: dateDisplay ? "flex" : "none" }}
+                    >
+                      <div onClick={onclickDate} className="color_blue">
+                        <div className="date_icon m-0">
+                          <img src={date_icon} alt="icon" className="mr-2 date_icon_in_custom" />{dateValue}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="horizontal-lines-tag"></div>
+                </div>
              <div className="card details-tag">
                <div className="card-body" id="card-details">
                  <div className="row">
@@ -928,6 +806,7 @@ const SellerLedger = () => {
                        : "content"
                    }
                  >
+                  {ledgerSummaryByDate.length >0 && ledgerSummaryByDate !==null ? (
                    <table className="table table-bordered ledger-table">
                      {/*ledger-table*/}
                      <thead className="thead-tag">
@@ -942,8 +821,8 @@ const SellerLedger = () => {
                        </tr>
                      </thead>
                      <tbody>
-                       {ledgerSummaryByDate.length > 0 ? (
-                         ledgerSummaryByDate.map((item, index) => {
+                       
+                         {ledgerSummaryByDate.map((item, index) => {
                            return (
                              <tr
                                className="tr-tags"
@@ -963,29 +842,29 @@ const SellerLedger = () => {
                                  <p id="p-common">
                                    {item.paidRcvd
                                      ? item.paidRcvd.toFixed(2)
-                                     : 0}
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.tobePaidRcvd
                                      ? item.tobePaidRcvd.toFixed(2)
-                                     : 0}
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : 0}
+                                   {item.balance ? item.balance.toFixed(2) : ''}
                                  </p>
                                </td>
                              </tr>
                            );
                          })
-                       ) : (
-                         <p style={{ fontSize: "20px" }}>No Data Available!</p>
-                       )}
+                        }
                      </tbody>
                    </table>
+                  ):(<NoDataAvailable />)
+                  }
                  </div>
                </div>
              )}
@@ -999,6 +878,7 @@ const SellerLedger = () => {
                        : "content"
                    }
                  >
+                  {sellerDetailed!==null && sellerDetailed.length>0 ? (
                    <table className="table table-bordered ledger-table">
                      <thead className="thead-tag">
                        <tr>
@@ -1016,8 +896,8 @@ const SellerLedger = () => {
                        </tr>
                      </thead>
                      <tbody>
-                       {sellerDetailed.length > 0 ? (
-                         sellerDetailed.map((item, index) => {
+                       
+                         {sellerDetailed.map((item, index) => {
                            return (
                              <tr className="tr-tags" key={item.partyId}>
                                <td className="col-1" id="p-common-sno">
@@ -1063,12 +943,12 @@ const SellerLedger = () => {
                                </td>
                              </tr>
                            );
-                         })
-                       ) : (
-                         <p style={{ fontSize: "20px" }}>No Data Available!</p>
+                         }
                        )}
                      </tbody>
                    </table>
+                  ):(<NoDataAvailable />)
+                  }
                  </div>
                </div>
              )}
@@ -1331,6 +1211,153 @@ const SellerLedger = () => {
          </div>
        </div> : <NoDataAvailable />
        }
+      </div>
+      {showDatepickerModal1 ? (
+          <DatePickerModel
+            show={showDatepickerModal}
+            close={() => setShowDatepickerModal(false)}
+            parentCallback={callbackFunction}
+          />
+        ) : (
+          <p></p>
+        )}
+        <div className="modal fade" id="datePopupmodal">
+          <div className="modal-dialog modal-dialog-centered date_modal_dialog">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header">
+                <h5 className="modal-title header2_text" id="staticBackdropLabel">
+                  Select Dates
+                </h5>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  data-bs-dismiss="modal"
+                />
+              </div>
+              <div className="modal-body date_modal_mody">
+                <div className="calender_popup">
+                  <div className="row">
+                    <div className="dates_div">
+                      <div className="flex_class">
+                        <input type="radio" id="tab1" name="tab" defaultChecked />
+                        <label htmlFor="tab1">Daily</label>
+                      </div>
+                      <div className="flex_class">
+                        <input type="radio" id="tab2" name="tab" />
+                        <label htmlFor="tab2">Monthly</label>
+                      </div>
+                      <div className="flex_class">
+                        {" "}
+                        <input type="radio" id="tab3" name="tab" />
+                        <label htmlFor="tab3">Yearly</label>
+                      </div>
+                      <div className="flex_class">
+                        <input type="radio" id="tab4" name="tab" />
+                        <label htmlFor="tab4">Weekly</label>
+                      </div>
+                      <div className="flex_class">
+                        <input type="radio" id="tab5" name="tab" />
+                        <label htmlFor="tab5">Custom</label>
+                      </div>
+                    </div>
+                    <article className="date_picker">
+                      <DatePicker
+                        dateFormat="yyyy-MM-dd"
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        className="form-control"
+                        placeholder="Date"
+                        maxDate={new Date()}
+                        inline
+                      />
+                    </article>
+                    <article className="month_picker">
+                      <DatePicker
+                        dateFormat="MM/yyyy"
+                        showMonthYearPicker
+                        showFullMonthYearPicker
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        className="form-control"
+                        placeholder="Date"
+                        maxDate={new Date()}
+                        showThreeColumnMonthYearPicker
+                        inline
+                      />
+                    </article>
+                    <article>
+                      <h2>
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          showYearPicker
+                          dateFormat="yyyy"
+                          className="form-control"
+                          maxDate={new Date()}
+                          inline
+                          // showThreeColumnYearPicker
+                          yearItemNumber={9}
+                        />
+                      </h2>
+                    </article>
+                    <article className="week_picker">
+                      {/* <WeeklyCalendar
+                        onWeekPick={handleWeekPick}
+                        max={moment().format("DD-MM-YYYY")}
+                      /> */}
+                    </article>
+                    <article className="custom_picker">
+                      <div className="flex_class custom_input_div">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          popperClassName="d-none"
+                          dateFormat="yyyy-MM-dd"
+                          placeholderText="Select from date"
+                        />
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          popperClassName="d-none"
+                          dateFormat="yyyy-MM-dd"
+                          placeholderText="Select to date"
+                        />
+                      </div>
+
+                      <DatePicker
+                        selected={startDate}
+                        onChange={onChangeDate}
+                        startDate={startDate}
+                        endDate={endDate}
+                        selectsRange
+                        inline
+                        maxDate={new Date()}
+                      />
+                    </article>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="modal-footer">
+                <button
+                  type="button"
+                  className="secondary_btn"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="primary_btn"
+                  // onClick={() => postPreference()}
+                  data-bs-dismiss="modal"
+                >
+                  Next
+                </button>
+              </div> */}
+            </div>
+          </div>
+        </div>
       </div>
     </Fragment>
   );

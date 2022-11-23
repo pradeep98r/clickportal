@@ -41,7 +41,6 @@ const SmartBoard = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   const [weekFirstDate, setWeekFirstDate] = useState(
     moment(new Date()).format("YYYY-MMM-DD")
@@ -283,7 +282,7 @@ const SmartBoard = () => {
       <div className="main_div_padding">
         <div className="container-fluid px-0">
           {loginData.businessCreated === false &&
-          businessCreatedStatus == "" ? (
+            businessCreatedStatus == "" ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
@@ -363,7 +362,7 @@ const SmartBoard = () => {
                         })()}
                       </div>
                     </div>
-                    {tabType == langFullData.daily ? (
+                    {tabType == "Daily" ? (
                       <span className="" onClick={onNextDate}>
                         <img src={next_icon} alt="icon" className="ml-2" />
                       </span>
@@ -379,6 +378,7 @@ const SmartBoard = () => {
                     <div>
                       {smartboardData != null ? (
                         // {tabType}
+                        
                         <div className="row smartboard_row" id="scroll_style">
                           {/* left side */}
                           <div className="col-sm-9 smartboard_div smartboard_div1 p-0">
@@ -395,7 +395,7 @@ const SmartBoard = () => {
                                           {langFullData.pendingReceivables}{" "}
                                         </h5>
                                         {outStandingBal.pendingRecievables ==
-                                        0 ? (
+                                          0 ? (
                                           <p className="nodata">
                                             {langFullData.noDataAvailable}
                                           </p>
@@ -413,7 +413,7 @@ const SmartBoard = () => {
                                         )}
                                         <p>
                                           {outStandingBal.pendingRecievables ==
-                                          0 ? (
+                                            0 ? (
                                             ""
                                           ) : (
                                             <a
@@ -477,7 +477,7 @@ const SmartBoard = () => {
 
                                         <p className="color_blue">
                                           {outStandingBal.pendingPaybles ==
-                                          0 ? (
+                                            0 ? (
                                             ""
                                           ) : (
                                             <a href="/sellerledger">
@@ -528,13 +528,13 @@ const SmartBoard = () => {
                                           {salesReprtData.totalBusiness == 0
                                             ? ""
                                             : salesReprtData.totalBusiness.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                  maximumFractionDigits: 2,
-                                                  style: "currency",
-                                                  currency: "INR",
-                                                }
-                                              )}
+                                              "en-IN",
+                                              {
+                                                maximumFractionDigits: 2,
+                                                style: "currency",
+                                                currency: "INR",
+                                              }
+                                            )}
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -543,23 +543,20 @@ const SmartBoard = () => {
                                           {salesReprtData.totalUnits == 0
                                             ? ""
                                             : salesReprtData.totalUnits.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                  maximumFractionDigits: 2,
-                                                  currency: "INR",
-                                                }
-                                              ) +
-                                              (salesReprtData.totalWeight
-                                                ? " | " +
-                                                  salesReprtData.totalWeight.toLocaleString(
-                                                    "en-IN",
-                                                    {
-                                                      maximumFractionDigits: 2,
-                                                      currency: "INR",
-                                                    }
-                                                  ) +
-                                                  " KGS"
-                                                : "")}
+                                              undefined, {
+                                                minimumFractionDigits: 1,
+                                              maximumFractionDigits: 2
+                                            })
+                                            +
+                                            (salesReprtData.totalWeight
+                                              ? " | " +
+                                              salesReprtData.totalWeight.toLocaleString(
+                                                undefined, {
+                                                  minimumFractionDigits: 1,
+                                                maximumFractionDigits: 2
+                                              }) +
+                                              langFullData.kgs
+                                              : "")}
                                         </h6>
                                       </div>
                                     </div>
@@ -586,13 +583,13 @@ const SmartBoard = () => {
                                           {purchaseReprtData.totalBusiness == 0
                                             ? ""
                                             : purchaseReprtData.totalBusiness.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                  maximumFractionDigits: 2,
-                                                  style: "currency",
-                                                  currency: "INR",
-                                                }
-                                              )}
+                                              "en-IN",
+                                              {
+                                                maximumFractionDigits: 2,
+                                                style: "currency",
+                                                currency: "INR",
+                                              }
+                                            )}
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
@@ -601,23 +598,20 @@ const SmartBoard = () => {
                                           {purchaseReprtData.totalUnits == 0
                                             ? ""
                                             : purchaseReprtData.totalUnits.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                  maximumFractionDigits: 2,
-                                                  currency: "INR",
-                                                }
-                                              ) +
-                                              (purchaseReprtData.totalWeight
-                                                ? " | " +
-                                                  purchaseReprtData.totalWeight.toLocaleString(
-                                                    "en-IN",
-                                                    {
-                                                      maximumFractionDigits: 2,
-                                                      currency: "INR",
-                                                    }
-                                                  ) +
-                                                  " KGS"
-                                                : "")}
+                                              undefined, {
+                                                minimumFractionDigits: 1,
+                                              maximumFractionDigits: 2
+                                            }) +
+                                            (purchaseReprtData.totalWeight
+                                              ? " | " +
+                                              purchaseReprtData.totalWeight.toLocaleString(
+                                                undefined, {
+                                                  minimumFractionDigits: 1,
+                                                maximumFractionDigits: 2
+                                              })
+                                              +
+                                              langFullData.kgs
+                                              : "")}
                                         </h6>
                                       </div>
                                     </div>
@@ -626,7 +620,7 @@ const SmartBoard = () => {
                                     ) : (
                                       <div className="row top_border">
                                         <p className="color_blue text-center">
-                                         {langFullData.seeAll}
+                                          {langFullData.seeAll}
                                         </p>
                                       </div>
                                     )}
@@ -696,23 +690,19 @@ const SmartBoard = () => {
                                                   {cropItem.totalQty == 0
                                                     ? ""
                                                     : cropItem.totalQty.toLocaleString(
-                                                        "en-IN",
-                                                        {
-                                                          maximumFractionDigits: 2,
-                                                          currency: "INR",
-                                                        }
-                                                      ) +
-                                                      (cropItem.totalWeight
-                                                        ? " | " +
-                                                          cropItem.totalWeight.toLocaleString(
-                                                            "en-IN",
-                                                            {
-                                                              maximumFractionDigits: 2,
-                                                              currency: "INR",
-                                                            }
-                                                          ) +
-                                                          " KGS"
-                                                        : "")}
+                                                      undefined, {
+                                                        minimumFractionDigits: 1,
+                                                      maximumFractionDigits: 2
+                                                    }) +
+                                                    (cropItem.totalWeight
+                                                      ? " | " +
+                                                      cropItem.totalWeight.toLocaleString(
+                                                        undefined, {
+                                                          minimumFractionDigits: 1,
+                                                        maximumFractionDigits: 2
+                                                      }) +
+                                                      langFullData.kgs
+                                                      : "")}
                                                 </h6>
                                               </div>
                                             </div>
@@ -791,23 +781,23 @@ const SmartBoard = () => {
                                                   {buycropItem.totalQty == 0
                                                     ? ""
                                                     : buycropItem.totalQty.toLocaleString(
+                                                      "en-IN",
+                                                      {
+                                                        maximumFractionDigits: 2,
+                                                        currency: "INR",
+                                                      }
+                                                    ) +
+                                                    (buycropItem.totalWeight
+                                                      ? " | " +
+                                                      buycropItem.totalWeight.toLocaleString(
                                                         "en-IN",
                                                         {
                                                           maximumFractionDigits: 2,
                                                           currency: "INR",
                                                         }
                                                       ) +
-                                                      (buycropItem.totalWeight
-                                                        ? " | " +
-                                                          buycropItem.totalWeight.toLocaleString(
-                                                            "en-IN",
-                                                            {
-                                                              maximumFractionDigits: 2,
-                                                              currency: "INR",
-                                                            }
-                                                          ) +
-                                                          " KGS"
-                                                        : "")}
+                                                      " KGS"
+                                                      : "")}
                                                 </h6>
                                               </div>
                                             </div>
@@ -858,60 +848,55 @@ const SmartBoard = () => {
                                                   </h3>
                                                 </div>
                                               </div>
-                                                <div>
-                                                  <div className="row mt-3">
-                                                    <div className="col-lg-6 col_left_border">
-                                                      <h5 className="">
-                                                        {" "}
-                                                        {langFullData.totalPurchases}{" "}
-                                                      </h5>
-                                                      <h6 className="">
-                                                        {buyerItem.totalBusiness.toLocaleString(
-                                                          "en-IN",
-                                                          {
-                                                            maximumFractionDigits: 2,
-                                                            style: "currency",
-                                                            currency: "INR",
-                                                          }
-                                                        )}
-                                                      </h6>
-                                                    </div>
-                                                    <div className="col-lg-6 col2">
-                                                      <h5 className="">
-                                                        {langFullData.totalQuantity}{" "}
-                                                      </h5>
-                                                      <h6 className="">
-                                                        {buyerItem.totalQty ==
-                                                        0
-                                                          ? ""
-                                                          : buyerItem.totalQty.toLocaleString(
-                                                              "en-IN",
-                                                              {
-                                                                maximumFractionDigits: 2,
-                                                                currency: "INR",
-                                                              }
-                                                            ) +
-                                                            (buyerItem.totalWeight
-                                                              ? " | " +
-                                                              buyerItem.totalWeight.toLocaleString(
-                                                                  "en-IN",
-                                                                  {
-                                                                    maximumFractionDigits: 2,
-                                                                    currency:
-                                                                      "INR",
-                                                                  }
-                                                                ) +
-                                                                " KGS"
-                                                              : "")}
-                                                      </h6>
-                                                    </div>
+                                              <div>
+                                                <div className="row mt-3">
+                                                  <div className="col-lg-6 col_left_border">
+                                                    <h5 className="">
+                                                      {" "}
+                                                      {langFullData.totalSales}{" "}
+                                                    </h5>
+                                                    <h6 className="">
+                                                      {buyerItem.totalBusiness.toLocaleString(
+                                                        "en-IN",
+                                                        {
+                                                          maximumFractionDigits: 2,
+                                                          style: "currency",
+                                                          currency: "INR",
+                                                        }
+                                                      )}
+                                                    </h6>
                                                   </div>
-                                                  <div className="row top_border">
-                                                    <p className="color_blue text-center">
-                                                      {langFullData.seeAll}
-                                                    </p>
+                                                  <div className="col-lg-6 col2">
+                                                    <h5 className="">
+                                                      {langFullData.totalQuantity}{" "}
+                                                    </h5>
+                                                    <h6 className="">
+                                                      {buyerItem.totalQty ==
+                                                        0
+                                                        ? ""
+                                                        : buyerItem.totalQty.toLocaleString(
+                                                          undefined, {
+                                                            minimumFractionDigits: 1,
+                                                          maximumFractionDigits: 2
+                                                        }) +
+                                                        (buyerItem.totalWeight
+                                                          ? " | " +
+                                                          buyerItem.totalWeight.toLocaleString(
+                                                            undefined, {
+                                                              minimumFractionDigits: 1,
+                                                            maximumFractionDigits: 2
+                                                          }) +
+                                                          langFullData.kgs
+                                                          : "")}
+                                                    </h6>
                                                   </div>
                                                 </div>
+                                                <div className="row top_border">
+                                                  <p className="color_blue text-center">
+                                                    {langFullData.seeAll}
+                                                  </p>
+                                                </div>
+                                              </div>
                                             </div>
                                           );
                                         })}
@@ -924,7 +909,7 @@ const SmartBoard = () => {
                                 <div className="col-md-6 col_right">
                                   <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
-                                      {langFullData.totalQuantity}{" "}
+                                      {langFullData.purchaseBySeller}{" "}
                                     </h5>
                                     {farmerData.length != 0 ? (
                                       <OwlCarousel
@@ -956,57 +941,52 @@ const SmartBoard = () => {
                                                 </div>
                                               </div>
                                               <div className="row mt-3">
-                                                    <div className="col-lg-6 col_left_border">
-                                                      <h5 className="">
-                                                        {" "}
-                                                        {langFullData.totalQuantity}{" "}
-                                                      </h5>
-                                                      <h6 className="">
-                                                        {farmerItem.totalBusiness.toLocaleString(
-                                                          "en-IN",
-                                                          {
-                                                            maximumFractionDigits: 2,
-                                                            style: "currency",
-                                                            currency: "INR",
-                                                          }
-                                                        )}
-                                                      </h6>
-                                                    </div>
-                                                    <div className="col-lg-6 col2">
-                                                      <h5 className="">
-                                                        {langFullData.totalQuantity}{" "}
-                                                      </h5>
-                                                      <h6 className="">
-                                                        {farmerItem.totalQty ==
-                                                        0
-                                                          ? ""
-                                                          : farmerItem.totalQty.toLocaleString(
-                                                              "en-IN",
-                                                              {
-                                                                maximumFractionDigits: 2,
-                                                                currency: "INR",
-                                                              }
-                                                            ) +
-                                                            (farmerItem.totalWeight
-                                                              ? " | " +
-                                                              farmerItem.totalWeight.toLocaleString(
-                                                                  "en-IN",
-                                                                  {
-                                                                    maximumFractionDigits: 2,
-                                                                    currency:
-                                                                      "INR",
-                                                                  }
-                                                                ) +
-                                                                " KGS"
-                                                              : "")}
-                                                      </h6>
-                                                    </div>
-                                                  </div>
-                                                  <div className="row top_border">
-                                                    <p className="color_blue text-center">
-                                                      {langFullData.seeAll}
-                                                    </p>
-                                                  </div>
+                                                <div className="col-lg-6 col_left_border">
+                                                  <h5 className="">
+                                                    {" "}
+                                                    {langFullData.totalPurchases}{" "}
+                                                  </h5>
+                                                  <h6 className="">
+                                                    {farmerItem.totalBusiness.toLocaleString(
+                                                      "en-IN",
+                                                      {
+                                                        maximumFractionDigits: 2,
+                                                        style: "currency",
+                                                        currency: "INR",
+                                                      }
+                                                    )}
+                                                  </h6>
+                                                </div>
+                                                <div className="col-lg-6 col2">
+                                                  <h5 className="">
+                                                    {langFullData.totalQuantity}{" "}
+                                                  </h5>
+                                                  <h6 className="">
+                                                    {farmerItem.totalQty ==
+                                                      0
+                                                      ? ""
+                                                      : farmerItem.totalQty.toLocaleString(
+                                                        undefined, {
+                                                          minimumFractionDigits: 1,
+                                                        maximumFractionDigits: 2
+                                                      }) +
+                                                      (farmerItem.totalWeight
+                                                        ? " | " +
+                                                        farmerItem.totalWeight.toLocaleString(
+                                                          undefined, {
+                                                            minimumFractionDigits: 1,
+                                                          maximumFractionDigits: 2
+                                                        }) +
+                                                        langFullData.kgs
+                                                        : "")}
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                              <div className="row top_border">
+                                                <p className="color_blue text-center">
+                                                  {langFullData.seeAll}
+                                                </p>
+                                              </div>
                                             </div>
                                           );
                                         })}
@@ -1061,7 +1041,8 @@ const SmartBoard = () => {
                                                 />
                                                 <div>
                                                   <h4>{item.farmerName}</h4>
-                                                  <h4>{langFullData.billNo} {item.billId}</h4>
+                                                  <h4>{langFullData.billNo}:
+                                                    <span style={{ color: '#0066FF' }}>{item.billId}</span></h4>
                                                 </div>
                                               </div>
                                             </td>
@@ -1119,7 +1100,8 @@ const SmartBoard = () => {
                                                 />
                                                 <div>
                                                   <h4>{item.buyerName}</h4>
-                                                  <h4>{langFullData.billNo} {item.billId}</h4>
+                                                  <h4>{langFullData.billNo}:
+                                                    <span style={{ color: '#0066FF' }}>{item.billId}</span></h4>
                                                 </div>
                                               </div>
                                             </td>
@@ -1159,8 +1141,7 @@ const SmartBoard = () => {
                                             {
                                               maximumFractionDigits: 2,
                                               style: "currency",
-                                              currency:
-                                                "INR",
+                                              currency: "INR",
                                             }
                                           )}
                                       </h6>
@@ -1175,8 +1156,7 @@ const SmartBoard = () => {
                                             {
                                               maximumFractionDigits: 2,
                                               style: "currency",
-                                              currency:
-                                                "INR",
+                                              currency: "INR",
                                             }
                                           )}
                                       </h6>
@@ -1234,12 +1214,12 @@ const SmartBoard = () => {
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
                 Select{" "}
                 {tabType == "Daily"
-                  ? "Date"
+                  ? langFullData.date
                   : tabType == "Weekly"
-                  ? "Week"
-                  : tabType == "Monthly"
-                  ? "Month"
-                  : tabType == "Year"}
+                    ? "Week"
+                    : tabType == "Monthly"
+                      ? "Month"
+                      : tabType == "Year"}
               </h5>
               <img
                 src={close}
@@ -1251,7 +1231,7 @@ const SmartBoard = () => {
             <div className="modal-body date_modal_mody smartboard_modal_mody">
               <div className="calender_popup ">
                 {(() => {
-                  if (tabType == "Dialy") {
+                  if (tabType == "Daily") {
                     return (
                       <div className="daily">
                         <DatePicker
@@ -1316,8 +1296,8 @@ const SmartBoard = () => {
                     tabType == "Daily"
                       ? selectedDate
                       : tabType == "Yearly"
-                      ? selectedYearDate
-                      : selectedMonthDate
+                        ? selectedYearDate
+                        : selectedMonthDate
                   )
                 }
               >

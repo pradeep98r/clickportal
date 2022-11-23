@@ -44,8 +44,7 @@ function BuyBillBook() {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    if (dateTab === "Daily") {
-      
+    if (dateTab === "Daily") { 
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
       setDateValue(
@@ -278,7 +277,7 @@ console.log(singleBillData)
                                 </div>
                               </div>
                               <div className="buy_bills" id="scroll_style">
-                                {(billItem.length > 1 && singleBillData.length > 0)
+                                {(billItem.length > 1)
                                 ? singleBillData
                                   .map((bill, index) => (
                                     <div
@@ -318,7 +317,7 @@ console.log(singleBillData)
                                               <p className="biilid">
                                                 {langFullData.billNo} : {bill.billId}{" "}
                                               </p>
-                                              <p>{bill.billDate}</p>
+                                              <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
                                               <p>{bill.billStatus}</p>
                                             </div>
                                           </div>
@@ -421,7 +420,7 @@ console.log(singleBillData)
                                               <p className="biilid">
                                               {langFullData.billNo}: {bill.billId}{" "}
                                               </p>
-                                              <p>{bill.billDate}</p>
+                                              <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
                                               <p>{bill.billStatus}</p>
                                             </div>
                                           </div>
