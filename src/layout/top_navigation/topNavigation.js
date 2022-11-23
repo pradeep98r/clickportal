@@ -115,7 +115,7 @@ function TopNavigation() {
             {linkPath == "/partner" && langFullData.partners}
             {linkValue == 8 && langFullData.myProfile}
             {linkValue == 9 && "Reports"}
-            {linkValue == 10 && "Transporto"}{" "}
+            {linkValue == 10 && langFullData.transporto}
           </h2>
           {linkValue == 11 && "Advances"}
         </div>

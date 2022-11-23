@@ -102,7 +102,7 @@ class SideNavigation extends Component {
       // },
       {
         id: 10,
-        name: "Transporto",
+        name: langFullData.transporto,
         to: "/transportoledger",
         className: "side_nav_item",
         img: transporto,
