@@ -25,7 +25,6 @@ const SellBillBook = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   useEffect(() => {
     callbackFunction();
@@ -122,7 +121,7 @@ const SellBillBook = () => {
         }
       })
       setSingleBillData(filteredItems);
-      console.log(filteredItems);
+      console.log(filteredItems,"filteredItems");
     }else{
       setSingleBillData(sellBillData);
     }
