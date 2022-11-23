@@ -211,7 +211,7 @@ const Step3Modal = (props) => {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
       qty: cropArray[i].unitValue,
-      qtyUnit: cropArray[i].units,
+      qtyUnit: cropArray[i].unitType,
       rate: cropArray[i].rateValue,
       total: cropArray[i].totalValue,
       wastage: cropArray[i].wastageValue,
