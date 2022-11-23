@@ -387,7 +387,7 @@ const SmartBoard = () => {
                                 {langFullData.outstandingBalances}
                               </h4>
                               <div className="row">
-                                <div className="col-lg-6 p-0">
+                                <div className="col-md-6 p-0">
                                   <div className="card pending_rec_card green_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
@@ -453,7 +453,7 @@ const SmartBoard = () => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-lg-6">
+                                <div className="col-md-6 pr-0">
                                   <div className="card pending_rec_card pending_pay_card warning_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
@@ -516,7 +516,7 @@ const SmartBoard = () => {
                             </div>
                             <div className="reports_cards margin_bottom">
                               <div className="row margin_bottom">
-                                <div className="col-lg-6 col_left">
+                                <div className="col-md-6 col_left pr-0">
                                   <h4 className="smartboard_main_header">
                                     {langFullData.salesReportText}
                                   </h4>
@@ -571,7 +571,7 @@ const SmartBoard = () => {
                                     )}
                                   </div>
                                 </div>
-                                <div className="col-lg-6 col_right">
+                                <div className="col-md-6 col_right">
                                   <h4 className="smartboard_main_header">
                                     {langFullData.purchaseReports}
                                   </h4>
@@ -628,7 +628,7 @@ const SmartBoard = () => {
                                 </div>
                               </div>
                               <div className="row margin_bottom">
-                                <div className="col-sm-6 col_left">
+                                <div className="col-md-6 col_left pr-0">
                                   <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
                                       {langFullData.salesByCrop}
@@ -719,7 +719,7 @@ const SmartBoard = () => {
                                     )}
                                   </div>
                                 </div>
-                                <div className="col-sm-6 col_right">
+                                <div className="col-md-6 col_right">
                                   <div className="card default_card empty_card1">
                                     <h5 className="text-center mb-2">
                                       {langFullData.purchaseByCrop}
@@ -816,7 +816,7 @@ const SmartBoard = () => {
                                 </div>
                               </div>
                               <div className="row margin_bottom">
-                                <div className="col-lg-6 col_left">
+                                <div className="col-md-6 col_left pr-0">
                                   <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
                                       {langFullData.salesByBuyer}{" "}
@@ -906,7 +906,7 @@ const SmartBoard = () => {
                                     )}
                                   </div>
                                 </div>
-                                <div className="col-lg-6 col_right">
+                                <div className="col-md-6 col_right">
                                   <div className="card default_card empty_card2">
                                     <h5 className="text-center mb-2">
                                       {langFullData.purchaseBySeller}{" "}

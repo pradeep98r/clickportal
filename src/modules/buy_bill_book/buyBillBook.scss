@@ -14,6 +14,9 @@
     margin-right: 0px!important;
   }
 }
+.step3_bottom{
+  position: initial;
+}
 .bills_rows:hover{
   cursor: pointer;
 }
@@ -458,7 +461,7 @@ input:focus-visible {
 .comm_total_card {
   padding: 15px;
   overflow-y: auto;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 250px);
 }
 .total_bal{
   height: auto;
