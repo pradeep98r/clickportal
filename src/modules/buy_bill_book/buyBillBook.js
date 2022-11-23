@@ -23,7 +23,6 @@ function BuyBillBook() {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   useEffect(() => {
     callbackFunction();
@@ -127,7 +126,7 @@ function BuyBillBook() {
   };
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
-
+console.log(singleBillData)
   const searchInput = (searchValue) => {
     setSelectBill(searchValue);
     if(billItem !== ""){
@@ -242,7 +241,8 @@ function BuyBillBook() {
                               role="tabpanel"
                               aria-labelledby="home-tab"
                               >
-                              <div className="row header_row">
+                                {buyBillData != null ? <div>
+                                <div className="row header_row">
                                 <div className="col-lg-4">
                                   <div className="row">
                                     <div className="col-lg-7 col-sm-12 p-0">
@@ -278,7 +278,7 @@ function BuyBillBook() {
                                 </div>
                               </div>
                               <div className="buy_bills" id="scroll_style">
-                                {billItem.length > 1 && singleBillData!==null
+                                {(billItem.length > 1 && singleBillData.length > 0)
                                 ? singleBillData
                                   .map((bill, index) => (
                                     <div
@@ -496,6 +496,9 @@ function BuyBillBook() {
                                   <NoDataAvailable />
                                 </div>
                               </div>
+                                </div> : <NoDataAvailable />}
+                                
+                             
                             </div>
                       </div>
                     </div>

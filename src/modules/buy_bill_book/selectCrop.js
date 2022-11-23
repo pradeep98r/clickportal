@@ -43,7 +43,6 @@ const SelectCrop = (props) => {
   };
 
   const addCropClickNext=(event)=>{
-    console.log(selected,"to Mereged");
     if(stat===true){
       props.cropCallback(selected,true);
       while(selected.length>0){

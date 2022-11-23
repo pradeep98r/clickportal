@@ -84,7 +84,8 @@ const SellbillStep2Modal = (props) => {
           list[index] = existedItem;
           console.log(list[index], "if");
           setPreferedCropsData([...list, ...arr]);
-          cropResponseData([...cropData, ...arr]);
+          cropData.push(list[index]);
+          cropResponseData([...cropData]);
           Object.assign(list[index], { cropActive: true }, { unitType: "crates" });
         } else {
           console.log(i, "else");
@@ -103,8 +104,8 @@ const SellbillStep2Modal = (props) => {
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
-          cropResponseData([...cropData, ...arr]);
-          console.log(arr, "pushed arr");
+          cropData.push(i);
+          cropResponseData([...cropData]);
         }
       });
     } else {
@@ -198,38 +199,17 @@ const SellbillStep2Modal = (props) => {
       console.log(cropData[index].unitValue)
       if(cropData[index].unitValue == 0){
         toast.error('Please enter Quantity', {
-          toastId: "error1" ,
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+          toastId: "error1" 
         });
       }
       else if(cropData[index].weightValue == 0){
         toast.error('Please enter weight', {
-          toastId: "error2" ,
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+          toastId: "error2" 
         });
       }
       else if(cropData[index].rateValue == 0){
         toast.error('Please enter rate', {
-          toastId: "error3" ,
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+          toastId: "error3" 
         });
       }
       else if(cropData[index].unitValue != 0 && cropData[index].weightValue != 0 &&cropData[index].rateValue != 0){
