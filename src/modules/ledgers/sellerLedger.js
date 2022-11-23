@@ -4,6 +4,8 @@ import { Fragment } from "react";
 import search_img from "../../assets/images/search.svg";
 import "../../modules/ledgers/buyerLedger.scss";
 import close from "../../assets/images/close.svg";
+import DatePicker from "react-datepicker";
+import DatePickerModel from "../smartboard/datePicker";
 import {
   getLedgerSummary,
   getLedgerSummaryByDate,
@@ -52,11 +54,16 @@ const SellerLedger = () => {
   const [sellerDetailed, setSellerDetailed] = useState([]);
   const [isActive, setIsActive] = useState(-1);
 
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
   const toggleTab = (type) => {
     setToggleState(type);
   };
+
   const [toggleAC, setToggleAC] = useState("all");
   const toggleAllCustom = (type) => {
     setToggleAC(type);
@@ -70,18 +77,34 @@ const SellerLedger = () => {
   };
 
   let partyId = 0;
-  let fromDate = null;
-  let toDate = null;
   //Fetch ledger by party Type
   useEffect(() => {
     fetchSellerLedger();
+    callbackFunction();
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
   }, [clickId]);
+  var [dateValue, setDateValue] = useState();
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showDatepickerModal, setShowDatepickerModal] = useState(false);
+  const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const onChangeDate = (dates) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
+  const onclickDate = () => {
+    setShowDatepickerModal1(true);
+    setShowDatepickerModal(true);
+  };
+
   const fetchSellerLedger = () => {
     getSelleLedgers(clickId)
       .then((response) => {
         setData(response.data.data);
         setLedgeres(response.data.data.ledgers);
-        console(response.data.data, "Buyer Details");
       })
       .catch((error) => {
         setError(error.message);
@@ -130,20 +153,14 @@ const SellerLedger = () => {
         setError(error.message);
       });
   };
-  //Convert standard date to date
-  function convert(str) {
-    var date = new Date(str),
-      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-      day = ("0" + date.getDate()).slice(-2);
-    return [date.getFullYear(), mnth, day].join("-");
-  }
+
   //Add Record payment
   const [requiredCondition, setRequiredCondition] = useState("");
   const onSubmitRecordPayment = () => {
     if (paidRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidRcvd) === 0) {
-      setRequiredCondition("Amount Received cannot be empty");
+      setRequiredCondition(langFullData.amountReceivedCannotBeEmpty);
     } else if (isNaN(paidRcvd)) {
       setRequiredCondition("Invalid Amount");
     } else if (
@@ -155,7 +172,7 @@ const SellerLedger = () => {
       addRecordPayment();
     } else if (paidRcvd > data.totalOutStgAmt) {
       setRequiredCondition(
-        "Entered Amount  cannot more than Outstanding Balance"
+        langFullData.enteredAmountCannotMoreThanOutstandingBalance
       );
     }
   };
@@ -163,7 +180,7 @@ const SellerLedger = () => {
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("partyId")),
-      date: convert(selectDate),
+      date: selectDate,
       comments: comments,
       paidRcvd: paidRcvd,
       paymentMode: paymentMode,
@@ -182,68 +199,58 @@ const SellerLedger = () => {
     localStorage.removeItem("partyId");
   };
   //Fetch Ledger Summary By Date
-  const fetchLedgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
-    getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
-      .then((response) => {
-        setSummaryByDate(response.data.data.ledgerSummary);
-        //setSummaryDataByDate(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  //Fetch Detailed Ledger By Date
-  const fetchDetailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
-    getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
-      .then((response) => {
-        setSellerDetailed(response.data.data.details);
-      })
-      .catch((error) => {
-        setError(error);
-      });
-  };
-  //Date Range Select
-  $("[name=tab]").each(function (i, d) {
-    var p = $(this).prop("checked");
-    if (p) {
-      $("article").eq(i).addClass("on");
+  const callbackFunction = (startDate, endDate, dateTab) => {
+    var fromDate = moment(startDate).format("YYYY-MM-DD");
+    var toDate = moment(endDate).format("YYYY-MM-DD");
+    dateValue = fromDate;
+    if (dateTab === "Daily") {
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if (dateTab === "Weekly") {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
+      );
+    } else if (dateTab === "Monthly") {
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if (dateTab === "Yearly") {
+      console.log("yearly", dateTab);
+      setDateValue(moment(fromDate).format("YYYY"));
+    } else {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
+      );
     }
-  });
-  $("[name=tab]").on("change", function () {
-    var p = $(this).prop("checked");
-
-    // $(type).index(this) == nth-of-type
-    var i = $("[name=tab]").index(this);
-
-    $("article").removeClass("on");
-    $("article").eq(i).addClass("on");
-  });
-
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const onChangeDate = (dates) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
-
+    if (toggleState === "ledgersummary") {
+      getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+        .then((response) => {
+          setSummaryByDate(response.data.data.ledgerSummary);
+          setLoading(false);
+          //setSummaryDataByDate(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    else {
+      getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+        .then((response) => {
+          setSellerDetailed(response.data.data.details);
+        })
+        .catch((error) => {
+          setError(error);
+        });
+    }
+  }
   const handleWeekPick = (startDate, endDate) => {
     console.log(`${startDate} to ${endDate}`);
   };
   const DateModal = () => {
     $("#datePopupmodal").modal("show");
   };
-  const getDate = () => {
-    fromDate = convert(startDate);
-    toDate = convert(endDate);
-    localStorage.setItem("fromDate", JSON.stringify(fromDate));
-    localStorage.setItem("toDate", JSON.stringify(toDate));
-    fetchLedgerSummaryByDate(clickId, partyId, fromDate, toDate);
-    fetchDetailedLedgerByDate(clickId, partyId, fromDate, toDate);
-    $("#datePopupmodal").modal("hide");
-    setIsOpen(false);
-  };
+
   const [ledgersData, setLedgersData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
   //partyId = JSON.parse(localStorage.getItem("partyId"));
@@ -288,7 +295,7 @@ const SellerLedger = () => {
                  className="form-control me-2"
                  id="searchbar"
                  type="search"
-                 placeholder="Search by Name / Short Code"
+                 placeholder={langFullData.searchByNameShortCode}
                  onChange={(e) => {
                    searchInput(e.target.value);
                  }}
@@ -303,9 +310,9 @@ const SellerLedger = () => {
                <thead className="theadr-tag">
                  <tr>
                    <th scope="col">#</th>
-                   <th scope="col">Date</th>
-                   <th scope="col">Seller Name</th>
-                   <th scope="col">To Be Paid(&#8377;)</th>
+                   <th scope="col">{langFullData.date}</th>
+                   <th scope="col">{langFullData.sellerName}</th>
+                   <th scope="col">{langFullData.toBePaid}(&#8377;)</th>
                  </tr>
                </thead>
                <tbody>
@@ -442,11 +449,11 @@ const SellerLedger = () => {
                  display: valueActive && search.length > 0 ? "block" : "none",
                }}
              >
-               <p>No Data Found</p>
+                <NoDataAvailable />
              </div>
            </div>
            <div className="outstanding-pay d-flex align-items-center justify-content-between">
-             <p className="pat-tag">Outstanding Payables:</p>
+             <p className="pat-tag">{langFullData.outstandingPayables}:</p>
              <p className="values-tag">
                &#8377;
                {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
@@ -489,7 +496,7 @@ const SellerLedger = () => {
                  }
                  onClick={() => toggleAllCustom("all")}
                >
-                 All
+                 {langFullData.all}
                </button>
                <button
                  className={
@@ -497,7 +504,7 @@ const SellerLedger = () => {
                  }
                  onClick={() => toggleAllCustom("custom")}
                >
-                 Custom
+                 {langFullData.custom}
                </button>
                <div id="horizontal-lines-tag"></div>
                <div
@@ -517,7 +524,7 @@ const SellerLedger = () => {
                            className="modal-title header2_text"
                            id="staticBackdropLabel"
                          >
-                           Select Dates
+                           {langFullData.selectDates}
                          </h5>
                          <img
                            src={close_btn}
@@ -537,24 +544,24 @@ const SellerLedger = () => {
                                    name="tab"
                                    defaultChecked
                                  />
-                                 <label htmlFor="tab1">Daily</label>
+                                 <label htmlFor="tab1">{langFullData.daily}</label>
                                </div>
                                <div className="flex_class">
                                  <input type="radio" id="tab2" name="tab" />
-                                 <label htmlFor="tab2">Monthly</label>
+                                 <label htmlFor="tab2">{langFullData.monthly}</label>
                                </div>
                                <div className="flex_class">
                                  {" "}
                                  <input type="radio" id="tab3" name="tab" />
-                                 <label htmlFor="tab3">Yearly</label>
+                                 <label htmlFor="tab3">{langFullData.yearly}</label>
                                </div>
                                <div className="flex_class">
                                  <input type="radio" id="tab4" name="tab" />
-                                 <label htmlFor="tab4">Weekly</label>
+                                 <label htmlFor="tab4">{langFullData.weekly}</label>
                                </div>
                                <div className="flex_class">
                                  <input type="radio" id="tab5" name="tab" />
-                                 <label htmlFor="tab5">Custom</label>
+                                 <label htmlFor="tab5">{langFullData.custom}</label>
                                </div>
                              </div>
                              <article className="date_picker">
@@ -673,7 +680,7 @@ const SellerLedger = () => {
                                        {item.partyName}
                                      </p>
                                      <p className="mobilee-tag">
-                                       {!item.trader ? "Seller" : "Trader"} -{" "}
+                                       {!item.trader ? langFullData.seller : langFullData.trader} -{" "}
                                        {item.partyId}&nbsp;
                                      </p>
                                      <p className="mobilee-tag">
@@ -690,14 +697,14 @@ const SellerLedger = () => {
                              </Fragment>
                            );
                          } else {
-                           <p>No Data Found</p>;
+                           <p>{langFullData.noDataFound}</p>;
                          }
                        })}
                      </div>
                    )}
                    <div className="col-lg-3" id="verticalLines">
                      <p className="card-text paid">
-                       Total Business
+                       {langFullData.totalBusiness}
                        <p className="coloring">
                          &#8377;
                          {summaryData.totalTobePaidRcvd
@@ -708,7 +715,7 @@ const SellerLedger = () => {
                    </div>
                    <div className="col-lg-3" id="verticalLines">
                      <p className="total-paid">
-                       Total Paid
+                       {langFullData.totalPaid}
                        <p className="coloring">
                          &#8377;
                          {summaryData.totalRcvdPaid
@@ -719,7 +726,7 @@ const SellerLedger = () => {
                    </div>
                    <div className="col-lg-3 d-flex align-items-center">
                      <p className="out-standing">
-                       Outstanding Payables
+                       {langFullData.outstandingPayables}
                        <p className="coloring">
                          &#8377;
                          {summaryData.outStdRcvPayble
@@ -739,7 +746,7 @@ const SellerLedger = () => {
                      }
                      onClick={() => toggleTab("ledgersummary")}
                    >
-                     Ledger Summary
+                     {langFullData.ledgerSummary}
                    </button>
                    <button
                      className={
@@ -749,7 +756,7 @@ const SellerLedger = () => {
                      }
                      onClick={() => toggleTab("detailedledger")}
                    >
-                     Detailed Ledger
+                     {langFullData.detailedLedger}
                    </button>
                  </div>
                </div>
@@ -771,10 +778,10 @@ const SellerLedger = () => {
                          <th className="col-1" id="sno">
                            #
                          </th>
-                         <th className="col-2">RefId | Date</th>
-                         <th className="col-3">Paid(&#8377;)</th>
-                         <th className="col-3">To Be Paid(&#8377;)</th>
-                         <th className="col-3">Ledger Balance(&#8377;)</th>
+                         <th className="col-2">{langFullData.refId} | {langFullData.date}</th>
+                         <th className="col-3">{langFullData.paid}(&#8377;)</th>
+                         <th className="col-3">{langFullData.toBePaid}(&#8377;)</th>
+                         <th className="col-3">{langFullData.ledgerBalance}(&#8377;)</th>
                        </tr>
                      </thead>
                      <tbody>
@@ -844,14 +851,14 @@ const SellerLedger = () => {
                          <th className="col-1" id="sno">
                            #
                          </th>
-                         <th className="col-2">RefId | Date</th>
+                         <th className="col-2">{langFullData.refId} | {langFullData.date}</th>
                          <th className="col-3">
-                           <p>Item</p>
-                           <p> Unit | Kgs | Rate</p>
+                           <p>{langFullData.item}</p>
+                           <p>{langFullData.unitKgsRate}</p>
                          </th>
-                         <th className="col-2">Paid(&#8377;)</th>
-                         <th className="col-2">To Be Paid(&#8377;)</th>
-                         <th className="col-2">Ledger Balance(&#8377;)</th>
+                         <th className="col-2">{langFullData.paid}(&#8377;)</th>
+                         <th className="col-2">{langFullData.toBePaid}(&#8377;)</th>
+                         <th className="col-2">{langFullData.ledgerBalance}(&#8377;)</th>
                        </tr>
                      </thead>
                      <tbody>
@@ -928,10 +935,10 @@ const SellerLedger = () => {
                          <th className="col-1" id="sno">
                            #
                          </th>
-                         <th className="col-2">RefId | Date</th>
-                         <th className="col-3">Paid(&#8377;)</th>
-                         <th className="col-3">To Be Paid(&#8377;)</th>
-                         <th className="col-3">Ledger Balance(&#8377;)</th>
+                         <th className="col-2">{langFullData.refId} | {langFullData.date}</th>
+                         <th className="col-3">{langFullData.paid}(&#8377;)</th>
+                         <th className="col-3">{langFullData.toBePaid}(&#8377;)</th>
+                         <th className="col-3">{langFullData.ledgerBalance}(&#8377;)</th>
                        </tr>
                      </thead>
                      <tbody>
@@ -998,14 +1005,14 @@ const SellerLedger = () => {
                          <th className="col-1" id="sno">
                            #
                          </th>
-                         <th className="col-2">RefId | Date</th>
+                         <th className="col-2">{langFullData.refId} | {langFullData.date}</th>
                          <th className="col-3">
-                           <p>Item</p>
-                           <p> Unit | Kgs | Rate</p>
+                           <p>{langFullData.item}</p>
+                           <p>{langFullData.unitKgsRate}</p>
                          </th>
-                         <th className="col-2">Paid(&#8377;)</th>
-                         <th className="col-2">To Be Paid(&#8377;)</th>
-                         <th className="col-2">Ledger Balance(&#8377;)</th>
+                         <th className="col-2">{langFullData.paid}(&#8377;)</th>
+                         <th className="col-2">{langFullData.toBePaid}(&#8377;)</th>
+                         <th className="col-2">{langFullData.ledgerBalance}(&#8377;)</th>
                        </tr>
                      </thead>
                      <tbody>
@@ -1073,7 +1080,7 @@ const SellerLedger = () => {
                        className="modal-title header2_text"
                        id="staticBackdropLabel"
                      >
-                       Add Record Payment
+                       {langFullData.addRecordPayment}
                      </h5>
                      <img
                        src={close}
@@ -1167,7 +1174,7 @@ const SellerLedger = () => {
                          </div>
                        </div>
                        <div id="out-paybles">
-                         <p id="p-tag">Outstanding Paybles</p>
+                         <p id="p-tag">{langFullData.outstandingPayables}</p>
                          <p id="recieve-tag">
                            &#8377;
                            {data.totalOutStgAmt
@@ -1177,7 +1184,7 @@ const SellerLedger = () => {
                        </div>
                        <div className="form-group" id="input_in_modal">
                          <label hmtlFor="amtRecieved" id="amt-tag">
-                           Amount
+                           {langFullData.amount}
                          </label>
                          <input
                            className="form-cont"
@@ -1190,7 +1197,7 @@ const SellerLedger = () => {
                          <p className="text-valid">{requiredCondition}</p>
                        </div>
                        <div id="radios_in_modal">
-                         <p className="payment-tag">Payment Mode</p>
+                         <p className="payment-tag">{langFullData.paymentMode}</p>
                          <div className="form-check form-check-inline">
                            <input
                              className="form-check-input"
@@ -1206,7 +1213,7 @@ const SellerLedger = () => {
                              className="form-check-label"
                              for="inlineRadio1"
                            >
-                             CASH
+                             {langFullData.cash}
                            </label>
                          </div>
                          <div
@@ -1227,7 +1234,7 @@ const SellerLedger = () => {
                              className="form-check-label"
                              for="inlineRadio2"
                            >
-                             UPI
+                             {langFullData.upi}
                            </label>
                          </div>
                          <div className="form-check form-check-inline">
@@ -1245,7 +1252,7 @@ const SellerLedger = () => {
                              className="form-check-label"
                              for="inlineRadio3"
                            >
-                             NEFT
+                             {langFullData.neft}
                            </label>
                          </div>
                          <div className="form-check form-check-inline">
@@ -1263,7 +1270,7 @@ const SellerLedger = () => {
                              className="form-check-label"
                              for="inlineRadio4"
                            >
-                             RTGS
+                             {langFullData.rtgs}
                            </label>
                          </div>
                          <div className="form-check form-check-inline">
@@ -1281,7 +1288,7 @@ const SellerLedger = () => {
                              className="form-check-label"
                              for="inlineRadio5"
                            >
-                             IMPS
+                             {langFullData.imps}
                            </label>
                          </div>
                        </div>
@@ -1292,7 +1299,7 @@ const SellerLedger = () => {
                              className="form-label"
                              id="comment-tag"
                            >
-                             Comment
+                             {langFullData.comment}
                            </label>
                            <textarea
                              className="form-control"
@@ -1314,7 +1321,7 @@ const SellerLedger = () => {
                        // id="close_modal"
                        data-bs-dismiss="modal"
                      >
-                       SUBMIT
+                       {langFullData.submit}
                      </button>
                    </div>
                  </div>

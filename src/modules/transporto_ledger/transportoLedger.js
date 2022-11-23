@@ -55,6 +55,10 @@ const TransportoLedger = () => {
   const clickId = loginData.clickId;
   let transId = 0;
 
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   const [toggleState, setToggleState] = useState("paymentledger");
   const toggleTab = (type) => {
     setToggleState(type);
@@ -141,7 +145,7 @@ const TransportoLedger = () => {
     if (paidRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidRcvd) === 0) {
-      setRequiredCondition("Amount Received cannot be empty");
+      setRequiredCondition(langFullData.amountReceivedCannotBeEmpty);
     } else if (isNaN(paidRcvd)) {
       setRequiredCondition("Invalid Amount");
     } else if (
@@ -153,7 +157,7 @@ const TransportoLedger = () => {
       addRecordPayment();
     } else if (paidRcvd > payLedger.outStdRcvPayble) {
       setRequiredCondition(
-        "Entered Amount  cannot more than Outstanding Balance"
+        langFullData.enteredAmountCannotMoreThanOutstandingBalance
       );
     }
   };
@@ -276,7 +280,7 @@ const TransportoLedger = () => {
                  className="form-control me-2"
                  id="searchbar"
                  type="search"
-                 placeholder="Search by Name / Short Code"
+                 placeholder={langFullData.searchByNameShortCode}
                  onChange={(e) => {
                    searchInput(e.target.value);
                  }}
@@ -291,9 +295,9 @@ const TransportoLedger = () => {
                <thead className="theadr-tag">
                  <tr>
                    <th scope="col">#</th>
-                   <th scope="col">Date</th>
-                   <th scope="col">Transporter Name</th>
-                   <th scope="col">To Be Paid(&#8377;)</th>
+                   <th scope="col">{langFullData.date}</th>
+                   <th scope="col">{langFullData.transporterName}</th>
+                   <th scope="col">{langFullData.toBePaid}(&#8377;)</th>
                  </tr>
                </thead>
                <tbody>
@@ -430,12 +434,12 @@ const TransportoLedger = () => {
                  display: valueActive && search.length > 0 ? "block" : "none",
                }}
              >
-               <p>No Data Found</p>
+               <NoDataAvailable />
              </div>
              {/* ) : (<img src={no_data} alt="no_data" id="nodata-svg"/>)} */}
            </div>
            <div className="outstanding-pay d-flex align-items-center justify-content-between">
-             <p className="pat-tag">Outstanding Paybles:</p>
+             <p className="pat-tag">{langFullData.outstandingPayables}:</p>
              <p className="values-tag">
                &#8377;
                {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
@@ -484,8 +488,8 @@ const TransportoLedger = () => {
                                      </p>
                                      <p className="mobilee-tag">
                                        {!item.trader
-                                         ? "Transporter"
-                                         : "Trader"}{" "}
+                                         ? langFullData.transporter
+                                         : langFullData.trader}{" "}
                                        - {item.partyId}&nbsp;
                                      </p>
                                      <p className="mobilee-tag">
@@ -508,7 +512,7 @@ const TransportoLedger = () => {
                      </div>
                      <div className="col-lg-3" id="verticalLines">
                        <p className="card-text paid">
-                         Total Business{" "}
+                         {langFullData.totalBusiness}{" "}
                          <p className="coloring">
                            &#8377;
                            {payLedger.totalTobePaidRcvd
@@ -519,7 +523,7 @@ const TransportoLedger = () => {
                      </div>
                      <div className="col-lg-3" id="verticalLines">
                        <p className="total-paid">
-                         Total Paid
+                         {langFullData.totalPaid}
                          <p className="coloring">
                            &#8377;
                            {payLedger.totalRcvdPaid
@@ -530,7 +534,7 @@ const TransportoLedger = () => {
                      </div>
                      <div className="col-lg-3">
                        <p className="out-standing">
-                         Outstanding Paybles
+                       {langFullData.outstandingPayables}
                          <p className="coloring">
                            &#8377;
                            {payLedger.outStdRcvPayble
@@ -552,7 +556,7 @@ const TransportoLedger = () => {
                        }
                        onClick={() => toggleTab("paymentledger")}
                      >
-                       Payment Ledger
+                       {langFullData.paymentLedger}
                      </button>
                      <button
                        className={
@@ -562,7 +566,7 @@ const TransportoLedger = () => {
                        }
                        onClick={() => toggleTab("inventoryledger")}
                      >
-                       Inventory Ledger
+                       {langFullData.inventoryLedger}
                      </button>
                    </div>
                    <div className="d-flex recordbtns-style">
@@ -594,7 +598,7 @@ const TransportoLedger = () => {
                          className="modal-title header2_text"
                          id="staticBackdropLabel"
                        >
-                         Add Record Payment
+                        {langFullData.addRecordPayment}
                        </h5>
                        <img
                          src={close}
@@ -640,8 +644,8 @@ const TransportoLedger = () => {
                                            </p>
                                            <p className="mobilee-tag">
                                              {!item.trader
-                                               ? "Trans"
-                                               : "Trader"}{" "}
+                                               ? langFullData.transporter
+                                               : langFullData.trader}{" "}
                                              - {item.partyId}&nbsp;|&nbsp;
                                              {item.mobile}
                                            </p>
@@ -690,7 +694,7 @@ const TransportoLedger = () => {
                            </div>
                          </div>
                          <div id="out-paybles">
-                           <p id="p-tag">Outstanding Paybles</p>
+                           <p id="p-tag">{langFullData.outstandingPayables}</p>
                            <p id="recieve-tag">
                              &#8377;
                              {payLedger.outStdRcvPayble
@@ -700,7 +704,7 @@ const TransportoLedger = () => {
                          </div>
                          <div className="form-group" id="input_in_modal">
                            <label hmtlFor="amtRecieved" id="amt-tag">
-                             Amount
+                             {langFullData.amount}
                            </label>
                            <input
                              className="form-cont"
@@ -713,7 +717,7 @@ const TransportoLedger = () => {
                            <p className="text-valid">{requiredCondition}</p>
                          </div>
                          <div id="radios_in_modal">
-                           <p className="payments-tag">Payment Mode</p>
+                           <p className="payments-tag">{langFullData.paymentMode}</p>
                            <div className="form-check form-check-inline">
                              <input
                                className="form-check-input"
@@ -729,7 +733,7 @@ const TransportoLedger = () => {
                                className="form-check-label"
                                for="inlineRadio1"
                              >
-                               CASH
+                               {langFullData.cash}
                              </label>
                            </div>
                            <div
@@ -750,7 +754,7 @@ const TransportoLedger = () => {
                                className="form-check-label"
                                for="inlineRadio2"
                              >
-                               UPI
+                               {langFullData.upi}
                              </label>
                            </div>
                            <div className="form-check form-check-inline">
@@ -768,7 +772,7 @@ const TransportoLedger = () => {
                                className="form-check-label"
                                for="inlineRadio3"
                              >
-                               NEFT
+                               {langFullData.neft}
                              </label>
                            </div>
                            <div className="form-check form-check-inline">
@@ -786,7 +790,7 @@ const TransportoLedger = () => {
                                className="form-check-label"
                                for="inlineRadio4"
                              >
-                               RTGS
+                               {langFullData.rtgs}
                              </label>
                            </div>
                            <div className="form-check form-check-inline">
@@ -804,7 +808,7 @@ const TransportoLedger = () => {
                                className="form-check-label"
                                for="inlineRadio5"
                              >
-                               IMPS
+                               {langFullData.imps}
                              </label>
                            </div>
                          </div>
@@ -815,7 +819,7 @@ const TransportoLedger = () => {
                                className="form-label"
                                id="comment-tag"
                              >
-                               Comment
+                               {langFullData.comment}
                              </label>
                              <textarea
                                className="form-control"
@@ -837,7 +841,7 @@ const TransportoLedger = () => {
                          // id="close_modal"
                          data-bs-dismiss="modal"
                        >
-                         SUBMIT
+                         {langFullData.submit}
                        </button>
                      </div>
                    </div>
@@ -861,10 +865,10 @@ const TransportoLedger = () => {
                            <th className="col-1" id="sno">
                              #
                            </th>
-                           <th className="col-2">Ref ID</th>
-                           <th className="col-3">Paid(&#8377;)</th>
-                           <th className="col-3">To Be Paid(&#8377;)</th>
-                           <th className="col-3">Ledger Balance(&#8377;)</th>
+                           <th className="col-2">{langFullData.refId}</th>
+                           <th className="col-3">{langFullData.paid}(&#8377;)</th>
+                           <th className="col-3">{langFullData.toBePaid}(&#8377;)</th>
+                           <th className="col-3">{langFullData.ledgerBalance}(&#8377;)</th>
                          </tr>
                        </thead>
                        <tbody>
@@ -931,10 +935,10 @@ const TransportoLedger = () => {
                            <th className="col-1" id="p-common-sno">
                              #
                            </th>
-                           <th className="col-2">Ref ID</th>
-                           <th className="col-3">Collected</th>
-                           <th className="col-3">Given</th>
-                           <th className="col-3">Balance</th>
+                           <th className="col-2">{langFullData.refId}</th>
+                           <th className="col-3">{langFullData.collected}</th>
+                           <th className="col-3">{langFullData.given}</th>
+                           <th className="col-3">{langFullData.balance}</th>
                          </tr>
                        </thead>
                        <tbody>
@@ -960,12 +964,12 @@ const TransportoLedger = () => {
                                    {item.collected
                                      ? item.collected.toFixed(1)
                                      : 0}
-                                   &nbsp;
+                                      &nbsp;
                                    {item.unit === "BAGS"
-                                     ? item.unit.charAt(0).toUpperCase() +
+                                     ? item.unit.charAt(item).toUpperCase() +
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "BOXES"
-                                     ? item.unit.charAt(0).toUpperCase() +
+                                     ? item.unit.charAt(item).toUpperCase() +
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "CRATES" || "SACS"
                                      ? item.unit.charAt(item).toUpperCase()
@@ -1042,7 +1046,7 @@ const TransportoLedger = () => {
                              }
                              onClick={() => toggleTabs("Given")}
                            >
-                             Given
+                             {langFullData.given}
                            </button>
                            <button
                              className={
@@ -1052,7 +1056,7 @@ const TransportoLedger = () => {
                              }
                              onClick={() => toggleTabs("Collected")}
                            >
-                             Collected
+                             {langFullData.collected}
                            </button>
                          </div>
                          <img
@@ -1157,7 +1161,7 @@ const TransportoLedger = () => {
                                </div>
                              </div>
                              <div id="out-paybles">
-                               <p id="p-tag">Inventory Balance</p>
+                               <p id="p-tag">{langFullData.inventoryBalance}</p>
                              </div>
                              <div id="cbbk-tag">
                                {toggleState === "inventoryledger" &&
@@ -1177,7 +1181,7 @@ const TransportoLedger = () => {
                                  </p>
                                ) : (
                                  <p className="select-tag">
-                                   Select Collected Type
+                                   {langFullData.selectCollectedType}
                                  </p>
                                )}
 
@@ -1197,7 +1201,7 @@ const TransportoLedger = () => {
                                    for="inlineRadio1"
                                    id="crates"
                                  >
-                                   CRATES
+                                   {langFullData.crates}
                                  </label>
                                </div>
                                <div className="form-check form-check-inline">
@@ -1215,7 +1219,7 @@ const TransportoLedger = () => {
                                    for="inlineRadio2"
                                    id="sacs"
                                  >
-                                   SACS
+                                   {langData.sacs}
                                  </label>
                                </div>
                                <div className="form-check form-check-inline">
@@ -1233,7 +1237,7 @@ const TransportoLedger = () => {
                                    for="inlineRadio3"
                                    id="boxes"
                                  >
-                                   BOXES
+                                   {langFullData.boxes}
                                  </label>
                                </div>
                                <div className="form-check form-check-inline">
@@ -1251,12 +1255,12 @@ const TransportoLedger = () => {
                                    for="inlineRadio4"
                                    id="bags"
                                  >
-                                   BAGS
+                                   {langFullData.bags}
                                  </label>
                                </div>
                                <div className="form-gro">
                                  <label hmtlFor="amtRecieved" id="count-tag">
-                                   Number of {unit}
+                                   {langFullData.numberOf} {unit}
                                  </label>
                                  <input
                                    className="form-cond"
@@ -1275,7 +1279,7 @@ const TransportoLedger = () => {
                                    className="form-label"
                                    id="comments-tag"
                                  >
-                                   Comment
+                                   {langFullData.comment}
                                  </label>
                                  <textarea
                                    className="form-control"
@@ -1300,7 +1304,7 @@ const TransportoLedger = () => {
                            // id="close_modal"
                            /*</div>data-dismiss="modal"*/
                          >
-                           SUBMIT
+                           {langFullData.numberOf}
                          </button>
                        </div>
                      </div>

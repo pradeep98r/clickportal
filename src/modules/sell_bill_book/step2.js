@@ -16,6 +16,11 @@ const SellbillStep2Modal = (props) => {
   const clickId = loginData.clickId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
+
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   let [preferedCropsData, setPreferedCropsData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
   const [cropInfoModal, setCropInfoModal] = useState(false);
@@ -265,7 +270,7 @@ const SellbillStep2Modal = (props) => {
     >
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          Add Crop Information
+          {langFullData.addCrop}
         </h5>
         <img alt="image" onClick={props.closeStep2CropModal} />
       </div>
@@ -302,7 +307,7 @@ const SellbillStep2Modal = (props) => {
             onClick={allCropData}
           >
             <img src={other_crop} />
-            <p>Other Crop</p>
+            <p>{langFullData.otherCrop}</p>
           </div>
         </div>
         <div className="crop_table" id="scroll_style">

@@ -7,6 +7,10 @@ import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 function TopNavigation() {
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   const linkValue = localStorage.getItem("LinkId");
   var linkPath = localStorage.getItem("LinkPath");
   const dispatch = useDispatch();
@@ -55,7 +59,7 @@ function TopNavigation() {
         <div className="page_header">
           <h2>
             {/* {(linkValue == 1 || linkPath == "/smartboard") && "Smartboard"} */}
-            {linkValue == 1 && "Smartboard"}
+            {linkValue == 1 && langFullData.smartBoard}
             {linkValue == 2 && "Smartchart"}
             {linkValue == 3 &&
               "Sell Bill Book" &&
@@ -80,7 +84,7 @@ function TopNavigation() {
                   <p id="bill_id">Add Sell Bill</p>
                 </div>
               ) : (
-                "Sell Bill Book"
+                langFullData.salesBillBook
               ))}
             {linkPath == "/buy_bill_book" &&
               (billStatus === true ? (
@@ -104,14 +108,14 @@ function TopNavigation() {
                   <p id="bill_id">Add Purchase Bill</p>
                 </div>
               ) : (
-                "Buy Bill Book"
+                langFullData.buyBillBook
               ))}
             {linkValue == 5 && "Buyer Ledger"}
-            {linkValue == 6 && "Seller Ledger"}
-            {linkPath == "/partner" && "Partners"}
-            {linkValue == 8 && "My Profile"}
+            {linkValue == 6 && langFullData.sellerLedger}
+            {linkPath == "/partner" && langFullData.partners}
+            {linkValue == 8 && langFullData.myProfile}
             {linkValue == 9 && "Reports"}
-            {linkValue == 10 && "Transporto"}{" "}
+            {linkValue == 10 && langFullData.transporto}
           </h2>
           {linkValue == 11 && "Advances"}
         </div>

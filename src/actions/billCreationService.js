@@ -25,7 +25,7 @@ export function editPartnerItem(obj) {
 export function getPartnerData(clickId, type) {
   return axiosCommon.get(`/account/partners/caId/${clickId}/partyType/${type}`);
 }
-export function getBuyerLedgers(clickId, clientId, clientSecret) {
+export function getBuyerLedgers(clickId) {
   return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/BUYER`);
 }
 

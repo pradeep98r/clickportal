@@ -7,6 +7,10 @@ const SelectCrop = (props) => {
   let [allCropsData, allCropResponseData] = useState([]);
   const [cropItem, setSelectCrop] = useState("");
   const [selected, setSelected] = useState([]);
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   useEffect(() => {
     fetchCropData();
   }, []);
@@ -58,7 +62,7 @@ const SelectCrop = (props) => {
     >
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          Select Crop
+          {langFullData.selectCrop}
         </h5>
         <img
           src={close}
@@ -120,7 +124,7 @@ const SelectCrop = (props) => {
           className="primary_btn ml-3"
           onClick={e=>{addCropClickNext(e);props.close()}}
         >
-          Next
+          {langFullData.next}
         </button>
       </div>
       <a className="backdrop"></a>
