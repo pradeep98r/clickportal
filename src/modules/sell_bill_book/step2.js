@@ -210,19 +210,19 @@ const SellbillStep2Modal = (props) => {
         }
      });
      cropResponseData([...updatedItems4]);
-      if (cropitem[index].rateType == "kgs") {
-        cropitem[index].totalValue =
-          (cropitem[index].weightValue - cropitem[index].wastageValue) *
-          cropitem[index].rateValue;
+      if (updatedItems4[index].rateType == "kgs") {
+        updatedItems4[index].totalValue =
+          (updatedItems4[index].weightValue - updatedItems4[index].wastageValue) *
+          updatedItems4[index].rateValue;
       } else {
-        cropitem[index].totalValue =
-          (cropitem[index].unitValue - cropitem[index].wastageValue) *
-          cropitem[index].rateValue;
-        console.log(cropitem[index].totalValue);
+        updatedItems4[index].totalValue =
+          (updatedItems4[index].unitValue - updatedItems4[index].wastageValue) *
+          updatedItems4[index].rateValue;
+        console.log(updatedItems4[index].totalValue);
       }
 
     setCropId(id);
-    setSelectedCropsData(cropitem);
+    setSelectedCropsData(updatedItems4);
   };
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);

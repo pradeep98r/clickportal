@@ -7,15 +7,16 @@ import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
 import {
   getPartnerData,
-  getSystemSettings,getOutstandingBal
+  getSystemSettings,
+  getOutstandingBal,
 } from "../../actions/billCreationService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import { postbuybillApi } from "../../actions/billCreationService";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 const Step3Modal = (props) => {
@@ -46,15 +47,15 @@ const Step3Modal = (props) => {
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
-    if(partnerSelectedData != null){
-      getOutstandingBal(clickId,partnerSelectedData.partyId).then((res) => {
+    if (partnerSelectedData != null) {
+      getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
     getGrossTotalValue(props.slectedCropsArray);
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-      console.log(response)
+      console.log(response);
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -78,14 +79,13 @@ const Step3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
-              else if(response[i].settingName === "OUT_ST_BALANCE")
+            else if (response[i].settingName === "OUT_ST_BALANCE")
               setOutBalformStatusvalue(true);
           }
 
           if (response[i].settingName === "COMMISSION") {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
-           
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
@@ -117,7 +117,7 @@ const Step3Modal = (props) => {
     if (type == "Seller") {
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
-      getOutstandingBal(clickId,item.partyId).then((res) => {
+      getOutstandingBal(clickId, item.partyId).then((res) => {
         setOutsBal(res.data.data);
       });
     } else if (type == "Transporter") {
@@ -150,6 +150,7 @@ const Step3Modal = (props) => {
       total += items[i].totalValue;
       totalunitvalue += parseInt(items[i].unitValue);
       setGrossTotal(total);
+      console.log(items[i].totalValue, items);
       setTotalUnits(totalunitvalue);
     }
   };
@@ -171,58 +172,65 @@ const Step3Modal = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
-    var t =  parseInt((getTotalValue(commValue) +
-    getTotalUnits(transportationValue) +
-    getTotalUnits(laborChargeValue) +
-    getTotalUnits(rentValue) +
-    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)))
-    let totalValue =
-      grossTotal - t;
+    var t = parseInt(
+      getTotalValue(commValue) +
+        getTotalUnits(transportationValue) +
+        getTotalUnits(laborChargeValue) +
+        getTotalUnits(rentValue) +
+        getTotalValue(mandifeeValue) +
+        parseInt(levisValue) +
+        parseInt(otherfeeValue) +
+        parseInt(advancesValue)
+    );
+    let totalValue = grossTotal - t;
     if (addRetComm) {
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
   };
-  const getActualPayble = ()=>{
+  const getActualPayble = () => {
     var actualPay = getTotalBillAmount() - parseInt(cashpaidValue);
-    if(!includeComm){
+    if (!includeComm) {
       actualPay = actualPay - getTotalValue(commValue);
     }
-    if(!includeRetComm){
+    if (!includeRetComm) {
       if (addRetComm) {
         actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
       } else {
-        actualPay= (actualPay + getTotalValue(retcommValue)).toFixed(2);
+        actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
       }
     }
     return actualPay;
-  }
-  const getFinalLedgerbalance = () =>{
-    var t =  parseInt((
-    getTotalUnits(transportationValue) +
-    getTotalUnits(laborChargeValue) +
-    getTotalUnits(rentValue) +
-    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)));
+  };
+  const getFinalLedgerbalance = () => {
+    var t = parseInt(
+      getTotalUnits(transportationValue) +
+        getTotalUnits(laborChargeValue) +
+        getTotalUnits(rentValue) +
+        getTotalValue(mandifeeValue) +
+        parseInt(levisValue) +
+        parseInt(otherfeeValue) +
+        parseInt(advancesValue)
+    );
     var finalValue = grossTotal - t;
     var finalVal = 0;
-    if(includeComm){
+    if (includeComm) {
       finalVal = finalValue + getTotalValue(commValue);
     }
     if (addRetComm) {
-      if(includeRetComm){
+      if (includeRetComm) {
         finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
-      }
-      else{
+      } else {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
-      if(includeRetComm){
+      if (includeRetComm) {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    return ((parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashpaidValue));
-  }
+    return (parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashpaidValue);
+  };
   var lineItemsArray = [];
   var cropArray = props.slectedCropsArray;
   var len = cropArray.length;
@@ -239,9 +247,8 @@ const Step3Modal = (props) => {
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
     });
   }
-  const billRequestObj = 
-  {
-    actualPayble:getActualPayble(),
+  const billRequestObj = {
+    actualPayble: getActualPayble(),
     advance: advancesValue,
     billDate: partnerSelectDate,
     billStatus: "Completed",
@@ -267,7 +274,8 @@ const Step3Modal = (props) => {
     rtCommIncluded: includeRetComm,
     totalPayble: getTotalBillAmount() - parseInt(cashpaidValue),
     transportation: getTotalUnits(transportationValue),
-    transporterId:transpoSelectedData != null ? transpoSelectedData.partyId : '',
+    transporterId:
+      transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
     writerId: 0,
     timeStamp: "",
@@ -279,29 +287,31 @@ const Step3Modal = (props) => {
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.description, {
-            toastId:'success1'
+            toastId: "success1",
           });
           props.closeStep3Modal();
-          navigate('/buy_bill_book');
-        } 
+          navigate("/buy_bill_book");
+        }
       },
       (error) => {
-        toast.error(error.response.data.status.description, { toastId: "error1"});
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
       }
     );
   };
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () =>{
-    if(!checked){
-      setChecked(!checked)
-      localStorage.setItem("defaultDate",true);
+  const handleCheckEvent = () => {
+    if (!checked) {
+      setChecked(!checked);
+      localStorage.setItem("defaultDate", true);
       setStartDate(selectedDate);
-    } else{
+    } else {
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
     }
-  }
+  };
   return (
     <Modal
       show={props.show}
@@ -779,35 +789,49 @@ const Step3Modal = (props) => {
                 <h5>Total Bill Amount (₹)</h5>
                 <h6>{getTotalBillAmount()}</h6>
               </div>
-              {outBalformStatusvalue ?  <div className="totals_value">
-                <h5>Outstanding Balance (₹)</h5>
-                <h6>{outBal != 0 ? outBal.toFixed(2) : '0'}</h6>
-              </div>: ''}
-             
-              {cashpaidValue != 0 ?<div className="totals_value">
-                <h5>Cash Paid</h5>
-                <h6 className="black_color">-{cashpaidValue}</h6>
-              </div> : ''}
-              {outBalformStatusvalue ?   <div className="totals_value">
-                <h5>Final Ledger Balance (₹)</h5>
-                <h6>{getFinalLedgerbalance().toFixed(2)}</h6>
-              </div> :   <div className="totals_value">
-                <h5>Total Paybles (₹)</h5>
-                <h6>{(getTotalBillAmount() - parseInt(cashpaidValue)).toFixed(2)}</h6>
-              </div>}
-            
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Outstanding Balance (₹)</h5>
+                  <h6>{outBal != 0 ? outBal.toFixed(2) : "0"}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+
+              {cashpaidValue != 0 ? (
+                <div className="totals_value">
+                  <h5>Cash Paid</h5>
+                  <h6 className="black_color">-{cashpaidValue}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Final Ledger Balance (₹)</h5>
+                  <h6>{getFinalLedgerbalance().toFixed(2)}</h6>
+                </div>
+              ) : (
+                <div className="totals_value">
+                  <h5>Total Paybles (₹)</h5>
+                  <h6>
+                    {(getTotalBillAmount() - parseInt(cashpaidValue)).toFixed(
+                      2
+                    )}
+                  </h6>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      
       </div>
       <div className="bottom_div main_div popup_bottom_div step3_bottom">
-          <div className="d-flex align-items-center justify-content-end">
-            <button className="primary_btn" onClick={postbuybill}>
-              Next
-            </button>
-          </div>
+        <div className="d-flex align-items-center justify-content-end">
+          <button className="primary_btn" onClick={postbuybill}>
+            Next
+          </button>
         </div>
+      </div>
       <ToastContainer />
     </Modal>
   );
