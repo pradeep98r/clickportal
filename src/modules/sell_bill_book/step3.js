@@ -248,7 +248,7 @@ const SellbillStep3Modal = (props) => {
     billDate: partnerSelectDate,
     billStatus: "Completed",
     caId: clickId,
-    cashPaid: cashRcvdValue,
+    cashRcvd: cashRcvdValue,
     comm: getTotalValue(commValue),
     commIncluded: includeComm,
     commShown: true,
