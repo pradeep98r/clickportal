@@ -38,24 +38,37 @@ const SellBillView = () => {
     const [grtwo, setGrTwo] = useState([]);
     const [grthree, setGrThree] = useState([]);
     const [grfour, setGrFour] = useState([]);
+    const [status, setStatus] = useState(false);
     const getBuyBillsById = () => {
         getSystemSettings(clickId, clientId, clientSecret).then((res) => {
             billSettingData(res.data.data.billSetting)
             for (var i = 0; i < res.data.data.billSetting.length; i++) {
                 if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'SELL'
                     && res.data.data.billSetting[i].formStatus === 1) {
+                        if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+                            setStatus(true);
+                          }
                     grOne = [res.data.data.billSetting[i], ...grOne];
                     setGrOne([grone, ...grOne]);
                 } else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'SELL'
                     && res.data.data.billSetting[i].formStatus === 1) {
+                        if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+                            setStatus(true);
+                          }
                     grTwo = [res.data.data.billSetting[i], ...grTwo];
                     setGrTwo([grtwo, ...grTwo]);
                 } else if (res.data.data.billSetting[i].groupId === 3 && res.data.data.billSetting[i].billType === 'SELL'
                     && res.data.data.billSetting[i].formStatus === 1) {
+                        if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+                            setStatus(true);
+                          }
                     grThree = [res.data.data.billSetting[i], ...grThree];
                     setGrThree([grthree, ...grThree]);
                 } else if (res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'SELL'
                     && res.data.data.billSetting[i].formStatus === 1) {
+                        if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+                            setStatus(true);
+                        }
                     grFour = [res.data.data.billSetting[i], ...grFour];
                     setGrFour([grfour, ...grFour]);
                 }
@@ -70,6 +83,47 @@ const SellBillView = () => {
                 break;
             case "RETURN_COMMISSION":
                 value = singleBillData?.rtComm;
+                grOne.map(item=>{
+                    if(item.addToGt == 1){
+                      value = -(singleBillData?.rtComm);
+                      console.log(value)
+                      return value;
+                    }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+                      value = (singleBillData?.rtComm);
+                      console.log(value)
+                      return value;
+                    }
+                  })
+                  grTwo.map(item=>{
+                    if(item.addToGt == 1){
+                      value = -(singleBillData?.rtComm);
+                      return value;
+                    }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+                      value = (singleBillData?.rtComm);
+                      console.log(value)
+                      return value;
+                    }
+                  })
+                  grThree.map(item=>{
+                    if(item.addToGt == 1){
+                      value = -(singleBillData?.rtComm);
+                      return value;
+                    }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+                      value = (singleBillData?.rtComm);
+                      console.log(value)
+                      return value;
+                    }
+                  })
+                  grFour.map(item=>{
+                    if(item.addToGt == 1){
+                      value = -(singleBillData?.rtComm);
+                      return value;
+                    }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+                      value = (singleBillData?.rtComm);
+                      console.log(value)
+                      return value;
+                    }
+                  })
                 break;
             case "TRANSPORTATION":
                 value = singleBillData?.transportation;
@@ -93,12 +147,6 @@ const SellBillView = () => {
                 break;
             case "GOVT_LEVIES":
                 value = singleBillData?.govtLevies;
-                break;
-            case "CASH_PAID":
-                value = singleBillData?.cashPaid;
-                break;
-            case "CASH_RECEIVED":
-                value = singleBillData?.cashRcvd;
                 break;
             case "ADVANCES":
                 value = singleBillData?.advance;
@@ -183,6 +231,12 @@ const SellBillView = () => {
                 item = "";
                 break;
             case "OUT_ST_BALANCE":
+                item = "";
+                break;
+            case "CASH_PAID":
+                item = "";
+                break;
+            case "CASH_RECEIVED":
                 item = "";
                 break;
         }
@@ -407,7 +461,7 @@ const SellBillView = () => {
                                     <div className="row group-one-total">
                                         <div className="pl-0 col-lg-8 pr-0"></div>
                                         <div className="col-lg-4">
-                                            <p>{groupOneTotal === 0 || null ? '' : groupOneTotal.toFixed(2)}</p>                                        </div>
+                                            <p>{groupOneTotal === 0 || null ? '' :singleBillData.grossTotal+groupOneTotal}</p>                                        </div>
                                         <div className={groupOneTotal === 0 || null ? '':"hr-line-in-totals"}></div>
                                     </div>
                                 </div>
@@ -436,7 +490,7 @@ const SellBillView = () => {
                                     <div className="row group-one-total">
                                         <div className="pl-0 col-lg-8 pr-0"></div>
                                         <div className="col-lg-4">
-                                            <p>{groupTwoTotal === 0 || null ? '' : groupTwoTotal.toFixed(2)}</p>
+                                            <p>{groupTwoTotal === 0 || null ? '' : singleBillData?.grossTotal+(groupTwoTotal+groupOneTotal)}</p>
                                         </div>
                                         <div className={groupTwoTotal === 0 || null ? '': "hr-line-in-totals"}></div>
                                     </div>
@@ -466,7 +520,7 @@ const SellBillView = () => {
                                     <div className="row group-one-total">
                                         <div className="pl-0 col-lg-8 pr-0"></div>
                                         <div className="col-lg-4">
-                                            <p>{groupThreeTotal === 0 || null ? '' : groupThreeTotal.toFixed(2)}</p>
+                                            <p>{groupThreeTotal === 0 || null ? '' : singleBillData?.grossTotal+(groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
                                         </div>
                                         <div className={groupThreeTotal === 0 || null ? '':"hr-line-in-totals"}></div>
                                     </div>
@@ -496,7 +550,7 @@ const SellBillView = () => {
                                     <div className="row group-one-total">
                                         <div className="pl-0 col-lg-8 pr-0"></div>
                                         <div className="col-lg-4">
-                                            <p>{groupFourTotal === 0 || null ? '' : groupFourTotal.toFixed(2)}</p>
+                                            <p>{groupFourTotal === 0 || null ? '' : singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
                                         </div>
                                         <div className={groupFourTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
                                     </div>
@@ -506,14 +560,15 @@ const SellBillView = () => {
                                         <div className="col-lg-2"></div>
                                         <div className="col-lg-6">
                                             <div>
-                                            {singleBillData.totalReceivable === 0 || 
-                                            singleBillData.totalReceivable === null  ? '' : <p className="groups_value">Total Bill Amount  :</p>}
+                                            {singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)=== 0 || 
+                                            singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) === null  ? '' 
+                                            : <p className="groups_value">Total Bill Amount  :</p>}
                                             </div>
                                         </div>
                                         <div className="col-lg-4">
-                                            < p className="groups_value">{singleBillData.totalReceivable === 0|| 
-                                            singleBillData.totalReceivable ===null ? ' ' :
-                                                singleBillData.totalReceivable.toFixed(2)}</p>
+                                            < p className="groups_value">{singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) === 0|| 
+                                            singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) ===null ? ' ' :
+                                            singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -521,10 +576,34 @@ const SellBillView = () => {
                                     <div className="row">
                                         <div className="col-lg-2"></div>
                                         <div className="col-lg-6">
-                                            <p className="groups_value">Outstanding Balance:</p>
+                                            <p className="groups_value">{singleBillData.cashRcvdCash === 0 ||
+                                            singleBillData.cashRcvd ===null?'':singleBillData.cashRcvd}</p>
                                         </div>
                                         <div className="col-lg-4">
-                                            < p className="groups_value">{singleBillData?.outStBal.toFixed(2)}</p>
+                                            < p className="groups_value">{singleBillData.cashRcvdCash === 0 ||
+                                            singleBillData.cashRcvd ===null?'':singleBillData.cashRcvd}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                <div className="row">
+                                    <div className="col-lg-2"></div>
+                                        <div className="col-lg-6">
+                                            <p className="groups_value" style={{display:status?'block':'none'}}>Outstanding Balance:</p>
+                                        </div>
+                                        <div className="col-lg-4">
+                                            < p className="groups_value" style={{display:status?'block':'none'}}>{singleBillData?.outStBal}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="row">
+                                        <div className="col-lg-2"></div>
+                                        <div className="col-lg-6">
+                                            <p className="groups_value" style={{display:!status?'block':'none'}}>Total Receivables:</p>
+                                        </div>
+                                        <div className="col-lg-4">
+                                            < p className="groups_value"style={{display:!status?'block':'none'}} >{singleBillData?.totalReceivable}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -533,10 +612,10 @@ const SellBillView = () => {
                         <div className="row out-st-bal">
                             <div className="col-lg-6"></div>
                             <div className="col-lg-4">
-                                <p className="out-st">Final Ledger Balance</p>
+                                <p className="out-st" style={{display:status?'block':'none'}}>Final Ledger Balance</p>
                             </div>
                             <div className="col-lg-2">
-                                <span className="out-value">0</span>
+                                <span className="out-value" style={{display:status?'block':'none'}}>0</span>
                             </div>
                         </div>
                         {/*  */}
