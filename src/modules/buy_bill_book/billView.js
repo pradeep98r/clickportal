@@ -3,6 +3,7 @@ import {
   getMandiDetails,
   getSystemSettings,
 } from "../../actions/billCreationService";
+import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 
@@ -38,7 +39,10 @@ const BillView = () => {
   const [groupThree, setGroupThree] = useState([]);
   const [groupFour, setGroupFour] = useState([]);
 
-
+  const [includeComm, setIncludeComm] = useState("");
+  const [includeRetComm, setIncludeRetComm] = useState("")
+  const [addRetComm, setAddRetComm] = useState(false);
+  const [status, setStatus] = useState(false);
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       billSettingData(res.data.data.billSetting);
@@ -46,22 +50,58 @@ const BillView = () => {
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
         if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'BUY'
           && res.data.data.billSetting[i].formStatus === 1) {
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            }
+            if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+              setStatus(true);
+            }
+             else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+              setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            }
           groupOne = [res.data.data.billSetting[i], ...groupOne];
           setGroupOne([groupone, ...groupOne]);
           console.log(groupOne, "Buy")
         }
         else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'BUY'
           && res.data.data.billSetting[i].formStatus === 1) {
+            if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+              setStatus(true);
+            }if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+              setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            }
           grouptwo = [res.data.data.billSetting[i], ...grouptwo];
           setGroupTwo([groupTwo, ...grouptwo]);
         }
         else if (res.data.data.billSetting[i].groupId === 3 && res.data.data.billSetting[i].billType === 'BUY' &&
           res.data.data.billSetting[i].formStatus === 1) {
+            if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+              setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              console.log(true);
+              setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+              setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            }
           groupthree = [res.data.data.billSetting[i], ...groupthree];
           setGroupThree([groupThree, ...groupthree]);
         }
         else if (res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'BUY' &&
           res.data.data.billSetting[i].formStatus === 1) {
+            if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
+              setStatus(true);
+            }if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+              setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            }
           groupfour = [res.data.data.billSetting[i], ...groupfour];
           setGroupFour([groupFour, ...groupfour]);
         }
@@ -74,49 +114,82 @@ const BillView = () => {
     var value = 0;
     switch (name) {
       case "COMMISSION":
-        value = singleBillData?.comm;
+        value = -(singleBillData?.comm);
         break;
       case "RETURN_COMMISSION":
-        value = singleBillData?.rtComm;
+        groupone.map(item=>{
+          if(item.addToGt == 1){
+            value = singleBillData?.rtComm;
+            console.log(value)
+            return value;
+          }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+            value = -(singleBillData?.rtComm);
+            console.log(value)
+            return value;
+          }
+        })
+        groupTwo.map(item=>{
+          if(item.addToGt == 1){
+            value = singleBillData?.rtComm;
+            return value;
+          }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+            value = -(singleBillData?.rtComm);
+            console.log(value)
+            return value;
+          }
+        })
+        groupThree.map(item=>{
+          if(item.addToGt == 1){
+            value = singleBillData?.rtComm;
+            return value;
+          }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+            value = -(singleBillData?.rtComm);
+            console.log(value)
+            return value;
+          }
+        })
+        groupFour.map(item=>{
+          if(item.addToGt == 1){
+            value = singleBillData?.rtComm;
+            return value;
+          }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
+            value = -(singleBillData?.rtComm);
+            console.log(value)
+            return value;
+          }
+        })
         break;
       case "TRANSPORTATION":
-        value = singleBillData?.transportation;
+        value = -(singleBillData?.transportation);
         break;
       case "LABOUR_CHARGES":
-        value = singleBillData?.labourCharges;
+        value = -(singleBillData?.labourCharges);
         break;
       case "RENT":
-        value = singleBillData?.rent;
+        value = -(singleBillData?.rent);
         break;
       case "MANDI_FEE":
-        value = singleBillData?.mandiFee;
+        value = -(singleBillData?.mandiFee);
         break;
       case "OTHER_FEE":
         if (singleBillData.partyType === "BUYER") {
-          value = singleBillData?.otherFee;
+          value = -(singleBillData?.otherFee);
           console.log(value)
         }
         else {
-          value = singleBillData?.misc;
+          value = -(singleBillData?.misc);
         }
         break;
       case "GOVT_LEVIES":
-        value = singleBillData?.govtLevies;
-        break;
-      case "CASH_PAID":
-        value = singleBillData?.cashPaid;
-        break;
-      case "CASH_RECEIVED":
-        value = singleBillData?.cashRcvd;
-        console.log(value)
+        value = -(singleBillData?.govtLevies);
         break;
       case "ADVANCES":
-        value = singleBillData?.advance;
+        value = -(singleBillData?.advance);
         break;
       case "CUSTOM_FIELD1":
         singleBillData.customFields.map(item => {
           if (item.field === name) {
-            value = item.fee;
+            value = -(item.fee);
             return value;
           }
         });
@@ -124,7 +197,7 @@ const BillView = () => {
       case "CUSTOM_FIELD2":
         singleBillData.customFields.map(item => {
           if (item.field === name) {
-            value = item.fee;
+            value = -(item.fee);
             return value;
           }
         });
@@ -132,7 +205,7 @@ const BillView = () => {
       case "CUSTOM_FIELD3":
         singleBillData.customFields.map(item => {
           if (item.field === name) {
-            value = item.fee;
+            value = -(item.fee);
             return value;
           }
         });
@@ -140,7 +213,7 @@ const BillView = () => {
       case "CUSTOM_FIELD4":
         singleBillData.customFields.map(item => {
           if (item.field === name) {
-            value = item.fee;
+            value = -(item.fee);
             return value;
           }
         });
@@ -159,7 +232,8 @@ const BillView = () => {
   var groupFourTotal = 0;
 
   groupone.map(item => {
-    return groupOneTotal += handleGroupNames(item.settingName);
+     groupOneTotal += handleGroupNames(item.settingName);
+     return groupOneTotal;
   })
 
   groupTwo.map(item => {
@@ -192,6 +266,7 @@ const BillView = () => {
     }
     return unitType;
   };
+
   const handleSettingName = (item) => {
     switch (item) {
       case "COMM_INCLUDE":
@@ -212,9 +287,46 @@ const BillView = () => {
       case "OUT_ST_BALANCE":
         item = "";
         break;
+      case "CASH_PAID":
+        item = "";
+        break;
+      case "CASH_RECEIVED":
+        item = "";
+        break;
     }
     return item;
   }
+  const getFinalLedgerbalance = () => {
+    var t = parseInt(
+      singleBillData.transportation +
+      singleBillData.labourCharges+
+      singleBillData.rent +
+      singleBillData.mandiFee + 
+      singleBillData.govtLevies + 
+      singleBillData.misc +
+      singleBillData.advance
+    );
+    var finalValue = singleBillData.grossTotal - t;
+    console.log(finalValue)
+    var finalVal = finalValue;
+    if (includeComm) {
+      finalVal = finalVal - singleBillData.comm
+      console.log(finalVal)
+    }
+    if (addRetComm) {
+      if (includeRetComm) {
+        finalVal = (finalVal + singleBillData.rtComm);
+        console.log(finalVal)
+      }
+    } else {
+      if (includeRetComm) {
+        finalVal = (finalVal - singleBillData.rtComm);
+        console.log(finalVal)
+      }
+    }
+    console.log((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashPaid),singleBillData.outStBal,singleBillData.cashPaid)
+    return ((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashPaid)).toFixed(2);
+  };
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -421,7 +533,7 @@ const BillView = () => {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                          <p>{groupOneTotal === 0 || null ? '' : groupOneTotal.toFixed(2)}</p>
+                          <p>{groupOneTotal === 0 || null ? '' :(singleBillData?.grossTotal+groupOneTotal).toFixed(2)}</p>
                         </div>
                         <div className={groupOneTotal === 0 || null ? '': "hr-line-in-totals"}></div>
                       </div>
@@ -451,7 +563,7 @@ const BillView = () => {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                          <p>{groupTwoTotal === 0 || null ? '' : groupTwoTotal.toFixed(2)}</p>
+                          <p>{groupTwoTotal === 0 || null ? '' :(singleBillData?.grossTotal+(groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                         <div className={groupTwoTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
                       </div>
@@ -480,7 +592,8 @@ const BillView = () => {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                          <p>{groupThreeTotal === 0 || null ? '' : groupThreeTotal.toFixed(2)}</p>
+                          <p>{groupThreeTotal === 0 || null ? '' : 
+                          (singleBillData?.grossTotal+(groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                         <div className={groupThreeTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
                       </div>
@@ -509,7 +622,8 @@ const BillView = () => {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                          <p>{groupFourTotal === 0 || null ? '' : groupFourTotal.toFixed(2)}</p>
+                          <p>{groupFourTotal === 0 || null ? '' :
+                          (singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                         <div className={groupFourTotal === 0 || null ? '':"hr-line-in-totals"}></div>
                       </div>
@@ -518,12 +632,13 @@ const BillView = () => {
                       <div className="row">
                         <div className="col-lg-2"></div>
                         <div className="col-lg-6">
-                          {singleBillData.totalPayables === 0 ?'':<p className="groups_value">Total Bill Amount  :</p>}
+                          {singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)+singleBillData?.totalPayables===0 ?'':
+                          <p className="groups_value">Total Bill Amount  :</p>}
                         </div>
                         <div className="col-lg-4">
-                          < p className="groups_value">{singleBillData.totalPayables === 0 ||
-                          singleBillData.totalPayables === null? ' ' :
-                          singleBillData.totalPayables.toFixed(2)}</p>
+                          < p className="groups_value">{singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)===0||
+                          singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) === null? ' ' :
+                          (singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                       </div>
                     </div>
@@ -531,22 +646,64 @@ const BillView = () => {
                       <div className="row">
                         <div className="col-lg-2"></div>
                         <div className="col-lg-6">
-                          <p className="groups_value">Outstanding Balance:</p>
+                          {singleBillData.cashPaid === 0 ?''||
+                          singleBillData.cashPaid === null:<p className="groups_value">Cash Paid  :</p>}
                         </div>
                         <div className="col-lg-4">
-                          < p className="groups_value">{singleBillData?.outStBal.toFixed(2)}</p>
+                          < p className="groups_value">{singleBillData.cashPaid===0||
+                          singleBillData.cashPaid === null? ' ' :
+                          -singleBillData?.cashPaid}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="row">
+                        <div className="col-lg-2"></div>
+                        <div className="col-lg-6">
+                          {singleBillData.totalPayables === 0 ?''||
+                          singleBillData.totalPayables === null:<p className="groups_value" 
+                          style={{display:!status?'block':'none'}}>
+                            Total totalPayables  :</p>}
+                        </div>
+                        <div className="col-lg-4">
+                          < p className="groups_value" style={{display:!status?'block':'none'}}>
+                            {singleBillData.totalPayables===0 ||
+                          singleBillData.totalPayables === null? ' ' :
+                          singleBillData?.totalPayables}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="row">
+                        <div className="col-lg-2"></div>
+                        <div className="col-lg-6">
+                          <p className="groups_value" style={{display:status?'block':'none'}}>Outstanding Balance:</p>
+                        </div>
+                        <div className="col-lg-4">
+                          < p className="groups_value" style={{display:status?'block':'none'}}>{singleBillData?.outStBal.toFixed(2)}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="row out-st-bal">
-                  <div className="col-lg-6"></div>
+                  <div className="col-lg-6">
+                    <div className="d-flex footer-img">
+                      <img src={ono_connect_click} alt="ono_connect" />
+                      
+                    </div>
+                  </div>
                   <div className="col-lg-4">
-                    <p className="out-st">Final Ledger Balance</p>
+                    <p className="out-st" style={{display:status?'block':'none'}}>Final Ledger Balance</p>
                   </div>
                   <div className="col-lg-2">
-                    <span className="out-value">0</span>
+                    <span className="out-value" style={{display:status?'block':'none'}}>{getFinalLedgerbalance()}</span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-6">
+                    <p className="ono-footer">ONO-{moment(singleBillData.billDate).format("DDMMYYYY")}-CLICK-
+                      {singleBillData.actualPaybles.toFixed(2)}</p>
                   </div>
                 </div>
                 {/*  */}
