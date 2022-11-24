@@ -792,7 +792,9 @@ const SellbillStep3Modal = (props) => {
                 <h6 className="color_green">{getFinalLedgerbalance()}</h6>
               </div> :  <div className="totals_value">
                 <h5>Total Receivables  (₹)</h5>
-                <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+                <h6 className="color_green">{(getTotalBillAmount() - parseInt(cashRcvdValue)).toFixed(
+                      2
+                    )}</h6>
               </div>}
              
             </div>
