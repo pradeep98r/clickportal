@@ -638,7 +638,7 @@ const BillView = () => {
                         <div className="col-lg-4">
                           < p className="groups_value">{singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)===0||
                           singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) === null? ' ' :
-                          singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
+                          (singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                       </div>
                     </div>

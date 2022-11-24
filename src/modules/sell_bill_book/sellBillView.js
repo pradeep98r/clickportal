@@ -629,7 +629,7 @@ const SellBillView = () => {
                                         <div className="col-lg-4">
                                             < p className="groups_value">{singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) === 0|| 
                                             singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal) ===null ? ' ' :
-                                            singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
+                                            (singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -637,8 +637,8 @@ const SellBillView = () => {
                                     <div className="row">
                                         <div className="col-lg-2"></div>
                                         <div className="col-lg-6">
-                                            <p className="groups_value">{singleBillData.cashRcvdCash === 0 ||
-                                            singleBillData.cashRcvd ===null?'':singleBillData.cashRcvd}</p>
+                                            {singleBillData.cashRcvdCash === 0 ||
+                                            singleBillData.cashRcvd ===null?'':<p className="groups_value">Cash Received</p>}
                                         </div>
                                         <div className="col-lg-4">
                                             < p className="groups_value">{singleBillData.cashRcvdCash === 0 ||
