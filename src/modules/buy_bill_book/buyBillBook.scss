@@ -1,8 +1,27 @@
+
+
 .bills_div {
   padding-bottom: 10px;
   border-bottom: 1px solid #e4e4e4;
   align-items: center;
   position: relative;
+}
+.color_blue{
+  color: var(--ono-blue);
+}
+.bills_rows{
+  .flex_class{
+    margin-right: 0px!important;
+  }
+}
+.step3_bottom{
+  position: initial;
+}
+.bills_rows:hover{
+  cursor: pointer;
+}
+.color_red{
+  color: var(--ono-red);
 }
 .nav-tabs {
   border-bottom: 0px;
@@ -326,10 +345,8 @@ option[value=""][disabled] {
   }
 }
 .crop_table_div {
-  border: 1px solid #e4e4e4;
   background-color: var(--ono-white);
   border-radius: 10px;
-  padding: 10px 20px;
   p,
   label {
     font-size: var(--body-text);
@@ -392,14 +409,31 @@ option[value=""][disabled] {
 }
 // addition/deduction css
 .comm_cards {
+  .col-sm-12{
+    padding: 10px;
+  }
   .comm_card_title {
     font-size: var(--body-text);
     color: var(--ono-primary-text);
     margin-bottom: 10px;
+    line-height: normal;
+  }
+  .title_bg{
+    background-color: #E7F8EB;
+    border-radius: 10px 0px 0px 10px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 0px;
   }
   .comm_card_sub_title {
     font-size: var(--body-small-text);
     color: var(--ono-subtext);
+    z-index: 99;
+    position: absolute;
+    bottom: -11px;
+    background: #fff;
+    padding: 0px 2px;
   }
   margin-bottom: 20px;
 }
@@ -427,7 +461,10 @@ input:focus-visible {
 .comm_total_card {
   padding: 15px;
   overflow-y: auto;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 250px);
+}
+.total_bal{
+  height: auto;
 }
 .table_row {
   overflow-y: auto;
@@ -438,7 +475,7 @@ input:focus-visible {
   max-width: 900px;
 }
 .crop_modal_body {
-  max-height: calc(100vh - 300px);
+  max-height: calc(100vh - 280px);
   overflow-y: auto;
 }
 .flex_width {
@@ -520,10 +557,10 @@ input:focus-visible {
   }
 }
 .react-datepicker-popper[data-placement^="bottom"]
-.react-datepicker__triangle::after,
+  .react-datepicker__triangle::after,
 .react-datepicker-popper[data-placement^="bottom"]
-.react-datepicker__triangle::before {
-border-bottom-color: #fff;
+  .react-datepicker__triangle::before {
+  border-bottom-color: #fff;
 }
 .react-datepicker__current-month,
 .react-datepicker-time__header,
@@ -533,8 +570,8 @@ border-bottom-color: #fff;
 .react-datepicker__current-month,
 .react-datepicker-time__header,
 .react-datepicker-year-header {
-  color: var(--ono-blue)!important;
-  font-weight: normal!important;
+  color: var(--ono-blue) !important;
+  font-weight: normal !important;
 }
 .react-datepicker__year-read-view--down-arrow,
 .react-datepicker__month-read-view--down-arrow,
@@ -547,25 +584,28 @@ border-bottom-color: #fff;
   border-color: var(--ono-primary);
 }
 .react-datepicker__day--in-selecting-range {
-  background-color: #f0f0f0!important;
+  background-color: #f0f0f0 !important;
   border-radius: 100% !important;
-  color: #000!important;
-  }
+  color: #000 !important;
+}
 .react-datepicker__day--keyboard-selected,
-.react-datepicker__day--selected, .react-datepicker__day--in-range {
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range {
   background-color: var(--ono-primary) !important;
   border-radius: 100% !important;
 }
 .react-datepicker__day:hover {
   border-radius: 100% !important;
 }
-.react-datepicker__year-read-view--down-arrow, .react-datepicker__month-read-view--down-arrow, .react-datepicker__month-year-read-view--down-arrow, .react-datepicker__navigation-icon::before
-{
+.react-datepicker__year-read-view--down-arrow,
+.react-datepicker__month-read-view--down-arrow,
+.react-datepicker__month-year-read-view--down-arrow,
+.react-datepicker__navigation-icon::before {
   border-color: #1c1c1c;
-  border-width: 1px 1px 0 0!important;
+  border-width: 1px 1px 0 0 !important;
 }
 .react-datepicker__navigation:hover *::before {
-  border-color: var(--on-primary)!important;
+  border-color: var(--on-primary) !important;
 }
 // month picker
 .react-datepicker__month {
@@ -615,10 +655,13 @@ border-bottom-color: #fff;
 .Toastify__toast-theme--dark {
   background-color: red;
 }
-
+.samrtboard_calender .react-datepicker__navigation {
+     top: 10px; 
+}
 article {
   display: none;
-  height: 380px;
+  height: 350px;
+  width: 100%;
 }
 article.on {
   display: block;
@@ -655,7 +698,8 @@ article.on {
       margin: 0px;
     }
     .user_icon {
-      width: 50px;
+      width: 30px;
+      margin-right: 5px;
     }
   }
   .billid_div {
@@ -708,28 +752,28 @@ article.on {
   background-color: var(--ono-primary);
   border-radius: 10px 10px 0px 0px;
   color: var(--ono-white);
-  .bill_view_top_header{
+  .bill_view_top_header {
     align-items: center;
     padding: 10px;
-    border-bottom: 0.5px dashed #FFFFFF;
+    border-bottom: 0.5px dashed #ffffff;
   }
-  .mandi_details_header{
+  .mandi_details_header {
     padding: 10px 10px 0px 10px;
   }
   .mandi_logo {
     font-size: 16px;
     font-weight: 600;
   }
-  .credit_bill{
+  .credit_bill {
     font-size: 12px;
     color: var(--ono-yellow);
     font-weight: 700;
     text-transform: uppercase;
   }
-  .shop_no{
+  .shop_no {
     margin-left: auto;
   }
-  .mandi_circle{
+  .mandi_circle {
     border-radius: 100%;
     background-color: var(--ono-yellow);
     padding: 10px;
@@ -738,21 +782,22 @@ article.on {
     color: var(--ono-primary);
     justify-content: center;
     margin: 0 auto;
-   .shop_number{
-     line-height: 16px;
-   }
+    .shop_number {
+      line-height: 16px;
+    }
   }
-  .billid_date_bg{
+  .billid_date_bg {
     border-radius: 15px 15px 0px 0px;
-    background-color:#0C7A1E;
+    background-color: #0c7a1e;
     margin-top: 10px;
     padding: 5px 0px;
   }
 }
-.bill_crop_details{
-  border: 1px solid var(--ono-primary);
+.bill_crop_details {
+  border: 2px solid var(--ono-primary);
   border-top: 0px;
   border-radius: 0px 0px 10px 10px;
+  background:#FFFFFF ;
 }
 .small_text {
   font-size: 10px;
@@ -765,18 +810,83 @@ article.on {
   font-size: 32px;
   font-weight: 700;
 }
-.partner_info{
-  p{
-    color: #4D4D4D;
+.partner_info {
+  p {
+    color: #4d4d4d;
     font-weight: 600;
   }
-  h6{
+  h6 {
     color: #121212;
     font-weight: 700;
   }
 }
-.partner_info_padding{
+.total-qty{
+  color: #121212;
+  font-weight: 700;
+font-size: 10px;
+}
+.partner_info_padding {
   padding: 5px 20px;
+}
+.more-inf-tag{
+background: #FFFFFF;
+border: 1px solid #E4E4E4;
+border-radius: 10px;
+}
+.more-info{
+  padding:10px 20px;
+}
+.buy-dtl{
+  padding: 10px 0px;
+  width: 100%;
+}
+.actions{
+  padding: 5px 20px;
+}
+.more-p-tag{
+  font-weight: 600;
+font-size: 15px;
+color: #1C1C1C;
+}
+.buyer_img{
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  margin-right: 5px;
+}
+.b-cr-by,.d-a-time{
+  color: #4D4D4D;
+  font-weight: 600;
+  font-size: 10px
+}
+.b-name{
+  font-weight: 600;
+font-size: 13px;
+color: #121212;
+}
+.d-a-value{
+  font-weight: 600;
+font-size: 13px;
+color: #121212;
+word-wrap: normal;
+}
+.hr-line{
+  border-bottom: 1px solid  #EFF3EF;
+  width: 100%;
+}
+.table-bordered th{
+  color: #121212;
+  // font-size: 12px;
+}
+.bill_view th,td{
+  font-size: 12px;
+}
+.crop-tbl{
+  td{
+    font-size: 12px;
+    color: #121212;
+  }
+  
 }
 // .table > :not(:first-child) {
 //   border-top: 0;
@@ -789,104 +899,173 @@ article.on {
 //   font-size: 12px;
 //   color: #121212;
 // }
-.crop_image_bill{
+.crop_image_bill {
   width: 35px;
   margin-right: 10px;
 }
-.red_text{
+.red_text {
   color: var(--ono-red);
 }
-.total_value{
+.total_value {
   font-size: 12px;
   color: #121212;
   font-weight: 700;
 }
-.gross_profit{
-  background-color: #D7F3DD;
+.color_blue{
+  cursor: pointer;
+}
+.hrs-line{
+  border-bottom: 0.5px dashed #4D4D4D;
+  width: 100%;
+}
+.gross_profit {
+  background-color: #d7f3dd;
   padding: 5px;
   border-bottom: 1px solid #4d4d4d;
 }
-.col_border_left{
+.col_border_left {
   border-left: 0.5px solid var(--ono-primary);
 }
-.clo{
+.clo {
   font-size: 20px;
   font-weight: 500;
 }
-.bg_y{
+.bg_y {
   background-color: yellow;
 }
-.bg_b{
+.bg_b {
   background-color: blue;
 }
 .buy_bills_view {
   overflow-y: auto;
-  height: calc(100vh - 260px);
+  height: calc(100vh - 72px);
+}
+.groups_value{
+  font-weight: 700;
+  font-size: 10px;
+  color: #121212;
+}
+.align-items{
+  text-align: left;
+}
+.group-one-total{
+  //padding-left: 240px;
+  background: #D7F3DD;
+  width: 100%;
+  font-size: 10px;
+}
+.total-pay{
+  padding-left: 65px;
+}
+.total-pay p{
+  color: #121212;
+  font-weight: 700;
+  font-size: 10px;
+}
+.pay-value{
+  padding-left: 68px;
+}
+.out-value{
+  padding-top: 5px;
+  color:#000;
+   font-size: 12px;
+}
+.hr-line-in-totals{
+  border-bottom: 0.5px solid #4D4D4D;
+  width: 100%;;
+}
+.out-st-bal{
+  background: #D7F3DD;
+  // border-bottom-left-radius: 8px;
+  // border-bottom-right-radius: 8px;
+}
+.ono-footer{
+  padding:5px 5px;
+  color: #121212;
+  font-weight: 700;
+  font-size: 10px;
+  font-family: 'Manrope';
+}
+.footer-img{
+  padding:5px 5px;
+}
+.out-st{
+  padding-left: 60px;
+  padding-top: 5px;
+   color:#000;
+   font-size: 12px;
 }
 // calenderr popup styles
-.dates_div{
-  label{
+.dates_div {
+  label {
     font-size: 13px;
     font-weight: 500;
-    color: #4D4D4D;
+    color: #4d4d4d;
     // margin-right: 25px;
     margin-left: 5px;
+    margin-bottom: 0px;
   }
   display: flex;
   padding: 20px;
   justify-content: space-between;
-  border-bottom: 1px solid #E4E4E4;
+  border-bottom: 1px solid #e4e4e4;
 }
-.date_modal_mody{
+.date_modal_mody {
   padding: 0px;
 }
-.date_modal_header{
+.date_modal_header {
   border-bottom: 0px;
   padding-bottom: 0px;
 }
-.calender_popup article{
+.calender_popup article {
   padding: 20px;
 }
-.date_modal_dialog{
+.date_modal_dialog {
   max-width: 450px;
 }
-.month_picker .react-datepicker__month{
+.month_picker .react-datepicker__month {
   margin: 0px;
 }
-.date_picker .react-datepicker, .date_picker .react-datepicker__month-container, .month_picker .react-datepicker, .month_picker .react-datepicker__month-container, .custom_picker .react-datepicker, .custom_picker .react-datepicker__month-container{
+.date_picker .react-datepicker,
+.date_picker .react-datepicker__month-container,
+.month_picker .react-datepicker,
+.month_picker .react-datepicker__month-container,
+.custom_picker .react-datepicker,
+.custom_picker .react-datepicker__month-container {
   width: 100%;
 }
-.calender_popup .react-datepicker{
+.calender_popup .react-datepicker {
   border: none;
 }
-.calender_popup .react-datepicker__header{
+.calender_popup .react-datepicker__header {
   background-color: transparent;
   border-bottom: 0px;
 }
-.calender_popup .react-datepicker__week, .calender_popup .react-datepicker__day-names,
-.month_picker .react-datepicker__month-wrapper{
+.calender_popup .react-datepicker__week,
+.calender_popup .react-datepicker__day-names,
+.month_picker .react-datepicker__month-wrapper {
   display: flex;
   justify-content: space-between;
 }
-.calender_popup .react-datepicker__month{
-margin: 0px;
+.calender_popup .react-datepicker__month {
+  margin: 0px;
 }
-.react-datepicker__year-wrapper{
+.react-datepicker__year-wrapper {
   // max-width: 230px!important;
 }
-.custom_input_div{
+.custom_input_div {
   margin-bottom: 20px;
 }
-.react-datepicker__input-container{
-  display: block!important;
+.react-datepicker__input-container {
+  display: block !important;
 }
-.react-datepicker__input-container input{
+.react-datepicker__input-container input {
   font-size: 14px;
   color: var(--ono-blue);
   border: 1px solid #c2c2c2;
   border-radius: 4px;
   padding: 5px 10px;
 }
-.calender_popup{
+.calender_popup {
   font-size: 13px;
 }

@@ -22,7 +22,9 @@ import TransportoLedger from "../modules/transporto_ledger/transportoLedger";
 import Registration from "../modules/registration/registration";
 import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
-
+import Step1 from "../modules/buy_bill_book/step1";
+import SellebillStep1 from "../modules/sell_bill_book/step1";
+import SellBillView from "../modules/sell_bill_book/sellBillView";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
 
@@ -57,39 +59,30 @@ const RoutesConfig = () => {
           );
         } else if (id === loginData.clickId.toString()) {
           // console.log(loginData, localStorage.getItem("status"));
-          const savePref =
+          /*const savePref =
             localStorage.getItem("status") == null
               ? ""
-              : localStorage.getItem("status");
+              : localStorage.getItem("status");*/
+              const planStatus=localStorage.getItem("statusPlan") == "FAILURE"?
+              "" : localStorage.getItem("statusPlan");
+              console.log(planStatus);
           return (
             <BrowserRouter>
-              {savePref == "SUCCESS" ? (
+              {planStatus === "SUCCESS" ? (                
                 <Layout>
                   <Routes>
+                    <Route path="/" element={<SmartBoard />} />
                     <Route path="/smartboard" element={<SmartBoard />} />
                     <Route path="/buy_bill_book" element={<BuyBillBook />} />
                     <Route path="/bill_creation" element={<BillCreation />} />
                     <Route path="/bill_view/:billId" element={<BillView />} />
+                    <Route path="/sell_bill_view/:billId" element={<SellBillView />} />
                     <Route path="/calender" element={<Calender />} />
                     <Route path="/buyerledger" element={<BuyerLedger />}>
-                      {/* <Route
-                        path="ledgersummary/:partyId"
-                        element={<LedgerSummary />}
-                      />
-                      <Route
-                        path="detailedledger/:partyId"
-                        element={<DetailedLedger />}
-                      /> */}
+                    
                     </Route>
                     <Route path="/sellerledger" element={<SellerLedger />}>
-                      {/* <Route
-                        path="sellerledgersummary/:partyId"
-                        element={<SellerLedgerSummary />}
-                      />
-                      <Route
-                        path="sellerdetailedledger/:partyId"
-                        element={<SellerDetailedLedger />}
-                      /> */}
+                     
                     </Route>
                     <Route path="/partner" element={<Partner />} />
                     <Route path="/myprofile" element={<MyProfile />} />
@@ -100,11 +93,21 @@ const RoutesConfig = () => {
                       path="/transportoledger"
                       element={<TransportoLedger />}
                     />
+                    <Route
+                      path="/step1"
+                      element={<Step1 />}
+                    />
+                     <Route
+                      path="/sellbillstep1"
+                      element={<SellebillStep1 />}
+                    />
+                   
                   </Routes>
                 </Layout>
               ) : (
                 <Routes>
                   <Route path="/preferredCrops" element={<PreferredCrops />} />
+                  <Route path="/plans" element={<SubscriptionPlans />} />
                 </Routes>
               )}
             </BrowserRouter>
@@ -113,35 +116,25 @@ const RoutesConfig = () => {
       } else {
         // console.log(loginData, "login data after succesful registration");
         // console.log(localStorage.getItem("registerData"), "aftter data");
+        
         return (
           <BrowserRouter>
             <Layout>
               <Routes>
-                <Route path="/plans" element={<SubscriptionPlans />} />
+                {
+                  // localStorage.setItem("LinkId","1")
+                }
+                <Route path="/" element={<SmartBoard />} />
                 <Route path="/smartboard" element={<SmartBoard />} />
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />
                 <Route path="/bill_view/:billId" element={<BillView />} />
+                <Route path="/sell_bill_view/:billId" element={<SellBillView />} />
                 <Route path="/calender" element={<Calender />} />
                 <Route path="buyerledger" element={<BuyerLedger />}>
-                  {/* <Route
-                    path="ledgersummary/:partyId"
-                    element={<LedgerSummary />}
-                  />
-                  <Route
-                    path="detailedledger/:partyId"
-                    element={<DetailedLedger />}
-                  /> */}
                 </Route>
                 <Route path="sellerledger" element={<SellerLedger />}>
-                  {/* <Route
-                    path="sellerledgersummary/:partyId"
-                    element={<SellerLedgerSummary />}
-                  />
-                  <Route
-                    path="sellerdetailedledger/:partyId"
-                    element={<SellerDetailedLedger />}
-                  /> */}
+               
                 </Route>
                 <Route path="/partner" element={<Partner />} />
                 <Route path="/myprofile" element={<MyProfile />} />
@@ -152,6 +145,14 @@ const RoutesConfig = () => {
                   path="/transportoledger"
                   element={<TransportoLedger />}
                 />
+                  <Route
+                      path="/step1"
+                      element={<Step1 />}
+                    />
+                       <Route
+                      path="/sellbillstep1"
+                      element={<SellebillStep1 />}
+                    />
               </Routes>
             </Layout>
           </BrowserRouter>

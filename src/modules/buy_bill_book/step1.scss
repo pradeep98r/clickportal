@@ -1,0 +1,110 @@
+.selectparty_field, .date_col{
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #E4E4E4;
+    padding:20px; 
+    border-radius: 10px;
+    height: 80px;
+    p{
+        color: #1C1C1C;
+        font-size: 13px;
+        font-weight: 600;
+    }
+}
+.selectparty_field:hover{
+    cursor: pointer;
+}
+.partners_div {
+    background-color: #fff;
+    position: absolute;
+    z-index: 99;
+    border: 1px solid #e4e4e4;
+    box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    width: 100%;
+    border-bottom: 0px;
+    overflow-y: auto;
+    height: calc(100vh - 200px);
+    ul{
+        margin: 0px;
+    }
+    li{
+        padding: 5px;
+        border-bottom: 1px solid #e4e4e4;
+       :hover{
+           cursor: pointer;
+       } 
+    }
+    .partner_card{
+        padding: 4px;
+    }
+    li.active_class{ 
+        .partner_card{
+            background-color:#D7F3DD;
+            border-radius: 10px;
+            border: 1px solid #16A12C;
+        }
+    }
+    .searchparty{
+        padding: 10px;
+        .form-control{
+            border-radius: 10px;
+        }
+        ::placeholder{
+            color: #16A12C;
+            text-align: left;
+            padding-left: 0;
+        }
+    }
+  }
+  .date_col{ 
+      padding: 21px 20px;
+      .react-datepicker-wrapper{
+      width: auto;
+  }
+  label{
+      color: var(--ono-blue);
+      :hover{
+          cursor: pointer;
+      }
+  }
+  .custom-control-input{
+      opacity: 1;
+      border: 1px solid #e4e4e4;
+      margin-top: 3px;
+  }
+  .react-datepicker__input-container input{
+      border: 1px solid #e4e4e4;
+      margin-bottom: 0px;
+      width: 120px;
+      text-align: center;
+  }
+  .form-control:focus{
+      border-color: 1px solid var(--ono-blue)!important;
+  }
+  .react-datepicker {
+    border: 0px;
+    padding: 15px;
+    margin-top: 50px;
+    box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+  }
+  .react-datepicker__header {
+    background-color: var(--ono-white);
+    border-bottom: 0px;
+  }
+  .react-datepicker__navigation {
+    top: 25px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 15px;
+  }
+  .react-datepicker__navigation--next {
+    right: 15px;
+  }
+  .react-datepicker-popper[data-placement^="bottom"] {
+    padding-top: 0px;
+    transform: translate3d(5px, 35.5px, 0px) !important;
+  }
+}
+

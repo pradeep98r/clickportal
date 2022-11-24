@@ -10,16 +10,20 @@ import { completeMandiSetup, editMandiSetup } from "../../actions/loginService";
 import $ from "jquery";
 import { useSelector } from "react-redux";
 import { getAllMarkets } from "../../actions/loginService";
+import search_img from "../../assets/images/search.svg";
+import markets from "../../assets/images/markets_img.png";
+import { Fragment } from "react";
+
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
-  const mandiUserDetails = useSelector(
-    (state) => state.mandiInfo.isMandiDetails
-  );
   const [allMarketsData, setAllMarketsData] = useState([]);
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
   useEffect(() => {
     getAllMarkets().then(
       (response) => {
@@ -32,7 +36,7 @@ const CompleteProfile = (props) => {
   }, []);
   // mandi name
   const [mandiNameField, setMandiNameField] = useState(
-    mandiEditStatus ? mandiData.businessName : ""
+    mandiEditStatus === "true" ? mandiData.businessName : ""
   );
   const [mandiNameError, setMandiNameError] = useState("");
   const handleMandiName = (e) => {
@@ -42,7 +46,7 @@ const CompleteProfile = (props) => {
   };
   //   mandi type
   const [mandiTypeField, setMandiTypeField] = useState(
-    mandiEditStatus ? mandiData.businessType : ""
+    mandiEditStatus == "true" ? mandiData.businessType : ""
   );
   const [mandiTypeError, setMandiTypeError] = useState("");
   const handleMandiType = (e) => {
@@ -51,7 +55,7 @@ const CompleteProfile = (props) => {
   };
   //   mandi short code
   const [mandiShortCode, setMandiShortCode] = useState(
-    mandiEditStatus ? mandiData.shortCode : ""
+    mandiEditStatus == "true" ? mandiData.shortCode : ""
   );
   const [mandiShortCodeError, setMandiShortCodeError] = useState("");
   const handleMandiShortCode = (e) => {
@@ -69,7 +73,7 @@ const CompleteProfile = (props) => {
   };
   //   shop number
   const [shopNumberField, setShopNumberField] = useState(
-    mandiEditStatus ? mandiData.shopNum : ""
+    mandiEditStatus == "true" ? mandiData.shopNum : ""
   );
   const [shopNumberError, setShopNumberError] = useState("");
   const handleShopNumber = (e) => {
@@ -87,7 +91,7 @@ const CompleteProfile = (props) => {
   };
   //   contact name
   const [contactName, setContactName] = useState(
-    mandiEditStatus ? mandiData.contactName : ""
+    mandiEditStatus == "true" ? mandiData.contactName : ""
   );
   const [contactNameError, setContactNameError] = useState("");
   const handleContactName = (e) => {
@@ -96,14 +100,15 @@ const CompleteProfile = (props) => {
   };
   //   mobile number
   const [mobileNumber, setmobileNumber] = useState(
-    mandiEditStatus ? mandiData.mobile : ""
+    mandiEditStatus == "true" ? mandiData.mobile : ""
   );
+  const [marketname, setMarketName] = useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
   };
   const [alternateMobileNumber, setAlternateMobileNumber] = useState(
-    mandiEditStatus ? mandiData.altMobile : ""
+    mandiEditStatus == "true" ? mandiData.altMobile : ""
   );
   const [alternateMobileNumberError, setAlternateMobileNumberError] =
     useState("");
@@ -111,13 +116,13 @@ const CompleteProfile = (props) => {
     mobileNumberValidation(e, "alternateMobile");
   };
   const [pincode, setPincode] = useState(
-    mandiEditStatus ? mandiData.businessAddress.pincode : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.pincode : ""
   );
   const [cityVal, setCityVal] = useState(
-    mandiEditStatus ? mandiData.businessAddress.dist : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.dist : ""
   );
   const [stateVal, setStateVal] = useState(
-    mandiEditStatus ? mandiData.businessAddress.state : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.state : ""
   );
   //   common mobilenumber validation
   const mobileNumberValidation = (e, type) => {
@@ -141,7 +146,7 @@ const CompleteProfile = (props) => {
     else setAlternateMobileNumber(number);
   };
   const [streetVillage, setStreetVillage] = useState(
-    mandiEditStatus ? mandiData.businessAddress.addressLine : ""
+    mandiEditStatus == "true" ? mandiData.businessAddress.addressLine : ""
   );
   const [streetvillageError, setStreetvillageError] = useState("");
   const handleStreetName = (e) => {
@@ -185,25 +190,54 @@ const CompleteProfile = (props) => {
     }
   };
   const [submitStatus, setSubmitStatus] = useState(false);
+  const [pincodeError, setPincodeError] = useState('');
+  const [cityValError, setCityValError] = useState('');
+  const [stateValError, setStateValError] = useState('');
   const onSubmit = () => {
     if (
-      mandiNameField.trim().length !== 0
-      //   mobileNumber.trim().length !== 0 &&
-      //   shortNameField.trim().length !== 0
+      mandiNameField.trim().length !== 0 &&
+        mobileNumber.trim().length !== 0 &&
+        mandiShortCode.trim().length !== 0 && 
+        shopNumberField.trim().length !==0 && 
+        contactName.trim().length !==0 && marketname.trim().length !==0 && 
+        pincode.trim().length !==0
+        && cityVal.trim().length !==0 && stateVal.trim().length !==0 && 
+        streetVillage.trim().length !==0
     ) {
       addEditMandiSetupApiCall();
     } else if (mandiNameField.trim().length === 0) {
-      mandiNameError("Please Enter Name");
-      // alert("hii")
+      setMandiNameError("Please Enter Name");
     }
-    // else if (mobileNumber.trim().length === 0) {
-    //     requiredNumberField("Please Enter Mobile Number");
-    // } else if (shortNameField.trim().length === 0) {
-    //   setRequiredshortNameField("Please Enter Short Name");
-    // }
+   else if (mandiShortCode.trim().length === 0) {
+      setMandiShortCodeError("Please Enter Short Code");
+    }
+    else if(shopNumberField.trim().length === 0) {
+      setShopNumberError("Please Enter Shop Number");
+    }
+    else if (mobileNumber.trim().length === 0) {
+      setRequiredNumberField("Please Enter Mobile Number");
+    } 
+    else if(contactName.trim().length === 0) {
+      setContactNameError("Please Enter Contact Name");
+    }
+    else if(pincode.trim().length === 0){
+      setPincodeError("Please enter pincode")
+    }
+    else if(cityVal.trim().length === 0){
+      setCityValError("Please enter city/dist")
+    }
+    else if(stateVal.trim().length === 0){
+      setStateValError("Please enter state")
+    }
+    else if(streetVillage.trim().length === 0){
+      setStreetvillageError("Please enter street or village")
+    }
   };
+  console.log(mandiData.businessId);
+  console.log(mandiData.marketId);
   const obj = {
-    altMobile: mandiEditStatus ? mandiData.altMobile : alternateMobileNumber,
+    altMobile:
+      mandiEditStatus == "true" ? mandiData.altMobile : alternateMobileNumber,
     businessAddress: {
       addressLine: streetVillage,
       city: cityVal,
@@ -212,19 +246,19 @@ const CompleteProfile = (props) => {
       state: stateVal,
       type: "BUSINESS",
     },
-    businessId: mandiEditStatus ? mandiData.businessId : 0,
+    businessId: mandiEditStatus == "true" ? mandiData.businessId : 0,
     businessName: mandiNameField,
     businessType: mandiTypeField,
     contactName: contactName,
     imageUrl: "string",
-    marketId: mandiEditStatus ? mandiData.marketId : selectMarketId,
+    //marketId: (mandiEditStatus == 'true') ? mandiData.marketId : selectMarketId,
     mobile: mobileNumber,
-    otherMarket: "string",
+    otherMarket: marketname ? marketname : "", //"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
   };
   const addEditMandiSetupApiCall = () => {
-    if (mandiEditStatus) {
+    if (mandiEditStatus == "true") {
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -263,6 +297,9 @@ const CompleteProfile = (props) => {
       alert("Sorry, Geolocation is not supported by this browser.");
       // Alert is browser does not support geolocation
     }
+    setPincodeError("");
+    setCityValError("");
+    setStateValError("");
   };
   const posError = () => {
     if (navigator.permissions) {
@@ -331,6 +368,9 @@ const CompleteProfile = (props) => {
         fillCityAndStateFields(possibleLocalities);
       });
     }
+    setPincodeError("");
+    setCityValError("");
+    setStateValError("");
   };
 
   function fillCityAndStateFields(localities) {
@@ -396,17 +436,69 @@ const CompleteProfile = (props) => {
     console.log(e.target.value);
     setSelectedOption(e.target.value);
     allMarketsData.map((item) => {
-      if (item.marketName == e.target.value) {
-        console.log(item.marketId,"id");
-        setSelectedMarketId(item.marketId)
+      if (item.marketName === e.target.value) {
+        console.log(item.marketId, "id");
+        setSelectedMarketId(item.marketId);
       }
     });
+  };
+  const openMarketNamePopUpModal = () => {
+    $("#marketNamePopUpModal").modal("show");
+  };
+  const closePopup = () => {
+    $("#marketNamePopUpModal").modal("hide");
+  };
+
+  const openOtheModalPopUp = () => {
+    $("#otherModalPopUp").modal("show");
+  };
+  const closeOtheModalPopUp = () => {
+    $("#otherModalPopUp").modal("hide");
+  };
+  const handleMarketName = () => {
+    openMarketNamePopUpModal();
+    console.log("Drop Down Cicked");
+  };
+  const [search, setSearch] = useState("");
+  const [marketName, setMarketname] = useState([]);
+  const searchMarketName = (searchValue) => {
+    setSearch(searchValue);
+    if (search !== "") {
+      const filteredNames = allMarketsData.filter((item) => {
+        return item.marketName.toLowerCase().includes(search.toLowerCase());
+      });
+      setMarketname(filteredNames);
+    } else {
+      setMarketname(allMarketsData);
+    }
+  };
+
+  const handleOtherName = () => {
+    openOtheModalPopUp();
+    setMarketName(marketname);
+  };
+  const handleMarketSelection = (name) => {
+    if (name.toLowerCase().includes("other")) {
+      //openOtheModalPopUp();
+      //setMarketName(marketname)
+      handleOtherName();
+      console.log("other");
+    } else {
+      setMarketName(name);
+      console.log(name, "mkName");
+      closePopup();
+    }
+  };
+  const handleOtherMarketName = (e) => {
+    setMarketname(e.target.value);
+    closeOtheModalPopUp();
+    closePopup();
   };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          Mandi Details
+          {langFullData.businessDetails}
         </h5>
         <img
           src={close}
@@ -420,17 +512,176 @@ const CompleteProfile = (props) => {
           <div className="row">
             <div className="col-lg-6">
               <label htmlFor="zip" className="input_field">
-                Market Name*
+                {langFullData.marketName+"*"}
               </label>
-              <select
+              {/*<select*/}
+              <input
                 className="form-control"
-                value={selectMarket}
-                onChange={selectedValue}
-              >
-                {allMarketsData.map((market) => (
+                //value={selectMarket}
+                //placeholder="Select Market Name"
+                value={marketname ? marketname : langFullData.selectMarketName}
+                //onChange={selectedValue}
+                onClick={handleMarketName}
+              />
+              {/*</div>{allMarketsData.map((market) => (
                   <option value={market.marketName}>{market.marketName}</option>
                 ))}
-              </select>
+              </select>*/}
+              <div className="modal fade" id="marketNamePopUpModal">
+                <div className="modal-dialog modal-dialog-centered market_modal_dialog market_name_popup">
+                  <div className="modal-content" id="market-modal-content">
+                    <div className="modal-header date_modal_header market_modal_header">
+                      <h5 className="modal-title header2_text" id="mk-header">
+                        Select Market
+                      </h5>
+                      <img
+                        src={close}
+                        alt="image"
+                        className="close_icon"
+                        onClick={closePopup}
+                      />
+                    </div>
+                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                      <div className="col-lg-6" id="market-div">
+                        <div id="search-mk-field">
+                          <form className="d-flex">
+                            <input
+                              className="form-control me-2 searchbar-input"
+                              id="searchbar-mk"
+                              type="text"
+                              value={search}
+                              placeholder={langFullData.searchByNameShortCode}
+                              onChange={(e) => {
+                                searchMarketName(e.target.value);
+                              }}
+                              
+                            />
+                          </form>
+                          <div className="searchicon">
+                            <img src={search_img} alt="search" />
+                          </div>
+                        </div>
+                        <div className="market-names" id="scroll_style">
+                          {allMarketsData.map((item, index) => {
+                            if (index === allMarketsData.length - 1)
+                              return (
+                                <div
+                                  id="mk-other-name"
+                                  onClick={(e) => {
+                                    handleOtherName(e);
+                                  }}
+                                >
+                                  <div className="d-flex" id="ot-m-img">
+                                    <img src={markets} alt="markets" />
+                                    <p id="mk-other-Name">{item.marketName}</p>
+                                  </div>
+                                </div>
+                              );
+                          })}
+                          {search.length > 1
+                            ? marketName.map((item) => {
+                                return (
+                                  <div
+                                    id="mk-name"
+                                    onClick={(name) => {
+                                      handleMarketSelection(item.marketName);
+                                    }}
+                                  >
+                                    <div className="d-flex">
+                                      <img src={markets} alt="markets" />
+                                      <p key={item.id} id="mk-Name">
+                                        {item.marketName}
+                                      </p>
+                                    </div>
+                                    <span id="hr-lines"></span>
+                                  </div>
+                                );
+                              })
+                            : allMarketsData.map((item) => {
+                                return (
+                                  <Fragment>
+                                    <div
+                                      id="mk-name"
+                                      onClick={(name) => {
+                                        handleMarketSelection(item.marketName);
+                                      }}
+                                    >
+                                      <div className="d-flex">
+                                        <img src={markets} alt="markets" />
+                                        <p key={item.id} id="mk-Name">
+                                          {item.marketName}
+                                        </p>
+                                      </div>
+
+                                      <span id="hr-lines"></span>
+                                    </div>
+                                  </Fragment>
+                                );
+                              })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal fade" id="otherModalPopUp">
+                <div className="modal-dialog modal-dialog-centered date_modal_dialog market_name_popup">
+                  <div className="modal-content" id="other-modal-content">
+                    <div className="modal-header date_modal_header market_modal_header">
+                      <h5 className="modal-title header2_text" id="mk-header">
+                        Select Market
+                      </h5>
+                      <img
+                        src={close}
+                        alt="image"
+                        className="close_icon"
+                        onClick={closeOtheModalPopUp}
+                      />
+                    </div>
+                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                      <div className="col-lg-6" id="market-div">
+                        <div id="search-mk-field">
+                          <form className="d-flex">
+                            <input
+                              className="form-control me-2 searchbar-input"
+                              id="searchbar-mk"
+                              type="text"
+                              value={"OTHER"}
+                              onChange={(e) => {
+                                searchMarketName(e.target.value);
+                              }}
+                            />
+                          </form>
+                        </div>
+                        <div id="search-mk-field">
+                          <InputField
+                            type="text"
+                            //value={mandiTypeField}
+                            label={langFullData.marketName}
+                            name="marketName"
+                            id="marketName"
+                            onChange={(e) => {
+                              setMarketName(e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="modal-footer p-0">
+                      <button
+                        type="button"
+                        className="primary_btn cont_btn w-100 m-0"
+                        onClick={(e) => {
+                          handleOtherMarketName(e);
+                        }}
+                      >
+                        {langFullData.continue_}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* <InputField
                 type="text"
@@ -443,7 +694,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mandiTypeField}
-                label="Mandi Type"
+                label={langFullData.businessType}
                 name="mandiType"
                 id="mandiType"
                 onChange={(e) => {
@@ -465,7 +716,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={shopNumberField}
-                label="Shop Number*"
+                label={langFullData.shopNumber+"*"}
                 name="shopNumber"
                 id="shopNumber"
                 onChange={(e) => {
@@ -476,18 +727,20 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mobileNumber}
-                label="Mobile Number*"
+                label={langFullData.mobileNumber+"*"}
                 name="mobileNumber"
                 id="mobileNumber"
                 onChange={(e) => {
                   handleMobileNumber(e);
                 }}
               />
-              <span className="text-danger">{requiredNumberField}</span>
-              <label className="input_field address_text mt-0">Address</label>
+             <div>
+             <span className="text-danger">{requiredNumberField}</span>
+             </div>
+              <label className="input_field address_text mt-0">{langFullData.address}</label>
               <div>
                 <label htmlFor="zip" className="input_field">
-                  Pincode*
+                  {langFullData.pincode+"*"}
                 </label>
                 <div>
                   <input
@@ -503,12 +756,13 @@ const CompleteProfile = (props) => {
                   />
                 </div>
               </div>
+              <span className="text-danger">{pincodeError}</span>
               <div>
                 <label htmlFor="city" className="input_field">
                   City*
                 </label>
                 <div id="city-input-wrapper">
-                  {mandiEditStatus ? (
+                  {mandiEditStatus == "true" ? (
                     <div>
                       <InputField
                         type="text"
@@ -522,12 +776,13 @@ const CompleteProfile = (props) => {
                   )}
                 </div>
               </div>
+              <span className="text-danger">{cityValError}</span>
             </div>
             <div className="col-lg-6">
               <InputField
                 type="text"
                 value={mandiNameField}
-                label="Mandi Name*"
+                label={langFullData.businessName+"*"}
                 name="mandiName"
                 id="mandiName"
                 onChange={(e) => {
@@ -537,7 +792,7 @@ const CompleteProfile = (props) => {
               <span className="text-danger">{mandiNameError}</span>
               <div>
                 <label htmlFor="pic" className="input_field">
-                  Profile Pic
+                  {langFullData.profilePic}
                 </label>
                 <div className="file-input">
                   <div className="d-flex align-items-center">
@@ -558,7 +813,7 @@ const CompleteProfile = (props) => {
                         //   onChange={(e) => setFile(e.target.files[0])}
                       />
                       <label htmlFor="file" className="file">
-                        Choose from library
+                        {langFullData.chooseFromLibrary}
                       </label>
                     </div>
                   </div>
@@ -567,7 +822,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={contactName}
-                label="Contact Name*"
+                label={langFullData.contactName+"*"}
                 name="contactName"
                 id="contactName"
                 onChange={(e) => {
@@ -578,7 +833,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={alternateMobileNumber}
-                label="Alternative Mobile"
+                label={langFullData.alternativeMobile}
                 name="alternativeMobile"
                 id="alternativeMobile"
                 onChange={(e) => {
@@ -587,14 +842,14 @@ const CompleteProfile = (props) => {
               />
               <span className="text-danger">{alternateMobileNumberError}</span>
               <div onClick={() => getPosition()} className="location mt-0">
-                Select Current Location
+                {langFullData.selectCurrentLocation}
               </div>
 
               <div>
                 <label htmlFor="state" className="input_field">
-                  State*
+                  {langFullData.state}
                 </label>
-                {mandiEditStatus ? (
+                {mandiEditStatus == "true" ? (
                   <input
                     id="state"
                     className="form-control"
@@ -605,10 +860,11 @@ const CompleteProfile = (props) => {
                   <input id="state" className="form-control" name="state" />
                 )}
               </div>
+              <span className="text-danger">{stateValError}</span>
               <InputField
                 type="text"
                 value={streetVillage}
-                label="Street & Village*"
+                label={langFullData.streetVillage+"*"}
                 name="name"
                 onChange={(e) => {
                   handleStreetName(e);
@@ -619,8 +875,7 @@ const CompleteProfile = (props) => {
           </div>
           <div className="row">
             <span className="pl-3 note_text">
-              Please keep correct Business Address as this address is displayed
-              on your cash bills
+              {langFullData.pleaseKeepCorrectBusinessAddressAsThisAddressIsDisplayed}
             </span>
           </div>
         </form>
@@ -630,7 +885,7 @@ const CompleteProfile = (props) => {
         <button
           type="button"
           className="primary_btn"
-          // onClick={props.close}
+          // onClick={props.close onSubmit()}
           onClick={() => onSubmit()}
         >
           Submit

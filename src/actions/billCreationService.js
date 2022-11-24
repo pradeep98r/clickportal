@@ -8,9 +8,15 @@ export function deletePartnerId(partyId, clickId) {
     `/common/reset/caId/${clickId}/partyId/${partyId}?clearPartner=true`
   );
 }
-export function getBuyBills(clickId) {
+export function getBuyBills(clickId, fromDate, toDate) {
+  console.log(fromDate,toDate);
   return axiosCommon.get(
-    `/click/bills/buy-bill/caId/${clickId}?fromDate=2022-01-01&toDate=2022-12-30`
+    `/click/bills/buy-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}`
+  );
+}
+export function getSellBills(clickId, fromDate, toDate) {
+  return axiosCommon.get(
+    `/click/bills/sell-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
 export function editPartnerItem(obj) {
@@ -19,7 +25,7 @@ export function editPartnerItem(obj) {
 export function getPartnerData(clickId, type) {
   return axiosCommon.get(`/account/partners/caId/${clickId}/partyType/${type}`);
 }
-export function getBuyerLedgers(clickId, clientId, clientSecret) {
+export function getBuyerLedgers(clickId) {
   return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/BUYER`);
 }
 
@@ -49,15 +55,17 @@ export function getSellerDetailedLedgerByDate(clickId,partyId,fromDate,toDate,cl
 export function getBuyerDetailedLedger(
   clickId,
   partyId,
-  clientId,
-  clientSecre
 ) {
   return axiosCommon.get(
     `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
-
-export function getSelleLedgers(clickId, clientId, clientSecre){
+export function getOutstandingBal(clickId,partyId,){
+  return axiosCommon.get(
+    `/click/ledgers/balance/caId/${clickId}/partyId/${partyId}`
+  );
+}
+export function getSelleLedgers(clickId){
   return axiosCommon.get(
     `/click/ledgers/caId/${clickId}/type/SELLER`
   );
@@ -66,23 +74,15 @@ export function getSelleLedgers(clickId, clientId, clientSecre){
 export function getSellerDetailedLedger(
   clickId,
   partyId,
-  clientId,
-  clientSecret
 ) {
   return axiosCommon.get(
     `/account/reports/seller-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
-export function getPreferredCrops(clickId, clientId, clientSecret) {
-  return axios.get(
-    `https://dev-api.onoark.com/v1/account/preferences/caId/${clickId}/prefType/CROP`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "client-id": clientId,
-        "client-secret": clientSecret,
-      },
-    }
+export function getPreferredCrops(clickId) {
+  return axiosCommon.get(
+    `/account/preferences/caId/${clickId}/prefType/CROP`,
+   
   );
 }
 export function getAllCrops() {
@@ -90,36 +90,35 @@ export function getAllCrops() {
 
   });
 }
-export function getSystemSettings(clickId, clientId, clientSecret) {
-  return axios.get(
-    `https://dev-api.onoark.com/v1/click/bcp-settings/caId/371`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "client-id": "klT68w3ey9apljo",
-        "client-secret": "cqFHj2glsqVLHq0bA80zmNqzu",
-      },
-    }
+export function getSystemSettings(clickId) {
+  return axiosCommon.get(
+    `/click/bcp-settings/caId/${clickId}`
   );
 }
 
-export function getMandiDetails(clickId, clientId, clientSecret) {
-  let config = {
-    headers: {
-      "Content-Type": "application/json",
-      "client-id": clientId,
-      "client-secret": clientSecret,
-    },
-  };
-  return axios.get(
-    `https://dev-api.onoark.com/v1/account/click/profiles/caId/${clickId}`,
-    config
+export function getMandiDetails(clickId) {
+  return axiosCommon.get(
+    `/account/click/profiles/caId/${clickId}`
   );
 }
-export function postRecordPayment(addRecordPaymentReq, clientId, clientSecret) {
+export function postRecordPayment(addRecordPaymentReq) {
   return axiosCommon.post(
-    `https://dev-api.onoark.com/v1/click/ledgers/payment/record`,
+    `/click/ledgers/payment/record`,
     addRecordPaymentReq
+  );
+}
+export function postbuybillApi(billRequestObj) {
+  console.log(billRequestObj,"object");
+  return axiosCommon.post(
+    "/click/bills/buy-bill",
+    billRequestObj,  
+  );
+}
+export function postsellbillApi(billRequestObj) {
+  console.log(billRequestObj,"object");
+  return axiosCommon.post(
+    "/click/bills/sales-bill",
+    billRequestObj,  
   );
 }
 export default {
@@ -137,19 +136,7 @@ export default {
   postRecordPayment,
   getLedgerSummaryByDate,
   getDetailedLedgerByDate,
-  getSellerDetailedLedgerByDate
+  getSellerDetailedLedgerByDate,
+  postbuybillApi,
+  getOutstandingBal
 };
-
-// export function getBuyBills(clickId, clientId, clientSecret) {
-//   let config = {
-//     headers: {
-//       "Content-Type": "application/json",
-//       "client-id": clientId,
-//       "client-secret": clientSecret,
-//     },
-//     params: { fromDate: "2022-06-27", toDate: "2022-06-27" },
-//   }
-//   return axios.get(
-//     `https://dev-api.onoark.com/v1/click/bills/buy-bill/caId/${clickId}`,config
-//   );
-// }

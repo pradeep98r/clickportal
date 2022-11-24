@@ -29,7 +29,13 @@ a:hover {
   background-color: var(--ono-white);
 }
 .main_div_padding {
-  padding: 20px;
+  padding:25px 20px 20px;
+}
+ul {
+  li{
+    list-style: none;
+  }
+  padding-left: 0px;
 }
 :root {
   --ono-primary: #16a12c;
@@ -54,7 +60,7 @@ a:hover {
   color: var(--ono-primary-text);
 }
 .main_div {
-  width: calc(100% - 210px);
+  width: calc(100% - 210px)!important;
   overflow-x: hidden;
 }
 .main_wrapper {
@@ -68,12 +74,13 @@ a:hover {
   padding: 25px;
   width: 100%;
   h1 {
-    font-size: var(--main-heading);
+    font-size: 22px;
   }
 }
 .flex_class {
   display: flex;
   align-items: center;
+  margin-right: 30px;
 }
 .primary_btn,
 .btn_white,
@@ -134,7 +141,7 @@ a:hover {
   border-radius: 10px;
   p {
     font-size: var(--btn-text);
-    color: var(--ono-primary-text);
+    color: var(--ono-primary-text)!important;
     margin-top: 20px;
   }
 }
@@ -255,4 +262,25 @@ a:hover {
   font-size: 13px;
   color: #121212!important;
   margin-top: 5px;
+}
+// calender
+.samrtboard_calender {
+  .react-datepicker {
+    width: 100%;
+  }
+  .react-datepicker__month-container {
+    width: 100%;
+  }
+  .react-datepicker__navigation {
+    top: 20px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 30px;
+  }
+  .react-datepicker__navigation--next {
+    right: 30px;
+  }
+  .modal-content {
+    border: none;
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect,  } from "react";
+import React, { useState, useEffect } from "react";
 import "../buy_bill_book/buyBillBook.scss";
 import {
   getPreferredCrops,
@@ -12,7 +12,7 @@ import CommissionCard from "../../components/commissionCard";
 import close from "../../assets/images/close.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
-import postbuybillApi from "../../actions/preferencesService";
+import postbuybillApi from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectSearch from "./selectSearch";
@@ -23,7 +23,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import SelectPartner from "./selectParty";
 var array = [];
 function BillCreation() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -33,7 +34,7 @@ function BillCreation() {
   let [responseData, setResponseData] = useState([]);
   let [allCropsData, allCropResponseData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
-  console.log(loginData)
+  console.log(loginData);
   // let [billSettingResponse, billSettingData] = useState(array);
 
   // api to fettch preferred crops data
@@ -60,18 +61,17 @@ function BillCreation() {
   useEffect(() => {
     fetchData();
   }, []);
-//  useDispatch(
-//   login({
-//     name: this.name,
-//     loggedIn: true,
-//   })
-// )
-// console.log(userName);
+  //  useDispatch(
+  //   login({
+  //     name: this.name,
+  //     loggedIn: true,
+  //   })
+  // )
+  // console.log(userName);
   // add crop in other crop popup model
   const addCropOnclick = (crop_item) => {
     setResponseData([...responseData, crop_item]);
     cropResponseData([...cropData, crop_item]);
-    
   };
   const [selectedOption, setSelectedOption] = useState();
   const [selectedQty, setSelected] = useState(
@@ -138,7 +138,7 @@ function BillCreation() {
   const [selectedPartner, setselectedPartner] = useState();
   let [partnerData, setpartnerData] = useState([]);
   const fetchPertnerData = () => {
-    getPartnerData(clickId,'')
+    getPartnerData(clickId, "FARMER")
       .then((response) => {
         setpartnerData(response.data.data);
         console.log(response.data, "buyer data");
@@ -191,7 +191,7 @@ function BillCreation() {
   };
   // post bill request api call
   const postbuybill = () => {
-    postbuybillApi(billRequestObj, clientId, clientSecret).then(
+    postbuybillApi(billRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.description, {
@@ -214,7 +214,17 @@ function BillCreation() {
       }
     );
   };
-
+  // new code
+  const [getPartyName, setGetPartyName] = useState(false);
+  const selectParty = () => {
+    setGetPartyName(true);
+  };
+  const [getPartyItem, setGetPartyItem] = useState(null);
+  const partySelect = (item) => {
+    console.log(item);
+    setGetPartyItem(item);
+    setGetPartyName(false);
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -223,6 +233,56 @@ function BillCreation() {
             <div className="col-lg-7 col_left">
               <div className="row row_margin_botton">
                 <div className="col-lg-5 column">
+                  <div onClick={selectParty}>
+                    {getPartyItem == null ? (
+                      "select farmer"
+                    ) : (
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <img src={single_bill} className="icon_user" />
+                        <div style={{ marginLeft: 5 }}>
+                          <span>{getPartyItem.partyName}</span>
+                          <p>{getPartyItem.mobile}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {getPartyName ? (
+                    partnerData.length > 0 ? (
+                      <div>
+                        <ul className="partners_div">
+                          {partnerData.map((item) => {
+                            return (
+                              <li
+                                key={item.partyId}
+                                className="nav-item"
+                                onClick={() => partySelect(item)}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <img
+                                    src={single_bill}
+                                    className="icon_user"
+                                  />
+                                  <div style={{ marginLeft: 5 }}>
+                                    <span>{item.partyName}</span>
+                                    <p>{item.mobile}</p>
+                                  </div>
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p></p>
+                    )
+                  ) : (
+                    <p></p>
+                  )}
                   {/* {partnerData.length > 0 ? (
                     <div>
                       <Select
@@ -365,7 +425,7 @@ function BillCreation() {
                                 type="radio"
                                 id="kg"
                                 value="kg"
-                                defaultChecked={"kg"}        
+                                defaultChecked={"kg"}
                               />
                               <label htmlFor="kg">Rate Per Kg</label>
                             </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import axiosCommon from "../axios";
 
-export function getTransporters(clickId, clientId, clientSecret) {
+export function getTransporters(clickId) {
     return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/TRANS`);
 }
 //get Particular Transporter
@@ -20,10 +20,15 @@ export function postRecordPayment(request, clientId, clientSecre){
 export function addRecordInventory(inventoryRequest, clientId, clientSecret){
     return axiosCommon.post(`/account/transporter/record/inventory`, inventoryRequest);
 }
+// get Inventory
+export function getInventory(clickId, transId, clientId,clientSecret){
+    return axiosCommon.get(`/account/transporter/caId/${clickId}/transId/${transId}`);
+}
 export default {
     getTransporters,
     getParticularTransporter,
     getInventoryLedgers,
     postRecordPayment,
-    addRecordInventory
+    addRecordInventory,
+    getInventory
 }

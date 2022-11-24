@@ -1,24 +1,26 @@
 import bell from "../../assets/images/navbar/Bell.svg";
 import help from "../../assets/images/navbar/Help.svg";
+import leftClick from "../../assets/images/left_click.png";
 import "./topNavigation.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 function TopNavigation() {
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
+  console.log(langFullData);
+
   const linkValue = localStorage.getItem("LinkId");
-  const linkPath = localStorage.getItem("LinkPath");
+  var linkPath = localStorage.getItem("LinkPath");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
   const logOutFunction = () => {
-    console.log("hey")
     caches.keys().then((names) => {
-
-      console.log("hey")
       names.forEach((name) => {
         caches.delete(name);
-        alert("hii")
+        alert("hii");
       });
     });
     localStorage.setItem("isauth", false);
@@ -31,23 +33,89 @@ function TopNavigation() {
     localStorage.removeItem("LinkPath");
     localStorage.removeItem("languageData");
     localStorage.setItem("LinkPath", "/smartboard");
-    console.log(loginUserDetails, "after clearing");
+    localStorage.setItem("statusPlan", "FAILURE");
+    localStorage.setItem("LinkId", "1");
+    localStorage.removeItem("businessCreatedStatus");
+  };
+  const singleBill = JSON.parse(localStorage.getItem("selectedBillData"));
+
+  var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
+  var stepone = JSON.parse(localStorage.getItem("stepOne"));
+  var stepOneSingleBill = JSON.parse(localStorage.getItem("stepOneSingleBook"));
+
+  const backToBuyBillBook = () => {
+    localStorage.setItem("billViewStatus", false);
+    localStorage.setItem("stepOne", false);
+    navigate("/buy_bill_book");
+  };
+  const backToSellBillBook = () => {
+    localStorage.setItem("billViewStatus", false);
+    localStorage.setItem("stepOneSingleBook", false);
+    navigate("/sellbillbook");
   };
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
         <div className="page_header">
           <h2>
-            {linkPath == "/smartboard" && "Smartboard"}
+            {/* {(linkValue == 1 || linkPath == "/smartboard") && "Smartboard"} */}
+            {linkValue == 1 && langFullData.smartBoard}
             {linkValue == 2 && "Smartchart"}
-            {linkValue == 3 && "Sell Bill Book"}
-            {linkPath == "/buy_bill_book" && "Buy Bill Book"}
+            {linkValue == 3 &&
+              "Sell Bill Book" &&
+              (billStatus === true ? (
+                <div className="d-flex">
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToSellBillBook}
+                    id="left_click_img"
+                  />
+                  <p id="bill_id">Bill ID : {singleBill.billId}</p>
+                </div>
+              ) : stepOneSingleBill === true ? (
+                <div className="d-flex">
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToSellBillBook}
+                    id="left_click_img"
+                  />
+                  <p id="bill_id">Add Sell Bill</p>
+                </div>
+              ) : (
+                langFullData.salesBillBook
+              ))}
+            {linkPath == "/buy_bill_book" &&
+              (billStatus === true ? (
+                <div className="d-flex">
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToBuyBillBook}
+                    id="left_click_img"
+                  />
+                  <p id="bill_id">Bill ID : {singleBill.billId}</p>
+                </div>
+              ) : stepone === true ? (
+                <div className="d-flex">
+                  <img
+                    src={leftClick}
+                    alt="left_click_img"
+                    onClick={backToBuyBillBook}
+                    id="left_click_img"
+                  />
+                  <p id="bill_id">Add Purchase Bill</p>
+                </div>
+              ) : (
+                langFullData.buyBillBook
+              ))}
             {linkValue == 5 && "Buyer Ledger"}
-            {linkValue == 6 && "Seller Ledger"}
-            {linkPath == "/partner" && "Partners"}
-            {linkValue == 8 && "My Profile"}
+            {linkValue == 6 && langFullData.sellerLedger}
+            {linkPath == "/partner" && langFullData.partners}
+            {linkValue == 8 && langFullData.myProfile}
             {linkValue == 9 && "Reports"}
-            {linkValue == 10 && "Transporto"}{" "}
+            {linkValue == 10 && langFullData.transporto}
           </h2>
           {linkValue == 11 && "Advances"}
         </div>
@@ -55,14 +123,14 @@ function TopNavigation() {
           <ul className="navbar-nav flex_class">
             <li className="nav-item">
               <div className="nav-link active" aria-current="page" href="#">
-                <form className="d-flex" role="search">
+                {/* <form className="d-flex" role="search">
                   <input
                     className="form-control search"
                     type="search"
                     placeholder="Search"
                     aria-label="Search"
                   />
-                </form>
+                </form> */}
               </div>
             </li>
             <li className="nav-item">
@@ -102,7 +170,7 @@ function TopNavigation() {
                     <p>
                       {loginUserDetails.profile.profile != null
                         ? loginUserDetails.profile.profile.mobile
-                        : "kk"}
+                        : ""}
                     </p>
                   </a>
                   <a className="dropdown-item" href="#">

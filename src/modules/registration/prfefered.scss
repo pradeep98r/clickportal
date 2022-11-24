@@ -42,3 +42,13 @@
 .cropItem_div{
   width: 120px;
 }
+// .search_div{
+  input[type=search]{
+    padding-left: 20px;
+  }
+// }
+input::placeholder{
+  padding-left: 0px;
+  left: 0px;
+  text-align: left;
+}

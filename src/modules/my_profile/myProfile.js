@@ -3,6 +3,11 @@ import { getProfile } from "../../actions/profileService";
 import NoDataAvailable from "../../components/noDataAvailable";
 import "../my_profile/myProfile.scss";
 import icon from "../../assets/images/icon.svg";
+import single_bill from "../../assets/images/bills/single_bill.svg";
+import edit from "../../assets/images/edit.svg";
+import globe from "../../assets/images/Vector.png";
+import contact from "../../assets/images/contact_img.png";
+import market_img from "../../assets/images/markets_img.png";
 import ProfileCard from "../../components/profileCard";
 import ProfileCardWithoutIcon from "../../components/profileCardWithoutIcon";
 import loading from "../../assets/images/loading.gif";
@@ -76,24 +81,51 @@ const MyProfile = () => {
   };
 
   const langFullData = JSON.parse(langData);
+  console.log(langFullData);
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
-      : "noo";
+      : "";
   const [showModal, setShowModal] = useState(false);
   const editMandiData = (mandiDetails)=>{
     setShowModal(true);
     setIsMandiEdit(true);
     localStorage.setItem("mandiEditStatus",true);
     dispatch(mandiInfoActions.mandiSuccess(mandiDetails));
+    console.log(mandiDetails)
     localStorage.setItem("mandiEditDetails",JSON.stringify(mandiDetails));
+  }
+  const [showModalStatus, setShowModalStatus] = useState(false);
+  const onClickProfiles = () => {
+    setShowModal(true);
+    setShowModalStatus(true);
+    localStorage.removeItem("mandiEditStatus")
+    localStorage.setItem("mandiEditStatus", false)
   }
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
         {loginData.businessCreated === false &&
-        businessCreatedStatus == "noo" ? (
-          <p>Please Complete Profile</p>
+        businessCreatedStatus == "" ? (
+          <div className="row">
+              <div className="col-lg-9 smartboard_div p-0">
+                <div className="complete_profile d-flex justify-content-between align-items-center">
+                  <p>Complete your Mandi Setup</p>
+                  <button onClick={onClickProfiles}>
+                    Complete Now
+                  </button>
+                  {showModalStatus ?
+                    <CompleteProfile
+                      show={showModal}
+                      close={() => setShowModal(false)}
+                    />
+                    : ("")}
+                 
+                </div>
+                <NoDataAvailable />
+              </div>
+              <div className="col-lg-3"></div>
+            </div>
         ) : (
           <div>
             <div className="myprofile_screen" id="scroll_style">
@@ -115,8 +147,7 @@ const MyProfile = () => {
                                     <div className="d-flex align-items-center">
                                       <img src={icon} alt="image" />
                                       <h6>
-                                        Personal deatails
-                                        {/* {langFullData.hello} */}
+                                        {langFullData.personalDetails}
                                       </h6>
                                     </div>
                                   </div>
@@ -124,20 +155,20 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Owner Name"
+                                          title={langFullData.ownerName}
                                           subTitle={
                                             profileData.personalDtls.ownerName
                                           }
-                                          imageTag={icon}
+                                          imageTag={single_bill}
                                         />
                                       </div>
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Contact Number"
+                                          title={langFullData.contactNumber}
                                           subTitle={
                                             profileData.personalDtls.contactNum
                                           }
-                                          imageTag={icon}
+                                          imageTag={contact}
                                         />
                                       </div>
                                     </div>
@@ -153,11 +184,12 @@ const MyProfile = () => {
                                   <div className="card_header">
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
-                                        <img src={icon} alt="image" />
-                                        <h6>Business Details</h6>
+                                        <img src={market_img} alt="image" id="market-img"/>
+                                        <h6>{langFullData.businessDetails}</h6>
                                       </div>
                                       <p onClick={() => editMandiData( profileData.businessDtls)} className="edit_text">
-                                        Edit
+                                        <img src={edit} alt="edit-img" />
+                                        {/* Edit */}
                                       </p>
                                       {
                                         isMandiEdit ? <CompleteProfile
@@ -171,17 +203,17 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Mandi Name"
+                                          title={langFullData.businessName}
                                           subTitle={
                                             profileData.businessDtls
                                               .businessName
                                           }
-                                          imageTag={icon}
+                                          imageTag={single_bill}
                                         />
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         <ProfileCard
-                                          title="Mandi Address"
+                                          title={langFullData.businessAddress}
                                           subTitle={
                                             profileData.businessDtls
                                               .businessAddress.addressLine +
@@ -195,14 +227,14 @@ const MyProfile = () => {
                                             profileData.businessDtls
                                               .businessAddress.pincode
                                           }
-                                          imageTag={icon}
+                                          imageTag={market_img}
                                         />
                                       </div>
                                     </div>
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCardWithoutIcon
-                                          title="Mandi Type"
+                                          title={langFullData.businessType}
                                           subTitle={
                                             profileData.businessDtls
                                               .businessType
@@ -221,18 +253,18 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Market Name"
+                                          title={langFullData.marketName}
                                           subTitle={
                                             profileData.businessDtls.marketName
                                           }
-                                          imageTag={icon}
+                                          imageTag={market_img}
                                         />
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         <div className="row mb-0">
                                           <div className="col-lg-6 p-0">
                                             <ProfileCardWithoutIcon
-                                              title="Shop Number"
+                                              title={langFullData.shopNumber}
                                               subTitle={
                                                 profileData.businessDtls.shopNum
                                               }
@@ -240,7 +272,7 @@ const MyProfile = () => {
                                           </div>
                                           <div className="col-lg-6 p-0">
                                             <ProfileCardWithoutIcon
-                                              title="Contact Name"
+                                              title={langFullData.contactName}
                                               subTitle={
                                                 profileData.businessDtls
                                                   .contactName
@@ -253,16 +285,16 @@ const MyProfile = () => {
                                     <div className="row">
                                       <div className="col-lg-4 p-0">
                                         <ProfileCard
-                                          title="Mobile number"
+                                          title={langFullData.mobileNumber}
                                           subTitle={
                                             profileData.businessDtls.mobile
                                           }
-                                          imageTag={icon}
+                                          imageTag={contact}
                                         />
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         <ProfileCardWithoutIcon
-                                          title="Alternative Mobile"
+                                          title={langFullData.alternativeMobile}
                                           subTitle={
                                             profileData.businessDtls.altMobile
                                           }
@@ -281,14 +313,14 @@ const MyProfile = () => {
                                   <div className="card_header">
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
-                                        <img src={icon} alt="image" />
-                                        <h6>Select your preferred language</h6>
+                                        <img src={globe} alt="image" />
+                                        <h6>{langFullData.selectYourPreferredLanguage}</h6>
                                       </div>
                                       <p
                                         onClick={isEdit ? onSave : onEdit}
                                         className="editsave_text"
                                       >
-                                        {isEdit ? "Save" : "Edit"}
+                                        {isEdit ? "Save" : <img src={edit} alt="edit-img" />}
                                       </p>
                                       {/* <p onClick={onSave}>save</p> */}
                                     </div>

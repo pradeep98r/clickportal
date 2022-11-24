@@ -1,0 +1,85 @@
+.cropmodal_poopup {
+  .modal-dialog {
+    max-width: 1300px;
+  }
+}
+.crop_table_view {
+  width: 100%;
+}
+.popup_bottom_div {
+  width: 100% !important;
+}
+.backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: black;
+  opacity: 0.5;
+  z-index: 1;
+}
+.crop_search {
+  input::placeholder {
+    padding-left: 0px;
+    text-align: left;
+    color: #16a12c;
+  }
+}
+.crop_table {
+  height: calc(100vh - 280px);
+  overflow-y: auto;
+}
+.allCrops_modal {
+  .modal-content {
+    box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+  }
+}
+.crop:hover {
+  cursor: pointer;
+}
+.crop.active {
+  img {
+    border: 2px solid #16a12c;
+    border-radius: 100%;
+  }
+  P {
+    font-weight: 600;
+  }
+}
+.table_crop_div {
+  img {
+    width: 30px;
+  }
+}
+.wastage_val,
+.wastage_val:focus {
+  color: var(--ono-red);
+}
+.delete_copy_div {
+  margin-left: 10px;
+}
+.crop_div_ui {
+  position: relative;
+}
+.crp_count {
+    position: absolute;
+    right: 0px;
+    top: 0;
+    background-color: var(--ono-blue);
+    color: #fff;
+    font-size: 13px;
+    height: 20px;
+    border-radius: 100%;
+    width: 20px;
+  }
+  .crop_div_ui:hover, .other_Crop:hover{
+      cursor: pointer;
+  }
+  .totals{
+    font-size: 1rem!important;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057!important;
+}
