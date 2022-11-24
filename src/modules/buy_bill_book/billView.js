@@ -3,6 +3,7 @@ import {
   getMandiDetails,
   getSystemSettings,
 } from "../../actions/billCreationService";
+import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 
@@ -49,12 +50,13 @@ const BillView = () => {
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
         if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'BUY'
           && res.data.data.billSetting[i].formStatus === 1) {
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+            }
             if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
               setStatus(true);
             }
-            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-              setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
-            } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+             else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
               setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
               setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
             }
@@ -308,7 +310,7 @@ const BillView = () => {
     console.log(finalValue)
     var finalVal = finalValue;
     if (includeComm) {
-      finalVal = finalVal + singleBillData.comm
+      finalVal = finalVal - singleBillData.comm
       console.log(finalVal)
     }
     if (addRetComm) {
@@ -531,7 +533,7 @@ const BillView = () => {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                          <p>{groupOneTotal === 0 || null ? '' : singleBillData?.grossTotal+groupOneTotal}</p>
+                          <p>{groupOneTotal === 0 || null ? '' :(singleBillData?.grossTotal+groupOneTotal).toFixed(2)}</p>
                         </div>
                         <div className={groupOneTotal === 0 || null ? '': "hr-line-in-totals"}></div>
                       </div>
@@ -561,7 +563,7 @@ const BillView = () => {
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
-                          <p>{groupTwoTotal === 0 || null ? '' :singleBillData?.grossTotal+(groupTwoTotal+groupOneTotal)}</p>
+                          <p>{groupTwoTotal === 0 || null ? '' :(singleBillData?.grossTotal+(groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                         <div className={groupTwoTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
                       </div>
@@ -591,7 +593,7 @@ const BillView = () => {
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
                           <p>{groupThreeTotal === 0 || null ? '' : 
-                          singleBillData?.grossTotal+(groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
+                          (singleBillData?.grossTotal+(groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                         <div className={groupThreeTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
                       </div>
@@ -621,7 +623,7 @@ const BillView = () => {
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
                           <p>{groupFourTotal === 0 || null ? '' :
-                          singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)}</p>
+                          (singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
                         <div className={groupFourTotal === 0 || null ? '':"hr-line-in-totals"}></div>
                       </div>
@@ -685,12 +687,23 @@ const BillView = () => {
                   </div>
                 </div>
                 <div className="row out-st-bal">
-                  <div className="col-lg-6"></div>
+                  <div className="col-lg-6">
+                    <div className="d-flex footer-img">
+                      <img src={ono_connect_click} alt="ono_connect" />
+                      
+                    </div>
+                  </div>
                   <div className="col-lg-4">
                     <p className="out-st" style={{display:status?'block':'none'}}>Final Ledger Balance</p>
                   </div>
                   <div className="col-lg-2">
                     <span className="out-value" style={{display:status?'block':'none'}}>{getFinalLedgerbalance()}</span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-6">
+                    <p className="ono-footer">ONO-{moment(singleBillData.billDate).format("DDMMYYYY")}-CLICK-
+                      {singleBillData.actualPaybles.toFixed(2)}</p>
                   </div>
                 </div>
                 {/*  */}
