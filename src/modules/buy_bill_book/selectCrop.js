@@ -31,20 +31,17 @@ const SelectCrop = (props) => {
       })
       setSelected(newSelected);
       setStat(true);
-      console.log(newSelected)
     }
      else {
       setStat(false);
       let newSelected = selected.filter((t) => t.cropId !== crop_item.cropId);
       setSelected(newSelected);
       //props.cropCallback(crop_item,false);
-      console.log(newSelected,"new Selected");
     }
   };
 
   const addCropClickNext=(event)=>{
     if(stat===true){
-      console.log(selected,"true")
       props.cropCallback(selected,true);
       while(selected.length>0){
         selected.pop();
@@ -56,7 +53,6 @@ const SelectCrop = (props) => {
         item.cropSelect="";
       })
       setSelected([]);
-      console.log(selected,"false")
     }
   }
   return (

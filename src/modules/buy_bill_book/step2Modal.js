@@ -56,7 +56,6 @@ const Step2Modal = (props) => {
           Object.assign(item, { count: 0 }, { cropActive: false },{ unitType: 'crates' });
         });
         setPreferedCropsData(response.data.data);
-        console.log(response.data.data, "crops preferred");
       })
       .catch((error) => {
         console.log(error);
@@ -68,7 +67,6 @@ const Step2Modal = (props) => {
 
   var arr = [];
   const cropDataFunction = (childData, status) => {
-    console.log(childData,status,"parent")
     if (status === true) {
       var list = preferedCropsData;
       childData.map((i, ind) => {
@@ -80,7 +78,6 @@ const Step2Modal = (props) => {
           setPreferedCropsData([...list, ...arr]);
           cropData.push(list[index]);
           cropResponseData([...cropData]);
-          console.log(cropData)
           Object.assign(
             list[index],
             { cropActive: true },
@@ -111,7 +108,6 @@ const Step2Modal = (props) => {
       let deSelectedCrop = preferedCropsData.filter(
         (item) => item.cropId !== childData.cropId
       );
-      console.log(deSelectedCrop)
       setPreferedCropsData(deSelectedCrop);
     }
   };
@@ -120,7 +116,6 @@ const Step2Modal = (props) => {
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
     var h = [];
-    console.log(h);
     if(cropData.length>0){
       h =  cropData.map((item, index) => {
         if (cropData[index].unitValue == 0 && !setQuantityBasedtable(cropData[index].unitType)) {
@@ -144,7 +139,6 @@ const Step2Modal = (props) => {
           cropData[index].weightValue != 0 &&
           cropData[index].rateValue != 0
         ) {
-          console.log("cr",cropData[index])
           return cropData[index];
         }
         else if (
@@ -157,7 +151,6 @@ const Step2Modal = (props) => {
           return cropData[index];
         }  
       });
-      console.log(h.length,h)
      if(h.length > 0){
      var h1 =  h.map((item, index) => {
       if(h[index] !=null){
@@ -169,7 +162,6 @@ const Step2Modal = (props) => {
        }
        }
       })
-     console.log(h1)
      }
     }
    
@@ -187,20 +179,16 @@ const Step2Modal = (props) => {
   const getQuantity = (cropData, index1,crop) => (e) => {
     cropData[index1].rateType = "kgs";
     var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
-    console.log(index)
     let updatedItemList = cropData.map((item,i) => {
       if (i == index1) {
-        console.log(cropData[i],"if");
         arr1.push({ ...cropData[i], unitType: e.target.value })   
          return { ...cropData[i], unitType: e.target.value };
       }
       else{
-        console.log("else",cropData)
         cropResponseData([...cropData]);
         return {...cropData[i]}
       }
    });
-   console.log(updatedItemList);
    cropResponseData([...updatedItemList]);
   };
   const getRateType = (cropData, index) => (e) => {
@@ -213,25 +201,60 @@ const Step2Modal = (props) => {
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
   const getQuantityValue = (id, index, cropitem) => (e) => {
+    let updatedItem = cropitem.map((item,i) => {
+      if (i == index) {
+         return { ...cropitem[i], unitValue: e.target.value };
+      }
+      else{
+        cropResponseData([...cropitem]);
+        return {...cropitem[i]}
+      }
+   });
+   cropResponseData([...updatedItem]);
     setunitValue(e.target.value);
-    cropitem[index].unitValue = e.target.value;
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
+    let updatedItem1 = cropitem.map((item,i) => {
+      if (i == index) {
+         return { ...cropitem[i], weightValue: e.target.value };
+      }
+      else{
+        cropResponseData([...cropitem]);
+        return {...cropitem[i]}
+      }
+   });
+   cropResponseData([...updatedItem1]);
     setweightValue(e.target.value);
-    cropitem[index].weightValue = e.target.value;
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
-      setwastageValue(e.target.value);
-      cropitem[index].wastageValue = e.target.value;
+    let updatedItem2 = cropitem.map((item,i) => {
+      if (i == index) {
+         return { ...cropitem[i], wastageValue: e.target.value };
+      }
+      else{
+        cropResponseData([...cropitem]);
+        return {...cropitem[i]}
+      }
+   });
+   cropResponseData([...updatedItem2]);
+   setwastageValue(e.target.value);
     setCropId(id);
   };
   const [selectedCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
-    if (cropitem[index].cropId == id) {
       setrateValue(e.target.value);
-      cropitem[index].rateValue = e.target.value;
+      let updatedItem3 = cropitem.map((item,i) => {
+        if (i == index) {
+           return { ...cropitem[i], rateValue: e.target.value };
+        }
+        else{
+          cropResponseData([...cropitem]);
+          return {...cropitem[i]}
+        }
+     });
+     cropResponseData([...updatedItem3]);
       if (cropitem[index].rateType == "kgs") {
         cropitem[index].totalValue =
           (cropitem[index].weightValue - cropitem[index].wastageValue) *
@@ -240,11 +263,32 @@ const Step2Modal = (props) => {
         cropitem[index].totalValue =
           (cropitem[index].unitValue - cropitem[index].wastageValue) *
           cropitem[index].rateValue;
-        console.log(cropitem[index].totalValue);
       }
-    }
+  
     setCropId(id);
     setSelectedCropsData(cropitem);
+  };
+  const cloneCrop = (crop) => {
+    var list = preferedCropsData;
+      var index = list.findIndex((obj) => obj == crop);
+      if (index != -1) {
+        list[index].count += 1;
+      console.log(list[index].count,list[index],"count")
+      }
+      cropResponseData([...cropData, crop]);
+  };
+  const deleteCrop = (crop, cropArray) => {
+    var index = cropArray.indexOf(crop);
+    var list = preferedCropsData;
+    if (index != -1) {
+      cropArray.splice(index, 1);
+      var index1 = list.findIndex((obj) => obj == crop);
+      if (index1 != -1) {
+        list[index1].count -= 1;
+      console.log(list[index1].count,list[index1],"count")
+      }
+    }
+    cropResponseData([...cropArray]);
   };
   return (
     <Modal
@@ -310,6 +354,7 @@ const Step2Modal = (props) => {
                       className="crop_div crop_table_div table_crop_div"
                       key={index}
                     >
+                       <div className="d-flex crop_table_delete_div">
                       <div className="crop_table_view">
                         {cropData[index].unitType +
                           index +
@@ -446,6 +491,7 @@ const Step2Modal = (props) => {
                                   <input
                                     type="text"
                                     name="rate"
+                                    className="form-control"
                                     value={cropData[index].rateValue}
                                     onChange={getRateValue(
                                       cropData[index].cropId,
@@ -455,6 +501,7 @@ const Step2Modal = (props) => {
                                   />
                                 </td>
                                 <td className="col-2">
+                                  <p className="totals">
                                   {cropData[index].rateType == "kgs"
                                     ? (cropData[index].weightValue -
                                         cropData[index].wastageValue) *
@@ -462,6 +509,7 @@ const Step2Modal = (props) => {
                                     : (cropData[index].unitValue -
                                         cropData[index].wastageValue) *
                                       cropData[index].rateValue}
+                                      </p>
                                 </td>
                               </tr>
                             </tbody>
@@ -551,6 +599,7 @@ const Step2Modal = (props) => {
                                   <input
                                     type="text"
                                     name="rate"
+                                    className="form-control"
                                     value={cropData[index].rateValue}
                                     onChange={getRateValue(
                                       cropData[index].cropId,
@@ -559,18 +608,41 @@ const Step2Modal = (props) => {
                                     )}
                                   />
                                 </td>
-                                <td className="col-2">{
+                                <td className="col-2"><p className="totals">{
                                   cropData[index].unitType == 'loads' ? (cropData[index].weightValue *
                                   cropData[index].rateValue) : 
                                   (cropData[index].weightValue -
                                     cropData[index].wastageValue) *
                                   cropData[index].rateValue
-                                }</td>
+                                }</p></td>
                               </tr>
                             </tbody>
                           </table>
                         )}
                       </div>
+                      <div className="delete_copy_div d-flex">
+                        <div
+                          className="flex_class mr-0 sub_icons_div"
+                          onClick={cloneCrop.bind(this, crop)}
+                        >
+                          <img
+                            src={copy_icon}
+                            className="sub_icons"
+                            alt="image"
+                          />
+                        </div>
+                        <div
+                          className="flex_class mr-0 sub_icons_div"
+                          onClick={deleteCrop.bind(this, crop, cropData)}
+                        >
+                          <img
+                            src={delete_icon}
+                            className="sub_icons"
+                            alt="image"
+                          />
+                        </div>
+                          </div>
+                          </div>
                     </div>
                   ))}
                 </div>

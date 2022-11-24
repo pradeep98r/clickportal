@@ -10,14 +10,11 @@ const Step1 = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   useEffect(() => {
-    console.log("step1");
   }, []);
   const [partnerData, setPartnerData] = useState(null);
   const callbackFunction = (childData) => {
-    console.log(childData, "child");
     setPartnerData(childData);
     if(childData.partyType != 'Transporter'){
       localStorage.removeItem("selectedTransporter");
@@ -35,12 +32,10 @@ const Step1 = () => {
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () =>{
     if(!checked){
-      console.log("checked");
       setChecked(!checked)
       localStorage.setItem("defaultDate",true);
       setStartDate(selectedDate);
     } else{
-      console.log(new Date());
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
