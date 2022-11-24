@@ -1118,7 +1118,8 @@ const TransportoLedger = () => {
                                      );
                                    }
                                  })}
-                                 <span className="card-text" id="date-tag">
+                                 <div className="card-text" id="date-tag">
+                                  <div className="date_popper">
                                    <ReactDatePicker
                                      className="date_picker_in_modal"
                                      selected={selectDate}
@@ -1131,23 +1132,13 @@ const TransportoLedger = () => {
                                      showMonthYearDropdown={true}
                                      scrollableMonthYearDropdown
                                      required
-                                     style={{
-                                       width: "400px",
-                                       cursor: "pointer",
-                                       right: "300px",
-                                       marginTop: "30px",
-                                       fontFamily: "Manrope",
-                                       fontStyle: "normal",
-                                       fontWeight: "600",
-                                       fontSize: "15px",
-                                       lineHeight: "18px",
-                                     }}
                                    ></ReactDatePicker>
+                                   </div>
                                    <img
                                      className="date_icon_in_modal"
                                      src={date_icon}
                                    />
-                                 </span>
+                                 </div>
                                </div>
                              </div>
                              <div id="out-paybles">
