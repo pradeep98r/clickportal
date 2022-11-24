@@ -60,7 +60,11 @@ export function getBuyerDetailedLedger(
     `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
-
+export function getOutstandingBal(clickId,partyId,){
+  return axiosCommon.get(
+    `/click/ledgers/balance/caId/${clickId}/partyId/${partyId}`
+  );
+}
 export function getSelleLedgers(clickId){
   return axiosCommon.get(
     `/click/ledgers/caId/${clickId}/type/SELLER`
@@ -133,5 +137,6 @@ export default {
   getLedgerSummaryByDate,
   getDetailedLedgerByDate,
   getSellerDetailedLedgerByDate,
-  postbuybillApi
+  postbuybillApi,
+  getOutstandingBal
 };

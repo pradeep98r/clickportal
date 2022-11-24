@@ -11,15 +11,12 @@ const SelectPartner = (props) => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   let [partnerData, setpartnerData] = useState([]);
   const navigate = useNavigate();
-  console.log("Select search");
   const [getPartyItem, setGetPartyItem] = useState(null);
   const fetchPertnerData = () => {
     var partnerType = "";
-    console.log(props.partyType);
     if (props.partyType == "Seller") {
       partnerType = "FARMER";
     } else if (props.partyType == "Transporter") {
@@ -40,20 +37,16 @@ const SelectPartner = (props) => {
   const [getPartyName, setGetPartyName] = useState(false);
   const selectParty = () => {
     setGetPartyName(true);
-    console.log(true);
   };
   const partySelect = (item) => {
-    console.log(item);
     setGetPartyItem(item);
     setGetPartyName(false);
     props.parentCallback(item);
     if (props.partyType == "Seller") {
       localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
-      console.log(item);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
     } else if (props.partyType == "Buyer") {
-      console.log(item);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
   };
@@ -84,7 +77,6 @@ const SelectPartner = (props) => {
         }
       });
       setPartners(filterdNames);
-      console.log(filterdNames, "filteredNames");
     } else {
       setPartners(partnerData);
     }

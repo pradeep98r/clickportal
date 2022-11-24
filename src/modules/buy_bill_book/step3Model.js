@@ -8,14 +8,15 @@ import "../../modules/buy_bill_book/step1.scss";
 import {
   getPartnerData,
   getSystemSettings,
+  getOutstandingBal,
 } from "../../actions/billCreationService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import { postbuybillApi } from "../../actions/billCreationService";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 const Step3Modal = (props) => {
@@ -28,7 +29,6 @@ const Step3Modal = (props) => {
   const transpoSelectedData = JSON.parse(
     localStorage.getItem("selectedTransporter")
   );
-  console.log(transpoSelectedData)
   const [partyType, setPartnerType] = useState("Seller");
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
@@ -43,12 +43,19 @@ const Step3Modal = (props) => {
   const [otherformStatusvalue, setOtherFormStatus] = useState(false);
   const [cashformStatusvalue, setCashFormStatus] = useState(false);
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
+  const [outBal, setOutsBal] = useState(0);
+  const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
+    if (partnerSelectedData != null) {
+      getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
+        setOutsBal(res.data.data == null ? 0 : res.data.data);
+      });
+    }
     getGrossTotalValue(props.slectedCropsArray);
     getSystemSettings(clickId).then((res) => {
-      console.log(response)
       var response = res.data.data.billSetting;
+      console.log(response);
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -72,17 +79,13 @@ const Step3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
+            else if (response[i].settingName === "OUT_ST_BALANCE")
+              setOutBalformStatusvalue(true);
           }
 
           if (response[i].settingName === "COMMISSION") {
-            console.log(response[i].includeInLedger, "commiss");
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
-            console.log(
-              response[i].includeInLedger,
-              response[i].addToGt,
-              "return"
-            );
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
@@ -110,11 +113,13 @@ const Step3Modal = (props) => {
       });
   };
   const partySelect = (item, type) => {
-    console.log(item);
     setGetPartyItem(item);
     if (type == "Seller") {
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
+      getOutstandingBal(clickId, item.partyId).then((res) => {
+        setOutsBal(res.data.data);
+      });
     } else if (type == "Transporter") {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
@@ -141,13 +146,11 @@ const Step3Modal = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     var totalunitvalue = 0;
-    console.log(items);
     for (var i = 0; i < items.length; i++) {
       total += items[i].totalValue;
-      console.log(typeof(items[i].unitValue),"unit")
       totalunitvalue += parseInt(items[i].unitValue);
-      console.log(totalunitvalue,"lopp");
       setGrossTotal(total);
+      console.log(items[i].totalValue, items);
       setTotalUnits(totalunitvalue);
     }
   };
@@ -169,41 +172,65 @@ const Step3Modal = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
-    var t =  parseInt((getTotalValue(commValue) +
-    getTotalUnits(transportationValue) +
-    getTotalUnits(laborChargeValue) +
-    getTotalUnits(rentValue) +
-    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)))
-    let totalValue =
-      grossTotal - t;
+    var t = parseInt(
+      getTotalValue(commValue) +
+        getTotalUnits(transportationValue) +
+        getTotalUnits(laborChargeValue) +
+        getTotalUnits(rentValue) +
+        getTotalValue(mandifeeValue) +
+        parseInt(levisValue) +
+        parseInt(otherfeeValue) +
+        parseInt(advancesValue)
+    );
+    let totalValue = grossTotal - t;
     if (addRetComm) {
-      console.log(grossTotal,t,totalValue,getTotalValue(retcommValue))
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
   };
-  const getFinalLedgerbalance = () =>{
-    var t =  parseInt((
-    getTotalUnits(transportationValue) +
-    getTotalUnits(laborChargeValue) +
-    getTotalUnits(rentValue) +
-    getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)));
+  const getActualPayble = () => {
+    var actualPay = getTotalBillAmount() - parseInt(cashpaidValue);
+    if (!includeComm) {
+      actualPay = actualPay - getTotalValue(commValue);
+    }
+    if (!includeRetComm) {
+      if (addRetComm) {
+        actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
+      } else {
+        actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
+      }
+    }
+    return actualPay;
+  };
+  const getFinalLedgerbalance = () => {
+    var t = parseInt(
+      getTotalUnits(transportationValue) +
+        getTotalUnits(laborChargeValue) +
+        getTotalUnits(rentValue) +
+        getTotalValue(mandifeeValue) +
+        parseInt(levisValue) +
+        parseInt(otherfeeValue) +
+        parseInt(advancesValue)
+    );
     var finalValue = grossTotal - t;
-    if(includeComm){
-      finalValue = finalValue + getTotalValue(commValue);
+    var finalVal = 0;
+    if (includeComm) {
+      finalVal = finalValue + getTotalValue(commValue);
     }
     if (addRetComm) {
-      if(includeRetComm){
-        return (finalValue + getTotalValue(retcommValue)).toFixed(2);
+      if (includeRetComm) {
+        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
+      } else {
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
-      if(includeRetComm){
-        return (finalValue - getTotalValue(retcommValue)).toFixed(2);
+      if (includeRetComm) {
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    console.log(finalValue,"final ledger bal")
-  }
+    return (parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashpaidValue);
+  };
   var lineItemsArray = [];
   var cropArray = props.slectedCropsArray;
   var len = cropArray.length;
@@ -220,9 +247,8 @@ const Step3Modal = (props) => {
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
     });
   }
-  const billRequestObj = 
-  {
-    actualPayble: getTotalBillAmount(),
+  const billRequestObj = {
+    actualPayble: getActualPayble(),
     advance: advancesValue,
     billDate: partnerSelectDate,
     billStatus: "Completed",
@@ -246,52 +272,46 @@ const Step3Modal = (props) => {
     rent: getTotalUnits(rentValue),
     rtComm: getTotalValue(retcommValue),
     rtCommIncluded: includeRetComm,
-    totalPayble: 0,
+    totalPayble: getTotalBillAmount() - parseInt(cashpaidValue),
     transportation: getTotalUnits(transportationValue),
-    transporterId:transpoSelectedData != null ? transpoSelectedData.partyId : '',
+    transporterId:
+      transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
     writerId: 0,
     timeStamp: "",
   };
   // post bill request api call
   const postbuybill = () => {
+    console.log(billRequestObj);
     postbuybillApi(billRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.description, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            toastId:'success1'
+            toastId: "success1",
           });
-          console.log("bill created", response.data);
           props.closeStep3Modal();
-          navigate('/buy_bill_book');
-        } 
+          navigate("/buy_bill_book");
+        }
       },
       (error) => {
-        toast.error(error.response.data.status.description, { toastId: "error1"});
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
       }
     );
   };
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () =>{
-    if(!checked){
-      console.log("checked");
-      setChecked(!checked)
-      localStorage.setItem("defaultDate",true);
+  const handleCheckEvent = () => {
+    if (!checked) {
+      setChecked(!checked);
+      localStorage.setItem("defaultDate", true);
       setStartDate(selectedDate);
-    } else{
-      console.log(new Date());
+    } else {
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
     }
-  }
+  };
   return (
     <Modal
       show={props.show}
@@ -763,32 +783,55 @@ const Step3Modal = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal}</h6>
+                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
                 <h6>{getTotalBillAmount()}</h6>
               </div>
-              <div className="totals_value">
-                <h5>Outstanding Balance (₹)</h5>
-                <h6>0</h6>
-              </div>
-              <div className="totals_value">
-                <h5>Final Ledger Balance (₹)</h5>
-                <h6>{getFinalLedgerbalance()}</h6>
-              </div>
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Outstanding Balance (₹)</h5>
+                  <h6>{outBal != 0 ? outBal.toFixed(2) : "0"}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+
+              {cashpaidValue != 0 ? (
+                <div className="totals_value">
+                  <h5>Cash Paid</h5>
+                  <h6 className="black_color">-{cashpaidValue}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Final Ledger Balance (₹)</h5>
+                  <h6>{getFinalLedgerbalance().toFixed(2)}</h6>
+                </div>
+              ) : (
+                <div className="totals_value">
+                  <h5>Total Paybles (₹)</h5>
+                  <h6>
+                    {(getTotalBillAmount() - parseInt(cashpaidValue)).toFixed(
+                      2
+                    )}
+                  </h6>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      
       </div>
-      <div className="bottom_div main_div popup_bottom_div">
-          <div className="d-flex align-items-center justify-content-end">
-            <button className="primary_btn" onClick={postbuybill}>
-              Next
-            </button>
-          </div>
+      <div className="bottom_div main_div popup_bottom_div step3_bottom">
+        <div className="d-flex align-items-center justify-content-end">
+          <button className="primary_btn" onClick={postbuybill}>
+            Next
+          </button>
         </div>
+      </div>
       <ToastContainer />
     </Modal>
   );

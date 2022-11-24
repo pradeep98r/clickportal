@@ -1,8 +1,9 @@
 image: python:3.9
 
 definitions:
-  docker:
-    memory: 5120
+  services:
+    docker:
+      memory: 5120
   scripts:
     script: &commonScript
               echo "Setting up environment and required tools ...";

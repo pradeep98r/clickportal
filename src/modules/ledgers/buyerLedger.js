@@ -36,9 +36,9 @@ const BuyerLedger = () => {
   const [error, setError] = useState();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
-  const [ledgerSummary, setSummary] = useState([{}]);
+  const [ledgerSummary, setSummary] = useState([]);
   const [summaryData, setSummaryData] = useState({}, ledgerSummary);
-  const [details, setDetails] = useState([{}]);
+  const [details, setDetails] = useState([]);
 
   const [open, setIsOpen] = useState(false);
   const [selectDate, setSelectDate] = useState(new Date());
@@ -47,8 +47,8 @@ const BuyerLedger = () => {
   const [paymentMode, setPaymentMode] = useState("CASH");
   const [dateDisplay, setDateDisplay] = useState(false);
 
-  const [ledgerSummaryByDate, setSummaryByDate] = useState([{}]);
-  const [detailsByDate, setDetailsByDate] = useState([{}]);
+  const [ledgerSummaryByDate, setSummaryByDate] = useState([]);
+  const [detailsByDate, setDetailsByDate] = useState([]);
   const [isActive, setIsActive] = useState(-1);
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
@@ -211,7 +211,9 @@ const BuyerLedger = () => {
         moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    if (toggleState === "ledgersummary") {
+    if (toggleState === "ledgersummary" && toggleAC === "custom") {
+      var fromDate = moment(startDate).format("YYYY-MM-DD");
+      var toDate = moment(endDate).format("YYYY-MM-DD");
       getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
         .then((response) => {
           console.log(response);
@@ -222,6 +224,8 @@ const BuyerLedger = () => {
         });
     }
     else {
+      var fromDate = moment(startDate).format("YYYY-MM-DD");
+      var toDate = moment(endDate).format("YYYY-MM-DD");
       getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
         .then((response) => {
           console.log(response)
@@ -448,47 +452,15 @@ const BuyerLedger = () => {
                           </Fragment>
                         );
                       })}
-                </tbody>
-              </table>
-              <div
-                id="search-no-data"
-                style={{
-                  display: valueActive && search.length > 0 ? "block" : "none",
-                }}
-              >
-                 <NoDataAvailable />
-              </div>
-            </div>
-            <div className="outstanding-pay d-flex align-items-center justify-content-between">
-              <p className="pat-tag">Outstanding Recievables:</p>
-              <p className="values-tag">
-                &#8377;
-                {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
-              </p>
-            </div>
-          </div>
-          <div className="col-lg-8">
-            <div
-              className="no_data_found"
-              style={{ display: openTabs ? "none" : "block" }}
-            >
-              <img src={no_data} className="no-data-img" />
-            </div>
-            <div
-              className="container-fluid px-0"
-              id="tabsEvents"
-              style={{ display: openTabs ? "block" : "none" }}
-            >
-              <div className="recordbtn-style">
-                <button
-                  className="add-record-btns"
-                  onClick={() => {
-                    (toggleState === "ledgersummary" ||
-                      toggleState === "detailedledger") &&
-                      setIsOpen(!open);
+                  </tbody>
+                </table>
+                <div
+                  id="search-no-data"
+                  style={{
+                    display: valueActive && search.length > 0 ? "block" : "none",
                   }}
-                ></button>
-                  <p>No Data Found</p>
+                >
+                  <NoDataAvailable />
                 </div>
               </div>
               <div className="outstanding-pay d-flex align-items-center justify-content-between">
@@ -847,6 +819,7 @@ const BuyerLedger = () => {
                           : "content"
                       }
                     >
+                      {ledgerSummaryByDate.length > 0 ? (
                       <table className="table table-bordered ledger-table">
                         {/*ledger-table*/}
                         <thead className="thead-tag">
@@ -861,7 +834,7 @@ const BuyerLedger = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {ledgerSummaryByDate.length > 0 ? (
+                          {
                             ledgerSummaryByDate.map((item, index) => {
                               return (
                                 <tr
@@ -900,11 +873,11 @@ const BuyerLedger = () => {
                                 </tr>
                               );
                             })
-                          ) : (
-                            <p style={{ fontSize: "20px" }}>No Data Available!</p>
-                          )}
+                            }
                         </tbody>
                       </table>
+                      ):(<NoDataAvailable />)
+                    }
                     </div>
                   </div>
                 )}
@@ -918,7 +891,8 @@ const BuyerLedger = () => {
                           : "content"
                       }
                     >
-                      <table className="table table-bordered ledger-table">
+                     {detailsByDate.length > 0 ? (
+                       <table className="table table-bordered ledger-table">
                         <thead className="thead-tag">
                           <tr>
                             <th className="col-1" id="sno">
@@ -935,7 +909,7 @@ const BuyerLedger = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {detailsByDate.length > 0 ? (
+                          {
                             detailsByDate.map((item, index) => {
                               return (
                                 <tr className="tr-tags" key={item.partyId}>
@@ -983,11 +957,11 @@ const BuyerLedger = () => {
                                 </tr>
                               );
                             })
-                          ) : (
-                            <p style={{ fontSize: "20px" }}>No Data Available!</p>
-                          )}
+                          }
                         </tbody>
                       </table>
+                     ):(<NoDataAvailable />)
+                    }
                     </div>
                   </div>
                 )}

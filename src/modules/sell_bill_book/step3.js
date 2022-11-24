@@ -1,6 +1,6 @@
 import { Modal } from "react-bootstrap";
 import "../../modules/buy_bill_book/step2.scss";
-import "../sell_bill_book/step3.scss"
+import "../sell_bill_book/step3.scss";
 import { useState, useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
@@ -8,6 +8,7 @@ import "../../modules/buy_bill_book/step1.scss";
 import {
   getPartnerData,
   getSystemSettings,
+  getOutstandingBal,
 } from "../../actions/billCreationService";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -40,16 +41,20 @@ const SellbillStep3Modal = (props) => {
   const [otherformStatusvalue, setOtherFormStatus] = useState(false);
   const [cashformStatusvalue, setCashFormStatus] = useState(false);
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
-  console.log(props.slectedSellCropsArray);
-  var hi = false;
+  const [outBal, setOutsBal] = useState(0);
+  const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
+    if (partnerSelectedData != null) {
+      getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
+        setOutsBal(res.data.data == null ? 0 : res.data.data);
+      });
+    }
     getGrossTotalValue(props.slectedSellCropsArray);
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "SELL") {
-         
           if (response[i].formStatus === 1) {
             if (response[i].settingName === "COMMISSION") {
               setFormStatus(true);
@@ -71,17 +76,13 @@ const SellbillStep3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
+              else if(response[i].settingName === "OUT_ST_BALANCE")
+              setOutBalformStatusvalue(true);
           }
 
           if (response[i].settingName === "COMMISSION") {
-            console.log(response[i].includeInLedger, "commiss");
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
-            console.log(
-              response[i].includeInLedger,
-              response[i].addToGt,
-              "return"
-            );
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
@@ -109,11 +110,13 @@ const SellbillStep3Modal = (props) => {
       });
   };
   const partySelect = (item, type) => {
-    console.log(item);
     setGetPartyItem(item);
     if (type == "Transporter") {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+      getOutstandingBal(clickId, item.partyId).then((res) => {
+        setOutsBal(res.data.data);
+      });
     } else if (type == "Buyer") {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
@@ -140,12 +143,9 @@ const SellbillStep3Modal = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     var totalunitvalue = 0;
-    console.log(items);
     for (var i = 0; i < items.length; i++) {
       total += items[i].totalValue;
-      console.log(typeof items[i].unitValue, "unit");
       totalunitvalue += parseInt(items[i].unitValue);
-      console.log(totalunitvalue, "lopp");
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
@@ -159,7 +159,7 @@ const SellbillStep3Modal = (props) => {
   const [rentValue, getRentValue] = useState(0);
   const [levisValue, getlevisValue] = useState(0);
   const [otherfeeValue, getOtherfeeValue] = useState(0);
-  const [cashpaidValue, getCashpaidValue] = useState(0);
+  const [cashRcvdValue, getCashRcvdValue] = useState(0);
   const [advancesValue, getAdvancesValue] = useState(0);
   const getTotalValue = (value) => {
     return (value / 100) * grossTotal;
@@ -178,9 +178,8 @@ const SellbillStep3Modal = (props) => {
         parseInt(otherfeeValue) +
         parseInt(advancesValue)
     );
-    let totalValue = grossTotal - t;
+    let totalValue = grossTotal + t;
     if (addRetComm) {
-      console.log(grossTotal, t, totalValue, getTotalValue(retcommValue));
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
@@ -196,20 +195,26 @@ const SellbillStep3Modal = (props) => {
         parseInt(otherfeeValue) +
         parseInt(advancesValue)
     );
-    var finalValue = grossTotal - t;
+    var finalValue = grossTotal + t;
+    console.log(finalValue)
+    var finalVal = 0;
     if (includeComm) {
-      return (finalValue = finalValue + getTotalValue(commValue));
+      finalVal = finalValue + getTotalValue(commValue);
+      console.log(finalVal)
     }
     if (addRetComm) {
       if (includeRetComm) {
-        return (finalValue + getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal + getTotalValue(retcommValue));
+        console.log(finalVal)
       }
     } else {
       if (includeRetComm) {
-        return (finalValue - getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal - getTotalValue(retcommValue));
+        console.log(finalVal)
       }
     }
-    console.log(finalValue, "final ledger bal");
+    console.log((parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashRcvdValue),outBal)
+    return ((parseInt(finalVal) + outBal) - parseInt(cashRcvdValue)).toFixed(2);
   };
   var lineItemsArray = [];
   var cropArray = props.slectedSellCropsArray;
@@ -227,13 +232,27 @@ const SellbillStep3Modal = (props) => {
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
     });
   }
+  const getActualRcvd = () => {
+    var actualRcvd = getTotalBillAmount() - parseInt(cashRcvdValue);
+    if (!includeComm) {
+      actualRcvd = actualRcvd - getTotalValue(commValue);
+    }
+    if (!includeRetComm) {
+      if (addRetComm) {
+        actualRcvd = (actualRcvd - getTotalValue(retcommValue)).toFixed(2);
+      } else {
+        actualRcvd=(actualRcvd + getTotalValue(retcommValue)).toFixed(2);
+      }
+    }
+    return actualRcvd;
+  };
   const sellBillRequestObj = {
-    actualReceivable: getTotalBillAmount(),
+    actualReceivable: getActualRcvd(),
     advance: advancesValue,
     billDate: partnerSelectDate,
-    billStatus: "Completed",
+    billStatus: "",
     caId: clickId,
-    cashPaid: cashpaidValue,
+    cashRcvd: cashRcvdValue,
     comm: getTotalValue(commValue),
     commIncluded: includeComm,
     commShown: true,
@@ -247,34 +266,28 @@ const SellbillStep3Modal = (props) => {
     lineItems: lineItemsArray,
     mandiFee: mandifeeValue,
     misc: otherfeeValue,
-    outStBal: 0,
+    outStBal: outBal,
     paidTo: 100,
     rent: getTotalUnits(rentValue),
     rtComm: getTotalValue(retcommValue),
     rtCommIncluded: includeRetComm,
-    totalPayble: 0,
+    totalPayble: getTotalBillAmount() - parseInt(cashRcvdValue),
     transportation: getTotalUnits(transportationValue),
-    transporterId:transpoSelectedData != null ? transpoSelectedData.partyId : '',
+    transporterId:
+      transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
     writerId: 0,
     timeStamp: "",
   };
   // post bill request api call
   const postsellbill = () => {
+    console.log(sellBillRequestObj);
     postsellbillApi(sellBillRequestObj).then(
       (response) => {
         if (response.data.status.message === "SUCCESS") {
           toast.success(response.data.status.description, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             toastId: "success1",
           });
-          console.log("bill created", response.data);
           props.closeStep3Modal();
           navigate("/sellbillbook");
         }
@@ -703,15 +716,15 @@ const SellbillStep3Modal = (props) => {
                   <div className="card input_card">
                     <div className="row">
                       <div className="col-lg-3 title_bg">
-                        <h5 className="comm_card_title mb-0">Cash Paid</h5>
+                        <h5 className="comm_card_title mb-0">Cash Received</h5>
                       </div>
                       <div className="col-lg-9 col-sm-12 col_left_border">
                         <input
                           type="text"
                           placeholder=""
-                          value={cashpaidValue}
+                          value={cashRcvdValue}
                           onChange={(event) =>
-                            getCashpaidValue(
+                            getCashRcvdValue(
                               event.target.value.replace(/\D/g, "")
                             )
                           }
@@ -755,25 +768,40 @@ const SellbillStep3Modal = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal}</h6>
+                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
-                <h6>{getTotalBillAmount()}</h6>
+                <h6 className="color_green">{getTotalBillAmount()}</h6>
               </div>
-              <div className="totals_value">
+              {outBalformStatusvalue ? <div className="totals_value">
                 <h5>Outstanding Balance (₹)</h5>
-                <h6>0</h6>
-              </div>
-              <div className="totals_value">
+                <h6 className="color_green">{outBal.toFixed(2)}</h6>
+              </div> : ''}
+             
+              {cashRcvdValue != 0 ? (
+                <div className="totals_value">
+                  <h5>Cash Received</h5>
+                  <h6 className="black_color">-{cashRcvdValue}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+              {outBalformStatusvalue ? <div className="totals_value">
                 <h5>Final Ledger Balance (₹)</h5>
-                <h6>{getFinalLedgerbalance()}</h6>
-              </div>
+                <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+              </div> :  <div className="totals_value">
+                <h5>Total Receivables  (₹)</h5>
+                <h6 className="color_green">{(getTotalBillAmount() - parseInt(cashRcvdValue)).toFixed(
+                      2
+                    )}</h6>
+              </div>}
+             
             </div>
           </div>
         </div>
       </div>
-      <div className="bottom_div main_div popup_bottom_div">
+      <div className="bottom_div main_div popup_bottom_div step3_bottom">
         <div className="d-flex align-items-center justify-content-end">
           <button className="primary_btn" onClick={postsellbill}>
             Next

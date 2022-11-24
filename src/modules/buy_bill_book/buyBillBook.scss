@@ -14,6 +14,9 @@
     margin-right: 0px!important;
   }
 }
+.step3_bottom{
+  position: initial;
+}
 .bills_rows:hover{
   cursor: pointer;
 }
@@ -458,7 +461,7 @@ input:focus-visible {
 .comm_total_card {
   padding: 15px;
   overflow-y: auto;
-  height: calc(100vh - 210px);
+  height: calc(100vh - 250px);
 }
 .total_bal{
   height: auto;
@@ -695,7 +698,8 @@ article.on {
       margin: 0px;
     }
     .user_icon {
-      width: 50px;
+      width: 30px;
+      margin-right: 5px;
     }
   }
   .billid_div {
@@ -830,10 +834,10 @@ border: 1px solid #E4E4E4;
 border-radius: 10px;
 }
 .more-info{
-  padding:20px 20px;
+  padding:10px 20px;
 }
 .buy-dtl{
-  padding-top: 10px;
+  padding: 10px 0px;
   width: 100%;
 }
 .actions{
@@ -845,8 +849,10 @@ font-size: 15px;
 color: #1C1C1C;
 }
 .buyer_img{
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
+  border-radius: 100%;
+  margin-right: 5px;
 }
 .b-cr-by,.d-a-time{
   color: #4D4D4D;
@@ -871,6 +877,9 @@ word-wrap: normal;
 .table-bordered th{
   color: #121212;
   // font-size: 12px;
+}
+.bill_view th,td{
+  font-size: 12px;
 }
 .crop-tbl{
   td{
@@ -901,6 +910,9 @@ word-wrap: normal;
   font-size: 12px;
   color: #121212;
   font-weight: 700;
+}
+.color_blue{
+  cursor: pointer;
 }
 .hrs-line{
   border-bottom: 0.5px dashed #4D4D4D;
@@ -955,7 +967,8 @@ word-wrap: normal;
 }
 .out-value{
   padding-top: 5px;
-  padding-left:55px;
+  color:#000;
+   font-size: 12px;
 }
 .hr-line-in-totals{
   border-bottom: 0.5px solid #4D4D4D;
@@ -963,11 +976,24 @@ word-wrap: normal;
 }
 .out-st-bal{
   background: #D7F3DD;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  // border-bottom-left-radius: 8px;
+  // border-bottom-right-radius: 8px;
+}
+.ono-footer{
+  padding:5px 5px;
+  color: #121212;
+  font-weight: 700;
+  font-size: 10px;
+  font-family: 'Manrope';
+}
+.footer-img{
+  padding:5px 5px;
 }
 .out-st{
-  padding: 5px 5px;
+  padding-left: 60px;
+  padding-top: 5px;
+   color:#000;
+   font-size: 12px;
 }
 // calenderr popup styles
 .dates_div {

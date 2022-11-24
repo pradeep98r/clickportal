@@ -9,6 +9,7 @@ import close from "../../assets/images/close.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
+import date_icon from "../../assets/images/date_icon.svg";
 import $ from "jquery";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
@@ -25,18 +26,38 @@ const SellBillBook = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   useEffect(() => {
     callbackFunction();
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
   }, []);
+  var [dateValue, setDateValue] = useState(
+    );
 
-  var dateValue = moment(new Date()).format("YYYY-MM-DD");
-
-  const callbackFunction = (startDate, endDate) => {
+  const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
-    dateValue=fromDate
+    dateValue=fromDate;
+    if (dateTab === "Daily") { 
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if (dateTab === "Weekly") {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    } else if (dateTab === "Monthly") {
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if (dateTab === "Yearly") {
+      console.log("yearly", dateTab);
+      setDateValue(moment(fromDate).format("YYYY"));
+    } else {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    }
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         console.log(response, "billsss");
@@ -56,7 +77,7 @@ const SellBillBook = () => {
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus",billViewStatus);
-    navigate(generatePath(`/bill_view/${id}`, { id }));
+    navigate(generatePath(`/sell_bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
   };
@@ -80,9 +101,8 @@ const SellBillBook = () => {
     localStorage.setItem("stepOneSingleBook",stepOneHeader); 
   }
   const getCropUnit = (unit) => {
-    console.log(unit);
     var unitType = "";
-    switch (unit) {
+    switch (unit.toUpperCase()) {
       case "CRATES":
         unitType = "C";
         break;
@@ -96,6 +116,7 @@ const SellBillBook = () => {
         unitType = "S";
         break;
     }
+    console.log(unitType);
     return unitType;
   };
 
@@ -122,7 +143,7 @@ const SellBillBook = () => {
         }
       })
       setSingleBillData(filteredItems);
-      console.log(filteredItems);
+      console.log(filteredItems,"filteredItems");
     }else{
       setSingleBillData(sellBillData);
     }
@@ -156,7 +177,10 @@ const SellBillBook = () => {
                     </div>
 
                     <div onClick={onclickDate} className="color_blue">
-                      {dateValue}
+                      <span className="date_icon m-0">
+                          <img src={date_icon} alt="icon" className="mr-2" />
+                        </span>
+                        {dateValue}
                     </div>
                     <div className="d-flex">
                       <div className="d-flex mx-3" role="search">
@@ -196,6 +220,7 @@ const SellBillBook = () => {
                         role="tabpanel"
                         aria-labelledby="home-tab"
                       >
+                          {sellBillData != null ? <div>
                         <div className="row header_row">
                           <div className="col-lg-4">
                             <div className="row">
@@ -270,7 +295,7 @@ const SellBillBook = () => {
                                         <p className="biilid">
                                           {langFullData.billNo} : {bill.billId}{" "}
                                         </p>
-                                        <p>{bill.billDate}</p>
+                                        <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
                                         <p>{bill.billStatus}</p>
                                       </div>
                                     </div>
@@ -292,7 +317,7 @@ const SellBillBook = () => {
                                             {crop.qty + getCropUnit(crop.qtyUnit)}
                                             | {crop.weight + "KGS"}
                                             <span className="color_red">
-                                              {crop.wastage != 0
+                                              {crop.wastage != "0"
                                                 ? " - " + crop.wastage + langFullData.kgs
                                                 : ""}{" "}
                                             </span>
@@ -316,7 +341,7 @@ const SellBillBook = () => {
                                     <div className="row">
                                       <div className="col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
-                                          {bill.actualReceivable}
+                                          {bill.totalReceivables}
                                         </p>
                                       </div>
                                     </div>
@@ -363,7 +388,7 @@ const SellBillBook = () => {
                                           <p className="biilid">
                                             {langFullData.billNo} : {bill.billId}{" "}
                                           </p>
-                                          <p>{bill.billDate}</p>
+                                          <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
                                           <p>{bill.billStatus}</p>
                                         </div>
                                       </div>
@@ -388,11 +413,11 @@ const SellBillBook = () => {
                                                 )}{" "}
                                               | {crop.weight + "KGS"}
                                               <span className="color_red">
-                                                {crop.wastage != 0
-                                                  ? " - " +
+                                                {(crop.wastage != "0")
+                                                  ? (" - " +
                                                     crop.wastage +
-                                                    langFullData.kgs
-                                                  : ""}{" "}
+                                                    langFullData.kgs)
+                                                  : ""}
                                               </span>
                                               {/* {crop.qtyUnit + ":" + crop.qty}  */}
                                               {/* |
@@ -419,7 +444,7 @@ const SellBillBook = () => {
                                       <div className="row">
                                         <div className="col-lg-12 col-sm-12 col last_col">
                                           <p className="crop_name payble_text">
-                                            {bill.actualPaybles}
+                                            {bill.totalReceivables}
                                           </p>
                                         </div>
                                       </div>
@@ -438,6 +463,7 @@ const SellBillBook = () => {
                             <NoDataAvailable />
                           </div>
                         </div>
+                        </div> : <NoDataAvailable />}
                       </div>
                     </div>
                   </div>
