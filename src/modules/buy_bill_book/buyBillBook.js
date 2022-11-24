@@ -26,11 +26,10 @@ function BuyBillBook() {
 
   useEffect(() => {
     callbackFunction();
-    setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
 
-  var [dateValue, setDateValue] = useState(
-  );
+  var [dateValue, setDateValue] = useState();
 
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
@@ -44,7 +43,7 @@ function BuyBillBook() {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    if (dateTab === "Daily") { 
+    if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
       setDateValue(
@@ -125,32 +124,32 @@ function BuyBillBook() {
   };
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
-console.log(singleBillData)
+  console.log(singleBillData);
   const searchInput = (searchValue) => {
     setSelectBill(searchValue);
-    if(billItem !== ""){
-      const filteredItems = buyBillData.singleBills.filter((item)=>{
+    if (billItem !== "") {
+      const filteredItems = buyBillData.singleBills.filter((item) => {
         console.log(item);
-        if(
+        if (
           item.farmerName.toLowerCase().includes(searchValue.toLowerCase()) ||
           item.shortName.toLowerCase().includes(searchValue.toLowerCase())
-        ){
-          return(
+        ) {
+          return (
             item.farmerName.toLowerCase().includes(searchValue.toLowerCase()) ||
             item.shortName.toLowerCase().includes(searchValue.toLowerCase())
-          )
-        }else if (billItem === "" || searchValue === "") {
+          );
+        } else if (billItem === "" || searchValue === "") {
           return setIsValueActive(false);
         } else {
           return setIsValueActive(true);
         }
-      })
+      });
       setSingleBillData(filteredItems);
       console.log(filteredItems);
-    }else{
+    } else {
       setSingleBillData(buyBillData);
     }
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -173,7 +172,7 @@ console.log(singleBillData)
                   <img src={loading} alt="my-gif" className="gif_img" />
                 </div>
               ) : (
-                <div>  
+                <div>
                   <div>
                     <div className="d-flex justify-content-between bills_div">
                       <div className="d-flex">
@@ -233,15 +232,16 @@ console.log(singleBillData)
                       </div>
                     </div>
                     <div>
-                      <div className="tab-content">  
+                      <div className="tab-content">
                         <div
-                              className="tab-pane active"
-                              id="home"
-                              role="tabpanel"
-                              aria-labelledby="home-tab"
-                              >
-                                {buyBillData != null ? <div>
-                                <div className="row header_row">
+                          className="tab-pane active"
+                          id="home"
+                          role="tabpanel"
+                          aria-labelledby="home-tab"
+                        >
+                          {buyBillData != null ? (
+                            <div>
+                              <div className="row header_row">
                                 <div className="col-lg-4">
                                   <div className="row">
                                     <div className="col-lg-7 col-sm-12 p-0">
@@ -277,228 +277,248 @@ console.log(singleBillData)
                                 </div>
                               </div>
                               <div className="buy_bills" id="scroll_style">
-                                {(billItem.length > 1)
-                                ? singleBillData
-                                  .map((bill, index) => (
-                                    <div
-                                      onClick={() =>
-                                        billOnClick(bill.billId, bill)
-                                      }
-                                      key={index}
+                                {billItem.length > 1
+                                  ? singleBillData.map((bill, index) => (
+                                      <div
+                                        onClick={() =>
+                                          billOnClick(bill.billId, bill)
+                                        }
+                                        key={index}
                                       >
-                                      <div className="row bills_rows bg_white bottom_space">
-                                        <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
-                                          <div className="row full_width">
-                                            <div className="col-lg-7 col-sm-12 p-0 col">
-                                              <div className="bill_user_details flex_class mr-0">
-                                                <img
-                                                  src={single_bill}
-                                                  className="user_icon"
-                                                  alt="icon"
-                                                />
-                                                <div>
-                                                  <h6 className="userName">
-                                                    {bill.farmerName +
-                                                      "-" +
-                                                      bill.shortName}
-                                                  </h6>
-                                                  <h6 className="mobile">
-                                                    {bill.partyType +
-                                                      "-" +
-                                                      bill.farmerId}
-                                                  </h6>
-                                                  <h6 className="address">
-                                                    {bill.farmerAddress}
-                                                  </h6>
+                                        <div className="row bills_rows bg_white bottom_space">
+                                          <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                            <div className="row full_width">
+                                              <div className="col-lg-7 col-sm-12 p-0 col">
+                                                <div className="bill_user_details flex_class mr-0">
+                                                  <img
+                                                    src={single_bill}
+                                                    className="user_icon"
+                                                    alt="icon"
+                                                  />
+                                                  <div>
+                                                    <h6 className="userName">
+                                                      {bill.farmerName +
+                                                        "-" +
+                                                        bill.shortName}
+                                                    </h6>
+                                                    <h6 className="mobile">
+                                                      {bill.partyType +
+                                                        "-" +
+                                                        bill.farmerId}
+                                                    </h6>
+                                                    <h6 className="address">
+                                                      {bill.farmerAddress}
+                                                    </h6>
+                                                  </div>
                                                 </div>
                                               </div>
-                                            </div>
-                                            <div className="col-lg-5 col-sm-12 billid_div">
-                                              <p className="biilid">
-                                                {langFullData.billNo} : {bill.billId}{" "}
-                                              </p>
-                                              <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
-                                              <p>{bill.billStatus}</p>
+                                              <div className="col-lg-5 col-sm-12 billid_div">
+                                                <p className="biilid">
+                                                  {langFullData.billNo} :{" "}
+                                                  {bill.billId}{" "}
+                                                </p>
+                                                <p>
+                                                  {moment(bill.billDate).format(
+                                                    "DD-MMM-YYYY"
+                                                  )}
+                                                </p>
+                                                <p>{bill.billStatus}</p>
+                                              </div>
                                             </div>
                                           </div>
-                                        </div>
-                                        <div className="col-lg-6 p-0">
-                                          {bill.lineItems.map((crop, index) => (
-                                            <div className="row" key={index}>
-                                              <div className="col-lg-4 col-sm-12 col">
-                                                <p className="flex_class crop_name">
-                                                  <img
-                                                    src={crop.imageUrl}
-                                                    className="crop_image"
-                                                  />
-                                                  {crop.cropName}
-                                                </p>
-                                              </div>
-                                              <div className="col-lg-4 col-sm-12 col flex_class">
-                                                <p className="crop_name">
-                                                  {crop.qty +
-                                                    getCropUnit(
-                                                      crop.qtyUnit
-                                                    )}{" "}
-                                                  | {crop.weight + "KGS"}
-                                                  <span className="color_red">
-                                                    {crop.wastage != 0
-                                                      ? " - " +
-                                                        crop.wastage +
-                                                        langFullData.kgs
-                                                      : ""}{" "}
-                                                  </span>
-                                                  {/* {crop.qtyUnit + ":" + crop.qty}  */}
-                                                  {/* |
+                                          <div className="col-lg-6 p-0">
+                                            {bill.lineItems.map(
+                                              (crop, index) => (
+                                                <div
+                                                  className="row"
+                                                  key={index}
+                                                >
+                                                  <div className="col-lg-4 col-sm-12 col">
+                                                    <p className="flex_class crop_name">
+                                                      <img
+                                                        src={crop.imageUrl}
+                                                        className="crop_image"
+                                                      />
+                                                      {crop.cropName}
+                                                    </p>
+                                                  </div>
+                                                  <div className="col-lg-4 col-sm-12 col flex_class">
+                                                    <p className="crop_name">
+                                                      {crop.qty +
+                                                        getCropUnit(
+                                                          crop.qtyUnit
+                                                        )}{" "}
+                                                      | {crop.weight + "KGS"}
+                                                      <span className="color_red">
+                                                        {crop.wastage != 0
+                                                          ? " - " +
+                                                            crop.wastage +
+                                                            langFullData.kgs
+                                                          : ""}{" "}
+                                                      </span>
+                                                      {/* {crop.qtyUnit + ":" + crop.qty}  */}
+                                                      {/* |
                                             Weight:{" "}
                                             {crop.weight == null
                                               ? "0"
                                               : crop.weight} */}
+                                                    </p>
+                                                  </div>
+                                                  <div className="col-lg-2 col-sm-12 col flex_class">
+                                                    <p className="number_overflow crop_name">
+                                                      {crop.rate}
+                                                    </p>
+                                                  </div>
+                                                  <div className="col-lg-2 col-sm-12 col flex_class">
+                                                    <p className="number_overflow crop_name">
+                                                      {crop.total}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              )
+                                            )}
+                                          </div>
+                                          <div className="col-lg-2 flex_class">
+                                            <div className="row">
+                                              <div className="col-lg-12 col-sm-12 col last_col">
+                                                <p className="crop_name payble_text">
+                                                  {bill.totalPayables}
                                                 </p>
                                               </div>
-                                              <div className="col-lg-2 col-sm-12 col flex_class">
-                                                <p className="number_overflow crop_name">
-                                                  {crop.rate}
-                                                </p>
-                                              </div>
-                                              <div className="col-lg-2 col-sm-12 col flex_class">
-                                                <p className="number_overflow crop_name">
-                                                  {crop.total}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          ))}
-                                        </div>
-                                        <div className="col-lg-2 flex_class">
-                                          <div className="row">
-                                            <div className="col-lg-12 col-sm-12 col last_col">
-                                              <p className="crop_name payble_text">
-                                                {bill.actualPaybles}
-                                              </p>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  )):(
-                                    buyBillData.singleBills
-                                    .map((bill, index) => (
-                                    <div
-                                      onClick={() =>
-                                        billOnClick(bill.billId, bill)
-                                      }
-                                      key={index}
-                                    >
-                                      <div className="row bills_rows bg_white bottom_space">
-                                        <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
-                                          <div className="row full_width">
-                                            <div className="col-lg-7 col-sm-12 p-0 col">
-                                              <div className="bill_user_details flex_class mr-0">
-                                                <img
-                                                  src={single_bill}
-                                                  className="user_icon"
-                                                  alt="icon"
-                                                />
-                                                <div>
-                                                  <h6 className="userName">
-                                                    {bill.farmerName +
-                                                      "-" +
-                                                      bill.shortName}
-                                                  </h6>
-                                                  <h6 className="mobile">
-                                                    {bill.partyType +
-                                                      "-" +
-                                                      bill.farmerId}
-                                                  </h6>
-                                                  <h6 className="address">
-                                                    {bill.farmerAddress}
-                                                  </h6>
+                                    ))
+                                  : buyBillData.singleBills.map(
+                                      (bill, index) => (
+                                        <div
+                                          onClick={() =>
+                                            billOnClick(bill.billId, bill)
+                                          }
+                                          key={index}
+                                        >
+                                          <div className="row bills_rows bg_white bottom_space">
+                                            <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                              <div className="row full_width">
+                                                <div className="col-lg-7 col-sm-12 p-0 col">
+                                                  <div className="bill_user_details flex_class mr-0">
+                                                    <img
+                                                      src={single_bill}
+                                                      className="user_icon"
+                                                      alt="icon"
+                                                    />
+                                                    <div>
+                                                      <h6 className="userName">
+                                                        {bill.farmerName +
+                                                          "-" +
+                                                          bill.shortName}
+                                                      </h6>
+                                                      <h6 className="mobile">
+                                                        {bill.partyType +
+                                                          "-" +
+                                                          bill.farmerId}
+                                                      </h6>
+                                                      <h6 className="address">
+                                                        {bill.farmerAddress}
+                                                      </h6>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <div className="col-lg-5 col-sm-12 billid_div">
+                                                  <p className="biilid">
+                                                    {langFullData.billNo}:{" "}
+                                                    {bill.billId}{" "}
+                                                  </p>
+                                                  <p>
+                                                    {moment(
+                                                      bill.billDate
+                                                    ).format("DD-MMM-YYYY")}
+                                                  </p>
+                                                  <p>{bill.billStatus}</p>
                                                 </div>
                                               </div>
                                             </div>
-                                            <div className="col-lg-5 col-sm-12 billid_div">
-                                              <p className="biilid">
-                                              {langFullData.billNo}: {bill.billId}{" "}
-                                              </p>
-                                              <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
-                                              <p>{bill.billStatus}</p>
-                                            </div>
-                                          </div>
-                                        </div>
-                                        <div className="col-lg-6 p-0">
-                                          {bill.lineItems.map((crop, index) => (
-                                            <div className="row" key={index}>
-                                              <div className="col-lg-4 col-sm-12 col">
-                                                <p className="flex_class crop_name">
-                                                  <img
-                                                    src={crop.imageUrl}
-                                                    className="crop_image"
-                                                  />
-                                                  {crop.cropName}
-                                                </p>
-                                              </div>
-                                              <div className="col-lg-4 col-sm-12 col flex_class">
-                                                <p className="crop_name">
-                                                  {crop.qty +
-                                                    getCropUnit(
-                                                      crop.qtyUnit
-                                                    )}{" "}
-                                                  | {crop.weight + "KGS"}
-                                                  <span className="color_red">
-                                                    {crop.wastage != 0
-                                                      ? " - " +
-                                                        crop.wastage +
-                                                        langFullData.kgs
-                                                      : ""}{" "}
-                                                  </span>
-                                                  {/* {crop.qtyUnit + ":" + crop.qty}  */}
-                                                  {/* |
+                                            <div className="col-lg-6 p-0">
+                                              {bill.lineItems.map(
+                                                (crop, index) => (
+                                                  <div
+                                                    className="row"
+                                                    key={index}
+                                                  >
+                                                    <div className="col-lg-4 col-sm-12 col">
+                                                      <p className="flex_class crop_name">
+                                                        <img
+                                                          src={crop.imageUrl}
+                                                          className="crop_image"
+                                                        />
+                                                        {crop.cropName}
+                                                      </p>
+                                                    </div>
+                                                    <div className="col-lg-4 col-sm-12 col flex_class">
+                                                      <p className="crop_name">
+                                                        {crop.qty +
+                                                          getCropUnit(
+                                                            crop.qtyUnit
+                                                          )}{" "}
+                                                        | {crop.weight + "KGS"}
+                                                        <span className="color_red">
+                                                          {crop.wastage != 0
+                                                            ? " - " +
+                                                              crop.wastage +
+                                                              langFullData.kgs
+                                                            : ""}{" "}
+                                                        </span>
+                                                        {/* {crop.qtyUnit + ":" + crop.qty}  */}
+                                                        {/* |
                                             Weight:{" "}
                                             {crop.weight == null
                                               ? "0"
                                               : crop.weight} */}
-                                                </p>
-                                              </div>
-                                              <div className="col-lg-2 col-sm-12 col flex_class">
-                                                <p className="number_overflow crop_name">
-                                                  {crop.rate}
-                                                </p>
-                                              </div>
-                                              <div className="col-lg-2 col-sm-12 col flex_class">
-                                                <p className="number_overflow crop_name">
-                                                  {crop.total}
-                                                </p>
-                                              </div>
+                                                      </p>
+                                                    </div>
+                                                    <div className="col-lg-2 col-sm-12 col flex_class">
+                                                      <p className="number_overflow crop_name">
+                                                        {crop.rate}
+                                                      </p>
+                                                    </div>
+                                                    <div className="col-lg-2 col-sm-12 col flex_class">
+                                                      <p className="number_overflow crop_name">
+                                                        {crop.total}
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                )
+                                              )}
                                             </div>
-                                          ))}
-                                        </div>
-                                        <div className="col-lg-2 flex_class">
-                                          <div className="row">
-                                            <div className="col-lg-12 col-sm-12 col last_col">
-                                              <p className="crop_name payble_text">
-                                                {bill.actualPaybles}
-                                              </p>
+                                            <div className="col-lg-2 flex_class">
+                                              <div className="row">
+                                                <div className="col-lg-12 col-sm-12 col last_col">
+                                                  <p className="crop_name payble_text">
+                                                    {bill.totalPayables}
+                                                  </p>
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </div>
-                                  ))
-                                  )
-                                }
+                                      )
+                                    )}
                                 <div
                                   id="search-data"
                                   style={{
-                                    display:billItem.length > 0 ? "block" : "none",
+                                    display:
+                                      billItem.length > 0 ? "block" : "none",
                                   }}
                                 >
                                   <NoDataAvailable />
                                 </div>
                               </div>
-                                </div> : <NoDataAvailable />}
-                                
-                             
                             </div>
+                          ) : (
+                            <NoDataAvailable />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
