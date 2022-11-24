@@ -663,10 +663,12 @@ const SellBillView = () => {
                                             <div className="row">
                                                 <div className="col-lg-2"></div>
                                                 <div className="col-lg-6">
-                                                    <p className="groups_value" style={{display:!status?'block':'none'}}>Total Receivables:</p>
+                                                {singleBillData.totalReceivable === 0 || singleBillData.totalReceivable === null ?'':
+                                                    <p className="groups_value" style={{display:!status?'block':'none'}}>Total Receivables:</p>}
                                                 </div>
                                                 <div className="col-lg-4">
-                                                    < p className="groups_value"style={{display:!status?'block':'none'}} >{(singleBillData?.totalReceivable)}</p>
+                                                {singleBillData.totalReceivable === 0 || singleBillData.totalReceivable === null ?'':
+                                                    < p className="groups_value"style={{display:!status?'block':'none'}} >{(singleBillData?.totalReceivable)}</p>}
                                                 </div>
                                             </div>
                                         </div>
