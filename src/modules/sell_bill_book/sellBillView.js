@@ -39,6 +39,9 @@ const SellBillView = () => {
     const [grthree, setGrThree] = useState([]);
     const [grfour, setGrFour] = useState([]);
     const [status, setStatus] = useState(false);
+    const [includeComm, setIncludeComm] = useState("");
+    const [includeRetComm, setIncludeRetComm] = useState("")
+    const [addRetComm, setAddRetComm] = useState(false);
     const getBuyBillsById = () => {
         getSystemSettings(clickId, clientId, clientSecret).then((res) => {
             billSettingData(res.data.data.billSetting)
@@ -48,12 +51,24 @@ const SellBillView = () => {
                         if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
                             setStatus(true);
                           }
+                          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                            setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+                            setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+                            setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          }
                     grOne = [res.data.data.billSetting[i], ...grOne];
                     setGrOne([grone, ...grOne]);
                 } else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'SELL'
                     && res.data.data.billSetting[i].formStatus === 1) {
                         if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
                             setStatus(true);
+                          }
+                          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                            setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+                            setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+                            setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
                           }
                     grTwo = [res.data.data.billSetting[i], ...grTwo];
                     setGrTwo([grtwo, ...grTwo]);
@@ -62,6 +77,12 @@ const SellBillView = () => {
                         if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
                             setStatus(true);
                           }
+                          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                            setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+                            setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+                            setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          }
                     grThree = [res.data.data.billSetting[i], ...grThree];
                     setGrThree([grthree, ...grThree]);
                 } else if (res.data.data.billSetting[i].groupId === 4 && res.data.data.billSetting[i].billType === 'SELL'
@@ -69,6 +90,12 @@ const SellBillView = () => {
                         if(res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"){
                             setStatus(true);
                         }
+                        if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                            setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
+                            setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
+                            setIncludeRetComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
+                          }
                     grFour = [res.data.data.billSetting[i], ...grFour];
                     setGrFour([grfour, ...grFour]);
                 }
@@ -257,6 +284,36 @@ const SellBillView = () => {
     grfour.map(item => {
         return groupFourTotal += handleGroupNames(item.settingName);
     })
+    const getFinalLedgerbalance = () => {
+        var t = parseInt(
+          console.log(singleBillData.transportation +
+          singleBillData.labourCharges+
+          singleBillData.rent +
+          singleBillData.mandiFee + 
+          singleBillData.govtLevies + 
+          singleBillData.misc )
+        );
+        var finalValue = singleBillData.grossTotal + t;
+        console.log(finalValue)
+        var finalVal = finalValue;
+        if (includeComm) {
+            finalVal = finalValue + singleBillData.comm;
+            console.log(finalVal)
+          }
+          if (addRetComm) {
+            if (includeRetComm) {
+              finalVal = (finalVal + singleBillData.rtComm);
+              console.log(finalVal)
+            }
+          } else {
+            if (includeRetComm) {
+              finalVal = (finalVal - singleBillData.rtComm);
+              console.log(finalVal)
+            }
+          }
+        console.log((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashRcvd),singleBillData.outStBal,singleBillData.cashRcvd)
+        return ((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashRcvd)).toFixed(2);
+      };
     return (
         <div className="row">
             <div className="col-lg-7 col_left">
@@ -615,7 +672,7 @@ const SellBillView = () => {
                                 <p className="out-st" style={{display:status?'block':'none'}}>Final Ledger Balance</p>
                             </div>
                             <div className="col-lg-2">
-                                <span className="out-value" style={{display:status?'block':'none'}}>0</span>
+                                <span className="out-value" style={{display:status?'block':'none'}}>{getFinalLedgerbalance()}</span>
                             </div>
                         </div>
                         {/*  */}
