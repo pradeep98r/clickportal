@@ -185,12 +185,27 @@ const Step3Modal = (props) => {
     getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)))
     let totalValue =
       grossTotal - t;
+      console.log(totalValue)
     if (addRetComm) {
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
   };
+  const getActualPayble = ()=>{
+    var actualPay = getTotalBillAmount() - parseInt(cashpaidValue);
+    if(!includeComm){
+      actualPay = actualPay - getTotalValue(commValue);
+    }
+    if(!includeRetComm){
+      if (addRetComm) {
+        actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
+      } else {
+        actualPay= (actualPay + getTotalValue(retcommValue)).toFixed(2);
+      }
+    }
+    return actualPay;
+  }
   const getFinalLedgerbalance = () =>{
     var t =  parseInt((
     getTotalUnits(transportationValue) +
@@ -235,7 +250,7 @@ const Step3Modal = (props) => {
   }
   const billRequestObj = 
   {
-    actualPayble: getTotalBillAmount(),
+    actualPayble:getActualPayble(),
     advance: advancesValue,
     billDate: partnerSelectDate,
     billStatus: "Completed",
@@ -259,7 +274,7 @@ const Step3Modal = (props) => {
     rent: getTotalUnits(rentValue),
     rtComm: getTotalValue(retcommValue),
     rtCommIncluded: includeRetComm,
-    totalPayble: 0,
+    totalPayble: getTotalBillAmount() - parseInt(cashpaidValue),
     transportation: getTotalUnits(transportationValue),
     transporterId:transpoSelectedData != null ? transpoSelectedData.partyId : '',
     updatedOn: "",
@@ -268,17 +283,11 @@ const Step3Modal = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
+    console.log(billRequestObj);
     postbuybillApi(billRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.description, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             toastId:'success1'
           });
           console.log("bill created", response.data);

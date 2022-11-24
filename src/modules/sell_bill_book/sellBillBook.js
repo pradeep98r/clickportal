@@ -341,7 +341,7 @@ const SellBillBook = () => {
                                     <div className="row">
                                       <div className="col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
-                                          {bill.actualReceivable}
+                                          {bill.totalReceivables}
                                         </p>
                                       </div>
                                     </div>
@@ -444,7 +444,7 @@ const SellBillBook = () => {
                                       <div className="row">
                                         <div className="col-lg-12 col-sm-12 col last_col">
                                           <p className="crop_name payble_text">
-                                            {bill.actualPaybles}
+                                            {bill.totalReceivables}
                                           </p>
                                         </div>
                                       </div>
