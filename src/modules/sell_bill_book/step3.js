@@ -42,6 +42,7 @@ const SellbillStep3Modal = (props) => {
   const [cashformStatusvalue, setCashFormStatus] = useState(false);
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
   const [outBal, setOutsBal] = useState(0);
+  const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
     if (partnerSelectedData != null) {
@@ -75,6 +76,8 @@ const SellbillStep3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
+              else if(response[i].settingName === "OUT_ST_BALANCE")
+              setOutBalformStatusvalue(true);
           }
 
           if (response[i].settingName === "COMMISSION") {
@@ -771,10 +774,11 @@ const SellbillStep3Modal = (props) => {
                 <h5>Total Bill Amount (₹)</h5>
                 <h6 className="color_green">{getTotalBillAmount()}</h6>
               </div>
-              <div className="totals_value">
+              {outBalformStatusvalue ? <div className="totals_value">
                 <h5>Outstanding Balance (₹)</h5>
                 <h6 className="color_green">{outBal.toFixed(2)}</h6>
-              </div>
+              </div> : ''}
+             
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Received</h5>
@@ -783,10 +787,14 @@ const SellbillStep3Modal = (props) => {
               ) : (
                 ""
               )}
-              <div className="totals_value">
+              {outBalformStatusvalue ? <div className="totals_value">
                 <h5>Final Ledger Balance (₹)</h5>
                 <h6 className="color_green">{getFinalLedgerbalance()}</h6>
-              </div>
+              </div> :  <div className="totals_value">
+                <h5>Total Receivables  (₹)</h5>
+                <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+              </div>}
+             
             </div>
           </div>
         </div>

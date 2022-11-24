@@ -120,6 +120,7 @@ function BuyBillBook() {
         unitType = "S";
         break;
     }
+    console.log(unitType);
     return unitType;
   };
   const [singleBillData, setSingleBillData] = useState([]);
@@ -350,11 +351,11 @@ function BuyBillBook() {
                                                         )}{" "}
                                                       | {crop.weight + "KGS"}
                                                       <span className="color_red">
-                                                        {crop.wastage != 0
-                                                          ? " - " +
-                                                            crop.wastage +
-                                                            langFullData.kgs
-                                                          : ""}{" "}
+                                                      {(crop.wastage != "0")
+                                                            ? (crop.wastage != null ? " - " +
+                                                              crop.wastage +
+                                                              langFullData.kgs : '')
+                                                            : ""}
                                                       </span>
                                                       {/* {crop.qtyUnit + ":" + crop.qty}  */}
                                                       {/* |
@@ -463,11 +464,11 @@ function BuyBillBook() {
                                                           )}{" "}
                                                         | {crop.weight + "KGS"}
                                                         <span className="color_red">
-                                                          {crop.wastage != 0
-                                                            ? " - " +
+                                                          {(crop.wastage != "0")
+                                                            ? (crop.wastage != null ? " - " +
                                                               crop.wastage +
-                                                              langFullData.kgs
-                                                            : ""}{" "}
+                                                              langFullData.kgs : '')
+                                                            : ""}
                                                         </span>
                                                         {/* {crop.qtyUnit + ":" + crop.qty}  */}
                                                         {/* |

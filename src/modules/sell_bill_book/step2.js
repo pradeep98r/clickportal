@@ -154,30 +154,62 @@ const SellbillStep2Modal = (props) => {
   const [weightDefaultValue, setweightValue] = useState();
   const getQuantityValue = (id, index, cropitem) => (e) => {
     console.log(id, index, cropitem, e.target.value);
+    let updatedItems1 = cropitem.map((item,i) => {
+      if (i == index) {
+         return { ...cropitem[i], unitValue: e.target.value };
+      }
+      else{
+        cropResponseData([...cropitem]);
+        return {...cropitem[i]}
+      }
+   });
+   cropResponseData([...updatedItems1]);
     setunitValue(e.target.value);
-    cropitem[index].unitValue = e.target.value;
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
     console.log(id, index, cropitem);
+    let updatedItems2 = cropitem.map((item,i) => {
+      if (i == index) {
+         return { ...cropitem[i], weightValue: e.target.value };
+      }
+      else{
+        cropResponseData([...cropitem]);
+        return {...cropitem[i]}
+      }
+   });
+   cropResponseData([...updatedItems2]);
     setweightValue(e.target.value);
-    cropitem[index].weightValue = e.target.value;
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
-    console.log(id, index, cropitem, e.target.value);
-    if (cropitem[index].cropId == id) {
+    let updatedItems3 = cropitem.map((item,i) => {
+      if (i == index) {
+         return { ...cropitem[i], wastageValue: e.target.value };
+      }
+      else{
+        cropResponseData([...cropitem]);
+        return {...cropitem[i]}
+      }
+   });
+   cropResponseData([...updatedItems3]);
       setwastageValue(e.target.value);
-      cropitem[index].wastageValue = e.target.value;
-      console.log(cropitem[index].wastageValue);
-    }
     setCropId(id);
   };
   const [selectedSellbillCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
-    if (cropitem[index].cropId == id) {
+   
       setrateValue(e.target.value);
-      cropitem[index].rateValue = e.target.value;
+      let updatedItems4 = cropitem.map((item,i) => {
+        if (i == index) {
+           return { ...cropitem[i], rateValue: e.target.value };
+        }
+        else{
+          cropResponseData([...cropitem]);
+          return {...cropitem[i]}
+        }
+     });
+     cropResponseData([...updatedItems4]);
       if (cropitem[index].rateType == "kgs") {
         cropitem[index].totalValue =
           (cropitem[index].weightValue - cropitem[index].wastageValue) *
@@ -188,7 +220,7 @@ const SellbillStep2Modal = (props) => {
           cropitem[index].rateValue;
         console.log(cropitem[index].totalValue);
       }
-    }
+
     setCropId(id);
     setSelectedCropsData(cropitem);
   };
@@ -232,7 +264,6 @@ const SellbillStep2Modal = (props) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     if (index != -1) {
-      console.log(index, crop);
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj == crop);
       if (index1 != -1) {
@@ -302,6 +333,7 @@ const SellbillStep2Modal = (props) => {
                       id={cropData[index].cropId}
                       key={index}
                     >
+                    <div className="d-flex crop_table_delete_div">
                       <div className="crop_table_view">
                         {cropData[index].unitType +
                           index +
@@ -438,6 +470,7 @@ const SellbillStep2Modal = (props) => {
                                   <input
                                     type="text"
                                     name="rate"
+                                    className="form-control"
                                     value={cropData[index].rateValue}
                                     onChange={getRateValue(
                                       cropData[index].cropId,
@@ -447,13 +480,13 @@ const SellbillStep2Modal = (props) => {
                                   />
                                 </td>
                                 <td className="col-2">
-                                  {cropData[index].rateType == "kgs"
+                                  <p className="totals">{cropData[index].rateType == "kgs"
                                     ? (cropData[index].weightValue -
                                         cropData[index].wastageValue) *
                                       cropData[index].rateValue
                                     : (cropData[index].unitValue -
                                         cropData[index].wastageValue) *
-                                      cropData[index].rateValue}
+                                      cropData[index].rateValue}</p>
                                 </td>
                               </tr>
                             </tbody>
@@ -543,6 +576,7 @@ const SellbillStep2Modal = (props) => {
                                   <input
                                     type="text"
                                     name="rate"
+                                    className="form-control"
                                     value={cropData[index].rateValue}
                                     onChange={getRateValue(
                                       cropData[index].cropId,
@@ -551,18 +585,42 @@ const SellbillStep2Modal = (props) => {
                                     )}
                                   />
                                 </td>
-                                <td className="col-2">{
+                                <td className="col-2">
+                                <p className="totals">{
                                   cropData[index].unitType == 'loads' ? (cropData[index].weightValue *
                                   cropData[index].rateValue) : 
                                   (cropData[index].weightValue -
                                     cropData[index].wastageValue) *
                                   cropData[index].rateValue
-                                }</td>
+                                }</p></td>
                               </tr>
                             </tbody>
                           </table>
                         )}
                       </div>
+                      <div className="delete_copy_div d-flex">
+                        <div
+                          className="flex_class mr-0 sub_icons_div"
+                          onClick={cloneCrop.bind(this, crop)}
+                        >
+                          <img
+                            src={copy_icon}
+                            className="sub_icons"
+                            alt="image"
+                          />
+                        </div>
+                        <div
+                          className="flex_class mr-0 sub_icons_div"
+                          onClick={deleteCrop.bind(this, crop, cropData)}
+                        >
+                          <img
+                            src={delete_icon}
+                            className="sub_icons"
+                            alt="image"
+                          />
+                        </div>
+                          </div>
+                          </div>
                     </div>
                   ))}
                 </div>

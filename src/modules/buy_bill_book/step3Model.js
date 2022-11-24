@@ -43,18 +43,18 @@ const Step3Modal = (props) => {
   const [cashformStatusvalue, setCashFormStatus] = useState(false);
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
   const [outBal, setOutsBal] = useState(0);
+  const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
     if(partnerSelectedData != null){
       getOutstandingBal(clickId,partnerSelectedData.partyId).then((res) => {
-        console.log(res);
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
     getGrossTotalValue(props.slectedCropsArray);
     getSystemSettings(clickId).then((res) => {
-      console.log(response)
       var response = res.data.data.billSetting;
+      console.log(response)
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -78,16 +78,14 @@ const Step3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
+              else if(response[i].settingName === "OUT_ST_BALANCE")
+              setOutBalformStatusvalue(true);
           }
 
           if (response[i].settingName === "COMMISSION") {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
-            console.log(
-              response[i].includeInLedger,
-              response[i].addToGt,
-              "return"
-            );
+           
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
@@ -115,13 +113,11 @@ const Step3Modal = (props) => {
       });
   };
   const partySelect = (item, type) => {
-    console.log(item);
     setGetPartyItem(item);
     if (type == "Seller") {
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
       getOutstandingBal(clickId,item.partyId).then((res) => {
-        console.log(res.data);
         setOutsBal(res.data.data);
       });
     } else if (type == "Transporter") {
@@ -150,12 +146,9 @@ const Step3Modal = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     var totalunitvalue = 0;
-    console.log(items);
     for (var i = 0; i < items.length; i++) {
       total += items[i].totalValue;
-      console.log(typeof(items[i].unitValue),"unit")
       totalunitvalue += parseInt(items[i].unitValue);
-      console.log(totalunitvalue,"lopp");
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
@@ -185,7 +178,6 @@ const Step3Modal = (props) => {
     getTotalValue(mandifeeValue) + parseInt(levisValue) + parseInt(otherfeeValue) + parseInt(advancesValue)))
     let totalValue =
       grossTotal - t;
-      console.log(totalValue)
     if (addRetComm) {
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
@@ -229,7 +221,6 @@ const Step3Modal = (props) => {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    console.log(parseInt(finalVal),outBal,"final ledger bal")
     return ((parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashpaidValue));
   }
   var lineItemsArray = [];
@@ -290,7 +281,6 @@ const Step3Modal = (props) => {
           toast.success(response.data.status.description, {
             toastId:'success1'
           });
-          console.log("bill created", response.data);
           props.closeStep3Modal();
           navigate('/buy_bill_book');
         } 
@@ -303,12 +293,10 @@ const Step3Modal = (props) => {
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () =>{
     if(!checked){
-      console.log("checked");
       setChecked(!checked)
       localStorage.setItem("defaultDate",true);
       setStartDate(selectedDate);
     } else{
-      console.log(new Date());
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
@@ -791,18 +779,23 @@ const Step3Modal = (props) => {
                 <h5>Total Bill Amount (₹)</h5>
                 <h6>{getTotalBillAmount()}</h6>
               </div>
-              <div className="totals_value">
+              {outBalformStatusvalue ?  <div className="totals_value">
                 <h5>Outstanding Balance (₹)</h5>
                 <h6>{outBal != 0 ? outBal.toFixed(2) : '0'}</h6>
-              </div>
+              </div>: ''}
+             
               {cashpaidValue != 0 ?<div className="totals_value">
                 <h5>Cash Paid</h5>
                 <h6 className="black_color">-{cashpaidValue}</h6>
               </div> : ''}
-              <div className="totals_value">
+              {outBalformStatusvalue ?   <div className="totals_value">
                 <h5>Final Ledger Balance (₹)</h5>
-                <h6>{getFinalLedgerbalance()}</h6>
-              </div>
+                <h6>{getFinalLedgerbalance().toFixed(2)}</h6>
+              </div> :   <div className="totals_value">
+                <h5>Total Paybles (₹)</h5>
+                <h6>{(getTotalBillAmount() - parseInt(cashpaidValue)).toFixed(2)}</h6>
+              </div>}
+            
             </div>
           </div>
         </div>

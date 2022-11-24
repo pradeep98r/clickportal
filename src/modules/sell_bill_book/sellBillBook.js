@@ -101,9 +101,8 @@ const SellBillBook = () => {
     localStorage.setItem("stepOneSingleBook",stepOneHeader); 
   }
   const getCropUnit = (unit) => {
-    console.log(unit);
     var unitType = "";
-    switch (unit) {
+    switch (unit.toUpperCase()) {
       case "CRATES":
         unitType = "C";
         break;
@@ -117,6 +116,7 @@ const SellBillBook = () => {
         unitType = "S";
         break;
     }
+    console.log(unitType);
     return unitType;
   };
 
@@ -317,7 +317,7 @@ const SellBillBook = () => {
                                             {crop.qty + getCropUnit(crop.qtyUnit)}
                                             | {crop.weight + "KGS"}
                                             <span className="color_red">
-                                              {crop.wastage != 0
+                                              {crop.wastage != "0"
                                                 ? " - " + crop.wastage + langFullData.kgs
                                                 : ""}{" "}
                                             </span>
@@ -413,11 +413,11 @@ const SellBillBook = () => {
                                                 )}{" "}
                                               | {crop.weight + "KGS"}
                                               <span className="color_red">
-                                                {crop.wastage != 0
-                                                  ? " - " +
+                                                {(crop.wastage != "0")
+                                                  ? (" - " +
                                                     crop.wastage +
-                                                    langFullData.kgs
-                                                  : ""}{" "}
+                                                    langFullData.kgs)
+                                                  : ""}
                                               </span>
                                               {/* {crop.qtyUnit + ":" + crop.qty}  */}
                                               {/* |
