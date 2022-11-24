@@ -698,7 +698,8 @@ article.on {
       margin: 0px;
     }
     .user_icon {
-      width: 50px;
+      width: 30px;
+      margin-right: 5px;
     }
   }
   .billid_div {
@@ -833,10 +834,10 @@ border: 1px solid #E4E4E4;
 border-radius: 10px;
 }
 .more-info{
-  padding:20px 20px;
+  padding:10px 20px;
 }
 .buy-dtl{
-  padding-top: 10px;
+  padding: 10px 0px;
   width: 100%;
 }
 .actions{
@@ -848,9 +849,10 @@ font-size: 15px;
 color: #1C1C1C;
 }
 .buyer_img{
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 100%;
+  margin-right: 5px;
 }
 .b-cr-by,.d-a-time{
   color: #4D4D4D;
