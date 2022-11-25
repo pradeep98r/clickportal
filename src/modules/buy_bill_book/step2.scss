@@ -83,3 +83,33 @@
     line-height: 1.5;
     color: #495057!important;
 }
+.invidual_weights_modal_popup{
+  max-width: 750px;
+  height: 400px;
+  margin-top: 200px;
+  margin-left: 150px;
+  iframe{
+      border: none;
+  }
+
+  // .modal-header, .modal-footer{
+  //     border: none;
+  // }
+}
+.add_inv_weights{
+  height: 200px;
+}
+.total_bags_tbl{
+  width: 100%;
+  height: 200px;
+  padding: 10px 0px;
+}
+// .modal_checkbox{
+//   padding: 5px 0px;
+// }
+.add_inv_pls_btn{
+  border: none;
+  color:#0066FF;
+  background: none;
+  font-size: 20px;
+}
