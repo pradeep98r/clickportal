@@ -10,6 +10,8 @@ import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
   import SelectCrop from "../buy_bill_book/selectCrop";
   import SellbillStep3Modal from "./step3";
+  import $, { merge } from "jquery";
+import close from "../../assets/images/close.svg";
 var array = [];
 const SellbillStep2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -251,6 +253,103 @@ const SellbillStep2Modal = (props) => {
     })
   
   };
+  var arr =[];
+  const [quantityVal, setQuantityVal] = useState(0);
+  const [invArr, setInvArr] = useState([]);
+  const addInvQuantityValue = (ind,cropitem) => (e) =>{
+    var obj = {
+      id:ind,
+      total:0,
+      wastage:0,
+      weight:0
+    }
+    for(var i = 0; i<e.target.value; i++){
+      arr.push(obj);
+    }
+    setQuantityVal(e.target.value);
+    setInvArr(arr);
+    console.log(arr);
+    return e.target.value;
+  }
+  var arr1=[]
+  const addInvTab = () =>{
+    var addObj = {
+      id:arr.length,
+      total:0,
+      wastage:0,
+      weight:0
+    }
+
+    arr1.push(addObj);
+    setQuantityVal(parseInt(quantityVal)+1);
+    var arr2 =[...invArr, ...arr1];
+    setInvArr(arr2);
+  }
+  const [invWeightVal, setinvWeightVal] = useState(0);
+  const getInvWeightValue = (a, i) => (e) =>{
+    console.log(a,i,e.target.value);
+    setinvWeightVal(e.target.value)
+    let updatedItem = a.map((item, index) => {
+      if (i == index) {
+        return { ...a[index], weight: e.target.value };
+      } else {
+        setInvArr([...a]);
+        return { ...a[index] };
+      }
+    });
+    setInvArr([...updatedItem]);
+    // a[i].weight=e.target.value;
+
+  }
+  const [invWastageVal, setinvWastageVal] = useState(0);
+  const getInvWastageValue = (a, i) => (e) =>{
+    setinvWastageVal(e.target.value);
+    let updatedItem = a.map((item, index) => {
+      if (i == index) {
+        return { ...a[index], wastage: e.target.value };
+      } else {
+        setInvArr([...a]);
+        return { ...a[index] };
+      }
+    });
+    setInvArr([...updatedItem]);
+  }
+
+  var totalVal = 0;
+  const getInvTotalValue = () =>{
+    invArr.map(item=>{
+      totalVal+=parseInt(item.weight);
+    })
+    return totalVal;
+  }
+
+  var wastageSum=0;
+  const addInvidualWeights = (c,j)=>{
+    for(var l=0;l<invArr.length;l++){
+      wastageSum+=parseInt(invArr[l].wastage);
+    }
+    for(var i=0;i<c.length;i++){
+      for(var k=0;k<invArr.length;k++){
+        c[j].unitValue=quantityVal;
+        c[j].weightValue=totalVal;
+        c[j].wastageValue=wastageSum;
+      }
+    }
+    $("#addInvidualWeights").modal("hide");
+    setChecked(false);
+    console.log(c,j,"Updated");
+  }
+
+  const [checked, setChecked] = useState(false);
+  const handleCheckEvent = () => {
+    $("#addInvidualWeights").modal("show");
+    setChecked(true);
+  }
+  const closePopup = () => {
+    $("#addInvidualWeights").modal("hide");
+    setChecked(false);
+  };
+
   const cloneCrop = (crop) => {
     var list = preferedCropsData;
       var index = list.findIndex((obj) => obj == crop);
@@ -359,7 +458,13 @@ const SellbillStep2Modal = (props) => {
                                 ) : (
                                   ""
                                 )}
-
+                                {
+                                    cropData[index].unitType.toLowerCase() === 'bags' ||
+                                      cropData[index].unitType.toLowerCase() === 'sacs' ? (
+                                      <th className="col-2">
+                                        Invidual Weights
+                                      </th>) : ("")
+                                  }
                                 <th>
                                   Wastage(
                                   {cropData[index].unitType.toLowerCase() !=
@@ -450,7 +555,148 @@ const SellbillStep2Modal = (props) => {
                                 ) : (
                                   ""
                                 )}
-
+                                {
+                                    cropData[index].unitType.toLowerCase() === "bags" ||
+                                      cropData[index].unitType.toLowerCase() === "sacs" ? (
+                                      <td className="col-2">
+                                        <div className="d-flex">
+                                          <input
+                                            type="checkbox"
+                                            //defaultChecked
+                                            //className="custom-control-input"
+                                            checked={checked}
+                                            id="modal_checkbox"
+                                            value="my-value"
+                                            onChange={handleCheckEvent}
+                                          />
+                                          <p className="unit-type">Add {cropData[index].unitType}</p>
+                                        </div>
+                                        <div className="modal fade" id="addInvidualWeights">
+                                          <div className="modal-dialog invidual_weights_modal_popup" id="scroll_style">
+                                            <div className="modal-content invidual_weights_modal_popup">
+                                              <div className="modal-header date_modal_header smartboard_modal_header">
+                                                <h5
+                                                  className="modal-title header2_text"
+                                                  id="staticBackdropLabel"
+                                                >
+                                                  Add Invidual Weights
+                                                </h5>
+                                                <img
+                                                  src={close}
+                                                  alt="image"
+                                                  className="close_icon"
+                                                  onClick={closePopup}
+                                                />
+                                              </div>
+                                              <div className="modal-body add_inv_weights" id="scroll_style">
+                                                <div className="row">
+                                                  <div className="d-flex">
+                                                    <img src={cropData[index].imageUrl} alt="crop_image" />
+                                                    <p>{cropData[index].cropName}</p>
+                                                  </div>
+                                                </div>
+                                                <div className="row">
+                                                  <div className="total_bags_tbl" id="scroll_style">
+                                                    <table className="table table-bordered">
+                                                      <thead>
+                                                        <tr>
+                                                          <th className="col-3">Total {cropData[index].unitType}</th>
+                                                          <th className="col-3">Total Weight(Kgs)</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        <tr>
+                                                          <td className="col-3">
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="totalbags"
+                                                              value={quantityVal}
+                                                              onChange={addInvQuantityValue(
+                                                                index,
+                                                                crop
+                                                              )}
+                                                            />
+                                                          </td>
+                                                          <td className="col-3">
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="totalweight"
+                                                              value={getInvTotalValue()}
+                                                            //value={cropData[index].unitValue}
+                                                            // onChange={getInvTotalValue}
+                                                            />
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    </table>
+                                                    <table className="table table-bordered">
+                                                      <thead>
+                                                        <tr>
+                                                          <th className="col-2">S.No</th>
+                                                          <th className="col-2">KGS</th>
+                                                          <th className="col-2">Wastage(Kgs)</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                      {/* {_.times(invArr.length, (i) => (         */}
+                                                      {invArr.map((it, i)=>{
+                                                        return(
+                                                        <tr>
+                                                          <td className="col-2">{i+1}</td>
+                                                          <td className="col-2">
+                                                            <input
+                                                               type="text"
+                                                                className="form-control"
+                                                                name="weight"
+                                                                value={invArr[i].weight - invArr[i].wastage}
+                                                                onChange={getInvWeightValue(
+                                                                  invArr,
+                                                                  i
+                                                                )}
+                                                            />
+                                                            <p>{i}</p>
+                                                          </td>  
+                                                          <td className="col-2">
+                                                            <input
+                                                            type="text"
+                                                            name="wastage"
+                                                            className="form-control wastage_val"
+                                                            value={invArr[i].wastage}
+                                                            onChange={getInvWastageValue(
+                                                              invArr,
+                                                              i
+                                                            )}
+                                                          />
+                                                          </td>
+                                                        </tr> 
+                                                      )
+                                                        })}
+                                                      {/* ))} */}
+                                                      </tbody>
+                                                    </table>
+                                                    <button className="add_inv_pls_btn" onClick={addInvTab}>+</button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div className="modal-footer pt-0">
+                                                <button
+                                                  type="button"
+                                                  className="primary_btn"
+                                                  onClick={()=>{addInvidualWeights(cropData,index)}}
+                                                  data-bs-dismiss="modal"
+                                                >
+                                                  UPDATE
+                                                </button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        
+                                      </td>
+                                    ) : ("")
+                                  }
                                 <td className="col-1">
                                   {" "}
                                   <input
