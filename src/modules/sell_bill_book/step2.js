@@ -67,7 +67,7 @@ const SellbillStep2Modal = (props) => {
     fetchData();
     if (props.cropTableEditStatus) {
       if(props.billEditStatus){
-        cropResponseData([...cropData, ...props.cropEditObject]);
+        cropResponseData([...props.cropEditObject]);
       }
         for (var i = 0; i < props.cropEditObject.length; i++) {
           preferedCropsData.push(props.cropEditObject[i]);
@@ -230,6 +230,7 @@ const SellbillStep2Modal = (props) => {
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItems4;
     } 
+    console.log(updatedItems4)
   };
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);

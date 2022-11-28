@@ -120,12 +120,10 @@ function BuyBillBook() {
         unitType = "S";
         break;
     }
-    console.log(unitType);
     return unitType;
   };
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
-  console.log(singleBillData);
   const searchInput = (searchValue) => {
     setSelectBill(searchValue);
     if (billItem !== "") {

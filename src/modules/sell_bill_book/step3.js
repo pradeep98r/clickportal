@@ -269,6 +269,7 @@ const SellbillStep3Modal = (props) => {
   // var cropArray = props.slectedSellCropsArray;
   var cropArray = editStatus ? step2CropEditStatus ? props.slectedSellCropsArray[0].lineItems  :billEditItem.lineItems : props.slectedSellCropsArray;
   var len = cropArray.length;
+  console.log(cropArray)
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
@@ -278,8 +279,23 @@ const SellbillStep3Modal = (props) => {
       total: cropArray[i].total,
       wastage: cropArray[i].wastage,
       weight:parseInt(cropArray[i].weight),
+      id:cropArray[i].id,
+      bags:[],
+      partyId:billEditItem.buyerId,
+      status:editStatus ? 1 : 0,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+        // "cropId": 0,
+        // "id": 0,
+        // "partyId": 0,
+        // "qty": 0,
+        // "qtyUnit": "string",
+        // "rate": 0,
+        // "rateType": "string",
+        // "status": 0,
+        // "total": 0,
+        // "wastage": 0,
+        // "weight": 0
     });
   }
   const getActualRcvd = () => {
@@ -371,7 +387,7 @@ const SellbillStep3Modal = (props) => {
     billType: "SELL",
     caBSeq: billEditItem.caBSeq,
     caId: clickId,
-    lineItems: lineItemsArray,
+    lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
     updatedOn: "",
     writerId: 0

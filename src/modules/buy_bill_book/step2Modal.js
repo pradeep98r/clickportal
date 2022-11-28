@@ -23,7 +23,7 @@ const Step2Modal = (props) => {
   const [cropId, setCropId] = useState(0);
   const [cropClear, setCropClear] = useState(false);
   const [cropItemVal, setCropItemVal] = useState({});
-  console.log(props.cropEditObject, "edit object");
+  console.log(props.cropEditObject, "step2");
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     setCropItemVal(crop);
     setCropId(id);
@@ -70,7 +70,7 @@ const Step2Modal = (props) => {
     fetchData();
     if (props.cropTableEditStatus) {
     if(props.billEditStatus){
-      cropResponseData([...cropData, ...props.cropEditObject]);
+      cropResponseData([...props.cropEditObject]);
     }
       for (var i = 0; i < props.cropEditObject.length; i++) {
         preferedCropsData.push(props.cropEditObject[i]);
