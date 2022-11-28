@@ -4,10 +4,12 @@ import { useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
+import edit from "../../assets/images/edit_round.svg";
 import {
     getMandiDetails,
     getSystemSettings,
 } from "../../actions/billCreationService";
+import SellbillStep3Modal from "./step3"; 
 const SellBillView = () => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.clickId;
@@ -16,7 +18,7 @@ const SellBillView = () => {
     const [mandiData, setMandiData] = useState({});
     const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
     const [billSettingResponse, billSettingData] = useState([]);
-
+    console.log(singleBillData)
     useEffect(() => {
         getBusinessDetails();
         getBuyBillsById();
@@ -317,6 +319,16 @@ const SellBillView = () => {
           var cashRecieved=singleBillData.cashRcvd===null?0:singleBillData.cashRcvd;
         console.log((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashRcvd===null?0:singleBillData.cashRcvd))
         return ((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - cashRecieved).toFixed(2);
+      };
+      const [showStep3Modal, setShowStep3Modal] = useState(false);
+      const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
+      const [slectedCropArray, setSlectedCropArray] = useState([]);
+      const editBill = (itemVal) => {
+        var arr = [];
+        arr.push(itemVal);
+        setSlectedCropArray(arr);
+        setShowStep3ModalStatus(true);
+              setShowStep3Modal(true);
       };
     return (
         <div className="main_div_padding">
@@ -729,10 +741,29 @@ const SellBillView = () => {
                                 </div>
                             </div>
                             <div className="hr-line"></div>
+                            <div className="d-flex more-info">
+                <img
+                  src={edit}
+                  alt="img"
+                  className=""
+                  onClick={() => editBill(singleBillData)}
+                />
+              </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {showStep3ModalStatus ? (
+        <SellbillStep3Modal
+          show={showStep3Modal}
+          closeStep3Modal={() => setShowStep3Modal(false)}
+          slectedSellCropsArray={slectedCropArray}
+          billEditStatus = {true}
+          step2CropEditStatus={false}
+        />
+      ) : (
+        ""
+      )}
         </div>
     )
 }

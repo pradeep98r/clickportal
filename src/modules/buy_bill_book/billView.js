@@ -9,7 +9,10 @@ import moment from "moment/moment";
 import edit from "../../assets/images/edit_round.svg";
 import { useNavigate } from "react-router-dom";
 import Step3Modal from "./step3Model";
-const BillView = () => {
+import { editbuybillApi } from "../../actions/billCreationService";
+import { ToastContainer, toast } from "react-toastify";
+import cancel from "../../assets/images/cancel.svg";
+const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const clientId = loginData.authKeys.clientId;
@@ -17,6 +20,7 @@ const BillView = () => {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
+  // console.log(singleBillData)
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -316,13 +320,85 @@ const BillView = () => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const [slectedCropArray, setSlectedCropArray] = useState([]);
+  const [editCancelStatus, setEditCancelStatus] = useState(false)
   const editBill = (itemVal) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
     setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
+          setEditCancelStatus(true);
+
   };
+  const cancelBill = (itemVal)=>{
+    cancelbillApiCall();
+  }
+  const editBillRequestObj = 
+  {
+    action:"CANCEL",
+    billAttributes: {
+      actualPayRecieevable: singleBillData.actualPaybles,
+      advance: singleBillData.advance,
+      billDate: singleBillData.billDate,
+      cashRcvd: singleBillData.cashPaid,
+      comm: singleBillData.comm,
+      commIncluded: singleBillData.commIncluded,
+      comments: singleBillData.comments,
+      // customFields: [
+      //   {
+      //     "comments": "string",
+      //     "fee": 0,
+      //     "field": "string",
+      //     "fieldName": "string",
+      //     "fieldType": "string",
+      //     "less": true
+      //   }
+      // ],
+      govtLevies: singleBillData.govtLevies,
+      grossTotal: singleBillData.grossTotal,
+      labourCharges: singleBillData.labourCharges,
+      less: singleBillData.less,
+      mandiFee: singleBillData.mandiData,
+      misc: singleBillData.misc,
+      otherFee: singleBillData.misc,
+      outStBal: singleBillData.outStBal,
+      paidTo: 0,
+      partyId: singleBillData.farmerId,
+      rent: singleBillData.rent,
+      rtComm: singleBillData.rtComm,
+      rtCommIncluded: singleBillData.rtCommIncluded,
+      totalPayRecieevable: singleBillData.totalPayables,
+      transportation: singleBillData.transportation,
+      transporterId: singleBillData.transporterId,
+    },
+    billId: singleBillData.billId,
+    billType: "BUY",
+    caBSeq: singleBillData.caBSeq,
+    caId: clickId,
+    lineItems: singleBillData.lineItems,
+    updatedBy: 0,
+    updatedOn: "",
+    writerId: 0
+  }
+  const cancelbillApiCall = () =>{
+    editbuybillApi(editBillRequestObj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.message, {
+            toastId: "success1",
+          });
+          console.log(editBillRequestObj,"edit bill request");
+          console.log(response.data,"edit bill")
+          navigate("/buy_bill_book");
+        }
+      },
+      (error) => {
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
+      }
+    );
+  }
 
   return (
     <div className="main_div_padding">
@@ -897,15 +973,26 @@ const BillView = () => {
                   {/* </div> */}
                 </div>
               </div>
-              <div className="hr-line"></div>
+            {
+              singleBillData.billStatus == 'CANCELLED' ?'' : 
+              <div>
+                  <div className="hr-line"></div>
               <div className="d-flex more-info">
                 <img
                   src={edit}
                   alt="img"
-                  className=""
+                  className="mr-3"
                   onClick={() => editBill(singleBillData)}
                 />
+                 <img
+                  src={cancel}
+                  alt="img"
+                  className=""
+                  onClick={() => cancelBill(singleBillData)}
+                />
               </div>
+                </div>
+            }
             </div>
           </div>
         </div>
@@ -916,6 +1003,7 @@ const BillView = () => {
           slectedCropsArray={slectedCropArray}
           billEditStatus = {true}
           step2CropEditStatus={false}
+          editCancelStatus={editCancelStatus}
         />
       ) : (
         ""

@@ -115,14 +115,12 @@ export function postbuybillApi(billRequestObj) {
   );
 }
 export function editbuybillApi(billRequestObj) {
-  console.log(billRequestObj,"object");
   return axiosCommon.put(
     "/click/bills/sell-buy-bill",
     billRequestObj,  
   );
 }
 export function postsellbillApi(billRequestObj) {
-  console.log(billRequestObj,"object");
   return axiosCommon.post(
     "/click/bills/sales-bill",
     billRequestObj,  

@@ -342,7 +342,7 @@ const Step3Modal = (props) => {
   };
   const editBillRequestObj = 
   {
-    action: "UPDATE",
+    action:props.editCancelStatus? "UPDATE" : "CANCEL",
     billAttributes: {
       actualPayRecieevable: getActualPayble(),
       advance: advancesValue,
@@ -389,7 +389,6 @@ const Step3Modal = (props) => {
   }
   // post bill request api call
   const postbuybill = () => {
-    
     if(editStatus)
    {
     console.log("edit api");
