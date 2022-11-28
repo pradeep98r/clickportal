@@ -107,6 +107,7 @@ const Step2Modal = (props) => {
             { rateValue: 0 },
             { totalValue: 0 },
             { unitType: "crates" },
+            { checked:false}
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -228,6 +229,7 @@ const Step2Modal = (props) => {
     console.log(arr);
     return e.target.value;
   }
+
   var arr1=[]
   const addInvTab = () =>{
     var addObj = {
@@ -285,16 +287,37 @@ const Step2Modal = (props) => {
     for(var l=0;l<invArr.length;l++){
       wastageSum+=parseInt(invArr[l].wastage);
     }
-    for(var i=0;i<c.length;i++){
-      for(var k=0;k<invArr.length;k++){
-        c[j].unitValue=quantityVal;
-        c[j].weightValue=totalVal;
-        c[j].wastageValue=wastageSum;
-      }
+    if(parseInt(quantityVal) === 0){
+      toast.error("Please enter Quantity", {
+        toastId: "error1",
+      });
+      return null;
     }
-    $("#addInvidualWeights").modal("hide");
-    setChecked(false);
-    console.log(c,j,"Updated");
+    else{
+      for(var i=0;i<c.length;i++){
+        for(var k=0;k<invArr.length;k++){
+          //c[j].checked=true;
+          c[j].unitValue=parseInt(quantityVal);
+          c[j].weightValue=totalVal;
+          c[j].wastageValue=wastageSum;
+        }
+      }
+      let updatedItem = c.map((item, i) => {
+        if (i == j) {
+          console.log(i,j,"matched")
+          return { ...c[i], checked:true};
+        } else {
+          cropResponseData([...c]);
+          return { ...c[i] };
+        }
+      });
+      console.log(updatedItem,"UpdatedItem")
+  
+      $("#addInvidualWeights").modal("hide");
+      return cropResponseData([...updatedItem]);
+    }
+
+    //return cropResponseData([...c]);
   }
   const getQuantityValue = (id, index, cropitem) => (e) => {
     console.log(e.target.value);
@@ -383,14 +406,41 @@ const Step2Modal = (props) => {
     }
     cropResponseData([...cropArray]);
   };
-  const [checked, setChecked] = useState(false);
-  const handleCheckEvent = () => {
+  //const [checked, setChecked] = useState(false);
+  const handleCheckEvent = (crd, ink, cr) => {
+    console.log(ink,"in1")
+    while(invArr.length>0){
+      invArr.pop();
+    }
+    setQuantityVal(0);
+    let updatedItem = crd.map((item, i) => {
+      if (i == ink) {
+        console.log(i,ink,"matched")
+        return { ...crd[i], checked:true };
+      } else {
+        cropResponseData([...crd]);
+        return { ...crd[i] };
+      }
+    });
+    console.log(updatedItem,"UpdatedItem")
     $("#addInvidualWeights").modal("show");
-    setChecked(true);
+    
   }
-  const closePopup = () => {
+  const closePopup = (crData, ink, cr) => {
+    let updatedItem = crData.map((item, i) => {
+      if (i == ink) {
+        console.log(i,ink,"matched")
+        return { ...crData[i], checked:false};
+      } else {
+        cropResponseData([...crData]);
+        return { ...crData[i] };
+      }
+    });
+    console.log(updatedItem,"UpdatedItem")
     $("#addInvidualWeights").modal("hide");
-    setChecked(false);
+    return cropResponseData([...updatedItem]);
+    
+    //setChecked(false);
   };
   return (
     <Modal
@@ -596,10 +646,10 @@ const Step2Modal = (props) => {
                                             type="checkbox"
                                             //defaultChecked
                                             //className="custom-control-input"
-                                            checked={checked}
+                                            checked={cropData[index].checked}
                                             id="modal_checkbox"
                                             value="my-value"
-                                            onChange={handleCheckEvent}
+                                            onChange={()=>{handleCheckEvent(cropData,index,crop)}}
                                           />
                                           <p className="unit-type">Add {cropData[index].unitType}</p>
                                         </div>
@@ -617,7 +667,7 @@ const Step2Modal = (props) => {
                                                   src={close}
                                                   alt="image"
                                                   className="close_icon"
-                                                  onClick={closePopup}
+                                                  onClick={()=>{closePopup(cropData, index, crop)}}
                                                 />
                                               </div>
                                               <div className="modal-body add_inv_weights" id="scroll_style">
