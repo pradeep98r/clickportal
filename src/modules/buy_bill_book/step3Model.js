@@ -308,7 +308,7 @@ const Step3Modal = (props) => {
           id:cropArray[i].id,
       // bags:[],
       partyId:cropArray[i].farmerId,
-      status:editStatus ? 1 : 0,
+      status:editStatus ? 2 : 0,
       });
     }
   // }

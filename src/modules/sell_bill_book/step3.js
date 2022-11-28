@@ -282,7 +282,7 @@ const SellbillStep3Modal = (props) => {
       id:cropArray[i].id,
       bags:[],
       partyId:billEditItem.buyerId,
-      status:editStatus ? 1 : 0,
+      status:editStatus ? 2 : 0,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
         // "cropId": 0,
