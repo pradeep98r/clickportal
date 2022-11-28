@@ -107,16 +107,16 @@ function BuyBillBook() {
   const getCropUnit = (unit) => {
     var unitType = "";
     switch (unit) {
-      case "Crates":
+      case "crates":
         unitType = "C";
         break;
-      case "Boxes":
+      case "boxes":
         unitType = "BX";
         break;
-      case "Bags":
+      case "bags":
         unitType = "BG";
         break;
-      case "Sacs":
+      case "sacs":
         unitType = "S";
         break;
     }
