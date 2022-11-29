@@ -125,7 +125,7 @@ const SelectBags = (props) => {
           <div className="crop_div">
             <div className="d-flex align-items-center">
               <img src={props.cropsArray[0].imageUrl} alt="crop_image" />
-              <p className="ml-2">{props.cropsArray[0].cropName + ' ' +props.cropsArray[0].unitType}</p>
+              <p className="ml-2">{props.cropsArray[0].cropName + ' ' +props.cropsArray[0].qtyUnit}</p>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@ const SelectBags = (props) => {
               <thead>
                 <tr>
                   <th className="col-3">
-                    Total {props.cropsArray[0].unitType}
+                    Total {props.cropsArray[0].qtyUnit}
                   </th>
                   <th className="col-3">Total Weight(Kgs)</th>
                 </tr>
