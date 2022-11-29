@@ -101,6 +101,8 @@ const Step1 = () => {
           <Step2Modal
             show={showCropModal}
             closeCropModal={() => setShowCropModal(false)}
+            cropTableEditStatus = {false}
+            billEditStatus={false}
           />
         ) : (
           ""
