@@ -9,7 +9,6 @@ import React, { useState, useEffect } from "react";
 function TopNavigation() {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   const linkValue = localStorage.getItem("LinkId");
   var linkPath = localStorage.getItem("LinkPath");

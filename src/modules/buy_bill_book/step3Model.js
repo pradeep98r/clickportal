@@ -292,6 +292,7 @@ const Step3Modal = (props) => {
 
   // if (props.slectedCropsArray.length > 0) {
     var cropArray = editStatus ? step2CropEditStatus ? props.slectedCropsArray[0].lineItems  :billEditItem.lineItems : props.slectedCropsArray;
+    console.log(cropArray,lineItemsArray,"array")
     var len = cropArray.length;
     for (var i = 0; i < len; i++) {
       lineItemsArray.push({
@@ -304,6 +305,10 @@ const Step3Modal = (props) => {
         weight: parseInt(cropArray[i].weight),
         rateType:
           cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+          id:cropArray[i].id,
+      // bags:[],
+      partyId:cropArray[i].farmerId,
+      status:editStatus ? 2 : 0,
       });
     }
   // }
@@ -342,7 +347,7 @@ const Step3Modal = (props) => {
   };
   const editBillRequestObj = 
   {
-    action: "UPDATE",
+    action:"UPDATE",
     billAttributes: {
       actualPayRecieevable: getActualPayble(),
       advance: advancesValue,
@@ -382,14 +387,13 @@ const Step3Modal = (props) => {
     billType: "BUY",
     caBSeq: billEditItem.caBSeq,
     caId: clickId,
-    lineItems: lineItemsArray,
+    lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
     updatedOn: "",
     writerId: 0
   }
   // post bill request api call
   const postbuybill = () => {
-    
     if(editStatus)
    {
     console.log("edit api");

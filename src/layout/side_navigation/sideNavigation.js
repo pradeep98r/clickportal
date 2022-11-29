@@ -19,7 +19,6 @@ import { Link } from "react-router-dom";
 
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
-console.log(langFullData);
 class SideNavigation extends Component {
   state = { isActive: false };
 
