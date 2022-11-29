@@ -14,7 +14,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
-import { postbuybillApi, editbuybillApi } from "../../actions/billCreationService";
+import {
+  postbuybillApi,
+  editbuybillApi,
+} from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
@@ -61,6 +64,7 @@ const Step3Modal = (props) => {
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   const step2CropEditStatus = props.step2CropEditStatus;
+  const [unitPrevVal, setUnitPrevVal] = useState(0);
   useEffect(() => {
     console.log(props.slectedCropsArray);
     fetchPertnerData(partyType);
@@ -121,11 +125,14 @@ const Step3Modal = (props) => {
       var totalunitvalues = 0;
       var t = 0;
       var lineitm = billEditItem.lineItems;
+      console.log(billEditItem.lineItems);
       for (var i = 0; i < lineitm.length; i++) {
         totalunitvalues += editStatus
           ? parseInt(lineitm[i].qty)
           : parseInt(props.slectedCropsArray[i].qty);
-        setTotalUnits(totalunitvalues);
+        // setTotalUnits(totalunitvalues);
+        setUnitPrevVal(parseInt(lineitm[i].qty));
+        console.log(parseInt(lineitm[i].qty));
       }
       if (!commEdit) {
         getCommInput((billEditItem.comm / billEditItem.grossTotal) * 100);
@@ -134,13 +141,26 @@ const Step3Modal = (props) => {
         getRetCommInput((billEditItem.rtComm / billEditItem.grossTotal) * 100);
       }
       if (!transEdit) {
-        getTransportationValue(billEditItem.transportation / totalunitvalues);
+        if (!step2CropEditStatus) {
+          getTransportationValue(billEditItem.transportation / totalunitvalues);
+        } else {
+          getTransportationValue(parseInt(localStorage.getItem("trVal")));
+        }
       }
       if (!labourEdit) {
-        getLaborChargeValue(billEditItem.labourCharges / totalunitvalues);
+        if (!step2CropEditStatus) {
+          getLaborChargeValue(billEditItem.labourCharges / totalunitvalues);
+        } else {
+          console.log(localStorage.getItem("labVal"));
+          getLaborChargeValue(parseInt(localStorage.getItem("labVal")));
+        }
       }
       if (!rentEdit) {
-        getRentValue(billEditItem.rent / totalunitvalues);
+        if (!step2CropEditStatus) {
+          getRentValue(billEditItem.rent / totalunitvalues);
+        } else {
+          getRentValue(parseInt(localStorage.getItem("rentVal")));
+        }
       }
       if (!mandifEdit) {
         getMandiFeeInput(
@@ -148,7 +168,7 @@ const Step3Modal = (props) => {
         );
       }
     }
-  }, []);
+  }, [props.show]);
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
@@ -220,6 +240,7 @@ const Step3Modal = (props) => {
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
+    console.log(total);
   };
 
   const getTotalValue = (value) => {
@@ -291,26 +312,30 @@ const Step3Modal = (props) => {
   var lineItemsArray = [];
 
   // if (props.slectedCropsArray.length > 0) {
-    var cropArray = editStatus ? step2CropEditStatus ? props.slectedCropsArray[0].lineItems  :billEditItem.lineItems : props.slectedCropsArray;
-    console.log(cropArray,lineItemsArray,"array")
-    var len = cropArray.length;
-    for (var i = 0; i < len; i++) {
-      lineItemsArray.push({
-        cropId: cropArray[i].cropId,
-        qty: parseInt(cropArray[i].qty),
-        qtyUnit: cropArray[i].qtyUnit,
-        rate: parseInt(cropArray[i].rate),
-        total: cropArray[i].total,
-        wastage: cropArray[i].wastage,
-        weight: parseInt(cropArray[i].weight),
-        rateType:
-          cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
-          id:cropArray[i].id,
-      partyId:cropArray[i].farmerId,
-      status:editStatus ? 2 : 0,
-      bags:cropArray[i].bags
-      });
-    }
+  var cropArray = editStatus
+    ? step2CropEditStatus
+      ? props.slectedCropsArray[0].lineItems
+      : billEditItem.lineItems
+    : props.slectedCropsArray;
+  console.log(cropArray, lineItemsArray, "array");
+  var len = cropArray.length;
+  for (var i = 0; i < len; i++) {
+    lineItemsArray.push({
+      cropId: cropArray[i].cropId,
+      qty: parseInt(cropArray[i].qty),
+      qtyUnit: cropArray[i].qtyUnit,
+      rate: parseInt(cropArray[i].rate),
+      total: cropArray[i].total,
+      wastage: cropArray[i].wastage,
+      weight: parseInt(cropArray[i].weight),
+      rateType:
+        cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+      id: cropArray[i].id,
+      partyId: cropArray[i].farmerId,
+      status: editStatus ? 2 : 0,
+      bags: cropArray[i].bags,
+    });
+  }
   // }
   const billRequestObj = {
     actualPayble: getActualPayble(),
@@ -345,9 +370,8 @@ const Step3Modal = (props) => {
     writerId: 0,
     timeStamp: "",
   };
-  const editBillRequestObj = 
-  {
-    action:"UPDATE",
+  const editBillRequestObj = {
+    action: "UPDATE",
     billAttributes: {
       actualPayRecieevable: getActualPayble(),
       advance: advancesValue,
@@ -379,9 +403,10 @@ const Step3Modal = (props) => {
       rent: getTotalUnits(rentValue),
       rtComm: getTotalValue(retcommValue),
       rtCommIncluded: includeRetComm,
-      totalPayRecieevable: (getTotalBillAmount() - parseInt(cashpaidValue)),
+      totalPayRecieevable: getTotalBillAmount() - parseInt(cashpaidValue),
       transportation: getTotalUnits(transportationValue),
-      transporterId: transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+      transporterId:
+        transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
     billId: billEditItem.billId,
     billType: "BUY",
@@ -390,50 +415,48 @@ const Step3Modal = (props) => {
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
     updatedOn: "",
-    writerId: 0
-  }
+    writerId: 0,
+  };
   // post bill request api call
   const postbuybill = () => {
-    if(editStatus)
-   {
-    console.log("edit api");
-    editbuybillApi(editBillRequestObj).then(
-      (response) => {
-        if (response.data.status.type === "SUCCESS") {
-          toast.success(response.data.status.message, {
-            toastId: "success1",
+    if (editStatus) {
+      console.log("edit api");
+      editbuybillApi(editBillRequestObj).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
+            console.log(editBillRequestObj, "edit bill request");
+            console.log(response.data, "edit bill");
+            props.closeStep3Modal();
+            navigate("/buy_bill_book");
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
           });
-          console.log(editBillRequestObj,"edit bill request");
-          console.log(response.data,"edit bill")
-          props.closeStep3Modal();
-          navigate("/buy_bill_book");
         }
-      },
-      (error) => {
-        toast.error(error.response.data.status.description, {
-          toastId: "error1",
-        });
-      }
-    );
-   }
-   else{
-    postbuybillApi(billRequestObj).then(
-      (response) => {
-        if (response.data.status.type === "SUCCESS") {
-          toast.success(response.data.status.description, {
-            toastId: "success1",
+      );
+    } else {
+      postbuybillApi(billRequestObj).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            toast.success(response.data.status.description, {
+              toastId: "success1",
+            });
+            props.closeStep3Modal();
+            navigate("/buy_bill_book");
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
           });
-          props.closeStep3Modal();
-          navigate("/buy_bill_book");
         }
-      },
-      (error) => {
-        toast.error(error.response.data.status.description, {
-          toastId: "error1",
-        });
-      }
-    );
-   }
+      );
+    }
   };
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () => {
@@ -458,18 +481,23 @@ const Step3Modal = (props) => {
     setrtCommedit(true);
   };
   const [transEdit, settransedit] = useState(false);
+  const [transValue, settransValue] = useState(0);
   const transOnchangeEvent = (event) => {
     getTransportationValue(event.target.value.replace(/\D/g, ""));
     settransedit(true);
+    localStorage.setItem("trVal", event.target.value);
+    settransValue(event.target.value);
   };
   const [labourEdit, setLabouredit] = useState(false);
   const labourOnchangeEvent = (event) => {
     getLaborChargeValue(event.target.value.replace(/\D/g, ""));
+    localStorage.setItem("labVal", event.target.value);
     setLabouredit(true);
   };
   const [rentEdit, setRentedit] = useState(false);
   const rentOnchangeEvent = (event) => {
     getRentValue(event.target.value.replace(/\D/g, ""));
+    // localStorage.setItem("rentVal", editStatus ? !step2CropEditStatus ?billEditItem.rent/ : : event.target.value);
     setRentedit(true);
   };
   const [mandifEdit, setMandifEdit] = useState(false);
@@ -790,8 +818,17 @@ const Step3Modal = (props) => {
             ) : (
               ""
             )}
-            <h5 className="date_sec head_modal">Crop Information </h5>
-            <p onClick={() => editCropTable(billEditItem.lineItems)}>edit</p>
+            <h5 className="date_sec head_modal p-0">Crop Information </h5>
+            <div className="selectparty_field edit_crop_item_div">
+            <div className="d-flex align-items-center justify-content-between">
+              <p className="d-flex align-items-center">
+                <img src={billEditItem.lineItems[0].imageUrl} className="edit_crop_item"/>
+                <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p>
+              </p>
+            <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
+            </div>
+            </div>
+            
             <div className="cropinfo_div">{/* <p>edit</p>  */}</div>
           </div>
           <div className="col-lg-6">
