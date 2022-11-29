@@ -59,7 +59,6 @@ const SellBillBook = () => {
     }
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response.data.data)
         setSellBillData(response.data.data);
         setLoading(false);
       })
@@ -99,7 +98,6 @@ const SellBillBook = () => {
     localStorage.setItem("stepOneSingleBook",stepOneHeader); 
   }
   const getCropUnit = (unit) => {
-    console.log(unit)
     var unitType = "";
     switch (unit.toUpperCase()) {
       case "CRATES":
