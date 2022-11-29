@@ -84,7 +84,6 @@ const SellbillStep2Modal = (props) => {
             { cropActive: true }
           );
         }
-        console.log(preferedCropsData);
       }
   }, []);
 
@@ -235,7 +234,6 @@ const SellbillStep2Modal = (props) => {
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItems4;
     } 
-    console.log(updatedItems4)
   };
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
@@ -276,14 +274,12 @@ const SellbillStep2Modal = (props) => {
         setarIndex(ink);
         arrobject.push(crd[i]);
         setArray([...arrobject]);
-        console.log(ink);
         return { ...crd[i], checked: true };
       } else {
         return { ...crd[i] };
       }
     });
     cropResponseData([...updatedItem]);
-    console.log(arrobject, ar, "UpdatedItem");
     setshowBagsModalStatus(true);
     setShowBagsModal(true);
     if(crd[ink].bags.length > 0){
@@ -291,16 +287,14 @@ const SellbillStep2Modal = (props) => {
     }
   }
   const callbackFunction = (childData, invArr) => {
-    console.log(childData, invArr, "parent");
     let updatedItems = cropData.map((item, i) => {
       if (i == arIndex) {
         item = childData[0];
-        console.log(item);
         return {
           ...cropData[i],
-          unitValue: parseInt(item.unitValue),
-          wastageValue: item.wastageValue,
-          weightValue: item.weightValue,
+          qty: parseInt(item.qty),
+          wastage: item.wastage,
+          weight: item.weight,
           bags: invArr,
         };
       } else {
@@ -309,7 +303,6 @@ const SellbillStep2Modal = (props) => {
       }
     });
     cropResponseData([...updatedItems]);
-    console.log(updatedItems);
   };
   const cloneCrop = (crop) => {
     var list = preferedCropsData;
@@ -327,6 +320,10 @@ const SellbillStep2Modal = (props) => {
       var index1 = list.findIndex((obj) => obj == crop);
       if (index1 != -1) {
         list[index1].count -= 1;
+        if(list[index1].count == 0){
+          console.log(list,index1)
+          list.splice(index1,index1);
+        }
       }
     }
     cropResponseData([...cropArray]);

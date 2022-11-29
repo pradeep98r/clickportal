@@ -27,7 +27,6 @@ const Step2Modal = (props) => {
   const [cropId, setCropId] = useState(0);
   const [cropClear, setCropClear] = useState(false);
   const [cropItemVal, setCropItemVal] = useState({});
-  console.log(props.cropEditObject, "step2");
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     setCropItemVal(crop);
     setCropId(id);
@@ -76,7 +75,6 @@ const Step2Modal = (props) => {
     if (props.cropTableEditStatus) {
     if(props.billEditStatus){
       cropResponseData([...props.cropEditObject]);
-      console.log(props.cropEditObject)
     }
       for (var i = 0; i < props.cropEditObject.length; i++) {
         preferedCropsData.push(props.cropEditObject[i]);
@@ -131,7 +129,6 @@ const Step2Modal = (props) => {
           setPreferedCropsData([...preferedCropsData, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
-          console.log(cropData,"new")
         }
       });
     } else {
@@ -221,7 +218,6 @@ const Step2Modal = (props) => {
   };
   const getRateType = (cropData, index) => (e) => {
     cropData[index].rateType = e.target.value;
-    console.log(cropData[index].rateType, cropData);
     cropResponseData([...cropData]);
   };
   const [quantityValue, setunitValue] = useState();
@@ -232,7 +228,6 @@ const Step2Modal = (props) => {
   var arr = [];
 
   const getQuantityValue = (id, index, cropitem) => (e) => {
-    console.log(e.target.value);
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], qty: e.target.value };
@@ -293,7 +288,6 @@ const Step2Modal = (props) => {
     }
     setrateValue(e.target.value);
     setCropId(id);
-    console.log(e.target.value, updatedItem3);
     setSelectedCropsData(updatedItem3);
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItem3;
@@ -304,7 +298,6 @@ const Step2Modal = (props) => {
     var index = list.findIndex((obj) => obj == crop);
     if (index != -1) {
       list[index].count += 1;
-      console.log(list[index].count, list[index], "count");
     }
     cropResponseData([...cropData, crop]);
   };
@@ -316,7 +309,9 @@ const Step2Modal = (props) => {
       var index1 = list.findIndex((obj) => obj == crop);
       if (index1 != -1) {
         list[index1].count -= 1;
-        console.log(list[index1].count, list[index1], "count");
+        if(list[index1].count == 0){
+          list.splice(index1,index1);
+        }
       }
     }
     cropResponseData([...cropArray]);
@@ -334,47 +329,28 @@ const Step2Modal = (props) => {
         setarIndex(ink);
         arrobject.push(crd[i]);
         setArray([...arrobject]);
-        console.log(ink);
         return { ...crd[i], checked: true };
       } else {
         return { ...crd[i] };
       }
     });
     cropResponseData([...updatedItem]);
-    console.log(arrobject, ar, "UpdatedItem");
     setshowBagsModalStatus(true);
     setShowBagsModal(true);
     if(crd[ink].bags.length > 0){
       setEditBagsStatus(true);
     }
   };
-  const closePopup = (crData, ink, cr) => {
-    let updatedItem = crData.map((item, i) => {
-      if (i == ink) {
-        console.log(i, ink, "matched");
-        return { ...crData[i], checked: false };
-      } else {
-        cropResponseData([...crData]);
-        return { ...crData[i] };
-      }
-    });
-    console.log(updatedItem, "UpdatedItem");
-    $("#addInvidualWeights").modal("hide");
-    return cropResponseData([...updatedItem]);
-
-    //setChecked(false);
-  };
   const callbackFunction = (childData, invArr) => {
     console.log(childData, invArr, "parent");
     let updatedItems = cropData.map((item, i) => {
       if (i == arIndex) {
         item = childData[0];
-        console.log(item);
         return {
           ...cropData[i],
-          unitValue: parseInt(item.unitValue),
-          wastageValue: item.wastageValue,
-          weightValue: item.weightValue,
+          qty: parseInt(item.qty),
+          wastage: item.wastage,
+          weight: item.weight,
           bags: invArr,
         };
       } else {

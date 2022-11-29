@@ -4,7 +4,6 @@ import close from "../../assets/images/close.svg";
 const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
-  console.log(props.editBagsStatus, props.cropsArray[0].bags, "edit bags");
   useEffect(() => {
     if (props.editBagsStatus) {
       setInvArr(props.cropsArray[0].bags);
@@ -27,13 +26,10 @@ const SelectBags = (props) => {
     for (var i = 0; i < k; i++) {
       arr.push(obj);
     }
-    console.log(k,"loop")
     setQuantityVal(e.target.value);
     if (props.editBagsStatus) {
-      console.log(props.cropsArray[0].bags, arr, "if");
       setInvArr([...arr, ...props.cropsArray[0].bags]);
     } else {
-      console.log("else");
       setInvArr(arr);
     }
     return e.target.value;
@@ -79,11 +75,10 @@ const SelectBags = (props) => {
       wastageSum += parseInt(invArr[l].wastage);
       totalw += parseInt(invArr[l].weight);
     }
-    props.cropsArray[0].wastageValue = wastageSum;
-    props.cropsArray[0].weightValue = totalw;
-    props.cropsArray[0].unitValue = quantityVal;
+    props.cropsArray[0].wastage = wastageSum;
+    props.cropsArray[0].weight = totalw;
+    props.cropsArray[0].qty = quantityVal;
     props.cropsArray[0].checked = false
-    console.log(props.cropsArray, invArr, "child");
     props.parentCallback(props.cropsArray, invArr);
     setInvArr([]);
     setQuantityVal(0);

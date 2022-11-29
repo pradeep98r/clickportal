@@ -197,8 +197,6 @@ const SellbillStep3Modal = (props) => {
     var total = 0;
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
-      // total += items[i].totalValue;
-      // totalunitvalue += parseInt(items[i].unitValue);
       total += editStatus
       ? step2CropEditStatus
         ? items[i].total
@@ -410,6 +408,7 @@ const SellbillStep3Modal = (props) => {
           toast.success(response.data.status.description, {
             toastId: "success1",
           });
+          console.log(sellBillRequestObj,"post req")
           props.closeStep3Modal();
           navigate("/sellbillbook");
         }
