@@ -375,6 +375,18 @@ option[value=""][disabled] {
   background-position: right 5px center;
   // border: 1px solid #e4e4e4 !important;
 }
+.bags_table{
+  th {
+    color: var(--ono-primary-text);
+    font-size: var(--body-small-text);
+    background-color: var(--ono-select-background);
+    font-weight: 500;
+  }
+  table td {
+    position: relative;
+    padding: 5px;
+  }
+}
 // crop table
 .crop_table_view {
   table {
@@ -402,6 +414,11 @@ option[value=""][disabled] {
     border: none;
     padding: 10px;
     box-sizing: border-box;
+  }
+  table .checkbox_t{
+    width: auto;
+    height: auto;
+    position:initial;
   }
   .table > :not(:first-child) {
     border-top: 0px solid currentColor;

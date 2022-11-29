@@ -8,8 +8,12 @@ import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import Step3Modal from "./step3Model";
 import toastr from "toastr";
+import $, { merge } from "jquery";
+import close from "../../assets/images/close.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import _ from "lodash";
+import SelectBags from "./bags";
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -34,7 +38,8 @@ const Step2Modal = (props) => {
       { rateType: "kgs" },
       { weight: 0 },
       { rate: 0 },
-      { total: 0 }
+      { total: 0 },
+      { bags: [] }
       // { unitType:  preferedCrops[index2] }
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
@@ -57,7 +62,7 @@ const Step2Modal = (props) => {
             item,
             { count: 0 },
             { cropActive: false },
-            { qtyUnit: "crates" }
+            { qtyUnit: "Crates" }
           );
         });
         setPreferedCropsData([...preferedCropsData, ...response.data.data]);
@@ -71,6 +76,7 @@ const Step2Modal = (props) => {
     if (props.cropTableEditStatus) {
     if(props.billEditStatus){
       cropResponseData([...props.cropEditObject]);
+      console.log(props.cropEditObject)
     }
       for (var i = 0; i < props.cropEditObject.length; i++) {
         preferedCropsData.push(props.cropEditObject[i]);
@@ -83,7 +89,6 @@ const Step2Modal = (props) => {
           { cropActive: true }
         );
       }
-      console.log(preferedCropsData);
     }
   }, []);
 
@@ -103,7 +108,8 @@ const Step2Modal = (props) => {
           Object.assign(
             list[index],
             { cropActive: true },
-            { qtyUnit: "crates" }
+            { qtyUnit: "crates" },
+            { addInv: false }
           );
         } else {
           Object.assign(
@@ -117,12 +123,15 @@ const Step2Modal = (props) => {
             { weight: 0 },
             { rate: 0 },
             { total: 0 },
-            { qtyUnit: "crates" }
+            { qtyUnit: "crates" },
+            { checked: false },
+            { bags: [] }
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
+          console.log(cropData,"new")
         }
       });
     } else {
@@ -194,6 +203,7 @@ const Step2Modal = (props) => {
     }
     return t;
   };
+
   var arr1 = [];
   const getQuantity = (cropData, index1, crop) => (e) => {
     cropData[index1].rateType = "kgs";
@@ -218,7 +228,11 @@ const Step2Modal = (props) => {
   const [wastagesValue, setwastageValue] = useState();
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
+
+  var arr = [];
+
   const getQuantityValue = (id, index, cropitem) => (e) => {
+    console.log(e.target.value);
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], qty: e.target.value };
@@ -306,6 +320,70 @@ const Step2Modal = (props) => {
       }
     }
     cropResponseData([...cropArray]);
+  };
+  //const [checked, setChecked] = useState(false);
+  const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
+  const [showBagsModal, setShowBagsModal] = useState(false);
+  const arrobject = [];
+  const [ar, setArray] = useState([]);
+  const [arIndex, setarIndex] = useState(0);
+  const [editBagsStatus, setEditBagsStatus] = useState(false);
+  const handleCheckEvent = (crd, ink, cr) => {
+    let updatedItem = crd.map((item, i) => {
+      if (i == ink) {
+        setarIndex(ink);
+        arrobject.push(crd[i]);
+        setArray([...arrobject]);
+        console.log(ink);
+        return { ...crd[i], checked: true };
+      } else {
+        return { ...crd[i] };
+      }
+    });
+    cropResponseData([...updatedItem]);
+    console.log(arrobject, ar, "UpdatedItem");
+    setshowBagsModalStatus(true);
+    setShowBagsModal(true);
+    if(crd[ink].bags.length > 0){
+      setEditBagsStatus(true);
+    }
+  };
+  const closePopup = (crData, ink, cr) => {
+    let updatedItem = crData.map((item, i) => {
+      if (i == ink) {
+        console.log(i, ink, "matched");
+        return { ...crData[i], checked: false };
+      } else {
+        cropResponseData([...crData]);
+        return { ...crData[i] };
+      }
+    });
+    console.log(updatedItem, "UpdatedItem");
+    $("#addInvidualWeights").modal("hide");
+    return cropResponseData([...updatedItem]);
+
+    //setChecked(false);
+  };
+  const callbackFunction = (childData, invArr) => {
+    console.log(childData, invArr, "parent");
+    let updatedItems = cropData.map((item, i) => {
+      if (i == arIndex) {
+        item = childData[0];
+        console.log(item);
+        return {
+          ...cropData[i],
+          unitValue: parseInt(item.unitValue),
+          wastageValue: item.wastageValue,
+          weightValue: item.weightValue,
+          bags: invArr,
+        };
+      } else {
+        cropResponseData([...cropData]);
+        return { ...cropData[i] };
+      }
+    });
+    cropResponseData([...updatedItems]);
+    console.log(updatedItems);
   };
   return (
     <Modal
@@ -398,6 +476,21 @@ const Step2Modal = (props) => {
                                         : cropData[index].qtyUnit}
                                       )
                                     </th>
+                                  ) : (
+                                    ""
+                                  )}
+                                   {cropData[index].qtyUnit.toLowerCase() ===
+                                    "bags" ||
+                                  cropData[index].qtyUnit.toLowerCase() ===
+                                    "sacs" ? (
+                                    cropData[index].qtyUnit.toLowerCase() !=
+                                    cropData[index].rateType ? (
+                                      <th className="col-2">
+                                        Invidual Weights
+                                      </th>
+                                    ) : (
+                                      ""
+                                    )
                                   ) : (
                                     ""
                                   )}
@@ -495,7 +588,39 @@ const Step2Modal = (props) => {
                                   ) : (
                                     ""
                                   )}
-
+                                  {cropData[index].qtyUnit.toLowerCase() ===
+                                    "bags" ||
+                                  cropData[index].qtyUnit.toLowerCase() ===
+                                    "sacs" ? (
+                                    cropData[index].qtyUnit.toLowerCase() !=
+                                    cropData[index].rateType ? (
+                                      <td className="col-2">
+                                        <div className="d-flex">
+                                          <p className="unit-type">
+                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                          </p>
+                                          <input
+                                            type="checkbox"
+                                            checked={cropData[index].checked}
+                                            id="modal_checkbox"
+                                            value="my-value"
+                                            className="checkbox_t"
+                                            onChange={() => {
+                                              handleCheckEvent(
+                                                cropData,
+                                                index,
+                                                crop
+                                              );
+                                            }}
+                                          />
+                                        </div>
+                                      </td>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
                                   <td className="col-1">
                                     {" "}
                                     <input
@@ -715,6 +840,18 @@ const Step2Modal = (props) => {
         ""
       )}
       <ToastContainer />
+      {showBagsModalStatus ? (
+        <SelectBags
+          show={showBagsModal}
+          closeBagsModal={() => setShowBagsModal(false)}
+          cropsArray={ar}
+          parentCallback={callbackFunction}
+          cropIndex={arIndex}
+          editBagsStatus={editBagsStatus}
+        />
+      ) : (
+        ""
+      )}
     </Modal>
   );
 };

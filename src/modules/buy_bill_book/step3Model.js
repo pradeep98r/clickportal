@@ -306,9 +306,9 @@ const Step3Modal = (props) => {
         rateType:
           cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
           id:cropArray[i].id,
-      // bags:[],
       partyId:cropArray[i].farmerId,
       status:editStatus ? 2 : 0,
+      bags:cropArray[i].bags
       });
     }
   // }

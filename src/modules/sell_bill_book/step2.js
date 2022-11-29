@@ -10,6 +10,9 @@ import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
   import SelectCrop from "../buy_bill_book/selectCrop";
   import SellbillStep3Modal from "./step3";
+  import $, { merge } from "jquery";
+import close from "../../assets/images/close.svg";
+import SelectBags from "../buy_bill_book/bags";
 var array = [];
 const SellbillStep2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -36,6 +39,7 @@ const SellbillStep2Modal = (props) => {
       { weight: 0 },
       { rate: 0 },
       { total: 0 },
+      { bags: [] }
       // { unitType:  preferedCrops[index2] }
     );
 
@@ -55,7 +59,7 @@ const SellbillStep2Modal = (props) => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
         response.data.data.map((item) => {
-          Object.assign(item, { count: 0 }, { cropActive: false }, { qtyUnit: "crates" });
+          Object.assign(item, { count: 0 }, { cropActive: false }, { qtyUnit: "Crates" }, { bags: [] });
         });
         setPreferedCropsData(response.data.data);
       })
@@ -110,7 +114,8 @@ const SellbillStep2Modal = (props) => {
             { weight: 0 },
             { rate: 0 },
             { total: 0 },
-            { qtyUnit: "crates" }
+            { qtyUnit: "Crates" },
+            { bags: [] }
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -258,6 +263,54 @@ const SellbillStep2Modal = (props) => {
     })
   
   };
+  
+  const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
+  const [showBagsModal, setShowBagsModal] = useState(false);
+  const arrobject = [];
+  const [ar, setArray] = useState([]);
+  const [arIndex, setarIndex] = useState(0);
+  const [editBagsStatus, setEditBagsStatus] = useState(false);
+  const handleCheckEvent = (crd, ink, cr) => {
+    let updatedItem = crd.map((item, i) => {
+      if (i == ink) {
+        setarIndex(ink);
+        arrobject.push(crd[i]);
+        setArray([...arrobject]);
+        console.log(ink);
+        return { ...crd[i], checked: true };
+      } else {
+        return { ...crd[i] };
+      }
+    });
+    cropResponseData([...updatedItem]);
+    console.log(arrobject, ar, "UpdatedItem");
+    setshowBagsModalStatus(true);
+    setShowBagsModal(true);
+    if(crd[ink].bags.length > 0){
+      setEditBagsStatus(true);
+    }
+  }
+  const callbackFunction = (childData, invArr) => {
+    console.log(childData, invArr, "parent");
+    let updatedItems = cropData.map((item, i) => {
+      if (i == arIndex) {
+        item = childData[0];
+        console.log(item);
+        return {
+          ...cropData[i],
+          unitValue: parseInt(item.unitValue),
+          wastageValue: item.wastageValue,
+          weightValue: item.weightValue,
+          bags: invArr,
+        };
+      } else {
+        cropResponseData([...cropData]);
+        return { ...cropData[i] };
+      }
+    });
+    cropResponseData([...updatedItems]);
+    console.log(updatedItems);
+  };
   const cloneCrop = (crop) => {
     var list = preferedCropsData;
       var index = list.findIndex((obj) => obj == crop);
@@ -364,7 +417,13 @@ const SellbillStep2Modal = (props) => {
                                 ) : (
                                   ""
                                 )}
-
+                                {
+                                    cropData[index].qtyUnit.toLowerCase() === 'bags' ||
+                                      cropData[index].qtyUnit.toLowerCase() === 'sacs' ? (
+                                      <th className="col-2">
+                                        Invidual Weights
+                                      </th>) : ("")
+                                  }
                                 <th>
                                   Wastage(
                                   {cropData[index].qtyUnit.toLowerCase() !=
@@ -455,7 +514,32 @@ const SellbillStep2Modal = (props) => {
                                 ) : (
                                   ""
                                 )}
-
+                                {
+                                    cropData[index].qtyUnit.toLowerCase() === "bags" ||
+                                      cropData[index].qtyUnit.toLowerCase() === "sacs" ? (
+                                        <td className="col-2">
+                                        <div className="d-flex">
+                                          <p className="unit-type">
+                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                          </p>
+                                          <input
+                                            type="checkbox"
+                                            checked={cropData[index].checked}
+                                            id="modal_checkbox"
+                                            value="my-value"
+                                            className="checkbox_t"
+                                            onChange={() => {
+                                              handleCheckEvent(
+                                                cropData,
+                                                index,
+                                                crop
+                                              );
+                                            }}
+                                          />
+                                        </div>
+                                      </td>
+                                    ) : ("")
+                                  }
                                 <td className="col-1">
                                   {" "}
                                   <input
@@ -667,6 +751,18 @@ const SellbillStep2Modal = (props) => {
         ""
       )}
       <ToastContainer />
+      {showBagsModalStatus ? (
+        <SelectBags
+          show={showBagsModal}
+          closeBagsModal={() => setShowBagsModal(false)}
+          cropsArray={ar}
+          parentCallback={callbackFunction}
+          cropIndex={arIndex}
+          editBagsStatus={editBagsStatus}
+        />
+      ) : (
+        ""
+      )}
     </Modal>
   );
 };

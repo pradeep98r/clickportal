@@ -285,17 +285,7 @@ const SellbillStep3Modal = (props) => {
       status:editStatus ? 2 : 0,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
-        // "cropId": 0,
-        // "id": 0,
-        // "partyId": 0,
-        // "qty": 0,
-        // "qtyUnit": "string",
-        // "rate": 0,
-        // "rateType": "string",
-        // "status": 0,
-        // "total": 0,
-        // "wastage": 0,
-        // "weight": 0
+        bags:cropArray[i].bags
     });
   }
   const getActualRcvd = () => {
