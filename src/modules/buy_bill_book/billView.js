@@ -250,7 +250,7 @@ const BillView = () => {
   const getCropUnit = (unit) => {
     console.log(unit);
     var unitType = "";
-    switch (unit) {
+    switch (unit.toUpperCase()) {
       case "CRATES":
         unitType = "C";
         break;

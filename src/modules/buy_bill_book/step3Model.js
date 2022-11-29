@@ -245,6 +245,7 @@ const Step3Modal = (props) => {
       weight: cropArray[i].weightValue,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+        bags:cropArray[i].bags
     });
   }
   const billRequestObj = {
