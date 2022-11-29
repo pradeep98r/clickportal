@@ -6,8 +6,13 @@ import {
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
-
-const BillView = () => {
+import edit from "../../assets/images/edit_round.svg";
+import { useNavigate } from "react-router-dom";
+import Step3Modal from "./step3Model";
+import { editbuybillApi } from "../../actions/billCreationService";
+import { ToastContainer, toast } from "react-toastify";
+import cancel from "../../assets/images/cancel.svg";
+const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
   const clientId = loginData.authKeys.clientId;
@@ -15,12 +20,12 @@ const BillView = () => {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  console.log(singleBillData, "Data");
+  // console.log(singleBillData)
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
-
+  const navigate = useNavigate();
   useEffect(() => {
     getBusinessDetails();
     getBuyBillsById();
@@ -46,7 +51,6 @@ const BillView = () => {
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       billSettingData(res.data.data.billSetting);
-      console.log(res.data.data.billSetting)
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
         if (res.data.data.billSetting[i].groupId === 1 && res.data.data.billSetting[i].billType === 'BUY'
           && res.data.data.billSetting[i].formStatus === 1) {
@@ -62,7 +66,6 @@ const BillView = () => {
             }
           groupOne = [res.data.data.billSetting[i], ...groupOne];
           setGroupOne([groupone, ...groupOne]);
-          console.log(groupOne, "Buy")
         }
         else if (res.data.data.billSetting[i].groupId === 2 && res.data.data.billSetting[i].billType === 'BUY'
           && res.data.data.billSetting[i].formStatus === 1) {
@@ -83,7 +86,7 @@ const BillView = () => {
               setStatus(true);
             }
             if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-              console.log(true);
+             
               setIncludeComm(res.data.data.billSetting[i].includeInLedger == 1 ? true : false);
             } else if (res.data.data.billSetting[i].settingName === "RETURN_COMMISSION") {
               setAddRetComm(res.data.data.billSetting[i].addToGt == 1 ? true : false);
@@ -106,7 +109,6 @@ const BillView = () => {
           setGroupFour([groupFour, ...groupfour]);
         }
       }
-
     });
   };
 
@@ -120,11 +122,9 @@ const BillView = () => {
         groupone.map(item=>{
           if(item.addToGt == 1){
             value = singleBillData?.rtComm;
-            console.log(value)
             return value;
           }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
             value = -(singleBillData?.rtComm);
-            console.log(value)
             return value;
           }
         })
@@ -134,7 +134,6 @@ const BillView = () => {
             return value;
           }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
             value = -(singleBillData?.rtComm);
-            console.log(value)
             return value;
           }
         })
@@ -144,7 +143,6 @@ const BillView = () => {
             return value;
           }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
             value = -(singleBillData?.rtComm);
-            console.log(value)
             return value;
           }
         })
@@ -154,7 +152,6 @@ const BillView = () => {
             return value;
           }else if(item.addToGt ==0 && item.settingName ==="RETURN_COMMISSION"){
             value = -(singleBillData?.rtComm);
-            console.log(value)
             return value;
           }
         })
@@ -174,7 +171,6 @@ const BillView = () => {
       case "OTHER_FEE":
         if (singleBillData.partyType === "BUYER") {
           value = -(singleBillData?.otherFee);
-          console.log(value)
         }
         else {
           value = -(singleBillData?.misc);
@@ -187,7 +183,7 @@ const BillView = () => {
         value = -(singleBillData?.advance);
         break;
       case "CUSTOM_FIELD1":
-        singleBillData.customFields.map(item => {
+        singleBillData.customFields.map((item) => {
           if (item.field === name) {
             value = -(item.fee);
             return value;
@@ -195,7 +191,7 @@ const BillView = () => {
         });
         break;
       case "CUSTOM_FIELD2":
-        singleBillData.customFields.map(item => {
+        singleBillData.customFields.map((item) => {
           if (item.field === name) {
             value = -(item.fee);
             return value;
@@ -203,7 +199,7 @@ const BillView = () => {
         });
         break;
       case "CUSTOM_FIELD3":
-        singleBillData.customFields.map(item => {
+        singleBillData.customFields.map((item) => {
           if (item.field === name) {
             value = -(item.fee);
             return value;
@@ -211,7 +207,7 @@ const BillView = () => {
         });
         break;
       case "CUSTOM_FIELD4":
-        singleBillData.customFields.map(item => {
+        singleBillData.customFields.map((item) => {
           if (item.field === name) {
             value = -(item.fee);
             return value;
@@ -220,7 +216,7 @@ const BillView = () => {
         break;
     }
     return value;
-  }
+  };
   var cratesTotal = 0;
   var sacsTotal = 0;
   var bagsTotal = 0;
@@ -236,19 +232,18 @@ const BillView = () => {
      return groupOneTotal;
   })
 
-  groupTwo.map(item => {
-    return groupTwoTotal += handleGroupNames(item.settingName);
-  })
-  groupThree.map(item => {
-    return groupThreeTotal += handleGroupNames(item.settingName);
-  })
+  groupTwo.map((item) => {
+    return (groupTwoTotal += handleGroupNames(item.settingName));
+  });
+  groupThree.map((item) => {
+    return (groupThreeTotal += handleGroupNames(item.settingName));
+  });
 
-  groupFour.map(item => {
-    return groupFourTotal += handleGroupNames(item.settingName);
-  })
+  groupFour.map((item) => {
+    return (groupFourTotal += handleGroupNames(item.settingName));
+  });
 
   const getCropUnit = (unit) => {
-    console.log(unit);
     var unitType = "";
     switch (unit.toUpperCase()) {
       case "CRATES":
@@ -307,26 +302,104 @@ const BillView = () => {
       singleBillData.advance
     );
     var finalValue = singleBillData.grossTotal - t;
-    console.log(finalValue)
     var finalVal = finalValue;
     if (includeComm) {
       finalVal = finalVal - singleBillData.comm
-      console.log(finalVal)
     }
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = (finalVal + singleBillData.rtComm);
-        console.log(finalVal)
       }
     } else {
       if (includeRetComm) {
         finalVal = (finalVal - singleBillData.rtComm);
-        console.log(finalVal)
       }
     }
-    console.log((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashPaid),singleBillData.outStBal,singleBillData.cashPaid)
     return ((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashPaid)).toFixed(2);
   };
+  const [showStep3Modal, setShowStep3Modal] = useState(false);
+  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
+  const [slectedCropArray, setSlectedCropArray] = useState([]);
+  const [editCancelStatus, setEditCancelStatus] = useState(false)
+  const editBill = (itemVal) => {
+    var arr = [];
+    arr.push(itemVal);
+    setSlectedCropArray(arr);
+    setShowStep3ModalStatus(true);
+          setShowStep3Modal(true);
+          setEditCancelStatus(true);
+
+  };
+  const cancelBill = (itemVal)=>{
+    cancelbillApiCall();
+  }
+  const editBillRequestObj = 
+  {
+    action:"CANCEL",
+    billAttributes: {
+      actualPayRecieevable: singleBillData.actualPaybles,
+      advance: singleBillData.advance,
+      billDate: singleBillData.billDate,
+      cashRcvd: singleBillData.cashPaid,
+      comm: singleBillData.comm,
+      commIncluded: singleBillData.commIncluded,
+      comments: singleBillData.comments,
+      // customFields: [
+      //   {
+      //     "comments": "string",
+      //     "fee": 0,
+      //     "field": "string",
+      //     "fieldName": "string",
+      //     "fieldType": "string",
+      //     "less": true
+      //   }
+      // ],
+      govtLevies: singleBillData.govtLevies,
+      grossTotal: singleBillData.grossTotal,
+      labourCharges: singleBillData.labourCharges,
+      less: singleBillData.less,
+      mandiFee: singleBillData.mandiData,
+      misc: singleBillData.misc,
+      otherFee: singleBillData.misc,
+      outStBal: singleBillData.outStBal,
+      paidTo: 0,
+      partyId: singleBillData.farmerId,
+      rent: singleBillData.rent,
+      rtComm: singleBillData.rtComm,
+      rtCommIncluded: singleBillData.rtCommIncluded,
+      totalPayRecieevable: singleBillData.totalPayables,
+      transportation: singleBillData.transportation,
+      transporterId: singleBillData.transporterId,
+    },
+    billId: singleBillData.billId,
+    billType: "BUY",
+    caBSeq: singleBillData.caBSeq,
+    caId: clickId,
+    lineItems: singleBillData.lineItems,
+    updatedBy: 0,
+    updatedOn: "",
+    writerId: 0
+  }
+  const cancelbillApiCall = () =>{
+    editbuybillApi(editBillRequestObj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.message, {
+            toastId: "success1",
+          });
+          console.log(editBillRequestObj,"edit bill request");
+          console.log(response.data,"edit bill")
+          navigate("/buy_bill_book");
+        }
+      },
+      (error) => {
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
+      }
+    );
+  }
+
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -375,15 +448,15 @@ const BillView = () => {
                       {mandiData.businessDtls?.businessType}
                     </p>
                     <p className="small_text">
-                      {
-                        mandiData.businessDtls?.businessAddress ? mandiData.businessDtls?.businessAddress?.addressLine +
+                      {mandiData.businessDtls?.businessAddress
+                        ? mandiData.businessDtls?.businessAddress?.addressLine +
                           "," +
                           mandiData.businessDtls?.businessAddress?.dist +
                           ",Pincode-" +
                           mandiData.businessDtls?.businessAddress?.pincode +
                           "," +
-                          mandiData.businessDtls?.businessAddress?.state : ''
-                      }
+                          mandiData.businessDtls?.businessAddress?.state
+                        : ""}
                     </p>
                   </div>
                   <div className="col-lg-2 text-center">
@@ -458,9 +531,22 @@ const BillView = () => {
                           <td className="col-3">
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
-                            <p>{item.qty == null ? "" : item.qty + " " + getCropUnit(item.qtyUnit) + " | "}
-                              {item.weight == null ? "" : item.weight + " KGS  - "} <span className="red_text">
-                                {item.wastage == null ? "" : item.wastage + " KGS "}</span></p>
+                            <p>
+                              {item.qty == null
+                                ? ""
+                                : item.qty +
+                                  " " +
+                                  getCropUnit(item.qtyUnit) +
+                                  " | "}
+                              {item.weight == null
+                                ? ""
+                                : item.weight + " KGS  - "}{" "}
+                              <span className="red_text">
+                                {item.wastage == null
+                                  ? ""
+                                  : item.wastage + " KGS "}
+                              </span>
+                            </p>
                           </td>
                           <td className="col-2">{item.rate.toFixed(2)}</td>
                           <td className="col-2">{item.total.toFixed(2)}</td>
@@ -472,23 +558,26 @@ const BillView = () => {
                 <div className="row gross_profit">
                   <div className="col-lg-2"></div>
                   <div className="col-lg-4">
-                    {
-                      singleBillData.lineItems.map(item => {
-                        if (item.qtyUnit === 'CRATES') {
-                          cratesTotal += item.qty;
-                        } else if (item.qtyUnit === 'SACS') {
-                          sacsTotal += item.qty;
-                        } else if (item.qtyUnit === 'BAGS') {
-                          bagsTotal += item.qty;
-                        } else if (item.qtyUnit === 'BOXES') {
-                          boxesTotal += item.qty;
-                        } else {
-                          kgsTotal += item.qty;
-                        }
-                      })
-                    }
-                    <p className="total-qty">{cratesTotal ? cratesTotal.toFixed(2) + 'C |' : ''}  {sacsTotal ? sacsTotal.toFixed(2) + 'S |' : ''}  {bagsTotal ? bagsTotal.toFixed(2) + 'Bg |' : ''}
-                      {boxesTotal ? boxesTotal.toFixed(2) + 'BX |' : ''}  {kgsTotal ? kgsTotal.toFixed(2) + 'KGS' : ''}</p>
+                    {singleBillData.lineItems.map((item) => {
+                      if (item.qtyUnit === "CRATES") {
+                        cratesTotal += item.qty;
+                      } else if (item.qtyUnit === "SACS") {
+                        sacsTotal += item.qty;
+                      } else if (item.qtyUnit === "BAGS") {
+                        bagsTotal += item.qty;
+                      } else if (item.qtyUnit === "BOXES") {
+                        boxesTotal += item.qty;
+                      } else {
+                        kgsTotal += item.qty;
+                      }
+                    })}
+                    <p className="total-qty">
+                      {cratesTotal ? cratesTotal.toFixed(2) + "C |" : ""}{" "}
+                      {sacsTotal ? sacsTotal.toFixed(2) + "S |" : ""}{" "}
+                      {bagsTotal ? bagsTotal.toFixed(2) + "Bg |" : ""}
+                      {boxesTotal ? boxesTotal.toFixed(2) + "BX |" : ""}{" "}
+                      {kgsTotal ? kgsTotal.toFixed(2) + "KGS" : ""}
+                    </p>
                   </div>
                   <div className="col-lg-6 ">
                     <div className="row">
@@ -509,85 +598,181 @@ const BillView = () => {
                   <div className="pl-0 col-lg-6 col_border_left pr-0">
                     <div>
                       {groupone.map((item, index) => {
-                        return <div>
-                          <div className="row" key={index}>
-                            <div className="col-lg-2"></div>
-                            <div className="col-lg-6 align-items">
-                              <p className="groups_value">
-                                {(item.settingName !== handleSettingName(item.settingName)
-                                  ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                                  item.settingName?.replaceAll('_', ' ')} </p>
+                        return (
+                          <div>
+                            <div className="row" key={index}>
+                              <div className="col-lg-2"></div>
+                              <div className="col-lg-6 align-items">
+                                <p className="groups_value">
+                                  {(
+                                    item.settingName !==
+                                    handleSettingName(item.settingName)
+                                      ? " "
+                                      : handleGroupNames(item.settingName) === 0
+                                  )
+                                    ? " "
+                                    : item.settingName?.replaceAll(
+                                        "_",
+                                        " "
+                                      )}{" "}
+                                </p>
+                              </div>
+                              <div className="col-lg-4">
+                                <p className="groups_value">
+                                  {handleGroupNames(
+                                    handleSettingName(item.settingName)
+                                  ) === 0
+                                    ? " "
+                                    : handleGroupNames(item.settingName)}
+                                </p>
+                              </div>
                             </div>
-                            <div className="col-lg-4">
-                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                                === 0 ? ' ' : handleGroupNames(item.settingName)}</p>
-                            </div>
+                            <div
+                              className={
+                                (
+                                  item.settingName !==
+                                  handleSettingName(item.settingName)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName?.replaceAll("_", " ")
+                                  ? "hrs-line"
+                                  : ""
+                              }
+                            ></div>
                           </div>
-                          <div className={(item.settingName !== handleSettingName(item.settingName)
-                            ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                            item.settingName?.replaceAll('_', ' ') ? 'hrs-line' : ''}>
-
-                          </div>
-                        </div>
+                        );
                       })}
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
                           <p>{groupOneTotal === 0 || null ? '' :(singleBillData?.grossTotal+groupOneTotal).toFixed(2)}</p>
                         </div>
-                        <div className={groupOneTotal === 0 || null ? '': "hr-line-in-totals"}></div>
+                        <div
+                          className={
+                            groupOneTotal === 0 || null
+                              ? ""
+                              : "hr-line-in-totals"
+                          }
+                        ></div>
                       </div>
                     </div>
                     <div>
                       {groupTwo.map((item, index) => {
-                        return <div>
-                          <div className="row" key={index}>
-                            <div className="col-lg-2"></div>
-                            <div className="col-lg-6">
-                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
-                                ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                                item.settingName?.replaceAll('_', ' ')} </p>
+                        return (
+                          <div>
+                            <div className="row" key={index}>
+                              <div className="col-lg-2"></div>
+                              <div className="col-lg-6">
+                                <p className="groups_value">
+                                  {" "}
+                                  {(
+                                    item.settingName !==
+                                    handleSettingName(item.settingName)
+                                      ? " "
+                                      : handleGroupNames(item.settingName) === 0
+                                  )
+                                    ? " "
+                                    : item.settingName?.replaceAll(
+                                        "_",
+                                        " "
+                                      )}{" "}
+                                </p>
+                              </div>
+                              <div className="col-lg-4">
+                                <p className="groups_value">
+                                  {handleGroupNames(
+                                    handleSettingName(item.settingName)
+                                  ) === 0
+                                    ? " "
+                                    : handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)}
+                                </p>
+                              </div>
                             </div>
-                            <div className="col-lg-4">
-                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                                === 0 ? ' ' : handleGroupNames(item.settingName).toFixed(2)}</p>
-                            </div>
+                            <div
+                              className={
+                                (
+                                  item.settingName !==
+                                  handleSettingName(item.settingName)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName?.replaceAll("_", " ")
+                                  ? "hrs-line"
+                                  : ""
+                              }
+                            ></div>
                           </div>
-                          <div className={(item.settingName !== handleSettingName(item.settingName)
-                            ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                            item.settingName?.replaceAll('_', ' ') ? 'hrs-line' : ''}>
-
-                          </div>
-                        </div>
+                        );
                       })}
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
                         <div className="col-lg-4">
                           <p>{groupTwoTotal === 0 || null ? '' :(singleBillData?.grossTotal+(groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
-                        <div className={groupTwoTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
+                        <div
+                          className={
+                            groupTwoTotal === 0 || null
+                              ? ""
+                              : "hr-line-in-totals"
+                          }
+                        ></div>
                       </div>
                     </div>
                     <div>
                       {groupThree.map((item, index) => {
-                        return <div>
-                          <div className="row" key={index}>
-                            <div className="col-lg-2"></div>
-                            <div className="col-lg-6">
-                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
-                                ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                                item.settingName?.replaceAll('_', ' ')} </p>
+                        return (
+                          <div>
+                            <div className="row" key={index}>
+                              <div className="col-lg-2"></div>
+                              <div className="col-lg-6">
+                                <p className="groups_value">
+                                  {" "}
+                                  {(
+                                    item.settingName !==
+                                    handleSettingName(item.settingName)
+                                      ? " "
+                                      : handleGroupNames(item.settingName) === 0
+                                  )
+                                    ? " "
+                                    : item.settingName?.replaceAll(
+                                        "_",
+                                        " "
+                                      )}{" "}
+                                </p>
+                              </div>
+                              <div className="col-lg-4">
+                                <p className="groups_value">
+                                  {handleGroupNames(
+                                    handleSettingName(item.settingName)
+                                  ) === 0
+                                    ? " "
+                                    : handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)}
+                                </p>
+                              </div>
                             </div>
-                            <div className="col-lg-4">
-                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                                === 0 ? ' ' : handleGroupNames(item.settingName).toFixed(2)}</p>
-                            </div>
+                            <div
+                              className={
+                                (
+                                  item.settingName !==
+                                  handleSettingName(item.settingName)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName?.replaceAll("_", " ")
+                                  ? "hrs-line"
+                                  : ""
+                              }
+                            ></div>
                           </div>
-                          <div className={(item.settingName !== handleSettingName(item.settingName)
-                            ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                            item.settingName?.replaceAll('_', ' ') ? 'hrs-line' : ''}>
-                          </div>
-                        </div>
+                        );
                       })}
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
@@ -595,29 +780,60 @@ const BillView = () => {
                           <p>{groupThreeTotal === 0 || null ? '' : 
                           (singleBillData?.grossTotal+(groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
-                        <div className={groupThreeTotal === 0 || null ? '' :"hr-line-in-totals"}></div>
+                        <div
+                          className={
+                            groupThreeTotal === 0 || null
+                              ? ""
+                              : "hr-line-in-totals"
+                          }
+                        ></div>
                       </div>
                     </div>
                     <div>
                       {groupFour.map((item, index) => {
-                        return <div>
-                          <div className="row" key={index}>
-                            <div className="col-lg-2"></div>
-                            <div className="col-lg-6">
-                              <p className="groups_value"> {(item.settingName !== handleSettingName(item.settingName)
-                                ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                                item.settingName?.replaceAll('_', ' ')}</p>
+                        return (
+                          <div>
+                            <div className="row" key={index}>
+                              <div className="col-lg-2"></div>
+                              <div className="col-lg-6">
+                                <p className="groups_value">
+                                  {" "}
+                                  {(
+                                    item.settingName !==
+                                    handleSettingName(item.settingName)
+                                      ? " "
+                                      : handleGroupNames(item.settingName) === 0
+                                  )
+                                    ? " "
+                                    : item.settingName?.replaceAll("_", " ")}
+                                </p>
+                              </div>
+                              <div className="col-lg-4">
+                                <p className="groups_value">
+                                  {handleGroupNames(
+                                    handleSettingName(item.settingName)
+                                  ) === 0
+                                    ? " "
+                                    : handleGroupNames(item.settingName)}
+                                </p>
+                              </div>
                             </div>
-                            <div className="col-lg-4">
-                              <p className="groups_value">{handleGroupNames(handleSettingName(item.settingName))
-                                === 0 ? ' ' : handleGroupNames(item.settingName)}</p>
-                            </div>
+                            <div
+                              className={
+                                (
+                                  item.settingName !==
+                                  handleSettingName(item.settingName)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName?.replaceAll("_", " ")
+                                  ? "hrs-line"
+                                  : ""
+                              }
+                            ></div>
                           </div>
-                          <div className={(item.settingName !== handleSettingName(item.settingName)
-                            ? ' ' : (handleGroupNames(item.settingName)) === 0) ? ' ' :
-                            item.settingName?.replaceAll('_', ' ') ? 'hrs-line' : ''}>
-                          </div>
-                        </div>
+                        );
                       })}
                       <div className="row group-one-total">
                         <div className="pl-0 col-lg-8 pr-0"></div>
@@ -625,7 +841,13 @@ const BillView = () => {
                           <p>{groupFourTotal === 0 || null ? '' :
                           (singleBillData?.grossTotal+(groupFourTotal+groupThreeTotal+groupTwoTotal+groupOneTotal)).toFixed(2)}</p>
                         </div>
-                        <div className={groupFourTotal === 0 || null ? '':"hr-line-in-totals"}></div>
+                        <div
+                          className={
+                            groupFourTotal === 0 || null
+                              ? ""
+                              : "hr-line-in-totals"
+                          }
+                        ></div>
                       </div>
                     </div>
                     <div>
@@ -721,11 +943,18 @@ const BillView = () => {
                   <div className="d-flex">
                     <div className="buyer-image">
                       {singleBillData.farmerProfilePic ? (
-                        <img src={singleBillData?.farmerProfilePic} alt="buyerimage" className="buyer_img" />
+                        <img
+                          src={singleBillData?.farmerProfilePic}
+                          alt="buyerimage"
+                          className="buyer_img"
+                        />
                       ) : (
-                        <img src={single_bill} alt="buyerimage" className="buyer_img" />
-                      )
-                      }
+                        <img
+                          src={single_bill}
+                          alt="buyerimage"
+                          className="buyer_img"
+                        />
+                      )}
                     </div>
                     <div className="buy-details">
                       <p className="b-cr-by">Bill Created By</p>
@@ -736,16 +965,51 @@ const BillView = () => {
                 <div className="col-lg-6">
                   {/* <div className="date-and-time"> */}
                   <p className="d-a-time">Date And Time</p>
-                  <p className="d-a-value">{moment((singleBillData?.timeStamp)).format("DD-MMM-YY | hh:mm:ss:A")}</p>
+                  <p className="d-a-value">
+                    {moment(singleBillData?.timeStamp).format(
+                      "DD-MMM-YY | hh:mm:ss:A"
+                    )}
+                  </p>
                   {/* </div> */}
                 </div>
               </div>
-              <div className="hr-line"></div>
+            {
+              singleBillData.billStatus == 'CANCELLED' ?'' : 
+              <div>
+                  <div className="hr-line"></div>
+              <div className="d-flex more-info">
+                <img
+                  src={edit}
+                  alt="img"
+                  className="mr-3"
+                  onClick={() => editBill(singleBillData)}
+                />
+                 <img
+                  src={cancel}
+                  alt="img"
+                  className=""
+                  onClick={() => cancelBill(singleBillData)}
+                />
+              </div>
+                </div>
+            }
             </div>
           </div>
         </div>
+        {showStep3ModalStatus ? (
+        <Step3Modal
+          show={showStep3Modal}
+          closeStep3Modal={() => setShowStep3Modal(false)}
+          slectedCropsArray={slectedCropArray}
+          billEditStatus = {true}
+          step2CropEditStatus={false}
+          editCancelStatus={editCancelStatus}
+        />
+      ) : (
+        ""
+      )}
       </div>
     </div>
   );
-}
+};
 export default BillView;

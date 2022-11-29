@@ -49,7 +49,6 @@ const SellBillBook = () => {
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
     } else if (dateTab === "Yearly") {
-      console.log("yearly", dateTab);
       setDateValue(moment(fromDate).format("YYYY"));
     } else {
       setDateValue(
@@ -60,8 +59,7 @@ const SellBillBook = () => {
     }
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response, "billsss");
-        console.log(response.data.data, "billsss");
+        console.log(response.data.data)
         setSellBillData(response.data.data);
         setLoading(false);
       })
@@ -101,6 +99,7 @@ const SellBillBook = () => {
     localStorage.setItem("stepOneSingleBook",stepOneHeader); 
   }
   const getCropUnit = (unit) => {
+    console.log(unit)
     var unitType = "";
     switch (unit.toUpperCase()) {
       case "CRATES":
@@ -116,7 +115,6 @@ const SellBillBook = () => {
         unitType = "S";
         break;
     }
-    console.log(unitType);
     return unitType;
   };
 
@@ -127,7 +125,7 @@ const SellBillBook = () => {
     setSelectBill(searchValue);
     if(billItem !== ""){
       const filteredItems = sellBillData.singleBills.filter((item)=>{
-        console.log(item);
+       
         if(
           item.buyerName.toLowerCase().includes(searchValue.toLowerCase()) ||
           item.shortName.toLowerCase().includes(searchValue.toLowerCase())
@@ -143,7 +141,6 @@ const SellBillBook = () => {
         }
       })
       setSingleBillData(filteredItems);
-      console.log(filteredItems,"filteredItems");
     }else{
       setSingleBillData(sellBillData);
     }
@@ -341,7 +338,7 @@ const SellBillBook = () => {
                                     <div className="row">
                                       <div className="col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
-                                          {bill.totalReceivables}
+                                          {bill.totalReceivable}
                                         </p>
                                       </div>
                                     </div>
@@ -444,7 +441,7 @@ const SellBillBook = () => {
                                       <div className="row">
                                         <div className="col-lg-12 col-sm-12 col last_col">
                                           <p className="crop_name payble_text">
-                                            {bill.totalReceivables}
+                                            {bill.totalReceivable}
                                           </p>
                                         </div>
                                       </div>

@@ -25,6 +25,7 @@ import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import Step1 from "../modules/buy_bill_book/step1";
 import SellebillStep1 from "../modules/sell_bill_book/step1";
 import SellBillView from "../modules/sell_bill_book/sellBillView";
+import Step3Modal from "../modules/buy_bill_book/step3Model";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
 
@@ -101,7 +102,10 @@ const RoutesConfig = () => {
                       path="/sellbillstep1"
                       element={<SellebillStep1 />}
                     />
-                   
+                    <Route
+                      path="/step3Modal"
+                      element={<Step3Modal />}
+                    />
                   </Routes>
                 </Layout>
               ) : (
@@ -153,6 +157,11 @@ const RoutesConfig = () => {
                       path="/sellbillstep1"
                       element={<SellebillStep1 />}
                     />
+                      <Route
+                      path="/step3Modal"
+                      element={<Step3Modal />}
+                    />
+                    
               </Routes>
             </Layout>
           </BrowserRouter>

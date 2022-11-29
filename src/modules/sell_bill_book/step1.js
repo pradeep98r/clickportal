@@ -104,6 +104,8 @@ const SellebillStep1 = () => {
           <SellbillStep2Modal
             show={showCropModal}
             closeStep2CropModal={() => setShowCropModal(false)}
+            cropTableEditStatus = {false}
+            billEditStatus={false}
           />
         ) : (
           ""

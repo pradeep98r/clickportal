@@ -22,23 +22,23 @@ const Step2Modal = (props) => {
   const clientSecret = loginData.authKeys.clientSecret;
   let [preferedCropsData, setPreferedCropsData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
-  let [cropData1, setcropResponseData] = useState(cropData);
   const [cropInfoModal, setCropInfoModal] = useState(false);
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
   const [cropClear, setCropClear] = useState(false);
   const [cropItemVal, setCropItemVal] = useState({});
+  console.log(props.cropEditObject, "step2");
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     setCropItemVal(crop);
     setCropId(id);
     Object.assign(
       preferedCrops[index2],
-      { wastageValue: 0 },
-      { unitValue: 0 },
+      { wastage: 0 },
+      { qty: 0 },
       { rateType: "kgs" },
-      { weightValue: 0 },
-      { rateValue: 0 },
-      { totalValue: 0 },
+      { weight: 0 },
+      { rate: 0 },
+      { total: 0 },
       { bags: [] }
       // { unitType:  preferedCrops[index2] }
     );
@@ -62,11 +62,10 @@ const Step2Modal = (props) => {
             item,
             { count: 0 },
             { cropActive: false },
-            { unitType: "Crates" }
+            { qtyUnit: "Crates" }
           );
         });
-        console.log(response, "res");
-        setPreferedCropsData(response.data.data);
+        setPreferedCropsData([...preferedCropsData, ...response.data.data]);
       })
       .catch((error) => {
         console.log(error);
@@ -74,6 +73,23 @@ const Step2Modal = (props) => {
   };
   useEffect(() => {
     fetchData();
+    if (props.cropTableEditStatus) {
+    if(props.billEditStatus){
+      cropResponseData([...props.cropEditObject]);
+      console.log(props.cropEditObject)
+    }
+      for (var i = 0; i < props.cropEditObject.length; i++) {
+        preferedCropsData.push(props.cropEditObject[i]);
+        if (props.cropEditObject[i].rateType == "RATE_PER_KG") {
+          props.cropEditObject[i].rateType = "kgs";
+        }
+        Object.assign(
+          props.cropEditObject[i],
+          { count: 1 },
+          { cropActive: true }
+        );
+      }
+    }
   }, []);
 
   var arr = [];
@@ -92,7 +108,7 @@ const Step2Modal = (props) => {
           Object.assign(
             list[index],
             { cropActive: true },
-            { unitType: "Crates" },
+            { qtyUnit: "crates" },
             { addInv: false }
           );
         } else {
@@ -101,13 +117,13 @@ const Step2Modal = (props) => {
             { count: 1 },
             { cropActive: true },
             { cropSelect: "active" },
-            { wastageValue: 0 },
-            { unitValue: 0 },
+            { wastage: 0 },
+            { qty: 0 },
             { rateType: "kgs" },
-            { weightValue: 0 },
-            { rateValue: 0 },
-            { totalValue: 0 },
-            { unitType: "Crates" },
+            { weight: 0 },
+            { rate: 0 },
+            { total: 0 },
+            { qtyUnit: "crates" },
             { checked: false },
             { bags: [] }
           );
@@ -115,6 +131,7 @@ const Step2Modal = (props) => {
           setPreferedCropsData([...preferedCropsData, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
+          console.log(cropData,"new")
         }
       });
     } else {
@@ -132,33 +149,33 @@ const Step2Modal = (props) => {
     if (cropData.length > 0) {
       h = cropData.map((item, index) => {
         if (
-          cropData[index].unitValue == 0 &&
-          !setQuantityBasedtable(cropData[index].unitType)
+          cropData[index].qty == 0 &&
+          !setQuantityBasedtable(cropData[index].qtyUnit)
         ) {
           toast.error("Please enter Quantity", {
             toastId: "error1",
           });
           return null;
-        } else if (cropData[index].weightValue == 0) {
+        } else if (cropData[index].weight == 0) {
           toast.error("Please enter weight", {
             toastId: "error2",
           });
           return null;
-        } else if (cropData[index].rateValue == 0) {
+        } else if (cropData[index].rate == 0) {
           toast.error("Please enter rate", {
             toastId: "error3",
           });
           return null;
         } else if (
-          setQuantityBasedtable(cropData[index].unitType) &&
-          cropData[index].weightValue != 0 &&
-          cropData[index].rateValue != 0
+          setQuantityBasedtable(cropData[index].qtyUnit) &&
+          cropData[index].weight != 0 &&
+          cropData[index].rate != 0
         ) {
           return cropData[index];
         } else if (
-          cropData[index].unitValue != 0 &&
-          cropData[index].weightValue != 0 &&
-          cropData[index].rateValue != 0
+          cropData[index].qty != 0 &&
+          cropData[index].weight != 0 &&
+          cropData[index].rate != 0
         ) {
           setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
@@ -193,9 +210,8 @@ const Step2Modal = (props) => {
     var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
-        arr1.push({ ...cropData[i], unitType: e.target.value });
-        console.log(arr1);
-        return { ...cropData[i], unitType: e.target.value };
+        arr1.push({ ...cropData[i], qtyUnit: e.target.value });
+        return { ...cropData[i], qtyUnit: e.target.value };
       } else {
         cropResponseData([...cropData]);
         return { ...cropData[i] };
@@ -219,7 +235,7 @@ const Step2Modal = (props) => {
     console.log(e.target.value);
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], unitValue: e.target.value };
+        return { ...cropitem[i], qty: e.target.value };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
@@ -232,7 +248,7 @@ const Step2Modal = (props) => {
   const getWeightValue = (id, index, cropitem) => (e) => {
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], weightValue: e.target.value };
+        return { ...cropitem[i], weight: e.target.value };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
@@ -245,7 +261,7 @@ const Step2Modal = (props) => {
   const getWastageValue = (id, index, cropitem) => (e) => {
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], wastageValue: e.target.value };
+        return { ...cropitem[i], wastage: e.target.value };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
@@ -259,7 +275,7 @@ const Step2Modal = (props) => {
   const getRateValue = (id, index, cropitem) => (e) => {
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], rateValue: e.target.value };
+        return { ...cropitem[i], rate: e.target.value };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
@@ -267,18 +283,21 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem3]);
     if (updatedItem3[index].rateType == "kgs") {
-      updatedItem3[index].totalValue =
-        (updatedItem3[index].weightValue - updatedItem3[index].wastageValue) *
-        updatedItem3[index].rateValue;
+      updatedItem3[index].total =
+        (updatedItem3[index].weight - updatedItem3[index].wastage) *
+        updatedItem3[index].rate;
     } else {
-      updatedItem3[index].totalValue =
-        (updatedItem3[index].unitValue - updatedItem3[index].wastageValue) *
-        updatedItem3[index].rateValue;
+      updatedItem3[index].total =
+        (updatedItem3[index].qty - updatedItem3[index].wastage) *
+        updatedItem3[index].rate;
     }
     setrateValue(e.target.value);
     setCropId(id);
-    setSelectedCropsData(updatedItem3);
     console.log(e.target.value, updatedItem3);
+    setSelectedCropsData(updatedItem3);
+    if(props.billEditStatus){
+      props.slectedCropstableArray[0].lineItems = updatedItem3;
+    } 
   };
   const cloneCrop = (crop) => {
     var list = preferedCropsData;
@@ -434,10 +453,10 @@ const Step2Modal = (props) => {
                     >
                       <div className="d-flex crop_table_delete_div">
                         <div className="crop_table_view">
-                          {cropData[index].unitType +
+                          {cropData[index].qtyUnit +
                             index +
                             cropData[index].rateType}
-                          {!setQuantityBasedtable(cropData[index].unitType) ? (
+                          {!setQuantityBasedtable(cropData[index].qtyUnit) ? (
                             <table className="table table-bordered">
                               <thead>
                                 <tr>
@@ -445,26 +464,26 @@ const Step2Modal = (props) => {
                                   <th>Unit Type</th>
                                   <th>Rate Type</th>
                                   <th>
-                                    No of Units({cropData[index].unitType})
+                                    No of Units({cropData[index].qtyUnit})
                                   </th>
-                                  {cropData[index].unitType.toLowerCase() !=
+                                  {cropData[index].qtyUnit.toLowerCase() !=
                                   cropData[index].rateType ? (
                                     <th>
                                       Total Weight(
-                                      {cropData[index].unitType.toLowerCase() !=
+                                      {cropData[index].qtyUnit.toLowerCase() !=
                                       cropData[index].rateType
                                         ? "kgs"
-                                        : cropData[index].unitType}
+                                        : cropData[index].qtyUnit}
                                       )
                                     </th>
                                   ) : (
                                     ""
                                   )}
-                                  {cropData[index].unitType.toLowerCase() ===
+                                   {cropData[index].qtyUnit.toLowerCase() ===
                                     "bags" ||
-                                  cropData[index].unitType.toLowerCase() ===
+                                  cropData[index].qtyUnit.toLowerCase() ===
                                     "sacs" ? (
-                                    cropData[index].unitType.toLowerCase() !=
+                                    cropData[index].qtyUnit.toLowerCase() !=
                                     cropData[index].rateType ? (
                                       <th className="col-2">
                                         Invidual Weights
@@ -477,10 +496,10 @@ const Step2Modal = (props) => {
                                   )}
                                   <th>
                                     Wastage(
-                                    {cropData[index].unitType.toLowerCase() !=
+                                    {cropData[index].qtyUnit.toLowerCase() !=
                                     cropData[index].rateType
                                       ? "kgs"
-                                      : cropData[index].unitType}
+                                      : cropData[index].qtyUnit}
                                     )
                                   </th>
 
@@ -505,7 +524,7 @@ const Step2Modal = (props) => {
                                   <td className="col-1">
                                     <select
                                       className="form-control qty_dropdown dropdown"
-                                      value={cropData[index].unitType}
+                                      value={cropData[index].qtyUnit}
                                       onChange={getQuantity(
                                         cropData,
                                         index,
@@ -530,9 +549,9 @@ const Step2Modal = (props) => {
                                       <option
                                         value={cropData[
                                           index
-                                        ].unitType.toLowerCase()}
+                                        ].qtyUnit.toLowerCase()}
                                       >
-                                        {cropData[index].unitType}{" "}
+                                        {cropData[index].qtyUnit}{" "}
                                       </option>
                                       <option value="kgs">Kgs </option>
                                     </select>
@@ -543,7 +562,7 @@ const Step2Modal = (props) => {
                                       type="text"
                                       className="form-control"
                                       name="quantity"
-                                      value={cropData[index].unitValue}
+                                      value={cropData[index].qty}
                                       onChange={getQuantityValue(
                                         cropData[index].cropId,
                                         index,
@@ -551,14 +570,14 @@ const Step2Modal = (props) => {
                                       )}
                                     />
                                   </td>
-                                  {cropData[index].unitType.toLowerCase() !=
+                                  {cropData[index].qtyUnit.toLowerCase() !=
                                   cropData[index].rateType ? (
                                     <td className="col-2">
                                       <input
                                         type="text"
                                         className="form-control"
                                         name="weight"
-                                        value={cropData[index].weightValue}
+                                        value={cropData[index].weight}
                                         onChange={getWeightValue(
                                           cropData[index].cropId,
                                           index,
@@ -569,16 +588,16 @@ const Step2Modal = (props) => {
                                   ) : (
                                     ""
                                   )}
-                                  {cropData[index].unitType.toLowerCase() ===
+                                  {cropData[index].qtyUnit.toLowerCase() ===
                                     "bags" ||
-                                  cropData[index].unitType.toLowerCase() ===
+                                  cropData[index].qtyUnit.toLowerCase() ===
                                     "sacs" ? (
-                                    cropData[index].unitType.toLowerCase() !=
+                                    cropData[index].qtyUnit.toLowerCase() !=
                                     cropData[index].rateType ? (
                                       <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
-                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].unitType}
+                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
                                           </p>
                                           <input
                                             type="checkbox"
@@ -608,7 +627,7 @@ const Step2Modal = (props) => {
                                       type="text"
                                       name="wastage"
                                       className="form-control wastage_val"
-                                      value={cropData[index].wastageValue}
+                                      value={cropData[index].wastage}
                                       onChange={getWastageValue(
                                         cropData[index].cropId,
                                         index,
@@ -622,7 +641,7 @@ const Step2Modal = (props) => {
                                       type="text"
                                       name="rate"
                                       className="form-control"
-                                      value={cropData[index].rateValue}
+                                      value={cropData[index].rate}
                                       onChange={getRateValue(
                                         cropData[index].cropId,
                                         index,
@@ -633,12 +652,12 @@ const Step2Modal = (props) => {
                                   <td className="col-2">
                                     <p className="totals">
                                       {cropData[index].rateType == "kgs"
-                                        ? (cropData[index].weightValue -
-                                            cropData[index].wastageValue) *
-                                          cropData[index].rateValue
-                                        : (cropData[index].unitValue -
-                                            cropData[index].wastageValue) *
-                                          cropData[index].rateValue}
+                                        ? (cropData[index].weight -
+                                            cropData[index].wastage) *
+                                          cropData[index].rate
+                                        : (cropData[index].qty -
+                                            cropData[index].wastage) *
+                                          cropData[index].rate}
                                     </p>
                                   </td>
                                 </tr>
@@ -651,12 +670,12 @@ const Step2Modal = (props) => {
                                   <th>Crop</th>
                                   <th>Unit Type</th>
                                   <th>
-                                    Total Weight({cropData[index].unitType})
+                                    Total Weight({cropData[index].qtyUnit})
                                   </th>
-                                  {cropData[index].unitType == "loads" ? (
+                                  {cropData[index].qtyUnit == "loads" ? (
                                     ""
                                   ) : (
-                                    <th>Wastage({cropData[index].unitType})</th>
+                                    <th>Wastage({cropData[index].qtyUnit})</th>
                                   )}
 
                                   <th>Rate</th>
@@ -680,7 +699,7 @@ const Step2Modal = (props) => {
                                   <td>
                                     <select
                                       className="form-control qty_dropdown dropdown"
-                                      value={cropData[index].unitType}
+                                      value={cropData[index].qtyUnit}
                                       onChange={getQuantity(
                                         cropData,
                                         index,
@@ -702,7 +721,7 @@ const Step2Modal = (props) => {
                                       type="text"
                                       className="form-control"
                                       name="weight"
-                                      value={cropData[index].weightValue}
+                                      value={cropData[index].weight}
                                       onChange={getWeightValue(
                                         cropData[index].cropId,
                                         index,
@@ -710,7 +729,7 @@ const Step2Modal = (props) => {
                                       )}
                                     />
                                   </td>
-                                  {cropData[index].unitType == "loads" ? (
+                                  {cropData[index].qtyUnit == "loads" ? (
                                     ""
                                   ) : (
                                     <td className="col-2">
@@ -719,7 +738,7 @@ const Step2Modal = (props) => {
                                         type="text"
                                         name="wastage"
                                         className="form-control wastage_val"
-                                        value={cropData[index].wastageValue}
+                                        value={cropData[index].wastage}
                                         onChange={getWastageValue(
                                           cropData[index].cropId,
                                           index,
@@ -734,7 +753,7 @@ const Step2Modal = (props) => {
                                       type="text"
                                       name="rate"
                                       className="form-control"
-                                      value={cropData[index].rateValue}
+                                      value={cropData[index].rate}
                                       onChange={getRateValue(
                                         cropData[index].cropId,
                                         index,
@@ -744,12 +763,12 @@ const Step2Modal = (props) => {
                                   </td>
                                   <td className="col-2">
                                     <p className="totals">
-                                      {cropData[index].unitType == "loads"
-                                        ? cropData[index].weightValue *
-                                          cropData[index].rateValue
-                                        : (cropData[index].weightValue -
-                                            cropData[index].wastageValue) *
-                                          cropData[index].rateValue}
+                                      {cropData[index].qtyUnit == "loads"
+                                        ? cropData[index].weight *
+                                          cropData[index].rate
+                                        : (cropData[index].weight -
+                                            cropData[index].wastage) *
+                                          cropData[index].rate}
                                     </p>
                                   </td>
                                 </tr>
@@ -810,7 +829,12 @@ const Step2Modal = (props) => {
         <Step3Modal
           show={showStep3Modal}
           closeStep3Modal={() => setShowStep3Modal(false)}
-          slectedCropsArray={selectedCropsData}
+          // slectedCropsArray={selectedCropsData}
+          billEditStatus={props.billEditStatus ? true : false}
+          slectedCropsArray={
+            props.billEditStatus ? props.slectedCropstableArray : selectedCropsData
+          }
+          step2CropEditStatus={props.billEditStatus ? true : false}
         />
       ) : (
         ""

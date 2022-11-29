@@ -107,25 +107,23 @@ function BuyBillBook() {
   const getCropUnit = (unit) => {
     var unitType = "";
     switch (unit) {
-      case "Crates":
+      case "crates":
         unitType = "C";
         break;
-      case "Boxes":
+      case "boxes":
         unitType = "BX";
         break;
-      case "Bags":
+      case "bags":
         unitType = "BG";
         break;
-      case "Sacs":
+      case "sacs":
         unitType = "S";
         break;
     }
-    console.log(unitType);
     return unitType;
   };
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
-  console.log(singleBillData);
   const searchInput = (searchValue) => {
     setSelectBill(searchValue);
     if (billItem !== "") {
