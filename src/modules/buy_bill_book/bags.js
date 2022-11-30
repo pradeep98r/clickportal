@@ -52,7 +52,7 @@ const SelectBags = (props) => {
     setinvWastageVal(e.target.value);
     let updatedItem = a.map((item, index) => {
       if (i == index) {
-        a[index].weight = a[index].weight - e.target.value;
+        //a[index].weight = a[index].weight - e.target.value;
         return { ...a[index], wastage: e.target.value };
       } else {
         setInvArr([...a]);
@@ -64,8 +64,10 @@ const SelectBags = (props) => {
   var totalVal = 0;
   const getInvTotalValue = () => {
     invArr.map((item) => {
+      console.log(item.weight,"weight")
       totalVal += parseInt(item.weight);
     });
+    console.log(totalVal,"totalValue");
     return totalVal;
   };
   var wastageSum = 0;
@@ -178,7 +180,7 @@ const SelectBags = (props) => {
                               type="text"
                               className="form-control mb-0"
                               name="weight"
-                              value={invArr[i].weight}
+                              value={invArr[i].weight - invArr[i].wastage}
                               onChange={getInvWeightValue(invArr, i)}
                             />
                           </td>

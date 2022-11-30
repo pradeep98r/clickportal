@@ -400,7 +400,7 @@ const Step3Modal = (props) => {
       outStBal: outBal,
       paidTo: 0,
       partyId: partnerSelectedData.partyId,
-      rent: getTotalUnits(rentValue),
+      rent:getTotalUnits(rentValue),
       rtComm: getTotalValue(retcommValue),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: getTotalBillAmount() - parseInt(cashpaidValue),
@@ -417,6 +417,7 @@ const Step3Modal = (props) => {
     updatedOn: "",
     writerId: 0,
   };
+  console.log(getTotalUnits(rentValue));
   // post bill request api call
   const postbuybill = () => {
     if (editStatus) {
@@ -822,8 +823,9 @@ const Step3Modal = (props) => {
             <div className="selectparty_field edit_crop_item_div">
             <div className="d-flex align-items-center justify-content-between">
               <p className="d-flex align-items-center">
-                <img src={billEditItem.lineItems[0].imageUrl} className="edit_crop_item"/>
-                <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p>
+                {/* {billEditItem.lineItems!==null? */}
+                 {/* <img src={billEditItem.lineItems[0].imageUrl} className="edit_crop_item"/> */}
+                {/* <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> */}
               </p>
             <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
             </div>

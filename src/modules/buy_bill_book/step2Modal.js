@@ -303,14 +303,16 @@ const Step2Modal = (props) => {
   };
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
+    console.log(index,"index");
     var list = preferedCropsData;
     if (index != -1) {
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj == crop);
-      if (index1 != -1) {
+      console.log(index1,"index1");
+      if (index1 != -1) { 
         list[index1].count -= 1;
         if(list[index1].count == 0){
-          list.splice(index1,index1);
+          list.splice(index1,1);
         }
       }
     }
@@ -573,7 +575,7 @@ const Step2Modal = (props) => {
                                       <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
-                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                            {cropData[index].bags !==null && cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
                                           </p>
                                           <input
                                             type="checkbox"

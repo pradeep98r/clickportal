@@ -322,7 +322,8 @@ const SellbillStep2Modal = (props) => {
         list[index1].count -= 1;
         if(list[index1].count == 0){
           console.log(list,index1)
-          list.splice(index1,index1);
+          list.splice(index1,1);
+          // list.splice(index1,index1);
         }
       }
     }
@@ -517,7 +518,8 @@ const SellbillStep2Modal = (props) => {
                                         <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
-                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                            
+                                            {cropData[index].bags !=null && cropData[index].bags.length> 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
                                           </p>
                                           <input
                                             type="checkbox"
