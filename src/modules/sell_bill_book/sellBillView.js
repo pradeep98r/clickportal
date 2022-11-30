@@ -5,11 +5,15 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import edit from "../../assets/images/edit_round.svg";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
     getMandiDetails,
     getSystemSettings,
 } from "../../actions/billCreationService";
 import SellbillStep3Modal from "./step3"; 
+import cancel from "../../assets/images/cancel.svg";
+import { editbuybillApi } from "../../actions/billCreationService";
+import { ToastContainer, toast } from "react-toastify";
 const SellBillView = () => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.clickId;
@@ -19,6 +23,7 @@ const SellBillView = () => {
     const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
     const [billSettingResponse, billSettingData] = useState([]);
     console.log(singleBillData)
+    const navigate = useNavigate();
     useEffect(() => {
         getBusinessDetails();
         getBuyBillsById();
@@ -330,6 +335,76 @@ const SellBillView = () => {
         setShowStep3ModalStatus(true);
               setShowStep3Modal(true);
       };
+      const cancelBill = (itemVal)=>{
+        cancelbillApiCall();
+      }
+      const editBillRequestObj = 
+        {
+            action: "CANCEL",
+            billAttributes: {
+            actualPayRecieevable: singleBillData.actualReceivable,
+            advance: singleBillData.advance,
+            billDate: singleBillData.billDate,
+            cashRcvd: singleBillData.cashRcvd,
+            comm: singleBillData.comm,
+            commIncluded: singleBillData.commIncluded,
+            comments: singleBillData.comments,
+            // customFields: [
+            //   {
+            //     "comments": "string",
+            //     "fee": 0,
+            //     "field": "string",
+            //     "fieldName": "string",
+            //     "fieldType": "string",
+            //     "less": true
+            //   }
+            // ],
+            govtLevies: singleBillData.govtLevies,
+            grossTotal: singleBillData.grossTotal,
+            labourCharges: singleBillData.labourCharges,
+            less: singleBillData.less,
+            mandiFee: singleBillData.mandiData,
+            misc: singleBillData.misc,
+            otherFee: singleBillData.misc,
+            outStBal: singleBillData.outStBal,
+            paidTo: 0,
+            partyId: singleBillData.buyerId,
+            rrent: singleBillData.rent,
+            rtComm: singleBillData.rtComm,
+            rtCommIncluded: singleBillData.rtCommIncluded,
+            totalPayRecieevable: singleBillData.totalReceivable,
+            transportation: singleBillData.transportation,
+            transporterId: singleBillData.transporterId,
+            },
+            billId: singleBillData.billId,
+            billType: "SELL",
+            caBSeq: singleBillData.caBSeq,
+            caId: clickId,
+            lineItems: singleBillData.lineItems,
+            updatedBy: 0,
+            updatedOn: "",
+            writerId: 0
+        }
+      const cancelbillApiCall = () =>{
+        editbuybillApi(editBillRequestObj).then(
+          (response) => {
+            if (response.data.status.type === "SUCCESS") {
+              toast.success(response.data.status.message, {
+                toastId: "success1",
+              });
+              console.log(editBillRequestObj,"edit bill request");
+              console.log(response.data,"edit bill")
+              navigate("/sellbillbook");
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
+            });
+          }
+        );
+      }
+    
     return (
         <div className="main_div_padding">
             <div className="container-fluid px-0">
@@ -741,14 +816,34 @@ const SellBillView = () => {
                                 </div>
                             </div>
                             <div className="hr-line"></div>
-                            <div className="d-flex more-info">
-                <img
-                  src={edit}
-                  alt="img"
-                  className=""
-                  onClick={() => editBill(singleBillData)}
-                />
-              </div>
+                            {
+                                singleBillData.billStatus == 'CANCELLED' ?'' : 
+                                <div>
+                                    <div className="hr-line"></div>
+                                    <div className="d-flex more-info">
+                                    <img
+                                    src={edit}
+                                    alt="img"
+                                    className="mr-3"
+                                    onClick={() => editBill(singleBillData)}
+                                    />
+                                    <img
+                                    src={cancel}
+                                    alt="img"
+                                    className=""
+                                    onClick={() => cancelBill(singleBillData)}
+                                    />
+                                </div>
+                                    </div>
+                            }
+                            {/* <div className="d-flex more-info">
+                                <img
+                                src={edit}
+                                alt="img"
+                                className=""
+                                onClick={() => editBill(singleBillData)}
+                                />
+                            </div> */}
                         </div>
                     </div>
                 </div>

@@ -308,7 +308,7 @@ const SellbillStep3Modal = (props) => {
     actualReceivable: getActualRcvd(),
     advance: advancesValue,
     billDate: partnerSelectDate,
-    billStatus: "",
+    billStatus: "Completed",
     caId: clickId,
     cashRcvd: cashRcvdValue,
     comm: getTotalValue(commValue),

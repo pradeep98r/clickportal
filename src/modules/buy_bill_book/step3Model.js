@@ -63,7 +63,7 @@ const Step3Modal = (props) => {
   const [advancesValue, getAdvancesValue] = useState(0);
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
-  const step2CropEditStatus = props.step2CropEditStatus;
+  var step2CropEditStatus = props.step2CropEditStatus;
   const [unitPrevVal, setUnitPrevVal] = useState(0);
   useEffect(() => {
     console.log(props.slectedCropsArray);
@@ -531,6 +531,7 @@ const Step3Modal = (props) => {
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
     console.log(cropEditArray, "hi");
+    step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);

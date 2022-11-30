@@ -26,6 +26,7 @@ const BillView = (props) => {
   var groupthree = [];
   var groupfour = [];
   const navigate = useNavigate();
+  
   useEffect(() => {
     getBusinessDetails();
     getBuyBillsById();

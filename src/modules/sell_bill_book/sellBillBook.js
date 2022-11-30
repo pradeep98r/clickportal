@@ -115,7 +115,7 @@ const SellBillBook = () => {
     }
     return unitType;
   };
-
+  console.log(sellBillData);
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
 
