@@ -139,6 +139,7 @@ const Step2Modal = (props) => {
     }
   };
 
+  const [updatedItemList, setUpdatedItemList] = useState([]);
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
@@ -176,6 +177,21 @@ const Step2Modal = (props) => {
         ) {
           setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
+          setUpdatedItemList(updatedItemList);
+          if(props.billEditStatus){
+            props.slectedCropstableArray[0].lineItems = updatedItemList;
+          } 
+          setUpdatedItemList(updatedItemList);
+          if (updatedItemList[index].rateType == "kgs") {
+            updatedItemList[index].total =
+              (updatedItemList[index].weight - updatedItemList[index].wastage) *
+              updatedItemList[index].rate;
+          } else {
+            updatedItemList[index].total =
+              (updatedItemList[index].qty - updatedItemList[index].wastage) *
+              updatedItemList[index].rate;
+          }
+          console.log(updatedItemList);
           return cropData[index];
         }
       });
@@ -238,6 +254,7 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem]);
     setunitValue(e.target.value);
+    setUpdatedItemList(updatedItem);
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
@@ -251,6 +268,7 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem1]);
     setweightValue(e.target.value);
+    setUpdatedItemList(updatedItem1);
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
@@ -264,6 +282,7 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem2]);
     setwastageValue(e.target.value);
+    setUpdatedItemList(updatedItem2);
     setCropId(id);
   };
   const [selectedCropsData, setSelectedCropsData] = useState([]);
@@ -277,18 +296,12 @@ const Step2Modal = (props) => {
       }
     });
     cropResponseData([...updatedItem3]);
-    if (updatedItem3[index].rateType == "kgs") {
-      updatedItem3[index].total =
-        (updatedItem3[index].weight - updatedItem3[index].wastage) *
-        updatedItem3[index].rate;
-    } else {
-      updatedItem3[index].total =
-        (updatedItem3[index].qty - updatedItem3[index].wastage) *
-        updatedItem3[index].rate;
-    }
+    console.log(updatedItem3)
     setrateValue(e.target.value);
     setCropId(id);
-    setSelectedCropsData(updatedItem3);
+    // setSelectedCropsData(updatedItem3);
+    setUpdatedItemList(updatedItem3);
+    
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItem3;
     } 

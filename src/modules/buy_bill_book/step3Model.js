@@ -141,10 +141,17 @@ const Step3Modal = (props) => {
         getRetCommInput((billEditItem.rtComm / billEditItem.grossTotal) * 100);
       }
       if (!transEdit) {
+        var totalQty = 0;
         if (!step2CropEditStatus) {
+          for(var i = 0; i<billEditItem.lineItems.length;i++){
+            totalQty += parseInt(billEditItem.lineItems[i].qty);
+          }
+          localStorage.setItem("totalQty",totalQty);
           getTransportationValue(billEditItem.transportation / totalunitvalues);
         } else {
-          getTransportationValue(parseInt(localStorage.getItem("trVal")));
+          var totalQtyValue = localStorage.getItem("totalQty");
+          console.log(totalQtyValue,"total Qty");
+          getTransportationValue(billEditItem.transportation / totalQtyValue);
         }
       }
       if (!labourEdit) {
@@ -152,14 +159,18 @@ const Step3Modal = (props) => {
           getLaborChargeValue(billEditItem.labourCharges / totalunitvalues);
         } else {
           console.log(localStorage.getItem("labVal"));
-          getLaborChargeValue(parseInt(localStorage.getItem("labVal")));
+          var totalQtyValue = localStorage.getItem("totalQty");
+          getLaborChargeValue(billEditItem.labourCharges / totalQtyValue);
+          //getLaborChargeValue(parseInt(localStorage.getItem("labVal")));
         }
       }
       if (!rentEdit) {
         if (!step2CropEditStatus) {
           getRentValue(billEditItem.rent / totalunitvalues);
         } else {
-          getRentValue(parseInt(localStorage.getItem("rentVal")));
+          var totalQtyValue = localStorage.getItem("totalQty");
+          getRentValue(billEditItem.rent / totalQtyValue)
+          //getRentValue(parseInt(localStorage.getItem("rentVal")));
         }
       }
       if (!mandifEdit) {
