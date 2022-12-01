@@ -301,6 +301,8 @@ const Step2Modal = (props) => {
     }
     cropResponseData([...cropData, crop]);
   };
+
+  const dummyList = preferedCropsData;
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
     console.log(index,"index");
@@ -311,8 +313,11 @@ const Step2Modal = (props) => {
       console.log(index1,"index1");
       if (index1 != -1) { 
         list[index1].count -= 1;
-        if(list[index1].count == 0){
-          list.splice(index1,1);
+        if(dummyList.includes(list[index1]) && list[index1].count == 0){
+          return dummyList;
+        }
+        else{
+            list.splice(index1,1);
         }
       }
     }

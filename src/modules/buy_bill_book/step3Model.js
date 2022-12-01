@@ -495,6 +495,7 @@ const Step3Modal = (props) => {
     localStorage.setItem("labVal", event.target.value);
     setLabouredit(true);
   };
+  console.log(billEditItem);
   const [rentEdit, setRentedit] = useState(false);
   const rentOnchangeEvent = (event) => {
     getRentValue(event.target.value.replace(/\D/g, ""));
