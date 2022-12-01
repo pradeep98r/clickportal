@@ -12,6 +12,8 @@ import Step3Modal from "./step3Model";
 import { editbuybillApi } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import cancel from "../../assets/images/cancel.svg";
+import close from "../../assets/images/close.svg";
+import $ from "jquery";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -332,6 +334,7 @@ const BillView = (props) => {
 
   };
   const cancelBill = (itemVal)=>{
+    $("#cancelBill").modal("hide");
     cancelbillApiCall();
   }
   const editBillRequestObj = 
@@ -400,7 +403,12 @@ const BillView = (props) => {
       }
     );
   }
-
+  const handleCheckEvent = () => {
+    $("#cancelBill").modal("show");
+  };
+  const closePopup = () => {
+    $("#cancelBill").modal("hide");
+  };
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -989,7 +997,7 @@ const BillView = (props) => {
                   src={cancel}
                   alt="img"
                   className=""
-                  onClick={() => cancelBill(singleBillData)}
+                  onClick={handleCheckEvent}
                 />
               </div>
                 </div>
@@ -1010,6 +1018,73 @@ const BillView = (props) => {
         ""
       )}
       </div>
+      <div className="modal fade" id="cancelBill">
+        <div className="modal-dialog cancelBill_modal_popup">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header smartboard_modal_header">
+                <h5
+                  className="modal-title header2_text"
+                  id="staticBackdropLabel"
+                >
+                  CANCEL BILL
+                </h5>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  onClick={closePopup}
+                />
+              </div>
+              <div className="modal-body">
+                <div className=" row terms_popup ">
+                  <div className="col-lg-2"></div>
+                  <div className="col-lg-8">
+                    <div className="cancel_img">
+                      <img
+                        src={cancel}
+                        alt="img"
+                        className=""
+                      />
+                    </div>
+                    <div className="cancel_bill">
+                      <p>Are you sure you want to cancel the bill</p>
+                    </div>
+                    <p>Please note that cancellation of bill result in ledger adjustments (rol back)
+                        and you will see an adjustment record in ledger for the same bill</p>
+                  </div>
+                  <div className="col-lg-2"></div>
+                </div>
+              </div>
+              <div className="modal-footer pt-0">
+                <div className=" row d-flex">
+                  <div className="col-lg-3 no_btn">
+                    <button
+                      type="button"
+                      className="primary_btn"
+                      onClick={closePopup}
+                      data-bs-dismiss="modal"
+                    >
+                      NO
+                    </button>
+                  </div>
+                  <div className="col-lg-3"></div>
+                  <div className=" col-lg-4 yes_btn">
+                    <button
+                    type="button"
+                    className="primary_btn"
+                    onClick={() => cancelBill(singleBillData)}
+                    data-bs-dismiss="modal"
+                    >
+                    YES
+                    </button>
+                  </div>
+                
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
   );
 };

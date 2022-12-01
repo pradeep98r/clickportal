@@ -836,9 +836,18 @@ const Step3Modal = (props) => {
             <div className="selectparty_field edit_crop_item_div">
             <div className="d-flex align-items-center justify-content-between">
               <p className="d-flex align-items-center">
-                {/* {billEditItem.lineItems!==null? */}
-                 {/* <img src={billEditItem.lineItems[0].imageUrl} className="edit_crop_item"/> */}
-                {/* <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> */}
+                {editStatus ?(
+                  <div>
+                  <img src={billEditItem.lineItems[0].imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
+                  </div>
+                ):(
+                  <div>
+                  <img src={props.slectedCropsArray[0].lineItems[0].imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
+                  </div>
+                )
+                }
               </p>
             <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
             </div>

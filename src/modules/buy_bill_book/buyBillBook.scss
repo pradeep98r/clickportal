@@ -852,6 +852,7 @@ border-radius: 10px;
 }
 .more-info{
   padding:10px 20px;
+  cursor: pointer;
 }
 .buy-dtl{
   padding: 10px 0px;
@@ -1085,4 +1086,29 @@ word-wrap: normal;
 }
 .calender_popup {
   font-size: 13px;
+}
+.cancelBill_modal_popup{
+  max-width: 600px;
+    margin-top: 150px;
+    iframe{
+        border: none;
+    }
+    // .modal-header, .modal-footer{
+    //     border: none;
+    // }
+}
+.cancel_bill{
+  padding: 10px 0px;
+  .cancel_bill p{
+    font-size: 12px;
+    color: black;
+    font-weight: 600px;
+  }
+}
+.cancel_img{
+  text-align: center;
+  padding: 10px 0px;
+}
+.yes_btn,.no_btn{
+  padding: 10px 0px;
 }
