@@ -269,7 +269,6 @@ const SellbillStep3Modal = (props) => {
   var cropArray = editStatus ? step2CropEditStatus ? props.slectedSellCropsArray[0].lineItems  :billEditItem.lineItems : props.slectedSellCropsArray;
   var len = cropArray.length;
   console.log(editStatus,step2CropEditStatus,"statuses");
-  console.log(props.slectedSellCropsArray[0].lineItems,cropArray)
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
@@ -337,7 +336,7 @@ const SellbillStep3Modal = (props) => {
     writerId: 0,
     timeStamp: "",
   };
-  console.log(props.slectedSellCropsArray[0].lineItems,"values");
+  //console.log(props.slectedSellCropsArray[0].lineItems,"values");
   const editBillRequestObj = 
   {
     action: "UPDATE",
@@ -376,9 +375,9 @@ const SellbillStep3Modal = (props) => {
       transportation: getTotalUnits(transportationValue),
       transporterId: transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
-    billId: billEditItem.billId,
+    billId: 0,//billEditItem.billId,
     billType: "SELL",
-    caBSeq: billEditItem.caBSeq,
+    caBSeq: 0,//billEditItem.caBSeq,
     caId: clickId,
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
