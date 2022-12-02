@@ -73,7 +73,7 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
     if (props.cropTableEditStatus) {
-    if(props.billEditStatus){
+    if(props.billEditStatus){;
       cropResponseData([...props.cropEditObject]);
     }
       for (var i = 0; i < props.cropEditObject.length; i++) {
@@ -143,6 +143,7 @@ const Step2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
+    console.log("hello")
     var h = [];
     if (cropData.length > 0) {
       h = cropData.map((item, index) => {
@@ -175,13 +176,13 @@ const Step2Modal = (props) => {
           cropData[index].weight != 0 &&
           cropData[index].rate != 0
         ) {
+          console.log("hello")
           setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
           setUpdatedItemList(updatedItemList);
           if(props.billEditStatus){
             props.slectedCropstableArray[0].lineItems = updatedItemList;
           } 
-          setUpdatedItemList(updatedItemList);
           if (updatedItemList[index].rateType == "kgs") {
             updatedItemList[index].total =
               (updatedItemList[index].weight - updatedItemList[index].wastage) *
@@ -299,9 +300,10 @@ const Step2Modal = (props) => {
     console.log(updatedItem3)
     setrateValue(e.target.value);
     setCropId(id);
-    // setSelectedCropsData(updatedItem3);
+    setSelectedCropsData(updatedItem3);
     setUpdatedItemList(updatedItem3);
     
+    console.log(props.billEditStatus,"editStatus");
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItem3;
     } 

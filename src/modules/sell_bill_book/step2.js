@@ -164,6 +164,9 @@ const SellbillStep2Modal = (props) => {
         setShowStep3ModalStatus(true);
         setShowStep3Modal(true);
         setUpdatedItemList(updatedItemList);
+        if(props.billEditStatus){
+          props.slectedCropstableArray[0].lineItems = updatedItemList;
+        } 
         if (updatedItemList[index].rateType == "kgs") {
           updatedItemList[index].total =
             (updatedItemList[index].weight - updatedItemList[index].wastage) *
@@ -272,7 +275,7 @@ const SellbillStep2Modal = (props) => {
       
     setCropId(id);
     setUpdatedItemList(updatedItems4);
-    // setSelectedCropsData(updatedItems4);
+    setSelectedCropsData(updatedItems4);
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItems4;
     } 

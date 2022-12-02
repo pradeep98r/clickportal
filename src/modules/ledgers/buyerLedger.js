@@ -164,6 +164,7 @@ const BuyerLedger = () => {
       );
     }
   };
+
   const addRecordPayment = (partyId) => {
     const addRecordData = {
       caId: clickId,
@@ -187,6 +188,11 @@ const BuyerLedger = () => {
     localStorage.removeItem("partyId");
   };
   //Fetch Ledger Summary By Date
+  const clearDate =()=>{
+    while(detailsByDate.length>0){
+      detailsByDate.pop();
+    }
+  }
   const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
@@ -224,6 +230,7 @@ const BuyerLedger = () => {
         });
     }
     else {
+      clearDate();
       var fromDate = moment(startDate).format("YYYY-MM-DD");
       var toDate = moment(endDate).format("YYYY-MM-DD");
       getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)

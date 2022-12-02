@@ -65,6 +65,7 @@ const Step3Modal = (props) => {
   const [totalUnits, setTotalUnits] = useState(0);
   var step2CropEditStatus = props.step2CropEditStatus;
   const [unitPrevVal, setUnitPrevVal] = useState(0);
+  
   useEffect(() => {
     console.log(props.slectedCropsArray);
     fetchPertnerData(partyType);
@@ -180,6 +181,7 @@ const Step3Modal = (props) => {
       }
     }
   }, [props.show]);
+  console.log(billEditItem,"billEdititem")
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
@@ -419,9 +421,9 @@ const Step3Modal = (props) => {
       transporterId:
         transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
-    billId: billEditItem.billId,
+    billId: billEditItem?.billId,
     billType: "BUY",
-    caBSeq: billEditItem.caBSeq,
+    caBSeq: billEditItem?.caBSeq,
     caId: clickId,
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
@@ -543,7 +545,7 @@ const Step3Modal = (props) => {
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
     console.log(cropEditArray, "hi");
-    step2CropEditStatus=true;
+    //step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
@@ -837,19 +839,19 @@ const Step3Modal = (props) => {
             <div className="d-flex align-items-center justify-content-between">
               <p className="d-flex align-items-center">
                 {editStatus ?(
-                  <div>
-                  <img src={billEditItem.lineItems[0].imageUrl} className="edit_crop_item"/>
+                  <div className="d-flex">
+                  <img src={billEditItem.lineItems[0]?.imageUrl} className="edit_crop_item"/>
                   <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
                   </div>
                 ):(
-                  <div>
-                  <img src={props.slectedCropsArray[0].lineItems[0].imageUrl} className="edit_crop_item"/>
-                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
+                  <div className="d-flex">
+                  <img src={props.slectedCropsArray[0].imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{props.slectedCropsArray.length}</p><span className="ml-3">Crops</span></p> 
                   </div>
                 )
                 }
               </p>
-            <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
+              <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
             </div>
             </div>
             

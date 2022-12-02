@@ -375,9 +375,9 @@ const SellbillStep3Modal = (props) => {
       transportation: getTotalUnits(transportationValue),
       transporterId: transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
-    billId: 0,//billEditItem.billId,
+    billId: billEditItem.billId,
     billType: "SELL",
-    caBSeq: 0,//billEditItem.caBSeq,
+    caBSeq: billEditItem.caBSeq,
     caId: clickId,
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
@@ -774,7 +774,26 @@ const SellbillStep3Modal = (props) => {
               ""
             )}
             <h5 className="date_sec head_modal">Crop Information </h5>
-            <div className="cropinfo_div" onClick={()=>editCropTable(billEditItem.lineItems)}><p>edit</p> </div>
+            <div className="selectparty_field edit_crop_item_div">
+            <div className="d-flex align-items-center justify-content-between">
+              <p className="d-flex align-items-center">
+                {editStatus ?(
+                  <div className="d-flex">
+                  <img src={billEditItem.lineItems[0]?.imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
+                  </div>
+                ):(
+                  <div className="d-flex">
+                  <img src={props.slectedCropsArray[0].imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{props.slectedCropsArray.length}</p><span className="ml-3">Crops</span></p> 
+                  </div>
+                )
+                }
+              </p>
+              <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
+            </div>
+            </div>
+            {/* <div className="cropinfo_div" onClick={()=>editCropTable(billEditItem.lineItems)}><p>edit</p> </div> */}
           </div>
           <div className="col-lg-6">
             <h5 className="head_modal">Additions/Deductions</h5>

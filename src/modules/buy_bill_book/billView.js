@@ -14,6 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
+import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -27,12 +28,24 @@ const BillView = (props) => {
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
+
+  const [displayCancel, setDisplayCancel] = useState(false);
+
   const navigate = useNavigate();
   
   useEffect(() => {
+    cancelBillStatus();
     getBusinessDetails();
     getBuyBillsById();
   }, []);
+
+  const cancelBillStatus = () =>{
+    if(singleBillData.billStatus === "CANCELLED"){
+      setDisplayCancel(true);
+    }else{
+      setDisplayCancel(displayCancel)
+    }
+  }
   const getBusinessDetails = () => {
     getMandiDetails(clickId)
       .then((response) => {
@@ -320,6 +333,7 @@ const BillView = (props) => {
     }
     return ((parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - parseInt(singleBillData.cashPaid)).toFixed(2);
   };
+
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const [slectedCropArray, setSlectedCropArray] = useState([]);
@@ -335,6 +349,7 @@ const BillView = (props) => {
   };
   const cancelBill = (itemVal)=>{
     $("#cancelBill").modal("hide");
+    setDisplayCancel(!displayCancel);
     cancelbillApiCall();
   }
   const editBillRequestObj = 
@@ -403,6 +418,7 @@ const BillView = (props) => {
       }
     );
   }
+  
   const handleCheckEvent = () => {
     $("#cancelBill").modal("show");
   };
@@ -510,6 +526,14 @@ const BillView = (props) => {
                         {singleBillData.transporterName}
                       </h6>
                     </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-8"></div>
+                  <div className="col-lg-4 stamp_img">
+                    {displayCancel&&
+                    <img src={cancel_bill_stamp} alt="stammp_img" />
+                  }
                   </div>
                 </div>
                 {/* table */}
@@ -1037,9 +1061,9 @@ const BillView = (props) => {
               </div>
               <div className="modal-body">
                 <div className=" row terms_popup ">
-                  <div className="col-lg-2"></div>
-                  <div className="col-lg-8">
-                    <div className="cancel_img">
+                  <div className="col-lg-3"></div>
+                  <div className="col-lg-7">
+                  <div className="cancel_img">
                       <img
                         src={cancel}
                         alt="img"
@@ -1047,12 +1071,19 @@ const BillView = (props) => {
                       />
                     </div>
                     <div className="cancel_bill">
-                      <p>Are you sure you want to cancel the bill</p>
+                      <p className="cancel_billp">Are you sure you want to cancel the bill</p>
                     </div>
-                    <p>Please note that cancellation of bill result in ledger adjustments (rol back)
+                    <div className="col-lg-2"></div>
+                  </div>
+                  
+                </div>
+                <div className="row">
+                  <div className="col-lg-1"></div>
+                  <div className="col-lg-10">
+                  <p className="desc-tag">Please note that cancellation of bill result in ledger adjustments (rol back)
                         and you will see an adjustment record in ledger for the same bill</p>
                   </div>
-                  <div className="col-lg-2"></div>
+                  <div className="col-lg-1"></div>
                 </div>
               </div>
               <div className="modal-footer pt-0">
@@ -1083,8 +1114,8 @@ const BillView = (props) => {
                 
               </div>
             </div>
-          </div>
         </div>
+      </div>
     </div>
   );
 };
