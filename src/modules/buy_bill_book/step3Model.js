@@ -65,9 +65,8 @@ const Step3Modal = (props) => {
   const [totalUnits, setTotalUnits] = useState(0);
   var step2CropEditStatus = props.step2CropEditStatus;
   const [unitPrevVal, setUnitPrevVal] = useState(0);
-  
+  console.log(props.slectedCropsArray,"ste2 items")
   useEffect(() => {
-    console.log(props.slectedCropsArray);
     fetchPertnerData(partyType);
     if (partnerSelectedData != null) {
       getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
@@ -126,14 +125,12 @@ const Step3Modal = (props) => {
       var totalunitvalues = 0;
       var t = 0;
       var lineitm = billEditItem.lineItems;
-      console.log(billEditItem.lineItems);
       for (var i = 0; i < lineitm.length; i++) {
         totalunitvalues += editStatus
           ? parseInt(lineitm[i].qty)
           : parseInt(props.slectedCropsArray[i].qty);
         // setTotalUnits(totalunitvalues);
         setUnitPrevVal(parseInt(lineitm[i].qty));
-        console.log(parseInt(lineitm[i].qty));
       }
       if (!commEdit) {
         getCommInput((billEditItem.comm / billEditItem.grossTotal) * 100);
@@ -151,7 +148,6 @@ const Step3Modal = (props) => {
           getTransportationValue(billEditItem.transportation / totalunitvalues);
         } else {
           var totalQtyValue = localStorage.getItem("totalQty");
-          console.log(totalQtyValue,"total Qty");
           getTransportationValue(billEditItem.transportation / totalQtyValue);
         }
       }
@@ -159,7 +155,6 @@ const Step3Modal = (props) => {
         if (!step2CropEditStatus) {
           getLaborChargeValue(billEditItem.labourCharges / totalunitvalues);
         } else {
-          console.log(localStorage.getItem("labVal"));
           var totalQtyValue = localStorage.getItem("totalQty");
           getLaborChargeValue(billEditItem.labourCharges / totalQtyValue);
           //getLaborChargeValue(parseInt(localStorage.getItem("labVal")));
@@ -181,7 +176,6 @@ const Step3Modal = (props) => {
       }
     }
   }, [props.show]);
-  console.log(billEditItem,props.slectedCropsArray,"billEdititem")
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
@@ -233,7 +227,6 @@ const Step3Modal = (props) => {
   };
 
   const getGrossTotalValue = (items) => {
-    console.log(items, typeof props.billEditStatus);
     var total = 0;
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
@@ -253,7 +246,6 @@ const Step3Modal = (props) => {
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
-    console.log(total);
   };
 
   const getTotalValue = (value) => {
@@ -325,12 +317,12 @@ const Step3Modal = (props) => {
   var lineItemsArray = [];
 
   // if (props.slectedCropsArray.length > 0) {
+    console.log(props.slectedCropsArray,step2CropEditStatus,"crops")
   var cropArray = editStatus
     ? step2CropEditStatus
       ? props.slectedCropsArray[0].lineItems
       : billEditItem.lineItems
     : props.slectedCropsArray;
-  console.log(cropArray, lineItemsArray, "array");
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -345,10 +337,11 @@ const Step3Modal = (props) => {
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
       id: cropArray[i].id,
       partyId: cropArray[i].farmerId,
-      status: editStatus ? 2 : 0,
+      status: cropArray[i].status,
       bags: cropArray[i].bags,
     });
   }
+  console.log(lineItemsArray)
   // }
   const billRequestObj = {
     actualPayble: getActualPayble(),
@@ -430,19 +423,16 @@ const Step3Modal = (props) => {
     updatedOn: "",
     writerId: 0,
   };
-  console.log(getTotalUnits(rentValue));
   // post bill request api call
   const postbuybill = () => {
     if (editStatus) {
-      console.log("edit api");
+      console.log(editBillRequestObj)
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(editBillRequestObj, "edit bill request");
-            console.log(response.data, "edit bill");
             props.closeStep3Modal();
             navigate("/buy_bill_book");
           }
@@ -508,7 +498,6 @@ const Step3Modal = (props) => {
     localStorage.setItem("labVal", event.target.value);
     setLabouredit(true);
   };
-  console.log(billEditItem);
   const [rentEdit, setRentedit] = useState(false);
   const rentOnchangeEvent = (event) => {
     getRentValue(event.target.value.replace(/\D/g, ""));
@@ -544,7 +533,6 @@ const Step3Modal = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
-    console.log(cropEditArray, "hi");
     //step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
