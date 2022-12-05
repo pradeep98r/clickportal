@@ -198,6 +198,7 @@ const SellbillStep3Modal = (props) => {
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   const getGrossTotalValue = (items) => {
+    console.log(items,"items")
     var total = 0;
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
@@ -206,6 +207,7 @@ const SellbillStep3Modal = (props) => {
           ? items[i].total
           : items[i].grossTotal
         : items[i].total;
+      console.log(total,"total");
       totalunitvalue += editStatus
         ? step2CropEditStatus
           ? parseInt(items[i].qty)
@@ -215,7 +217,7 @@ const SellbillStep3Modal = (props) => {
       setTotalUnits(totalunitvalue);
     }
   };
-  console.log(partnerData);
+  console.log(grossTotal);
   const getTotalValue = (value) => {
     return (value / 100) * grossTotal;
   };
@@ -289,7 +291,7 @@ const SellbillStep3Modal = (props) => {
       sellBillId: billEditItem.billId,
       //bags:[],
       partyId: billEditItem.buyerId,
-      status: editStatus ? 2 : 0,
+      status: cropArray[i].status,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
       bags: cropArray[i].bags,
