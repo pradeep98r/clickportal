@@ -6,7 +6,7 @@ export function getTransporters(clickId) {
 }
 //get Particular Transporter
 export function getParticularTransporter(clickId, partyId, clientId, clientSecret){
-    return axiosCommon.get(`/account/reports/ledger/summary/caId/${clickId}/partyId/${partyId}`);
+    return axiosCommon.get(`/reports/transporter-ledger/caId/${clickId}/partyId/${partyId}`);
 }
 //get Inventory Ledger
 export function getInventoryLedgers(clickId,transId, clientId, clientSecret){

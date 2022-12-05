@@ -76,9 +76,16 @@ const Step2Modal = (props) => {
   };
   useEffect(() => {
     fetchData();
+    console.log(props.billEditStatus,"billEditStatus");
     if (props.cropTableEditStatus) {
     if(props.billEditStatus){;
       cropResponseData([...props.cropEditObject]);
+    }
+    else{
+      //console.log("try to do different");
+      var lineIt=JSON.parse(localStorage.getItem("lineItemsEdit"));
+      cropResponseData(lineIt);
+      console.log(cropResponseData);
     }
       for (var i = 0; i < props.cropEditObject.length; i++) {
         preferedCropsData.push(props.cropEditObject[i]);
@@ -147,7 +154,7 @@ const Step2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
-    console.log("hello")
+    console.log(cropData)
     var h = [];
     if (cropData.length > 0) {
       h = cropData.map((item, index) => {
@@ -184,6 +191,7 @@ const Step2Modal = (props) => {
           setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
           setUpdatedItemList(updatedItemList);
+          localStorage.setItem("lineItemsEdit",JSON.stringify(cropData));
           if(props.billEditStatus){
             props.slectedCropstableArray[0].lineItems = updatedItemList;
           } 

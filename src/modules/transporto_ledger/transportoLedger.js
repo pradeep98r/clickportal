@@ -15,7 +15,6 @@ import no_data from "../../assets/images/no_data.svg";
 import add from "../../assets/images/add.svg";
 import ReactModal from "react-modal";
 import close_btn from "../../assets/images/close_btn.svg";
-import ReactDatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import date_icon from "../../assets/images/date_icon.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
@@ -23,6 +22,8 @@ import moment from "moment/moment";
 import $ from "jquery";
 import context from "react-bootstrap/esm/AccordionContext";
 import NoDataAvailable from "../../components/noDataAvailable";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const TransportoLedger = () => {
   const [transporter, setTransporter] = useState([{}]);
   const [data, setData] = useState({}, transporter);
@@ -83,9 +84,10 @@ const TransportoLedger = () => {
   const paymentLedger = (clickId, partyId) => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
+        console.log(response, "payledger");
         setPayLedger(response.data.data);
-        setLedgerSummary(response.data.data.ledgerSummary);
-        console.log(payLedger, "payledger");
+        setLedgerSummary(response.data.data.details);
+        
       })
       .catch((error) => {
         setError(error);
@@ -602,8 +604,8 @@ const TransportoLedger = () => {
                        id="scroll_style"
                      >
                        <form>
-                         <div className="card">
-                           <div className="card-body" id="details-tag">
+                         <div className="d-flex card">
+                           <div className="d-flex justify-content-between card-body" id="details-tag">
                              {transporter.map((item, index) => {
                                if (item.partyId == transId) {
                                  return (
@@ -651,9 +653,13 @@ const TransportoLedger = () => {
                                  );
                                }
                              })}
-                             <span className="card-text" id="date-tag">
-                               <ReactDatePicker
-                                 className="date_picker_in_modal"
+                             <div className="d-flex card-text" id="date-tag">
+                                <img
+                                 className="date_icon_in_modal"
+                                 src={date_icon}
+                                />
+                               <DatePicker
+                                 //className="date_picker_in_modal"
                                  selected={selectDate}
                                  onChange={(date) => {
                                    setSelectDate(date);
@@ -661,26 +667,9 @@ const TransportoLedger = () => {
                                  dateFormat="dd-MMM-yy"
                                  maxDate={new Date()}
                                  placeholder="Date"
-                                 showMonthYearDropdown={true}
-                                 scrollableMonthYearDropdown
                                  required
-                                 style={{
-                                   width: "400px",
-                                   cursor: "pointer",
-                                   right: "300px",
-                                   marginTop: "30px",
-                                   fontFamily: "Manrope",
-                                   fontStyle: "normal",
-                                   fontWeight: "600",
-                                   fontSize: "15px",
-                                   lineHeight: "18px",
-                                 }}
-                               ></ReactDatePicker>
-                               <img
-                                 className="date_icon_in_modal"
-                                 src={date_icon}
-                               />
-                             </span>
+                               ></DatePicker>
+                             </div>
                            </div>
                          </div>
                          <div id="out-paybles">
@@ -887,8 +876,8 @@ const TransportoLedger = () => {
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
-                                   {item.tobePaidRcvd
-                                     ? item.tobePaidRcvd.toFixed(2)
+                                   {item.toBePaid
+                                     ? item.toBePaid.toFixed(2)
                                      : 0}
                                  </p>
                                </td>
@@ -1069,8 +1058,8 @@ const TransportoLedger = () => {
                            }
                          >
                            <form>
-                             <div className="card">
-                               <div className="card-body" id="details-tag">
+                             <div className="d-flex justify-content-between card">
+                               <div className="d-flex justify-content-between card-body" id="details-tag">
                                  {transporter.map((item, index) => {
                                    if (item.partyId == transId) {
                                      return (
@@ -1118,28 +1107,25 @@ const TransportoLedger = () => {
                                      );
                                    }
                                  })}
-                                 <div className="card-text" id="date-tag">
-                                  <div className="date_popper">
-                                   <ReactDatePicker
-                                     className="date_picker_in_modal"
-                                     selected={selectDate}
-                                     onChange={(date) => {
-                                       setSelectDate(date);
-                                     }}
-                                     dateFormat="dd-MMM-yy"
-                                     maxDate={new Date()}
-                                     placeholder="Date"
-                                     showMonthYearDropdown={true}
-                                     scrollableMonthYearDropdown
-                                     required
-                                   ></ReactDatePicker>
-                                   </div>
-                                   <img
-                                     className="date_icon_in_modal"
-                                     src={date_icon}
-                                   />
-                                 </div>
-                               </div>
+                                 <div className="d-flex card-text" id="date-tag">
+                                    <img
+                                      className="date_icon_in_modal"
+                                      src={date_icon}
+                                    />
+                                    <div className="d-flex date_popper">
+                                      <DatePicker
+                                        //className="date_picker_in_modal"
+                                        selected={selectDate}
+                                        onChange={(date) => {
+                                          setSelectDate(date);
+                                        }}
+                                        dateFormat="dd-MMM-yy"
+                                        maxDate={new Date()}
+                                        placeholder="Date"
+                                      ></DatePicker>
+                                    </div>
+                                  </div>
+                              </div>
                              </div>
                              <div id="out-paybles">
                                <p id="p-tag">{langFullData.inventoryBalance}</p>

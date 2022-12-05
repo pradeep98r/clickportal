@@ -11,7 +11,7 @@ import $ from "jquery";
 import { useSelector } from "react-redux";
 import { getAllMarkets } from "../../actions/loginService";
 import search_img from "../../assets/images/search.svg";
-import markets from "../../assets/images/markets_img.png";
+import markets from "../../assets/images/mandi.svg";
 import { Fragment } from "react";
 
 const CompleteProfile = (props) => {
