@@ -1238,7 +1238,7 @@ const BillView = (props) => {
           <div className="modal-content">
             <div className="modal-header date_modal_header smartboard_modal_header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                CANCEL BILL
+                Cancel Bill
               </h5>
               <img
                 src={close}
@@ -1274,20 +1274,16 @@ const BillView = (props) => {
                 <div className="col-lg-1"></div>
               </div>
             </div>
-            <div className="modal-footer pt-0">
-              <div className=" row d-flex">
-                <div className="col-lg-3 no_btn">
+            <div className="modal-footer">
+              <div className="d-flex">
                   <button
                     type="button"
-                    className="primary_btn"
+                    className="secondary_btn mr-2"
                     onClick={closePopup}
                     data-bs-dismiss="modal"
                   >
                     NO
                   </button>
-                </div>
-                <div className="col-lg-3"></div>
-                <div className=" col-lg-4 yes_btn">
                   <button
                     type="button"
                     className="primary_btn"
@@ -1296,7 +1292,6 @@ const BillView = (props) => {
                   >
                     YES
                   </button>
-                </div>
               </div>
             </div>
           </div>

@@ -142,7 +142,7 @@ input[type=radio]:checked+label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 203px);
+    height: calc(100vh - 230px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -172,7 +172,6 @@ input[type=radio]:checked+label {
 .recordbtns-style{
     position: relative;
     top: 17px;
-    padding-left: 390px;
 }
 .add-img{
     border:1px solid red;

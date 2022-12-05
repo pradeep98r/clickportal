@@ -629,7 +629,7 @@ const Partner = () => {
                           ? "seller"
                           : partyType.toLowerCase()}
                       </h6>
-                      <p>Loream iipusm text</p>
+                      <p></p>
 
                       <button className="outline_btn" id="MybtnModal">
                         Add

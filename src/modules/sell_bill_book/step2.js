@@ -72,22 +72,27 @@ const SellbillStep2Modal = (props) => {
   };
   useEffect(() => {
     fetchData();
+    console.log(preferedCropsData,"pre")
+    var lineIt;
     if (props.cropTableEditStatus) {
-      if(props.billEditStatus){
+      if (props.billEditStatus) {
         cropResponseData([...props.cropEditObject]);
+      } else {
+        lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
+        cropResponseData([...lineIt]);
+        setUpdatedItemList(lineIt);
+        console.log(lineIt, props.cropEditObject);
       }
-        for (var i = 0; i < props.cropEditObject.length; i++) {
-          preferedCropsData.push(props.cropEditObject[i]);
-          if (props.cropEditObject[i].rateType == "RATE_PER_KG") {
-            props.cropEditObject[i].rateType = "kgs";
-          }
-          Object.assign(
-            props.cropEditObject[i],
-            { count: 1 },
-            { cropActive: true }
-          );
+      var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
+      console.log(cropArr,preferedCropsData)
+      for (var i = 0; i < cropArr.length; i++) {
+        preferedCropsData.push(cropArr[i]);
+        if (cropArr[i].rateType == "RATE_PER_KG") {
+          cropArr[i].rateType = "kgs";
         }
+        Object.assign(cropArr[i], { count: 1 }, { cropActive: true });
       }
+    }
   }, []);
 
   var arr = [];
@@ -169,6 +174,7 @@ const SellbillStep2Modal = (props) => {
         setShowStep3ModalStatus(true);
         setShowStep3Modal(true);
         setUpdatedItemList(updatedItemList);
+        localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
         if(props.billEditStatus){
           props.slectedCropstableArray[0].lineItems = updatedItemList;
         } 
@@ -346,11 +352,17 @@ const SellbillStep2Modal = (props) => {
         list[index1].count -= 1;
         if(list[index1].count == 0){
           console.log(list,index1)
-          list.splice(index1,index1);
+          if(props.billEditStatus){
+            list.splice(index1,1);
+          }
+          else{
+            list.splice(index1, index1);
+          }
           // list.splice(index1,index1);
         }
       }
     }
+    setUpdatedItemList(cropArray)
     cropResponseData([...cropArray]);
   };
   return (
@@ -766,7 +778,7 @@ const SellbillStep2Modal = (props) => {
           // slectedSellCropsArray={selectedSellbillCropsData}
           billEditStatus={props.billEditStatus ? true : false}
           slectedSellCropsArray={
-            props.billEditStatus ? props.slectedCropstableArray : selectedSellbillCropsData
+            props.billEditStatus ? props.slectedCropstableArray : updatedItemList
           }
           step2CropEditStatus={props.billEditStatus ? true : false}
         />
