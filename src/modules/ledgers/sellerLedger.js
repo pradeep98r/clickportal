@@ -8,6 +8,7 @@ import DatePickerModel from "../smartboard/datePicker";
 import {
   getLedgerSummary,
   getLedgerSummaryByDate,
+  getOutstandingBal,
   getSelleLedgers,
   getSellerDetailedLedger,
   getSellerDetailedLedgerByDate,
@@ -44,6 +45,7 @@ const SellerLedger = () => {
   const [open, setIsOpen] = useState(false);
   const [selectDate, setSelectDate] = useState(new Date());
   const [paidRcvd, setPaidRcvd] = useState(0);
+  const [paidsRcvd, setPaidsRcvd] = useState(0);
   const [comments, setComments] = useState(" ");
   const [paymentMode, setPaymentMode] = useState("CASH");
   const [dateDisplay, setDateDisplay] = useState(false);
@@ -125,6 +127,7 @@ const SellerLedger = () => {
         localStorage.setItem("partyId", JSON.stringify(partyId));
         getSellerLedgerSummary(clickId, id);
         fetchSellerLedgerDetails(clickId, id);
+        getOutstandingPaybles(clickId,id);
         return item.partyId;
         //navigate("ledgerSummary");
       } else {
@@ -132,6 +135,14 @@ const SellerLedger = () => {
       }
     });
   };
+
+  const getOutstandingPaybles = (clickId, partyId)=>{
+    getOutstandingBal(clickId,partyId)
+    .then((response)=>{
+      console.log(response);
+      setPaidRcvd(response.data.data);
+    })
+  }
   //Get Seller Ledger Summary
   const getSellerLedgerSummary = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
@@ -160,20 +171,20 @@ const SellerLedger = () => {
   //Add Record payment
   const [requiredCondition, setRequiredCondition] = useState("");
   const onSubmitRecordPayment = () => {
-    if (paidRcvd < 0) {
+    if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
-    } else if (parseInt(paidRcvd) === 0) {
+    } else if (parseInt(paidsRcvd) === 0) {
       setRequiredCondition(langFullData.amountReceivedCannotBeEmpty);
-    } else if (isNaN(paidRcvd)) {
+    } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
     } else if (
-      paidRcvd.trim().length !== 0 &&
-      paidRcvd != 0 &&
-      paidRcvd < data.totalOutStgAmt &&
-      !(paidRcvd < 0)
+      paidsRcvd.trim().length !== 0 &&
+      paidsRcvd != 0 &&
+      paidsRcvd < paidRcvd &&
+      !(paidsRcvd < 0)
     ) {
       addRecordPayment();
-    } else if (paidRcvd > data.totalOutStgAmt) {
+    } else if (paidsRcvd > paidRcvd) {
       setRequiredCondition(
         langFullData.enteredAmountCannotMoreThanOutstandingBalance
       );
@@ -310,7 +321,8 @@ const SellerLedger = () => {
       <div>
       <div className="main_div_padding">
        {
-         ledger.length > 0 ?  <div className="row">
+         ledger.length > 0 ?
+        <div className="row">
          <div className="col-lg-4 p-0">
            <div id="search-field">
              <form className="d-flex">
@@ -479,17 +491,17 @@ const SellerLedger = () => {
              <p className="pat-tag">{langFullData.outstandingPayables}:</p>
              <p className="values-tag">
                &#8377;
-               {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
+               {paidRcvd ? paidRcvd : 0}
              </p>
            </div>
          </div>
          <div className="col-lg-8">
-           <div
-             className="no_data_found"
-             style={{ display: openTabs ? "none" : "block" }}
-           >
-             <img src={no_data} className="no-data-img" />
-           </div>
+            <div
+                className="no_data_found"
+                style={{ display: openTabs ? "none" : "block" }}
+                >
+                <img src={no_data} className="no-data-img" />
+            </div>
            <div
              className="container-fluid px-0"
              id="tabsEvents"
@@ -969,7 +981,7 @@ const SellerLedger = () => {
                   }
                  </div>
                </div>
-             ):(<NoDataAvailable />)
+             ):("")
              }
              <div className="modal fade" id="myModal">
                <div className="modal-dialog transporter_modal modal-dialog-centered">
@@ -1076,7 +1088,7 @@ const SellerLedger = () => {
                            id="amtRecieved"
                            required
                            onChange={(e) => {
-                             setPaidRcvd(e.target.value);
+                             setPaidsRcvd(e.target.value);
                            }}
                          />
                          <p className="text-valid">{requiredCondition}</p>

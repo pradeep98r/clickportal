@@ -299,6 +299,23 @@ const SmartBoard = () => {
     localStorage.removeItem("mandiEditStatus");
     localStorage.setItem("mandiEditStatus", false);
   };
+
+  const handleLinks = (path)=>{
+    console.log(path)
+    if(path === '/sellbillbook'){
+      localStorage.setItem("LinkId", 3);
+      localStorage.setItem("LinkPath", "/sellbillbook");
+    } else if(path === '/buy_bill_book'){
+      localStorage.setItem("LinkId", 4);
+      localStorage.setItem("LinkPath", "/buy_bill_book");
+    } else if(path === '/buyerledger'){
+      localStorage.setItem("LinkId", 5);
+      localStorage.setItem("LinkPath", "/buyerledger");
+    } else{
+      localStorage.setItem("LinkId", 6);
+      localStorage.setItem("LinkPath", "/sellerledger");
+    }
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -440,7 +457,7 @@ const SmartBoard = () => {
                                           ) : (
                                             <a
                                               id="buyer-link"
-                                              href="/buyerledger"
+                                              href="/buyerledger" onClick={()=>{handleLinks("/buyerledger")}}
                                             >
                                               {langFullData.seeBuyerLedger}
                                             </a>
@@ -502,7 +519,7 @@ const SmartBoard = () => {
                                             0 ? (
                                             ""
                                           ) : (
-                                            <a href="/sellerledger">
+                                            <a href="/sellerledger" onClick={()=>{handleLinks("/sellerledger")}}>
                                               {langFullData.seeSellerLedger}
                                             </a>
                                           )}
@@ -1202,7 +1219,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     {langFullData.salesBillBook}
                                   </h4>
-                                  <Link to="/sellbillbook">
+                                  <Link to="/sellbillbook" onClick={()=>{handleLinks("/sellbillbook")}}>
                                     <OutlineButton text={langFullData.addSalesBill} />
                                   </Link>
                                 </div>
@@ -1210,7 +1227,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     {langFullData.buyBillBook}
                                   </h4>
-                                  <Link to="/buy_bill_book">
+                                  <Link to="/buy_bill_book" onClick={()=>{handleLinks("/buy_bill_book")}}>
                                     <OutlineButton text={langFullData.addPurchaseBill} />
                                   </Link>
                                 </div>
