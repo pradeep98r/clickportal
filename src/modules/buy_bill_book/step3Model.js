@@ -181,7 +181,7 @@ const Step3Modal = (props) => {
       }
     }
   }, [props.show]);
-  console.log(billEditItem,"billEdititem")
+  console.log(billEditItem,props.slectedCropsArray,"billEdititem")
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
