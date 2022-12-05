@@ -115,7 +115,7 @@ const SellBillBook = () => {
     }
     return unitType;
   };
-
+  console.log(sellBillData);
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
 
@@ -291,7 +291,7 @@ const SellBillBook = () => {
                                           {langFullData.billNo} : {bill.billId}{" "}
                                         </p>
                                         <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
-                                        <p>{bill.billStatus}</p>
+                                        <p style={{color:bill.billStatus == 'COMPLETED'? 'green':'red'}}>{bill.billStatus}</p>
                                       </div>
                                     </div>
                                   </div>

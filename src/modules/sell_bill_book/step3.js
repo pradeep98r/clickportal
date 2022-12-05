@@ -46,7 +46,7 @@ const SellbillStep3Modal = (props) => {
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   const editStatus = props.billEditStatus;
   const billEditItem = props.slectedSellCropsArray[0];
-  const step2CropEditStatus = props.step2CropEditStatus;
+  var step2CropEditStatus = props.step2CropEditStatus;
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -265,9 +265,10 @@ const SellbillStep3Modal = (props) => {
   };
   var lineItemsArray = [];
   // var cropArray = props.slectedSellCropsArray;
+  console.log(editStatus,step2CropEditStatus,"status");
   var cropArray = editStatus ? step2CropEditStatus ? props.slectedSellCropsArray[0].lineItems  :billEditItem.lineItems : props.slectedSellCropsArray;
   var len = cropArray.length;
-  console.log(cropArray)
+  console.log(editStatus,step2CropEditStatus,"statuses");
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
@@ -278,14 +279,16 @@ const SellbillStep3Modal = (props) => {
       wastage: cropArray[i].wastage,
       weight:parseInt(cropArray[i].weight),
       id:cropArray[i].id,
-      bags:[],
+      sellBillId:billEditItem.billId,
+      //bags:[],
       partyId:billEditItem.buyerId,
       status:editStatus ? 2 : 0,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
-        bags:cropArray[i].bags
+      bags:cropArray[i].bags
     });
   }
+  console.log(lineItemsArray);
   const getActualRcvd = () => {
     var actualRcvd = getTotalBillAmount() - parseInt(cashRcvdValue);
     if (!includeComm) {
@@ -304,7 +307,7 @@ const SellbillStep3Modal = (props) => {
     actualReceivable: getActualRcvd(),
     advance: advancesValue,
     billDate: partnerSelectDate,
-    billStatus: "",
+    billStatus: "Completed",
     caId: clickId,
     cashRcvd: cashRcvdValue,
     comm: getTotalValue(commValue),
@@ -333,6 +336,7 @@ const SellbillStep3Modal = (props) => {
     writerId: 0,
     timeStamp: "",
   };
+  //console.log(props.slectedSellCropsArray[0].lineItems,"values");
   const editBillRequestObj = 
   {
     action: "UPDATE",
@@ -384,6 +388,7 @@ const SellbillStep3Modal = (props) => {
   const postsellbill = () => {
     if(editStatus)
     {
+      console.log("came to edit feature");
      editbuybillApi(editBillRequestObj).then(
        (response) => {
          if (response.data.status.type === "SUCCESS") {
@@ -391,6 +396,7 @@ const SellbillStep3Modal = (props) => {
              toastId: "success1",
            });
            console.log(editBillRequestObj,"edit bill request");
+           console.log(response);
            props.closeStep3Modal();
            navigate("/sellbillbook");
          }
@@ -402,6 +408,7 @@ const SellbillStep3Modal = (props) => {
        }
      );
     }else{
+      console.log("came to post feature");
     postsellbillApi(sellBillRequestObj).then(
       (response) => {
         if (response.data.status.message === "SUCCESS") {
@@ -475,6 +482,7 @@ const SellbillStep3Modal = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
+    step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
@@ -766,7 +774,26 @@ const SellbillStep3Modal = (props) => {
               ""
             )}
             <h5 className="date_sec head_modal">Crop Information </h5>
-            <div className="cropinfo_div" onClick={()=>editCropTable(billEditItem.lineItems)}><p>edit</p> </div>
+            <div className="selectparty_field edit_crop_item_div">
+            <div className="d-flex align-items-center justify-content-between">
+              <p className="d-flex align-items-center">
+                {editStatus ?(
+                  <div className="d-flex">
+                  <img src={billEditItem.lineItems[0]?.imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
+                  </div>
+                ):(
+                  <div className="d-flex">
+                  <img src={props.slectedCropsArray[0].imageUrl} className="edit_crop_item"/>
+                  <p className="edit_crop_item_len d-flex align-items-center"><p>{props.slectedCropsArray.length}</p><span className="ml-3">Crops</span></p> 
+                  </div>
+                )
+                }
+              </p>
+              <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
+            </div>
+            </div>
+            {/* <div className="cropinfo_div" onClick={()=>editCropTable(billEditItem.lineItems)}><p>edit</p> </div> */}
           </div>
           <div className="col-lg-6">
             <h5 className="head_modal">Additions/Deductions</h5>

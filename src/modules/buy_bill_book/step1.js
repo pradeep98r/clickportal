@@ -55,7 +55,7 @@ const Step1 = () => {
             <div className="col-lg-5 ">
               <div className="date_col d-flex align-items-center justify-content-between">
                 <DatePicker
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="dd-MMM-yyyy"
                   selected={selectedDate}
                   onChange={(date) => setStartDate(date)}
                   className="form-control"

@@ -59,6 +59,7 @@ const SellerLedger = () => {
 
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
+  
   const toggleTab = (type) => {
     setToggleState(type);
   };
@@ -75,6 +76,7 @@ const SellerLedger = () => {
     }
   };
 
+
   let partyId = 0;
   //Fetch ledger by party Type
   useEffect(() => {
@@ -82,6 +84,7 @@ const SellerLedger = () => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"))
   }, [clickId]);
+
   var [dateValue, setDateValue] = useState();
 
   const [startDate, setStartDate] = useState(new Date());
@@ -89,6 +92,7 @@ const SellerLedger = () => {
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   const [isLoading, setLoading] = useState(true);
+
   const onChangeDate = (dates) => {
     const [start, end] = dates;
     setStartDate(start);
@@ -197,6 +201,12 @@ const SellerLedger = () => {
     setIsOpen(false);
     localStorage.removeItem("partyId");
   };
+  const clearData =()=>{
+    while(sellerDetailed.length>0){
+      sellerDetailed.pop();
+    }
+  }
+ 
   //Fetch Ledger Summary By Date
   const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
@@ -236,6 +246,7 @@ const SellerLedger = () => {
         });
     }
     else {
+      clearData();
       var fromDate = moment(startDate).format("YYYY-MM-DD");
       var toDate = moment(endDate).format("YYYY-MM-DD");
       getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
@@ -806,7 +817,7 @@ const SellerLedger = () => {
                        : "content"
                    }
                  >
-                  {ledgerSummaryByDate.length >0 && ledgerSummaryByDate !==null ? (
+                  {ledgerSummaryByDate.length>0 && ledgerSummaryByDate !==null ? (
                    <table className="table table-bordered ledger-table">
                      {/*ledger-table*/}
                      <thead className="thead-tag">
@@ -868,7 +879,8 @@ const SellerLedger = () => {
                  </div>
                </div>
              )}
-             {toggleAC === "custom" && toggleState === "detailedledger" && (
+             {sellerDetailed.length>0 &&
+             toggleAC === "custom" && toggleState === "detailedledger" ?  (
                <div className="detailedLedger" id="scroll_style">
                  <div
                    id="detailed-ledger"
@@ -878,7 +890,7 @@ const SellerLedger = () => {
                        : "content"
                    }
                  >
-                  {sellerDetailed!==null && sellerDetailed.length>0 ? (
+                  {sellerDetailed.length>0 ? (
                    <table className="table table-bordered ledger-table">
                      <thead className="thead-tag">
                        <tr>
@@ -951,7 +963,8 @@ const SellerLedger = () => {
                   }
                  </div>
                </div>
-             )}
+             ):(<NoDataAvailable />)
+             }
              <div className="modal fade" id="myModal">
                <div className="modal-dialog transporter_modal modal-dialog-centered">
                  <div className="modal-content">

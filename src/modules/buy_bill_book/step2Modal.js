@@ -73,7 +73,7 @@ const Step2Modal = (props) => {
   useEffect(() => {
     fetchData();
     if (props.cropTableEditStatus) {
-    if(props.billEditStatus){
+    if(props.billEditStatus){;
       cropResponseData([...props.cropEditObject]);
     }
       for (var i = 0; i < props.cropEditObject.length; i++) {
@@ -139,9 +139,11 @@ const Step2Modal = (props) => {
     }
   };
 
+  const [updatedItemList, setUpdatedItemList] = useState([]);
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
+    console.log("hello")
     var h = [];
     if (cropData.length > 0) {
       h = cropData.map((item, index) => {
@@ -174,8 +176,23 @@ const Step2Modal = (props) => {
           cropData[index].weight != 0 &&
           cropData[index].rate != 0
         ) {
+          console.log("hello")
           setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
+          setUpdatedItemList(updatedItemList);
+          if(props.billEditStatus){
+            props.slectedCropstableArray[0].lineItems = updatedItemList;
+          } 
+          if (updatedItemList[index].rateType == "kgs") {
+            updatedItemList[index].total =
+              (updatedItemList[index].weight - updatedItemList[index].wastage) *
+              updatedItemList[index].rate;
+          } else {
+            updatedItemList[index].total =
+              (updatedItemList[index].qty - updatedItemList[index].wastage) *
+              updatedItemList[index].rate;
+          }
+          console.log(updatedItemList);
           return cropData[index];
         }
       });
@@ -238,6 +255,7 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem]);
     setunitValue(e.target.value);
+    setUpdatedItemList(updatedItem);
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
@@ -251,6 +269,7 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem1]);
     setweightValue(e.target.value);
+    setUpdatedItemList(updatedItem1);
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
@@ -264,6 +283,7 @@ const Step2Modal = (props) => {
     });
     cropResponseData([...updatedItem2]);
     setwastageValue(e.target.value);
+    setUpdatedItemList(updatedItem2);
     setCropId(id);
   };
   const [selectedCropsData, setSelectedCropsData] = useState([]);
@@ -277,18 +297,13 @@ const Step2Modal = (props) => {
       }
     });
     cropResponseData([...updatedItem3]);
-    if (updatedItem3[index].rateType == "kgs") {
-      updatedItem3[index].total =
-        (updatedItem3[index].weight - updatedItem3[index].wastage) *
-        updatedItem3[index].rate;
-    } else {
-      updatedItem3[index].total =
-        (updatedItem3[index].qty - updatedItem3[index].wastage) *
-        updatedItem3[index].rate;
-    }
+    console.log(updatedItem3)
     setrateValue(e.target.value);
     setCropId(id);
     setSelectedCropsData(updatedItem3);
+    setUpdatedItemList(updatedItem3);
+    
+    console.log(props.billEditStatus,"editStatus");
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItem3;
     } 
@@ -301,16 +316,23 @@ const Step2Modal = (props) => {
     }
     cropResponseData([...cropData, crop]);
   };
+
+  const dummyList = preferedCropsData;
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
+    console.log(index,"index");
     var list = preferedCropsData;
     if (index != -1) {
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj == crop);
-      if (index1 != -1) {
+      console.log(index1,"index1");
+      if (index1 != -1) { 
         list[index1].count -= 1;
-        if(list[index1].count == 0){
-          list.splice(index1,index1);
+        if(dummyList.includes(list[index1]) && list[index1].count == 0){
+          return dummyList;
+        }
+        else{
+            list.splice(index1,1);
         }
       }
     }
@@ -573,7 +595,7 @@ const Step2Modal = (props) => {
                                       <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
-                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                            {cropData[index].bags !==null && cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
                                           </p>
                                           <input
                                             type="checkbox"

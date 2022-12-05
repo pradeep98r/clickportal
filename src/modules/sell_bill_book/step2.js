@@ -130,6 +130,56 @@ const SellbillStep2Modal = (props) => {
     }
   };
  
+  const [updatedItemList, setUpdatedItemList] = useState([]);
+  const [showStep3Modal, setShowStep3Modal] = useState(false);
+  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
+  const addStep3Modal = () => {
+    cropData.map((item, index) => {
+      if(cropData[index].qty == 0){
+        toast.error('Please enter Quantity', {
+          toastId: "error1" 
+        });
+      }
+      else if(cropData[index].weight == 0){
+        toast.error('Please enter weight', {
+          toastId: "error2" 
+        });
+      }
+      else if(cropData[index].rate == 0){
+        toast.error('Please enter rate', {
+          toastId: "error3" 
+        });
+      }
+      else if (
+        setQuantityBasedtable(cropData[index].qtyUnit) &&
+        cropData[index].weight != 0 &&
+        cropData[index].rate != 0
+      ) {
+        return cropData[index];
+      } else if (
+        cropData[index].qty != 0 &&
+        cropData[index].weight != 0 &&
+        cropData[index].rate != 0
+      ) {
+        setShowStep3ModalStatus(true);
+        setShowStep3Modal(true);
+        setUpdatedItemList(updatedItemList);
+        if(props.billEditStatus){
+          props.slectedCropstableArray[0].lineItems = updatedItemList;
+        } 
+        if (updatedItemList[index].rateType == "kgs") {
+          updatedItemList[index].total =
+            (updatedItemList[index].weight - updatedItemList[index].wastage) *
+            updatedItemList[index].rate;
+        } else {
+          updatedItemList[index].total =
+            (updatedItemList[index].qty - updatedItemList[index].wastage) *
+            updatedItemList[index].rate;
+        }
+      }
+    })
+  
+  }; 
   const setQuantityBasedtable = (unitType) => {
     var t = false;
     if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
@@ -175,6 +225,7 @@ const SellbillStep2Modal = (props) => {
    });
    cropResponseData([...updatedItems1]);
     setunitValue(e.target.value);
+    setUpdatedItemList(updatedItems1);
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
@@ -189,6 +240,7 @@ const SellbillStep2Modal = (props) => {
    });
    cropResponseData([...updatedItems2]);
     setweightValue(e.target.value);
+    setUpdatedItemList(updatedItems2);
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
@@ -203,6 +255,7 @@ const SellbillStep2Modal = (props) => {
    });
    cropResponseData([...updatedItems3]);
       setwastageValue(e.target.value);
+      setUpdatedItemList(updatedItems3);
     setCropId(id);
   };
   const [selectedSellbillCropsData, setSelectedCropsData] = useState([]);
@@ -219,47 +272,13 @@ const SellbillStep2Modal = (props) => {
         }
      });
      cropResponseData([...updatedItems4]);
-      if (updatedItems4[index].rateType == "kgs") {
-        updatedItems4[index].total =
-          (updatedItems4[index].weight - updatedItems4[index].wastage) *
-          updatedItems4[index].rate;
-      } else {
-        updatedItems4[index].total =
-          (updatedItems4[index].qty - updatedItems4[index].wastage) *
-          updatedItems4[index].rate;
-      }
-
+      
     setCropId(id);
+    setUpdatedItemList(updatedItems4);
     setSelectedCropsData(updatedItems4);
     if(props.billEditStatus){
       props.slectedCropstableArray[0].lineItems = updatedItems4;
     } 
-  };
-  const [showStep3Modal, setShowStep3Modal] = useState(false);
-  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
-  const addStep3Modal = () => {
-    cropData.map((item, index) => {
-      if(cropData[index].qty == 0){
-        toast.error('Please enter Quantity', {
-          toastId: "error1" 
-        });
-      }
-      else if(cropData[index].weight == 0){
-        toast.error('Please enter weight', {
-          toastId: "error2" 
-        });
-      }
-      else if(cropData[index].rate == 0){
-        toast.error('Please enter rate', {
-          toastId: "error3" 
-        });
-      }
-      else if(cropData[index].qty != 0 && cropData[index].weight != 0 &&cropData[index].rate != 0){
-        setShowStep3ModalStatus(true);
-        setShowStep3Modal(true);
-      }
-    })
-  
   };
   
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
@@ -322,7 +341,8 @@ const SellbillStep2Modal = (props) => {
         list[index1].count -= 1;
         if(list[index1].count == 0){
           console.log(list,index1)
-          list.splice(index1,index1);
+          list.splice(index1,1);
+          // list.splice(index1,index1);
         }
       }
     }
@@ -517,7 +537,8 @@ const SellbillStep2Modal = (props) => {
                                         <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
-                                            {cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                            
+                                            {cropData[index].bags !=null && cropData[index].bags.length> 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
                                           </p>
                                           <input
                                             type="checkbox"

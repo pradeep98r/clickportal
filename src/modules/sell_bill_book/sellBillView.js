@@ -5,11 +5,19 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import moment from "moment/moment";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import edit from "../../assets/images/edit_round.svg";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
     getMandiDetails,
     getSystemSettings,
 } from "../../actions/billCreationService";
 import SellbillStep3Modal from "./step3"; 
+import cancel from "../../assets/images/cancel.svg";
+import { editbuybillApi } from "../../actions/billCreationService";
+import { ToastContainer, toast } from "react-toastify";
+import $ from "jquery";
+import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
+import close from "../../assets/images/close.svg";
+
 const SellBillView = () => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.clickId;
@@ -19,10 +27,22 @@ const SellBillView = () => {
     const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
     const [billSettingResponse, billSettingData] = useState([]);
     console.log(singleBillData)
+    const [displayCancel, setDisplayCancel] = useState(false);
+    const navigate = useNavigate();
+
     useEffect(() => {
+        cancelBillStatus();
         getBusinessDetails();
         getBuyBillsById();
     }, []);
+
+    const cancelBillStatus = () =>{
+        if(singleBillData.billStatus === "CANCELLED"){
+          setDisplayCancel(true);
+        }else{
+          setDisplayCancel(displayCancel)
+        }
+      }
     const getBusinessDetails = () => {
         getMandiDetails(clickId)
             .then((response) => {
@@ -330,6 +350,83 @@ const SellBillView = () => {
         setShowStep3ModalStatus(true);
               setShowStep3Modal(true);
       };
+      const cancelBill = (itemVal)=>{
+        $("#cancelBill").modal("hide");
+        setDisplayCancel(!displayCancel);
+        cancelbillApiCall();
+      }
+      const editBillRequestObj = 
+        {
+            action: "CANCEL",
+            billAttributes: {
+            actualPayRecieevable: singleBillData.actualReceivable,
+            advance: singleBillData.advance,
+            billDate: singleBillData.billDate,
+            cashRcvd: singleBillData.cashRcvd,
+            comm: singleBillData.comm,
+            commIncluded: singleBillData.commIncluded,
+            comments: singleBillData.comments,
+            // customFields: [
+            //   {
+            //     "comments": "string",
+            //     "fee": 0,
+            //     "field": "string",
+            //     "fieldName": "string",
+            //     "fieldType": "string",
+            //     "less": true
+            //   }
+            // ],
+            govtLevies: singleBillData.govtLevies,
+            grossTotal: singleBillData.grossTotal,
+            labourCharges: singleBillData.labourCharges,
+            less: singleBillData.less,
+            mandiFee: singleBillData.mandiData,
+            misc: singleBillData.misc,
+            otherFee: singleBillData.misc,
+            outStBal: singleBillData.outStBal,
+            paidTo: 0,
+            partyId: singleBillData.buyerId,
+            rrent: singleBillData.rent,
+            rtComm: singleBillData.rtComm,
+            rtCommIncluded: singleBillData.rtCommIncluded,
+            totalPayRecieevable: singleBillData.totalReceivable,
+            transportation: singleBillData.transportation,
+            transporterId: singleBillData.transporterId,
+            },
+            billId: singleBillData.billId,
+            billType: "SELL",
+            caBSeq: singleBillData.caBSeq,
+            caId: clickId,
+            lineItems: singleBillData.lineItems,
+            updatedBy: 0,
+            updatedOn: "",
+            writerId: 0
+        }
+      const cancelbillApiCall = () =>{
+        editbuybillApi(editBillRequestObj).then(
+          (response) => {
+            if (response.data.status.type === "SUCCESS") {
+              toast.success(response.data.status.message, {
+                toastId: "success1",
+              });
+              console.log(editBillRequestObj,"edit bill request");
+              console.log(response.data,"edit bill")
+              navigate("/sellbillbook");
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
+            });
+          }
+        );
+      }
+      const handleCheckEvent = () => {
+        $("#cancelBill").modal("show");
+      };
+      const closePopup = () => {
+        $("#cancelBill").modal("hide");
+      };
     return (
         <div className="main_div_padding">
             <div className="container-fluid px-0">
@@ -434,6 +531,14 @@ const SellBillView = () => {
                                     </div>
                                 </div>
                                 {/* table */}
+                                <div className="row">
+                                    <div className="col-lg-8"></div>
+                                    <div className="col-lg-4 stamp_img">
+                                        {displayCancel&&
+                                        <img src={cancel_bill_stamp} alt="stammp_img" />
+                                    }
+                                    </div>
+                                </div>
                                 <table className="table table-bordered bill_view mb-0">
                                     <thead>
                                         <tr>
@@ -741,14 +846,34 @@ const SellBillView = () => {
                                 </div>
                             </div>
                             <div className="hr-line"></div>
-                            <div className="d-flex more-info">
-                <img
-                  src={edit}
-                  alt="img"
-                  className=""
-                  onClick={() => editBill(singleBillData)}
-                />
-              </div>
+                            {
+                                singleBillData.billStatus == 'CANCELLED' ?'' : 
+                                <div>
+                                    <div className="hr-line"></div>
+                                    <div className="d-flex more-info">
+                                    <img
+                                    src={edit}
+                                    alt="img"
+                                    className="mr-3"
+                                    onClick={() => editBill(singleBillData)}
+                                    />
+                                    <img
+                                    src={cancel}
+                                    alt="img"
+                                    className=""
+                                    onClick={handleCheckEvent}
+                                    />
+                                </div>
+                                    </div>
+                            }
+                            {/* <div className="d-flex more-info">
+                                <img
+                                src={edit}
+                                alt="img"
+                                className=""
+                                onClick={() => editBill(singleBillData)}
+                                />
+                            </div> */}
                         </div>
                     </div>
                 </div>
@@ -764,7 +889,81 @@ const SellBillView = () => {
       ) : (
         ""
       )}
+      <div className="modal fade" id="cancelBill">
+        <div className="modal-dialog cancelBill_modal_popup">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header smartboard_modal_header">
+                <h5
+                  className="modal-title header2_text"
+                  id="staticBackdropLabel"
+                >
+                  CANCEL BILL
+                </h5>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  onClick={closePopup}
+                />
+              </div>
+              <div className="modal-body">
+                <div className=" row terms_popup ">
+                  <div className="col-lg-3"></div>
+                  <div className="col-lg-7">
+                  <div className="cancel_img">
+                      <img
+                        src={cancel}
+                        alt="img"
+                        className=""
+                      />
+                    </div>
+                    <div className="cancel_bill">
+                      <p className="cancel_billp">Are you sure you want to cancel the bill</p>
+                    </div>
+                    <div className="col-lg-2"></div>
+                  </div>
+                  
+                </div>
+                <div className="row">
+                  <div className="col-lg-1"></div>
+                  <div className="col-lg-10">
+                  <p className="desc-tag">Please note that cancellation of bill result in ledger adjustments (rol back)
+                        and you will see an adjustment record in ledger for the same bill</p>
+                  </div>
+                  <div className="col-lg-1"></div>
+                </div>
+              </div>
+              <div className="modal-footer pt-0">
+                <div className=" row d-flex">
+                  <div className="col-lg-3 no_btn">
+                    <button
+                      type="button"
+                      className="primary_btn"
+                      onClick={closePopup}
+                      data-bs-dismiss="modal"
+                    >
+                      NO
+                    </button>
+                  </div>
+                  <div className="col-lg-3"></div>
+                  <div className=" col-lg-4 yes_btn">
+                    <button
+                    type="button"
+                    className="primary_btn"
+                    onClick={() => cancelBill(singleBillData)}
+                    data-bs-dismiss="modal"
+                    >
+                    YES
+                    </button>
+                  </div>
+                
+                </div>
+                
+              </div>
+            </div>
         </div>
+      </div>
+    </div>
     )
 }
 
