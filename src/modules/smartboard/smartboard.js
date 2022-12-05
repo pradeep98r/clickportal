@@ -1186,7 +1186,7 @@ const SmartBoard = () => {
                                       </h6>
                                     </div>
                                     <div className="col-lg-6 pr-0">
-                                      <h5 className="">{langFullData.netCommissions} </h5>
+                                      <h5 className="">Net Commission </h5>
                                       <h6 className="">
                                         {commissionEarns.netComm == 0
                                           ? ""

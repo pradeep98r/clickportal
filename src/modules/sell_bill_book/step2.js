@@ -370,7 +370,12 @@ const SellbillStep2Modal = (props) => {
         list[index1].count -= 1;
         if(list[index1].count == 0){
           console.log(list,index1)
-          list.splice(index1,index1);
+          if(props.billEditStatus){
+            list.splice(index1,1);
+          }
+          else{
+            list.splice(index1, index1);
+          }
           // list.splice(index1,index1);
         }
       }
