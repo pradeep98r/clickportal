@@ -538,7 +538,7 @@ const TransportoLedger = () => {
                    </div>
                  </div>
                  <span id="horizontal-line-card"></span>
-                 <div className="d-flex">
+                 <div className="d-flex justify-content-between">
                    <div className="bloc-tabs">
                      <button
                        className={
