@@ -147,7 +147,29 @@ const SmartBoard = () => {
       fromDate = moment(selectedDate).format("YYYY-MM-DD");
       toDate = moment(selectedDate).format("YYYY-MM-DD");
       getSmartBoardResponse(type, fromDate, toDate);
-    } else {
+    } else if (type === "Yearly") {
+      const currentYear = selectedYearDate.getFullYear();
+      const firstDay = new Date(currentYear, 0, 1);
+      const lastDay = new Date(currentYear, 11, 31);
+      fromDate = moment(firstDay).format("YYYY-MM-DD");
+      toDate = moment(lastDay).format("YYYY-MM-DD");
+      getSmartBoardResponse(type, fromDate, toDate);
+    }
+    else if (tabType == "Weekly") {
+      fromDate = weekFirstDate;
+      toDate = weekLastDate;
+      getSmartBoardResponse(type, fromDate, toDate);
+    }
+    else{
+      console.log(selectedMonthDate);
+      var lastDay = new Date(
+        selectedMonthDate.getFullYear(),
+        selectedMonthDate.getMonth() + 1,
+        0
+      );
+      var fromDate = moment(selectedMonthDate).format("YYYY-MM-DD");
+      var toDate = moment(lastDay).format("YYYY-MM-DD")
+      
       getSmartBoardResponse(type, fromDate, toDate);
     }
   };
