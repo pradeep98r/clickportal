@@ -282,12 +282,16 @@ input[type=radio]:checked+label {
 }
 .date_icon_in_modal{
     cursor: pointer;
-    position: relative;
-    top: -85px;
-    left: 330px;
-
+    width: 35px;
+    height: 35px;
+    padding: 5px 5px;
+    //position: relative;
+    //top: -85px;
+    //left: 330px;
 }
-
+.date_popper react-datepicker-wrapper{
+    padding-left: 100px;
+}
 .date_picker_in_modal{
     border: none;
     position: relative;

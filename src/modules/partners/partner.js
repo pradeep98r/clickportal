@@ -189,12 +189,12 @@ const Partner = () => {
   //   file ? URL.createObjectURL(file) :
   
   const onSubmit = () => {
-    console.log(obj);
     if (
       nameField.trim().length !== 0 &&
       mobileNumber.trim().length !== 0 &&
       shortNameField.trim().length !== 0
     ) {
+      console.log("came to edit")
       addEditPartnerApiCall();
     } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
@@ -204,6 +204,7 @@ const Partner = () => {
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
     }
+    console.log("done");
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {

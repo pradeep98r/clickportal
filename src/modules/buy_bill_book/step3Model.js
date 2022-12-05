@@ -1161,7 +1161,7 @@ const Step3Modal = (props) => {
           closeCropModal={() => setShowCropModal(false)}
           cropTableEditStatus={true}
           cropEditObject={cropEditvalArray}
-          billEditStatus={true}
+          billEditStatus={editStatus?true:false}
           slectedCropstableArray={props.slectedCropsArray}
         />
       ) : (
