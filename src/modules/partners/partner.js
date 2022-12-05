@@ -35,14 +35,12 @@ const Partner = () => {
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   const handleDelete = (partyId) => {
     //   const deletePartner = (partyId) => {
     deletePartnerId(partyId, clickId).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
-          console.log(response, "delete partner");
           tabEvent(partyType);
         }
       },
@@ -67,12 +65,10 @@ const Partner = () => {
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
-    if(e.target.value.length < 10){
+    if (e.target.value.length < 10) {
       setRequiredNumberField("Minimum mobile number length should be 10");
-      console.log("het")
-    }
-    else{
-    setRequiredNumberField("");
+    } else {
+      setRequiredNumberField("");
     }
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
@@ -131,13 +127,11 @@ const Partner = () => {
 
   function onChangeValue(event) {
     setradioValue(event.target.value.toUpperCase());
-    console.log(event.target.value);
   }
   const [partnerItem, setPartnerItem] = useState({});
   const [isEdit, setIsEdit] = useState(false);
   const [addeditText, setAddeditText] = useState("Add");
   const editPartner = (partner) => {
-    console.log("hey open", partner);
     setIsEdit(true);
     partnerData.map((item) => {
       if (item.partyId == partner.partyId) {
@@ -153,6 +147,7 @@ const Partner = () => {
         setOpeningBalance(partner.openingBal);
         setradioValue(partner.partyType.toUpperCase());
         setAddeditText("Edit");
+        setStartDate(new Date(partner.openingBalDate));
       }
     });
 
@@ -180,25 +175,30 @@ const Partner = () => {
     profilePic: single_bill,
     seqNum: 0,
     shortName: shortNameField,
-    trader:(radioValue.trim().length !== 0) ? (radioValue == "FARMER" || radioValue == "BUYER") ? false : true : false,
+    trader:
+      radioValue.trim().length !== 0
+        ? radioValue == "FARMER" || radioValue == "BUYER"
+          ? false
+          : true
+        : false,
     vehicleInfo: {
       vehicleNum: "string",
       vehicleType: vehicleType,
     },
   };
   //   file ? URL.createObjectURL(file) :
-  
+
   const onSubmit = () => {
-    console.log(obj);
     if (
       nameField.trim().length !== 0 &&
       mobileNumber.trim().length !== 0 &&
-      shortNameField.trim().length !== 0
+      (partyType === "TRANSPORTER" || partyType == "COOLIE"
+        ? true
+        : shortNameField.trim().length !== 0)
     ) {
       addEditPartnerApiCall();
     } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
-      // alert("hii")
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
@@ -207,6 +207,7 @@ const Partner = () => {
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
+      console.log("ediitt");
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -222,7 +223,6 @@ const Partner = () => {
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            console.log(response, "add partner");
             tabEvent(partyType);
           }
         },
@@ -233,34 +233,32 @@ const Partner = () => {
     }
     closeAddModal();
   };
-  const [valueActive, setIsValueActive] =useState(false);
+  const [valueActive, setIsValueActive] = useState(false);
   const searchItems = (searchValue) => {
     setSearchInput(searchValue);
     if (searchInput !== "") {
       const filteredData = partnerData.filter((item) => {
-        if(item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
+        if (
+          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.partyId
+            .toString()
+            .toLowerCase()
+            .includes(searchInput.toLowerCase())
+        ) {
+          return (
+            item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
             item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
             item.partyId
               .toString()
               .toLowerCase()
               .includes(searchInput.toLowerCase())
-          )
-          {
-            return (
-              item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
-              item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
-              item.partyId
-                .toString()
-                .toLowerCase()
-                .includes(searchInput.toLowerCase())
-            );
-          }
-          else if(searchInput=="" || searchValue===""){
-            return setIsValueActive(false);
-          }
-          else{
-            return setIsValueActive(true);
-          } 
+          );
+        } else if (searchInput == "" || searchValue === "") {
+          return setIsValueActive(false);
+        } else {
+          return setIsValueActive(true);
+        }
       });
       setFilteredResults(filteredData);
     } else {
@@ -269,7 +267,6 @@ const Partner = () => {
   };
   const tabEvent = (type) => {
     setPartyType(type);
-    console.log(type);
     setAadharNumber("");
     setCityVal("");
     setNameField("");
@@ -285,7 +282,6 @@ const Partner = () => {
     setStateVal("");
     getPartnerData(clickId, type)
       .then((response) => {
-        console.log(response.data, "data");
         setPartnerData(response.data.data);
       })
       .catch((error) => {
@@ -295,7 +291,7 @@ const Partner = () => {
   const links = [
     {
       id: 1,
-      name: langFullData.seller,
+      name: "Seller",
       to: "FARMER",
     },
     {
@@ -315,9 +311,8 @@ const Partner = () => {
     },
   ];
   const getPosition = () => {
-    console.log("hey");
+    console.log("pos")
     if (navigator.geolocation) {
-      console.log("heyr");
       navigator.geolocation.getCurrentPosition(showPosition, posError);
     } else {
       alert("Sorry, Geolocation is not supported by this browser.");
@@ -340,7 +335,6 @@ const Partner = () => {
     }
   };
   const showPosition = async (position) => {
-    console.log("hey after", position);
     let lat = position.coords.latitude; // You have obtained latitude coordinate!
     let long = position.coords.longitude; // You have obtained
     await getAddress(lat, long, "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A");
@@ -374,6 +368,7 @@ const Partner = () => {
     $text.attr("class", "form-control");
     $input = $text;
     $("#city-input-wrapper").html($input);
+    console.log(pincodeValue,city,state)
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
@@ -399,6 +394,7 @@ const Partner = () => {
 
     $("#city").val(locality.city);
     $("#state").val(locality.state);
+    console.log(locality)
   }
 
   function geocodeResponseToCityState(geocodeJSON) {
@@ -433,6 +429,7 @@ const Partner = () => {
     } else {
       console.log("error: no address components found");
     }
+    console.log(parsedLocalities)
     return parsedLocalities;
   }
   function fillCityAndStateFields(localities) {
@@ -450,11 +447,9 @@ const Partner = () => {
     $text.attr("class", "form-control");
     $input = $text;
     $("#city-input-wrapper").html($input);
+    console.log(city,locality.state)
   }
-  //   $('#close_modal').on('click',function(){
-  //     $('#staticBackdrop1').modal();
-  // });
-
+  
   $("#MybtnModal").click(function () {
     // setPincode();
     setAadharNumber("");
@@ -476,9 +471,11 @@ const Partner = () => {
   });
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
+    console.log(pincode)
   };
-  
+
   return (
+    
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
@@ -487,7 +484,9 @@ const Partner = () => {
               return (
                 <li key={link.id} className="nav-item ">
                   <a
-                    className={"nav-link" + (partyType == link.to ? ' active' : '')}
+                    className={
+                      "nav-link" + (partyType == link.to ? " active" : "")
+                    }
                     href={"#" + partyType}
                     role="tab"
                     aria-controls="home"
@@ -606,7 +605,17 @@ const Partner = () => {
                       <NoDataAvailable />
                     )}
                   </div>
-                  <div id="search-no-data" style={{display:valueActive && searchInput.length>0?"block":"none"}}><p>No Data Found</p></div>
+                  <div
+                    id="search-no-data"
+                    style={{
+                      display:
+                        valueActive && searchInput.length > 0
+                          ? "block"
+                          : "none",
+                    }}
+                  >
+                    <p>No Data Found</p>
+                  </div>
                 </div>
                 <div className="col-lg-3">
                   <div className="card default_card add_partner">
@@ -624,7 +633,7 @@ const Partner = () => {
                         Add
                         {partyType == langFullData.seller
                           ? "seller"
-                          : partyType.toLowerCase()}
+                          : " " + partyType.toLowerCase()}
                       </button>
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
@@ -642,7 +651,9 @@ const Partner = () => {
             <div className="modal-header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
                 {addeditText}{" "}
-                {partyType == langFullData.farmer.toUpperCase() ? langFullData.seller : partyType.toLowerCase()}
+                {partyType == langFullData.farmer.toUpperCase()
+                  ? langFullData.seller
+                  : partyType.toLowerCase()}
               </h5>
               <img
                 src={close}
@@ -653,15 +664,21 @@ const Partner = () => {
             </div>
             <div className="modal-body partner_model_body" id="scroll_style">
               <form>
-                {partyType == langFullData.farmer.toUpperCase() || partyType == langFullData.buyer.toUpperCase() ? (
+                {partyType == langFullData.farmer.toUpperCase() ||
+                partyType == langFullData.buyer.toUpperCase() ? (
                   <div onChange={onChangeValue}>
                     <input
                       type="radio"
                       value={partyType.toLowerCase()}
                       name="radioValue"
-                      defaultChecked={(radioValue.trim().length !== 0) ? radioValue === partyType.toLowerCase() : partyType.toLowerCase()}
+                      defaultChecked={
+                        radioValue.trim().length !== 0
+                          ? radioValue === partyType.toLowerCase()
+                          : partyType.toLowerCase()
+                      }
                     />{" "}
-                    {partyType.charAt(0).toUpperCase() + partyType.toLowerCase().slice(1)}
+                    {partyType.charAt(0).toUpperCase() +
+                      partyType.toLowerCase().slice(1)}
                     {/* {partyType.toLowerCase()} */}
                     <input
                       type="radio"
@@ -677,11 +694,11 @@ const Partner = () => {
                 )}
                 {partyType == "COOLIE" ? (
                   <div className="row">
-                    <div className="col-lg-12">
+                    <div className="col-lg-12 p-0">
                       <InputField
                         type="text"
                         value={mobileNumber}
-                        label={langFullData.mobileNumber+"*"}
+                        label={langFullData.mobileNumber + "*"}
                         name="mobileNumber"
                         id="mobileNumber"
                         onChange={(e) => {
@@ -692,7 +709,7 @@ const Partner = () => {
                       <InputField
                         type="text"
                         value={nameField}
-                        label={langFullData.name+"*"}
+                        label={"Name" + "*"}
                         name="name"
                         id="inputName"
                         onChange={(e) => {
@@ -724,7 +741,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={mobileNumber}
-                          label={langFullData.mobileNumber+"*"}
+                          label={langFullData.mobileNumber + "*"}
                           name="mobileNumber"
                           id="mobileNumber"
                           onChange={(e) => {
@@ -738,7 +755,7 @@ const Partner = () => {
                         <InputField
                           type="text"
                           value={nameField}
-                          label={langFullData.name+"*"}
+                          label={'Name' + "*"}
                           name="name"
                           id="inputName"
                           onChange={(e) => {
@@ -821,21 +838,21 @@ const Partner = () => {
                     {partyType != "TRANSPORTER" ? (
                       partyType != "COOLIE" ? (
                         <div>
-                         <div>
-                         <InputField
-                            type="text"
-                            value={shortNameField}
-                            label={langFullData.initialsShortName+"*"}
-                            name="name"
-                            onChange={(e) => {
-                              handleShortName(e);
-                            }}
-                          />
-                          <span className="text-danger">{nameError}</span>
-                          <span className="text-danger">
-                            {requiredshortNameField}
-                          </span>
-                           </div>
+                          <div>
+                            <InputField
+                              type="text"
+                              value={shortNameField}
+                              label={langFullData.initialsShortName + "*"}
+                              name="name"
+                              onChange={(e) => {
+                                handleShortName(e);
+                              }}
+                            />
+                            <span className="text-danger">{nameError}</span>
+                            <span className="text-danger">
+                              {requiredshortNameField}
+                            </span>
+                          </div>
                           <label htmlFor="pic" className="input_field">
                             {langFullData.profilePic}
                           </label>
@@ -905,14 +922,14 @@ const Partner = () => {
                             <img src={date_icon} alt="icon" />
                           </span>
                           <div className="date_field partner_date">
-                          <DatePicker
-                            dateFormat="yyyy-MM-dd"
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            className="form-control"
-                            placeholder="Date"
-                            maxDate={new Date()}
-                          />
+                            <DatePicker
+                              dateFormat="yyyy-MM-dd"
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                              className="form-control"
+                              placeholder="Date"
+                              maxDate={new Date()}
+                            />
                           </div>
                         </label>
                       </div>
@@ -1000,7 +1017,7 @@ const Partner = () => {
         <Modal.Footer>
           <Button
             variant="secondary"
-            className="secondary_btn"
+            className="secondary_btn mr-2"
             onClick={handleClose}
           >
             {langFullData.no}
