@@ -147,6 +147,18 @@ const SellbillStep2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
+    localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
+    for(var k = 0; k<cropData.length; k++){
+      if (cropData[k].rateType == "kgs") {
+        cropData[k].total =
+          (cropData[k].weight - cropData[k].wastage) *
+          cropData[k].rate;
+      } else {
+        cropData[k].total =
+          (cropData[k].qty - cropData[k].wastage) *
+          cropData[k].rate;
+      }
+    }
     cropData.map((item, index) => {
       if(cropData[index].qty == 0){
         toast.error('Please enter Quantity', {
@@ -174,7 +186,12 @@ const SellbillStep2Modal = (props) => {
         cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
-        var lineitem = props.billEditStatus
+        
+        setShowStep3ModalStatus(true);
+        setShowStep3Modal(true);
+        setUpdatedItemList(cropData);
+        if(props.billEditStatus){
+          var lineitem = props.billEditStatus
             ? props.cropEditObject
             : JSON.parse(localStorage.getItem("lineItemsEdit"));
           for (var i = 0; i < cropData.length; i++) {
@@ -189,11 +206,6 @@ const SellbillStep2Modal = (props) => {
               cropData[i].status = 1;
             }
         }
-        setShowStep3ModalStatus(true);
-        setShowStep3Modal(true);
-        setUpdatedItemList(cropData);
-        localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
-        if(props.billEditStatus){
           props.slectedCropstableArray[0].lineItems = cropData;
         } 
         if (cropData[index].rateType == "kgs") {
