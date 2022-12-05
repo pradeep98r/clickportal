@@ -27,3 +27,27 @@
 .color_green{
     color: var(--ono-primary)!important;
 }
+.hr-line{
+    width: 100%;
+}
+.edit_crop_item{
+    width: 50px;
+}
+.edit_crop_item_div{
+    height: auto;
+    position: relative;
+}
+.edit_crop_item_len{
+    height: 50px;
+    width: 50px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 100%;
+    position: absolute;
+    left: 50px;
+    p{
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+    }
+}

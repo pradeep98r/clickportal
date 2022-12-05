@@ -37,18 +37,18 @@ export function getLedgerSummary(clickId, partyId, clientId, clientSecret) {
 
 export function getLedgerSummaryByDate(clickId,partyId,fromDate,toDate,clientId,clientSecret){
   return axiosCommon.get(
-    `/account/reports/ledger/summary/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
+    `/reports/ledger/summary/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
 export function getDetailedLedgerByDate(clickId,partyId,fromDate,toDate,clientId,clientSecret){
   return axiosCommon.get(
-    `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
+    `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
 
 export function getSellerDetailedLedgerByDate(clickId,partyId,fromDate,toDate,clientId,clientSecret){
   return axiosCommon.get(
-    `/account/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
+    `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
 
@@ -57,7 +57,7 @@ export function getBuyerDetailedLedger(
   partyId,
 ) {
   return axiosCommon.get(
-    `/account/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
+    `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
 export function getOutstandingBal(clickId,partyId,){
@@ -76,7 +76,7 @@ export function getSellerDetailedLedger(
   partyId,
 ) {
   return axiosCommon.get(
-    `/account/reports/seller-ledger/caId/${clickId}/partyId/${partyId}`
+    `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}`
   );
 }
 export function getPreferredCrops(clickId) {
@@ -114,8 +114,13 @@ export function postbuybillApi(billRequestObj) {
     billRequestObj,  
   );
 }
+export function editbuybillApi(billRequestObj) {
+  return axiosCommon.put(
+    "/click/bills/sell-buy-bill",
+    billRequestObj,  
+  );
+}
 export function postsellbillApi(billRequestObj) {
-  console.log(billRequestObj,"object");
   return axiosCommon.post(
     "/click/bills/sales-bill",
     billRequestObj,  

@@ -14,11 +14,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
-import { postsellbillApi } from "../../actions/billCreationService";
+import {
+  postsellbillApi,
+  editbuybillApi,
+} from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import SellbillStep2Modal from "./step2";
 const SellbillStep3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -43,6 +47,19 @@ const SellbillStep3Modal = (props) => {
   const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
   const [outBal, setOutsBal] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
+  const editStatus = props.billEditStatus;
+  const billEditItem = props.slectedSellCropsArray[0];
+  var step2CropEditStatus = props.step2CropEditStatus;
+  const [commValue, getCommInput] = useState(0);
+  const [retcommValue, getRetCommInput] = useState(0);
+  const [mandifeeValue, getMandiFeeInput] = useState(0);
+  const [transportationValue, getTransportationValue] = useState(0);
+  const [laborChargeValue, getLaborChargeValue] = useState(0);
+  const [rentValue, getRentValue] = useState(0);
+  const [levisValue, getlevisValue] = useState(0);
+  const [otherfeeValue, getOtherfeeValue] = useState(0);
+  const [cashRcvdValue, getCashRcvdValue] = useState(0);
+  const [advancesValue, getAdvancesValue] = useState(0);
   useEffect(() => {
     fetchPertnerData(partyType);
     if (partnerSelectedData != null) {
@@ -50,7 +67,13 @@ const SellbillStep3Modal = (props) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
-    getGrossTotalValue(props.slectedSellCropsArray);
+    getGrossTotalValue(
+      editStatus
+        ? step2CropEditStatus
+          ? props.slectedSellCropsArray[0].lineItems
+          : props.slectedSellCropsArray
+        : props.slectedSellCropsArray
+    );
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
       for (var i = 0; i < response.length; i++) {
@@ -76,7 +99,7 @@ const SellbillStep3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
-              else if(response[i].settingName === "OUT_ST_BALANCE")
+            else if (response[i].settingName === "OUT_ST_BALANCE")
               setOutBalformStatusvalue(true);
           }
 
@@ -89,6 +112,37 @@ const SellbillStep3Modal = (props) => {
         }
       }
     });
+    if (editStatus) {
+      var totalunitvalues = 0;
+      var t = 0;
+      var lineitm = billEditItem.lineItems;
+      for (var i = 0; i < lineitm.length; i++) {
+        totalunitvalues += editStatus
+          ? parseInt(lineitm[i].qty)
+          : parseInt(props.slectedSellCropsArray[i].qty);
+        setTotalUnits(totalunitvalues);
+      }
+      if (!commEdit) {
+        getCommInput((billEditItem.comm / billEditItem.grossTotal) * 100);
+      }
+      if (!rtcommEdit) {
+        getRetCommInput((billEditItem.rtComm / billEditItem.grossTotal) * 100);
+      }
+      if (!transEdit) {
+        getTransportationValue(billEditItem.transportation / totalunitvalues);
+      }
+      if (!labourEdit) {
+        getLaborChargeValue(billEditItem.labourCharges / totalunitvalues);
+      }
+      if (!rentEdit) {
+        getRentValue(billEditItem.rent / totalunitvalues);
+      }
+      if (!mandifEdit) {
+        getMandiFeeInput(
+          (billEditItem.mandiFee / billEditItem.grossTotal) * 100
+        );
+      }
+    }
   }, []);
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
@@ -103,12 +157,14 @@ const SellbillStep3Modal = (props) => {
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
+        console.log(response);
         setpartnerData(response.data.data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  const [partySelectStatus, setPartySelectStatus] = useState(false);
   const partySelect = (item, type) => {
     setGetPartyItem(item);
     if (type == "Transporter") {
@@ -120,6 +176,7 @@ const SellbillStep3Modal = (props) => {
     } else if (type == "Buyer") {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
+      setPartySelectStatus(true);
     }
     setPartnerType(type);
   };
@@ -141,26 +198,26 @@ const SellbillStep3Modal = (props) => {
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   const getGrossTotalValue = (items) => {
+    console.log(items,"items")
     var total = 0;
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
-      total += items[i].totalValue;
-      totalunitvalue += parseInt(items[i].unitValue);
+      total += editStatus
+        ? step2CropEditStatus
+          ? items[i].total
+          : items[i].grossTotal
+        : items[i].total;
+      console.log(total,"total");
+      totalunitvalue += editStatus
+        ? step2CropEditStatus
+          ? parseInt(items[i].qty)
+          : items[i].lineItems[i].qty
+        : parseInt(items[i].qty);
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
   };
-
-  const [commValue, getCommInput] = useState(0);
-  const [retcommValue, getRetCommInput] = useState(0);
-  const [mandifeeValue, getMandiFeeInput] = useState(0);
-  const [transportationValue, getTransportationValue] = useState(0);
-  const [laborChargeValue, getLaborChargeValue] = useState(0);
-  const [rentValue, getRentValue] = useState(0);
-  const [levisValue, getlevisValue] = useState(0);
-  const [otherfeeValue, getOtherfeeValue] = useState(0);
-  const [cashRcvdValue, getCashRcvdValue] = useState(0);
-  const [advancesValue, getAdvancesValue] = useState(0);
+  console.log(grossTotal);
   const getTotalValue = (value) => {
     return (value / 100) * grossTotal;
   };
@@ -196,42 +253,51 @@ const SellbillStep3Modal = (props) => {
         parseInt(advancesValue)
     );
     var finalValue = grossTotal + t;
-    console.log(finalValue)
     var finalVal = 0;
     if (includeComm) {
       finalVal = finalValue + getTotalValue(commValue);
-      console.log(finalVal)
     }
     if (addRetComm) {
       if (includeRetComm) {
-        finalVal = (finalVal + getTotalValue(retcommValue));
-        console.log(finalVal)
+        finalVal = finalVal + getTotalValue(retcommValue);
       }
     } else {
       if (includeRetComm) {
-        finalVal = (finalVal - getTotalValue(retcommValue));
-        console.log(finalVal)
+        finalVal = finalVal - getTotalValue(retcommValue);
       }
     }
-    console.log((parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashRcvdValue),outBal)
-    return ((parseInt(finalVal) + outBal) - parseInt(cashRcvdValue)).toFixed(2);
+    return (parseInt(finalVal) + outBal - parseInt(cashRcvdValue)).toFixed(2);
   };
   var lineItemsArray = [];
-  var cropArray = props.slectedSellCropsArray;
+  // var cropArray = props.slectedSellCropsArray;
+  console.log(editStatus, step2CropEditStatus, "status");
+  var cropArray = editStatus
+    ? step2CropEditStatus
+      ? props.slectedSellCropsArray[0].lineItems
+      : billEditItem.lineItems
+    : props.slectedSellCropsArray;
   var len = cropArray.length;
+  console.log(editStatus, step2CropEditStatus, "statuses");
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
-      qty: cropArray[i].unitValue,
-      qtyUnit: cropArray[i].unitType,
-      rate: cropArray[i].rateValue,
-      total: cropArray[i].totalValue,
-      wastage: cropArray[i].wastageValue,
-      weight: cropArray[i].weightValue,
+      qty: parseInt(cropArray[i].qty),
+      qtyUnit: cropArray[i].qtyUnit,
+      rate: parseInt(cropArray[i].rate),
+      total: cropArray[i].total,
+      wastage: cropArray[i].wastage,
+      weight: parseInt(cropArray[i].weight),
+      id: cropArray[i].id,
+      sellBillId: billEditItem.billId,
+      //bags:[],
+      partyId: billEditItem.buyerId,
+      status: cropArray[i].status,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+      bags: cropArray[i].bags,
     });
   }
+  console.log(lineItemsArray);
   const getActualRcvd = () => {
     var actualRcvd = getTotalBillAmount() - parseInt(cashRcvdValue);
     if (!includeComm) {
@@ -241,7 +307,7 @@ const SellbillStep3Modal = (props) => {
       if (addRetComm) {
         actualRcvd = (actualRcvd - getTotalValue(retcommValue)).toFixed(2);
       } else {
-        actualRcvd=(actualRcvd + getTotalValue(retcommValue)).toFixed(2);
+        actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
       }
     }
     return actualRcvd;
@@ -250,7 +316,7 @@ const SellbillStep3Modal = (props) => {
     actualReceivable: getActualRcvd(),
     advance: advancesValue,
     billDate: partnerSelectDate,
-    billStatus: "",
+    billStatus: "Completed",
     caId: clickId,
     cashRcvd: cashRcvdValue,
     comm: getTotalValue(commValue),
@@ -271,7 +337,7 @@ const SellbillStep3Modal = (props) => {
     rent: getTotalUnits(rentValue),
     rtComm: getTotalValue(retcommValue),
     rtCommIncluded: includeRetComm,
-    totalPayble: getTotalBillAmount() - parseInt(cashRcvdValue),
+    totalReceivable: getTotalBillAmount() - parseInt(cashRcvdValue),
     transportation: getTotalUnits(transportationValue),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
@@ -279,25 +345,155 @@ const SellbillStep3Modal = (props) => {
     writerId: 0,
     timeStamp: "",
   };
+  //console.log(props.slectedSellCropsArray[0].lineItems,"values");
+  const editBillRequestObj = {
+    action: "UPDATE",
+    billAttributes: {
+      actualPayRecieevable: getActualRcvd(),
+      advance: advancesValue,
+      billDate: partnerSelectDate,
+      cashRcvd: cashRcvdValue,
+      comm: getTotalValue(commValue),
+      commIncluded: includeComm,
+      comments: "hi",
+      // customFields: [
+      //   {
+      //     "comments": "string",
+      //     "fee": 0,
+      //     "field": "string",
+      //     "fieldName": "string",
+      //     "fieldType": "string",
+      //     "less": true
+      //   }
+      // ],
+      govtLevies: levisValue,
+      grossTotal: grossTotal,
+      labourCharges: getTotalUnits(laborChargeValue),
+      less: addRetComm,
+      mandiFee: getTotalValue(parseInt(mandifeeValue)),
+      misc: parseInt(otherfeeValue),
+      otherFee: parseInt(otherfeeValue),
+      outStBal: outBal,
+      paidTo: 0,
+      partyId: billEditItem.buyerId,//partnerSelectedData.partyId,
+      rent: getTotalUnits(rentValue),
+      rtComm: getTotalValue(retcommValue),
+      rtCommIncluded: includeRetComm,
+      totalPayRecieevable: getTotalBillAmount() - parseInt(cashRcvdValue),
+      transportation: getTotalUnits(transportationValue),
+      transporterId:
+        transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+    },
+    billId: billEditItem.billId,
+    billType: "SELL",
+    caBSeq: billEditItem.caBSeq,
+    caId: clickId,
+    lineItems: step2CropEditStatus ? lineItemsArray : [],
+    updatedBy: 0,
+    updatedOn: "",
+    writerId: 0,
+  };
   // post bill request api call
   const postsellbill = () => {
-    console.log(sellBillRequestObj);
-    postsellbillApi(sellBillRequestObj).then(
-      (response) => {
-        if (response.data.status.message === "SUCCESS") {
-          toast.success(response.data.status.description, {
-            toastId: "success1",
+    if (editStatus) {
+      console.log("came to edit feature");
+      editbuybillApi(editBillRequestObj).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
+            console.log(editBillRequestObj, "edit bill request");
+            console.log(response);
+            props.closeStep3Modal();
+            navigate("/sellbillbook");
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
           });
-          props.closeStep3Modal();
-          navigate("/sellbillbook");
         }
-      },
-      (error) => {
-        toast.error(error.response.data.status.description, {
-          toastId: "error1",
-        });
-      }
-    );
+      );
+    } else {
+      console.log("came to post feature");
+      postsellbillApi(sellBillRequestObj).then(
+        (response) => {
+          if (response.data.status.message === "SUCCESS") {
+            toast.success(response.data.status.description, {
+              toastId: "success1",
+            });
+            console.log(sellBillRequestObj, "post req");
+            props.closeStep3Modal();
+            navigate("/sellbillbook");
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
+          });
+        }
+      );
+    }
+  };
+  const [commEdit, setCommedit] = useState(false);
+  const commOnchangeEvent = (event) => {
+    getCommInput(event.target.value.replace(/\D/g, ""));
+    setCommedit(true);
+  };
+  const [rtcommEdit, setrtCommedit] = useState(false);
+  const rtcommOnchangeEvent = (event) => {
+    getRetCommInput(event.target.value.replace(/\D/g, ""));
+    setrtCommedit(true);
+  };
+  const [transEdit, settransedit] = useState(false);
+  const transOnchangeEvent = (event) => {
+    getTransportationValue(event.target.value.replace(/\D/g, ""));
+    settransedit(true);
+  };
+  const [labourEdit, setLabouredit] = useState(false);
+  const labourOnchangeEvent = (event) => {
+    getLaborChargeValue(event.target.value.replace(/\D/g, ""));
+    setLabouredit(true);
+  };
+  const [rentEdit, setRentedit] = useState(false);
+  const rentOnchangeEvent = (event) => {
+    getRentValue(event.target.value.replace(/\D/g, ""));
+    setRentedit(true);
+  };
+  const [mandifEdit, setMandifEdit] = useState(false);
+  const mandiOnchangeEvent = (event) => {
+    getMandiFeeInput(event.target.value.replace(/\D/g, ""));
+    setMandifEdit(true);
+  };
+  const [levisEdit, setlevisEdit] = useState(false);
+  const levisOnchangeEvent = (event) => {
+    getlevisValue(event.target.value.replace(/\D/g, ""));
+    setlevisEdit(true);
+  };
+  const [otherFEdit, setotherFEdit] = useState(false);
+  const otherFOnchangeEvent = (event) => {
+    getOtherfeeValue(event.target.value.replace(/\D/g, ""));
+    setotherFEdit(true);
+  };
+  const [cashPaidEdit, setCashPaidEdit] = useState(false);
+  const cashPaidOnchangeEvent = (event) => {
+    getCashRcvdValue(event.target.value.replace(/\D/g, ""));
+    setCashPaidEdit(true);
+  };
+  const [advEdit, setAdvEdit] = useState(false);
+  const advOnchangeEvent = (event) => {
+    getAdvancesValue(event.target.value.replace(/\D/g, ""));
+    setAdvEdit(true);
+  };
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [showCropModalStatus, setShowCropModalStatus] = useState(false);
+  const [cropEditvalArray, setcropEditvalArray] = useState([]);
+  const editCropTable = (cropEditArray) => {
+    step2CropEditStatus = true;
+    setShowCropModalStatus(true);
+    setShowCropModal(true);
+    setcropEditvalArray(cropEditArray);
   };
   return (
     <Modal
@@ -326,102 +522,43 @@ const SellbillStep3Modal = (props) => {
                   <div className="d-flex align-items-center">
                     <img src={single_bill} className="icon_user" />
                     <div>
-                      <h5>{partnerSelectedData.partyName}</h5>
+                      <h5>
+                        {editStatus
+                          ? partySelectStatus
+                            ? partnerSelectedData.partyName
+                            : billEditItem.farmerName
+                          : partnerSelectedData.partyName}
+                      </h5>
                       <h6>
+                        {editStatus
+                          ? partySelectStatus
+                            ? partnerSelectedData.partyType
+                            : billEditItem.partyType
+                          : partnerSelectedData.partyType}{" "}
+                        -{" "}
+                        {editStatus
+                          ? partySelectStatus
+                            ? partnerSelectedData.partyId
+                            : billEditItem.buyerId
+                          : partnerSelectedData.partyId}{" "}
+                        |{" "}
+                        {editStatus
+                          ? partySelectStatus
+                            ? partnerSelectedData.mobile
+                            : billEditItem.mobile
+                          : partnerSelectedData.mobile}
+                      </h6>
+                      {/* <h6>
                         {partnerSelectedData.partyType} -{" "}
                         {partnerSelectedData.partyId} |{" "}
                         {partnerSelectedData.mobile}
-                      </h6>
-                      <p>{partnerSelectedData.address.addressLine}</p>
+                      </h6> */}
+                      <p>{partnerData.buyerAddress}</p>
                     </div>
                   </div>
                 </div>
                 <img src={d_arrow} />
               </div>
-              {partnerDataStatus ? (
-                <div className="partners_div" id="scroll_style">
-                  <div className="d-flex searchparty" role="search">
-                    <input
-                      className="form-control mb-0"
-                      type="search"
-                      placeholder="Search"
-                      aria-label="Search"
-                      onChange={(event) =>
-                        setSearchPartyItem(event.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    {partnerData.length > 0 ? (
-                      <div>
-                        <ul>
-                          {partnerData
-                            .filter((item) => {
-                              if (searchPartyItem === "") {
-                                return item;
-                              } else if (
-                                item.partyName
-                                  .toLowerCase()
-                                  .includes(searchPartyItem.toLowerCase())
-                              ) {
-                                return item;
-                              } else if (
-                                item.mobile
-                                  .toLowerCase()
-                                  .includes(searchPartyItem)
-                              ) {
-                                return item;
-                              } else if (
-                                item.partyId
-                                  .toString()
-                                  .toLowerCase()
-                                  .includes(searchPartyItem)
-                              ) {
-                                return item;
-                              }
-                            })
-                            .map((item) => {
-                              return (
-                                <li
-                                  key={item.partyId}
-                                  onClick={() => partySelect(item, "Buyer")}
-                                  className={
-                                    "nav-item " +
-                                    (item == getPartyItem ? "active_class" : "")
-                                  }
-                                >
-                                  <div className="partner_card">
-                                    <div className="d-flex align-items-center">
-                                      <img
-                                        src={single_bill}
-                                        className="icon_user"
-                                      />
-                                      <div>
-                                        <h5>{item.partyName}</h5>
-                                        <h6>
-                                          {item.trader
-                                            ? "TRADER"
-                                            : item.partyType}{" "}
-                                          - {item.partyId} | {item.mobile}
-                                        </h6>
-                                        <p>{item.address.addressLine}</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              );
-                            })}
-                        </ul>
-                      </div>
-                    ) : (
-                      <p></p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
             </div>
             <div className="date_sec date_step3">
               <div className="date_col d-flex align-items-center justify-content-between">
@@ -451,7 +588,7 @@ const SellbillStep3Modal = (props) => {
               <div className="transporter_div">
                 <div
                   className="selectparty_field d-flex align-items-center justify-content-between"
-                  onClick={() => partnerClick("Transporter")}
+                  // onClick={() => partnerClick("Transporter")}
                 >
                   <div className="partner_card">
                     <div className="d-flex align-items-center">
@@ -559,10 +696,47 @@ const SellbillStep3Modal = (props) => {
                 )}
               </div>
             ) : (
-              ""
+              <div>
+                {/* <div
+                  className="selectparty_field d-flex align-items-center justify-content-between"
+                  onClick={() => partnerClick("Transporter")}
+                ></div> */}
+              </div>
             )}
             <h5 className="date_sec head_modal">Crop Information </h5>
-            <div className="cropinfo_div">{/* <p>edit</p>  */}</div>
+            <div className="selectparty_field edit_crop_item_div">
+              <div className="d-flex align-items-center justify-content-between">
+                <p className="d-flex align-items-center">
+                  {editStatus ? (
+                    <div className="d-flex">
+                      <img
+                        src={billEditItem.lineItems[0]?.imageUrl}
+                        className="edit_crop_item"
+                      />
+                      <p className="edit_crop_item_len d-flex align-items-center">
+                        <p>{billEditItem.lineItems.length}</p>
+                        <span className="ml-3">Crops</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="d-flex">
+                      <img
+                        src={props.slectedSellCropsArray[0].imageUrl}
+                        className="edit_crop_item"
+                      />
+                      <p className="edit_crop_item_len d-flex align-items-center">
+                        <p>{props.slectedSellCropsArray.length}</p>
+                        <span className="ml-3">Crops</span>
+                      </p>
+                    </div>
+                  )}
+                </p>
+                <p onClick={() => editCropTable(billEditItem.lineItems)}>
+                  Edit
+                </p>
+              </div>
+            </div>
+            {/* <div className="cropinfo_div" onClick={()=>editCropTable(billEditItem.lineItems)}><p>edit</p> </div> */}
           </div>
           <div className="col-lg-6">
             <h5 className="head_modal">Additions/Deductions</h5>
@@ -574,10 +748,20 @@ const SellbillStep3Modal = (props) => {
                 <CommissionCard
                   title="Commission"
                   rateTitle="Default Percentage %"
-                  onChange={(event) =>
-                    getCommInput(event.target.value.replace(/\D/g, ""))
+                  // onChange={(event) =>
+                  //   getCommInput(event.target.value.replace(/\D/g, ""))
+                  // }
+                  // inputText={getTotalValue(commValue)}
+                  onChange={(event) => commOnchangeEvent(event)}
+                  inputText={
+                    editStatus
+                      ? !commEdit
+                        ? step2CropEditStatus
+                          ? getTotalValue(commValue)
+                          : billEditItem.comm
+                        : getTotalValue(commValue)
+                      : getTotalValue(commValue)
                   }
-                  inputText={getTotalValue(commValue)}
                   inputValue={commValue}
                   totalTitle="Total"
                 />
@@ -588,10 +772,20 @@ const SellbillStep3Modal = (props) => {
                 <CommissionCard
                   title="Return Commission"
                   rateTitle="Default Percentage %"
-                  onChange={(event) =>
-                    getRetCommInput(event.target.value.replace(/\D/g, ""))
+                  // onChange={(event) =>
+                  //   getRetCommInput(event.target.value.replace(/\D/g, ""))
+                  // }
+                  // inputText={getTotalValue(retcommValue)}
+                  onChange={(event) => rtcommOnchangeEvent(event)}
+                  inputText={
+                    editStatus
+                      ? !rtcommEdit
+                        ? step2CropEditStatus
+                          ? getTotalValue(retcommValue)
+                          : billEditItem.rtComm
+                        : getTotalValue(retcommValue)
+                      : getTotalValue(retcommValue)
                   }
-                  inputText={getTotalValue(retcommValue)}
                   inputValue={retcommValue}
                   totalTitle="Total"
                 />
@@ -603,12 +797,22 @@ const SellbillStep3Modal = (props) => {
                 <CommonCard
                   title="Transportation"
                   rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) =>
-                    getTransportationValue(
-                      event.target.value.replace(/\D/g, "")
-                    )
+                  // onChange={(event) =>
+                  //   getTransportationValue(
+                  //     event.target.value.replace(/\D/g, "")
+                  //   )
+                  // }
+                  // inputText={getTotalUnits(transportationValue)}
+                  onChange={(event) => transOnchangeEvent(event)}
+                  inputText={
+                    editStatus
+                      ? !transEdit
+                        ? step2CropEditStatus
+                          ? getTotalUnits(transportationValue)
+                          : billEditItem.transportation
+                        : getTotalUnits(transportationValue)
+                      : getTotalUnits(transportationValue)
                   }
-                  inputText={getTotalUnits(transportationValue)}
                   inputValue={transportationValue}
                   totalTitle="Total"
                   unitsTitle="Number of Units"
@@ -621,10 +825,20 @@ const SellbillStep3Modal = (props) => {
                 <CommonCard
                   title="Labour Charges"
                   rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) =>
-                    getLaborChargeValue(event.target.value.replace(/\D/g, ""))
+                  // onChange={(event) =>
+                  //   getLaborChargeValue(event.target.value.replace(/\D/g, ""))
+                  // }
+                  // inputText={getTotalUnits(laborChargeValue)}
+                  onChange={(event) => labourOnchangeEvent(event)}
+                  inputText={
+                    editStatus
+                      ? !labourEdit
+                        ? step2CropEditStatus
+                          ? getTotalUnits(laborChargeValue)
+                          : billEditItem.labourCharges
+                        : getTotalUnits(laborChargeValue)
+                      : getTotalUnits(laborChargeValue)
                   }
-                  inputText={getTotalUnits(laborChargeValue)}
                   inputValue={laborChargeValue}
                   totalTitle="Total"
                   unitsTitle="Number of Units"
@@ -637,10 +851,20 @@ const SellbillStep3Modal = (props) => {
                 <CommonCard
                   title="Rent"
                   rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) =>
-                    getRentValue(event.target.value.replace(/\D/g, ""))
+                  // onChange={(event) =>
+                  //   getRentValue(event.target.value.replace(/\D/g, ""))
+                  // }
+                  // inputText={getTotalUnits(rentValue)}
+                  onChange={(event) => rentOnchangeEvent(event)}
+                  inputText={
+                    editStatus
+                      ? !rentEdit
+                        ? step2CropEditStatus
+                          ? getTotalUnits(rentValue)
+                          : billEditItem.rent
+                        : getTotalUnits(rentValue)
+                      : getTotalUnits(rentValue)
                   }
-                  inputText={getTotalUnits(rentValue)}
                   inputValue={rentValue}
                   totalTitle="Total"
                   unitsTitle="Number of Units"
@@ -653,10 +877,20 @@ const SellbillStep3Modal = (props) => {
                 <CommissionCard
                   title="Mandi Fee"
                   rateTitle="Default Percentage %"
-                  onChange={(event) =>
-                    getMandiFeeInput(event.target.value.replace(/\D/g, ""))
+                  // onChange={(event) =>
+                  //   getMandiFeeInput(event.target.value.replace(/\D/g, ""))
+                  // }
+                  // inputText={getTotalValue(mandifeeValue)}
+                  onChange={(event) => mandiOnchangeEvent(event)}
+                  inputText={
+                    editStatus
+                      ? !mandifEdit
+                        ? step2CropEditStatus
+                          ? getTotalValue(mandifeeValue)
+                          : billEditItem.mandiFee
+                        : getTotalValue(parseInt(mandifeeValue))
+                      : getTotalValue(parseInt(mandifeeValue))
                   }
-                  inputText={getTotalValue(mandifeeValue)}
                   inputValue={mandifeeValue}
                   totalTitle="Total"
                 />
@@ -674,10 +908,14 @@ const SellbillStep3Modal = (props) => {
                         <input
                           type="text"
                           placeholder=""
-                          value={levisValue}
-                          onChange={(event) =>
-                            getlevisValue(event.target.value.replace(/\D/g, ""))
+                          value={
+                            editStatus
+                              ? !levisEdit
+                                ? billEditItem.govtLevies
+                                : levisValue
+                              : levisValue
                           }
+                          onChange={(event) => levisOnchangeEvent(event)}
                         />
                       </div>
                     </div>
@@ -697,12 +935,14 @@ const SellbillStep3Modal = (props) => {
                         <input
                           type="text"
                           placeholder=""
-                          value={otherfeeValue}
-                          onChange={(event) =>
-                            getOtherfeeValue(
-                              event.target.value.replace(/\D/g, "")
-                            )
+                          value={
+                            editStatus
+                              ? !otherFEdit
+                                ? billEditItem.misc
+                                : otherfeeValue
+                              : otherfeeValue
                           }
+                          onChange={(event) => otherFOnchangeEvent(event)}
                         />
                       </div>
                     </div>
@@ -722,12 +962,20 @@ const SellbillStep3Modal = (props) => {
                         <input
                           type="text"
                           placeholder=""
-                          value={cashRcvdValue}
-                          onChange={(event) =>
-                            getCashRcvdValue(
-                              event.target.value.replace(/\D/g, "")
-                            )
+                          value={
+                            editStatus
+                              ? !cashPaidEdit
+                                ? billEditItem.cashRcvd
+                                : cashRcvdValue
+                              : cashRcvdValue
                           }
+                          onChange={(event) => cashPaidOnchangeEvent(event)}
+                          // value={cashRcvdValue}
+                          // onChange={(event) =>
+                          //   getCashRcvdValue(
+                          //     event.target.value.replace(/\D/g, "")
+                          //   )
+                          // }
                         />
                       </div>
                     </div>
@@ -747,12 +995,14 @@ const SellbillStep3Modal = (props) => {
                         <input
                           type="text"
                           placeholder=""
-                          value={advancesValue}
-                          onChange={(event) =>
-                            getAdvancesValue(
-                              event.target.value.replace(/\D/g, "")
-                            )
+                          value={
+                            editStatus
+                              ? !advEdit
+                                ? billEditItem.advance
+                                : advancesValue
+                              : advancesValue
                           }
+                          onChange={(event) => advOnchangeEvent(event)}
                         />
                       </div>
                     </div>
@@ -774,11 +1024,15 @@ const SellbillStep3Modal = (props) => {
                 <h5>Total Bill Amount (₹)</h5>
                 <h6 className="color_green">{getTotalBillAmount()}</h6>
               </div>
-              {outBalformStatusvalue ? <div className="totals_value">
-                <h5>Outstanding Balance (₹)</h5>
-                <h6 className="color_green">{outBal.toFixed(2)}</h6>
-              </div> : ''}
-             
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Outstanding Balance (₹)</h5>
+                  <h6 className="color_green">{outBal.toFixed(2)}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Received</h5>
@@ -787,16 +1041,21 @@ const SellbillStep3Modal = (props) => {
               ) : (
                 ""
               )}
-              {outBalformStatusvalue ? <div className="totals_value">
-                <h5>Final Ledger Balance (₹)</h5>
-                <h6 className="color_green">{getFinalLedgerbalance()}</h6>
-              </div> :  <div className="totals_value">
-                <h5>Total Receivables  (₹)</h5>
-                <h6 className="color_green">{(getTotalBillAmount() - parseInt(cashRcvdValue)).toFixed(
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Final Ledger Balance (₹)</h5>
+                  <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+                </div>
+              ) : (
+                <div className="totals_value">
+                  <h5>Total Receivables (₹)</h5>
+                  <h6 className="color_green">
+                    {(getTotalBillAmount() - parseInt(cashRcvdValue)).toFixed(
                       2
-                    )}</h6>
-              </div>}
-             
+                    )}
+                  </h6>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -809,6 +1068,18 @@ const SellbillStep3Modal = (props) => {
         </div>
       </div>
       <ToastContainer />
+      {showCropModalStatus ? (
+        <SellbillStep2Modal
+          show={showCropModal}
+          closeCropModal={() => setShowCropModal(false)}
+          cropTableEditStatus={true}
+          cropEditObject={cropEditvalArray}
+          billEditStatus={editStatus?true:false}
+          slectedCropstableArray={props.slectedSellCropsArray}
+        />
+      ) : (
+        ""
+      )}
     </Modal>
   );
 };

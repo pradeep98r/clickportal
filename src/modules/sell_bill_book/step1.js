@@ -8,14 +8,11 @@ const SellebillStep1 = () => {
   const [selectedDate, setStartDate] = useState(new Date());
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   useEffect(() => {
-    console.log("step1");
   }, []);
   const [partnerData, setPartnerData] = useState(null);
   const callbackFunction = (childData) => {
-    console.log(childData, "child");
     setPartnerData(childData);
     if(childData.partyType != 'Transporter'){
         localStorage.removeItem("selectedTransporter");
@@ -33,12 +30,10 @@ const SellebillStep1 = () => {
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () =>{
     if(!checked){
-      console.log("checked");
       setChecked(!checked)
       localStorage.setItem("defaultDate",true);
       setStartDate(selectedDate);
     } else{
-      console.log(new Date());
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
@@ -58,7 +53,7 @@ const SellebillStep1 = () => {
             <div className="col-lg-5 ">
               <div className="date_col d-flex align-items-center justify-content-between">
                 <DatePicker
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="dd-MMM-yyyy"
                   selected={selectedDate}
                   onChange={(date) => setStartDate(date)}
                   className="form-control"
@@ -104,6 +99,8 @@ const SellebillStep1 = () => {
           <SellbillStep2Modal
             show={showCropModal}
             closeStep2CropModal={() => setShowCropModal(false)}
+            cropTableEditStatus = {false}
+            billEditStatus={false}
           />
         ) : (
           ""

@@ -49,7 +49,6 @@ const SellBillBook = () => {
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
     } else if (dateTab === "Yearly") {
-      console.log("yearly", dateTab);
       setDateValue(moment(fromDate).format("YYYY"));
     } else {
       setDateValue(
@@ -60,8 +59,6 @@ const SellBillBook = () => {
     }
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response, "billsss");
-        console.log(response.data.data, "billsss");
         setSellBillData(response.data.data);
         setLoading(false);
       })
@@ -116,10 +113,9 @@ const SellBillBook = () => {
         unitType = "S";
         break;
     }
-    console.log(unitType);
     return unitType;
   };
-
+  console.log(sellBillData);
   const [singleBillData, setSingleBillData] = useState([]);
   const [valueActive, setIsValueActive] = useState(false);
 
@@ -127,7 +123,7 @@ const SellBillBook = () => {
     setSelectBill(searchValue);
     if(billItem !== ""){
       const filteredItems = sellBillData.singleBills.filter((item)=>{
-        console.log(item);
+       
         if(
           item.buyerName.toLowerCase().includes(searchValue.toLowerCase()) ||
           item.shortName.toLowerCase().includes(searchValue.toLowerCase())
@@ -143,7 +139,6 @@ const SellBillBook = () => {
         }
       })
       setSingleBillData(filteredItems);
-      console.log(filteredItems,"filteredItems");
     }else{
       setSingleBillData(sellBillData);
     }
@@ -296,7 +291,7 @@ const SellBillBook = () => {
                                           {langFullData.billNo} : {bill.billId}{" "}
                                         </p>
                                         <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
-                                        <p>{bill.billStatus}</p>
+                                        <p style={{color:bill.billStatus == 'COMPLETED'? 'green':'red'}}>{bill.billStatus}</p>
                                       </div>
                                     </div>
                                   </div>
@@ -341,7 +336,7 @@ const SellBillBook = () => {
                                     <div className="row">
                                       <div className="col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
-                                          {bill.totalReceivables}
+                                          {bill.totalReceivable}
                                         </p>
                                       </div>
                                     </div>
@@ -444,7 +439,7 @@ const SellBillBook = () => {
                                       <div className="row">
                                         <div className="col-lg-12 col-sm-12 col last_col">
                                           <p className="crop_name payble_text">
-                                            {bill.totalReceivables}
+                                            {bill.totalReceivable}
                                           </p>
                                         </div>
                                       </div>

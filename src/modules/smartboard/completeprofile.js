@@ -11,7 +11,7 @@ import $ from "jquery";
 import { useSelector } from "react-redux";
 import { getAllMarkets } from "../../actions/loginService";
 import search_img from "../../assets/images/search.svg";
-import markets from "../../assets/images/markets_img.png";
+import markets from "../../assets/images/mandi.svg";
 import { Fragment } from "react";
 
 const CompleteProfile = (props) => {
@@ -23,7 +23,7 @@ const CompleteProfile = (props) => {
   const [allMarketsData, setAllMarketsData] = useState([]);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
+  console.log(mandiData);
   useEffect(() => {
     getAllMarkets().then(
       (response) => {
@@ -102,7 +102,7 @@ const CompleteProfile = (props) => {
   const [mobileNumber, setmobileNumber] = useState(
     mandiEditStatus == "true" ? mandiData.mobile : ""
   );
-  const [marketname, setMarketName] = useState("");
+  const [marketname, setMarketName] = useState(mandiEditStatus === "true" ? mandiData.marketName  :"");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
@@ -194,16 +194,18 @@ const CompleteProfile = (props) => {
   const [cityValError, setCityValError] = useState('');
   const [stateValError, setStateValError] = useState('');
   const onSubmit = () => {
+    console.log(pincode,shopNumberField,mandiShortCode,mobileNumber)
     if (
       mandiNameField.trim().length !== 0 &&
         mobileNumber.trim().length !== 0 &&
         mandiShortCode.trim().length !== 0 && 
         shopNumberField.trim().length !==0 && 
         contactName.trim().length !==0 && marketname.trim().length !==0 && 
-        pincode.trim().length !==0
+        pincode.toString().trim().length !==0
         && cityVal.trim().length !==0 && stateVal.trim().length !==0 && 
         streetVillage.trim().length !==0
     ) {
+      console.log("edit api")
       addEditMandiSetupApiCall();
     } else if (mandiNameField.trim().length === 0) {
       setMandiNameError("Please Enter Name");
@@ -220,7 +222,8 @@ const CompleteProfile = (props) => {
     else if(contactName.trim().length === 0) {
       setContactNameError("Please Enter Contact Name");
     }
-    else if(pincode.trim().length === 0){
+    
+    else if(pincode.toString().trim().length === 0){
       setPincodeError("Please enter pincode")
     }
     else if(cityVal.trim().length === 0){
@@ -259,12 +262,14 @@ const CompleteProfile = (props) => {
   };
   const addEditMandiSetupApiCall = () => {
     if (mandiEditStatus == "true") {
+      console.log("edi mandi")
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "update partner");
             toastr.success(response.data.status.message);
             localStorage.setItem("submitStatus", true);
+            props.close();
           }
         },
         (error) => {
@@ -281,6 +286,7 @@ const CompleteProfile = (props) => {
               "businessCreatedStatus",
               response.data.status.message
             );
+            props.close();
           }
         },
         (error) => {

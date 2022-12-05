@@ -19,7 +19,6 @@ import { Link } from "react-router-dom";
 
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
-console.log(langFullData);
 class SideNavigation extends Component {
   state = { isActive: false };
 
@@ -138,11 +137,11 @@ class SideNavigation extends Component {
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);
   };
+
   getPathsId = () => {
     var id = 1;
     var linkPath = localStorage.getItem("LinkPath");
     //console.log(localStorage.getItem("LinkPath"));
-    
     // if(linkPath === "/"){
     //   id=1;
     // }

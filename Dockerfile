@@ -4,7 +4,7 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
-RUN npm install --no-audit
+RUN npm install --force
 #    && \
 #    npm audit fix --force
 #-g npm@7.18.1 \

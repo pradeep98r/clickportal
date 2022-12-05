@@ -147,7 +147,29 @@ const SmartBoard = () => {
       fromDate = moment(selectedDate).format("YYYY-MM-DD");
       toDate = moment(selectedDate).format("YYYY-MM-DD");
       getSmartBoardResponse(type, fromDate, toDate);
-    } else {
+    } else if (type === "Yearly") {
+      const currentYear = selectedYearDate.getFullYear();
+      const firstDay = new Date(currentYear, 0, 1);
+      const lastDay = new Date(currentYear, 11, 31);
+      fromDate = moment(firstDay).format("YYYY-MM-DD");
+      toDate = moment(lastDay).format("YYYY-MM-DD");
+      getSmartBoardResponse(type, fromDate, toDate);
+    }
+    else if (tabType == "Weekly") {
+      fromDate = weekFirstDate;
+      toDate = weekLastDate;
+      getSmartBoardResponse(type, fromDate, toDate);
+    }
+    else{
+      console.log(selectedMonthDate);
+      var lastDay = new Date(
+        selectedMonthDate.getFullYear(),
+        selectedMonthDate.getMonth() + 1,
+        0
+      );
+      var fromDate = moment(selectedMonthDate).format("YYYY-MM-DD");
+      var toDate = moment(lastDay).format("YYYY-MM-DD")
+      
       getSmartBoardResponse(type, fromDate, toDate);
     }
   };
@@ -277,6 +299,23 @@ const SmartBoard = () => {
     localStorage.removeItem("mandiEditStatus");
     localStorage.setItem("mandiEditStatus", false);
   };
+
+  const handleLinks = (path)=>{
+    console.log(path)
+    if(path === '/sellbillbook'){
+      localStorage.setItem("LinkId", 3);
+      localStorage.setItem("LinkPath", "/sellbillbook");
+    } else if(path === '/buy_bill_book'){
+      localStorage.setItem("LinkId", 4);
+      localStorage.setItem("LinkPath", "/buy_bill_book");
+    } else if(path === '/buyerledger'){
+      localStorage.setItem("LinkId", 5);
+      localStorage.setItem("LinkPath", "/buyerledger");
+    } else{
+      localStorage.setItem("LinkId", 6);
+      localStorage.setItem("LinkPath", "/sellerledger");
+    }
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -418,7 +457,7 @@ const SmartBoard = () => {
                                           ) : (
                                             <a
                                               id="buyer-link"
-                                              href="/buyerledger"
+                                              href="/buyerledger" onClick={()=>{handleLinks("/buyerledger")}}
                                             >
                                               {langFullData.seeBuyerLedger}
                                             </a>
@@ -480,7 +519,7 @@ const SmartBoard = () => {
                                             0 ? (
                                             ""
                                           ) : (
-                                            <a href="/sellerledger">
+                                            <a href="/sellerledger" onClick={()=>{handleLinks("/sellerledger")}}>
                                               {langFullData.seeSellerLedger}
                                             </a>
                                           )}
@@ -1147,7 +1186,7 @@ const SmartBoard = () => {
                                       </h6>
                                     </div>
                                     <div className="col-lg-6 pr-0">
-                                      <h5 className="">{langFullData.netCommissions} </h5>
+                                      <h5 className="">Net Commission </h5>
                                       <h6 className="">
                                         {commissionEarns.netComm == 0
                                           ? ""
@@ -1180,7 +1219,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     {langFullData.salesBillBook}
                                   </h4>
-                                  <Link to="/sellbillbook">
+                                  <Link to="/sellbillbook" onClick={()=>{handleLinks("/sellbillbook")}}>
                                     <OutlineButton text={langFullData.addSalesBill} />
                                   </Link>
                                 </div>
@@ -1188,7 +1227,7 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     {langFullData.buyBillBook}
                                   </h4>
-                                  <Link to="/buy_bill_book">
+                                  <Link to="/buy_bill_book" onClick={()=>{handleLinks("/buy_bill_book")}}>
                                     <OutlineButton text={langFullData.addPurchaseBill} />
                                   </Link>
                                 </div>

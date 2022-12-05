@@ -55,7 +55,7 @@ const Step1 = () => {
             <div className="col-lg-5 ">
               <div className="date_col d-flex align-items-center justify-content-between">
                 <DatePicker
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="dd-MMM-yyyy"
                   selected={selectedDate}
                   onChange={(date) => setStartDate(date)}
                   className="form-control"
@@ -101,6 +101,8 @@ const Step1 = () => {
           <Step2Modal
             show={showCropModal}
             closeCropModal={() => setShowCropModal(false)}
+            cropTableEditStatus = {false}
+            billEditStatus={false}
           />
         ) : (
           ""

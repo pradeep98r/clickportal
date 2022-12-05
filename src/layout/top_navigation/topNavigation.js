@@ -9,7 +9,6 @@ import React, { useState, useEffect } from "react";
 function TopNavigation() {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
 
   const linkValue = localStorage.getItem("LinkId");
   var linkPath = localStorage.getItem("LinkPath");
@@ -133,7 +132,7 @@ function TopNavigation() {
                 </form> */}
               </div>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <a className="nav-link" href="#">
                 <img src={help} alt="icon" />
               </a>
@@ -142,7 +141,7 @@ function TopNavigation() {
               <a className="nav-link bell_icon" href="#">
                 <img src={bell} alt="icon" />
               </a>
-            </li>
+            </li> */}
             <li className="nav-item">
               <div className="dropdown">
                 <div

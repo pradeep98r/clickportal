@@ -142,7 +142,7 @@ input[type=radio]:checked+label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 203px);
+    height: calc(100vh - 230px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -172,7 +172,6 @@ input[type=radio]:checked+label {
 .recordbtns-style{
     position: relative;
     top: 17px;
-    padding-left: 390px;
 }
 .add-img{
     border:1px solid red;
@@ -282,12 +281,16 @@ input[type=radio]:checked+label {
 }
 .date_icon_in_modal{
     cursor: pointer;
-    position: relative;
-    top: -85px;
-    left: 330px;
-
+    width: 35px;
+    height: 35px;
+    padding: 5px 5px;
+    //position: relative;
+    //top: -85px;
+    //left: 330px;
 }
-
+.date_popper react-datepicker-wrapper{
+    padding-left: 100px;
+}
 .date_picker_in_modal{
     border: none;
     position: relative;
@@ -436,6 +439,7 @@ input[type=radio]:checked+label {
     position: relative;
     left: -450px;
     top: 25px;
+    padding-top: 10px;
 }
 #nodata-svg{
     width: 100%;
