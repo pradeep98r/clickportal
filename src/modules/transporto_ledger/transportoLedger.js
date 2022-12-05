@@ -24,7 +24,9 @@ import context from "react-bootstrap/esm/AccordionContext";
 import NoDataAvailable from "../../components/noDataAvailable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { getOutstandingBal } from "../../actions/billCreationService";
 const TransportoLedger = () => {
+
   const [transporter, setTransporter] = useState([{}]);
   const [data, setData] = useState({}, transporter);
   const [search, setSearch] = useState("");
@@ -41,6 +43,7 @@ const TransportoLedger = () => {
 
   const [selectDate, setSelectDate] = useState(new Date());
   const [paidRcvd, setPaidRcvd] = useState(0);
+  const [paidsRcvd, setPaidsRcvd] = useState(0);
   const [comments, setComments] = useState(" ");
   const [paymentMode, setPaymentMode] = useState("CASH");
   //const [recordDisplay, setRecordDisplay]= useState("");
@@ -94,6 +97,13 @@ const TransportoLedger = () => {
       });
   };
 
+  const getOutstandingPaybles = (clickId, partyId)=>{
+    getOutstandingBal(clickId,partyId)
+    .then((response)=>{
+      console.log(response);
+      setPaidRcvd(response.data.data);
+    })
+  }
   // get Inventory Ledger
   const inventoryLedger = (clickId, transId) => {
     getInventoryLedgers(clickId, transId)
@@ -119,6 +129,7 @@ const TransportoLedger = () => {
         localStorage.setItem("transId", JSON.stringify(transId));
         paymentLedger(clickId, id);
         inventoryLedger(clickId, id);
+        getOutstandingPaybles(clickId,id);
         getInventoryRecord();
       } else {
         return <p>Not Found</p>;
@@ -137,23 +148,24 @@ const TransportoLedger = () => {
   const [requiredCondition, setRequiredCondition] = useState("");
 
   const onSubmitRecordPayment = (transId) => {
-    if (paidRcvd < 0) {
+    if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
-    } else if (parseInt(paidRcvd) === 0) {
+    }else if (parseInt(paidsRcvd) > paidRcvd) {
+      setRequiredCondition("Enterd Amount cannot more than outstanding balance"
+        //langFullData.enteredAmountCannotMoreThanOutstandingBalance
+      );
+    }
+     else if (parseInt(paidsRcvd) === 0) {
       setRequiredCondition(langFullData.amountReceivedCannotBeEmpty);
-    } else if (isNaN(paidRcvd)) {
+    } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
     } else if (
-      paidRcvd.trim().length !== 0 &&
-      paidRcvd != 0 &&
-      paidRcvd < payLedger.outStdRcvPayble &&
-      !(paidRcvd < 0)
+      paidsRcvd.trim().length !== 0 &&
+      paidsRcvd != 0 &&
+      paidsRcvd < paidRcvd &&
+      !(paidsRcvd < 0)
     ) {
       addRecordPayment();
-    } else if (paidRcvd > payLedger.outStdRcvPayble) {
-      setRequiredCondition(
-        langFullData.enteredAmountCannotMoreThanOutstandingBalance
-      );
     }
   };
   const addRecordPayment = () => {
@@ -168,6 +180,7 @@ const TransportoLedger = () => {
     postRecordPayment(addRecordData)
       .then((response) => {
         console.log(response.data.data);
+        setOpenTabs(true);
         window.location.reload();
       })
       .catch((error) => {
@@ -214,6 +227,7 @@ const TransportoLedger = () => {
         setError(error);
         console.log(error.message);
       });
+      setOpenTabs(true);
     navigate("/transportoledger");
     setOpenInventory(false);
     localStorage.removeItem("transId");
@@ -231,6 +245,8 @@ const TransportoLedger = () => {
       });
   };
   const closePopup = () => {
+    setPaidsRcvd(0);
+    setRequiredCondition("");
     $("#myModal").modal("hide");
   };
   //transId=JSON.parse(localStorage.getItem('transId'));
@@ -676,8 +692,8 @@ const TransportoLedger = () => {
                            <p id="p-tag">{langFullData.outstandingPayables}</p>
                            <p id="recieve-tag">
                              &#8377;
-                             {payLedger.outStdRcvPayble
-                               ? payLedger.outStdRcvPayble.toFixed(2)
+                             {paidRcvd
+                               ? paidRcvd
                                : 0}
                            </p>
                          </div>
@@ -690,7 +706,7 @@ const TransportoLedger = () => {
                              id="amtRecieved"
                              required
                              onChange={(e) => {
-                               setPaidRcvd(e.target.value);
+                               setPaidsRcvd(e.target.value);
                              }}
                            />
                            <p className="text-valid">{requiredCondition}</p>
@@ -1186,7 +1202,7 @@ const TransportoLedger = () => {
                                    for="inlineRadio2"
                                    id="sacs"
                                  >
-                                   {langData.sacs}
+                                   {langFullData.sacs}
                                  </label>
                                </div>
                                <div className="form-check form-check-inline">
@@ -1271,7 +1287,7 @@ const TransportoLedger = () => {
                            // id="close_modal"
                            /*</div>data-dismiss="modal"*/
                          >
-                           {langFullData.numberOf}
+                           SUBMIT
                          </button>
                        </div>
                      </div>
