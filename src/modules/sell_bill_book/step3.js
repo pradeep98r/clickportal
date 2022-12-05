@@ -157,6 +157,7 @@ const SellbillStep3Modal = (props) => {
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
+        console.log(response);
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -214,7 +215,7 @@ const SellbillStep3Modal = (props) => {
       setTotalUnits(totalunitvalue);
     }
   };
-
+  console.log(partnerData);
   const getTotalValue = (value) => {
     return (value / 100) * grossTotal;
   };
@@ -321,7 +322,7 @@ const SellbillStep3Modal = (props) => {
     commShown: true,
     comments: "hi",
     createdBy: 0,
-    buyerId: partnerSelectedData.partyId,
+    buyerId: partnerData.buyerId,
     govtLevies: levisValue,
     grossTotal: grossTotal,
     labourCharges: getTotalUnits(laborChargeValue),
@@ -372,7 +373,7 @@ const SellbillStep3Modal = (props) => {
       otherFee: parseInt(otherfeeValue),
       outStBal: outBal,
       paidTo: 0,
-      partyId: partnerSelectedData.partyId,
+      partyId: partnerData.buyerId,//partnerSelectedData.partyId,
       rent: getTotalUnits(rentValue),
       rtComm: getTotalValue(retcommValue),
       rtCommIncluded: includeRetComm,
@@ -550,7 +551,7 @@ const SellbillStep3Modal = (props) => {
                         {partnerSelectedData.partyId} |{" "}
                         {partnerSelectedData.mobile}
                       </h6> */}
-                      <p>{partnerSelectedData.address.addressLine}</p>
+                      <p>{partnerData.buyerAddress}</p>
                     </div>
                   </div>
                 </div>

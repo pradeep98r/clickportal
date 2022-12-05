@@ -362,7 +362,7 @@ const Step3Modal = (props) => {
     commShown: true,
     comments: "hi",
     createdBy: 0,
-    farmerId: partnerSelectedData.partyId,
+    farmerId: partnerData.farmerId,//partnerSelectedData.partyId,
     govtLevies: levisValue,
     grossTotal: grossTotal,
     labourCharges: getTotalUnits(laborChargeValue),
@@ -412,7 +412,7 @@ const Step3Modal = (props) => {
       otherFee: parseInt(otherfeeValue),
       outStBal: outBal,
       paidTo: 0,
-      partyId: partnerSelectedData.partyId,
+      partyId: partnerData.farmerId,//partnerSelectedData.partyId,
       rent:getTotalUnits(rentValue),
       rtComm: getTotalValue(retcommValue),
       rtCommIncluded: includeRetComm,
@@ -603,7 +603,7 @@ const Step3Modal = (props) => {
                             : billEditItem.farmerMobile
                           : partnerSelectedData.mobile}
                       </h6>
-                      <p>{partnerSelectedData.address.addressLine}</p>
+                      <p>{partnerData.farmerAddress}</p>
                     </div>
                   </div>
                 </div>
