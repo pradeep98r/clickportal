@@ -14,7 +14,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
-import { postsellbillApi,editbuybillApi } from "../../actions/billCreationService";
+import {
+  postsellbillApi,
+  editbuybillApi,
+} from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
@@ -96,7 +99,7 @@ const SellbillStep3Modal = (props) => {
               setCashFormStatus(true);
             else if (response[i].settingName === "ADVANCE")
               setAdvanceFormStatus(true);
-              else if(response[i].settingName === "OUT_ST_BALANCE")
+            else if (response[i].settingName === "OUT_ST_BALANCE")
               setOutBalformStatusvalue(true);
           }
 
@@ -198,20 +201,19 @@ const SellbillStep3Modal = (props) => {
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
       total += editStatus
-      ? step2CropEditStatus
-        ? items[i].total
-        : items[i].grossTotal
-      : items[i].total;
-    totalunitvalue += editStatus
-      ? step2CropEditStatus
-        ? parseInt(items[i].qty)
-        : items[i].lineItems[i].qty
-      : parseInt(items[i].qty);
+        ? step2CropEditStatus
+          ? items[i].total
+          : items[i].grossTotal
+        : items[i].total;
+      totalunitvalue += editStatus
+        ? step2CropEditStatus
+          ? parseInt(items[i].qty)
+          : items[i].lineItems[i].qty
+        : parseInt(items[i].qty);
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
   };
-
 
   const getTotalValue = (value) => {
     return (value / 100) * grossTotal;
@@ -254,21 +256,25 @@ const SellbillStep3Modal = (props) => {
     }
     if (addRetComm) {
       if (includeRetComm) {
-        finalVal = (finalVal + getTotalValue(retcommValue));
+        finalVal = finalVal + getTotalValue(retcommValue);
       }
     } else {
       if (includeRetComm) {
-        finalVal = (finalVal - getTotalValue(retcommValue));
+        finalVal = finalVal - getTotalValue(retcommValue);
       }
     }
-    return ((parseInt(finalVal) + outBal) - parseInt(cashRcvdValue)).toFixed(2);
+    return (parseInt(finalVal) + outBal - parseInt(cashRcvdValue)).toFixed(2);
   };
   var lineItemsArray = [];
   // var cropArray = props.slectedSellCropsArray;
-  console.log(editStatus,step2CropEditStatus,"status");
-  var cropArray = editStatus ? step2CropEditStatus ? props.slectedSellCropsArray[0].lineItems  :billEditItem.lineItems : props.slectedSellCropsArray;
+  console.log(editStatus, step2CropEditStatus, "status");
+  var cropArray = editStatus
+    ? step2CropEditStatus
+      ? props.slectedSellCropsArray[0].lineItems
+      : billEditItem.lineItems
+    : props.slectedSellCropsArray;
   var len = cropArray.length;
-  console.log(editStatus,step2CropEditStatus,"statuses");
+  console.log(editStatus, step2CropEditStatus, "statuses");
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
@@ -277,15 +283,15 @@ const SellbillStep3Modal = (props) => {
       rate: parseInt(cropArray[i].rate),
       total: cropArray[i].total,
       wastage: cropArray[i].wastage,
-      weight:parseInt(cropArray[i].weight),
-      id:cropArray[i].id,
-      sellBillId:billEditItem.billId,
+      weight: parseInt(cropArray[i].weight),
+      id: cropArray[i].id,
+      sellBillId: billEditItem.billId,
       //bags:[],
-      partyId:billEditItem.buyerId,
-      status:editStatus ? 2 : 0,
+      partyId: billEditItem.buyerId,
+      status: editStatus ? 2 : 0,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
-      bags:cropArray[i].bags
+      bags: cropArray[i].bags,
     });
   }
   console.log(lineItemsArray);
@@ -298,7 +304,7 @@ const SellbillStep3Modal = (props) => {
       if (addRetComm) {
         actualRcvd = (actualRcvd - getTotalValue(retcommValue)).toFixed(2);
       } else {
-        actualRcvd=(actualRcvd + getTotalValue(retcommValue)).toFixed(2);
+        actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
       }
     }
     return actualRcvd;
@@ -337,8 +343,7 @@ const SellbillStep3Modal = (props) => {
     timeStamp: "",
   };
   //console.log(props.slectedSellCropsArray[0].lineItems,"values");
-  const editBillRequestObj = 
-  {
+  const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
       actualPayRecieevable: getActualRcvd(),
@@ -371,9 +376,10 @@ const SellbillStep3Modal = (props) => {
       rent: getTotalUnits(rentValue),
       rtComm: getTotalValue(retcommValue),
       rtCommIncluded: includeRetComm,
-      totalPayRecieevable: (getTotalBillAmount() - parseInt(cashRcvdValue)),
+      totalPayRecieevable: getTotalBillAmount() - parseInt(cashRcvdValue),
       transportation: getTotalUnits(transportationValue),
-      transporterId: transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+      transporterId:
+        transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
     billId: billEditItem.billId,
     billType: "SELL",
@@ -382,50 +388,49 @@ const SellbillStep3Modal = (props) => {
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
     updatedOn: "",
-    writerId: 0
-  }
+    writerId: 0,
+  };
   // post bill request api call
   const postsellbill = () => {
-    if(editStatus)
-    {
+    if (editStatus) {
       console.log("came to edit feature");
-     editbuybillApi(editBillRequestObj).then(
-       (response) => {
-         if (response.data.status.type === "SUCCESS") {
-           toast.success(response.data.status.message, {
-             toastId: "success1",
-           });
-           console.log(editBillRequestObj,"edit bill request");
-           console.log(response);
-           props.closeStep3Modal();
-           navigate("/sellbillbook");
-         }
-       },
-       (error) => {
-         toast.error(error.response.data.status.description, {
-           toastId: "error1",
-         });
-       }
-     );
-    }else{
-      console.log("came to post feature");
-    postsellbillApi(sellBillRequestObj).then(
-      (response) => {
-        if (response.data.status.message === "SUCCESS") {
-          toast.success(response.data.status.description, {
-            toastId: "success1",
+      editbuybillApi(editBillRequestObj).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
+            console.log(editBillRequestObj, "edit bill request");
+            console.log(response);
+            props.closeStep3Modal();
+            navigate("/sellbillbook");
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
           });
-          console.log(sellBillRequestObj,"post req")
-          props.closeStep3Modal();
-          navigate("/sellbillbook");
         }
-      },
-      (error) => {
-        toast.error(error.response.data.status.description, {
-          toastId: "error1",
-        });
-      }
-    );
+      );
+    } else {
+      console.log("came to post feature");
+      postsellbillApi(sellBillRequestObj).then(
+        (response) => {
+          if (response.data.status.message === "SUCCESS") {
+            toast.success(response.data.status.description, {
+              toastId: "success1",
+            });
+            console.log(sellBillRequestObj, "post req");
+            props.closeStep3Modal();
+            navigate("/sellbillbook");
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
+          });
+        }
+      );
     }
   };
   const [commEdit, setCommedit] = useState(false);
@@ -482,7 +487,7 @@ const SellbillStep3Modal = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
-    step2CropEditStatus=true;
+    step2CropEditStatus = true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
@@ -514,13 +519,14 @@ const SellbillStep3Modal = (props) => {
                   <div className="d-flex align-items-center">
                     <img src={single_bill} className="icon_user" />
                     <div>
-                    
-                      <h5>{editStatus
+                      <h5>
+                        {editStatus
                           ? partySelectStatus
                             ? partnerSelectedData.partyName
                             : billEditItem.farmerName
-                          : partnerSelectedData.partyName}</h5>
-                             <h6>
+                          : partnerSelectedData.partyName}
+                      </h5>
+                      <h6>
                         {editStatus
                           ? partySelectStatus
                             ? partnerSelectedData.partyType
@@ -550,90 +556,6 @@ const SellbillStep3Modal = (props) => {
                 </div>
                 <img src={d_arrow} />
               </div>
-              {partnerDataStatus ? (
-                <div className="partners_div" id="scroll_style">
-                  <div className="d-flex searchparty" role="search">
-                    <input
-                      className="form-control mb-0"
-                      type="search"
-                      placeholder="Search"
-                      aria-label="Search"
-                      onChange={(event) =>
-                        setSearchPartyItem(event.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    {partnerData.length > 0 ? (
-                      <div>
-                        <ul>
-                          {partnerData
-                            .filter((item) => {
-                              if (searchPartyItem === "") {
-                                return item;
-                              } else if (
-                                item.partyName
-                                  .toLowerCase()
-                                  .includes(searchPartyItem.toLowerCase())
-                              ) {
-                                return item;
-                              } else if (
-                                item.mobile
-                                  .toLowerCase()
-                                  .includes(searchPartyItem)
-                              ) {
-                                return item;
-                              } else if (
-                                item.partyId
-                                  .toString()
-                                  .toLowerCase()
-                                  .includes(searchPartyItem)
-                              ) {
-                                return item;
-                              }
-                            })
-                            .map((item) => {
-                              return (
-                                <li
-                                  key={item.partyId}
-                                  onClick={() => partySelect(item, "Buyer")}
-                                  className={
-                                    "nav-item " +
-                                    (item == getPartyItem ? "active_class" : "")
-                                  }
-                                >
-                                  <div className="partner_card">
-                                    <div className="d-flex align-items-center">
-                                      <img
-                                        src={single_bill}
-                                        className="icon_user"
-                                      />
-                                      <div>
-                                        <h5>{item.partyName}</h5>
-                                        <h6>
-                                          {item.trader
-                                            ? "TRADER"
-                                            : item.partyType}{" "}
-                                          - {item.partyId} | {item.mobile}
-                                        </h6>
-                                        <p>{item.address.addressLine}</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              );
-                            })}
-                        </ul>
-                      </div>
-                    ) : (
-                      <p></p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
             </div>
             <div className="date_sec date_step3">
               <div className="date_col d-flex align-items-center justify-content-between">
@@ -663,7 +585,7 @@ const SellbillStep3Modal = (props) => {
               <div className="transporter_div">
                 <div
                   className="selectparty_field d-flex align-items-center justify-content-between"
-                  onClick={() => partnerClick("Transporter")}
+                  // onClick={() => partnerClick("Transporter")}
                 >
                   <div className="partner_card">
                     <div className="d-flex align-items-center">
@@ -771,27 +693,45 @@ const SellbillStep3Modal = (props) => {
                 )}
               </div>
             ) : (
-              ""
+              <div>
+                {/* <div
+                  className="selectparty_field d-flex align-items-center justify-content-between"
+                  onClick={() => partnerClick("Transporter")}
+                ></div> */}
+              </div>
             )}
             <h5 className="date_sec head_modal">Crop Information </h5>
             <div className="selectparty_field edit_crop_item_div">
-            <div className="d-flex align-items-center justify-content-between">
-              <p className="d-flex align-items-center">
-                {editStatus ?(
-                  <div className="d-flex">
-                  <img src={billEditItem.lineItems[0]?.imageUrl} className="edit_crop_item"/>
-                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
-                  </div>
-                ):(
-                  <div className="d-flex">
-                  <img src={props.slectedCropsArray[0].imageUrl} className="edit_crop_item"/>
-                  <p className="edit_crop_item_len d-flex align-items-center"><p>{props.slectedCropsArray.length}</p><span className="ml-3">Crops</span></p> 
-                  </div>
-                )
-                }
-              </p>
-              <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
-            </div>
+              <div className="d-flex align-items-center justify-content-between">
+                <p className="d-flex align-items-center">
+                  {editStatus ? (
+                    <div className="d-flex">
+                      <img
+                        src={billEditItem.lineItems[0]?.imageUrl}
+                        className="edit_crop_item"
+                      />
+                      <p className="edit_crop_item_len d-flex align-items-center">
+                        <p>{billEditItem.lineItems.length}</p>
+                        <span className="ml-3">Crops</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="d-flex">
+                      <img
+                        src={props.slectedSellCropsArray[0].imageUrl}
+                        className="edit_crop_item"
+                      />
+                      <p className="edit_crop_item_len d-flex align-items-center">
+                        <p>{props.slectedSellCropsArray.length}</p>
+                        <span className="ml-3">Crops</span>
+                      </p>
+                    </div>
+                  )}
+                </p>
+                <p onClick={() => editCropTable(billEditItem.lineItems)}>
+                  Edit
+                </p>
+              </div>
             </div>
             {/* <div className="cropinfo_div" onClick={()=>editCropTable(billEditItem.lineItems)}><p>edit</p> </div> */}
           </div>
@@ -1081,11 +1021,15 @@ const SellbillStep3Modal = (props) => {
                 <h5>Total Bill Amount (₹)</h5>
                 <h6 className="color_green">{getTotalBillAmount()}</h6>
               </div>
-              {outBalformStatusvalue ? <div className="totals_value">
-                <h5>Outstanding Balance (₹)</h5>
-                <h6 className="color_green">{outBal.toFixed(2)}</h6>
-              </div> : ''}
-             
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Outstanding Balance (₹)</h5>
+                  <h6 className="color_green">{outBal.toFixed(2)}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Received</h5>
@@ -1094,16 +1038,21 @@ const SellbillStep3Modal = (props) => {
               ) : (
                 ""
               )}
-              {outBalformStatusvalue ? <div className="totals_value">
-                <h5>Final Ledger Balance (₹)</h5>
-                <h6 className="color_green">{getFinalLedgerbalance()}</h6>
-              </div> :  <div className="totals_value">
-                <h5>Total Receivables  (₹)</h5>
-                <h6 className="color_green">{(getTotalBillAmount() - parseInt(cashRcvdValue)).toFixed(
+              {outBalformStatusvalue ? (
+                <div className="totals_value">
+                  <h5>Final Ledger Balance (₹)</h5>
+                  <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+                </div>
+              ) : (
+                <div className="totals_value">
+                  <h5>Total Receivables (₹)</h5>
+                  <h6 className="color_green">
+                    {(getTotalBillAmount() - parseInt(cashRcvdValue)).toFixed(
                       2
-                    )}</h6>
-              </div>}
-             
+                    )}
+                  </h6>
+                </div>
+              )}
             </div>
           </div>
         </div>

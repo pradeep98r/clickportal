@@ -571,7 +571,7 @@ const Step3Modal = (props) => {
             <div className="party_div">
               <div
                 className="selectparty_field d-flex align-items-center justify-content-between"
-                onClick={() => partnerClick("Seller")}
+                // onClick={() => partnerClick("Seller")}
               >
                 <div className="partner_card">
                   <div className="d-flex align-items-center">
@@ -609,90 +609,7 @@ const Step3Modal = (props) => {
                 </div>
                 <img src={d_arrow} />
               </div>
-              {partnerDataStatus ? (
-                <div className="partners_div" id="scroll_style">
-                  <div className="d-flex searchparty" role="search">
-                    <input
-                      className="form-control mb-0"
-                      type="search"
-                      placeholder="Search"
-                      aria-label="Search"
-                      onChange={(event) =>
-                        setSearchPartyItem(event.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    {partnerData.length > 0 ? (
-                      <div>
-                        <ul>
-                          {partnerData
-                            .filter((item) => {
-                              if (searchPartyItem === "") {
-                                return item;
-                              } else if (
-                                item.partyName
-                                  .toLowerCase()
-                                  .includes(searchPartyItem.toLowerCase())
-                              ) {
-                                return item;
-                              } else if (
-                                item.mobile
-                                  .toLowerCase()
-                                  .includes(searchPartyItem)
-                              ) {
-                                return item;
-                              } else if (
-                                item.partyId
-                                  .toString()
-                                  .toLowerCase()
-                                  .includes(searchPartyItem)
-                              ) {
-                                return item;
-                              }
-                            })
-                            .map((item) => {
-                              return (
-                                <li
-                                  key={item.partyId}
-                                  onClick={() => partySelect(item, "Seller")}
-                                  className={
-                                    "nav-item " +
-                                    (item == getPartyItem ? "active_class" : "")
-                                  }
-                                >
-                                  <div className="partner_card">
-                                    <div className="d-flex align-items-center">
-                                      <img
-                                        src={single_bill}
-                                        className="icon_user"
-                                      />
-                                      <div>
-                                        <h5>{item.partyName}</h5>
-                                        <h6>
-                                          {item.trader
-                                            ? "TRADER"
-                                            : item.partyType}{" "}
-                                          - {item.partyId} | {item.mobile}
-                                        </h6>
-                                        <p>{item.address.addressLine}</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              );
-                            })}
-                        </ul>
-                      </div>
-                    ) : (
-                      <p></p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
+             
             </div>
             <div className="date_sec date_step3">
               <div className="date_col d-flex align-items-center justify-content-between">

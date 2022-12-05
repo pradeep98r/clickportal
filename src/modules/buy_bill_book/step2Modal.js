@@ -61,7 +61,11 @@ const Step2Modal = (props) => {
             item,
             { count: 0 },
             { cropActive: false },
-            { qtyUnit: "Crates" }
+            { qtyUnit: "Crates" },
+            { weight: 0 },
+          { rate: 0 },
+          { total: 0 }, { wastage: 0 },
+          { qty: 0 },
           );
         });
         setPreferedCropsData([...preferedCropsData, ...response.data.data]);
@@ -333,14 +337,12 @@ const Step2Modal = (props) => {
     if (index != -1) {
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj == crop);
-      console.log(index1,"index1");
-      if (index1 != -1) { 
+      if (index1 != -1) {
         list[index1].count -= 1;
-        if(dummyList.includes(list[index1]) && list[index1].count == 0){
-          return dummyList;
-        }
-        else{
-            list.splice(index1,1);
+        if(list[index1].count == 0){
+          console.log(list,index1)
+          list.splice(index1,index1);
+          // list.splice(index1,index1);
         }
       }
     }

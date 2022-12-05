@@ -59,7 +59,10 @@ const SellbillStep2Modal = (props) => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
         response.data.data.map((item) => {
-          Object.assign(item, { count: 0 }, { cropActive: false }, { qtyUnit: "Crates" }, { bags: [] });
+          Object.assign(item, { count: 0 }, { cropActive: false }, { qtyUnit: "Crates" }, { bags: [], },{ weight: 0 },
+          { rate: 0 },
+          { total: 0 }, { wastage: 0 },
+          { qty: 0 },);
         });
         setPreferedCropsData(response.data.data);
       })
@@ -89,8 +92,10 @@ const SellbillStep2Modal = (props) => {
 
   var arr = [];
   const cropDataFunction = (childData, status) => {
+    console.log(childData)
     if (status === true) {
       var list = preferedCropsData;
+      console.log(childData,list)
       childData.map((i, ind) => {
         var index = list.findIndex((obj) => obj.cropId == i.cropId);
         if (index != -1) {
@@ -341,7 +346,7 @@ const SellbillStep2Modal = (props) => {
         list[index1].count -= 1;
         if(list[index1].count == 0){
           console.log(list,index1)
-          list.splice(index1,1);
+          list.splice(index1,index1);
           // list.splice(index1,index1);
         }
       }
