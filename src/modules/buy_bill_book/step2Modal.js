@@ -154,6 +154,15 @@ const Step2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
+    for (var k = 0; k < cropData.length; k++) {
+      if (cropData[k].rateType == "kgs") {
+        cropData[k].total =
+          (cropData[k].weight - cropData[k].wastage) * cropData[k].rate;
+      } else {
+        cropData[k].total =
+          (cropData[k].qty - cropData[k].wastage) * cropData[k].rate;
+      }
+    }
     var h = [];
     if (cropData.length > 0) {
       h = cropData.map((item, index) => {
@@ -188,39 +197,32 @@ const Step2Modal = (props) => {
           cropData[index].rate != 0
         ) {
           console.log(props.cropEditObject, cropData);
-          var lineitem = props.billEditStatus
-            ? props.cropEditObject
-            : JSON.parse(localStorage.getItem("lineItemsEdit"));
-          for (var i = 0; i < cropData.length; i++) {
-            var index = lineitem.findIndex(
-              (obj) => obj.cropId == cropData[i].cropId
-            );
-            if (index != -1) {
-              cropData[i].status = 2;
-              console.log(cropData[i].status);
-            } else {
-              console.log(cropData[i].status, "else");
-              cropData[i].status = 1;
-            }
-            setShowStep3ModalStatus(true);
-            setShowStep3Modal(true);
-          }
+
           console.log(updatedItemList, cropData, "afet");
           setUpdatedItemList(cropData);
+          setShowStep3ModalStatus(true);
+        setShowStep3Modal(true);
           localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
           if (props.billEditStatus) {
+            var lineitem = props.billEditStatus
+              ? props.cropEditObject
+              : JSON.parse(localStorage.getItem("lineItemsEdit"));
+            for (var i = 0; i < cropData.length; i++) {
+              var index = lineitem.findIndex(
+                (obj) => obj.cropId == cropData[i].cropId
+              );
+              if (index != -1) {
+                cropData[i].status = 2;
+                console.log(cropData[i].status);
+              } else {
+                console.log(cropData[i].status, "else");
+                cropData[i].status = 1;
+              }
+            }
             props.slectedCropstableArray[0].lineItems = cropData;
           }
-          if (cropData[index].rateType == "kgs") {
-            cropData[index].total =
-              (cropData[index].weight - cropData[index].wastage) *
-              cropData[index].rate;
-          } else {
-            cropData[index].total =
-              (cropData[index].qty - cropData[index].wastage) *
-              cropData[index].rate;
-          }
-          console.log(cropData,"step2 crropdata")
+
+          console.log(cropData, "step2 crropdata");
           return cropData[index];
         }
       });

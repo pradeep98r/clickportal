@@ -147,7 +147,7 @@ const SellbillStep2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
-    localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
+  
     for(var k = 0; k<cropData.length; k++){
       if (cropData[k].rateType == "kgs") {
         cropData[k].total =
@@ -186,10 +186,10 @@ const SellbillStep2Modal = (props) => {
         cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
-        
         setShowStep3ModalStatus(true);
         setShowStep3Modal(true);
         setUpdatedItemList(cropData);
+        localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
         if(props.billEditStatus){
           var lineitem = props.billEditStatus
             ? props.cropEditObject
@@ -208,15 +208,16 @@ const SellbillStep2Modal = (props) => {
         }
           props.slectedCropstableArray[0].lineItems = cropData;
         } 
-        if (cropData[index].rateType == "kgs") {
-          cropData[index].total =
-            (cropData[index].weight - cropData[index].wastage) *
-            cropData[index].rate;
-        } else {
-          cropData[index].total =
-            (cropData[index].qty - cropData[index].wastage) *
-            cropData[index].rate;
-        }
+        // if (cropData[index].rateType == "kgs") {
+        //   cropData[index].total =
+        //     (cropData[index].weight - cropData[index].wastage) *
+        //     cropData[index].rate;
+        // } else {
+        //   cropData[index].total =
+        //     (cropData[index].qty - cropData[index].wastage) *
+        //     cropData[index].rate;
+        // }
+        console.log(cropData)
       }
     })
   
@@ -265,6 +266,7 @@ const SellbillStep2Modal = (props) => {
       }
    });
    cropResponseData([...updatedItems1]);
+   
     setunitValue(e.target.value);
     setUpdatedItemList(updatedItems1);
     setCropId(id);
