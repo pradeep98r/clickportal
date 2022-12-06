@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
   import SelectCrop from "../buy_bill_book/selectCrop";
   import SellbillStep3Modal from "./step3";
   import $, { merge } from "jquery";
-import close from "../../assets/images/close.svg";
+  import clo from "../../assets/images/clo.png";
 import SelectBags from "../buy_bill_book/bags";
 var array = [];
 const SellbillStep2Modal = (props) => {
@@ -407,7 +407,7 @@ const SellbillStep2Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.addCrop}
         </h5>
-        <img alt="image" onClick={props.closeStep2CropModal} />
+        <img alt="image" src={clo} onClick={props.closeStep2CropModal} />
       </div>
 
       <div className="modal-body">
@@ -459,9 +459,7 @@ const SellbillStep2Modal = (props) => {
                     >
                     <div className="d-flex crop_table_delete_div">
                       <div className="crop_table_view">
-                        {cropData[index].qtyUnit +
-                          index +
-                          cropData[index].rateType}
+                        
                         {!setQuantityBasedtable(cropData[index].qtyUnit) ? (
                           <table class="table table-bordered">
                             <thead>

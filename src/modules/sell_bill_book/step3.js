@@ -23,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import SellbillStep2Modal from "./step2";
+import clo from "../../assets/images/clo.png";
 const SellbillStep3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -505,7 +506,7 @@ const SellbillStep3Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Additions/Deductions
         </h5>
-        <img alt="image" onClick={props.closeStep3Modal} />
+        <img alt="image" src={clo} onClick={props.closeStep3Modal} />
       </div>
 
       <div className="modal-body">

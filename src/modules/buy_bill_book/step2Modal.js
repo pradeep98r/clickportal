@@ -9,7 +9,7 @@ import copy_icon from "../../assets/images/copy.svg";
 import Step3Modal from "./step3Model";
 import toastr from "toastr";
 import $, { merge } from "jquery";
-import close from "../../assets/images/close.svg";
+import clo from "../../assets/images/clo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
@@ -72,6 +72,9 @@ const Step2Modal = (props) => {
           );
         });
         setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+        // if (props.cropTableEditStatus) {
+        preferedCropsData = response.data.data;
+        // }
       })
       .catch((error) => {
         console.log(error);
@@ -87,6 +90,8 @@ const Step2Modal = (props) => {
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         cropResponseData([...lineIt]);
         setUpdatedItemList(lineIt);
+        setPreferedCropsData([...lineIt]);
+        // preferedCropsData = lineIt;
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
       for (var i = 0; i < cropArr.length; i++) {
@@ -95,7 +100,10 @@ const Step2Modal = (props) => {
           cropArr[i].rateType = "kgs";
         }
         Object.assign(cropArr[i], { count: 1 }, { cropActive: true });
+       
       }
+      console.log('arrFiltered',preferedCropsData);
+
     }
   }, []);
 
@@ -103,14 +111,32 @@ const Step2Modal = (props) => {
   const cropDataFunction = (childData, status) => {
     if (status === true) {
       var list = preferedCropsData;
+      console.log(cropData, "befoore");
       childData.map((i, ind) => {
+        console.log(i, "item");
         var index = list.findIndex((obj) => obj.cropId == i.cropId);
         if (index != -1) {
+          Object.assign(
+            i,
+            { cropActive: true },
+            { cropSelect: "active" },
+            { wastage: 0 },
+            { qty: 0 },
+            { rateType: "kgs" },
+            { weight: 0 },
+            { rate: 0 },
+            { total: 0 },
+            { qtyUnit: "crates" },
+            { checked: false },
+            { bags: [] },
+            { status: 1 }
+          );
           var existedItem = list[index];
           existedItem.count += 1;
           list[index] = existedItem;
+          console.log(arr, "array");
           setPreferedCropsData([...list, ...arr]);
-          cropData.push(list[index]);
+          cropData.push(i);
           cropResponseData([...cropData]);
           Object.assign(
             list[index],
@@ -119,6 +145,7 @@ const Step2Modal = (props) => {
             { addInv: false },
             { status: 1 }
           );
+          console.log(cropData, list[index]);
         } else {
           Object.assign(
             i,
@@ -192,8 +219,8 @@ const Step2Modal = (props) => {
         ) {
           return cropData[index];
         } else if (
-          cropData[index].qty != 0 &&
-          cropData[index].weight != 0 &&
+          // cropData[index].qty != 0 &&
+          // cropData[index].weight != 0 &&
           cropData[index].rate != 0
         ) {
           console.log(props.cropEditObject, cropData);
@@ -201,7 +228,7 @@ const Step2Modal = (props) => {
           console.log(updatedItemList, cropData, "afet");
           setUpdatedItemList(cropData);
           setShowStep3ModalStatus(true);
-        setShowStep3Modal(true);
+          setShowStep3Modal(true);
           localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
           if (props.billEditStatus) {
             var lineitem = props.billEditStatus
@@ -419,7 +446,7 @@ const Step2Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Add Crop Information
         </h5>
-        <img alt="image" onClick={props.closeCropModal} />
+        <img alt="image" src={clo} onClick={props.closeCropModal} />
       </div>
 
       <div className="modal-body">
@@ -477,9 +504,6 @@ const Step2Modal = (props) => {
                     >
                       <div className="d-flex crop_table_delete_div">
                         <div className="crop_table_view">
-                          {cropData[index].qtyUnit +
-                            index +
-                            cropData[index].rateType}
                           {!setQuantityBasedtable(cropData[index].qtyUnit) ? (
                             <table className="table table-bordered">
                               <thead>
