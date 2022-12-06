@@ -177,18 +177,20 @@ const BuyerLedger = () => {
   };
 
   const addRecordPayment = (partyId) => {
+    console.log(partyId)
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("partyId")),
       date: selectDate,
       comments: comments,
-      paidRcvd: paidRcvd,
+      paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
     };
     console.log(selectDate);
     postRecordPayment(addRecordData)
       .then((response) => {
         console.log(response.data.data);
+        setIsOpen(false);
         window.location.reload();
       })
       .catch((error) => {
@@ -199,7 +201,7 @@ const BuyerLedger = () => {
     localStorage.removeItem("partyId");
   };
   //Fetch Ledger Summary By Date
-  const clearDate =()=>{
+  const clearData =()=>{
     while(detailsByDate.length>0){
       detailsByDate.pop();
     }
@@ -247,7 +249,7 @@ const BuyerLedger = () => {
         });
     }
     else {
-      clearDate();
+      clearData();
       var fromDate = moment(startDate).format("YYYY-MM-DD");
       var toDate = moment(endDate).format("YYYY-MM-DD");
       getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
@@ -491,7 +493,7 @@ const BuyerLedger = () => {
                 <p className="pat-tag">Outstanding Recievables:</p>
                 <p className="values-tag">
                   &#8377;
-                  {paidRcvd ? paidRcvd : 0}
+                  {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
                 </p>
               </div>
             </div>

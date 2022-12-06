@@ -338,10 +338,13 @@ const CompleteProfile = (props) => {
   };
   // Dispatching city, state, and zip code to store state
   const setZip = (address) => {
-    let pincode = address.results[0].formatted_address;
-    var pincodeValue = pincode.replace(/\D/g, "");
+    let pincode = address.results[5].formatted_address;
+    var pincodeValue = pincode.replace(/[^\d]/g, "");
+      ///\D/g, '');
+    console.log(pincodeValue);
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[4].short_name;
+    console.log(pincodeValue);
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
@@ -361,6 +364,7 @@ const CompleteProfile = (props) => {
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
     setPincode(zip);
+    setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
@@ -797,7 +801,7 @@ const CompleteProfile = (props) => {
                 }}
               />
               <span className="text-danger">{mandiNameError}</span>
-              <div>
+              {/* <div>
                 <label htmlFor="pic" className="input_field">
                   {langFullData.profilePic}
                 </label>
@@ -825,7 +829,7 @@ const CompleteProfile = (props) => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
               <InputField
                 type="text"
                 value={contactName}

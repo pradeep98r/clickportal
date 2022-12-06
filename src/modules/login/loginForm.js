@@ -12,16 +12,21 @@ import { authActions } from "../../reducers/authSlice";
 import { userInfoActions } from "../../reducers/userInfoSlice";
 import OtpTimer from "otp-timer";
 import { ToastContainer, toast } from 'react-toastify';
+import $ from "jquery";
+import close from "../../assets/images/close.svg";
 import 'react-toastify/dist/ReactToastify.css';
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
   const [mobileNumber, setmobileNumber] = useState("");
   const [otpId, setOtpId] = useState("");
+  const [invalidNumber, setInvalidError] = useState(false);
+
   const handleChange = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
+    setInvalidError(false);
   };
   navigator.geolocation.getCurrentPosition(function (position) {
     setLatValue(position.coords.latitude);
@@ -56,6 +61,7 @@ const LoginForm = () => {
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {
+    <OtpTimer/>
     console.log(obj);
     doLogin(obj).then(
       (response) => {
@@ -67,6 +73,7 @@ const LoginForm = () => {
         }
       },
       (error) => {
+        setInvalidError(true);
         toast.error(error.response.data.status.description,{toastId:'errorr1'});
       }
     );
@@ -84,6 +91,7 @@ const LoginForm = () => {
         if (response.data.status.type === "SUCCESS") {
           setViewOtpForm(true);
           setOtpId(response.data.data.otpReqId);
+          //setInvalidError(invalidNumber);
           toast.success(response.data.status.description, {
             position: "top-right",
             autoClose: 5000,
@@ -99,6 +107,7 @@ const LoginForm = () => {
         }
       },
       (error) => {
+        setInvalidError(true);
         toast.error(error.response.data.status.description,{toastId:"error2"});
       }
     );
@@ -156,6 +165,25 @@ const LoginForm = () => {
     setViewOtpForm(false);
   };
 
+  const conditionsPopUp =() =>{
+    $("#termsAndConditions").modal("show");
+  }
+  const policyPopUp = () =>{
+    $("#privatePolicy").modal("show");
+  }
+  const closePopup = () => {
+    $("#termsAndConditions").modal("hide");
+  };
+  const agreeTerms = () => {
+      $("#termsAndConditions").modal("hide");
+  };
+  const closePrivatePolicy = () =>{
+    $("#privatePolicy").modal("hide");
+  }
+  const agreePrivacy = () =>{
+    $("#privatePolicy").modal("hide");
+  }
+  console.log(invalidNumber);
   return (
     <div>
       <Navigation login_type="login_form" />
@@ -173,7 +201,11 @@ const LoginForm = () => {
                     onChange={(e) => {
                       handleChange(e);
                     }}
-                  />
+                    className={invalidNumber?'':'border-danger'} />
+                  {invalidNumber && <p className="text-danger">
+                     Given Mobile is not valid. Please try with valid mobile Number</p>
+                  }
+
                   <button
                     className="primary_btn"
                     type="submit"
@@ -185,7 +217,7 @@ const LoginForm = () => {
                   <p className="para_margin">
                     By continuing, you agree to Ono’s
                     <br></br>
-                    <a>Conditions of Use</a> and <a>Privacy Policy</a>.
+                    <a onClick={conditionsPopUp}>Conditions of Use</a> and <a onClick={policyPopUp}>Privacy Policy</a>.
                   </p>
                 </form>
               </div>
@@ -229,7 +261,7 @@ const LoginForm = () => {
                   <p className="para_margin">
                     By continuing, you agree to Ono’s
                     <br></br>
-                    <a>Conditions of Use</a> and <a>Privacy Policy</a>.
+                    <a onClick={conditionsPopUp}>Conditions of Use</a> and <a onClick={policyPopUp}>Privacy Policy</a>.
                   </p>
                 </form>
               </div>
@@ -238,6 +270,84 @@ const LoginForm = () => {
         </div>
         <Logo />
         <ToastContainer />
+      </div>
+      <div className="modal fade" id="termsAndConditions">
+          <div className="modal-dialog terms_modal_popup">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header smartboard_modal_header">
+                <h5
+                  className="modal-title header2_text"
+                  id="staticBackdropLabel"
+                >
+                  Terms And Conditions
+                </h5>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  onClick={closePopup}
+                />
+              </div>
+              <div className="modal-body">
+                <div className="terms_popup ">
+                  <iframe
+                    src="https://www.onoark.com/conditions-of-use"
+                    width="100%"
+                    height="480"
+                  ></iframe>
+                </div>
+              </div>
+              <div className="modal-footer pt-0">
+                <button
+                  type="button"
+                  className="primary_btn"
+                  onClick={() => agreeTerms()}
+                  data-bs-dismiss="modal"
+                >
+                  Agree
+                </button>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div className="modal fade" id="privatePolicy">
+          <div className="modal-dialog privatePolicy_modal_popup">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header smartboard_modal_header">
+                <h5
+                  className="modal-title header2_text"
+                  id="staticBackdropLabel"
+                >
+                  Private Policy
+                </h5>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  onClick={closePrivatePolicy}
+                />
+              </div>
+              <div className="modal-body">
+                <div className="terms_popup ">
+                  <iframe
+                    src="https://www.onoark.com/privacy-policy"
+                    width="100%"
+                    height="480"
+                  ></iframe>
+                </div>
+              </div>
+              <div className="modal-footer pt-0">
+                <button
+                  type="button"
+                  className="primary_btn"
+                  onClick={() => agreePrivacy()}
+                  data-bs-dismiss="modal"
+                >
+                  Agree
+                </button>
+              </div>
+            </div>
+          </div>
       </div>
     </div>
   );
