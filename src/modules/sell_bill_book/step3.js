@@ -564,7 +564,7 @@ const SellbillStep3Modal = (props) => {
             <div className="date_sec date_step3">
               <div className="date_col d-flex align-items-center justify-content-between">
                 <DatePicker
-                  dateFormat="yyyy-MM-dd"
+                  dateFormat="dd-MMM-YYYY"
                   selected={selectedDate}
                   onChange={(date) => setStartDate(date)}
                   className="form-control"

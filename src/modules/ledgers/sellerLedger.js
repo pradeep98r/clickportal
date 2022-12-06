@@ -616,7 +616,7 @@ const SellerLedger = () => {
                          &#8377;
                          {summaryData.totalTobePaidRcvd
                            ? summaryData.totalTobePaidRcvd.toFixed(2)
-                           : 0}
+                           : ''}
                        </p>
                      </p>
                    </div>
@@ -627,7 +627,7 @@ const SellerLedger = () => {
                          &#8377;
                          {summaryData.totalRcvdPaid
                            ? summaryData.totalRcvdPaid.toFixed(2)
-                           : 0}
+                           : ''}
                        </p>
                      </p>
                    </div>
@@ -638,7 +638,7 @@ const SellerLedger = () => {
                          &#8377;
                          {summaryData.outStdRcvPayble
                            ? summaryData.outStdRcvPayble.toFixed(2)
-                           : 0}
+                           : ''}
                        </p>
                      </p>
                    </div>
@@ -713,19 +713,19 @@ const SellerLedger = () => {
                                  <p id="p-common">
                                    {item.paidRcvd
                                      ? item.paidRcvd.toFixed(2)
-                                     : 0}
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.tobePaidRcvd
                                      ? item.tobePaidRcvd.toFixed(2)
-                                     : 0}
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : 0}
+                                   {item.balance ? item.balance.toFixed(2) : ''}
                                  </p>
                                </td>
                              </tr>
@@ -787,31 +787,31 @@ const SellerLedger = () => {
                                    {item.itemName}
                                  </p>
                                  <span style={{ fontSize: "13px" }}>
-                                   {item.qty ? item.qty.toFixed(1) : 0}{" "}
-                                   {(item.unit !== null ? item.unit : "")
-                                     .charAt(item)
-                                     .toUpperCase()}
-                                   &nbsp;|&nbsp;{item.kg ? item.kg : 0}
-                                   &nbsp;|&nbsp;{item.rate ? item.rate : 0}
+                                   {item.qty ? item.qty.toFixed(1) : ''}{" "}
+                                   {(item.unit !== null ? item.unit.charAt(item)
+                                     .toUpperCase() + " | " : "")
+                                     }
+                                   {item.kg ? item.kg + " | ": ''}
+                                   {item.rate ? item.rate : ''}
                                  </span>
                                </td>
                                <td className="col-2">
                                  <p>
-                                   {item.recieved
-                                     ? item.recieved.toFixed(2)
-                                     : 0}
+                                   {item.paid
+                                     ? item.paid.toFixed(2)
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-2">
                                  <p id="p-common">
-                                   {item.toBeRecieved
-                                     ? item.toBeRecieved.toFixed(2)
-                                     : 0}
+                                   {item.toBePaid
+                                     ? item.toBePaid.toFixed(2)
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-2">
                                  <span className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : 0}
+                                   {item.balance ? item.balance.toFixed(2) : ''}
                                  </span>
                                </td>
                              </tr>
@@ -897,7 +897,7 @@ const SellerLedger = () => {
                  </div>
                </div>
              )}
-             {sellerDetailed.length>0 &&
+             {
              toggleAC === "custom" && toggleState === "detailedledger" ?  (
                <div className="detailedLedger" id="scroll_style">
                  <div
@@ -944,31 +944,31 @@ const SellerLedger = () => {
                                    {item.itemName}
                                  </p>
                                  <span style={{ fontSize: "13px" }}>
-                                   {item.qty ? item.qty.toFixed(1) : 0}{" "}
-                                   {(item.unit ? item.unit : "")
-                                     .charAt(item)
-                                     .toUpperCase()}
-                                   &nbsp;|&nbsp;{item.kg ? item.kg : 0}
-                                   &nbsp;|&nbsp;{item.rate ? item.rate : 0}
+                                   {item.qty ? item.qty.toFixed(1) : ''}{" "}
+                                   {(item.unit ? item.unit.charAt(item)
+                                     .toUpperCase() + " | " : "")
+                                     }
+                                   {item.kg ? item.kg + " | " : ''}
+                                   {item.rate ? item.rate : ''}
                                  </span>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
-                                   {item.recieved
-                                     ? item.recieved.toFixed(2)
-                                     : 0}
+                                   {item.paid
+                                     ? item.paid.toFixed(2)
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
-                                   {item.toBeRecieved
-                                     ? item.toBeRecieved.toFixed(2)
-                                     : 0}
+                                   {item.toBePaid
+                                     ? item.toBePaid.toFixed(2)
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : 0}
+                                   {item.balance ? item.balance.toFixed(2) : ''}
                                  </p>
                                </td>
                              </tr>
