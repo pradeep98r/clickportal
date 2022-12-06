@@ -618,17 +618,17 @@ const BillView = (props) => {
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
                             <p>
-                              {item.qty == null
+                              {item.qty == null || item.qty == 0
                                 ? ""
                                 : item.qty +
                                   " " +
                                   getCropUnit(item.qtyUnit) +
                                   " | "}
-                              {item.weight == null
+                              {item.weight == null || item.weight == 0
                                 ? ""
                                 : item.weight + " KGS  - "}{" "}
                               <span className="red_text">
-                                {item.wastage == null
+                                {item.wastage == null || item.wastage == 0
                                   ? ""
                                   : item.wastage + " KGS "}
                               </span>
@@ -1082,7 +1082,7 @@ const BillView = (props) => {
                     </div>
                   </div>
                 </div>
-
+                {!status ?(
                 <div className="row out-st-bal align-items-center">
                   <div className="col-lg-5">
                     <div className="d-flex footer-img">
@@ -1121,7 +1121,17 @@ const BillView = (props) => {
                           )}
                     </p>
                   </div>
-                  <div className="col-lg-4">
+                </div>
+                ):(
+                  <div className="row out-st-bal align-items-center">
+                  <div className="col-lg-2">
+                    <div className="d-flex footer-img">
+                      <img src={ono_connect_click} alt="ono_connect" />
+                    </div>
+                  </div>
+                  
+                  <div className="col-lg-3"></div>
+                  <div className="col-lg-5">
                     <p
                       className="out-st"
                       style={{ display: status ? "block" : "none" }}
@@ -1138,6 +1148,7 @@ const BillView = (props) => {
                     </span>
                   </div>
                 </div>
+                )}
                 <div className="row">
                   <div className="col-lg-6">
                     <p className="ono-footer">

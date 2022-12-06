@@ -523,8 +523,8 @@ const TransportoLedger = () => {
                          {langFullData.totalBusiness}{" "}
                          <p className="coloring">
                            &#8377;
-                           {payLedger.totalTobePaidRcvd
-                             ? payLedger.totalTobePaidRcvd.toFixed(2)
+                           {payLedger.totalToBePaid
+                             ? payLedger.totalToBePaid.toFixed(2)
                              : 0}
                          </p>
                        </p>
@@ -534,8 +534,8 @@ const TransportoLedger = () => {
                          {langFullData.totalPaid}
                          <p className="coloring">
                            &#8377;
-                           {payLedger.totalRcvdPaid
-                             ? payLedger.totalRcvdPaid.toFixed(2)
+                           {payLedger.totalPaid
+                             ? payLedger.totalPaid.toFixed(2)
                              : 0}
                          </p>{" "}
                        </p>
@@ -545,8 +545,8 @@ const TransportoLedger = () => {
                        {langFullData.outstandingPayables}
                          <p className="coloring">
                            &#8377;
-                           {payLedger.outStdRcvPayble
-                             ? payLedger.outStdRcvPayble.toFixed(2)
+                           {payLedger.totalOutStandingBalance
+                             ? payLedger.totalOutStandingBalance.toFixed(2)
                              : 0}
                          </p>
                        </p>
@@ -887,19 +887,19 @@ const TransportoLedger = () => {
                                  <p id="p-common">
                                    {item.paidRcvd
                                      ? item.paidRcvd.toFixed(2)
-                                     : 0}
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.toBePaid
                                      ? item.toBePaid.toFixed(2)
-                                     : 0}
+                                     : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : 0}
+                                   {item.balance ? item.balance.toFixed(2) : ''}
                                  </p>
                                </td>
                              </tr>
@@ -958,9 +958,9 @@ const TransportoLedger = () => {
                                  <p id="p-common">
                                    {item.collected
                                      ? item.collected.toFixed(1)
-                                     : 0}
+                                     : ''}
                                       &nbsp;
-                                   {item.unit === "BAGS"
+                                   {item.collected ? item.unit === "BAGS"
                                      ? item.unit.charAt(item).toUpperCase() +
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "BOXES"
@@ -968,14 +968,14 @@ const TransportoLedger = () => {
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "CRATES" || "SACS"
                                      ? item.unit.charAt(item).toUpperCase()
-                                     : ""}
+                                     : "":''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
-                                   {item.given ? item.given.toFixed(1) : 0}
+                                   {item.given ? item.given.toFixed(1) : ''}
                                    &nbsp;
-                                   {item.unit === "BAGS"
+                                   {item.given ? item.unit === "BAGS"
                                      ? item.unit.charAt(0).toUpperCase() +
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "BOXES"
@@ -983,7 +983,7 @@ const TransportoLedger = () => {
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "CRATES" || "SACS"
                                      ? item.unit.charAt(item).toUpperCase()
-                                     : ""}
+                                     : "":''}
                                  </p>
                                </td>
                                <td className="col-3">
@@ -996,7 +996,7 @@ const TransportoLedger = () => {
                                      ? item.bagsBalance.toFixed(1)
                                      : item.unit === "BOXES"
                                      ? item.boxesBalance.toFixed(1)
-                                     : 0}
+                                     : ''}
                                    &nbsp;
                                    {item.unit === "BAGS"
                                      ? item.unit.charAt(0).toUpperCase() +
@@ -1006,7 +1006,7 @@ const TransportoLedger = () => {
                                        item.unit.slice(2, 3).toLowerCase()
                                      : item.unit === "CRATES" || "SACS"
                                      ? item.unit.charAt(item).toUpperCase()
-                                     : ""}
+                                     : ''}
                                  </p>
                                </td>
                              </tr>

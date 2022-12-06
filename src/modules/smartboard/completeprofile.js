@@ -207,6 +207,7 @@ const CompleteProfile = (props) => {
     ) {
       console.log("edit api")
       addEditMandiSetupApiCall();
+      window.location.reload();
     } else if (mandiNameField.trim().length === 0) {
       setMandiNameError("Please Enter Name");
     }
