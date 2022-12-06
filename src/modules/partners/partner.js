@@ -240,9 +240,13 @@ const Partner = () => {
     setSearchInput(searchValue);
     if (searchInput !== "") {
       const filteredData = partnerData.filter((item) => {
+        console.log(item);
         if (
           item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
           item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
+          item.partyId.toString().includes(searchInput.toLowerCase()) ||
+          item.shortName.toLowerCase().includes(searchInput.toLowerCase()) ||
           item.partyId
             .toString()
             .toLowerCase()
@@ -251,6 +255,8 @@ const Partner = () => {
           return (
             item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
             item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
+            item.partyId.toString().includes(searchInput.toLowerCase()) ||
+            item.shortName.toLowerCase().includes(searchInput.toLowerCase()) ||
             item.partyId
               .toString()
               .toLowerCase()
@@ -616,7 +622,8 @@ const Partner = () => {
                           : "none",
                     }}
                   >
-                    <p>No Data Found</p>
+                    <NoDataAvailable />
+                    {/* <p>No Data Found</p> */}
                   </div>
                 </div>
                 <div className="col-lg-3">

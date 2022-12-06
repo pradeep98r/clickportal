@@ -105,3 +105,19 @@
 .writer{
   height: 228px;
 }
+.terms_modal_popup{
+  max-width: 1100px;
+  margin-top: 60px;
+  iframe{
+      border: none;
+  }
+  .modal-header, .modal-footer{
+      border: none;
+  }
+}
+.danger-text{
+  color: red;
+}
+.border-danger{
+  border: 1px solid red;
+}
