@@ -256,9 +256,10 @@ const SellbillStep2Modal = (props) => {
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
   const getQuantityValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItems1 = cropitem.map((item,i) => {
       if (i == index) {
-         return { ...cropitem[i], qty: e.target.value };
+         return { ...cropitem[i], qty: val };
       }
       else{
         cropResponseData([...cropitem]);
@@ -267,14 +268,15 @@ const SellbillStep2Modal = (props) => {
    });
    cropResponseData([...updatedItems1]);
    
-    setunitValue(e.target.value);
+    setunitValue(val);
     setUpdatedItemList(updatedItems1);
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItems2 = cropitem.map((item,i) => {
       if (i == index) {
-         return { ...cropitem[i], weight: e.target.value };
+         return { ...cropitem[i], weight: val };
       }
       else{
         cropResponseData([...cropitem]);
@@ -282,14 +284,15 @@ const SellbillStep2Modal = (props) => {
       }
    });
    cropResponseData([...updatedItems2]);
-    setweightValue(e.target.value);
+    setweightValue(val);
     setUpdatedItemList(updatedItems2);
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItems3 = cropitem.map((item,i) => {
       if (i == index) {
-         return { ...cropitem[i], wastage: e.target.value };
+         return { ...cropitem[i], wastage: val };
       }
       else{
         cropResponseData([...cropitem]);
@@ -297,17 +300,17 @@ const SellbillStep2Modal = (props) => {
       }
    });
    cropResponseData([...updatedItems3]);
-      setwastageValue(e.target.value);
+      setwastageValue(val);
       setUpdatedItemList(updatedItems3);
     setCropId(id);
   };
   const [selectedSellbillCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
-   
-      setrateValue(e.target.value);
+    var val = e.target.value.replace(/\D/g, "");
+      setrateValue(val);
       let updatedItems4 = cropitem.map((item,i) => {
         if (i == index) {
-           return { ...cropitem[i], rate: e.target.value };
+           return { ...cropitem[i], rate: val };
         }
         else{
           cropResponseData([...cropitem]);

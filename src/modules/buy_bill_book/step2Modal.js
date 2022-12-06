@@ -299,59 +299,63 @@ const Step2Modal = (props) => {
   var arr = [];
 
   const getQuantityValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], qty: e.target.value };
+        return { ...cropitem[i], qty: val };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItem]);
-    setunitValue(e.target.value);
+    setunitValue(val);
     setUpdatedItemList(updatedItem);
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], weight: e.target.value };
+        return { ...cropitem[i], weight: val };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItem1]);
-    setweightValue(e.target.value);
+    setweightValue(val);
     setUpdatedItemList(updatedItem1);
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], wastage: e.target.value };
+        return { ...cropitem[i], wastage: val};
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItem2]);
-    setwastageValue(e.target.value);
+    setwastageValue(val);
     setUpdatedItemList(updatedItem2);
     setCropId(id);
   };
   const [selectedCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], rate: e.target.value };
+        return { ...cropitem[i], rate:val };
       } else {
         cropResponseData([...cropitem]);
         return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItem3]);
-    setrateValue(e.target.value);
+    setrateValue(val);
     setCropId(id);
     setSelectedCropsData(updatedItem3);
     setUpdatedItemList(updatedItem3);
