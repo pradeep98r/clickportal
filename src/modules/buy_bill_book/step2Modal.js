@@ -43,6 +43,7 @@ const Step2Modal = (props) => {
       // { unitType:  preferedCrops[index2] }
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
+    console.log(cropData,"crop")
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
@@ -94,14 +95,32 @@ const Step2Modal = (props) => {
         // preferedCropsData = lineIt;
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
-      for (var i = 0; i < cropArr.length; i++) {
-        preferedCropsData.push(cropArr[i]);
-        if (cropArr[i].rateType == "RATE_PER_KG") {
-          cropArr[i].rateType = "kgs";
+      cropArr.map((item,index)=>{
+        var k = preferedCropsData.findIndex((obj) => obj.cropId === item.cropId);
+        if(k!=-1){
+          console.log("came to if")
+          console.log(preferedCropsData[k])
+          preferedCropsData[k].count++;
+          console.log(preferedCropsData[k].count);
+          console.log(cropData,"cropData");
         }
-        Object.assign(cropArr[i], { count: 1 }, { cropActive: true });
+        else{
+          console.log("came to else")
+          preferedCropsData.push(cropArr[index]);
+        if (cropArr[index].rateType == "RATE_PER_KG") { 
+          cropArr[index].rateType = "kgs";
+        }
+        Object.assign(cropArr[index], { count: 1 }, { cropActive: true });
+        }
+      })
+      // for (var i = 0; i < cropArr.length; i++) {
+      //   preferedCropsData.push(cropArr[i]);
+      //   if (cropArr[i].rateType == "RATE_PER_KG") {
+      //     cropArr[i].rateType = "kgs";
+      //   }
+      //   Object.assign(cropArr[i], { count: 1 }, { cropActive: true });
        
-      }
+      // }
       console.log('arrFiltered',preferedCropsData);
 
     }
@@ -190,35 +209,36 @@ const Step2Modal = (props) => {
           (cropData[k].qty - cropData[k].wastage) * cropData[k].rate;
       }
     }
-    var h = [];
-    if (cropData.length > 0) {
-      h = cropData.map((item, index) => {
-        Object.assign(cropData[index], { status: 1 });
-        if (
-          cropData[index].qty == 0 &&
-          !setQuantityBasedtable(cropData[index].qtyUnit)
-        ) {
-          toast.error("Please enter Quantity", {
-            toastId: "error1",
-          });
-          return null;
-        } else if (cropData[index].weight == 0) {
-          toast.error("Please enter weight", {
-            toastId: "error2",
-          });
-          return null;
-        } else if (cropData[index].rate == 0) {
-          toast.error("Please enter rate", {
-            toastId: "error3",
-          });
-          return null;
-        } else if (
-          setQuantityBasedtable(cropData[index].qtyUnit) &&
-          cropData[index].weight != 0 &&
-          cropData[index].rate != 0
-        ) {
-          return cropData[index];
-        } else if (
+     var h = [];
+    // if (cropData.length > 0) {
+    cropData.map((item, index) => {
+    //     Object.assign(cropData[index], { status: 1 });
+    //     if (
+    //       cropData[index].qty == 0 &&
+    //       !setQuantityBasedtable(cropData[index].qtyUnit)
+    //     ) {
+    //       toast.error("Please enter Quantity", {
+    //         toastId: "error1",
+    //       });
+    //       return null;
+    //     } else if (cropData[index].weight == 0) {
+    //       toast.error("Please enter weight", {
+    //         toastId: "error2",
+    //       });
+    //       return null;
+    //     } else if (cropData[index].rate == 0) {
+    //       toast.error("Please enter rate", {
+    //         toastId: "error3",
+    //       });
+    //       return null;
+    //     } else if (
+    //       setQuantityBasedtable(cropData[index].qtyUnit) &&
+    //       cropData[index].weight != 0 &&
+    //       cropData[index].rate != 0
+    //     ) {
+    //       return cropData[index];
+    //     }
+         if (
           // cropData[index].qty != 0 &&
           // cropData[index].weight != 0 &&
           cropData[index].rate != 0
@@ -250,9 +270,9 @@ const Step2Modal = (props) => {
           }
 
           console.log(cropData, "step2 crropdata");
-          return cropData[index];
         }
-      });
+          //return cropData[index];
+        })
       if (h.length > 0) {
         var h1 = h.map((item, index) => {
           if (h[index] != null) {
@@ -262,8 +282,79 @@ const Step2Modal = (props) => {
           }
         });
       }
-    }
   };
+
+  var arrays=[]
+  const step2Next = () =>{
+    if (cropData.length > 0) {
+      for(var index = 0; index<cropData.length;index++){
+        Object.assign(cropData[index], { status: 1 });
+        if(cropData[index].qtyUnit.toLowerCase() === 'loads' || cropData[index].qtyUnit.toLowerCase() === 'pieces'){
+          if(cropData[index].weight == 0){
+            toast.error('Please enter weight', {
+              toastId: "error2" 
+            });
+            return null;
+          }
+          else if(cropData[index].rate == 0){
+            toast.error('Please enter rate', {
+              toastId: "error3" 
+            });
+            return null;
+          }
+        }
+        else if (
+          cropData[index].qty == 0 &&
+          !setQuantityBasedtable(cropData[index].qtyUnit)
+          ) {
+            toast.error("Please enter Quantity", {
+              toastId: "error1",
+            });
+            return null;
+          } 
+          else if(cropData[index].qtyUnit.toLowerCase() === cropData[index].rateType.toLowerCase())
+          {
+          console.log(cropData[index].qtyUnit, cropData[index].rateType);
+          if(cropData[index].qty == 0){
+            toast.error('Please enter Quantity', {
+              toastId: "error1" 
+            });
+            return null;
+          }
+          else if(cropData[index].rate == 0){
+            toast.error('Please enter rate', {
+              toastId: "error3" 
+            });
+            return null;
+          }
+        }
+        else if (cropData[index].weight == 0) {
+          toast.error("Please enter weight", {
+            toastId: "error2",
+          });
+          return null;
+        } else if (cropData[index].rate == 0) {
+          toast.error("Please enter rate", {
+            toastId: "error3",
+          });
+          return null;
+        } else if (
+          setQuantityBasedtable(cropData[index].qtyUnit) &&
+          cropData[index].weight != 0 &&
+          cropData[index].rate != 0
+        ) {
+          return cropData[index];
+        }
+      }
+      for(var k=0;k<cropData.length;k++){
+        arrays.push(cropData[k]);
+        console.log(arrays);
+      }
+      if(arrays.length === cropData.length){
+        addStep3Modal();
+      }
+    }
+  }
   const setQuantityBasedtable = (unitType) => {
     var t = false;
     if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
@@ -875,7 +966,7 @@ const Step2Modal = (props) => {
       {cropData.length > 0 && (
         <div className="bottom_div main_div popup_bottom_div">
           <div className="d-flex align-items-center justify-content-end">
-            <button className="primary_btn" onClick={addStep3Modal}>
+            <button className="primary_btn" onClick={step2Next}>
               Next
             </button>
           </div>
