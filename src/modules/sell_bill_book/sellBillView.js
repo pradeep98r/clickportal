@@ -626,8 +626,8 @@ const SellBillView = () => {
                             <p>
                               {item.qty == null || item.qty == 0
                                 ? ""
-                                : item.qty +" " + getCropUnit(item.qtyUnit) + " | "}
-                              {item.weight == null || item.weight == 0
+                                : item.qty + getCropUnit(item.qtyUnit) + (item.qty == null || item.qty == 0) ? '': " | "}
+                              {item.weight == null
                                 ? ""
                                 : item.weight + " KGS  - "}{" "}
                               <span className="red_text">

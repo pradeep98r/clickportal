@@ -1,6 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import close from "../../assets/images/close.svg";
+import { ToastContainer, toast } from "react-toastify";
 const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
@@ -84,7 +85,14 @@ const SelectBags = (props) => {
     props.parentCallback(props.cropsArray, invArr);
     setInvArr([]);
     setQuantityVal(0);
-    props.closeBagsModal();
+    if(totalw == 0){
+      toast.success("Please enter weight", {
+        toastId: "success1",
+      });
+    }
+    else{
+      props.closeBagsModal();
+    }  
   };
   var arr1 = [];
   const addInvTab = () => {
@@ -165,17 +173,17 @@ const SelectBags = (props) => {
                 <table className="table table-bordered">
                   <thead>
                     <tr>
-                      <th className="col-2">S.No</th>
-                      <th className="col-2">KGS</th>
-                      <th className="col-2">Wastage(Kgs)</th>
+                      <th className="col-1">S.No</th>
+                      <th className="col-3">KGS</th>
+                      <th className="col-3">Wastage(Kgs)</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invArr.map((it, i) => {
                       return (
                         <tr>
-                          <td className="col-2">{i + 1}</td>
-                          <td className="col-2">
+                          <td className="col-1">{i + 1}</td>
+                          <td className="col-3">
                             <input
                               type="text"
                               className="form-control mb-0"
@@ -184,7 +192,7 @@ const SelectBags = (props) => {
                               onChange={getInvWeightValue(invArr, i)}
                             />
                           </td>
-                          <td className="col-2">
+                          <td className="col-3">
                             <input
                               type="text"
                               name="wastage"
@@ -217,6 +225,7 @@ const SelectBags = (props) => {
           UPDATE
         </button>
       </div>
+      <ToastContainer />
     </Modal>
   );
 };

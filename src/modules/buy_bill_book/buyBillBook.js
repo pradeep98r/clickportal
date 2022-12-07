@@ -106,7 +106,7 @@ function BuyBillBook() {
 
   const getCropUnit = (unit) => {
     var unitType = "";
-    switch (unit) {
+    switch (unit.toLowerCase()) {
       case "crates":
         unitType = "C";
         break;
@@ -118,6 +118,12 @@ function BuyBillBook() {
         break;
       case "sacs":
         unitType = "S";
+        break;
+        case "loads":
+        unitType = "L";
+        break;
+        case "Pieces":
+        unitType = "P";
         break;
     }
     return unitType;
@@ -343,11 +349,12 @@ function BuyBillBook() {
                                                   </div>
                                                   <div className="col-lg-4 col-sm-12 col flex_class">
                                                     <p className="crop_name">
-                                                      {crop.qty +
+
+                                                      {(crop.qty == 0 ? '' : crop.qty) +
                                                         getCropUnit(
                                                           crop.qtyUnit
                                                         )}{" "}
-                                                      | {crop.weight + "KGS"}
+                                                       {crop.qty == 0 ? '' : '|'} {crop.weight + "KGS"}
                                                       <span className="color_red">
                                                       {(crop.wastage != "0")
                                                             ? (crop.wastage != null ? " - " +
@@ -456,11 +463,11 @@ function BuyBillBook() {
                                                     </div>
                                                     <div className="col-lg-4 col-sm-12 col flex_class">
                                                       <p className="crop_name">
-                                                        {crop.qty +
+                                                        {(crop.qty == 0 ? '' : crop.qty) +
                                                           getCropUnit(
                                                             crop.qtyUnit
                                                           )}{" "}
-                                                        | {crop.weight + "KGS"}
+                                                        {crop.qty == 0 ? '' : '|'} {crop.weight + "KGS"}
                                                         <span className="color_red">
                                                           {(crop.wastage != "0")
                                                             ? (crop.wastage != null ? " - " +

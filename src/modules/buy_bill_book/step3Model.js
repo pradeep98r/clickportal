@@ -23,6 +23,7 @@ import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
 import { useNavigate, useLocation } from "react-router-dom";
 import Step2Modal from "./step2Modal";
+import clo from "../../assets/images/clo.png";
 const Step3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -65,7 +66,7 @@ const Step3Modal = (props) => {
   const [totalUnits, setTotalUnits] = useState(0);
   var step2CropEditStatus = props.step2CropEditStatus;
   const [unitPrevVal, setUnitPrevVal] = useState(0);
-  console.log(props.slectedCropsArray,"ste2 items")
+  // console.log(props.slectedCropsArray,"ste2 items")
   useEffect(() => {
     fetchPertnerData(partyType);
     if (partnerSelectedData != null) {
@@ -75,6 +76,13 @@ const Step3Modal = (props) => {
     }
 
     getGrossTotalValue(
+      editStatus
+        ? step2CropEditStatus
+          ? props.slectedCropsArray[0].lineItems
+          : props.slectedCropsArray
+        : props.slectedCropsArray
+    );
+    getUnitsTotalValue(
       editStatus
         ? step2CropEditStatus
           ? props.slectedCropsArray[0].lineItems
@@ -227,23 +235,26 @@ const Step3Modal = (props) => {
   };
 
   const getGrossTotalValue = (items) => {
+    // console.log(items,"billittems")
     var total = 0;
-    var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
       total += editStatus
         ? step2CropEditStatus
           ? items[i].total
           : items[i].grossTotal
         : items[i].total;
+      setGrossTotal(total);
+    }
+  };
+  const getUnitsTotalValue = (items) => {
+    var totalunitvalue = 0;
+    var it = editStatus ? (step2CropEditStatus ? items : items[0].lineItems) : items;
+    for (var i = 0; i < it.length; i++) {
       totalunitvalue += editStatus
         ? step2CropEditStatus
-          ? parseInt(items[i].qty)
-          : items[i].lineItems[i].qty
-        : parseInt(items[i].qty);
-      // totalunitvalue += editStatus
-      //   ? items[i].lineItems[i].qty
-      //   : parseInt(items[i].qty);
-      setGrossTotal(total);
+          ? parseInt(it[i].qty)
+          : it[i].qty
+        : parseInt(it[i].qty);
       setTotalUnits(totalunitvalue);
     }
   };
@@ -317,7 +328,6 @@ const Step3Modal = (props) => {
   var lineItemsArray = [];
 
   // if (props.slectedCropsArray.length > 0) {
-    console.log(props.slectedCropsArray,step2CropEditStatus,"crops")
   var cropArray = editStatus
     ? step2CropEditStatus
       ? props.slectedCropsArray[0].lineItems
@@ -341,7 +351,6 @@ const Step3Modal = (props) => {
       bags: cropArray[i].bags,
     });
   }
-  console.log(lineItemsArray)
   // }
   const billRequestObj = {
     actualPayble: getActualPayble(),
@@ -548,7 +557,7 @@ const Step3Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Additions/Deductions
         </h5>
-        <img alt="image" onClick={props.closeStep3Modal} />
+        <img alt="image" src={clo} onClick={props.closeStep3Modal} />
       </div>
 
       <div className="modal-body">

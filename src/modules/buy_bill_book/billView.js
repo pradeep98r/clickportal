@@ -313,6 +313,7 @@ const BillView = (props) => {
 
   const getCropUnit = (unit) => {
     var unitType = "";
+    console.log(unit)
     switch (unit.toUpperCase()) {
       case "CRATES":
         unitType = "C";
@@ -326,8 +327,16 @@ const BillView = (props) => {
       case "SACS":
         unitType = "S";
         break;
+        case "LOADS":
+          unitType = "L";
+          break;
+          case "PIECES":
+          unitType = "P";
+          break;
     }
+    console.log(unitType)
     return unitType;
+   
   };
 
   const handleSettingName = (item) => {
@@ -622,15 +631,15 @@ const BillView = (props) => {
                                 ? ""
                                 : item.qty +
                                   " " +
-                                  getCropUnit(item.qtyUnit) +
+                                  (item.qtyUnit.toLowerCase() =='loads' ? '' :getCropUnit(item.qtyUnit)) +
                                   " | "}
                               {item.weight == null || item.weight == 0
                                 ? ""
-                                : item.weight + " KGS  - "}{" "}
+                                : item.weight + item.qtyUnit.toLowerCase() =='loads' ?  getCropUnit(item.qtyUnit):(" KGS  ")}
                               <span className="red_text">
                                 {item.wastage == null || item.wastage == 0
                                   ? ""
-                                  : item.wastage + " KGS "}
+                                  : - item.wastage + " KGS "}
                               </span>
                             </p>
                           </td>
