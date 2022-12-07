@@ -64,6 +64,10 @@
     padding: 25px 45px;
     a {
       color: var(--ono-blue) !important;
+      
+    }
+    .text-danger{
+      margin-bottom: 10px;
     }
     button {
       width: 100%;
@@ -120,4 +124,7 @@
 }
 .border-danger{
   border: 1px solid red;
+}
+a:hover{
+  cursor: pointer;
 }
