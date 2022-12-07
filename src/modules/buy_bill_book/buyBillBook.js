@@ -119,10 +119,10 @@ function BuyBillBook() {
       case "sacs":
         unitType = "S";
         break;
-        case "loads":
+      case "loads":
         unitType = "L";
         break;
-        case "Pieces":
+      case "Pieces":
         unitType = "P";
         break;
     }
@@ -213,27 +213,15 @@ function BuyBillBook() {
                             }
                           />
                         </div>
-                        <div className="dropdown">
-                          <button
-                            className="primary_btn add_bills_btn dropdown-toggle"
-                            type="button"
-                            id="dropdownMenuButton1"
-                            data-toggle="dropdown"
-                            aria-expanded="false"
-                          >
-                            {langFullData.addBill}
-                          </button>
-
-                          <div className="dropdown-menu">
+                       
                             <a
-                              className="dropdown-item"
+                              className="primary_btn add_bills_btn"
                               href="/step1"
                               onClick={handleStep1Header}
                             >
                               {langFullData.singleBill}
                             </a>
-                          </div>
-                        </div>
+                       
                       </div>
                     </div>
                     <div>
@@ -289,6 +277,7 @@ function BuyBillBook() {
                                           billOnClick(bill.billId, bill)
                                         }
                                         key={index}
+                                        className="billsDiv"
                                       >
                                         <div className="row bills_rows bg_white bottom_space">
                                           <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
@@ -349,18 +338,22 @@ function BuyBillBook() {
                                                   </div>
                                                   <div className="col-lg-4 col-sm-12 col flex_class">
                                                     <p className="crop_name">
-
-                                                      {(crop.qty == 0 ? '' : crop.qty) +
+                                                      {(crop.qty == 0
+                                                        ? ""
+                                                        : crop.qty) +
                                                         getCropUnit(
                                                           crop.qtyUnit
                                                         )}{" "}
-                                                       {crop.qty == 0 ? '' : '|'} {crop.weight + "KGS"}
+                                                      {crop.qty == 0 ? "" : "|"}{" "}
+                                                      {crop.weight + "KGS"}
                                                       <span className="color_red">
-                                                      {(crop.wastage != "0")
-                                                            ? (crop.wastage != null ? " - " +
+                                                        {crop.wastage != "0"
+                                                          ? crop.wastage != null
+                                                            ? " - " +
                                                               crop.wastage +
-                                                              langFullData.kgs : '')
-                                                            : ""}
+                                                              langFullData.kgs
+                                                            : ""
+                                                          : ""}
                                                       </span>
                                                       {/* {crop.qtyUnit + ":" + crop.qty}  */}
                                                       {/* |
@@ -403,6 +396,7 @@ function BuyBillBook() {
                                             billOnClick(bill.billId, bill)
                                           }
                                           key={index}
+                                          className="billsDiv"
                                         >
                                           <div className="row bills_rows bg_white bottom_space">
                                             <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
@@ -463,16 +457,24 @@ function BuyBillBook() {
                                                     </div>
                                                     <div className="col-lg-4 col-sm-12 col flex_class">
                                                       <p className="crop_name">
-                                                        {(crop.qty == 0 ? '' : crop.qty) +
+                                                        {(crop.qty == 0
+                                                          ? ""
+                                                          : crop.qty) +
                                                           getCropUnit(
                                                             crop.qtyUnit
                                                           )}{" "}
-                                                        {crop.qty == 0 ? '' : '|'} {crop.weight + "KGS"}
+                                                        {crop.qty == 0
+                                                          ? ""
+                                                          : "|"}{" "}
+                                                        {crop.weight + "KGS"}
                                                         <span className="color_red">
-                                                          {(crop.wastage != "0")
-                                                            ? (crop.wastage != null ? " - " +
-                                                              crop.wastage +
-                                                              langFullData.kgs : '')
+                                                          {crop.wastage != "0"
+                                                            ? crop.wastage !=
+                                                              null
+                                                              ? " - " +
+                                                                crop.wastage +
+                                                                langFullData.kgs
+                                                              : ""
                                                             : ""}
                                                         </span>
                                                         {/* {crop.qtyUnit + ":" + crop.qty}  */}

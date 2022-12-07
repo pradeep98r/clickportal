@@ -187,24 +187,14 @@ const SellBillBook = () => {
                           onChange={(event) => searchInput(event.target.value)}
                         />
                       </div>
-                      <div className="dropdown">
-                        <button
-                          className="primary_btn add_bills_btn dropdown-toggle"
-                          type="button"
-                          id="dropdownMenuButton1"
-                          data-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          {langFullData.addBill}
-                        </button>
-
-                        <div className="dropdown-menu">
-                          <a className="dropdown-item" href="/sellbillstep1" onClick={handleStep1Header}>
-                          {langFullData.singleBill}
-                          </a>
-                        
-                        </div>
-                      </div>
+                      <a
+                              className="primary_btn add_bills_btn"
+                              href="/sellbillstep1"
+                              onClick={handleStep1Header}
+                            >
+                              {langFullData.singleBill}
+                            </a>
+                    
                     </div>
                   </div>
                   <div>
@@ -258,6 +248,7 @@ const SellBillBook = () => {
                               <div
                                 onClick={() => billOnClick(bill.billId, bill)}
                                 key={index}
+                                className="billsDiv"
                               >
                                 <div className="row bills_rows bg_white bottom_space">
                                   <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
@@ -351,6 +342,7 @@ const SellBillBook = () => {
                                     billOnClick(bill.billId, bill)
                                   }
                                   key={index}
+                                  className="billsDiv"
                                 >
                                   <div className="row bills_rows bg_white bottom_space">
                                     <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">

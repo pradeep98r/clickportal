@@ -507,7 +507,7 @@ const BillView = (props) => {
                   <div className="col-lg-1"></div>
                   <div className="col-lg-2 text-end">
                     <p className="small_text">
-                      {mandiData.businessDtls?.contactName}
+                    Phone
                     </p>
                     <p className="medium_text">
                       {mandiData.businessDtls?.mobile}
@@ -563,7 +563,7 @@ const BillView = (props) => {
               </div>
               <div className="bill_crop_details">
                 <div className="row partner_info_padding">
-                  <div className="col-lg-3">
+                  <div className="col-lg-3 pl-0">
                     <div className="partner_info">
                       <p className="small_text">
                         Bill To {singleBillData.partyType}:{" "}
@@ -1216,24 +1216,31 @@ const BillView = (props) => {
                   {/* </div> */}
                 </div>
               </div>
+              <div className="hr-line"></div>
               {singleBillData.billStatus == "CANCELLED" ? (
                 ""
               ) : (
                 <div>
-                  <div className="hr-line"></div>
-                  <div className="d-flex more-info">
-                    <img
-                      src={edit}
-                      alt="img"
-                      className="mr-3"
-                      onClick={() => editBill(singleBillData)}
-                    />
-                    <img
+                
+                  <div className="d-flex more-info action_icons">
+                 <div className="items_div">
+                 <img
                       src={cancel}
                       alt="img"
                       className=""
                       onClick={handleCheckEvent}
                     />
+                    <p>Cancel</p>
+                   </div>
+                  <div className="items_div">
+                  <img
+                      src={edit}
+                      alt="img"
+                      onClick={() => editBill(singleBillData)}
+                    />
+                    <p>Edit</p>
+                    </div>
+                    
                   </div>
                 </div>
               )}

@@ -15,6 +15,7 @@ function TopNavigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
+  console.log(loginUserDetails)
   const logOutFunction = () => {
     caches.keys().then((names) => {
       names.forEach((name) => {

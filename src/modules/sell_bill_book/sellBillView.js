@@ -506,7 +506,7 @@ const SellBillView = () => {
                   <div className="col-lg-1"></div>
                   <div className="col-lg-2 text-end">
                     <p className="small_text">
-                      {mandiData.businessDtls?.contactName}
+                    Phone
                     </p>
                     <p className="medium_text">
                       {mandiData.businessDtls?.mobile}
@@ -562,7 +562,7 @@ const SellBillView = () => {
               </div>
               <div className="bill_crop_details">
                 <div className="row partner_info_padding">
-                  <div className="col-lg-3">
+                  <div className="col-lg-3 pl-0">
                     <div className="partner_info">
                       <p className="small_text">
                         Bill To {singleBillData.partyType}:{" "}
