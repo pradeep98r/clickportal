@@ -11,6 +11,7 @@ import toastr from "toastr";
 import { authActions } from "../../reducers/authSlice";
 import { userInfoActions } from "../../reducers/userInfoSlice";
 import OtpTimer from "otp-timer";
+import Timer from "otp-timer";
 import { ToastContainer, toast } from 'react-toastify';
 import $ from "jquery";
 import close from "../../assets/images/close.svg";
@@ -61,7 +62,6 @@ const LoginForm = () => {
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {
-    <OtpTimer/>
     console.log(obj);
     doLogin(obj).then(
       (response) => {
@@ -93,13 +93,6 @@ const LoginForm = () => {
           setOtpId(response.data.data.otpReqId);
           //setInvalidError(invalidNumber);
           toast.success(response.data.status.description, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             toastId: "success1",
           })
         } else if (response.data.status === "FAILURE") {
@@ -119,6 +112,7 @@ const LoginForm = () => {
       otp: otpValue,
       otpReqId: otpId,
       userType: localStorage.getItem("userType"),
+      // browser: true
     };
 
     validateOTP(obj).then(
@@ -127,7 +121,6 @@ const LoginForm = () => {
           setotpError("heyyy");
           dispatch(authActions.login(true));
           dispatch(userInfoActions.loginSuccess(resp.data.data));
-          console.log(resp.data.data, "response login");
           localStorage.setItem("clientId", resp.data.data.authKeys.clientId);
           const clientId = localStorage.getItem("clientId");
           if (resp.data.data.authKeys.clientId == clientId) {
@@ -174,15 +167,11 @@ const LoginForm = () => {
   const closePopup = () => {
     $("#termsAndConditions").modal("hide");
   };
-  const agreeTerms = () => {
-      $("#termsAndConditions").modal("hide");
-  };
+
   const closePrivatePolicy = () =>{
     $("#privatePolicy").modal("hide");
   }
-  const agreePrivacy = () =>{
-    $("#privatePolicy").modal("hide");
-  }
+ 
   console.log(invalidNumber);
   return (
     <div>
@@ -233,7 +222,7 @@ const LoginForm = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <label className="form-label mb-0">Enter OTP</label>
                       <div className="timer">
-                        <OtpTimer
+                        <Timer
                           seconds={60}
                           minutes={0}
                           resend={handleClick}
@@ -298,20 +287,13 @@ const LoginForm = () => {
                 </div>
               </div>
               <div className="modal-footer pt-0">
-                <button
-                  type="button"
-                  className="primary_btn"
-                  onClick={() => agreeTerms()}
-                  data-bs-dismiss="modal"
-                >
-                  Agree
-                </button>
+                
               </div>
             </div>
           </div>
       </div>
       <div className="modal fade" id="privatePolicy">
-          <div className="modal-dialog privatePolicy_modal_popup">
+          <div className="modal-dialog terms_modal_popup">
             <div className="modal-content">
               <div className="modal-header date_modal_header smartboard_modal_header">
                 <h5
@@ -337,14 +319,7 @@ const LoginForm = () => {
                 </div>
               </div>
               <div className="modal-footer pt-0">
-                <button
-                  type="button"
-                  className="primary_btn"
-                  onClick={() => agreePrivacy()}
-                  data-bs-dismiss="modal"
-                >
-                  Agree
-                </button>
+               
               </div>
             </div>
           </div>

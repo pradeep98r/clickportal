@@ -27,6 +27,7 @@ const Partner = () => {
   const [partyType, setPartyType] = useState("FARMER");
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
+  const [shortnameError, setShortNameError] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [showModal, setShow] = useState(false);
@@ -64,7 +65,7 @@ const Partner = () => {
   const [requiredshortNameField, setRequiredshortNameField] = useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     if (e.target.value.length < 10) {
       setRequiredNumberField("Minimum mobile number length should be 10");
     } else {
@@ -74,10 +75,17 @@ const Partner = () => {
     setmobileNumber(number);
   };
   const [aadharNumber, setAadharNumber] = useState("");
+  const [aadharError, setAadharError] = useState("");
   const [openingBalance, setOpeningBalance] = useState("");
   const handleNumber = (e) => {
-    let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
-    setAadharNumber(onlyNumbers);
+    let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
+    if (e.target.value.length < 12) {
+      setAadharError("Minimum Adhar number length should be 12");
+    } else {
+      setAadharError("");
+    }
+    let number = onlyNumbers.slice(0, 12);
+    setAadharNumber(number);
   };
   const handleOpeninngBal = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, " ");
@@ -87,22 +95,39 @@ const Partner = () => {
   const [nameField, setNameField] = useState("");
   const handleName = (e) => {
     setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
-    commonValidation(e);
+    commonValidation(e,'name');
     setRequiredNameField("");
   };
-  const commonValidation = (e) => {
+  const commonValidation = (e,type) => {
+    var string1 = "Name should be min 2 characters";
+    var string2 = "Name should be max 30 characters";
     if (e.target.value.length < 2) {
-      setNameError("Name should be min 2 characters");
+      if(type == 'name'){
+        setNameError(string1);
+      }
+      else if(type == 'shortName'){
+        setShortNameError(string1);
+      }
     } else if (e.target.value.length > 30) {
-      setNameError("Name should be max 30 characters");
+      if(type == 'name'){
+        setNameError(string2);
+      }
+      else if(type == 'shortName'){
+        setShortNameError(string2);
+      }
     } else {
-      setNameError("");
+      if(type == 'name'){
+        setNameError('');
+      }
+      else if(type == 'shortName'){
+        setShortNameError('');
+      }
     }
   };
   const [shortNameField, setShortNameField] = useState("");
   const handleShortName = (e) => {
     setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
-    commonValidation(e);
+    commonValidation(e,'shortName');
     setRequiredshortNameField("");
   };
   const [vehicleType, setVehicleType] = useState("");
@@ -115,7 +140,7 @@ const Partner = () => {
   };
   const [streetVillage, setStreetVillage] = useState("");
   const handleStreetName = (e) => {
-    setStreetVillage(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
+    setStreetVillage(e.target.value);
     commonValidation(e);
   };
   const [startDate, setStartDate] = useState(new Date());
@@ -191,25 +216,32 @@ const Partner = () => {
   const onSubmit = () => {
     if (
       nameField.trim().length !== 0 &&
+      nameField.trim().length !== 1 &&
       mobileNumber.trim().length !== 0 &&
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
-        : shortNameField.trim().length !== 0)
+        : (shortNameField.trim().length !== 0 && shortNameField.trim().length !== 1))
     ) {
       console.log("came to edit")
       addEditPartnerApiCall();
-    } else if (nameField.trim().length === 0) {
+    } else if (nameField.trim().length === 0 ) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
     }
+    else if(nameField.trim().length === 1){
+      setNameError("Name should be min 2 characters")
+    }
+    else if(shortNameField.trim().length === 1){
+      setShortNameError("Name should be min 2 characters")
+    }
     console.log("done");
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
-      console.log("ediitt");
+      console.log("ediitt",obj);
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -222,6 +254,7 @@ const Partner = () => {
         }
       );
     } else {
+      console.log("create",obj);
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -481,7 +514,28 @@ const Partner = () => {
     $("#Mymodal").modal("hide");
     console.log(pincode)
   };
-
+const getPartnerType = (item,trader) =>{
+var party = item;
+switch(item){
+  case 'FARMER':
+    if(trader){
+      party = 'TRADER';
+    }
+    else{
+      party = item; 
+    }
+    break;
+    case 'BUYER':
+    if(trader){
+      party = 'TRADER';
+    }
+    else{
+      party = item; 
+    }
+    break;   
+}
+return party;
+}
   return (
     
     <div>
@@ -579,7 +633,7 @@ const Partner = () => {
                                         partner.shortName}
                                     </h5>
                                     <h6>
-                                      {partner.partyType} - {partner.partyId} |{" "}
+                                      {getPartnerType(partner.partyType,partner.trader)} - {partner.partyId} |{" "}
                                       {partner.mobile}
                                     </h6>
                                     <p>{partner.address.addressLine}</p>
@@ -736,6 +790,8 @@ const Partner = () => {
                           handleNumber(e);
                         }}
                       />
+                       <span className="text-danger">{aadharError}</span>
+                      
                     </div>
                   </div>
                 ) : (
@@ -782,6 +838,7 @@ const Partner = () => {
                             handleNumber(e);
                           }}
                         />
+                         <span className="text-danger">{aadharError}</span>
                       </div>
                     ) : (
                       <div></div>
@@ -857,7 +914,7 @@ const Partner = () => {
                                 handleShortName(e);
                               }}
                             />
-                            <span className="text-danger">{nameError}</span>
+                            <span className="text-danger">{shortnameError}</span>
                             <span className="text-danger">
                               {requiredshortNameField}
                             </span>
