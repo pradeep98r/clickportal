@@ -1,6 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import close from "../../assets/images/close.svg";
+import { ToastContainer, toast } from "react-toastify";
 const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
@@ -84,7 +85,14 @@ const SelectBags = (props) => {
     props.parentCallback(props.cropsArray, invArr);
     setInvArr([]);
     setQuantityVal(0);
-    props.closeBagsModal();
+    if(totalw == 0){
+      toast.success("Please enter weight", {
+        toastId: "success1",
+      });
+    }
+    else{
+      props.closeBagsModal();
+    }  
   };
   var arr1 = [];
   const addInvTab = () => {
@@ -217,6 +225,7 @@ const SelectBags = (props) => {
           UPDATE
         </button>
       </div>
+      <ToastContainer />
     </Modal>
   );
 };
