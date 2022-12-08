@@ -407,6 +407,8 @@ const SellbillStep3Modal = (props) => {
             console.log(editBillRequestObj, "edit bill request");
             console.log(response);
             props.closeStep3Modal();
+            localStorage.setItem("stepOneSingleBook",false);
+            localStorage.setItem("billViewStatus",false)
             navigate("/sellbillbook");
           }
         },
@@ -426,6 +428,7 @@ const SellbillStep3Modal = (props) => {
             });
             console.log(sellBillRequestObj, "post req");
             props.closeStep3Modal();
+            localStorage.setItem("stepOneSingleBook",false);
             navigate("/sellbillbook");
           }
         },
