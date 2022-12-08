@@ -69,16 +69,19 @@ const SelectPartner = (props) => {
   const searchInput = (searchValue) => {
     setSearchPartyItem(searchValue);
     if (searchPartyItem !== "") {
+      console.log(partnerData);
       const filterdNames = partnerData.filter((item) => {
         if (
           item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
           item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.mobile.toString().includes(searchValue) ||
           item.partyId.toString().toLowerCase().includes(searchPartyItem)
 
         ) {
           return (
             item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
             item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.mobile.toString().includes(searchValue) ||
             item.partyId.toString().toLowerCase().includes(searchPartyItem)
           );
         } else if (searchPartyItem == "" || searchValue === "") {
