@@ -326,7 +326,6 @@ a:hover{
 }
 .add-record-btns{
     position: relative;
-    width: 118px;
     height: 29px;
     background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
     border: 1px solid #D1D1D1;
@@ -334,6 +333,7 @@ a:hover{
     font-weight: 500;
     font-size: 15px;
     color: #16A12C;
+    padding: 0px 10px 0px 20px;
 }
 .ledger{
     background: #E5E5E5;
@@ -448,3 +448,29 @@ a:hover{
     display: visible;
 }
 
+.has-search {
+   
+    .form-control {
+        padding-left: 2.375rem;
+        width: 100%;
+    }
+}
+.bills_search{
+    width: 100%;
+}
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+}
+.has-search{
+    ::placeholder{
+        font-size: 13px;
+        color: #16A12C;
+    }
+}

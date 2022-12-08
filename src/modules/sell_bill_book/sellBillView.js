@@ -17,7 +17,10 @@ import { ToastContainer, toast } from "react-toastify";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
 import close from "../../assets/images/close.svg";
-
+import {
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithOneDigit,
+} from "../../components/getCurrencyNumber";
 const SellBillView = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -470,6 +473,7 @@ const SellBillView = () => {
           });
           console.log(editBillRequestObj, "edit bill request");
           console.log(response.data, "edit bill");
+          localStorage.setItem("billViewStatus", false);
           navigate("/sellbillbook");
         }
       },
@@ -505,9 +509,7 @@ const SellBillView = () => {
                   </div>
                   <div className="col-lg-1"></div>
                   <div className="col-lg-2 text-end">
-                    <p className="small_text">
-                    Phone
-                    </p>
+                    <p className="small_text">Phone</p>
                     <p className="medium_text">
                       {mandiData.businessDtls?.mobile}
                     </p>
@@ -626,19 +628,30 @@ const SellBillView = () => {
                             <p>
                               {item.qty == null || item.qty == 0
                                 ? ""
-                                : item.qty + getCropUnit(item.qtyUnit) + (item.qty == null || item.qty == 0) ? '': " | "}
-                              {item.weight == null
+                                : getCurrencyNumberWithOneDigit(item.qty) +
+                                  " " +
+                                  (item.qtyUnit.toLowerCase() =='loads' ? '' :getCropUnit(item.qtyUnit)) +
+                                  " | "}
+                              {item.weight == null || item.weight == 0
                                 ? ""
-                                : item.weight + " KGS  - "}{" "}
+                                : getCurrencyNumberWithOneDigit(item.weight) + (item.qtyUnit.toLowerCase() =='loads' ? getCropUnit(item.qtyUnit):(" KGS  "))}
                               <span className="red_text">
-                                {item.wastage == null || item.wastage === 0
+                                {item.wastage == null || item.wastage == 0
                                   ? ""
-                                  : item.wastage + " KGS "}
+                                  : - getCurrencyNumberWithOneDigit(item.wastage) + " KGS "}
                               </span>
                             </p>
                           </td>
-                          <td className="col-2">{item.rate?item.rate.toFixed(2):''}</td>
-                          <td className="col-2 color_green">{item.total?item.total.toFixed(2):''}</td>
+                          <td className="col-2">
+                            {item.rate
+                              ? getCurrencyNumberWithOutSymbol(item.rate)
+                              : ""}
+                          </td>
+                          <td className="col-2 color_green">
+                            {item.total
+                              ? getCurrencyNumberWithOutSymbol(item.total)
+                              : ""}
+                          </td>
                         </tr>
                       );
                     })}
@@ -1095,53 +1108,51 @@ const SellBillView = () => {
                         </div>
                       </div>
                     </div>
-                    <div>
-                      
-                    </div>
+                    <div></div>
                   </div>
                 </div>
-                {!status ?(
-                <div className="row out-st-bal align-items-center">
-                  <div className="col-lg-5">
-                    <div className="d-flex footer-img">
-                      <img src={ono_connect_click} alt="ono_connect" />
+                {!status ? (
+                  <div className="row out-st-bal align-items-center">
+                    <div className="col-lg-5">
+                      <div className="d-flex footer-img">
+                        <img src={ono_connect_click} alt="ono_connect" />
+                      </div>
                     </div>
-                  </div>
-                      <div className="col-lg-2"></div>
-                        <div className="col-lg-3">
-                          {singleBillData.totalReceivable === 0 ||
-                          singleBillData.totalReceivable === null ? (
-                            ""
-                          ) : (
-                            <p
-                              className="groups_value"
-                              style={{ display: !status ? "block" : "none" }}
-                            >
-                              Total Receivables:
-                            </p>
+                    <div className="col-lg-2"></div>
+                    <div className="col-lg-3">
+                      {singleBillData.totalReceivable === 0 ||
+                      singleBillData.totalReceivable === null ? (
+                        ""
+                      ) : (
+                        <p
+                          className="groups_value"
+                          style={{ display: !status ? "block" : "none" }}
+                        >
+                          Total Receivables:
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-lg-2">
+                      {singleBillData.totalReceivable === 0 ||
+                      singleBillData.totalReceivable === null ? (
+                        ""
+                      ) : (
+                        <p
+                          className="groups_value color_green"
+                          style={{ display: !status ? "block" : "none" }}
+                        >
+                          {singleBillData?.totalReceivable.toLocaleString(
+                            "en-IN",
+                            {
+                              maximumFractionDigits: 2,
+                              style: "currency",
+                              currency: "INR",
+                            }
                           )}
-                        </div>
-                        <div className="col-lg-2">
-                          {singleBillData.totalReceivable === 0 ||
-                          singleBillData.totalReceivable === null ? (
-                            ""
-                          ) : (
-                            <p
-                              className="groups_value color_green"
-                              style={{ display: !status ? "block" : "none" }}
-                            >
-                              {singleBillData?.totalReceivable.toLocaleString(
-                                "en-IN",
-                                {
-                                  maximumFractionDigits: 2,
-                                  style: "currency",
-                                  currency: "INR",
-                                }
-                              )}
-                            </p>
-                          )}
-                        </div>
-                  {/* <div className="col-lg-4">
+                        </p>
+                      )}
+                    </div>
+                    {/* <div className="col-lg-4">
                     <p
                       className="out-st"
                       style={{ display: status ? "block" : "none" }}
@@ -1157,33 +1168,33 @@ const SellBillView = () => {
                       {getFinalLedgerbalance()}
                     </span>
                   </div> */}
-                </div>
-                ):(
+                  </div>
+                ) : (
                   <div className="row out-st-bal align-items-center">
-                  <div className="col-lg-2">
-                    <div className="d-flex footer-img">
-                      <img src={ono_connect_click} alt="ono_connect" />
-                    </div>
-                    </div>
-                      <div className="col-lg-3"></div>
-                      <div className="col-lg-5">
-                        <p
-                          className="out-st"
-                          style={{ display: status ? "block" : "none" }}
-                        >
-                          Final Ledger Balance
-                        </p>
-                      </div>
-                      <div className="col-lg-2">
-                        <span
-                          className="out-value"
-                          style={{ display: status ? "block" : "none" }}
-                        >
-                          {getFinalLedgerbalance()}
-                        </span>
+                    <div className="col-lg-2">
+                      <div className="d-flex footer-img">
+                        <img src={ono_connect_click} alt="ono_connect" />
                       </div>
                     </div>
-                  )}
+                    <div className="col-lg-3"></div>
+                    <div className="col-lg-5">
+                      <p
+                        className="out-st"
+                        style={{ display: status ? "block" : "none" }}
+                      >
+                        Final Ledger Balance
+                      </p>
+                    </div>
+                    <div className="col-lg-2">
+                      <span
+                        className="out-value"
+                        style={{ display: status ? "block" : "none" }}
+                      >
+                        {getFinalLedgerbalance()}
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <div className="row">
                   <div className="col-lg-6">
                     <p className="ono-footer">
@@ -1243,23 +1254,31 @@ const SellBillView = () => {
                 ""
               ) : (
                 <div>
-                  <div className="hr-line"></div>
-                  <div className="d-flex more-info">
-                    <img
-                      src={edit}
-                      alt="img"
-                      className="mr-3"
-                      onClick={() => editBill(singleBillData)}
-                    />
-                    <img
+                
+                  <div className="d-flex more-info action_icons">
+                 <div className="items_div">
+                 <img
                       src={cancel}
                       alt="img"
                       className=""
                       onClick={handleCheckEvent}
                     />
+                    <p>Cancel</p>
+                   </div>
+                  <div className="items_div">
+                  <img
+                      src={edit}
+                      alt="img"
+                      onClick={() => editBill(singleBillData)}
+                    />
+                    <p>Edit</p>
+                    </div>
+                    
                   </div>
                 </div>
               )}
+            
+             
               {/* <div className="d-flex more-info">
                                 <img
                                 src={edit}
@@ -1326,23 +1345,23 @@ const SellBillView = () => {
             </div>
             <div className="modal-footer">
               <div className="d-flex">
-                  <button
-                    type="button"
-                    className="secondary_btn mr-2"
-                    onClick={closePopup}
-                    data-bs-dismiss="modal"
-                  >
-                    NO
-                  </button>
-                
-                  <button
-                    type="button"
-                    className="primary_btn"
-                    onClick={() => cancelBill(singleBillData)}
-                    data-bs-dismiss="modal"
-                  >
-                    YES
-                  </button>
+                <button
+                  type="button"
+                  className="secondary_btn mr-2"
+                  onClick={closePopup}
+                  data-bs-dismiss="modal"
+                >
+                  NO
+                </button>
+
+                <button
+                  type="button"
+                  className="primary_btn"
+                  onClick={() => cancelBill(singleBillData)}
+                  data-bs-dismiss="modal"
+                >
+                  YES
+                </button>
               </div>
             </div>
           </div>
