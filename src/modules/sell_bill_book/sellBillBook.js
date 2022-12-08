@@ -16,7 +16,9 @@ import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
 import SelectCrop from "../buy_bill_book/selectCrop";
 import NoDataAvailable from "../../components/noDataAvailable";
-
+import BillsSearchField from "../../components/billsSearchField";
+import { getText } from "../../components/getText";
+import { getCurrencyNumberWithOutSymbol,getCurrencyNumberWithOneDigit } from "../../components/getCurrencyNumber";
 const SellBillBook = () => {
 
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -178,15 +180,9 @@ const SellBillBook = () => {
                         {dateValue}
                     </div>
                     <div className="d-flex">
-                      <div className="d-flex mx-3" role="search">
-                        <input
-                          className="form-control search"
-                          type="search"
-                          placeholder={langFullData.search}
-                          aria-label="Search"
-                          onChange={(event) => searchInput(event.target.value)}
-                        />
-                      </div>
+                    <BillsSearchField placeholder={langFullData.search} onChange={(e) => {
+                      searchInput(e.target.value);
+                    }} />
                       <a
                               className="primary_btn add_bills_btn"
                               href="/sellbillstep1"
@@ -282,7 +278,7 @@ const SellBillBook = () => {
                                           {langFullData.billNo} : {bill.billId}{" "}
                                         </p>
                                         <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
-                                        <p style={{color:bill.billStatus == 'COMPLETED'? 'green':'red'}}>{bill.billStatus}</p>
+                                        <p style={{color:bill.billStatus == "CANCELLED"? '#d43939':'#16a02c'}}>{getText(bill.billStatus)}</p>
                                       </div>
                                     </div>
                                   </div>
@@ -299,25 +295,34 @@ const SellBillBook = () => {
                                           </p>
                                         </div>
                                         <div className="col-lg-4 col-sm-12 col flex_class">
-                                          <p className="crop_name">
-                                            {crop.qty + getCropUnit(crop.qtyUnit)}
-                                            | {crop.weight + "KGS"}
-                                            <span className="color_red">
-                                              {crop.wastage != "0"
-                                                ? " - " + crop.wastage + langFullData.kgs
-                                                : ""}{" "}
-                                            </span>
-                                          
+                                        <p className="crop_name">
+                                                      {(crop.qty == 0
+                                                        ? ""
+                                                        : getCurrencyNumberWithOneDigit(crop.qty)) +
+                                                        getCropUnit(
+                                                          crop.qtyUnit
+                                                        )}{" "}
+                                                      {crop.qty == 0 ? "" : "|"}{" "}
+                                                      {getCurrencyNumberWithOneDigit(crop.weight) + "KGS"}
+                                                      <span className="color_red">
+                                                        {crop.wastage != "0"
+                                                          ? crop.wastage != null
+                                                            ? " - " +
+                                                            getCurrencyNumberWithOneDigit(crop.wastage) +
+                                                              langFullData.kgs
+                                                            : ""
+                                                          : ""}
+                                                      </span>
+                                                    </p>
+                                        </div>
+                                        <div className="col-lg-2 col-sm-12 col flex_class">
+                                          <p className="number_overflow crop_name">
+                                            {getCurrencyNumberWithOutSymbol(crop.rate)}
                                           </p>
                                         </div>
                                         <div className="col-lg-2 col-sm-12 col flex_class">
                                           <p className="number_overflow crop_name">
-                                            {crop.rate}
-                                          </p>
-                                        </div>
-                                        <div className="col-lg-2 col-sm-12 col flex_class">
-                                          <p className="number_overflow crop_name">
-                                            {crop.total}
+                                            {getCurrencyNumberWithOutSymbol(crop.total)}
                                           </p>
                                         </div>
                                       </div>
@@ -327,7 +332,7 @@ const SellBillBook = () => {
                                     <div className="row">
                                       <div className="col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
-                                          {bill.totalReceivable}
+                                          {getCurrencyNumberWithOutSymbol(bill.totalReceivable)}
                                         </p>
                                       </div>
                                     </div>
@@ -376,7 +381,7 @@ const SellBillBook = () => {
                                             {langFullData.billNo} : {bill.billId}{" "}
                                           </p>
                                           <p>{moment(bill.billDate).format("DD-MMM-YYYY")}</p>
-                                          <p>{bill.billStatus}</p>
+                                          <p style={{color:bill.billStatus == "CANCELLED"? '#d43939':'#16a02c'}}>{getText(bill.billStatus)}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -393,35 +398,34 @@ const SellBillBook = () => {
                                             </p>
                                           </div>
                                           <div className="col-lg-4 col-sm-12 col flex_class">
-                                            <p className="crop_name">
-                                              {crop.qty +
-                                                getCropUnit(
-                                                  crop.qtyUnit
-                                                )}{" "}
-                                              | {crop.weight + "KGS"}
-                                              <span className="color_red">
-                                                {(crop.wastage != "0")
-                                                  ? (" - " +
-                                                    crop.wastage +
-                                                    langFullData.kgs)
-                                                  : ""}
-                                              </span>
-                                              {/* {crop.qtyUnit + ":" + crop.qty}  */}
-                                              {/* |
-                                        Weight:{" "}
-                                        {crop.weight == null
-                                          ? "0"
-                                          : crop.weight} */}
+                                          <p className="crop_name">
+                                                      {(crop.qty == 0
+                                                        ? ""
+                                                        : getCurrencyNumberWithOneDigit(crop.qty)) +
+                                                        getCropUnit(
+                                                          crop.qtyUnit
+                                                        )}{" "}
+                                                      {crop.qty == 0 ? "" : "|"}{" "}
+                                                      {getCurrencyNumberWithOneDigit(crop.weight) + "KGS"}
+                                                      <span className="color_red">
+                                                        {crop.wastage != "0"
+                                                          ? crop.wastage != null
+                                                            ? " - " +
+                                                            getCurrencyNumberWithOneDigit(crop.wastage) +
+                                                              langFullData.kgs
+                                                            : ""
+                                                          : ""}
+                                                      </span>
+                                                    </p>
+                                          </div>
+                                          <div className="col-lg-2 col-sm-12 col flex_class">
+                                            <p className="number_overflow crop_name">
+                                              {getCurrencyNumberWithOutSymbol(crop.rate)}
                                             </p>
                                           </div>
                                           <div className="col-lg-2 col-sm-12 col flex_class">
                                             <p className="number_overflow crop_name">
-                                              {crop.rate}
-                                            </p>
-                                          </div>
-                                          <div className="col-lg-2 col-sm-12 col flex_class">
-                                            <p className="number_overflow crop_name">
-                                              {crop.total}
+                                              {getCurrencyNumberWithOutSymbol(crop.total)}
                                             </p>
                                           </div>
                                         </div>
@@ -431,7 +435,7 @@ const SellBillBook = () => {
                                       <div className="row">
                                         <div className="col-lg-12 col-sm-12 col last_col">
                                           <p className="crop_name payble_text">
-                                            {bill.totalReceivable}
+                                            {getCurrencyNumberWithOutSymbol(bill.totalReceivable)}
                                           </p>
                                         </div>
                                       </div>

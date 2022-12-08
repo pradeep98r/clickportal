@@ -5,6 +5,7 @@ import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
 import { useNavigate } from "react-router-dom";
 import NoDataAvailable from "../../components/noDataAvailable";
+import SearchField from "../../components/searchField";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -68,16 +69,19 @@ const SelectPartner = (props) => {
   const searchInput = (searchValue) => {
     setSearchPartyItem(searchValue);
     if (searchPartyItem !== "") {
+      console.log(partnerData);
       const filterdNames = partnerData.filter((item) => {
         if (
           item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
           item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.mobile.toString().includes(searchValue) ||
           item.partyId.toString().toLowerCase().includes(searchPartyItem)
 
         ) {
           return (
             item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
             item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.mobile.toString().includes(searchValue) ||
             item.partyId.toString().toLowerCase().includes(searchPartyItem)
           );
         } else if (searchPartyItem == "" || searchValue === "") {
@@ -124,14 +128,11 @@ const SelectPartner = (props) => {
           <div>
             {partnerData.length > 0 ? (
               <div>
-                <div className="d-flex searchparty" role="search">
-                  <input
-                    className="form-control mb-0"
-                    type="search"
-                    placeholder="Search"
-                    aria-label="Search"
-                    onChange={(event) => searchInput(event.target.value)}
-                  />
+                <div className="d-flex searchparty pb-0" role="search">
+                  
+                   <SearchField placeholder={langFullData.search} onChange={(e) => {
+                      searchInput(e.target.value);
+                    }} />
                 </div>
                 <ul>
                   {searchPartyItem.length > 1 ?

@@ -90,7 +90,7 @@ input[type=radio]:checked+label {
     background-color: #16A02C;
 }
 .paid-coloring{
-    color:red;
+    color:var(--ono-red);
     display: visible;
 }
 .outstanding-pay{

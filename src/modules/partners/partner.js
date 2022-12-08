@@ -20,6 +20,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
 import { Modal, Button } from "react-bootstrap";
+import SearchField from "../../components/searchField";
+import {getText} from "../../components/getText";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -353,6 +355,7 @@ const Partner = () => {
   ];
   const getPosition = () => {
     console.log("pos")
+    setStreetVillage("");
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, posError);
     } else {
@@ -382,18 +385,20 @@ const Partner = () => {
   };
   // Converting lat/long from browser geolocation into city, state, and zip code using Google Geocoding API
   const getAddress = (lat, long, googleKey) => {
-    fetch(
+   var hi= fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${googleKey}`
-    )
-      .then((res) => res.json())
-      .then((address) => setZip(address));
+    ).then((res) => res.json()).then((address) => setZip(address));
+      
   };
   // Dispatching city, state, and zip code to store state
   const setZip = (address) => {
     let pincode = address.results[0].formatted_address;
-    var pincodeValue = pincode.replace(/\D/g, "");
+    
+    var pincodeValue = pincode.replace(address.results[0].address_components[0].long_name, "");
+     pincodeValue = pincodeValue.replace(/\D/g, "");
+     console.log(address,pincodeValue,"address")
     let city = address.results[5].address_components[2].short_name;
-    let state = address.results[5].address_components[4].short_name;
+    let state = address.results[5].address_components[3].short_name;
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
@@ -414,6 +419,7 @@ const Partner = () => {
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
     setPincode(zip);
+    setStreetVillage('');
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
@@ -501,13 +507,18 @@ const Partner = () => {
     setStateVal("");
     setShortNameField("");
     setStreetVillage("");
-    setradioValue("");
+    if(partyType=='FARMER'){
+      setradioValue("FARMER");
+    }
+   else{
+    setradioValue("BUYER");
+   }
     setIsEdit(false);
     // setPincode();
     setCityVal("");
     setStateVal("");
     setAddeditText("Add");
-    console.log(isEdit, "after");
+    console.log(isEdit,radioValue, "after");
     $("#Mymodal").modal("show");
   });
   const closeAddModal = () => {
@@ -570,12 +581,10 @@ return party;
             >
               <div className="row">
                 <div className="col-lg-9 ps-0">
-                  <input
-                    icon="search"
-                    placeholder={langFullData.search}
-                    onChange={(e) => searchItems(e.target.value)}
-                    className="search_text"
-                  />
+                <SearchField placeholder={langFullData.search} onChange={(e) => {
+                      searchItems(e.target.value);
+                    }} />
+                 
                   <div>
                     {searchInput.length > 1 ? (
                       filteredResults.map((partner, index) => {
@@ -583,11 +592,17 @@ return party;
                           <div className="card partner_card" key={index}>
                             <div className="d-flex partner_card_flex justify-content-between align-items-center">
                               <div className="d-flex align-items-center">
-                                <img
-                                  src={single_bill}
-                                  alt="img"
-                                  className="user_img"
-                                />
+                              {
+                                   partner.profilePic ?  <img
+                                   src={partner.profilePic}
+                                   alt="profile_img"
+                                   className="user_img"
+                                 />: <img
+                                   src={single_bill}
+                                   alt="img"
+                                   className="user_img"
+                                 />
+                                 }
                                 <div>
                                   <h5>{partner.partyName}</h5>
                                   <h6>
@@ -621,11 +636,17 @@ return party;
                             <div className="card partner_card" key={index}>
                               <div className="d-flex partner_card_flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center">
-                                  <img
-                                    src={single_bill}
-                                    alt="img"
-                                    className="user_img"
-                                  />
+                                 {
+                                   partner.profilePic ?  <img
+                                   src={partner.profilePic}
+                                   alt="profile_img"
+                                   className="user_img"
+                                 />: <img
+                                   src={single_bill}
+                                   alt="img"
+                                   className="user_img"
+                                 />
+                                 }
                                   <div>
                                     <h5>
                                       {partner.partyName +
@@ -649,13 +670,7 @@ return party;
                                   <img
                                     src={delete_icon}
                                     alt="img"
-                                    // onClick={() =>
-                                    //   handleOpenDeleteModal(partner.partyId)
-                                    // }
                                     onClick={() => handleShow(partner.partyId)}
-                                    // onClick={() =>
-                                    //   deletePartner(partner.partyId)
-                                    // }
                                   />
                                 </div>
                               </div>
@@ -688,7 +703,7 @@ return party;
                         Add{" "}
                         {partyType == langFullData.seller
                           ? "seller"
-                          : partyType.toLowerCase()}
+                          : getText(partyType)}
                       </h6>
                       <p></p>
 
@@ -696,7 +711,7 @@ return party;
                         Add
                         {partyType == langFullData.seller
                           ? "seller"
-                          : " " + partyType.toLowerCase()}
+                          : " " + getText(partyType)}
                       </button>
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
@@ -716,7 +731,7 @@ return party;
                 {addeditText}{" "}
                 {partyType == langFullData.farmer.toUpperCase()
                   ? langFullData.seller
-                  : partyType.toLowerCase()}
+                  : getText(partyType)}
               </h5>
               <img
                 src={close}
@@ -740,8 +755,7 @@ return party;
                           : partyType.toLowerCase()
                       }
                     />{" "}
-                    {partyType.charAt(0).toUpperCase() +
-                      partyType.toLowerCase().slice(1)}
+                    {getText(partyType)}
                     {/* {partyType.toLowerCase()} */}
                     <input
                       type="radio"

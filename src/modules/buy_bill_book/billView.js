@@ -15,6 +15,7 @@ import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
+import { getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -470,6 +471,7 @@ const BillView = (props) => {
           });
           console.log(editBillRequestObj, "edit bill request");
           console.log(response.data, "edit bill");
+          localStorage.setItem("billViewStatus",false)
           navigate("/buy_bill_book");
         }
       },
@@ -629,23 +631,23 @@ const BillView = (props) => {
                             <p>
                               {item.qty == null || item.qty == 0
                                 ? ""
-                                : item.qty +
+                                : getCurrencyNumberWithOneDigit(item.qty) +
                                   " " +
                                   (item.qtyUnit.toLowerCase() =='loads' ? '' :getCropUnit(item.qtyUnit)) +
                                   " | "}
                               {item.weight == null || item.weight == 0
                                 ? ""
-                                : item.weight + item.qtyUnit.toLowerCase() =='loads' ?  getCropUnit(item.qtyUnit):(" KGS  ")}
+                                : getCurrencyNumberWithOneDigit(item.weight) + (item.qtyUnit.toLowerCase() =='loads' ? getCropUnit(item.qtyUnit):(" KGS  "))}
                               <span className="red_text">
                                 {item.wastage == null || item.wastage == 0
                                   ? ""
-                                  : - item.wastage + " KGS "}
+                                  : - getCurrencyNumberWithOneDigit(item.wastage) + " KGS "}
                               </span>
                             </p>
                           </td>
-                          <td className="col-2">{item.rate.toFixed(2)}</td>
+                          <td className="col-2">{getCurrencyNumberWithOutSymbol(item.rate)}</td>
                           <td className="col-2 color_red">
-                            {item.total.toFixed(2)}
+                            {getCurrencyNumberWithOutSymbol(item.total)}
                           </td>
                         </tr>
                       );

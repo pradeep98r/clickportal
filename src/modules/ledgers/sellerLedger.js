@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import { Fragment } from "react";
-import search_img from "../../assets/images/search.svg";
 import "../../modules/ledgers/buyerLedger.scss";
 import close from "../../assets/images/close.svg";
 import DatePickerModel from "../smartboard/datePicker";
@@ -29,6 +28,12 @@ import moment from "moment";
 import NoDataAvailable from "../../components/noDataAvailable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import SearchField from "../../components/searchField";
+import {
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithSymbol,
+  getCurrencyNumberWithOneDigit
+} from "../../components/getCurrencyNumber";
 const SellerLedger = () => {
   const [search, setSearch] = useState("");
   const [openTabs, setOpenTabs] = useState(false);
@@ -212,6 +217,7 @@ const SellerLedger = () => {
       });
     navigate("/sellerledger");
     setIsOpen(false);
+    setPaidsRcvd(0);
     localStorage.removeItem("partyId");
   };
   const clearData =()=>{
@@ -316,6 +322,7 @@ const SellerLedger = () => {
     }
   };
   const closePopup = () => {
+    setPaidsRcvd(0);
     $("#myModal").modal("hide");
   };
   return (
@@ -327,20 +334,10 @@ const SellerLedger = () => {
         <div className="row">
          <div className="col-lg-4 p-0">
            <div id="search-field">
-             <form className="d-flex">
-               <input
-                 className="form-control me-2"
-                 id="searchbar"
-                 type="search"
-                 placeholder={langFullData.searchByNameShortCode}
-                 onChange={(e) => {
-                   searchInput(e.target.value);
-                 }}
-               />
-             </form>
-             <div className="searchicon">
-               <img src={search_img} alt="search" />
-             </div>
+           <SearchField placeholder={langFullData.searchByNameShortCode} onChange={(e) => {
+                      searchInput(e.target.value);
+                    }} />
+            
            </div>
            <div className="table-scroll" id="scroll_style">
              <table className="table table-fixed ledger-table">
@@ -408,7 +405,7 @@ const SellerLedger = () => {
                              <td key={item.tobePaidRcvd}>
                                <p className="paid-coloring">
                                  {item.tobePaidRcvd
-                                   ? item.tobePaidRcvd.toFixed(2)
+                                   ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
                                    : 0}
                                </p>
                              </td>
@@ -470,7 +467,7 @@ const SellerLedger = () => {
                              <td key={item.tobePaidRcvd}>
                                <p className="paid-coloring">
                                  {item.tobePaidRcvd
-                                   ? item.tobePaidRcvd.toFixed(2)
+                                   ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
                                    : 0}
                                </p>
                              </td>
@@ -491,9 +488,9 @@ const SellerLedger = () => {
            </div>
            <div className="outstanding-pay d-flex align-items-center justify-content-between">
              <p className="pat-tag">{langFullData.outstandingPayables}:</p>
-             <p className="values-tag">
-               &#8377;
-               {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
+             <p className="values-tag paid-coloring">
+              
+               {data.totalOutStgAmt ? getCurrencyNumberWithSymbol(data.totalOutStgAmt) : 0}
              </p>
            </div>
          </div>
@@ -520,7 +517,7 @@ const SellerLedger = () => {
                  data-toggle="modal"
                  data-target="#myModal"
                >
-                 Add Record
+               Record payment
                </button>
                <div className="add-pays-btn">
                  <img src={add} id="addrecord-img" />
@@ -614,10 +611,10 @@ const SellerLedger = () => {
                    <div className="col-lg-3" id="verticalLines">
                      <p className="card-text paid">
                        {langFullData.totalBusiness}
-                       <p className="coloring">
-                         &#8377;
+                       <p className="paid-coloring">
+                        
                          {summaryData.totalTobePaidRcvd
-                           ? summaryData.totalTobePaidRcvd.toFixed(2)
+                           ? getCurrencyNumberWithSymbol(summaryData.totalTobePaidRcvd)
                            : ''}
                        </p>
                      </p>
@@ -625,22 +622,22 @@ const SellerLedger = () => {
                    <div className="col-lg-3" id="verticalLines">
                      <p className="total-paid">
                        {langFullData.totalPaid}
-                       <p className="coloring">
-                         &#8377;
+                       <p className="paid-coloring">
+                         
                          {summaryData.totalRcvdPaid
-                           ? summaryData.totalRcvdPaid.toFixed(2)
-                           : ''}
+                           ? getCurrencyNumberWithSymbol(summaryData.totalRcvdPaid)
+                           : 0}
                        </p>
                      </p>
                    </div>
                    <div className="col-lg-3 d-flex align-items-center">
                      <p className="out-standing">
                        {langFullData.outstandingPayables}
-                       <p className="coloring">
-                         &#8377;
+                       <p className="paid-coloring">
+                        
                          {summaryData.outStdRcvPayble
-                           ? summaryData.outStdRcvPayble.toFixed(2)
-                           : ''}
+                           ? getCurrencyNumberWithSymbol(summaryData.outStdRcvPayble)
+                           : 0}
                        </p>
                      </p>
                    </div>
@@ -714,20 +711,20 @@ const SellerLedger = () => {
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.paidRcvd
-                                     ? item.paidRcvd.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.tobePaidRcvd
-                                     ? item.tobePaidRcvd.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
-                                 <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : ''}
+                                 <p className="paid-coloring" id="p-common">
+                                   {item.balance ? getCurrencyNumberWithOutSymbol(item.balance) : ''}
                                  </p>
                                </td>
                              </tr>
@@ -800,20 +797,20 @@ const SellerLedger = () => {
                                <td className="col-2">
                                  <p>
                                    {item.paid
-                                     ? item.paid.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.paid)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-2">
                                  <p id="p-common">
                                    {item.toBePaid
-                                     ? item.toBePaid.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.toBePaid)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-2">
-                                 <span className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : ''}
+                                 <span className="coloring paid-coloring" id="p-common">
+                                   {item.balance ? getCurrencyNumberWithOutSymbol(item.balance) : ''}
                                  </span>
                                </td>
                              </tr>
@@ -872,20 +869,20 @@ const SellerLedger = () => {
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.paidRcvd
-                                     ? item.paidRcvd.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.tobePaidRcvd
-                                     ? item.tobePaidRcvd.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
-                                 <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : ''}
+                                 <p className="coloring paid-coloring" id="p-common">
+                                   {item.balance ? getCurrencyNumberWithOutSymbol(item.balance) : ''}
                                  </p>
                                </td>
                              </tr>
@@ -957,20 +954,20 @@ const SellerLedger = () => {
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.paid
-                                     ? item.paid.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.paid)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.toBePaid
-                                     ? item.toBePaid.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.toBePaid)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
-                                 <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : ''}
+                                 <p className="coloring paid-coloring" id="p-common">
+                                   {item.balance ? getCurrencyNumberWithOutSymbol(item.balance) : ''}
                                  </p>
                                </td>
                              </tr>
@@ -1076,8 +1073,8 @@ const SellerLedger = () => {
                          <p id="p-tag">{langFullData.outstandingPayables}</p>
                          <p id="recieve-tag">
                            &#8377;
-                           {data.totalOutStgAmt
-                             ? data.totalOutStgAmt.toFixed(2)
+                           {paidRcvd
+                             ? paidRcvd.toFixed(2)
                              : 0}
                          </p>
                        </div>

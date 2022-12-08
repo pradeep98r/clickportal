@@ -25,6 +25,12 @@ import NoDataAvailable from "../../components/noDataAvailable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getOutstandingBal } from "../../actions/billCreationService";
+import SearchField from "../../components/searchField";
+import {
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithOneDigit,
+  getCurrencyNumberWithSymbol
+} from "../../components/getCurrencyNumber";
 const TransportoLedger = () => {
 
   const [transporter, setTransporter] = useState([{}]);
@@ -283,20 +289,10 @@ const TransportoLedger = () => {
          transporter.length > 0 ?  <div className="row">
          <div className="col-lg-4  p-0">
            <div id="search-field">
-             <form className="d-flex">
-               <input
-                 className="form-control me-2"
-                 id="searchbar"
-                 type="search"
-                 placeholder={langFullData.searchByNameShortCode}
-                 onChange={(e) => {
-                   searchInput(e.target.value);
-                 }}
-               />
-             </form>
-             <div className="searchicon">
-               <img src={search_img} alt="search" />
-             </div>
+           <SearchField placeholder={langFullData.searchByNameShortCode} onChange={(e) => {
+                      searchInput(e.target.value);
+                    }} />
+            
            </div>
            <div className="table-scroll" id="scroll_style">
              <table className="table table-fixed ledger-table">
@@ -364,7 +360,7 @@ const TransportoLedger = () => {
                              <td key={item.tobePaidRcvd}>
                                <p className="paid-coloring">
                                  {item.tobePaidRcvd
-                                   ? item.tobePaidRcvd.toFixed(2)
+                                   ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
                                    : 0}
                                </p>
                              </td>
@@ -426,7 +422,7 @@ const TransportoLedger = () => {
                              <td key={item.tobePaidRcvd}>
                                <p className="paid-coloring">
                                  {item.tobePaidRcvd
-                                   ? item.tobePaidRcvd.toFixed(2)
+                                   ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
                                    : 0}
                                </p>
                              </td>
@@ -448,9 +444,9 @@ const TransportoLedger = () => {
            </div>
            <div className="outstanding-pay d-flex align-items-center justify-content-between">
              <p className="pat-tag">{langFullData.outstandingPayables}:</p>
-             <p className="values-tag">
-               &#8377;
-               {data.totalOutStgAmt ? data.totalOutStgAmt.toFixed(2) : 0}
+             <p className="values-tag paid-coloring">
+               
+               {data.totalOutStgAmt ? getCurrencyNumberWithSymbol(data.totalOutStgAmt) : 0}
              </p>
            </div>
          </div>
@@ -521,10 +517,10 @@ const TransportoLedger = () => {
                      <div className="col-lg-3" id="verticalLines">
                        <p className="card-text paid">
                          {langFullData.totalBusiness}{" "}
-                         <p className="coloring">
-                           &#8377;
+                         <p className="coloring color_black">
+                           
                            {payLedger.totalToBePaid
-                             ? payLedger.totalToBePaid.toFixed(2)
+                             ? getCurrencyNumberWithSymbol(payLedger.totalToBePaid)
                              : 0}
                          </p>
                        </p>
@@ -532,10 +528,10 @@ const TransportoLedger = () => {
                      <div className="col-lg-3" id="verticalLines">
                        <p className="total-paid">
                          {langFullData.totalPaid}
-                         <p className="coloring">
-                           &#8377;
+                         <p className="coloring color_black">
+                          
                            {payLedger.totalPaid
-                             ? payLedger.totalPaid.toFixed(2)
+                             ? getCurrencyNumberWithSymbol(payLedger.totalPaid)
                              : 0}
                          </p>{" "}
                        </p>
@@ -543,10 +539,10 @@ const TransportoLedger = () => {
                      <div className="col-lg-3">
                        <p className="out-standing">
                        {langFullData.outstandingPayables}
-                         <p className="coloring">
-                           &#8377;
+                         <p className="coloring color_black">
+                           
                            {payLedger.totalOutStandingBalance
-                             ? payLedger.totalOutStandingBalance.toFixed(2)
+                             ? getCurrencyNumberWithSymbol(payLedger.totalOutStandingBalance)
                              : 0}
                          </p>
                        </p>
@@ -886,20 +882,20 @@ const TransportoLedger = () => {
                                <td className="col-3">
                                  <p id="p-common">
                                    {item.paidRcvd
-                                     ? item.paidRcvd.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
-                                 <p id="p-common">
+                                 <p id="p-common" className="paid-coloring">
                                    {item.toBePaid
-                                     ? item.toBePaid.toFixed(2)
+                                     ? getCurrencyNumberWithOutSymbol(item.toBePaid)
                                      : ''}
                                  </p>
                                </td>
                                <td className="col-3">
-                                 <p className="coloring" id="p-common">
-                                   {item.balance ? item.balance.toFixed(2) : ''}
+                                 <p className="coloring color_black" id="p-common">
+                                   {item.balance ? getCurrencyNumberWithOutSymbol(item.balance) : ''}
                                  </p>
                                </td>
                              </tr>
