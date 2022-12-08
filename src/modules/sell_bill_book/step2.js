@@ -86,14 +86,29 @@ const SellbillStep2Modal = (props) => {
         console.log(lineIt, props.cropEditObject);
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
-      console.log(cropArr,preferedCropsData)
-      for (var i = 0; i < cropArr.length; i++) {
-        preferedCropsData.push(cropArr[i]);
-        if (cropArr[i].rateType == "RATE_PER_KG") {
-          cropArr[i].rateType = "kgs";
+      cropArr.map((item,index)=>{
+        var k = preferedCropsData.findIndex((obj) => obj.cropId === item.cropId);
+        if(k!=-1){
+          preferedCropsData[k].count++;
+          console.log(preferedCropsData[k].count,cropData,"cropData");
         }
-        Object.assign(cropArr[i], { count: 1 }, { cropActive: true },{status: 1});
-      }
+        else{
+          console.log("came to else")
+          preferedCropsData.push(cropArr[index]);
+        if (cropArr[index].rateType == "RATE_PER_KG") { 
+          cropArr[index].rateType = "kgs";
+        }
+        Object.assign(cropArr[index], { count: 1 }, { cropActive: true });
+        }
+      })
+      console.log(cropArr,preferedCropsData)
+      // for (var i = 0; i < cropArr.length; i++) {
+      //   preferedCropsData.push(cropArr[i]);
+      //   if (cropArr[i].rateType == "RATE_PER_KG") {
+      //     cropArr[i].rateType = "kgs";
+      //   }
+      //   Object.assign(cropArr[i], { count: 1 }, { cropActive: true },{status: 1});
+      // }
     }
   }, []);
 
@@ -160,28 +175,29 @@ const SellbillStep2Modal = (props) => {
       }
     }
     cropData.map((item, index) => {
-      if(cropData[index].qty == 0){
-        toast.error('Please enter Quantity', {
-          toastId: "error1" 
-        });
-      }
-      else if(cropData[index].weight == 0){
-        toast.error('Please enter weight', {
-          toastId: "error2" 
-        });
-      }
-      else if(cropData[index].rate == 0){
-        toast.error('Please enter rate', {
-          toastId: "error3" 
-        });
-      }
-      else if (
-        setQuantityBasedtable(cropData[index].qtyUnit) &&
-        cropData[index].weight != 0 &&
-        cropData[index].rate != 0
-      ) {
-        return cropData[index];
-      } else if (
+      // if(cropData[index].qty == 0){
+      //   toast.error('Please enter Quantity', {
+      //     toastId: "error1" 
+      //   });
+      // }
+      // else if(cropData[index].weight == 0){
+      //   toast.error('Please enter weight', {
+      //     toastId: "error2" 
+      //   });
+      // }
+      // else if(cropData[index].rate == 0){
+      //   toast.error('Please enter rate', {
+      //     toastId: "error3" 
+      //   });
+      // }
+      // else if (
+      //   setQuantityBasedtable(cropData[index].qtyUnit) &&
+      //   cropData[index].weight != 0 &&
+      //   cropData[index].rate != 0
+      // ) {
+      //   return cropData[index];
+      // }
+      if (
         cropData[index].qty != 0 &&
         cropData[index].weight != 0 &&
         cropData[index].rate != 0
@@ -222,6 +238,79 @@ const SellbillStep2Modal = (props) => {
     })
   
   }; 
+  var arrays=[];
+  const addStep2Next = () =>{
+    if(cropData.length>0){
+    for(var index = 0; index<cropData.length;index++){
+      console.log(cropData[index].qtyUnit, cropData[index].rateType);
+      Object.assign(cropData[index], { status: 1 });
+      
+      if(cropData[index].qtyUnit.toLowerCase() === 'loads' || cropData[index].qtyUnit.toLowerCase() === 'pieces'){
+        if(cropData[index].weight == 0){
+          toast.error('Please enter weight', {
+            toastId: "error2" 
+          });
+          return null;
+        }
+        else if(cropData[index].rate == 0){
+          toast.error('Please enter rate', {
+            toastId: "error3" 
+          });
+          return null;
+        }
+      }
+      else if(cropData[index].qty == 0){
+        toast.error('Please enter Quantity', {
+          toastId: "error1" 
+        });
+        return null;
+      }
+      else if(cropData[index].qtyUnit.toLowerCase() === cropData[index].rateType.toLowerCase())
+      {
+        console.log(cropData[index].qtyUnit, cropData[index].rateType);
+        if(cropData[index].qty == 0){
+          toast.error('Please enter Quantity', {
+            toastId: "error1" 
+          });
+          return null;
+        }
+        else if(cropData[index].rate == 0){
+          toast.error('Please enter rate', {
+            toastId: "error3" 
+          });
+          return null;
+        }
+      }
+      
+      else if(cropData[index].weight == 0){
+        toast.error('Please enter weight', {
+          toastId: "error2" 
+        });
+        return null;
+      }
+      else if(cropData[index].rate == 0){
+        toast.error('Please enter rate', {
+          toastId: "error3" 
+        });
+        return null;
+      }
+      else if (
+        setQuantityBasedtable(cropData[index].qtyUnit) &&
+        cropData[index].weight != 0 &&
+        cropData[index].rate != 0
+      ) {
+        return cropData[index];
+      }
+    }
+    for(var k = 0; k<cropData.length;k++){
+      arrays.push(cropData[k]);
+    }
+    console.log(arrays,"arrays");
+    if(arrays.length === cropData.length){
+      addStep3Modal();
+    }
+  }
+  }
   const setQuantityBasedtable = (unitType) => {
     var t = false;
     if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
@@ -798,7 +887,7 @@ const SellbillStep2Modal = (props) => {
       {cropData.length > 0 && (
         <div className="bottom_div main_div popup_bottom_div">
           <div className="d-flex align-items-center justify-content-end">
-            <button className="primary_btn" onClick={addStep3Modal}>
+            <button className="primary_btn" onClick={addStep2Next}>
               Next
             </button>
           </div>
