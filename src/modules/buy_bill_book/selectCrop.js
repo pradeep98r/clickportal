@@ -21,7 +21,7 @@ const SelectCrop = (props) => {
       allCropResponseData(response.data.data);
     });
   };
-  
+ 
   const [stat, setStat]= useState(false);
   const addCropOnclick = (crop_item) => {
     if (!selected.includes(crop_item)) {
@@ -55,6 +55,30 @@ const SelectCrop = (props) => {
       setSelected([]);
     }
   }
+  const [searchCropItem, setSearchCropItem] = useState("");
+  let [allCropData, setAllCropData] = useState([]);
+  const [valueActive, setIsValueActive] = useState(false);
+  const searchInput = (searchValue) =>{
+    setSearchCropItem(searchValue);
+    console.log(searchValue)
+    if (searchCropItem !== ""){
+      const filterdNames = allCropsData.filter(item=>{
+        if(item.cropName.toLowerCase().includes(searchValue.toLowerCase())){
+          return item.cropName.toLowerCase().includes(searchValue.toLowerCase());
+        }
+        else if (searchCropItem == "" || searchValue === "") {
+          return setIsValueActive(false);
+        } else {
+          return setIsValueActive(true);
+        }
+      })
+      console.log(filterdNames)
+      setAllCropData(filterdNames)
+    }
+    else{
+      setAllCropData(allCropsData)
+    }
+  }
   return (
     <Modal
       show={props.show}
@@ -77,26 +101,16 @@ const SelectCrop = (props) => {
             type="search"
             placeholder="Search"
             aria-label="Search"
-            onChange={(event) => setSelectCrop(event.target.value)}
+            onChange={(event) => searchInput(event.target.value)}
           />
         </div>
       </div>
       <div className="modal-body crop_modal_body" id="scroll_style">
-        {allCropsData.length > 0 && (
           <div className="d-flex flex_width">
-            {allCropsData
-              .filter((crop_item) => {
-                if (cropItem === "") {
-                  return crop_item;
-                } else if (
-                  crop_item.cropName
-                    .toLowerCase()
-                    .includes(cropItem.toLowerCase())
-                ) {
-                  return crop_item;
-                }
-              })
-              .map((crop_item, index) => (
+            {searchCropItem.length>1?
+            allCropData
+            .map((crop_item, index) => {
+                return(
                 <div className="col-lg-2">
                   <div
                     className={`text-center crop_div mr-0 crop ${
@@ -109,12 +123,32 @@ const SelectCrop = (props) => {
                       src={crop_item.imageUrl}
                       className="flex_class mx-auto"
                     />
-                    <p className="p-0">{crop_item.cropName}</p>
+                    <p className="p-0">{(crop_item.cropName)}</p>
                   </div>
                 </div>
-              ))}
+            )}):(allCropsData
+              .map((crop_item, index) => {
+                  return(
+                  <div className="col-lg-2">
+                    <div
+                      className={`text-center crop_div mr-0 crop ${
+                        selected.includes(crop_item) && crop_item.cropSelect==="active" ? "active" : ""
+                      }`}
+                      key={index}
+                      onClick={() => addCropOnclick(crop_item)}
+                    >
+                      <img
+                        src={crop_item.imageUrl}
+                        className="flex_class mx-auto"
+                      />
+                      <p className="p-0">
+                        {crop_item.cropName}
+                      </p>
+                    </div>
+                  </div>
+              )}))
+          }
           </div>
-        )}
       </div>
       <div className="modal-footer">
         <button type="button" className="secondary_btn" onClick={props.close}>
@@ -123,7 +157,7 @@ const SelectCrop = (props) => {
         <button
           type="button"
           className="primary_btn ml-3"
-          onClick={e=>{addCropClickNext(e);props.close()}}
+          onClick={e=>{addCropClickNext(e);props.close();}}
         >
           {langFullData.next}
         </button>

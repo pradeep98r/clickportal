@@ -496,20 +496,21 @@ const Step3Modal = (props) => {
   const [transEdit, settransedit] = useState(false);
   const [transValue, settransValue] = useState(0);
   const transOnchangeEvent = (event) => {
-    getTransportationValue(event.target.value.replace(/\D/g, ""));
+    getTransportationValue(event.target.value.replace(/[^0-9.]/g,''));
     settransedit(true);
     localStorage.setItem("trVal", event.target.value);
     settransValue(event.target.value);
   };
   const [labourEdit, setLabouredit] = useState(false);
   const labourOnchangeEvent = (event) => {
-    getLaborChargeValue(event.target.value.replace(/\D/g, ""));
+    getLaborChargeValue(event.target.value.replace(/[^0-9.]/g,''))//.replace(/\D./g, ""));
     localStorage.setItem("labVal", event.target.value);
     setLabouredit(true);
+   
   };
   const [rentEdit, setRentedit] = useState(false);
   const rentOnchangeEvent = (event) => {
-    getRentValue(event.target.value.replace(/\D/g, ""));
+    getRentValue(event.target.value.replace(/[^0-9.]/g,''));
     // localStorage.setItem("rentVal", editStatus ? !step2CropEditStatus ?billEditItem.rent/ : : event.target.value);
     setRentedit(true);
   };

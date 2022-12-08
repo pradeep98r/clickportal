@@ -449,17 +449,17 @@ const SellbillStep3Modal = (props) => {
   };
   const [transEdit, settransedit] = useState(false);
   const transOnchangeEvent = (event) => {
-    getTransportationValue(event.target.value.replace(/\D/g, ""));
+    getTransportationValue(event.target.value.replace(/[^0-9.]/g,''));
     settransedit(true);
   };
   const [labourEdit, setLabouredit] = useState(false);
   const labourOnchangeEvent = (event) => {
-    getLaborChargeValue(event.target.value.replace(/\D/g, ""));
+    getLaborChargeValue(event.target.value.replace(/[^0-9.]/g,''));
     setLabouredit(true);
   };
   const [rentEdit, setRentedit] = useState(false);
   const rentOnchangeEvent = (event) => {
-    getRentValue(event.target.value.replace(/\D/g, ""));
+    getRentValue(event.target.value.replace(/[^0-9.]/g,''));
     setRentedit(true);
   };
   const [mandifEdit, setMandifEdit] = useState(false);
