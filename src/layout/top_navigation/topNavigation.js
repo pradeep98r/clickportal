@@ -12,6 +12,7 @@ function TopNavigation() {
 
   const linkValue = localStorage.getItem("LinkId");
   var linkPath = localStorage.getItem("LinkPath");
+  console.log(linkPath)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
@@ -42,7 +43,7 @@ function TopNavigation() {
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));
   var stepOneSingleBill = JSON.parse(localStorage.getItem("stepOneSingleBook"));
-
+   console.log(stepone,typeof(stepone))
   const backToBuyBillBook = () => {
     localStorage.setItem("billViewStatus", false);
     localStorage.setItem("stepOne", false);

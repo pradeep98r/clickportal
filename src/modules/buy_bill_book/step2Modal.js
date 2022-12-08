@@ -642,8 +642,8 @@ const Step2Modal = (props) => {
                                     )
                                   </th>
 
-                                  <th>Rate</th>
-                                  <th>Total</th>
+                                  <th>Rate(₹)</th>
+                                  <th>Total(₹)</th>
                                 </tr>
                               </thead>
                               <tbody>

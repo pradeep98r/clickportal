@@ -443,6 +443,10 @@ const Step3Modal = (props) => {
               toastId: "success1",
             });
             props.closeStep3Modal();
+            console.log("edit")
+            localStorage.setItem("stepOne",false);
+            localStorage.setItem("billViewStatus",false)
+            localStorage.setItem("LinkPath","/buy_bill_book");
             navigate("/buy_bill_book");
           }
         },
@@ -460,7 +464,11 @@ const Step3Modal = (props) => {
               toastId: "success1",
             });
             props.closeStep3Modal();
+            localStorage.setItem("stepOne",false)
+            localStorage.setItem("LinkPath","/buy_bill_book");
             navigate("/buy_bill_book");
+            
+            console.log("add")
           }
         },
         (error) => {
