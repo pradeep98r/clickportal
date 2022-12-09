@@ -21,17 +21,16 @@ import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
 import { Modal, Button } from "react-bootstrap";
 import SearchField from "../../components/searchField";
-import {getText} from "../../components/getText";
+import { getText } from "../../components/getText";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
-  const [partnerData, setPartnerData] = useState([]);
+  const [allData, setAllData] = useState([]);
+  const [partnerData, setPartnerData] = useState(allData);
   const [partyType, setPartyType] = useState("FARMER");
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
   const [showModal, setShow] = useState(false);
   const [partyIdVal, setPartyIdVal] = useState(0);
   const handleClose = () => setShow(false);
@@ -97,39 +96,36 @@ const Partner = () => {
   const [nameField, setNameField] = useState("");
   const handleName = (e) => {
     setNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
-    commonValidation(e,'name');
+    commonValidation(e, "name");
     setRequiredNameField("");
   };
-  const commonValidation = (e,type) => {
+  const commonValidation = (e, type) => {
     var string1 = "Name should be min 2 characters";
     var string2 = "Name should be max 30 characters";
     if (e.target.value.length < 2) {
-      if(type == 'name'){
+      if (type == "name") {
         setNameError(string1);
-      }
-      else if(type == 'shortName'){
+      } else if (type == "shortName") {
         setShortNameError(string1);
       }
     } else if (e.target.value.length > 30) {
-      if(type == 'name'){
+      if (type == "name") {
         setNameError(string2);
-      }
-      else if(type == 'shortName'){
+      } else if (type == "shortName") {
         setShortNameError(string2);
       }
     } else {
-      if(type == 'name'){
-        setNameError('');
-      }
-      else if(type == 'shortName'){
-        setShortNameError('');
+      if (type == "name") {
+        setNameError("");
+      } else if (type == "shortName") {
+        setShortNameError("");
       }
     }
   };
   const [shortNameField, setShortNameField] = useState("");
   const handleShortName = (e) => {
     setShortNameField(e.target.value.replace(/[^A-Za-z0-9]/g, " "));
-    commonValidation(e,'shortName');
+    commonValidation(e, "shortName");
     setRequiredshortNameField("");
   };
   const [vehicleType, setVehicleType] = useState("");
@@ -222,28 +218,27 @@ const Partner = () => {
       mobileNumber.trim().length !== 0 &&
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
-        : (shortNameField.trim().length !== 0 && shortNameField.trim().length !== 1))
+        : shortNameField.trim().length !== 0 &&
+          shortNameField.trim().length !== 1)
     ) {
-      console.log("came to edit")
+      console.log("came to edit");
       addEditPartnerApiCall();
-    } else if (nameField.trim().length === 0 ) {
+    } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
-    }
-    else if(nameField.trim().length === 1){
-      setNameError("Name should be min 2 characters")
-    }
-    else if(shortNameField.trim().length === 1){
-      setShortNameError("Name should be min 2 characters")
+    } else if (nameField.trim().length === 1) {
+      setNameError("Name should be min 2 characters");
+    } else if (shortNameField.trim().length === 1) {
+      setShortNameError("Name should be min 2 characters");
     }
     console.log("done");
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
-      console.log("ediitt",obj);
+      console.log("ediitt", obj);
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -256,7 +251,7 @@ const Partner = () => {
         }
       );
     } else {
-      console.log("create",obj);
+      console.log("create", obj);
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -271,43 +266,7 @@ const Partner = () => {
     closeAddModal();
   };
   const [valueActive, setIsValueActive] = useState(false);
-  const searchItems = (searchValue) => {
-    setSearchInput(searchValue);
-    if (searchInput !== "") {
-      const filteredData = partnerData.filter((item) => {
-        console.log(item);
-        if (
-          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.partyId.toString().includes(searchInput.toLowerCase()) ||
-          item.shortName.toLowerCase().includes(searchInput.toLowerCase()) ||
-          item.partyId
-            .toString()
-            .toLowerCase()
-            .includes(searchInput.toLowerCase())
-        ) {
-          return (
-            item.partyName.toLowerCase().includes(searchInput.toLowerCase()) ||
-            item.mobile.toLowerCase().includes(searchInput.toLowerCase()) ||
-            item.partyId.toString().includes(searchInput.toLowerCase()) ||
-            item.shortName.toLowerCase().includes(searchInput.toLowerCase()) ||
-            item.partyId
-              .toString()
-              .toLowerCase()
-              .includes(searchInput.toLowerCase())
-          );
-        } else if (searchInput == "" || searchValue === "") {
-          return setIsValueActive(false);
-        } else {
-          return setIsValueActive(true);
-        }
-      });
-      setFilteredResults(filteredData);
-    } else {
-      setFilteredResults(partnerData);
-    }
-  };
+ 
   const tabEvent = (type) => {
     setPartyType(type);
     setAadharNumber("");
@@ -323,8 +282,10 @@ const Partner = () => {
     setPincode();
     setCityVal("");
     setStateVal("");
+    setSearchValue("");
     getPartnerData(clickId, type)
       .then((response) => {
+        setAllData(response.data.data);
         setPartnerData(response.data.data);
       })
       .catch((error) => {
@@ -354,7 +315,7 @@ const Partner = () => {
     },
   ];
   const getPosition = () => {
-    console.log("pos")
+    console.log("pos");
     setStreetVillage("");
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, posError);
@@ -385,18 +346,22 @@ const Partner = () => {
   };
   // Converting lat/long from browser geolocation into city, state, and zip code using Google Geocoding API
   const getAddress = (lat, long, googleKey) => {
-   var hi= fetch(
+    var hi = fetch(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${googleKey}`
-    ).then((res) => res.json()).then((address) => setZip(address));
-      
+    )
+      .then((res) => res.json())
+      .then((address) => setZip(address));
   };
   // Dispatching city, state, and zip code to store state
   const setZip = (address) => {
     let pincode = address.results[0].formatted_address;
-    
-    var pincodeValue = pincode.replace(address.results[0].address_components[0].long_name, "");
-     pincodeValue = pincodeValue.replace(/\D/g, "");
-     console.log(address,pincodeValue,"address")
+
+    var pincodeValue = pincode.replace(
+      address.results[0].address_components[0].long_name,
+      ""
+    );
+    pincodeValue = pincodeValue.replace(/\D/g, "");
+    console.log(address, pincodeValue, "address");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
     $("#city").val(city);
@@ -414,12 +379,12 @@ const Partner = () => {
     $text.attr("class", "form-control");
     $input = $text;
     $("#city-input-wrapper").html($input);
-    console.log(pincodeValue,city,state)
+    console.log(pincodeValue, city, state);
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
     setPincode(zip);
-    setStreetVillage('');
+    setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
@@ -441,7 +406,7 @@ const Partner = () => {
 
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    console.log(locality)
+    console.log(locality);
   }
 
   function geocodeResponseToCityState(geocodeJSON) {
@@ -476,7 +441,7 @@ const Partner = () => {
     } else {
       console.log("error: no address components found");
     }
-    console.log(parsedLocalities)
+    console.log(parsedLocalities);
     return parsedLocalities;
   }
   function fillCityAndStateFields(localities) {
@@ -494,9 +459,9 @@ const Partner = () => {
     $text.attr("class", "form-control");
     $input = $text;
     $("#city-input-wrapper").html($input);
-    console.log(city,locality.state)
+    console.log(city, locality.state);
   }
-  
+
   $("#MybtnModal").click(function () {
     // setPincode();
     setAadharNumber("");
@@ -507,48 +472,62 @@ const Partner = () => {
     setStateVal("");
     setShortNameField("");
     setStreetVillage("");
-    if(partyType=='FARMER'){
+    if (partyType == "FARMER") {
       setradioValue("FARMER");
+    } else {
+      setradioValue("BUYER");
     }
-   else{
-    setradioValue("BUYER");
-   }
     setIsEdit(false);
     // setPincode();
     setCityVal("");
     setStateVal("");
     setAddeditText("Add");
-    console.log(isEdit,radioValue, "after");
+    console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
   });
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
-    console.log(pincode)
+    console.log(pincode);
   };
-const getPartnerType = (item,trader) =>{
-var party = item;
-switch(item){
-  case 'FARMER':
-    if(trader){
-      party = 'TRADER';
+  const getPartnerType = (item, trader) => {
+    var party = item;
+    switch (item) {
+      case "FARMER":
+        if (trader) {
+          party = "TRADER";
+        } else {
+          party = item;
+        }
+        break;
+      case "BUYER":
+        if (trader) {
+          party = "TRADER";
+        } else {
+          party = item;
+        }
+        break;
     }
-    else{
-      party = item; 
-    }
-    break;
-    case 'BUYER':
-    if(trader){
-      party = 'TRADER';
-    }
-    else{
-      party = item; 
-    }
-    break;   
-}
-return party;
-}
+    return party;
+  };
+ const [searchValue, setSearchValue] = useState('');
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if(data.mobile.includes(value)){
+        return data.mobile.search(value) != -1;
+      }
+      else if(data.partyName.includes(value)){
+        return data.partyName.search(value) != -1;
+      }
+      else if(data.partyId.toString().includes(value)){
+        return data.partyId.toString().search(value) != -1;
+      }
+    });
+    setPartnerData(result);
+    setSearchValue(value);
+  };
   return (
-    
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
@@ -581,108 +560,123 @@ return party;
             >
               <div className="row">
                 <div className="col-lg-9 ps-0">
-                <SearchField placeholder={langFullData.search} onChange={(e) => {
-                      searchItems(e.target.value);
-                    }} />
-                 
+                  <SearchField
+                    placeholder={langFullData.search}
+                    val={searchValue}
+                    onChange={(event) => {
+                      handleSearch(event);
+                      // searchItems(e.target.value);
+                    }}
+                  />
+
                   <div>
-                    {searchInput.length > 1 ? (
-                      filteredResults.map((partner, index) => {
-                        return (
-                          <div className="card partner_card" key={index}>
-                            <div className="d-flex partner_card_flex justify-content-between align-items-center">
-                              <div className="d-flex align-items-center">
-                              {
-                                   partner.profilePic ?  <img
-                                   src={partner.profilePic}
-                                   alt="profile_img"
-                                   className="user_img"
-                                 />: <img
-                                   src={single_bill}
-                                   alt="img"
-                                   className="user_img"
-                                 />
-                                 }
-                                <div>
-                                  <h5>{partner.partyName}</h5>
-                                  <h6>
-                                    {partner.partyType} - {partner.partyId} |{" "}
-                                    {partner.mobile}
-                                  </h6>
-                                  <p>{partner.address.addressLine}</p>
-                                </div>
-                              </div>
-                              <div className="d-flex edit_delete_icons">
-                                <img
-                                  src={edit}
-                                  alt="img"
-                                  className=""
-                                  onClick={() => editPartner(partner)}
-                                />
-                                <img
-                                  src={delete_icon}
-                                  alt="img"
-                                  onClick={() => handleShow(partner.partyId)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : partnerData.length > 0 ? (
-                      <div>
-                        <div className="partner_div" id="scroll_style">
-                          {partnerData.map((partner, index) => (
-                            <div className="card partner_card" key={index}>
-                              <div className="d-flex partner_card_flex justify-content-between align-items-center">
-                                <div className="d-flex align-items-center">
-                                 {
-                                   partner.profilePic ?  <img
-                                   src={partner.profilePic}
-                                   alt="profile_img"
-                                   className="user_img"
-                                 />: <img
-                                   src={single_bill}
-                                   alt="img"
-                                   className="user_img"
-                                 />
-                                 }
-                                  <div>
-                                    <h5>
-                                      {partner.partyName +
-                                        " " +
-                                        partner.shortName}
-                                    </h5>
-                                    <h6>
-                                      {getPartnerType(partner.partyType,partner.trader)} - {partner.partyId} |{" "}
-                                      {partner.mobile}
-                                    </h6>
-                                    <p>{partner.address.addressLine}</p>
+                    {
+                      // searchInput.length > 1 ? (
+                      //   filteredResults.map((partner, index) => {
+                      //     return (
+                      //       <div className="card partner_card" key={index}>
+                      //         <div className="d-flex partner_card_flex justify-content-between align-items-center">
+                      //           <div className="d-flex align-items-center">
+                      //           {
+                      //                partner.profilePic ?  <img
+                      //                src={partner.profilePic}
+                      //                alt="profile_img"
+                      //                className="user_img"
+                      //              />: <img
+                      //                src={single_bill}
+                      //                alt="img"
+                      //                className="user_img"
+                      //              />
+                      //              }
+                      //             <div>
+                      //               <h5>{partner.partyName}</h5>
+                      //               <h6>
+                      //                 {partner.partyType} - {partner.partyId} |{" "}
+                      //                 {partner.mobile}
+                      //               </h6>
+                      //               <p>{partner.address.addressLine}</p>
+                      //             </div>
+                      //           </div>
+                      //           <div className="d-flex edit_delete_icons">
+                      //             <img
+                      //               src={edit}
+                      //               alt="img"
+                      //               className=""
+                      //               onClick={() => editPartner(partner)}
+                      //             />
+                      //             <img
+                      //               src={delete_icon}
+                      //               alt="img"
+                      //               onClick={() => handleShow(partner.partyId)}
+                      //             />
+                      //           </div>
+                      //         </div>
+                      //       </div>
+                      //     );
+                      //   })
+                      // ) :
+                      partnerData.length > 0 ? (
+                        <div>
+                          <div className="partner_div" id="scroll_style">
+                            {partnerData.map((partner, index) => (
+                              <div className="card partner_card" key={index}>
+                                <div className="d-flex partner_card_flex justify-content-between align-items-center">
+                                  <div className="d-flex align-items-center">
+                                    {partner.profilePic ? (
+                                      <img
+                                        src={partner.profilePic}
+                                        alt="profile_img"
+                                        className="user_img"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={single_bill}
+                                        alt="img"
+                                        className="user_img"
+                                      />
+                                    )}
+                                    <div>
+                                      <h5>
+                                        {partner.partyName +
+                                          " " +
+                                          partner.shortName}
+                                      </h5>
+                                      <h6>
+                                        {getPartnerType(
+                                          partner.partyType,
+                                          partner.trader
+                                        )}{" "}
+                                        - {partner.partyId} | {partner.mobile}
+                                      </h6>
+                                      <p>{partner.address.addressLine}</p>
+                                    </div>
+                                  </div>
+                                  <div className="d-flex edit_delete_icons">
+                                    <img
+                                      src={edit}
+                                      alt="img"
+                                      className=""
+                                      onClick={() => editPartner(partner)}
+                                    />
+                                    <img
+                                      src={delete_icon}
+                                      alt="img"
+                                      onClick={() =>
+                                        handleShow(partner.partyId)
+                                      }
+                                    />
                                   </div>
                                 </div>
-                                <div className="d-flex edit_delete_icons">
-                                  <img
-                                    src={edit}
-                                    alt="img"
-                                    className=""
-                                    onClick={() => editPartner(partner)}
-                                  />
-                                  <img
-                                    src={delete_icon}
-                                    alt="img"
-                                    onClick={() => handleShow(partner.partyId)}
-                                  />
-                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <NoDataAvailable />
-                    )}
+                      ) : (
+                        <NoDataAvailable />
+                      )
+                    }
                   </div>
-                  <div
+                  {/* <div
                     id="search-no-data"
                     style={{
                       display:
@@ -692,8 +686,7 @@ return party;
                     }}
                   >
                     <NoDataAvailable />
-                    {/* <p>No Data Found</p> */}
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col-lg-3">
                   <div className="card default_card add_partner">
@@ -804,8 +797,7 @@ return party;
                           handleNumber(e);
                         }}
                       />
-                       <span className="text-danger">{aadharError}</span>
-                      
+                      <span className="text-danger">{aadharError}</span>
                     </div>
                   </div>
                 ) : (
@@ -834,7 +826,7 @@ return party;
                         <InputField
                           type="text"
                           value={nameField}
-                          label={'Name' + "*"}
+                          label={"Name" + "*"}
                           name="name"
                           id="inputName"
                           onChange={(e) => {
@@ -852,7 +844,7 @@ return party;
                             handleNumber(e);
                           }}
                         />
-                         <span className="text-danger">{aadharError}</span>
+                        <span className="text-danger">{aadharError}</span>
                       </div>
                     ) : (
                       <div></div>
@@ -928,7 +920,9 @@ return party;
                                 handleShortName(e);
                               }}
                             />
-                            <span className="text-danger">{shortnameError}</span>
+                            <span className="text-danger">
+                              {shortnameError}
+                            </span>
                             <span className="text-danger">
                               {requiredshortNameField}
                             </span>
