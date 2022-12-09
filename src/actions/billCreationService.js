@@ -31,7 +31,7 @@ export function getBuyerLedgers(clickId) {
 
 export function getLedgerSummary(clickId, partyId, clientId, clientSecret) {
   return axiosCommon.get(
-    `/account/reports/ledger/summary/caId/${clickId}/partyId/${partyId}`
+    `/reports/ledger/summary/caId/${clickId}/partyId/${partyId}`
   );
 }
 

@@ -540,7 +540,7 @@ const BuyerLedger = () => {
                         </div>
                         <div className="col-lg-3" id="verticalLines">
                           <p className="total-paid">
-                            Total Paid
+                            Total Recieved
                             <p className="coloring">
                               {summaryData.totalRcvdPaid
                                 ? getCurrencyNumberWithSymbol(
