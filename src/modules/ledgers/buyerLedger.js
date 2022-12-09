@@ -18,11 +18,8 @@ import { useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import no_data from "../../assets/images/no_data_available.png";
 import add from "../../assets/images/add.svg";
-import close_btn from "../../assets/images/close_btn.svg";
 import date_icon from "../../assets/images/date_icon.svg";
-import ReactModal from "react-modal";
 import { useNavigate } from "react-router-dom";
-import right_click from "../../assets/images/right_click.svg";
 import $ from "jquery";
 import "../../modules/buy_bill_book/buyBillBook.scss";
 import moment from "moment";
@@ -33,12 +30,12 @@ import SearchField from "../../components/searchField";
 import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
-  getCurrencyNumberWithOneDigit
+  getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
 const BuyerLedger = () => {
-  const [search, setSearch] = useState("");
   const [openTabs, setOpenTabs] = useState(false);
-  const [ledger, setLedgeres] = useState([]);
+  const [allData, setallData] = useState([]);
+  const [ledger, setLedgeres] = useState(allData);
   const [data, setData] = useState({});
   const [error, setError] = useState();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -82,13 +79,15 @@ const BuyerLedger = () => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
-
+  const [allLedgersSummary, setallLedgersSummary] = useState([]);
   const fetchBuyerLedger = () => {
     getBuyerLedgers(clickId)
       .then((response) => {
         console.log(response);
         setData(response.data.data);
+        setallData(response.data.data.ledgers);
         setLedgeres(response.data.data.ledgers);
+        setallLedgersSummary(response.data.data.ledgers);
       })
       .catch((error) => {
         setError(error.message);
@@ -134,7 +133,7 @@ const BuyerLedger = () => {
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
       console.log(response);
-      console.log(response.data)
+      console.log(response.data);
       setPaidRcvd(response.data.data);
     });
   };
@@ -203,8 +202,8 @@ const BuyerLedger = () => {
       .catch((error) => {
         console.log(error);
       });
-      setOpenTabs(true);
-      // setIsActive(indexs);
+    setOpenTabs(true);
+    // setIsActive(indexs);
     // navigate("/buyerledger");
     setIsOpen(false);
     localStorage.removeItem("partyId");
@@ -271,91 +270,53 @@ const BuyerLedger = () => {
         });
     }
   };
-  // const fetchLedgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
-  //   console.log(fromDate, toDate);
-  //   getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
-  //     .then((response) => {
-  //       //setSummaryDataByDate(response.data.data);
-  //       setSummaryByDate(response.data.data.ledgerSummary);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-  // const fetchDetailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
-  //   getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
-  //     .then((response) => {
-  //       setDetailsByDate(response.data.data.details);
-  //       //setDetailedDataByDate(response.data.data)
-  //     })
-  //     .catch((error) => {
-  //       setError(error);
-  //       console.log(error.message);
-  //     });
-  // };
-  const DateModal = () => {
-    $("#datePopupmodal").modal("show");
-  };
 
-  const [ledgersData, setLedgersData] = useState([]);
-  const [valueActive, setIsValueActive] = useState(false);
-  //partyId = JSON.parse(localStorage.getItem("partyId"));
-  const searchInput = (searchValue) => {
-    setSearch(searchValue);
-    if (search !== "") {
-      console.log(search);
-      const filterdNames = ledger.filter((item) => {
-        if (
-          item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          item.shortName.toLowerCase().includes(searchValue.toLowerCase())
-        ) {
-          return (
-            item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-            item.shortName.toLowerCase().includes(searchValue.toLowerCase())
-          );
-        } else if (search == "" || searchValue === "") {
-          return setIsValueActive(false);
-        } else {
-          return setIsValueActive(true);
-        }
-      });
-      setLedgersData(filterdNames);
-      console.log(filterdNames, "filteredNames");
-    } else {
-      setLedgersData(ledger);
-    }
-  };
   const closePopup = () => {
     $("#myModal").modal("hide");
+  };
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.mobile.includes(value)) {
+        return data.mobile.search(value) != -1;
+      } else if (data.partyName.includes(value)) {
+        return data.partyName.search(value) != -1;
+      } else if (data.partyId.toString().includes(value)) {
+        return data.partyId.toString().search(value) != -1;
+      }
+    });
+    setLedgeres(result);
   };
   return (
     <Fragment>
       <div>
         <div className="main_div_padding">
-          {ledger.length > 0 ? (
+          {allLedgersSummary.length > 0 ? (
             <div className="row">
               <div className="col-lg-4 p-0">
                 <div id="search-field">
                   <SearchField
                     placeholder="Search by Name / Short Code"
-                    onChange={(e) => {
-                      searchInput(e.target.value);
+                    onChange={(event) => {
+                      handleSearch(event);
                     }}
                   />
                 </div>
-                <div className="table-scroll" id="scroll_style">
-                  <table className="table table-fixed ledger-table">
-                    <thead className="theadr-tag">
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Buyer Name</th>
-                        <th scope="col">To Be Recieved(&#8377;)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {search.length > 1
-                        ? ledgersData.map((item, index) => {
+                {ledger.length > 0 ? (
+                  <div>
+                    <div className="table-scroll" id="scroll_style">
+                      <table className="table table-fixed ledger-table">
+                        <thead className="theadr-tag">
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Buyer Name</th>
+                            <th scope="col">To Be Recieved(&#8377;)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {ledger.map((item, index) => {
                             return (
                               <Fragment>
                                 <tr
@@ -411,71 +372,9 @@ const BuyerLedger = () => {
                                   <td key={item.tobePaidRcvd}>
                                     <p className="coloring">
                                       {item.tobePaidRcvd
-                                        ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
-                                        : 0}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </Fragment>
-                            );
-                          })
-                        : ledger.map((item, index) => {
-                            return (
-                              <Fragment>
-                                <tr
-                                  onClick={(id, indexs) => {
-                                    particularLedger(item.partyId, index);
-                                  }}
-                                  className={
-                                    isActive === index
-                                      ? "tabRowSelected"
-                                      : "tr-tags"
-                                  }
-                                >
-                                  <td scope="row">{index + 1}</td>
-                                  <td key={item.date}>
-                                    {moment(item.date).format("DD-MMM-YY")}
-                                  </td>
-                                  <td key={item.partyName}>
-                                    <div className="d-flex">
-                                      <div className="c-img">
-                                        {item.profilePic ? (
-                                          <img
-                                            className="profile-img"
-                                            src={item.profilePic}
-                                            alt="pref-img"
-                                          />
-                                        ) : (
-                                          <img
-                                            className="profile-img"
-                                            src={single_bill}
-                                            alt="img"
-                                          />
-                                        )}
-                                      </div>
-                                      <div>
-                                        <p className="namedtl-tag">
-                                          {item.partyName}
-                                        </p>
-                                        <p className="mobilee-tag">
-                                          {!item.trader ? "Buyer" : "Trader"} -{" "}
-                                          {item.partyId}&nbsp;
-                                        </p>
-                                        <p className="mobilee-tag">
-                                          {item.mobile}
-                                        </p>
-                                        <p className="address-tag">
-                                          {item.partyAddress
-                                            ? item.partyAddress
-                                            : ""}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td key={item.tobePaidRcvd}>
-                                    <p className="coloring">
-                                      {item.tobePaidRcvd
-                                        ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
+                                        ? getCurrencyNumberWithOutSymbol(
+                                            item.tobePaidRcvd
+                                          )
                                         : 0}
                                     </p>
                                   </td>
@@ -483,25 +382,23 @@ const BuyerLedger = () => {
                               </Fragment>
                             );
                           })}
-                    </tbody>
-                  </table>
-                  <div
-                    id="search-no-data"
-                    style={{
-                      display:
-                        valueActive && search.length > 0 ? "block" : "none",
-                    }}
-                  >
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="outstanding-pay d-flex align-items-center justify-content-between">
+                      <p className="pat-tag">Outstanding Recievables:</p>
+                      <p className="values-tag">
+                        {data.totalOutStgAmt
+                          ? getCurrencyNumberWithSymbol(data.totalOutStgAmt)
+                          : 0}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="table-scroll nodata_scroll">
                     <NoDataAvailable />
                   </div>
-                </div>
-                <div className="outstanding-pay d-flex align-items-center justify-content-between">
-                  <p className="pat-tag">Outstanding Recievables:</p>
-                  <p className="values-tag">
-                    
-                    {data.totalOutStgAmt ? getCurrencyNumberWithSymbol(data.totalOutStgAmt) : 0}
-                  </p>
-                </div>
+                )}
               </div>
               <div className="col-lg-8">
                 <div
@@ -633,10 +530,10 @@ const BuyerLedger = () => {
                           <p className="card-text paid">
                             Total Business
                             <p className="coloring">
-                            
                               {summaryData.totalTobePaidRcvd
                                 ? getCurrencyNumberWithSymbol(
-                                  summaryData.totalTobePaidRcvd)
+                                    summaryData.totalTobePaidRcvd
+                                  )
                                 : 0}
                             </p>
                           </p>
@@ -645,10 +542,10 @@ const BuyerLedger = () => {
                           <p className="total-paid">
                             Total Recieved
                             <p className="coloring">
-                             
-                              {summaryData.totalRcvdPaid 
+                              {summaryData.totalRcvdPaid
                                 ? getCurrencyNumberWithSymbol(
-                                  summaryData.totalRcvdPaid)
+                                    summaryData.totalRcvdPaid
+                                  )
                                 : 0}
                             </p>
                           </p>
@@ -657,10 +554,10 @@ const BuyerLedger = () => {
                           <p className="out-standing">
                             Outstanding Recievables
                             <p className="coloring">
-                            
                               {summaryData.outStdRcvPayble
                                 ? getCurrencyNumberWithSymbol(
-                                  summaryData.outStdRcvPayble)
+                                    summaryData.outStdRcvPayble
+                                  )
                                 : 0}
                             </p>
                           </p>
@@ -743,8 +640,9 @@ const BuyerLedger = () => {
                                     <td className="col-3">
                                       <p id="p-common">
                                         {item.paidRcvd
-                                          ? getCurrencyNumberWithOutSymbol
-                                          (item.paidRcvd)
+                                          ? getCurrencyNumberWithOutSymbol(
+                                              item.paidRcvd
+                                            )
                                           : ""}
                                       </p>
                                     </td>
@@ -752,14 +650,17 @@ const BuyerLedger = () => {
                                       <p id="p-common">
                                         {item.tobePaidRcvd
                                           ? getCurrencyNumberWithOutSymbol(
-                                            item.tobePaidRcvd)
+                                              item.tobePaidRcvd
+                                            )
                                           : ""}
                                       </p>
                                     </td>
                                     <td className="col-3">
                                       <p className="coloring" id="p-common">
                                         {item.balance
-                                          ? getCurrencyNumberWithOutSymbol(item.balance)
+                                          ? getCurrencyNumberWithOutSymbol(
+                                              item.balance
+                                            )
                                           : ""}
                                       </p>
                                     </td>
@@ -826,23 +727,34 @@ const BuyerLedger = () => {
                                         {item.itemName}
                                       </p>
                                       <span style={{ fontSize: "13px" }}>
-                                        {item.qty ? getCurrencyNumberWithOneDigit(
-                                          item.qty) : ""}{" "}
+                                        {item.qty
+                                          ? getCurrencyNumberWithOneDigit(
+                                              item.qty
+                                            )
+                                          : ""}{" "}
                                         {item.unit !== null
                                           ? item.unit
                                               .charAt(item)
                                               .toUpperCase() + " | "
                                           : ""}{" "}
-                                        {item.kg ? getCurrencyNumberWithOneDigit(
-                                          item.kg) + " | " : ""}{" "}
-                                        {item.rate ? getCurrencyNumberWithOutSymbol(item.rate) : ""}
+                                        {item.kg
+                                          ? getCurrencyNumberWithOneDigit(
+                                              item.kg
+                                            ) + " | "
+                                          : ""}{" "}
+                                        {item.rate
+                                          ? getCurrencyNumberWithOutSymbol(
+                                              item.rate
+                                            )
+                                          : ""}
                                       </span>
                                     </td>
                                     <td className="col-2">
                                       <p id="p-common">
                                         {item.recieved
                                           ? getCurrencyNumberWithOutSymbol(
-                                            item.recieved)
+                                              item.recieved
+                                            )
                                           : ""}
                                       </p>
                                     </td>
@@ -850,7 +762,8 @@ const BuyerLedger = () => {
                                       <p id="p-common">
                                         {item.toBeRecieved
                                           ? getCurrencyNumberWithOutSymbol(
-                                            item.toBeRecieved)
+                                              item.toBeRecieved
+                                            )
                                           : ""}
                                       </p>
                                     </td>
@@ -858,7 +771,8 @@ const BuyerLedger = () => {
                                       <p className="coloring" id="p-common">
                                         {item.balance
                                           ? getCurrencyNumberWithOutSymbol(
-                                            item.balance)
+                                              item.balance
+                                            )
                                           : ""}
                                       </p>
                                     </td>
@@ -1146,9 +1060,7 @@ const BuyerLedger = () => {
                               <p id="p-tag">Outstanding Paybles</p>
                               <p id="recieve-tag">
                                 &#8377;
-                                {paidRcvd
-                                  ? paidRcvd.toFixed(2)
-                                  : 0}
+                                {paidRcvd ? paidRcvd.toFixed(2) : 0}
                               </p>
                             </div>
                             <div className="form-group" id="input_in_modal">
