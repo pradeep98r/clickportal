@@ -282,6 +282,42 @@ const TransportoLedger = () => {
       setLedgersData(transporter);
     }
   };
+
+  const getCropUnit = (unit) => {
+    var unitType = "";
+    console.log(unit)
+    switch (unit.toUpperCase()) {
+      case "CRATES":
+        unitType = "C";
+        break;
+      case "BOXES":
+        unitType = "BX";
+        break;
+      case "BAGS":
+        unitType = "Bg";
+        break;
+      case "SACS":
+        unitType = "S";
+        break;
+        case "LOADS":
+          unitType = "L";
+          break;
+          case "PIECES":
+          unitType = "P";
+          break;
+    }
+    console.log(unitType)
+    return unitType + " | ";
+   
+  };
+  const handleTotalBalance = (given,collected) =>{
+    for(var i = 0; i<given.length;i++){
+      for(var j = 0;j<collected.length;j++){
+        console.log(given[i].qty-collected[i].qty);
+        return given[i].qty-collected[i].qty;
+      }
+    }
+  }
   return (
     <Fragment>
       <div className="main_div_padding">
@@ -514,6 +550,8 @@ const TransportoLedger = () => {
                          }
                        })}
                      </div>
+                     {toggleState === "paymentledger" &&(
+                      <>
                      <div className="col-lg-3" id="verticalLines">
                        <p className="card-text paid">
                          {langFullData.totalBusiness}{" "}
@@ -547,6 +585,52 @@ const TransportoLedger = () => {
                          </p>
                        </p>
                      </div>
+                     </>
+                     )}
+                     {toggleState === "inventoryledger" &&(
+                      <>
+                     <div className="col-lg-3" id="verticalLines">
+                       <p className="card-text paid">
+                         Total Given{" "}
+                         <p className="coloring color_black">
+                           {invLedger.totalGiven
+                             ? invLedger.totalGiven
+                              .map(item=>{
+                                return item.qty+" "+getCropUnit(item.unit);
+                              })
+                             : 0}
+                         </p>
+                       </p>
+                     </div>
+                     <div className="col-lg-3" id="verticalLines">
+                       <p className="total-paid">
+                         Total Collected
+                         <p className="coloring color_black">
+                          
+                           {invLedger.totalCollected
+                             ? invLedger.totalCollected.map(item=>{
+                                return item.qty+" "+getCropUnit(item.unit);
+                             })
+                             : ''}
+                         </p>{" "}
+                       </p>
+                     </div>
+                     <div className="col-lg-3">
+                       <p className="out-standing">
+                       Total Balance
+                         <p className="coloring color_black">
+                           {invLedger.balance?invLedger.balance.map(item=>{
+                              return item.qty+" "+getCropUnit(item.unit);
+                            }):''
+                          }
+                           {/* {payLedger.totalOutStandingBalance
+                             ? getCurrencyNumberWithSymbol(payLedger.totalOutStandingBalance)
+                             : 0} */}
+                         </p>
+                       </p>
+                     </div>
+                     </>
+                     )}
                    </div>
                  </div>
                  <span id="horizontal-line-card"></span>
