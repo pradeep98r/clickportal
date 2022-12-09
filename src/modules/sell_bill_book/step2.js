@@ -175,31 +175,9 @@ const SellbillStep2Modal = (props) => {
       }
     }
     cropData.map((item, index) => {
-      // if(cropData[index].qty == 0){
-      //   toast.error('Please enter Quantity', {
-      //     toastId: "error1" 
-      //   });
-      // }
-      // else if(cropData[index].weight == 0){
-      //   toast.error('Please enter weight', {
-      //     toastId: "error2" 
-      //   });
-      // }
-      // else if(cropData[index].rate == 0){
-      //   toast.error('Please enter rate', {
-      //     toastId: "error3" 
-      //   });
-      // }
-      // else if (
-      //   setQuantityBasedtable(cropData[index].qtyUnit) &&
-      //   cropData[index].weight != 0 &&
-      //   cropData[index].rate != 0
-      // ) {
-      //   return cropData[index];
-      // }
       if (
         cropData[index].qty != 0 &&
-        cropData[index].weight != 0 &&
+        // cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
         setShowStep3ModalStatus(true);
@@ -238,7 +216,7 @@ const SellbillStep2Modal = (props) => {
     })
 
   };
-  var arrays = [];
+  var arrays = []
   const addStep2Next = () => {
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
@@ -287,12 +265,21 @@ const SellbillStep2Modal = (props) => {
             return null;
           }
         }
-        else if (cropData[index].qty == 0) {
-          toast.error('Please enter Quantity', {
-            toastId: "error1"
+        else if (
+          cropData[index].qty == 0 &&
+          !setQuantityBasedtable(cropData[index].qtyUnit)
+        ) {
+          toast.error("Please enter Quantity", {
+            toastId: "error1",
           });
           return null;
         }
+        // else if (cropData[index].qty == 0) {
+        //   toast.error('Please enter Quantity', {
+        //     toastId: "error1"
+        //   });
+        //   return null;
+        // }
 
         else if (cropData[index].weight == 0) {
           toast.error('Please enter weight', {
@@ -317,7 +304,6 @@ const SellbillStep2Modal = (props) => {
       for (var k = 0; k < cropData.length; k++) {
         arrays.push(cropData[k]);
       }
-      console.log(arrays, "arrays");
       if (arrays.length === cropData.length) {
         addStep3Modal();
       }

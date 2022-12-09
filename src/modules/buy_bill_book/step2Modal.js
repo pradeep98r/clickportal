@@ -55,7 +55,7 @@ const Step2Modal = (props) => {
     setCropInfoModal(true);
     setCropClear(true);
   };
-
+  var clearPrefCrops=[]
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
@@ -73,9 +73,11 @@ const Step2Modal = (props) => {
             { status: 1 }
           );
         });
+        //clearPrefCrops.push(response.data.data);
         setPreferedCropsData([...preferedCropsData, ...response.data.data]);
         // if (props.cropTableEditStatus) {
         preferedCropsData = response.data.data;
+        clearPrefCrops.push(preferedCropsData);
         return preferedCropsData;
         // }
       })
@@ -84,6 +86,7 @@ const Step2Modal = (props) => {
       });
     return preferedCropsData;
   };
+  
   useEffect(() => {
     fetchData()
     console.log(preferedCropsData, "prefered");
@@ -108,7 +111,6 @@ const Step2Modal = (props) => {
 
         }
         else {
-          console.log(preferedCropsData,cropArr, "came to else")
           preferedCropsData.push(cropArr[index]);
           if (cropArr[index].rateType == "RATE_PER_KG") {
             cropArr[index].rateType = "kgs";
@@ -216,7 +218,7 @@ const Step2Modal = (props) => {
     // if (cropData.length > 0) {
     cropData.map((item, index) => {
       if (
-        // cropData[index].qty != 0 &&
+        cropData[index].qty != 0 &&
         // cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
@@ -344,7 +346,6 @@ const Step2Modal = (props) => {
       }
       for (var k = 0; k < cropData.length; k++) {
         arrays.push(cropData[k]);
-        console.log(arrays);
       }
       if (arrays.length === cropData.length) {
         addStep3Modal();
