@@ -108,7 +108,7 @@ const Step2Modal = (props) => {
 
         }
         else {
-          console.log(preferedCropsData, "came to else")
+          console.log(preferedCropsData,cropArr, "came to else")
           preferedCropsData.push(cropArr[index]);
           if (cropArr[index].rateType == "RATE_PER_KG") {
             cropArr[index].rateType = "kgs";
