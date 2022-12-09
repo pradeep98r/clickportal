@@ -8,12 +8,13 @@ import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import Step3Modal from "./step3Model";
 import toastr from "toastr";
-import $, { merge } from "jquery";
+import $, { inArray, merge } from "jquery";
 import clo from "../../assets/images/clo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import SelectBags from "./bags";
+import { invalid } from "moment";
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -510,6 +511,7 @@ const Step2Modal = (props) => {
     }
   };
   const callbackFunction = (childData, invArr) => {
+    console.log(childData,invArr,"bags parent")
     let updatedItems = cropData.map((item, i) => {
       if (i == arIndex) {
         item = childData[0];
@@ -735,7 +737,7 @@ const Step2Modal = (props) => {
                                       cropData[index].rateType ? (
                                       <td className="col-2">
                                         <div className="d-flex">
-                                          <p className="unit-type">
+                                          <p className="unit-type mt-0">
                                             {cropData[index].bags !== null &&
                                               cropData[index].bags.length > 0
                                               ? "Edit"

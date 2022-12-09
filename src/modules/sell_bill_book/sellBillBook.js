@@ -113,10 +113,10 @@ const SellBillBook = () => {
     let value = event.target.value.toLowerCase();
     let result = [];
     result = allData.singleBills.filter((data) => {
-      if (data.buyerName.includes(value)) {
-        return data.buyerName.search(value) != -1;
-      } else if (data.shortName.includes(value)) {
-        return data.shortName.search(value) != -1;
+      if (data.buyerName.toLowerCase().includes(value)) {
+        return data.buyerName.toLowerCase().search(value) != -1;
+      } else if (data.shortName.toLowerCase().includes(value)) {
+        return data.shortName.toLowerCase().search(value) != -1;
       } else if (data.buyerId.toString().includes(value)) {
         return data.buyerId.toString().search(value) != -1;
       }

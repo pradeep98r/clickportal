@@ -266,7 +266,7 @@ const Partner = () => {
     closeAddModal();
   };
   const [valueActive, setIsValueActive] = useState(false);
- 
+
   const tabEvent = (type) => {
     setPartyType(type);
     setAadharNumber("");
@@ -509,18 +509,16 @@ const Partner = () => {
     }
     return party;
   };
- const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
     result = allData.filter((data) => {
-      if(data.mobile.includes(value)){
+      if (data.mobile.includes(value)) {
         return data.mobile.search(value) != -1;
-      }
-      else if(data.partyName.includes(value)){
-        return data.partyName.search(value) != -1;
-      }
-      else if(data.partyId.toString().includes(value)){
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
+      } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
       }
     });
