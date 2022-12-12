@@ -298,6 +298,7 @@ const CompleteProfile = (props) => {
   };
   // address details
   const getPosition = () => {
+    setStreetVillage("");
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, posError);
     } else {
@@ -338,12 +339,14 @@ const CompleteProfile = (props) => {
   };
   // Dispatching city, state, and zip code to store state
   const setZip = (address) => {
-    let pincode = address.results[5].formatted_address;
-    var pincodeValue = pincode.replace(/[^\d]/g, "");
-      ///\D/g, '');
-    console.log(pincodeValue);
+    let pincode = address.results[0].formatted_address;
+    var pincodeValue = pincode.replace(
+      address.results[0].address_components[0].long_name,
+      ""
+    );
+    pincodeValue = pincodeValue.replace(/\D/g, "");
     let city = address.results[5].address_components[2].short_name;
-    let state = address.results[5].address_components[4].short_name;
+    let state = address.results[5].address_components[3].short_name;
     console.log(pincodeValue);
     $("#city").val(city);
     $("#state").val(state);
