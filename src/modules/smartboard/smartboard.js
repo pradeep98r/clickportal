@@ -22,6 +22,7 @@ import prev_icon from "../../assets/images/prev_icon.png";
 import next_icon from "../../assets/images/next_icon.png";
 import CompleteProfile from "./completeprofile";
 import Modal from "react-modal/lib/components/Modal";
+import { useNavigate } from "react-router-dom";
 const SmartBoard = () => {
   const [tabType, setTabType] = useState("Daily");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -38,7 +39,7 @@ const SmartBoard = () => {
   const [cropPurchaseData, setcropPurchaseData] = useState([]);
   const [commissionEarns, setcommissionEarns] = useState({});
   const [isLoading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
 
@@ -64,8 +65,10 @@ const SmartBoard = () => {
           .addClass("ui-state-active");
       }, 1);
     };
+    var currentTime = new Date();
     $(".week-picker").datepicker({
-      maxDate: new Date(),
+      // minDate: new Date(currentTime.getFullYear(), currentTime.getMonth(), 1),
+      // maxDate: new Date(currentTime.getFullYear(), currentTime.getMonth() + 1, 0),
       showOtherMonths: true,
       selectOtherMonths: true,
       dateFormat: "dd-MM-yy",
@@ -305,9 +308,14 @@ const SmartBoard = () => {
     if(path === '/sellbillbook'){
       localStorage.setItem("LinkId", 3);
       localStorage.setItem("LinkPath", "/sellbillbook");
+      navigate('/sellbillbook');
+      console.log("sell")
+      window.location.reload();
     } else if(path === '/buy_bill_book'){
       localStorage.setItem("LinkId", 4);
       localStorage.setItem("LinkPath", "/buy_bill_book");
+      navigate('/buy_bill_book');
+      window.location.reload();
     } else if(path === '/buyerledger'){
       localStorage.setItem("LinkId", 5);
       localStorage.setItem("LinkPath", "/buyerledger");
@@ -1219,17 +1227,17 @@ const SmartBoard = () => {
                                   <h4 className="smartboard_main_header">
                                     {langFullData.salesBillBook}
                                   </h4>
-                                  <Link to="/sellbillbook" onClick={()=>{handleLinks("/sellbillbook")}}>
+                                  <div onClick={()=>{handleLinks("/sellbillbook")}}>
                                     <OutlineButton text={langFullData.addSalesBill} />
-                                  </Link>
+                                  </div>
                                 </div>
                                 <div className="card default_card mt-3">
                                   <h4 className="smartboard_main_header">
                                     {langFullData.buyBillBook}
                                   </h4>
-                                  <Link to="/buy_bill_book" onClick={()=>{handleLinks("/buy_bill_book")}}>
+                                  <div onClick={()=>{handleLinks("/buy_bill_book")}}>
                                     <OutlineButton text={langFullData.addPurchaseBill} />
-                                  </Link>
+                                  </div>
                                 </div>
                               </div>
                             </div>
