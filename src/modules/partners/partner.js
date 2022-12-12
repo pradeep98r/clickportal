@@ -152,6 +152,7 @@ const Partner = () => {
 
   function onChangeValue(event) {
     setradioValue(event.target.value.toUpperCase());
+    console.log(event.target.value.toUpperCase(),"radio value");
   }
   const [partnerItem, setPartnerItem] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -160,6 +161,7 @@ const Partner = () => {
     setIsEdit(true);
     partnerData.map((item) => {
       if (item.partyId == partner.partyId) {
+        console.log(partner.trader);
         setPartnerItem(item);
         setAadharNumber(partner.aadharNum);
         setmobileNumber(partner.mobile);
@@ -171,7 +173,13 @@ const Partner = () => {
         setUpdateProfilePic(partner.profilePic);
         setPincode(partner.address.pincode)
         setOpeningBalance(partner.openingBal);
-        setradioValue(partner.partyType.toUpperCase());
+        if(partner.trader){
+          console.log(partner.partyType)
+          setradioValue(langFullData.trader);
+        }
+        else{
+          setradioValue(partner.partyType.toUpperCase());
+        }
         setAddeditText("Edit");
         setStartDate(new Date(partner.openingBalDate));
       }
@@ -226,6 +234,7 @@ const Partner = () => {
       }
       uploadProfilePic(clickId,mobileNumber,req)
       .then(response=>{
+        console.log(mobileNumber)
         //setProfilePic(response.data.data)
         setUpdateProfilePic(response.data.data);
         console.log(updateProfilePic);
@@ -310,6 +319,7 @@ const Partner = () => {
   const [valueActive, setIsValueActive] = useState(false);
 
   const tabEvent = (type) => {
+    console.log(type,"type");
     setPartyType(type);
     setAadharNumber("");
     setCityVal("");
@@ -320,7 +330,13 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
-    setradioValue("");
+    if(type.toUpperCase() === 'FARMER'){
+      setradioValue('FARMER')
+    } else if(type.toUpperCase() === 'BUYER'){
+      setradioValue('BUYER');
+    }else{
+      setradioValue(langFullData.trader);
+    }
     setIsEdit(false);
     setPincode("");
     setCityVal("");
@@ -504,8 +520,8 @@ const Partner = () => {
     $("#city-input-wrapper").html($input);
     console.log(city, locality.state);
   }
-
-  $("#MybtnModal").click(function () {
+  const addTrader = (partyType) =>{
+    console.log(partyType);
     // setPincode();
     setAadharNumber("");
     setCityVal("");
@@ -517,21 +533,55 @@ const Partner = () => {
     setShortNameField("");
     setStreetVillage("");
     setProfilePic('');
-    if (partyType == "FARMER") {
+    if (partyType.toUpperCase() == "FARMER") {
+      console.log('came to farmer')
       setradioValue("FARMER");
-    } else {
+    } else if(partyType.toUpperCase() === 'BUYER'){
+      console.log('came to buyer')
       setradioValue("BUYER");
+    }else{
+      setradioValue(langFullData.trader);
     }
     setIsEdit(false);
     // setPincode();
-    setCityVal("");    setStateVal("");
+    setCityVal(""); 
+    setStateVal("");
     setAddeditText("Add");
     console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
-  });
+  }
+
+  // $("#MybtnModal").click(function () {
+  //   console.log("clicked");
+  //   // setPincode();
+  //   setAadharNumber("");
+  //   setCityVal("");
+  //   setNameField("");
+  //   setOpeningBalance("");
+  //   setmobileNumber("");
+  //   setStateVal("");
+  //   setProfilePic("");
+  //   setShortNameField("");
+  //   setStreetVillage("");
+  //   setProfilePic('');
+  //   if (partyType == "FARMER") {
+  //     setradioValue("FARMER");
+  //   } else {
+  //     setradioValue("BUYER");
+  //   }
+  //   setIsEdit(false);
+  //   // setPincode();
+  //   setCityVal("");    setStateVal("");
+  //   setAddeditText("Add");
+  //   console.log(isEdit, radioValue, "after");
+  //   $("#Mymodal").modal("show");
+  // });
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
-    console.log(pincode);
+    setPincode("");
+    setStateVal("");
+    setCityVal("");
+    setStartDate(new Date());
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -742,7 +792,7 @@ const Partner = () => {
                       </h6>
                       <p></p>
 
-                      <button className="outline_btn" id="MybtnModal">
+                      <button className="outline_btn" onClick={()=>{addTrader(partyType)}}>
                         Add
                         {partyType == langFullData.seller
                           ? "seller"
@@ -751,6 +801,29 @@ const Partner = () => {
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
                   </div>
+                  {getText(partyType) === langFullData.transporter || getText(partyType) === langFullData.labor?'':
+                  <div className="card default_card add_partner">
+                    <div>
+                      <h6>
+                        {" "}
+                        Add{" "}
+                        {partyType == langFullData.trader
+                          ? "trader"
+                          : 'Trader'}
+                      </h6>
+                      <p></p>
+
+                      <button className="outline_btn" onClick={()=>{addTrader(partyType)}}>
+                        Add
+                        {partyType == langFullData.seller||
+                        partyType == langFullData.trader
+                          ? "trader"
+                          : " " + 'Trader'}
+                      </button>
+                    </div>
+                    {/* <OutlineButton text="Add Seller" /> */}
+                  </div>
+                  }
                 </div>
               </div>
             </div>
@@ -784,11 +857,13 @@ const Partner = () => {
                       type="radio"
                       value={partyType.toLowerCase()}
                       name="radioValue"
-                      defaultChecked={
-                        radioValue.trim().length !== 0
-                          ? radioValue === partyType.toLowerCase()
-                          : partyType.toLowerCase()
-                      }
+                      defaultChecked={radioValue}
+                      
+                      // defaultChecked={
+                      //   radioValue.trim().length !== 0
+                      //     ? radioValue.toLowerCase === partyType.toLowerCase()
+                      //     : partyType.toLowerCase()
+                      // }
                     />{" "}
                     {getText(partyType)}
                     {/* {partyType.toLowerCase()} */}
@@ -796,7 +871,8 @@ const Partner = () => {
                       type="radio"
                       value={langFullData.trader}
                       name="radioValue"
-                      defaultChecked={radioValue === langFullData.trader}
+                      Checked={radioValue.toUpperCase() === langFullData.trader}
+                      // defaultChecked={radioValue === langFullData.trader}
                       className="radioBtnVal"
                     />{" "}
                     {langFullData.trader}
