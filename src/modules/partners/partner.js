@@ -22,6 +22,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import { Modal, Button } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
+import { uploadProfilePic } from "../../actions/uploadProfile";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -177,6 +178,9 @@ const Partner = () => {
     $("#Mymodal").modal("show");
   };
 
+  const [profilePic, setProfilePic] =useState('');
+  const[updateProfilePic, setUpdateProfilePic]=useState('')
+
   const obj = {
     aadharNum: aadharNumber,
     address: {
@@ -195,7 +199,7 @@ const Partner = () => {
     partyId: isEdit ? partnerItem.partyId : 0,
     partyName: nameField,
     partyType: partyType,
-    profilePic: single_bill,
+    profilePic: isEdit?updateProfilePic:profilePic,//single_bill,
     seqNum: 0,
     shortName: shortNameField,
     trader:
@@ -209,6 +213,41 @@ const Partner = () => {
       vehicleType: vehicleType,
     },
   };
+  
+  const handleProfilePic =(e)=>{
+    if(isEdit){
+      console.log("came t edit")
+      setFile(e.target.files[0]);
+      let req = {
+        file:e.target.files[0],
+        type:partyType
+      }
+      uploadProfilePic(clickId,mobileNumber,req)
+      .then(response=>{
+        //setProfilePic(response.data.data)
+        setUpdateProfilePic(response.data.data);
+        console.log(updateProfilePic);
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    else{
+      console.log("came to normal")
+      setFile(e.target.files[0]);
+      let req = {
+        file:e.target.files[0],
+        type:partyType
+      }
+      uploadProfilePic(clickId,mobileNumber,req)
+      .then(response=>{
+        setProfilePic(response.data.data)
+        console.log(profilePic);
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    
+  }
   //   file ? URL.createObjectURL(file) :
 
   const onSubmit = () => {
@@ -223,6 +262,7 @@ const Partner = () => {
     ) {
       console.log("came to edit");
       addEditPartnerApiCall();
+      window.location.reload();
     } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
@@ -944,7 +984,8 @@ const Partner = () => {
                                 <input
                                   type="file"
                                   id="file"
-                                  onChange={(e) => setFile(e.target.files[0])}
+                                  //onChange={(e) => setFile(e.target.files[0])}
+                                  onChange={(e)=>{handleProfilePic(e)}}
                                 />
                                 <label htmlFor="file" className="file">
                                   {langFullData.chooseFromLibrary}
