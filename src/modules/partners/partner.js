@@ -22,6 +22,8 @@ import date_icon from "../../assets/images/date_icon.svg";
 import { Modal, Button } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
+import { uploadProfilePic } from "../../actions/uploadProfile";
+import { update } from "lodash";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -166,7 +168,8 @@ const Partner = () => {
         setNameField(partner.partyName);
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
-        setPincode(partner.address.pincode);
+        setUpdateProfilePic(partner.profilePic);
+        setPincode(partner.address.pincode)
         setOpeningBalance(partner.openingBal);
         setradioValue(partner.partyType.toUpperCase());
         setAddeditText("Edit");
@@ -176,6 +179,9 @@ const Partner = () => {
 
     $("#Mymodal").modal("show");
   };
+
+  const [profilePic, setProfilePic] = useState('');
+  const[updateProfilePic, setUpdateProfilePic] = useState('')
 
   const obj = {
     aadharNum: aadharNumber,
@@ -195,7 +201,7 @@ const Partner = () => {
     partyId: isEdit ? partnerItem.partyId : 0,
     partyName: nameField,
     partyType: partyType,
-    profilePic: single_bill,
+    profilePic: isEdit?updateProfilePic:profilePic,//single_bill,
     seqNum: 0,
     shortName: shortNameField,
     trader:
@@ -209,6 +215,41 @@ const Partner = () => {
       vehicleType: vehicleType,
     },
   };
+  
+  const handleProfilePic =(e)=>{
+    if(isEdit){
+      console.log("came t edit")
+      setFile(e.target.files[0]);
+      let req = {
+        file:e.target.files[0],
+        type:partyType
+      }
+      uploadProfilePic(clickId,mobileNumber,req)
+      .then(response=>{
+        //setProfilePic(response.data.data)
+        setUpdateProfilePic(response.data.data);
+        console.log(updateProfilePic);
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    else{
+      console.log("came to normal")
+      setFile(e.target.files[0]);
+      let req = {
+        file:e.target.files[0],
+        type:partyType
+      }
+      uploadProfilePic(clickId,mobileNumber,req)
+      .then(response=>{
+        setProfilePic(response.data.data)
+        console.log(profilePic);
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    
+  }
   //   file ? URL.createObjectURL(file) :
 
   const onSubmit = () => {
@@ -223,6 +264,7 @@ const Partner = () => {
     ) {
       console.log("came to edit");
       addEditPartnerApiCall();
+      window.location.reload();
     } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
@@ -275,11 +317,12 @@ const Partner = () => {
     setOpeningBalance("");
     setmobileNumber("");
     setStateVal("");
+    setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
     setradioValue("");
     setIsEdit(false);
-    setPincode();
+    setPincode("");
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -470,8 +513,10 @@ const Partner = () => {
     setOpeningBalance("");
     setmobileNumber("");
     setStateVal("");
+    setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
+    setProfilePic('');
     if (partyType == "FARMER") {
       setradioValue("FARMER");
     } else {
@@ -479,8 +524,7 @@ const Partner = () => {
     }
     setIsEdit(false);
     // setPincode();
-    setCityVal("");
-    setStateVal("");
+    setCityVal("");    setStateVal("");
     setAddeditText("Add");
     console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
@@ -931,20 +975,32 @@ const Partner = () => {
                           <div className="file-input">
                             <div className="d-flex align-items-center">
                               <div className="input_file">
+                                {isEdit?
                                 <img
-                                  src={
-                                    file
-                                      ? URL.createObjectURL(file)
-                                      : single_bill
-                                  }
+                                src={isEdit?updateProfilePic===''?single_bill:updateProfilePic:single_bill}
+                                // src={
+                                //   file
+                                //     ? URL.createObjectURL(file)
+                                //     : single_bill
+                                // }
+                                alt="" />:
+                                <img
+                                  src={profilePic?profilePic:single_bill}
+                                  // src={
+                                  //   file
+                                  //     ? URL.createObjectURL(file)
+                                  //     : single_bill
+                                  // }
                                   alt=""
                                 />
+                                }
                               </div>
                               <div>
                                 <input
                                   type="file"
                                   id="file"
-                                  onChange={(e) => setFile(e.target.files[0])}
+                                  //onChange={(e) => setFile(e.target.files[0])}
+                                  onChange={(e)=>{handleProfilePic(e)}}
                                 />
                                 <label htmlFor="file" className="file">
                                   {langFullData.chooseFromLibrary}

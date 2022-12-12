@@ -114,6 +114,8 @@ const CompleteProfile = (props) => {
     useState("");
   const handleAlternateMobileNumber = (e) => {
     mobileNumberValidation(e, "alternateMobile");
+    console.log(e);
+    //console.log(e.ta)
   };
   const [pincode, setPincode] = useState(
     mandiEditStatus == "true" ? mandiData.businessAddress.pincode : ""
@@ -134,6 +136,7 @@ const CompleteProfile = (props) => {
       } else {
         setAlternateMobileNumberError(string1);
       }
+      // else if(e.target.val)
     } else {
       if (type == "mobile") {
         setRequiredNumberField("");
@@ -198,7 +201,7 @@ const CompleteProfile = (props) => {
     if (
       mandiNameField.trim().length !== 0 &&
         mobileNumber.trim().length !== 0 &&
-        mandiShortCode.trim().length !== 0 && 
+        mandiShortCode.trim().length !== 0 && mandiShortCode.trim().length<=4 &&
         shopNumberField.trim().length !==0 && 
         contactName.trim().length !==0 && marketname.trim().length !==0 && 
         pincode.toString().trim().length !==0
@@ -240,8 +243,8 @@ const CompleteProfile = (props) => {
   console.log(mandiData.businessId);
   console.log(mandiData.marketId);
   const obj = {
-    altMobile:
-      mandiEditStatus == "true" ? mandiData.altMobile : alternateMobileNumber,
+    altMobile:alternateMobileNumber,
+      //mandiEditStatus == "true" ? mandiData.altMobile : alternateMobileNumber,
     businessAddress: {
       addressLine: streetVillage,
       city: cityVal,
@@ -479,7 +482,9 @@ const CompleteProfile = (props) => {
     setSearch(searchValue);
     if (search !== "") {
       const filteredNames = allMarketsData.filter((item) => {
-        return item.marketName.toLowerCase().includes(search.toLowerCase());
+        if(item.marketName.toLowerCase().includes(search.toLowerCase())){
+          return item.marketName.toLowerCase().includes(search.toLowerCase());
+        }
       });
       setMarketname(filteredNames);
     } else {
@@ -592,7 +597,7 @@ const CompleteProfile = (props) => {
                                 </div>
                               );
                           })}
-                          {search.length > 1
+                          {search.length > 1 && marketName.length>0
                             ? marketName.map((item) => {
                                 return (
                                   <div
