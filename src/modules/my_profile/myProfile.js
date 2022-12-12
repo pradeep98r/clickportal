@@ -42,7 +42,6 @@ const MyProfile = () => {
       },
       (error) => {}
     );
-    console.log(localStorage.getItem("lId"));
   }, []);
   const getProfileDetails = () => {
     getProfile(clickId)
@@ -65,14 +64,21 @@ const MyProfile = () => {
   };
 
   const onSave = () => {
-    getLanguagesData(languageId)
+    console.log(languageId,"id");
+    var langid = languageId;
+    if(langid == 0){
+      langid =parseInt(selectedLangId);
+      console.log(langid,selectedLangId,"if");
+      setLanguageId(langid)
+    }
+    console.log(langid,"iffff")
+    getLanguagesData(langid)
       .then((response) => {
         const langData = response.data.data;
         const res = {};
         langData.forEach(({ key, value }) =>
           Object.assign(res, { [key]: value })
         );
-        console.log(res);
         toast.success("Language Changed Successfully",{toastId:'success'});
         localStorage.removeItem("languageData");
         localStorage.setItem("languageData", JSON.stringify(res));
@@ -84,12 +90,11 @@ const MyProfile = () => {
       .catch((error) => {
         console.log(error);
       });
-    localStorage.setItem("selectedLangId", languageId);
+    localStorage.setItem("selectedLangId", langid);
     setIsEdit(false);
   };
 
   const langFullData = JSON.parse(langData);
-  console.log(langFullData);
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
@@ -100,7 +105,6 @@ const MyProfile = () => {
     setIsMandiEdit(true);
     localStorage.setItem("mandiEditStatus",true);
     dispatch(mandiInfoActions.mandiSuccess(mandiDetails));
-    console.log(mandiDetails)
     localStorage.setItem("mandiEditDetails",JSON.stringify(mandiDetails));
   }
   const [showModalStatus, setShowModalStatus] = useState(false);

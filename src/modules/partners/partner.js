@@ -223,6 +223,7 @@ const Partner = () => {
     ) {
       console.log("came to edit");
       addEditPartnerApiCall();
+      window.location.reload();
     } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {

@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import caImage from "../../assets/images/ca_img.svg"
 function TopNavigation() {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -16,7 +17,7 @@ function TopNavigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
-  console.log(loginUserDetails)
+  
   const logOutFunction = () => {
     caches.keys().then((names) => {
       names.forEach((name) => {
@@ -28,7 +29,6 @@ function TopNavigation() {
     dispatch(authActions.logout(false));
     navigate("/login");
     window.location.reload();
-    console.log(loginUserDetails, "before clear");
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
     localStorage.removeItem("LinkPath");
@@ -43,7 +43,7 @@ function TopNavigation() {
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));
   var stepOneSingleBill = JSON.parse(localStorage.getItem("stepOneSingleBook"));
-   console.log(stepone,typeof(stepone))
+   
   const backToBuyBillBook = () => {
     localStorage.setItem("billViewStatus", false);
     localStorage.setItem("stepOne", false);
@@ -54,6 +54,12 @@ function TopNavigation() {
     localStorage.setItem("stepOneSingleBook", false);
     navigate("/sellbillbook");
   };
+  const profileClick = () =>{
+    localStorage.setItem("LinkPath","/myprofile");
+    localStorage.setItem("LinkId",8)
+    navigate("/myprofile");
+    window.location.reload();
+  }
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
@@ -145,42 +151,29 @@ function TopNavigation() {
               </a>
             </li> */}
             <li className="nav-item">
-              <div className="dropdown">
+              <div className="caDetails">
                 <div
-                  className="nav-link dropdown-toggle"
+                  className="nav-link"
                   type="button"
-                  data-toggle="dropdown"
-                  aria-expanded="false"
                 >
-                  {loginUserDetails.profile.profile != null
+                  <div className="d-flex align-items-center" onClick={()=>profileClick()}>
+                    <img src = {caImage} className="mr-2" alt="image"/>
+                    <div>
+                    <h5>{loginUserDetails.profile.profile != null
                     ? loginUserDetails.profile.profile.fullName
                     : ""}
-                </div>
-                <div className="dropdown-menu">
-                  <a className="dropdown-item" href="#">
-                    {" "}
-                    <p>
-                      Click Id:
+                    </h5>
+                     <p>
+                      Click ID:
                       {loginUserDetails.profile.profile != null
                         ? loginUserDetails.profile.profile.clickId
                         : loginUserDetails.clickId}
                     </p>
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    {" "}
-                    <p>
-                      {loginUserDetails.profile.profile != null
-                        ? loginUserDetails.profile.profile.mobile
-                        : ""}
-                    </p>
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    {" "}
-                    <button onClick={logOutFunction} className="primary_btn ">
-                      Logout
-                    </button>
-                  </a>
+                    </div>
+                  </div>
+                 
                 </div>
+              
               </div>
               {/* <a
                 className="nav-link dropdown-toggle"

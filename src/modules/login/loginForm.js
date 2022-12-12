@@ -7,15 +7,13 @@ import { useDispatch } from "react-redux";
 import { login } from "../../reducers/userSlice";
 import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, osVersion } from "react-device-detect";
-import toastr from "toastr";
 import { authActions } from "../../reducers/authSlice";
 import { userInfoActions } from "../../reducers/userInfoSlice";
 import OtpTimer from "otp-timer";
-import Timer from "otp-timer";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import $ from "jquery";
 import close from "../../assets/images/close.svg";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
@@ -74,7 +72,9 @@ const LoginForm = () => {
       },
       (error) => {
         setInvalidError(true);
-        toast.error(error.response.data.status.description,{toastId:'errorr1'});
+        toast.error(error.response.data.status.description, {
+          toastId: "errorr1",
+        });
       }
     );
   };
@@ -94,14 +94,16 @@ const LoginForm = () => {
           //setInvalidError(invalidNumber);
           toast.success(response.data.status.description, {
             toastId: "success1",
-          })
+          });
         } else if (response.data.status === "FAILURE") {
         } else {
         }
       },
       (error) => {
         setInvalidError(true);
-        toast.error(error.response.data.status.description,{toastId:"error2"});
+        toast.error(error.response.data.status.description, {
+          toastId: "error2",
+        });
       }
     );
   };
@@ -112,7 +114,7 @@ const LoginForm = () => {
       otp: otpValue,
       otpReqId: otpId,
       userType: localStorage.getItem("userType"),
-      browser: true
+      browser: true,
     };
 
     validateOTP(obj).then(
@@ -130,11 +132,10 @@ const LoginForm = () => {
             );
             localStorage.setItem("isauth", true);
             console.log("login success");
-            if(resp.data.data.useStatus == "USER_REGISTRATION_PENDING"){
-              console.log('registration')
+            if (resp.data.data.useStatus == "USER_REGISTRATION_PENDING") {
+              console.log("registration");
               navigate("/registration");
-            }
-            else{
+            } else {
               navigate("/smartboard");
             }
             window.location.reload();
@@ -143,7 +144,7 @@ const LoginForm = () => {
           }
           toast.success(resp.data.status.description, {
             toastId: "success2",
-          })
+          });
         } else {
           setotpError("The entered otp is incorrect");
         }
@@ -158,21 +159,20 @@ const LoginForm = () => {
     setViewOtpForm(false);
   };
 
-  const conditionsPopUp =() =>{
+  const conditionsPopUp = () => {
     $("#termsAndConditions").modal("show");
-  }
-  const policyPopUp = () =>{
+  };
+  const policyPopUp = () => {
     $("#privatePolicy").modal("show");
-  }
+  };
   const closePopup = () => {
     $("#termsAndConditions").modal("hide");
   };
 
-  const closePrivatePolicy = () =>{
+  const closePrivatePolicy = () => {
     $("#privatePolicy").modal("hide");
-  }
- 
-  console.log(invalidNumber);
+  };
+
   return (
     <div>
       <Navigation login_type="login_form" />
@@ -190,10 +190,14 @@ const LoginForm = () => {
                     onChange={(e) => {
                       handleChange(e);
                     }}
-                    className={invalidNumber?'':'border-danger'} />
-                  {invalidNumber && <p className="text-danger">
-                     Given Mobile is not valid. Please try with valid mobile Number</p>
-                  }
+                    className={invalidNumber ? "" : "border-danger"}
+                  />
+                  {invalidNumber && (
+                    <p className="text-danger">
+                      Given Mobile is not valid. Please try with valid mobile
+                      Number
+                    </p>
+                  )}
 
                   <button
                     className="primary_btn"
@@ -206,7 +210,8 @@ const LoginForm = () => {
                   <p className="para_margin">
                     By continuing, you agree to Ono’s
                     <br></br>
-                    <a onClick={conditionsPopUp}>Conditions of Use</a> and <a onClick={policyPopUp}>Privacy Policy</a>.
+                    <a onClick={conditionsPopUp}>Conditions of Use</a> and{" "}
+                    <a onClick={policyPopUp}>Privacy Policy</a>.
                   </p>
                 </form>
               </div>
@@ -222,11 +227,13 @@ const LoginForm = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <label className="form-label mb-0">Enter OTP</label>
                       <div className="timer">
-                        <Timer
-                          seconds={60}
-                          minutes={0}
-                          resend={handleClick}
-                        />
+                      <OtpTimer
+        minutes={0}
+        seconds={60}
+        text="Time:"
+        // ButtonText="Resend"
+        resend={handleClick}
+      />
                       </div>
                     </div>
                     <input
@@ -250,7 +257,8 @@ const LoginForm = () => {
                   <p className="para_margin">
                     By continuing, you agree to Ono’s
                     <br></br>
-                    <a onClick={conditionsPopUp}>Conditions of Use</a> and <a onClick={policyPopUp}>Privacy Policy</a>.
+                    <a onClick={conditionsPopUp}>Conditions of Use</a> and{" "}
+                    <a onClick={policyPopUp}>Privacy Policy</a>.
                   </p>
                 </form>
               </div>
@@ -261,68 +269,58 @@ const LoginForm = () => {
         <ToastContainer />
       </div>
       <div className="modal fade" id="termsAndConditions">
-          <div className="modal-dialog terms_modal_popup">
-            <div className="modal-content">
-              <div className="modal-header date_modal_header smartboard_modal_header">
-                <h5
-                  className="modal-title header2_text"
-                  id="staticBackdropLabel"
-                >
-                  Terms And Conditions
-                </h5>
-                <img
-                  src={close}
-                  alt="image"
-                  className="close_icon"
-                  onClick={closePopup}
-                />
-              </div>
-              <div className="modal-body">
-                <div className="terms_popup ">
-                  <iframe
-                    src="https://www.onoark.com/conditions-of-use"
-                    width="100%"
-                    height="480"
-                  ></iframe>
-                </div>
-              </div>
-              <div className="modal-footer pt-0">
-                
+        <div className="modal-dialog terms_modal_popup">
+          <div className="modal-content">
+            <div className="modal-header date_modal_header smartboard_modal_header">
+              <h5 className="modal-title header2_text" id="staticBackdropLabel">
+                Terms And Conditions
+              </h5>
+              <img
+                src={close}
+                alt="image"
+                className="close_icon"
+                onClick={closePopup}
+              />
+            </div>
+            <div className="modal-body">
+              <div className="terms_popup ">
+                <iframe
+                  src="https://www.onoark.com/conditions-of-use"
+                  width="100%"
+                  height="480"
+                ></iframe>
               </div>
             </div>
+            <div className="modal-footer pt-0"></div>
           </div>
+        </div>
       </div>
       <div className="modal fade" id="privatePolicy">
-          <div className="modal-dialog terms_modal_popup">
-            <div className="modal-content">
-              <div className="modal-header date_modal_header smartboard_modal_header">
-                <h5
-                  className="modal-title header2_text"
-                  id="staticBackdropLabel"
-                >
-                  Private Policy
-                </h5>
-                <img
-                  src={close}
-                  alt="image"
-                  className="close_icon"
-                  onClick={closePrivatePolicy}
-                />
-              </div>
-              <div className="modal-body">
-                <div className="terms_popup ">
-                  <iframe
-                    src="https://www.onoark.com/privacy-policy"
-                    width="100%"
-                    height="480"
-                  ></iframe>
-                </div>
-              </div>
-              <div className="modal-footer pt-0">
-               
+        <div className="modal-dialog terms_modal_popup">
+          <div className="modal-content">
+            <div className="modal-header date_modal_header smartboard_modal_header">
+              <h5 className="modal-title header2_text" id="staticBackdropLabel">
+                Private Policy
+              </h5>
+              <img
+                src={close}
+                alt="image"
+                className="close_icon"
+                onClick={closePrivatePolicy}
+              />
+            </div>
+            <div className="modal-body">
+              <div className="terms_popup ">
+                <iframe
+                  src="https://www.onoark.com/privacy-policy"
+                  width="100%"
+                  height="480"
+                ></iframe>
               </div>
             </div>
+            <div className="modal-footer pt-0"></div>
           </div>
+        </div>
       </div>
     </div>
   );

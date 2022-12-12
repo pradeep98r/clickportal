@@ -420,3 +420,7 @@
   position: absolute;
   right: 0;
 }
+.react-datepicker__day--outside-month {
+  color: transparent !important;
+  pointer-events: none;
+}

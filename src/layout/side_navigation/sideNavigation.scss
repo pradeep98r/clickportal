@@ -154,3 +154,20 @@
     width: auto;
   }
 }
+.logout_btn{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  // left: 35%;
+  // transform: translateX(-24%);
+  padding: 10px;
+  border-top: 1px solid #E4E4E4;
+  button{
+    background-color: #FFE7E7;
+    color: #4D4D4D;
+    border-radius: 10px;
+    font-size: var(--header3-text);
+    padding: 10px 20px;
+    border: none;
+  }
+}
