@@ -201,7 +201,7 @@ const CompleteProfile = (props) => {
     if (
       mandiNameField.trim().length !== 0 &&
         mobileNumber.trim().length !== 0 &&
-        mandiShortCode.trim().length !== 0 && 
+        mandiShortCode.trim().length !== 0 && mandiShortCode.trim().length<=4 &&
         shopNumberField.trim().length !==0 && 
         contactName.trim().length !==0 && marketname.trim().length !==0 && 
         pincode.toString().trim().length !==0

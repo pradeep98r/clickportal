@@ -23,6 +23,7 @@ import { Modal, Button } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
+import { update } from "lodash";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -167,7 +168,8 @@ const Partner = () => {
         setNameField(partner.partyName);
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
-        setPincode(partner.address.pincode);
+        setUpdateProfilePic(partner.profilePic);
+        setPincode(partner.address.pincode)
         setOpeningBalance(partner.openingBal);
         setradioValue(partner.partyType.toUpperCase());
         setAddeditText("Edit");
@@ -178,8 +180,8 @@ const Partner = () => {
     $("#Mymodal").modal("show");
   };
 
-  const [profilePic, setProfilePic] =useState('');
-  const[updateProfilePic, setUpdateProfilePic]=useState('')
+  const [profilePic, setProfilePic] = useState('');
+  const[updateProfilePic, setUpdateProfilePic] = useState('')
 
   const obj = {
     aadharNum: aadharNumber,
@@ -315,11 +317,12 @@ const Partner = () => {
     setOpeningBalance("");
     setmobileNumber("");
     setStateVal("");
+    setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
     setradioValue("");
     setIsEdit(false);
-    setPincode();
+    setPincode("");
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -510,8 +513,10 @@ const Partner = () => {
     setOpeningBalance("");
     setmobileNumber("");
     setStateVal("");
+    setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
+    setProfilePic('');
     if (partyType == "FARMER") {
       setradioValue("FARMER");
     } else {
@@ -519,8 +524,7 @@ const Partner = () => {
     }
     setIsEdit(false);
     // setPincode();
-    setCityVal("");
-    setStateVal("");
+    setCityVal("");    setStateVal("");
     setAddeditText("Add");
     console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
@@ -971,14 +975,25 @@ const Partner = () => {
                           <div className="file-input">
                             <div className="d-flex align-items-center">
                               <div className="input_file">
+                                {isEdit?
                                 <img
-                                  src={
-                                    file
-                                      ? URL.createObjectURL(file)
-                                      : single_bill
-                                  }
+                                src={isEdit?updateProfilePic===''?single_bill:updateProfilePic:single_bill}
+                                // src={
+                                //   file
+                                //     ? URL.createObjectURL(file)
+                                //     : single_bill
+                                // }
+                                alt="" />:
+                                <img
+                                  src={profilePic?profilePic:single_bill}
+                                  // src={
+                                  //   file
+                                  //     ? URL.createObjectURL(file)
+                                  //     : single_bill
+                                  // }
                                   alt=""
                                 />
+                                }
                               </div>
                               <div>
                                 <input
