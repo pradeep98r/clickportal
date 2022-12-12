@@ -176,8 +176,6 @@ const SellbillStep2Modal = (props) => {
     }
     cropData.map((item, index) => {
       if (
-        cropData[index].qty != 0 &&
-        // cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
         setShowStep3ModalStatus(true);

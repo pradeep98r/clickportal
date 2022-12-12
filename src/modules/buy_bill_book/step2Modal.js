@@ -218,8 +218,6 @@ const Step2Modal = (props) => {
     // if (cropData.length > 0) {
     cropData.map((item, index) => {
       if (
-        cropData[index].qty != 0 &&
-        // cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
         console.log(props.cropEditObject, cropData);
