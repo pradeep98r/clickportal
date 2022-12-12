@@ -332,8 +332,8 @@ const SellerLedger = () => {
     result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
         return data.mobile.search(value) != -1;
-      } else if (data.partyName.includes(value)) {
-        return data.partyName.search(value) != -1;
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
       }

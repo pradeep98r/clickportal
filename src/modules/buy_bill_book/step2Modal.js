@@ -8,12 +8,13 @@ import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import Step3Modal from "./step3Model";
 import toastr from "toastr";
-import $, { merge } from "jquery";
+import $, { inArray, merge } from "jquery";
 import clo from "../../assets/images/clo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import SelectBags from "./bags";
+import { invalid } from "moment";
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -55,7 +56,7 @@ const Step2Modal = (props) => {
     setCropInfoModal(true);
     setCropClear(true);
   };
-
+  var clearPrefCrops=[]
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
@@ -73,9 +74,11 @@ const Step2Modal = (props) => {
             { status: 1 }
           );
         });
+        //clearPrefCrops.push(response.data.data);
         setPreferedCropsData([...preferedCropsData, ...response.data.data]);
         // if (props.cropTableEditStatus) {
         preferedCropsData = response.data.data;
+        clearPrefCrops.push(preferedCropsData);
         return preferedCropsData;
         // }
       })
@@ -84,6 +87,7 @@ const Step2Modal = (props) => {
       });
     return preferedCropsData;
   };
+  
   useEffect(() => {
     fetchData()
     console.log(preferedCropsData, "prefered");
@@ -108,7 +112,6 @@ const Step2Modal = (props) => {
 
         }
         else {
-          console.log(preferedCropsData,cropArr, "came to else")
           preferedCropsData.push(cropArr[index]);
           if (cropArr[index].rateType == "RATE_PER_KG") {
             cropArr[index].rateType = "kgs";
@@ -216,8 +219,6 @@ const Step2Modal = (props) => {
     // if (cropData.length > 0) {
     cropData.map((item, index) => {
       if (
-        // cropData[index].qty != 0 &&
-        // cropData[index].weight != 0 &&
         cropData[index].rate != 0
       ) {
         console.log(props.cropEditObject, cropData);
@@ -344,7 +345,6 @@ const Step2Modal = (props) => {
       }
       for (var k = 0; k < cropData.length; k++) {
         arrays.push(cropData[k]);
-        console.log(arrays);
       }
       if (arrays.length === cropData.length) {
         addStep3Modal();
@@ -510,6 +510,7 @@ const Step2Modal = (props) => {
     }
   };
   const callbackFunction = (childData, invArr) => {
+    console.log(childData,invArr,"bags parent")
     let updatedItems = cropData.map((item, i) => {
       if (i == arIndex) {
         item = childData[0];
@@ -735,7 +736,7 @@ const Step2Modal = (props) => {
                                       cropData[index].rateType ? (
                                       <td className="col-2">
                                         <div className="d-flex">
-                                          <p className="unit-type">
+                                          <p className="unit-type mt-0">
                                             {cropData[index].bags !== null &&
                                               cropData[index].bags.length > 0
                                               ? "Edit"

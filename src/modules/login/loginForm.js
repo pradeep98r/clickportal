@@ -112,7 +112,7 @@ const LoginForm = () => {
       otp: otpValue,
       otpReqId: otpId,
       userType: localStorage.getItem("userType"),
-      // browser: true
+      browser: true
     };
 
     validateOTP(obj).then(

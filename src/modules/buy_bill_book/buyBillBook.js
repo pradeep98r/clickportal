@@ -129,10 +129,10 @@ function BuyBillBook() {
     let result = [];
     console.log(allData);
     result = allData.singleBills.filter((data) => {
-      if (data.farmerName.includes(value)) {
-        return data.farmerName.search(value) != -1;
-      } else if (data.shortName.includes(value)) {
-        return data.shortName.search(value) != -1;
+      if (data.farmerName.toLowerCase().includes(value)) {
+        return data.farmerName.toLowerCase().search(value) != -1;
+      } else if (data.shortName.toLowerCase().includes(value)) {
+        return data.shortName.toLowerCase().search(value) != -1;
       } else if (data.farmerId.toString().includes(value)) {
         return data.farmerId.toString().search(value) != -1;
       }

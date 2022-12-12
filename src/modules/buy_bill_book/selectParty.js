@@ -64,44 +64,15 @@ const SelectPartner = (props) => {
   useEffect(() => {
     fetchPertnerData();
   }, []);
-  let [partners, setPartners] = useState([]);
-  const [valueActive, setIsValueActive] = useState(false);
-  const searchInput = (searchValue) => {
-    setSearchPartyItem(searchValue);
-    if (searchPartyItem !== "") {
-      console.log(partnerData);
-      const filterdNames = partnerData.filter((item) => {
-        if (
-          item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
-          item.mobile.toString().includes(searchValue) ||
-          item.partyId.toString().toLowerCase().includes(searchPartyItem)
-        ) {
-          return (
-            item.partyName.toLowerCase().includes(searchValue.toLowerCase()) ||
-            item.shortName.toLowerCase().includes(searchValue.toLowerCase()) ||
-            item.mobile.toString().includes(searchValue) ||
-            item.partyId.toString().toLowerCase().includes(searchPartyItem)
-          );
-        } else if (searchPartyItem == "" || searchValue === "") {
-          return setIsValueActive(false);
-        } else {
-          return setIsValueActive(true);
-        }
-      });
-      setPartners(filterdNames);
-    } else {
-      setPartners(partnerData);
-    }
-  };
+ 
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
     result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
         return data.mobile.search(value) != -1;
-      } else if (data.partyName.includes(value)) {
-        return data.partyName.search(value) != -1;
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
       }
