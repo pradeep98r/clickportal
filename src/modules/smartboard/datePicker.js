@@ -7,6 +7,8 @@ import $ from "jquery";
 import "../../assets/css/calender.scss";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
+import date_icon from "../../assets/images/date_icon.svg";
+
 function DatePickerModel(props) {
   $("[name=tab]").each(function (i, d) {
     var p = $(this).prop("checked");
@@ -264,12 +266,18 @@ function DatePickerModel(props) {
                  
                   <article className="custom_picker" style={{display:dateTabs==='Custom'?'block':'none'}}>
                     <div className="flex_class custom_input_div">
+                      <img className="date_icon_in_modal"
+                        src={date_icon}
+                      />
                       <DatePicker
                         selected={startDate}
                         onChange={(date) => setStartsDate(date)}
                         popperClassName="d-none"
                         dateFormat="yyyy-MM-dd"
                         placeholderText="Select from date"
+                      />
+                      <img className="date_icon_in_modal"
+                        src={date_icon}
                       />
                       <DatePicker
                         selected={endDate}
