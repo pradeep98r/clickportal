@@ -29,7 +29,8 @@ const Partner = () => {
   const clickId = loginData.clickId;
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
-  const [partyType, setPartyType] = useState("FARMER");
+  const savetype=localStorage.getItem("partyType");
+  const [partyType, setPartyType] = useState(savetype!==null?savetype:"FARMER");
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
@@ -298,10 +299,8 @@ const Partner = () => {
           : true
         : false)
     ) {
-      console.log("oofirst", aadharNumber.trim.length);
       addEditPartnerApiCall();
     } else if (aadharNumber.trim.length > 0) {
-      console.log("oo");
       if (aadharNumber.trim().length < 12) {
         setAadharError("Minimum Adhar number length should be 12");
       }
@@ -1091,7 +1090,7 @@ const Partner = () => {
                           </span>
                           <div className="date_field partner_date">
                             <DatePicker
-                              dateFormat="yyyy-MM-dd"
+                              dateFormat="dd-MMM-yyyy"
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
                               className="form-control"
