@@ -29,7 +29,8 @@ const Partner = () => {
   const clickId = loginData.clickId;
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
-  const [partyType, setPartyType] = useState("FARMER");
+  const savetype=localStorage.getItem("partyType");
+  const [partyType, setPartyType] = useState(savetype!==null?savetype:"FARMER");
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
@@ -286,19 +287,19 @@ const Partner = () => {
       nameField.trim().length !== 0 &&
       nameField.trim().length !== 1 &&
       mobileNumber.trim().length !== 0 &&
-      !(aadharNumber.trim().length <12) && 
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
           shortNameField.trim().length !== 1)
     ) {
-
       addEditPartnerApiCall();
-      // window.setTimeout( function() {
-      //   window.location.reload();
-      // }, 1500);
-      //window.location.reload();
+      console.log(partyType);
+      localStorage.setItem("partyType",partyType);
+      window.setTimeout( function() {
+        window.location.reload();
+      }, 1500);
     } else if(aadharNumber.trim().length<12){
+      console.log(aadharNumber.trim().length);
       setAadharError("Minimum Adhar number length should be 12");
     }
      else if (nameField.trim().length === 0) {
@@ -1075,7 +1076,7 @@ const Partner = () => {
                           </span>
                           <div className="date_field partner_date">
                             <DatePicker
-                              dateFormat="yyyy-MM-dd"
+                              dateFormat="dd-MMM-yyyy"
                               selected={startDate}
                               onChange={(date) => setStartDate(date)}
                               className="form-control"
