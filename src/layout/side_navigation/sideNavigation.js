@@ -244,13 +244,13 @@ function SideNavigation() {
               );
             })}
           </ul>
-          <div className="logout_btn">
-           
-            <button onClick={logOutFunction} className="d-flex mx-auto">
-            <img src={logout} alt="image" className="mr-2"/> Logout
-            </button>
-          </div>
+          <div className="logout_btn">   
+           <button onClick={logOutFunction} className="d-flex mx-auto">
+           <img src={logout} alt="image" className="mr-2"/> Logout
+           </button>
+         </div>
         </div>
+       
       </div>
     </div>
   );

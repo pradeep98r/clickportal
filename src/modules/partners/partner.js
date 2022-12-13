@@ -171,7 +171,14 @@ const Partner = () => {
         setUpdateProfilePic(partner.profilePic);
         setPincode(partner.address.pincode)
         setOpeningBalance(partner.openingBal);
-        setradioValue(partner.partyType.toUpperCase());
+        if(partner.partyType.toLowerCase()=='farmer' || partner.partyType.toLowerCase() == 'buyer'){
+          if(partner.trader){
+            setradioValue('TRADER');
+          }
+          else{
+            setradioValue(partner.partyType.toUpperCase());
+          }
+        }
         setAddeditText("Edit");
         setStartDate(new Date(partner.openingBalDate));
       }
@@ -193,7 +200,7 @@ const Partner = () => {
       state: stateVal,
       type: "PERSONAL",
     },
-    caId: isEdit ? clickId : 0,
+    caId: isEdit ? clickId : clickId,
     createdOn: "2022-10-03T10:55:33.895Z",
     mobile: mobileNumber,
     openingBal: openingBalance,
@@ -505,7 +512,8 @@ const Partner = () => {
     console.log(city, locality.state);
   }
 
-  $("#MybtnModal").click(function () {
+  const [rVal, setrVal] = useState(false);
+  const MybtnModal = (type) =>{
     // setPincode();
     setAadharNumber("");
     setCityVal("");
@@ -517,10 +525,14 @@ const Partner = () => {
     setShortNameField("");
     setStreetVillage("");
     setProfilePic('');
-    if (partyType == "FARMER") {
+    if (type.toUpperCase() == "FARMER") {
       setradioValue("FARMER");
-    } else {
+    } else if(type.toUpperCase() == "BUYER") {
       setradioValue("BUYER");
+    }
+    else{
+      console.log(type)
+      setradioValue("TRADER");
     }
     setIsEdit(false);
     // setPincode();
@@ -528,7 +540,8 @@ const Partner = () => {
     setAddeditText("Add");
     console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
-  });
+
+  }
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
     console.log(pincode);
@@ -613,50 +626,7 @@ const Partner = () => {
 
                   <div>
                     {
-                      // searchInput.length > 1 ? (
-                      //   filteredResults.map((partner, index) => {
-                      //     return (
-                      //       <div className="card partner_card" key={index}>
-                      //         <div className="d-flex partner_card_flex justify-content-between align-items-center">
-                      //           <div className="d-flex align-items-center">
-                      //           {
-                      //                partner.profilePic ?  <img
-                      //                src={partner.profilePic}
-                      //                alt="profile_img"
-                      //                className="user_img"
-                      //              />: <img
-                      //                src={single_bill}
-                      //                alt="img"
-                      //                className="user_img"
-                      //              />
-                      //              }
-                      //             <div>
-                      //               <h5>{partner.partyName}</h5>
-                      //               <h6>
-                      //                 {partner.partyType} - {partner.partyId} |{" "}
-                      //                 {partner.mobile}
-                      //               </h6>
-                      //               <p>{partner.address.addressLine}</p>
-                      //             </div>
-                      //           </div>
-                      //           <div className="d-flex edit_delete_icons">
-                      //             <img
-                      //               src={edit}
-                      //               alt="img"
-                      //               className=""
-                      //               onClick={() => editPartner(partner)}
-                      //             />
-                      //             <img
-                      //               src={delete_icon}
-                      //               alt="img"
-                      //               onClick={() => handleShow(partner.partyId)}
-                      //             />
-                      //           </div>
-                      //         </div>
-                      //       </div>
-                      //     );
-                      //   })
-                      // ) :
+             
                       partnerData.length > 0 ? (
                         <div>
                           <div className="partner_div" id="scroll_style">
@@ -736,18 +706,22 @@ const Partner = () => {
                       <h6>
                         {" "}
                         Add{" "}
-                        {partyType == langFullData.seller
-                          ? "seller"
+                        {partyType.toLowerCase() == 'farmer'
+                          ? "Seller"
                           : getText(partyType)}
                       </h6>
                       <p></p>
 
-                      <button className="outline_btn" id="MybtnModal">
+                      <button className="outline_btn mr-2" onClick={()=>MybtnModal(partyType)}>
                         Add
                         {partyType == langFullData.seller
                           ? "seller"
                           : " " + getText(partyType)}
                       </button>
+                      {partyType.toLowerCase() == 'farmer' || partyType.toLowerCase() == 'buyer' ? <button className="outline_btn mt-3" onClick={()=>MybtnModal('trader')}>
+                        Add Trader
+                      </button> : ''}
+                      
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
                   </div>
@@ -784,19 +758,17 @@ const Partner = () => {
                       type="radio"
                       value={partyType.toLowerCase()}
                       name="radioValue"
-                      defaultChecked={
-                        radioValue.trim().length !== 0
-                          ? radioValue === partyType.toLowerCase()
-                          : partyType.toLowerCase()
-                      }
+                      id={partyType.toLowerCase()}
+                      checked={radioValue.toLowerCase() === partyType.toLowerCase()}
+                    
                     />{" "}
                     {getText(partyType)}
-                    {/* {partyType.toLowerCase()} */}
                     <input
                       type="radio"
-                      value={langFullData.trader}
+                      value='trader'
+                      id='trader'
                       name="radioValue"
-                      defaultChecked={radioValue === langFullData.trader}
+                      checked={radioValue.toLowerCase() === 'trader'}
                       className="radioBtnVal"
                     />{" "}
                     {langFullData.trader}
