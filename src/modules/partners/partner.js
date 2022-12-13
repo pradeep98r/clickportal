@@ -776,29 +776,7 @@ const Partner = () => {
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
                   </div>
-                  {getText(partyType) === langFullData.transporter || getText(partyType) === langFullData.labor?'':
-                  <div className="card default_card add_partner">
-                    <div>
-                      <h6>
-                        {" "}
-                        Add{" "}
-                        {partyType == langFullData.trader
-                          ? "trader"
-                          : 'Trader'}
-                      </h6>
-                      <p></p>
-
-                      <button className="outline_btn" onClick={()=>{addTrader(partyType)}}>
-                        Add
-                        {partyType == langFullData.seller||
-                        partyType == langFullData.trader
-                          ? "trader"
-                          : " " + 'Trader'}
-                      </button>
-                    </div>
-                    {/* <OutlineButton text="Add Seller" /> */}
-                  </div>
-                  }
+                  
                 </div>
               </div>
             </div>
