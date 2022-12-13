@@ -35,18 +35,16 @@ const SelectPartner = (props) => {
       });
   };
 
-  const [searchPartyItem, setSearchPartyItem] = useState("");
   const [getPartyName, setGetPartyName] = useState(false);
   const [count, setCount] = useState(0);
   const selectParty = () => {
-    //setGetPartyName(true);
     setCount(count + 1);
-    console.log(count);
     if (count % 2 == 0) {
       setGetPartyName(true);
     } else {
       setGetPartyName(false);
     }
+   
     console.log("came to click event");
   };
   const partySelect = (item) => {
@@ -62,7 +60,12 @@ const SelectPartner = (props) => {
     }
   };
   useEffect(() => {
+    console.log("click")
     fetchPertnerData();
+     if(props.onClickPage){
+       console.log("click")
+      setGetPartyName(false);
+    }
   }, []);
  
   const handleSearch = (event) => {
@@ -79,6 +82,7 @@ const SelectPartner = (props) => {
     });
     setpartnerData(result);
   };
+ 
   return (
     <div>
       <div onClick={selectParty}>

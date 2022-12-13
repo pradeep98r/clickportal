@@ -41,6 +41,11 @@ const Step1 = () => {
       setStartDate(new Date());
     }
   }
+  const [onClickPage, setonClickPage] = useState(false);
+  document.body.addEventListener("click", function (evt) {
+    setonClickPage(true);
+  });
+
   return (
     <div>
       <div className="main_div_padding">
@@ -50,6 +55,7 @@ const Step1 = () => {
               <SelectPartner
                 partyType="Seller"
                 parentCallback={callbackFunction}
+                onClickPage={onClickPage}
               />
             </div>
             <div className="col-lg-5 ">

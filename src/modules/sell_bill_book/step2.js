@@ -462,6 +462,7 @@ const SellbillStep2Modal = (props) => {
     }
     cropResponseData([...cropData, crop]);
   };
+  var dummyList = [];
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
@@ -471,14 +472,42 @@ const SellbillStep2Modal = (props) => {
       if (index1 != -1) {
         list[index1].count -= 1;
         if (list[index1].count == 0) {
-          console.log(list, index1)
           if (props.billEditStatus) {
             list.splice(index1, 1);
+          } else {
+            getPreferredCrops(clickId, clientId, clientSecret)
+            .then((response) => {
+                dummyList = response.data.data;
+                let updatedarr = dummyList.map((item, i) => {
+                  if (item.cropId == list[index1].cropId) {
+                    return { ...dummyList[i] };
+                  } else {
+                    console.log("else");
+                    return null;
+                  }
+                });
+               console.log(updatedarr,list,"update arr");
+               for(var k=0; k<updatedarr.length; k++){
+                 if(updatedarr[k]==null){
+                  list.splice(index1, k);
+                   console.log('newcrop remove',index1,list)
+                 }
+                 else{
+                  console.log('samecrop ');
+                  return list;
+                 }
+               }
+               console.log(list)
+               setPreferedCropsData([...list]);
+             
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+           
+            
+           
           }
-          else {
-            list.splice(index1, index1);
-          }
-          // list.splice(index1,index1);
         }
       }
     }
