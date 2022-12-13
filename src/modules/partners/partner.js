@@ -294,17 +294,20 @@ const Partner = () => {
         : shortNameField.trim().length !== 0 &&
           shortNameField.trim().length !== 1) &&
       (aadharNumber.trim().length == 0
-        ? aadharNumber.trim().length > 12
-          ? false
-          : true
-        : false)
+        ? true
+        : (aadharNumber.trim().length < 12 ? false : true))
     ) {
+      console.log(aadharNumber.trim().length,"inner");
+      localStorage.setItem("partyType",partyType);
       addEditPartnerApiCall();
-    } else if (aadharNumber.trim.length > 0) {
-      if (aadharNumber.trim().length < 12) {
+      window.setTimeout( function() {
+        window.location.reload();
+      }, 1500);
+    } 
+     else if (aadharNumber.trim().length < 12) {
         setAadharError("Minimum Adhar number length should be 12");
       }
-    } else if (nameField.trim().length === 0) {
+     else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
