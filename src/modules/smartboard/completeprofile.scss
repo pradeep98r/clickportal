@@ -8,17 +8,34 @@
         visibility: hidden;
     }
 }
-#market-modal-content{
-    position: absolute;
-    margin-top: -100px;
-    margin-left: 0px;
+// #market-modal-content{
+//     position: absolute;
+//     margin-top: -100px;
+//     margin-left: 0px;
+// }
+// #other-modal-content{
+//     position: absolute;
+//     margin-top: -5px;
+//     margin-left: 0px;
+//     max-width: 750px;
+// }
+.market_name_popup{
+    max-width: 650px;
+    margin-top: 60px;
+    iframe{
+        border: none;
+    }
 }
-#other-modal-content{
-    position: absolute;
-    margin-top: -5px;
-    margin-left: 0px;
-    max-width: 750px;
+.market_name_modal_mody{
+    max-width: 650px;
+    max-height: calc(100vh - 0px);
+    margin-top: 60px;
 }
+.drop-down-image{
+    position: absolute;
+    margin: 50px 180px;
+}
+
 .searchicon{
     padding-top: 5px;
 }
@@ -92,4 +109,13 @@
     line-height: 16px;
     color: #1C1C1C;
     cursor: pointer;   
+}
+.star-color{
+    color:#D43939;
+}
+.cont_btn {
+    border-radius: 0px 0px 0.3rem 0.3rem !important;
+  }
+.modal-footer{
+    padding: 0px;
 }
