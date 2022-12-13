@@ -46,13 +46,13 @@ const Partner = () => {
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           tabEvent(partyType);
-          toastr.success('Partner Deleted Successfully',{
-            toastId:'success1'
-          })
+          toastr.success("Partner Deleted Successfully", {
+            toastId: "success1",
+          });
         }
       },
       (error) => {
-        toastr.error(error.response.data.status.description,{
+        toastr.error(error.response.data.status.description, {
           toastId: "errorr1",
         });
       }
@@ -157,7 +157,7 @@ const Partner = () => {
 
   function onChangeValue(event) {
     setradioValue(event.target.value.toUpperCase());
-    console.log(event.target.value.toUpperCase(),"radio value");
+    console.log(event.target.value.toUpperCase(), "radio value");
   }
   const [partnerItem, setPartnerItem] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -176,13 +176,15 @@ const Partner = () => {
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
         setUpdateProfilePic(partner.profilePic);
-        setPincode(partner.address.pincode)
+        setPincode(partner.address.pincode);
         setOpeningBalance(partner.openingBal);
-        if(partner.partyType.toLowerCase()=='farmer' || partner.partyType.toLowerCase() == 'buyer'){
-          if(partner.trader){
-            setradioValue('TRADER');
-          }
-          else{
+        if (
+          partner.partyType.toLowerCase() == "farmer" ||
+          partner.partyType.toLowerCase() == "buyer"
+        ) {
+          if (partner.trader) {
+            setradioValue("TRADER");
+          } else {
             setradioValue(partner.partyType.toUpperCase());
           }
         }
@@ -194,8 +196,8 @@ const Partner = () => {
     $("#Mymodal").modal("show");
   };
 
-  const [profilePic, setProfilePic] = useState('');
-  const[updateProfilePic, setUpdateProfilePic] = useState('')
+  const [profilePic, setProfilePic] = useState("");
+  const [updateProfilePic, setUpdateProfilePic] = useState("");
 
   const obj = {
     aadharNum: aadharNumber,
@@ -215,7 +217,7 @@ const Partner = () => {
     partyId: isEdit ? partnerItem.partyId : 0,
     partyName: nameField,
     partyType: partyType,
-    profilePic: isEdit?updateProfilePic:profilePic,//single_bill,
+    profilePic: isEdit ? updateProfilePic : profilePic, //single_bill,
     seqNum: 0,
     shortName: shortNameField,
     trader:
@@ -229,79 +231,81 @@ const Partner = () => {
       vehicleType: vehicleType,
     },
   };
-  
-  const handleProfilePic =(e)=>{
-    if(isEdit){
-      console.log("came t edit")
+
+  const handleProfilePic = (e) => {
+    if (isEdit) {
+      console.log("came t edit");
       setFile(e.target.files[0]);
       let req = {
-        file:e.target.files[0],
-        type:partyType
-      }
-      uploadProfilePic(clickId,mobileNumber,req)
-      .then(response=>{
-        console.log(mobileNumber)
-        //setProfilePic(response.data.data)
-        setUpdateProfilePic(response.data.data);
-        console.log(updateProfilePic);
-      }).catch(error=>{
-        console.log(error)
-      })
-    }
-    else{
-      console.log("came to normal")
+        file: e.target.files[0],
+        type: partyType,
+      };
+      uploadProfilePic(clickId, mobileNumber, req)
+        .then((response) => {
+          console.log(mobileNumber);
+          //setProfilePic(response.data.data)
+          setUpdateProfilePic(response.data.data);
+          console.log(updateProfilePic);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.log("came to normal");
       setFile(e.target.files[0]);
       let req = {
-        file:e.target.files[0],
-        type:partyType
-      }
-      uploadProfilePic(clickId,mobileNumber,req)
-      .then(response=>{
-        setProfilePic(response.data.data)
-        console.log(profilePic);
-      }).catch(error=>{
-        console.log(error)
-      })
+        file: e.target.files[0],
+        type: partyType,
+      };
+      uploadProfilePic(clickId, mobileNumber, req)
+        .then((response) => {
+          setProfilePic(response.data.data);
+          console.log(profilePic);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    
-  }
+  };
   //   file ? URL.createObjectURL(file) :
-  var exitStatus=false;
-  const handleExitPartner = (mobilee)=>{
-    partnerData.map(item=>{
-      if(item.mobile===mobilee && !isEdit){
-        exitStatus=true;
-        return exitStatus
+  var exitStatus = false;
+  const handleExitPartner = (mobilee) => {
+    partnerData.map((item) => {
+      if (item.mobile === mobilee && !isEdit) {
+        exitStatus = true;
+        return exitStatus;
       }
-    })
+    });
     return exitStatus;
-  }
+  };
   const onSubmit = () => {
-    if(handleExitPartner(mobileNumber)){
-      toastr.error('Partner Already Existed',{
+    console.log(aadharNumber.trim().length);
+    if (handleExitPartner(mobileNumber)) {
+      toastr.error("Partner Already Existed", {
         toastId: "error5",
-      })
-    }
-    else if (
+      });
+    } else if (
       nameField.trim().length !== 0 &&
       nameField.trim().length !== 1 &&
       mobileNumber.trim().length !== 0 &&
-      !(aadharNumber.trim().length <12) && 
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
-          shortNameField.trim().length !== 1)
+          shortNameField.trim().length !== 1) &&
+      (aadharNumber.trim().length == 0
+        ? aadharNumber.trim().length > 12
+          ? false
+          : true
+        : false)
     ) {
-
+      console.log("oofirst", aadharNumber.trim.length);
       addEditPartnerApiCall();
-      // window.setTimeout( function() {
-      //   window.location.reload();
-      // }, 1500);
-      //window.location.reload();
-    } else if(aadharNumber.trim().length<12){
-      setAadharError("Minimum Adhar number length should be 12");
-    }
-     else if (nameField.trim().length === 0) {
+    } else if (aadharNumber.trim.length > 0) {
+      console.log("oo");
+      if (aadharNumber.trim().length < 12) {
+        setAadharError("Minimum Adhar number length should be 12");
+      }
+    } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
@@ -322,13 +326,13 @@ const Partner = () => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "edit partner");
             tabEvent(partyType);
-            toastr.success('Updated Successfully',{
-              toastId:'success2'
-            })
+            toastr.success("Updated Successfully", {
+              toastId: "success2",
+            });
           }
         },
         (error) => {
-          toastr.error(error.response.data.status.message,{
+          toastr.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
         }
@@ -339,13 +343,13 @@ const Partner = () => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             tabEvent(partyType);
-            toastr.success(response.data.status.message,{
+            toastr.success(response.data.status.message, {
               toastId: "success2",
-            })
+            });
           }
         },
         (error) => {
-          toastr.error(error.response.data.status.message,{
+          toastr.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
         }
@@ -356,7 +360,7 @@ const Partner = () => {
   const [valueActive, setIsValueActive] = useState(false);
 
   const tabEvent = (type) => {
-    console.log(type,"type");
+    console.log(type, "type");
     setPartyType(type);
     setAadharNumber("");
     setCityVal("");
@@ -367,11 +371,11 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
-    if(type.toUpperCase() === 'FARMER'){
-      setradioValue('FARMER')
-    } else if(type.toUpperCase() === 'BUYER'){
-      setradioValue('BUYER');
-    }else{
+    if (type.toUpperCase() === "FARMER") {
+      setradioValue("FARMER");
+    } else if (type.toUpperCase() === "BUYER") {
+      setradioValue("BUYER");
+    } else {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
@@ -559,8 +563,7 @@ const Partner = () => {
     console.log(city, locality.state);
   }
 
-  const [rVal, setrVal] = useState(false);
-  const MybtnModal = (type) =>{
+  const MybtnModal = (type) => {
     // setPincode();
     setAadharNumber("");
     setCityVal("");
@@ -571,25 +574,23 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
-    setProfilePic('');
+    setProfilePic("");
     if (type.toUpperCase() == "FARMER") {
       setradioValue("FARMER");
-    } else if(type.toUpperCase() == "BUYER") {
+    } else if (type.toUpperCase() == "BUYER") {
       setradioValue("BUYER");
-    }
-    else{
-      console.log(type)
+    } else {
+      console.log(type);
       setradioValue("TRADER");
     }
     setIsEdit(false);
     // setPincode();
-    setCityVal(""); 
+    setCityVal("");
     setStateVal("");
     setAddeditText("Add");
     console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
-
-  }
+  };
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
     setPincode("");
@@ -676,68 +677,63 @@ const Partner = () => {
                   />
 
                   <div>
-                    {
-             
-                      partnerData.length > 0 ? (
-                        <div>
-                          <div className="partner_div" id="scroll_style">
-                            {partnerData.map((partner, index) => (
-                              <div className="card partner_card" key={index}>
-                                <div className="d-flex partner_card_flex justify-content-between align-items-center">
-                                  <div className="d-flex align-items-center">
-                                    {partner.profilePic ? (
-                                      <img
-                                        src={partner.profilePic}
-                                        alt="profile_img"
-                                        className="user_img"
-                                      />
-                                    ) : (
-                                      <img
-                                        src={single_bill}
-                                        alt="img"
-                                        className="user_img"
-                                      />
-                                    )}
-                                    <div>
-                                      <h5>
-                                        {partner.partyName +
-                                          " " +
-                                          partner.shortName}
-                                      </h5>
-                                      <h6>
-                                        {getPartnerType(
-                                          partner.partyType,
-                                          partner.trader
-                                        )}{" "}
-                                        - {partner.partyId} | {partner.mobile}
-                                      </h6>
-                                      <p>{partner.address.addressLine}</p>
-                                    </div>
-                                  </div>
-                                  <div className="d-flex edit_delete_icons">
+                    {partnerData.length > 0 ? (
+                      <div>
+                        <div className="partner_div" id="scroll_style">
+                          {partnerData.map((partner, index) => (
+                            <div className="card partner_card" key={index}>
+                              <div className="d-flex partner_card_flex justify-content-between align-items-center">
+                                <div className="d-flex align-items-center">
+                                  {partner.profilePic ? (
                                     <img
-                                      src={edit}
-                                      alt="img"
-                                      className=""
-                                      onClick={() => editPartner(partner)}
+                                      src={partner.profilePic}
+                                      alt="profile_img"
+                                      className="user_img"
                                     />
+                                  ) : (
                                     <img
-                                      src={delete_icon}
+                                      src={single_bill}
                                       alt="img"
-                                      onClick={() =>
-                                        handleShow(partner.partyId)
-                                      }
+                                      className="user_img"
                                     />
+                                  )}
+                                  <div>
+                                    <h5>
+                                      {partner.partyName +
+                                        " " +
+                                        partner.shortName}
+                                    </h5>
+                                    <h6>
+                                      {getPartnerType(
+                                        partner.partyType,
+                                        partner.trader
+                                      )}{" "}
+                                      - {partner.partyId} | {partner.mobile}
+                                    </h6>
+                                    <p>{partner.address.addressLine}</p>
                                   </div>
                                 </div>
+                                <div className="d-flex edit_delete_icons">
+                                  <img
+                                    src={edit}
+                                    alt="img"
+                                    className=""
+                                    onClick={() => editPartner(partner)}
+                                  />
+                                  <img
+                                    src={delete_icon}
+                                    alt="img"
+                                    onClick={() => handleShow(partner.partyId)}
+                                  />
+                                </div>
                               </div>
-                            ))}
-                          </div>
+                            </div>
+                          ))}
                         </div>
-                      ) : (
-                        <NoDataAvailable />
-                      )
-                    }
+                      </div>
+                    ) : (
+                      <NoDataAvailable />
+                    )}
                   </div>
                   {/* <div
                     id="search-no-data"
@@ -757,26 +753,35 @@ const Partner = () => {
                       <h6>
                         {" "}
                         Add{" "}
-                        {partyType.toLowerCase() == 'farmer'
+                        {partyType.toLowerCase() == "farmer"
                           ? "Seller"
                           : getText(partyType)}
                       </h6>
                       <p></p>
 
-                      <button className="outline_btn mr-2" onClick={()=>MybtnModal(partyType)}>
+                      <button
+                        className="outline_btn mr-2"
+                        onClick={() => MybtnModal(partyType)}
+                      >
                         Add
                         {partyType == langFullData.seller
                           ? "seller"
                           : " " + getText(partyType)}
                       </button>
-                      {partyType.toLowerCase() == 'farmer' || partyType.toLowerCase() == 'buyer' ? <button className="outline_btn mt-3" onClick={()=>MybtnModal('trader')}>
-                        Add Trader
-                      </button> : ''}
-                      
+                      {partyType.toLowerCase() == "farmer" ||
+                      partyType.toLowerCase() == "buyer" ? (
+                        <button
+                          className="outline_btn mt-3"
+                          onClick={() => MybtnModal("trader")}
+                        >
+                          Add Trader
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -811,16 +816,17 @@ const Partner = () => {
                       value={partyType.toLowerCase()}
                       name="radioValue"
                       id={partyType.toLowerCase()}
-                      checked={radioValue.toLowerCase() === partyType.toLowerCase()}
-                    
+                      checked={
+                        radioValue.toLowerCase() === partyType.toLowerCase()
+                      }
                     />{" "}
                     {getText(partyType)}
                     <input
                       type="radio"
-                      value='trader'
-                      id='trader'
+                      value="trader"
+                      id="trader"
                       name="radioValue"
-                      checked={radioValue.toLowerCase() === 'trader'}
+                      checked={radioValue.toLowerCase() === "trader"}
                       className="radioBtnVal"
                     />{" "}
                     {langFullData.trader}
@@ -999,32 +1005,42 @@ const Partner = () => {
                           <div className="file-input">
                             <div className="d-flex align-items-center">
                               <div className="input_file">
-                                {isEdit?
-                                <img
-                                src={isEdit?updateProfilePic===''?single_bill:updateProfilePic:single_bill}
-                                // src={
-                                //   file
-                                //     ? URL.createObjectURL(file)
-                                //     : single_bill
-                                // }
-                                alt="" />:
-                                <img
-                                  src={profilePic?profilePic:single_bill}
-                                  // src={
-                                  //   file
-                                  //     ? URL.createObjectURL(file)
-                                  //     : single_bill
-                                  // }
-                                  alt=""
-                                />
-                                }
+                                {isEdit ? (
+                                  <img
+                                    src={
+                                      isEdit
+                                        ? updateProfilePic === ""
+                                          ? single_bill
+                                          : updateProfilePic
+                                        : single_bill
+                                    }
+                                    // src={
+                                    //   file
+                                    //     ? URL.createObjectURL(file)
+                                    //     : single_bill
+                                    // }
+                                    alt=""
+                                  />
+                                ) : (
+                                  <img
+                                    src={profilePic ? profilePic : single_bill}
+                                    // src={
+                                    //   file
+                                    //     ? URL.createObjectURL(file)
+                                    //     : single_bill
+                                    // }
+                                    alt=""
+                                  />
+                                )}
                               </div>
                               <div>
                                 <input
                                   type="file"
                                   id="file"
                                   //onChange={(e) => setFile(e.target.files[0])}
-                                  onChange={(e)=>{handleProfilePic(e)}}
+                                  onChange={(e) => {
+                                    handleProfilePic(e);
+                                  }}
                                 />
                                 <label htmlFor="file" className="file">
                                   {langFullData.chooseFromLibrary}
