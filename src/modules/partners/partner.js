@@ -152,6 +152,7 @@ const Partner = () => {
 
   function onChangeValue(event) {
     setradioValue(event.target.value.toUpperCase());
+    console.log(event.target.value.toUpperCase(),"radio value");
   }
   const [partnerItem, setPartnerItem] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -160,6 +161,7 @@ const Partner = () => {
     setIsEdit(true);
     partnerData.map((item) => {
       if (item.partyId == partner.partyId) {
+        console.log(partner.trader);
         setPartnerItem(item);
         setAadharNumber(partner.aadharNum);
         setmobileNumber(partner.mobile);
@@ -233,6 +235,7 @@ const Partner = () => {
       }
       uploadProfilePic(clickId,mobileNumber,req)
       .then(response=>{
+        console.log(mobileNumber)
         //setProfilePic(response.data.data)
         setUpdateProfilePic(response.data.data);
         console.log(updateProfilePic);
@@ -317,6 +320,7 @@ const Partner = () => {
   const [valueActive, setIsValueActive] = useState(false);
 
   const tabEvent = (type) => {
+    console.log(type,"type");
     setPartyType(type);
     setAadharNumber("");
     setCityVal("");
@@ -327,7 +331,13 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
-    setradioValue("");
+    if(type.toUpperCase() === 'FARMER'){
+      setradioValue('FARMER')
+    } else if(type.toUpperCase() === 'BUYER'){
+      setradioValue('BUYER');
+    }else{
+      setradioValue(langFullData.trader);
+    }
     setIsEdit(false);
     setPincode("");
     setCityVal("");
@@ -536,7 +546,8 @@ const Partner = () => {
     }
     setIsEdit(false);
     // setPincode();
-    setCityVal("");    setStateVal("");
+    setCityVal(""); 
+    setStateVal("");
     setAddeditText("Add");
     console.log(isEdit, radioValue, "after");
     $("#Mymodal").modal("show");
@@ -544,7 +555,10 @@ const Partner = () => {
   }
   const closeAddModal = () => {
     $("#Mymodal").modal("hide");
-    console.log(pincode);
+    setPincode("");
+    setStateVal("");
+    setCityVal("");
+    setStartDate(new Date());
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -725,6 +739,29 @@ const Partner = () => {
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
                   </div>
+                  {getText(partyType) === langFullData.transporter || getText(partyType) === langFullData.labor?'':
+                  <div className="card default_card add_partner">
+                    <div>
+                      <h6>
+                        {" "}
+                        Add{" "}
+                        {partyType == langFullData.trader
+                          ? "trader"
+                          : 'Trader'}
+                      </h6>
+                      <p></p>
+
+                      <button className="outline_btn" onClick={()=>{addTrader(partyType)}}>
+                        Add
+                        {partyType == langFullData.seller||
+                        partyType == langFullData.trader
+                          ? "trader"
+                          : " " + 'Trader'}
+                      </button>
+                    </div>
+                    {/* <OutlineButton text="Add Seller" /> */}
+                  </div>
+                  }
                 </div>
               </div>
             </div>
