@@ -29,8 +29,10 @@ const Partner = () => {
   const clickId = loginData.clickId;
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
-  const savetype=localStorage.getItem("partyType");
-  const [partyType, setPartyType] = useState(savetype!==null?savetype:"FARMER");
+  const savetype = localStorage.getItem("partyType");
+  const [partyType, setPartyType] = useState(
+    savetype !== null ? savetype : "FARMER"
+  );
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
@@ -223,7 +225,8 @@ const Partner = () => {
     shortName: shortNameField,
     trader:
       radioValue.trim().length !== 0
-        ? radioValue == "FARMER" || radioValue == "BUYER"
+        ? radioValue.toUpperCase() == "FARMER" ||
+          radioValue.toUpperCase() == "BUYER"
           ? false
           : true
         : false,
@@ -295,19 +298,19 @@ const Partner = () => {
           shortNameField.trim().length !== 1) &&
       (aadharNumber.trim().length == 0
         ? true
-        : (aadharNumber.trim().length < 12 ? false : true))
+        : aadharNumber.trim().length < 12
+        ? false
+        : true)
     ) {
-      console.log(aadharNumber.trim().length,"inner");
-      localStorage.setItem("partyType",partyType);
+      console.log(aadharNumber.trim().length, "inner");
+      localStorage.setItem("partyType", partyType);
       addEditPartnerApiCall();
-      window.setTimeout( function() {
+      window.setTimeout(function () {
         window.location.reload();
       }, 1500);
-    } 
-     else if (aadharNumber.trim().length < 12) {
-        setAadharError("Minimum Adhar number length should be 12");
-      }
-     else if (nameField.trim().length === 0) {
+    } else if (aadharNumber.trim().length < 12) {
+      setAadharError("Minimum Adhar number length should be 12");
+    } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
