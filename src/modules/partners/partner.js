@@ -46,10 +46,15 @@ const Partner = () => {
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           tabEvent(partyType);
+          toastr.success('Partner Deleted Successfully',{
+            toastId:'success1'
+          })
         }
       },
       (error) => {
-        toastr.error(error.response.data.status.description);
+        toastr.error(error.response.data.status.description,{
+          toastId: "errorr1",
+        });
       }
     );
     setShow(false);
@@ -261,21 +266,42 @@ const Partner = () => {
     
   }
   //   file ? URL.createObjectURL(file) :
-
+  var exitStatus=false;
+  const handleExitPartner = (mobilee)=>{
+    partnerData.map(item=>{
+      if(item.mobile===mobilee && !isEdit){
+        exitStatus=true;
+        return exitStatus
+      }
+    })
+    return exitStatus;
+  }
   const onSubmit = () => {
-    if (
+    if(handleExitPartner(mobileNumber)){
+      toastr.error('Partner Already Existed',{
+        toastId: "error5",
+      })
+    }
+    else if (
       nameField.trim().length !== 0 &&
       nameField.trim().length !== 1 &&
       mobileNumber.trim().length !== 0 &&
+      !(aadharNumber.trim().length <12) && 
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
           shortNameField.trim().length !== 1)
     ) {
-      console.log("came to edit");
+
       addEditPartnerApiCall();
-      window.location.reload();
-    } else if (nameField.trim().length === 0) {
+      // window.setTimeout( function() {
+      //   window.location.reload();
+      // }, 1500);
+      //window.location.reload();
+    } else if(aadharNumber.trim().length<12){
+      setAadharError("Minimum Adhar number length should be 12");
+    }
+     else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
@@ -296,10 +322,15 @@ const Partner = () => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "edit partner");
             tabEvent(partyType);
+            toastr.success('Updated Successfully',{
+              toastId:'success2'
+            })
           }
         },
         (error) => {
-          toastr.error(error.response.data.status.description);
+          toastr.error(error.response.data.status.message,{
+            toastId: "errorr2",
+          });
         }
       );
     } else {
@@ -308,10 +339,15 @@ const Partner = () => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             tabEvent(partyType);
+            toastr.success(response.data.status.message,{
+              toastId: "success2",
+            })
           }
         },
         (error) => {
-          toastr.error(error.response.data.status.description);
+          toastr.error(error.response.data.status.message,{
+            toastId: "errorr3",
+          });
         }
       );
     }
@@ -347,6 +383,7 @@ const Partner = () => {
       .then((response) => {
         setAllData(response.data.data);
         setPartnerData(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
