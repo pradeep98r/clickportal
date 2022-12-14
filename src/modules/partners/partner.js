@@ -23,7 +23,9 @@ import { Modal, Button } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
-import { update } from "lodash";
+import location_icon from "../../assets/images/location_icon.svg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -48,15 +50,12 @@ const Partner = () => {
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           tabEvent(partyType);
-          toastr.success('Partner Deleted Successfully',{
-            toastId:'success1'
-          })
+          toast.success("Partner Deleted Successfully",{toastId:'success1'});
+          
         }
       },
       (error) => {
-        toastr.error(error.response.data.status.description,{
-          toastId: "errorr1",
-        });
+        toast.error(error.response.data.status.description,{toastId:'errorr1'});
       }
     );
     setShow(false);
@@ -280,8 +279,10 @@ const Partner = () => {
     return exitStatus;
   }
   const onSubmit = () => {
-    if(handleExitPartner(mobileNumber)){
-      toastr.error('Partner Already Existed',{
+    console.log(aadharNumber.trim().length);
+    if (handleExitPartner(mobileNumber)) {
+      
+      toast.error("Partner Already Existed", {
         toastId: "error5",
       })
     }
@@ -301,10 +302,8 @@ const Partner = () => {
       localStorage.setItem("partyType",partyType);
       window.setTimeout( function() {
         window.location.reload();
-      }, 1500);
-      //window.location.reload();
-    } else if(aadharNumber.trim().length<12){
-      console.log(aadharNumber.trim().length);
+      }, 2000);
+    } else if (aadharNumber.trim().length < 12) {
       setAadharError("Minimum Adhar number length should be 12");
     }
      else if (nameField.trim().length === 0) {
@@ -328,13 +327,13 @@ const Partner = () => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "edit partner");
             tabEvent(partyType);
-            toastr.success('Updated Successfully',{
-              toastId:'success2'
-            })
+            toast.success("Updated Successfully", {
+              toastId: "success2",
+            });
           }
         },
         (error) => {
-          toastr.error(error.response.data.status.message,{
+          toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
         }
@@ -345,13 +344,13 @@ const Partner = () => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             tabEvent(partyType);
-            toastr.success(response.data.status.message,{
+            toast.success(response.data.status.message, {
               toastId: "success2",
             })
           }
         },
         (error) => {
-          toastr.error(error.response.data.status.message,{
+          toast.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
         }
@@ -359,8 +358,6 @@ const Partner = () => {
     }
     closeAddModal();
   };
-  const [valueActive, setIsValueActive] = useState(false);
-
   const tabEvent = (type) => {
     console.log(type,"type");
     setPartyType(type);
@@ -551,7 +548,7 @@ const Partner = () => {
     var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    var $input;
+   
     var city = localities[0].city;
     setCityVal(city);
     setStateVal(locality.state);
@@ -589,19 +586,31 @@ const Partner = () => {
     }
     setIsEdit(false);
     // setPincode();
-    setCityVal(""); 
-    setStateVal("");
+    setCityVal("");
     setAddeditText("Add");
-    console.log(isEdit, radioValue, "after");
+    console.log(isEdit, radioValue, cityVal,"after");
     $("#Mymodal").modal("show");
-
-  }
+  };
+  var $input;
   const closeAddModal = () => {
-    $("#Mymodal").modal("hide");
     setPincode("");
+    setAadharError("");
+    setNameError("")
     setStateVal("");
     setCityVal("");
     setStartDate(new Date());
+    $("#Mymodal").modal("hide");
+    console.log("hiding");
+    $("#state").val('');
+    $("#city").val('');
+    // var $input;
+    // var $text = $(document.createElement("input"));
+    // $text.attr("value", '');
+    // // $text.attr("type", "text");
+    // // $text.attr("type", "text");
+    // $text.attr("class", "form-control");
+    // $input = $text;
+    // $("#city-input-wrapper").html($input);
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -635,6 +644,9 @@ const Partner = () => {
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
       }
+      else if (data.shortName.toLowerCase().includes(value)) {
+        return data.shortName.toLowerCase().search(value) != -1;
+      }
     });
     setPartnerData(result);
     setSearchValue(value);
@@ -643,7 +655,7 @@ const Partner = () => {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          <ul className="nav nav-tabs" id="myTab" role="tablist">
+          <ul className="nav nav-tabs partner_tabs" id="myTab" role="tablist">
             {links.map((link) => {
               return (
                 <li key={link.id} className="nav-item ">
@@ -673,7 +685,7 @@ const Partner = () => {
               <div className="row">
                 <div className="col-lg-9 ps-0">
                   <SearchField
-                    placeholder={langFullData.search}
+                    placeholder='Search by Name / Mobile / Short Code / Party id'
                     val={searchValue}
                     onChange={(event) => {
                       handleSearch(event);
@@ -745,17 +757,7 @@ const Partner = () => {
                       )
                     }
                   </div>
-                  {/* <div
-                    id="search-no-data"
-                    style={{
-                      display:
-                        valueActive && searchInput.length > 0
-                          ? "block"
-                          : "none",
-                    }}
-                  >
-                    <NoDataAvailable />
-                  </div> */}
+                  
                 </div>
                 <div className="col-lg-3">
                   <div className="card default_card add_partner">
@@ -811,7 +813,13 @@ const Partner = () => {
               <form>
                 {partyType == langFullData.farmer.toUpperCase() ||
                 partyType == langFullData.buyer.toUpperCase() ? (
-                  <div onChange={onChangeValue}>
+                  <div>
+                    <label className="input_field">
+                    Select Type*
+                      </label>
+                    
+                    <div onChange={onChangeValue}>
+              
                     <input
                       type="radio"
                       value={partyType.toLowerCase()}
@@ -831,6 +839,8 @@ const Partner = () => {
                     />{" "}
                     {langFullData.trader}
                   </div>
+                  </div>
+                
                 ) : (
                   <div></div>
                 )}
@@ -1104,7 +1114,11 @@ const Partner = () => {
                       onClick={() => getPosition()}
                       className="location mt-0"
                     >
-                      {langFullData.selectCurrentLocation}
+                      <div className="d-flex align-items-center">
+                        <img src={location_icon} alt="" className="mr-2"/>
+                        {langFullData.selectCurrentLocation}
+                      </div>
+                      
                     </div>
                     <div>
                       <label htmlFor="state" className="input_field">
@@ -1138,7 +1152,7 @@ const Partner = () => {
                 </div>
               </form>
             </div>
-            <div className="modal-footer">
+            <div className="modal-footer p-0">
               <button
                 type="button"
                 className="primary_btn"
@@ -1146,7 +1160,7 @@ const Partner = () => {
                 // id="close_modal"
                 data-bs-dismiss="modal"
               >
-                {langFullData.submit}
+               save
               </button>
             </div>
           </div>
@@ -1189,6 +1203,7 @@ const Partner = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer />
     </div>
   );
 };

@@ -93,10 +93,12 @@
   .input_file img{
     width: 60px;
     height: 60px;
+    border-radius: 100%;
   }
 }
 .date_label{
   position: relative;
+  margin-bottom: 0;
   .date_icon img {
     position: absolute;
     top: 10px;
@@ -107,10 +109,13 @@
   .form-control{
     border: 1px solid #ccc;
     border-radius: 3px;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     padding: 0.375rem 40px;
     font-size: 1rem;
   }
+}
+.date_label .form-control:hover, .file:hover{
+  cursor: pointer;
 }
 .location:hover{
   cursor: pointer;
@@ -135,7 +140,7 @@ p{
   width: 100%;
   padding: 10px;
   ::placeholder{
-    color: #16A02C;
+    color: #7A7A7A;
     font-size: 15px;
   }
 }
@@ -144,7 +149,7 @@ p{
 }
 
 .transpo_height{
-  height: 85px;
+  height: 78px;
 }
 .delete_modal_dialog {
 .modal-header, .modal-footer{
@@ -161,4 +166,15 @@ border: none;
   border: none;
   border-radius: 0px;
   padding: 0px;
+}
+.partner_modal_dialog{
+  border-radius: 0px;
+  .primary_btn{
+    text-transform: uppercase;
+    width: 100%;
+    border-radius: 0px 0px 3px 3px!important;
+  }
+}
+.partner_tabs{
+  border-bottom: 1px solid #E4E4E4;
 }

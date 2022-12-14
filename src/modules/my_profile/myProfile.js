@@ -16,7 +16,6 @@ import { getLanguagesData } from "../../actions/profileService";
 import CompleteProfile from "../smartboard/completeprofile";
 import { mandiInfoActions } from "../../reducers/mandiProfile";
 import { useDispatch } from "react-redux";
-import toastr from "toastr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const MyProfile = () => {
