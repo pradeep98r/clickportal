@@ -575,22 +575,6 @@ const CompleteProfile = (props) => {
             <div className="col-lg-6">
               <InputField
                 type="text"
-                value={contactName}
-                label={langFullData.contactName}
-                name="contactName"
-                id="contactName"
-                onChange={(e) => {
-                  handleContactName(e);
-                }}
-                starRequired={true}
-              />
-              <span className="text-danger">{contactNameError}</span>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6">
-              <InputField
-                type="text"
                 value={mandiShortCode}
                 label="Mandi Short Code"
                 name="mandiShortCode"
@@ -601,20 +585,6 @@ const CompleteProfile = (props) => {
                 starRequired={true}
               />
               <span className="text-danger">{mandiShortCodeError}</span>
-            </div>
-            <div className="col-lg-6">
-              <InputField
-                type="text"
-                value={alternateMobileNumber}
-                label={langFullData.alternativeMobile}
-                name="alternativeMobile"
-                id="alternativeMobile"
-                onChange={(e) => {
-                  handleAlternateMobileNumber(e);
-                }}
-                starRequired={false}
-              />
-              <span className="text-danger">{alternateMobileNumberError}</span>
             </div>
           </div>
           <div className="row">
@@ -635,6 +605,22 @@ const CompleteProfile = (props) => {
             <div className="col-lg-6">
               <InputField
                 type="text"
+                value={contactName}
+                label={langFullData.contactName}
+                name="contactName"
+                id="contactName"
+                onChange={(e) => {
+                  handleContactName(e);
+                }}
+                starRequired={true}
+              />
+              <span className="text-danger">{contactNameError}</span>
+            </div>
+          </div>
+          <div className="row">
+          <div className="col-lg-6">
+              <InputField
+                type="text"
                 value={mobileNumber}
                 label={langFullData.mobileNumber}
                 name="mobileNumber"
@@ -647,6 +633,20 @@ const CompleteProfile = (props) => {
               <div>
                 <span className="text-danger">{requiredNumberField}</span>
               </div>
+            </div>
+            <div className="col-lg-6">
+              <InputField
+                type="text"
+                value={alternateMobileNumber}
+                label={langFullData.alternativeMobile}
+                name="alternativeMobile"
+                id="alternativeMobile"
+                onChange={(e) => {
+                  handleAlternateMobileNumber(e);
+                }}
+                starRequired={false}
+              />
+              <span className="text-danger">{alternateMobileNumberError}</span>
             </div>
           </div>
           <div className="row">
@@ -710,7 +710,7 @@ const CompleteProfile = (props) => {
               {" "}
               <div>
                 <label htmlFor="city" className="input_field">
-                  City<span className="star-color">*</span>
+                  District<span className="star-color">*</span>
                 </label>
                 <div id="city-input-wrapper">
                   {mandiEditStatus == "true" ? (
