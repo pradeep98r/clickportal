@@ -14,6 +14,8 @@ import { getAllMarkets } from "../../actions/loginService";
 import search_img from "../../assets/images/search.svg";
 import markets from "../../assets/images/mandi.svg";
 import { Fragment } from "react";
+import SearchField from "../../components/searchField";
+import NoDataAvailable from "../../components/noDataAvailable";
 
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -21,7 +23,8 @@ const CompleteProfile = (props) => {
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
-  const [allMarketsData, setAllMarketsData] = useState([]);
+  const [allData, setAllData] = useState([]);
+  const [allMarketsData, setAllMarketsData] = useState(allData);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   console.log(mandiData);
@@ -29,6 +32,7 @@ const CompleteProfile = (props) => {
     getAllMarkets().then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
+          setAllData(response.data.data);
           setAllMarketsData(response.data.data);
         }
       },
@@ -473,10 +477,10 @@ const CompleteProfile = (props) => {
     openMarketNamePopUpModal();
     console.log("Drop Down Cicked");
   };
-  const [search, setSearch] = useState("");
+  // const [search, setSearch] = useState("");
   const [marketName, setMarketname] = useState([]);
   const searchMarketName = (searchValue) => {
-    setSearch(searchValue);
+    // setSearch(searchValue);
     if (search !== "") {
       const filteredNames = allMarketsData.filter((item) => {
         if (item.marketName.toLowerCase().includes(search.toLowerCase())) {
@@ -487,6 +491,18 @@ const CompleteProfile = (props) => {
     } else {
       setMarketname(allMarketsData);
     }
+  };
+  const [search, setSearchValue] = useState("");
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.marketName.toLowerCase().includes(value)) {
+        return data.marketName.toLowerCase().search(value) != -1;
+      } 
+    });
+    setAllMarketsData(result);
+    setSearchValue(value)
   };
 
   const handleOtherName = () => {
@@ -511,7 +527,7 @@ const CompleteProfile = (props) => {
     closePopup();
   };
   return (
-    <Modal show={props.show} close={props.close} className="modal_popup">
+    <Modal show={props.show} close={props.close} className="modal_popup profileModal">
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.businessDetails}
@@ -537,7 +553,7 @@ const CompleteProfile = (props) => {
                 />
               </label>
               <input
-                className="form-control"
+                className="form-control marketfrom"
                 value={marketname ? marketname : langFullData.selectMarketName}
                 onClick={handleMarketName}
               />
@@ -765,7 +781,7 @@ const CompleteProfile = (props) => {
           UPDATE
         </button>
       </div>
-      <div className="modal fade" id="marketNamePopUpModal">
+      <div className="modal fade profileModal" id="marketNamePopUpModal">
         <div className="modal-dialog  markets_name_popup">
           <div className="modal-content" id="market-modal-content">
             <div className="modal-header date_modal_header market_modal_header">
@@ -781,24 +797,15 @@ const CompleteProfile = (props) => {
             </div>
             <div className="modal-body  markets_name_modal_mody">
               <div className="col-lg-6" id="market-div">
-                <div id="search-mk-field">
-                  <form className="d-flex">
-                    <input
-                      className="form-control me-2 searchbar-input"
-                      id="searchbar-mk"
-                      type="text"
-                      value={search}
-                      placeholder={langFullData.searchByNameShortCode}
-                      onChange={(e) => {
-                        searchMarketName(e.target.value);
-                      }}
-                    />
-                  </form>
-                  <div className="searchicon">
-                    <img src={search_img} alt="search" />
-                  </div>
-                </div>
-                <div className="market-names" id="scroll_style">
+               
+                <SearchField
+                    placeholder={langFullData.searchByNameShortCode}
+                    val={search}
+                    onChange={(event) => {
+                      handleSearch(event);
+                    }}
+                  />
+                  {allMarketsData.length > 0 ? <div className="market-names" id="scroll_style">
                   {allMarketsData.map((item, index) => {
                     if (index === allMarketsData.length - 1)
                       return (
@@ -855,30 +862,40 @@ const CompleteProfile = (props) => {
                           </Fragment>
                         );
                       })}
-                </div>
+                </div>: <NoDataAvailable />}
+                
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="modal fade" id="otherModalPopUp">
+      <div className="modal fade profileModal" id="otherModalPopUp">
         <div className="modal-dialog  market_name_popup">
           <div className="modal-content" id="other-modal-content">
-            <div className="modal-header date_modal_header market_modal_header">
-              <h5 className="modal-title header2_text" id="mk-header">
+            <div className="modal-header date_modal_header market_modal_header px-0">
+            <div className="container">
+           <div className="row">
+           <div className="col-lg-12 p-0">
+           <h5 className="modal-title header2_text pl-0" id="mk-header">
                 Select Market
               </h5>
               <img
                 src={close}
                 alt="image"
-                className="close_icon"
+                className="close_icon othermarkerClose"
                 onClick={closeOtheModalPopUp}
               />
+           </div>
+           </div>
             </div>
-            <div className="modal-body market_name_modal_mody">
-              <div className="col-lg-6" id="market-div">
-                <div id="search-mk-field">
+            </div>
+            <div className="modal-body market_name_modal_mody px-0">
+           <div className="container">
+           <div className="row">
+              <div className="col-lg-12 p-0" id="market-div">
+               <div>
+               <div id="search-mk-field">
                   <form className="d-flex">
                     <input
                       className="form-control me-2 searchbar-input"
@@ -905,6 +922,9 @@ const CompleteProfile = (props) => {
                   />
                 </div>
               </div>
+               </div>
+              </div>
+           </div>
             </div>
             <div className="modal-footer p-0">
               <button
