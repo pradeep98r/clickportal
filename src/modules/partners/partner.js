@@ -596,24 +596,24 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
+    setCityVal("");
     setPincode("");
     setAadharError("");
     setNameError("");
     setStateVal("");
-    setCityVal("");
     setStartDate(new Date());
     $("#Mymodal").modal("hide");
     console.log("hiding");
     $("#state").val("");
     $("#city").val("");
-    // var $input;
+    var $input;
     // var $text = $(document.createElement("input"));
     // $text.attr("value", '');
     // // $text.attr("type", "text");
     // // $text.attr("type", "text");
     // $text.attr("class", "form-control");
     // $input = $text;
-    // $("#city-input-wrapper").html($input);
+    $("#city-input-wrapper").html($input);
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -685,7 +685,7 @@ const Partner = () => {
               aria-labelledby="home-tab"
             >
               <div className="row">
-                <div className="col-lg-9 ps-0">
+                <div className="col-lg-9 pl-0">
                   <SearchField
                     placeholder="Search by Name / Mobile / Short Code / Party id"
                     val={searchValue}
@@ -824,12 +824,14 @@ const Partner = () => {
                     <div onChange={onChangeValue}>
                       <input
                         type="radio"
+                        //className="custom-control-input"
                         value={partyType.toLowerCase()}
                         name="radioValue"
                         id={partyType.toLowerCase()}
                         checked={
                           radioValue.toLowerCase() === partyType.toLowerCase()
                         }
+                        className="radioBtnsVal"
                       />{" "}
                       {getText(partyType)}
                       <input
@@ -838,6 +840,7 @@ const Partner = () => {
                         id="trader"
                         name="radioValue"
                         checked={radioValue.toLowerCase() === "trader"}
+                        //className="custom-control-input"
                         className="radioBtnVal"
                       />{" "}
                       {langFullData.trader}

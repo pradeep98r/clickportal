@@ -901,6 +901,7 @@ const CompleteProfile = (props) => {
                     onChange={(e) => {
                       setMarketName(e.target.value);
                     }}
+                    starRequired={true}
                   />
                 </div>
               </div>
