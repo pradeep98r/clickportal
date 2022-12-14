@@ -32,6 +32,8 @@ import {
   getCurrencyNumberWithSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const BuyerLedger = () => {
   const [openTabs, setOpenTabs] = useState(false);
   const [allData, setallData] = useState([]);
@@ -64,8 +66,8 @@ const BuyerLedger = () => {
   const toggleAllCustom = (type) => {
     setToggleAC(type);
     if (type === "custom") {
-      console.log(type);
-      setDateDisplay(!dateDisplay);
+      console.log(type, dateDisplay);
+      setDateDisplay(true);
       setToggleState("ledgersummary");
     } else if (type === "all") {
       setDateDisplay(false);
@@ -119,6 +121,7 @@ const BuyerLedger = () => {
       if (item.partyId === id) {
         partyId = id;
         localStorage.setItem("partyId", JSON.stringify(partyId));
+        localStorage.setItem("partyItem", JSON.stringify(item));
         getBuyerLedgerSummary(clickId, id);
         fetchBuyerLedgerDetails(clickId, id);
         getOutstandingPaybles(clickId, id);
@@ -182,26 +185,31 @@ const BuyerLedger = () => {
     }
   };
 
-  const addRecordPayment = (partyId) => {
+  const addRecordPayment = () => {
+    partyId = JSON.parse(
+      localStorage.getItem("partyId")
+    );
     console.log(partyId);
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("partyId")),
-      date: selectDate,
+      date: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
     };
-    console.log(selectDate);
-    postRecordPayment(addRecordData)
-      .then((response) => {
-        console.log(response.data.data);
-        setIsOpen(false);
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
+    console.log(selectDate, addRecordData);
+    postRecordPayment(addRecordData).then((response) => {
+      console.log(response.data.data);
+      setIsOpen(false);
+      window.location.reload();
+    },
+    (error) => {
+     
+      toast.error(error.response.data.status.message, {
+        toastId: "errorr2",
       });
+    });
     setOpenTabs(true);
     // setIsActive(indexs);
     // navigate("/buyerledger");
@@ -272,6 +280,7 @@ const BuyerLedger = () => {
   };
 
   const closePopup = () => {
+    setPaidsRcvd('');
     $("#myModal").modal("hide");
   };
   const handleSearch = (event) => {
@@ -305,8 +314,11 @@ const BuyerLedger = () => {
                 </div>
                 {ledger.length > 0 ? (
                   <div>
-                    <div className="table-scroll" id="scroll_style">
-                      <table className="table table-fixed ledger-table">
+                    <div
+                      className="table-scroll ledger-table"
+                      id="scroll_style"
+                    >
+                      <table className="table table-fixed">
                         <thead className="theadr-tag">
                           <tr>
                             <th scope="col">#</th>
@@ -412,6 +424,8 @@ const BuyerLedger = () => {
                   id="tabsEvents"
                   style={{ display: openTabs ? "block" : "none" }}
                 >
+                  <div style={{ position:"relative" }}>
+
                   <div className="recordbtn-style">
                     <button
                       className="add-record-btns"
@@ -432,7 +446,8 @@ const BuyerLedger = () => {
                   </div>
                   <div className="blockers-tab">
                     <div className="d-flex">
-                      <button
+                     <div>
+                        <button
                         className={
                           toggleAC === "all" ? "tabers active-tab" : "tabers"
                         }
@@ -448,6 +463,7 @@ const BuyerLedger = () => {
                       >
                         Custom
                       </button>
+                     </div>
                       <div
                         className="dateRangePicker"
                         style={{ display: dateDisplay ? "flex" : "none" }}
@@ -465,6 +481,7 @@ const BuyerLedger = () => {
                       </div>
                     </div>
                     <div id="horizontal-lines-tag"></div>
+                  </div>
                   </div>
 
                   <div className="card details-tag">
@@ -611,7 +628,7 @@ const BuyerLedger = () => {
                               <th className="col-1" id="sno">
                                 #
                               </th>
-                              <th className="col-2">RefId | Date</th>
+                              <th className="col-2">Ref ID | Date</th>
                               <th className="col-3">Received(&#8377;)</th>
                               <th className="col-3">To Be Received(&#8377;)</th>
                               <th className="col-3">Ledger Balance(&#8377;)</th>
@@ -988,7 +1005,8 @@ const BuyerLedger = () => {
                                 id="details-tag"
                               >
                                 {ledger.map((item, index) => {
-                                  if (item.partyId == partyId) {
+                                  
+                                  if (item.partyId == parseInt(partyId)) {
                                     return (
                                       <Fragment>
                                         <div
@@ -1017,7 +1035,7 @@ const BuyerLedger = () => {
                                               </p>
                                               <p className="mobilee-tag">
                                                 {!item.trader
-                                                  ? "Trans"
+                                                  ? "Buyer"
                                                   : "Trader"}{" "}
                                                 - {item.partyId}&nbsp;|&nbsp;
                                                 {item.mobile}
@@ -1033,11 +1051,13 @@ const BuyerLedger = () => {
                                       </Fragment>
                                     );
                                   }
+                                 
                                 })}
                                 <div
-                                  className="d-flex justify-content-between card-text"
+                                  className="d-flex justify-content-between card-text date_field"
                                   id="date-tag"
                                 >
+                                  
                                   <img
                                     className="date_icon_in_modal"
                                     src={date_icon}
@@ -1052,12 +1072,15 @@ const BuyerLedger = () => {
                                     maxDate={new Date()}
                                     placeholder="Date"
                                     required
+                                    onKeyDown={(e) => {
+                                      e.preventDefault();
+                                    }}
                                   ></DatePicker>
                                 </div>
                               </div>
                             </div>
                             <div id="out-paybles">
-                              <p id="p-tag">Outstanding Paybles</p>
+                              <p id="p-tag">Outstanding Recievables</p>
                               <p id="recieve-tag">
                                 &#8377;
                                 {paidRcvd ? paidRcvd.toFixed(2) : 0}
@@ -1070,9 +1093,12 @@ const BuyerLedger = () => {
                               <input
                                 className="form-cont"
                                 id="amtRecieved"
+                                value={paidsRcvd}
                                 required
                                 onChange={(e) => {
-                                  setPaidsRcvd(e.target.value);
+                                  setPaidsRcvd(
+                                    e.target.value.replace(/[^\d]/g, "")
+                                  );
                                 }}
                               />
                               <p className="text-valid">{requiredCondition}</p>
@@ -1235,6 +1261,7 @@ const BuyerLedger = () => {
           <p></p>
         )}
       </div>
+      <ToastContainer />
     </Fragment>
   );
 };
