@@ -16,7 +16,6 @@ import { getLanguagesData } from "../../actions/profileService";
 import CompleteProfile from "../smartboard/completeprofile";
 import { mandiInfoActions } from "../../reducers/mandiProfile";
 import { useDispatch } from "react-redux";
-import toastr from "toastr";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const MyProfile = () => {
@@ -79,12 +78,14 @@ const MyProfile = () => {
         langData.forEach(({ key, value }) =>
           Object.assign(res, { [key]: value })
         );
-        toast.success("Language Changed Successfully",{toastId:'success'});
-        localStorage.removeItem("languageData");
-        localStorage.setItem("languageData", JSON.stringify(res));
-        window.setTimeout( function() {
-          window.location.reload();
-        }, 1500);
+        if(langid===languageId){
+          toast.success("Language Changed Successfully",{toastId:'success'});
+          localStorage.removeItem("languageData");
+          localStorage.setItem("languageData", JSON.stringify(res));
+          window.setTimeout( function() {
+            window.location.reload();
+          }, 1500);
+        }
         //window.location.reload();
       })
       .catch((error) => {

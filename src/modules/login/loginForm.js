@@ -14,6 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import $ from "jquery";
 import close from "../../assets/images/close.svg";
 import "react-toastify/dist/ReactToastify.css";
+import Illustration from "../../assets/images/Illustration.svg"
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
@@ -174,7 +175,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
+    <div className="loginform">
       <Navigation login_type="login_form" />
       <div className="container login_container">
         <div className="row d-flex justify-content-center">
@@ -227,13 +228,13 @@ const LoginForm = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <label className="form-label mb-0">Enter OTP</label>
                       <div className="timer">
-                      <OtpTimer
-        minutes={0}
-        seconds={60}
-        text="Time:"
-        // ButtonText="Resend"
-        resend={handleClick}
-      />
+                        <OtpTimer
+                          minutes={0}
+                          seconds={60}
+                          text="Time:"
+                          // ButtonText="Resend"
+                          resend={handleClick}
+                        />
                       </div>
                     </div>
                     <input
@@ -322,6 +323,7 @@ const LoginForm = () => {
           </div>
         </div>
       </div>
+      <img src={Illustration} className="illustration" alt="imag" />
     </div>
   );
 };
