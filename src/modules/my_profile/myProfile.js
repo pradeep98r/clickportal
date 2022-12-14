@@ -78,12 +78,14 @@ const MyProfile = () => {
         langData.forEach(({ key, value }) =>
           Object.assign(res, { [key]: value })
         );
-        toast.success("Language Changed Successfully",{toastId:'success'});
-        localStorage.removeItem("languageData");
-        localStorage.setItem("languageData", JSON.stringify(res));
-        window.setTimeout( function() {
-          window.location.reload();
-        }, 1500);
+        if(langid===languageId){
+          toast.success("Language Changed Successfully",{toastId:'success'});
+          localStorage.removeItem("languageData");
+          localStorage.setItem("languageData", JSON.stringify(res));
+          window.setTimeout( function() {
+            window.location.reload();
+          }, 1500);
+        }
         //window.location.reload();
       })
       .catch((error) => {
