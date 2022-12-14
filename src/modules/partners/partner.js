@@ -32,9 +32,9 @@ const Partner = () => {
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
   const [saveType, setSaveType] = useState("FARMER");
-  const savetype = localStorage.getI;
+  const savetype = localStorage.getItem('partyType');
   const [partyType, setPartyType] = useState(
-    saveType !== null ? saveType : "FARMER"
+    savetype !== null ? savetype : "FARMER"
   );
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
@@ -204,7 +204,40 @@ const Partner = () => {
 
   const [profilePic, setProfilePic] = useState("");
   const [updateProfilePic, setUpdateProfilePic] = useState("");
-
+  const handleProfilePic = (e) => {
+    console.log(e);
+    if (isEdit) {
+      console.log("came to edit");
+      setFile(e.target.files[0]);
+      var req = {
+        file: e.target.files[0],
+        type: partyType,
+      };
+      uploadProfilePic(clickId, mobileNumber, req)
+        .then((response) => {
+          setUpdateProfilePic(response.data.data);
+          console.log(updateProfilePic);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.log("came to normal");
+      setFile(e.target.files[0]);
+      let req = {
+        file: e.target.files[0],
+        type: partyType,
+      };
+      uploadProfilePic(clickId, mobileNumber, req)
+        .then((response) => {
+          setProfilePic(response.data.data);
+          console.log(profilePic);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
   const obj = {
     aadharNum: aadharNumber,
     address: {
@@ -238,42 +271,6 @@ const Partner = () => {
     },
   };
 
-  const handleProfilePic = (e) => {
-    if (isEdit) {
-      console.log("came t edit");
-      setFile(e.target.files[0]);
-      console.log(profilePic);
-      let req = {
-        file: e.target.files[0],
-        type: partyType,
-      };
-      uploadProfilePic(clickId, mobileNumber, req)
-        .then((response) => {
-          console.log(mobileNumber);
-          //setProfilePic(response.data.data)
-          setUpdateProfilePic(response.data.data);
-          console.log(updateProfilePic);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      console.log("came to normal");
-      setFile(e.target.files[0]);
-      let req = {
-        file: e.target.files[0],
-        type: partyType,
-      };
-      uploadProfilePic(clickId, mobileNumber, req)
-        .then((response) => {
-          setProfilePic(response.data.data);
-          console.log(profilePic);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
   //   file ? URL.createObjectURL(file) :
   var exitStatus = false;
   const handleExitPartner = (mobilee) => {
@@ -474,16 +471,16 @@ const Partner = () => {
     setPincode(pincodeValue);
     setCityVal(city);
     setStateVal(state);
-    localStorage.setItem("cityValue", city);
-    var $input;
-    var $text = $(document.createElement("input"));
-    $text.attr("value", city);
-    $text.attr("type", "text");
-    $text.attr("type", "text");
-    $text.attr("class", "form-control");
-    $input = $text;
-    $("#city-input-wrapper").html($input);
-    console.log(pincodeValue, city, state);
+    // localStorage.setItem("cityValue", city);
+    // var $input;
+    // var $text = $(document.createElement("input"));
+    // $text.attr("value", city);
+    // $text.attr("type", "text");
+    // $text.attr("type", "text");
+    // $text.attr("class", "form-control");
+    // $input = $text;
+    // $("#city-input-wrapper").html($input);
+    // console.log(pincodeValue, city, state);
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
@@ -552,17 +549,17 @@ const Partner = () => {
     var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-
+    console.log(locality.city)
     var city = localities[0].city;
     setCityVal(city);
     setStateVal(locality.state);
-    var $text = $(document.createElement("input"));
-    $text.attr("value", city);
-    $text.attr("type", "text");
-    $text.attr("type", "text");
-    $text.attr("class", "form-control");
-    $input = $text;
-    $("#city-input-wrapper").html($input);
+    // var $text = $(document.createElement("input"));
+    // $text.attr("value", city);
+    // $text.attr("type", "text");
+    // $text.attr("type", "text");
+    // $text.attr("class", "form-control");
+    // $input = $text;
+    // $("#city-input-wrapper").html($input);
     console.log(city, locality.state);
   }
 
@@ -596,24 +593,24 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
+    //console.log(cityVal);
     setPincode("");
     setAadharError("");
     setNameError("");
     setStateVal("");
-    setCityVal("");
     setStartDate(new Date());
     $("#Mymodal").modal("hide");
     console.log("hiding");
     $("#state").val("");
     $("#city").val("");
-    // var $input;
-    // var $text = $(document.createElement("input"));
-    // $text.attr("value", '');
-    // // $text.attr("type", "text");
-    // // $text.attr("type", "text");
-    // $text.attr("class", "form-control");
-    // $input = $text;
-    // $("#city-input-wrapper").html($input);
+  //  var $input;
+  //   var $text = $(document.createElement("input"));
+  //   $text.attr("value", '');
+  //   // $text.attr("type", "text");
+  //   // $text.attr("type", "text");
+  //   $text.attr("class", "form-control");
+  //   $input = $text;
+  //   $("#city-input-wrapper").html($input);
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -685,7 +682,7 @@ const Partner = () => {
               aria-labelledby="home-tab"
             >
               <div className="row">
-                <div className="col-lg-9 ps-0">
+                <div className="col-lg-9 pl-0">
                   <SearchField
                     placeholder="Search by Name / Mobile / Short Code / Party id"
                     val={searchValue}
@@ -796,7 +793,7 @@ const Partner = () => {
         </div>
       </div>
 
-      <div className="modal fade profileModal" id="Mymodal">
+      <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
@@ -823,12 +820,14 @@ const Partner = () => {
                     <div onChange={onChangeValue}>
                       <input
                         type="radio"
+                        //className="custom-control-input"
                         value={partyType.toLowerCase()}
                         name="radioValue"
                         id={partyType.toLowerCase()}
                         checked={
                           radioValue.toLowerCase() === partyType.toLowerCase()
                         }
+                        className="radioBtnsVal"
                       />{" "}
                       {getText(partyType)}
                       <input
@@ -837,6 +836,7 @@ const Partner = () => {
                         id="trader"
                         name="radioValue"
                         checked={radioValue.toLowerCase() === "trader"}
+                        //className="custom-control-input"
                         className="radioBtnVal"
                       />{" "}
                       {langFullData.trader}
@@ -980,7 +980,7 @@ const Partner = () => {
                       <label htmlFor="city" className="input_field">
                         City
                       </label>
-                      <div id="city-input-wrapper">
+                      <div>
                         {isEdit ? (
                           <div>
                             <InputField
@@ -991,7 +991,7 @@ const Partner = () => {
                             />
                           </div>
                         ) : (
-                          <InputField type="text" id="city" name="city" />
+                          <InputField type="text" id="city" name="city" value={cityVal}/>
                         )}
                       </div>
                     </div>
