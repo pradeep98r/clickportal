@@ -85,7 +85,7 @@
     font-size: 13px;;
     left: 50%;
     position: absolute;
-    transform:translateX(-50%);    
+    transform:translateX(-30%);    
   } 
   .file{
       margin-top: -10px;
@@ -157,7 +157,10 @@ border: none;
 }
 }
 .radioBtnVal{
-  margin:0px 0px 20px 20px;
+  margin:0px 10px 20px 20px;
+}
+.radioBtnsVal{
+  margin:0px 10px 0px 0px;
 }
 .text-danger{
   font-size: 14px;
@@ -177,4 +180,23 @@ border: none;
 }
 .partner_tabs{
   border-bottom: 1px solid #E4E4E4;
+  width: 782px;
+}
+input[type=radio].radioBtnVal{
+  accent-color: #16A12C;
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+  transform: scale(1.5);
+}
+input[type=radio].radioBtnsVal{
+  accent-color: #16A12C;
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+  transform: scale(1.5);
+}
+.modal-footer{
+  padding: 0px;
+  border-top: none;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius:0px
 }

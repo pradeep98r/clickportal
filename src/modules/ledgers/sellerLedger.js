@@ -34,6 +34,8 @@ import {
   getCurrencyNumberWithSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const SellerLedger = () => {
   const [search, setSearch] = useState("");
   const [openTabs, setOpenTabs] = useState(false);
@@ -78,7 +80,7 @@ const SellerLedger = () => {
     setToggleAC(type);
     if (type === "custom") {
       console.log(type);
-      setDateDisplay(!dateDisplay);
+      setDateDisplay(true);
       setToggleState("ledgersummary");
     } else if (type === "all") {
       setDateDisplay(false);
@@ -202,7 +204,7 @@ const SellerLedger = () => {
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("partyId")),
-      date: selectDate,
+      date:  moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
@@ -213,9 +215,11 @@ const SellerLedger = () => {
         console.log(response.data.data);
         setIsOpen(false);
         window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
+      },
+      (error) => {
+        toast.error(error.response.data.status.message, {
+          toastId: "errorr2",
+        });
       });
     navigate("/sellerledger");
     setIsOpen(false);
@@ -340,6 +344,11 @@ const SellerLedger = () => {
     });
     setLedgeres(result);
   };
+ const getAmountValue = (e) =>{
+   var val = (e.target.value).replace(/\D/g, "");
+   console.log(val,e.target.value)
+  setPaidsRcvd(val);
+ }
   return (
     <Fragment>
       <div>
@@ -357,8 +366,8 @@ const SellerLedger = () => {
                 </div>
                 {ledger.length > 0 ? (
                   <div>
-                    <div className="table-scroll" id="scroll_style">
-                      <table className="table table-fixed ledger-table">
+                    <div className="table-scroll ledger-table" id="scroll_style">
+                      <table className="table table-fixed ">
                         <thead className="theadr-tag">
                           <tr>
                             <th scope="col">#</th>
@@ -469,6 +478,7 @@ const SellerLedger = () => {
                   id="tabsEvents"
                   style={{ display: openTabs ? "block" : "none" }}
                 >
+                  <div style={{ position:"relative" }}>
                   <div className="recordbtn-style">
                     <button
                       className="add-record-btns"
@@ -521,6 +531,7 @@ const SellerLedger = () => {
                       </div>
                     </div>
                     <div id="horizontal-lines-tag"></div>
+                  </div>
                   </div>
                   <div className="card details-tag">
                     <div className="card-body" id="card-details">
@@ -870,7 +881,7 @@ const SellerLedger = () => {
                                   #
                                 </th>
                                 <th className="col-2">
-                                  {langFullData.refId} | {langFullData.date}
+                                Ref ID | {langFullData.date}
                                 </th>
                                 <th className="col-3">
                                   {langFullData.paid}(&#8377;)
@@ -1106,7 +1117,7 @@ const SellerLedger = () => {
                                               </p>
                                               <p className="mobilee-tag">
                                                 {!item.trader
-                                                  ? "Trans"
+                                                  ? "Farmer"
                                                   : "Trader"}{" "}
                                                 - {item.partyId}&nbsp;|&nbsp;
                                                 {item.mobile}
@@ -1124,7 +1135,7 @@ const SellerLedger = () => {
                                   }
                                 })}
                                 <div
-                                  className="d-flex justify-content-between card-text"
+                                  className="d-flex justify-content-between card-text date_field"
                                   id="date-tag"
                                 >
                                   <img
@@ -1140,6 +1151,9 @@ const SellerLedger = () => {
                                     dateFormat="dd-MMM-yy"
                                     maxDate={new Date()}
                                     placeholder="Date"
+                                    onKeyDown={(e) => {
+                                      e.preventDefault();
+                                    }}
                                   ></DatePicker>
                                 </div>
                               </div>
@@ -1158,11 +1172,14 @@ const SellerLedger = () => {
                                 {langFullData.amount}
                               </label>
                               <input
-                                className="form-cont"
+                                className="form-control"
                                 id="amtRecieved"
+                                type="text"
                                 required
+                                value={paidsRcvd}
                                 onChange={(e) => {
-                                  setPaidsRcvd(e.target.value);
+                                  getAmountValue(e)
+                                 
                                 }}
                               />
                               <p className="text-valid">{requiredCondition}</p>
