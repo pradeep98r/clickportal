@@ -3,6 +3,7 @@ import "../smartboard/smartboard.scss";
 import "../smartboard/completeprofile.scss";
 import close from "../../assets/images/close.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
+import drop_down_btn from "../../assets/images/dropdown.svg";
 import InputField from "../../components/inputField";
 import { useState, useEffect } from "react";
 import toastr from "toastr";
@@ -531,7 +532,8 @@ const CompleteProfile = (props) => {
           <div className="row">
             <div className="col-lg-6">
               <label htmlFor="zip" className="input_field">
-                {langFullData.marketName+"*"}
+                {langFullData.marketName}<span className="star-color">*</span>
+                <img src={drop_down_btn} alt="dropdown" className="drop-down-image"/>
               </label>
               {/*<select*/}
               <input
@@ -547,7 +549,7 @@ const CompleteProfile = (props) => {
                 ))}
               </select>*/}
               <div className="modal fade" id="marketNamePopUpModal">
-                <div className="modal-dialog modal-dialog-centered market_modal_dialog market_name_popup">
+                <div className="modal-dialog  markets_name_popup">
                   <div className="modal-content" id="market-modal-content">
                     <div className="modal-header date_modal_header market_modal_header">
                       <h5 className="modal-title header2_text" id="mk-header">
@@ -560,7 +562,7 @@ const CompleteProfile = (props) => {
                         onClick={closePopup}
                       />
                     </div>
-                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                    <div className="modal-body  markets_name_modal_mody">
                       <div className="col-lg-6" id="market-div">
                         <div id="search-mk-field">
                           <form className="d-flex">
@@ -645,7 +647,7 @@ const CompleteProfile = (props) => {
               </div>
 
               <div className="modal fade" id="otherModalPopUp">
-                <div className="modal-dialog modal-dialog-centered date_modal_dialog market_name_popup">
+                <div className="modal-dialog  market_name_popup">
                   <div className="modal-content" id="other-modal-content">
                     <div className="modal-header date_modal_header market_modal_header">
                       <h5 className="modal-title header2_text" id="mk-header">
@@ -658,7 +660,7 @@ const CompleteProfile = (props) => {
                         onClick={closeOtheModalPopUp}
                       />
                     </div>
-                    <div className="modal-body marketName_modal_mody market_name_modal_mody">
+                    <div className="modal-body market_name_modal_mody">
                       <div className="col-lg-6" id="market-div">
                         <div id="search-mk-field">
                           <form className="d-flex">
@@ -724,7 +726,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mandiShortCode}
-                label="Mandi Short Code*"
+                label="Mandi Short Code"
                 name="mandiShortCode"
                 id="mandiShortCode"
                 onChange={(e) => {
@@ -735,7 +737,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={shopNumberField}
-                label={langFullData.shopNumber+"*"}
+                label={langFullData.shopNumber}
                 name="shopNumber"
                 id="shopNumber"
                 onChange={(e) => {
@@ -746,7 +748,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mobileNumber}
-                label={langFullData.mobileNumber+"*"}
+                label={langFullData.mobileNumber}
                 name="mobileNumber"
                 id="mobileNumber"
                 onChange={(e) => {
@@ -759,7 +761,7 @@ const CompleteProfile = (props) => {
               <label className="input_field address_text mt-0">{langFullData.address}</label>
               <div>
                 <label htmlFor="zip" className="input_field">
-                  {langFullData.pincode+"*"}
+                  {langFullData.pincode}
                 </label>
                 <div>
                   <input
@@ -778,7 +780,7 @@ const CompleteProfile = (props) => {
               <span className="text-danger">{pincodeError}</span>
               <div>
                 <label htmlFor="city" className="input_field">
-                  City*
+                  City
                 </label>
                 <div id="city-input-wrapper">
                   {mandiEditStatus == "true" ? (
@@ -801,7 +803,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={mandiNameField}
-                label={langFullData.businessName+"*"}
+                label={langFullData.businessName}
                 name="mandiName"
                 id="mandiName"
                 onChange={(e) => {
@@ -841,7 +843,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={contactName}
-                label={langFullData.contactName+"*"}
+                label={langFullData.contactName}
                 name="contactName"
                 id="contactName"
                 onChange={(e) => {
@@ -883,7 +885,7 @@ const CompleteProfile = (props) => {
               <InputField
                 type="text"
                 value={streetVillage}
-                label={langFullData.streetVillage+"*"}
+                label={langFullData.streetVillage}
                 name="name"
                 onChange={(e) => {
                   handleStreetName(e);
@@ -903,11 +905,11 @@ const CompleteProfile = (props) => {
       <div className="modal-footer">
         <button
           type="button"
-          className="primary_btn"
+          className="primary_btn cont_btn w-100 m-0"
           // onClick={props.close onSubmit()}
           onClick={() => onSubmit()}
         >
-          Submit
+          UPDATE
         </button>
       </div>
     </Modal>

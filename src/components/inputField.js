@@ -4,7 +4,7 @@ const InputField = ({ value, label, name, placeholder, type, onChange }) => (
   <div className="form_div">
     {label && (
       <label htmlFor="input-field" className="input_field">
-        {label}
+        {label}<span className="star-color">*</span>
       </label>
     )}
     <input
