@@ -552,7 +552,7 @@ const Partner = () => {
     var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    var $input;
+   
     var city = localities[0].city;
     setCityVal(city);
     setStateVal(locality.state);
@@ -593,6 +593,7 @@ const Partner = () => {
     console.log(isEdit, radioValue, cityVal,"after");
     $("#Mymodal").modal("show");
   };
+  var $input;
   const closeAddModal = () => {
     setPincode("");
     setAadharError("");
@@ -607,8 +608,8 @@ const Partner = () => {
     // var $input;
     // var $text = $(document.createElement("input"));
     // $text.attr("value", '');
-    // $text.attr("type", "text");
-    // $text.attr("type", "text");
+    // // $text.attr("type", "text");
+    // // $text.attr("type", "text");
     // $text.attr("class", "form-control");
     // $input = $text;
     // $("#city-input-wrapper").html($input);
