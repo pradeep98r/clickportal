@@ -74,11 +74,13 @@ const MyProfile = () => {
     getLanguagesData(langid)
       .then((response) => {
         const langData = response.data.data;
+        console.log(response);
         const res = {};
         langData.forEach(({ key, value }) =>
           Object.assign(res, { [key]: value })
         );
-        if(langid===languageId){
+        console.log(langid,selectedLangId);
+        if(langid!==parseInt(selectedLangId)){
           toast.success("Language Changed Successfully",{toastId:'success'});
           localStorage.removeItem("languageData");
           localStorage.setItem("languageData", JSON.stringify(res));

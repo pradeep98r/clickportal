@@ -87,7 +87,7 @@ const CompleteProfile = (props) => {
   };
   const shopNumberValidation = (e) => {
     if (e.target.value.length < 1) {
-      setShopNumberError("Shop number must be atleast one design");
+      setShopNumberError("Shop number must be atleast one digit");
     } else if (e.target.value.length >= 7) {
       setShopNumberError("Shop number can't be more than 7 digits");
     } else {
@@ -208,10 +208,12 @@ const CompleteProfile = (props) => {
     if (
       mandiNameField.trim().length !== 0 &&
       mobileNumber.trim().length !== 0 &&
+      !(mobileNumber.trim().length<10) &&
       mandiShortCode.trim().length !== 0 &&
       mandiShortCode.trim().length <= 4 &&
       shopNumberField.trim().length !== 0 &&
       contactName.trim().length !== 0 &&
+      !(contactName.trim().length<2) &&
       marketname.trim().length !== 0 &&
       pincode.toString().trim().length !== 0 &&
       cityVal.trim().length !== 0 &&
@@ -527,7 +529,7 @@ const CompleteProfile = (props) => {
     closePopup();
   };
   return (
-    <Modal show={props.show} close={props.close} className="modal_popup profileModal">
+    <Modal show={props.show} close={props.close} className="modal_popup">
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.businessDetails}
@@ -539,7 +541,7 @@ const CompleteProfile = (props) => {
           onClick={props.close}
         />
       </div>
-      <div className="modal-body partner_model_body" id="scroll_style">
+      <div className="modal-body partner_model_body profileModal" id="scroll_style">
         <form>
           <div className="row">
             <div className="col-lg-6">
@@ -795,7 +797,7 @@ const CompleteProfile = (props) => {
                 onClick={closePopup}
               />
             </div>
-            <div className="modal-body  markets_name_modal_mody">
+            <div className="modal-body  markets_name_modal_mody profileModal" id="scroll_style">
               <div className="col-lg-6" id="market-div">
                
                 <SearchField
@@ -890,7 +892,7 @@ const CompleteProfile = (props) => {
            </div>
             </div>
             </div>
-            <div className="modal-body market_name_modal_mody px-0">
+            <div className="modal-body market_name_modal_mody px-0 profileModal" id="scroll_style">
            <div className="container">
            <div className="row">
               <div className="col-lg-12 p-0" id="market-div">
@@ -918,6 +920,7 @@ const CompleteProfile = (props) => {
                     onChange={(e) => {
                       setMarketName(e.target.value);
                     }}
+                    starRequired={true}
                   />
                 </div>
               </div>

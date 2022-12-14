@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import no_data_icon from "../assets/images/no_data_available.png";
+import no_data_icon from "../assets/images/NodataAvailable.svg";
 class NoDataAvailable extends Component {
   render() {
     return (
@@ -10,7 +10,7 @@ class NoDataAvailable extends Component {
             alt="icon"
             className="d-flex mx-auto justify-content-center"
           />
-          <p>No Data Available</p>
+          {/* <p>No Data Available</p> */}
         </div>
       </div>
     );
