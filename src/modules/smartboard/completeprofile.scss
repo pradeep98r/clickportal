@@ -118,6 +118,12 @@
   }
 .modal-footer{
     padding: 0px;
+    border-top: none;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius:0px
+}
+.modal-content{
+    border: 0px solid rgba(0, 0, 0, 0.2);
 }
 .profileModal{
     .modal-content {
@@ -138,11 +144,4 @@
     }
 }
 #mk-name:hover, .marketfrom:hover{
-cursor: pointer;
-    border-top: none;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius:0px
-}
-.modal-content{
-    border: 0px solid rgba(0, 0, 0, 0.2);
-}
+cursor: pointer;}
