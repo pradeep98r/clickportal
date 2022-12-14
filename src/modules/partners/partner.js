@@ -691,7 +691,6 @@ const Partner = () => {
                     val={searchValue}
                     onChange={(event) => {
                       handleSearch(event);
-                      // searchItems(e.target.value);
                     }}
                   />
 
@@ -797,7 +796,7 @@ const Partner = () => {
         </div>
       </div>
 
-      <div className="modal fade" id="Mymodal">
+      <div className="modal fade profileModal" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
