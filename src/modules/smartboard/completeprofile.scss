@@ -27,7 +27,7 @@
     }
 }
 .market_name_modal_mody{
-    max-width: 650px;
+    // max-width: 650px;
     max-height: calc(100vh - 0px);
     margin-top: 60px;
 }
@@ -95,10 +95,10 @@
     left: 0px;
 }
 #mk-other-name{
-    border:1px solid #E4E4E4;
+    border-bottom:1px solid #E4E4E4;
+    padding: 10px;
 }
 #ot-m-img{
-    padding-left: 10px;
 }
 #mk-other-Name{
     padding: 10px;
@@ -118,6 +118,27 @@
   }
 .modal-footer{
     padding: 0px;
+}
+.profileModal{
+    .modal-content {
+        height: 600px;
+    }
+    .modal-footer{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+    .othermarkerClose{
+        margin-top: -15px;
+    }
+    .container{
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0px 100px;
+    }
+}
+#mk-name:hover, .marketfrom:hover{
+cursor: pointer;
     border-top: none;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius:0px
