@@ -114,7 +114,7 @@
     color:#D43939;
 }
 .cont_btn {
-    border-radius: 0px 0px 0.3rem 0.3rem !important;
+    border-radius: 0px 0px 9px 9px !important;
   }
 .modal-footer{
     padding: 0px;
@@ -139,4 +139,10 @@
 }
 #mk-name:hover, .marketfrom:hover{
 cursor: pointer;
+    border-top: none;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius:0px
+}
+.modal-content{
+    border: 0px solid rgba(0, 0, 0, 0.2);
 }
