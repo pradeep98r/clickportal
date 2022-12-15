@@ -214,6 +214,8 @@ const CompleteProfile = (props) => {
       shopNumberField.trim().length !== 0 &&
       contactName.trim().length !== 0 &&
       !(contactName.trim().length<2) &&
+      !(mandiTypeField.trim().length<2) &&
+      !(mandiNameField.trim().length<2) &&
       marketname.trim().length !== 0 &&
       pincode.toString().trim().length !== 0 &&
       cityVal.trim().length !== 0 &&
@@ -222,7 +224,7 @@ const CompleteProfile = (props) => {
     ) {
       console.log("edit api");
       addEditMandiSetupApiCall();
-      window.location.reload();
+      
     } else if (mandiNameField.trim().length === 0) {
       setMandiNameError("Please Enter Name");
     } else if (mandiShortCode.trim().length === 0) {
@@ -274,9 +276,12 @@ const CompleteProfile = (props) => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "update partner");
-            toastr.success(response.data.status.message);
+            toastr.success("Mandi Details Updated Successfully");
             localStorage.setItem("submitStatus", true);
             props.close();
+            window.setTimeout(function () {
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
