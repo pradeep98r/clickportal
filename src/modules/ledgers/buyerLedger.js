@@ -205,7 +205,6 @@ const BuyerLedger = () => {
       window.location.reload();
     },
     (error) => {
-     
       toast.error(error.response.data.status.message, {
         toastId: "errorr2",
       });
@@ -301,6 +300,14 @@ const BuyerLedger = () => {
     });
     setLedgeres(result);
   };
+  const getAmountVal = (e) =>{
+    setPaidsRcvd(
+      e.target.value.replace(/[^\d]/g, "")
+    );
+    if(e.target.value.length > 0){
+      setRequiredCondition("");
+    }
+  }
   return (
     <Fragment>
       <div>
@@ -1097,9 +1104,7 @@ const BuyerLedger = () => {
                                 value={paidsRcvd}
                                 required
                                 onChange={(e) => {
-                                  setPaidsRcvd(
-                                    e.target.value.replace(/[^\d]/g, "")
-                                  );
+                                 getAmountVal(e)
                                 }}
                               />
                               <p className="text-valid">{requiredCondition}</p>
