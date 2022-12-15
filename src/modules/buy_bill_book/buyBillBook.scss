@@ -280,8 +280,8 @@ option[value=""][disabled] {
   padding: 20px;
 }
 .icon_user {
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
   margin-right: 10px;
 }
 .css-9gakcf-option,
@@ -821,10 +821,12 @@ article.on {
 }
 .small_text {
   font-size: 10px;
+  text-align: right;
 }
 .medium_text {
   font-size: 13px;
-  font-size: 600;
+  font-weight: 600;
+  text-align: right;
 }
 .large_text {
   font-size: 32px;
@@ -843,7 +845,7 @@ article.on {
 .total-qty{
   color: #121212;
   font-weight: 700;
-font-size: 10px;
+font-size: 12px;
 }
 .partner_info_padding {
   padding: 5px 20px;
@@ -870,8 +872,8 @@ font-size: 15px;
 color: #1C1C1C;
 }
 .buyer_img{
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 100%;
   margin-right: 5px;
 }
@@ -965,6 +967,12 @@ word-wrap: normal;
   font-weight: 700;
   font-size: 10px;
   color: #121212;
+}
+.grouping_value{
+  font-weight: 700;
+  font-size: 10px;
+  color: #121212;
+  padding: 2px 0px;
 }
 .align-items{
   text-align: left;

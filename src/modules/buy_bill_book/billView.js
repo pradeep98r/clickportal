@@ -557,7 +557,7 @@ const BillView = (props) => {
                     </div>
                     <div className="billid_date_bg">
                       <p className="small_text text-center">
-                        {singleBillData.billDate}
+                        {moment(singleBillData.billDate).format("DD-MMM-YY")}
                       </p>
                     </div>
                   </div>
@@ -680,11 +680,11 @@ const BillView = (props) => {
                   </div>
                   <div className="col-lg-6 p-0 ">
                     <div className="row">
-                      <div className="col-lg-2"></div>
+                      <div className="col-lg-4"></div>
                       <div className="col-lg-5">
                         <p className="total_value">Gross Total : </p>
                       </div>
-                      <div className="col-lg-5 p-0">
+                      <div className="col-lg-3 p-0">
                         <p className="total_value number_overflow">
                           {singleBillData.grossTotal.toLocaleString("en-IN", {
                             maximumFractionDigits: 2,
@@ -1012,11 +1012,11 @@ const BillView = (props) => {
                           0 ? (
                             ""
                           ) : (
-                            <p className="groups_value">Total Bill Amount :</p>
+                            <p className="grouping_value">Total Bill Amount :</p>
                           )}
                         </div>
                         <div className="col-lg-4">
-                          <p className="groups_value color_red">
+                          <p className="grouping_value color_red">
                             {singleBillData?.grossTotal +
                               (groupFourTotal +
                                 groupThreeTotal +
@@ -1052,11 +1052,11 @@ const BillView = (props) => {
                           {singleBillData.cashPaid === 0 ? (
                             "" || singleBillData.cashPaid === null
                           ) : (
-                            <p className="groups_value">Cash Paid :</p>
+                            <p className="grouping_value">Cash Paid :</p>
                           )}
                         </div>
                         <div className="col-lg-4">
-                          <p className="groups_value">
+                          <p className="grouping_value">
                             {singleBillData.cashPaid === 0 ||
                             singleBillData.cashPaid === null
                               ? " "
@@ -1071,7 +1071,7 @@ const BillView = (props) => {
                         <div className="col-lg-2"></div>
                         <div className="col-lg-6">
                           <p
-                            className="groups_value"
+                            className="grouping_value"
                             style={{ display: status ? "block" : "none" }}
                           >
                             Outstanding Balance:
@@ -1079,7 +1079,7 @@ const BillView = (props) => {
                         </div>
                         <div className="col-lg-4">
                           <p
-                            className="groups_value"
+                            className="grouping_value"
                             style={{ display: status ? "block" : "none" }}
                           >
                             {singleBillData?.outStBal.toLocaleString("en-IN", {
