@@ -84,9 +84,8 @@ ul {
 }
 .primary_btn,
 .btn_white,
-.outline_btn,
-.primary_btn:hover {
-  color: var(--ono-white);
+.outline_btn{
+  color: var(--ono-white)!important;
   background-color: var(--ono-primary);
   border-radius: 10px;
   padding: 12px 40px;
