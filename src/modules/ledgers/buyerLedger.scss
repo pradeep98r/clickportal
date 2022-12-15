@@ -91,6 +91,19 @@ input[type=radio]:checked+label {
         padding: 10px;
     }
 }
+.tabRowSelected{
+    position: relative;
+}
+.tabRowSelected:after {
+    content: " ";
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border-top: 10px solid transparent;
+    border-right: none;
+    // border-left: 10px solid black;
+    border-bottom: 10px solid transparent;
+  }
 #horizontal-line{
     margin: 10px 0px;
     border-bottom:1px solid#E4E4E4;

@@ -280,7 +280,11 @@ const BuyerLedger = () => {
   };
 
   const closePopup = () => {
-    setPaidsRcvd('');
+    setPaidsRcvd(0);
+    setRequiredCondition('');
+    setPaymentMode("CASH");
+    setComments('');
+    setSelectDate(new Date());
     $("#myModal").modal("hide");
   };
   const handleSearch = (event) => {

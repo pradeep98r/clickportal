@@ -328,6 +328,10 @@ const SellerLedger = () => {
   };
   const closePopup = () => {
     setPaidsRcvd(0);
+    setRequiredCondition('');
+    setPaymentMode("CASH");
+    setComments('');
+    setSelectDate(new Date());
     $("#myModal").modal("hide");
   };
   const handleSearch = (event) => {
@@ -1190,7 +1194,7 @@ const SellerLedger = () => {
                               </p>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio1"
@@ -1213,7 +1217,7 @@ const SellerLedger = () => {
                                 id="radio-btn-in_modal"
                               >
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio2"
@@ -1233,7 +1237,7 @@ const SellerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio3"
@@ -1253,7 +1257,7 @@ const SellerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio4"
@@ -1273,7 +1277,7 @@ const SellerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio5"
