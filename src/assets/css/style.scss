@@ -85,13 +85,14 @@ ul {
 .primary_btn,
 .btn_white,
 .outline_btn{
-  color: var(--ono-white)!important;
+  color: var(--ono-white);
   background-color: var(--ono-primary);
   border-radius: 10px;
   padding: 12px 40px;
   font-size: var(--btn-text);
   border: none;
 }
+
 .btn_white,
 .outline_btn {
   background-color: var(--ono-white);
@@ -114,6 +115,7 @@ ul {
 
 .add_bills_btn, .add_bills_btn:hover {
   padding: 8px 25px;
+  color: #fff;
 }
 
 .buttons:hover {

@@ -762,7 +762,7 @@ const Partner = () => {
                       <p></p>
 
                       <button
-                        className="outline_btn mr-2"
+                        className="outline_btn outline_btn_partner mr-2"
                         onClick={() => MybtnModal(partyType)}
                       >
                         Add
@@ -773,7 +773,7 @@ const Partner = () => {
                       {partyType.toLowerCase() == "farmer" ||
                       partyType.toLowerCase() == "buyer" ? (
                         <button
-                          className="outline_btn mt-3"
+                          className="outline_btn outline_btn_partner mt-3"
                           onClick={() => MybtnModal("trader")}
                         >
                           Add Trader
