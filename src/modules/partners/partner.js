@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Image } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
@@ -32,7 +32,7 @@ const Partner = () => {
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
   const [saveType, setSaveType] = useState("FARMER");
-  const savetype = localStorage.getItem('partyType');
+  const savetype = localStorage.getItem("partyType");
   const [partyType, setPartyType] = useState(
     savetype !== null ? savetype : "FARMER"
   );
@@ -296,10 +296,14 @@ const Partner = () => {
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
-          shortNameField.trim().length !== 1)
+          shortNameField.trim().length !== 1) &&
+      (aadharNumber.trim().length == 0
+        ? true
+        : aadharNumber.trim().length < 12
+        ? false
+        : true)
     ) {
       addEditPartnerApiCall();
-      console.log(partyType);
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
       window.setTimeout(function () {
@@ -549,7 +553,7 @@ const Partner = () => {
     var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    console.log(locality.city)
+    console.log(locality.city);
     var city = localities[0].city;
     setCityVal(city);
     setStateVal(locality.state);
@@ -593,24 +597,17 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    //console.log(cityVal);
     setPincode("");
     setAadharError("");
     setNameError("");
     setStateVal("");
     setStartDate(new Date());
+    setAadharNumber("");
+    setRequiredNumberField("");
     $("#Mymodal").modal("hide");
     console.log("hiding");
     $("#state").val("");
     $("#city").val("");
-  //  var $input;
-  //   var $text = $(document.createElement("input"));
-  //   $text.attr("value", '');
-  //   // $text.attr("type", "text");
-  //   // $text.attr("type", "text");
-  //   $text.attr("class", "form-control");
-  //   $input = $text;
-  //   $("#city-input-wrapper").html($input);
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -699,6 +696,7 @@ const Partner = () => {
                             <div className="card partner_card" key={index}>
                               <div className="d-flex partner_card_flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center">
+                                  
                                   {partner.profilePic ? (
                                     <img
                                       src={partner.profilePic}
@@ -812,89 +810,47 @@ const Partner = () => {
             </div>
             <div className="modal-body partner_model_body" id="scroll_style">
               <form>
-                {partyType == langFullData.farmer.toUpperCase() ||
-                partyType == langFullData.buyer.toUpperCase() ? (
-                  <div>
-                    <label className="input_field">Select Type <span className="star-color">*</span></label>
-
-                    <div onChange={onChangeValue}>
-                      <input
-                        type="radio"
-                        //className="custom-control-input"
-                        value={partyType.toLowerCase()}
-                        name="radioValue"
-                        id={partyType.toLowerCase()}
-                        checked={
-                          radioValue.toLowerCase() === partyType.toLowerCase()
-                        }
-                        className="radioBtnsVal"
-                      />{" "}
-                      {getText(partyType)}
-                      <input
-                        type="radio"
-                        value="trader"
-                        id="trader"
-                        name="radioValue"
-                        checked={radioValue.toLowerCase() === "trader"}
-                        //className="custom-control-input"
-                        className="radioBtnVal"
-                      />{" "}
-                      {langFullData.trader}
-                    </div>
-                  </div>
-                ) : (
-                  <div></div>
-                )}
-                {partyType == "COOLIE" ? (
-                  <div className="row">
-                    <div className="col-lg-12 p-0">
-                      <InputField
-                        type="text"
-                        value={mobileNumber}
-                        label={langFullData.mobileNumber}
-                        name="mobileNumber"
-                        id="mobileNumber"
-                        onChange={(e) => {
-                          handleMobileNumber(e);
-                        }}
-                        starRequired={true}
-                      />
-                      <span className="text-danger">{requiredNumberField}</span>
-                      <InputField
-                        type="text"
-                        value={nameField}
-                        label={"Name"}
-                        name="name"
-                        id="inputName"
-                        onChange={(e) => {
-                          handleName(e);
-                        }}
-                        starRequired={true}
-                      />
-                      <span className="text-danger">{nameError}</span>
-                      <span className="text-danger">{requiredNameField}</span>
-                      <InputField
-                        type="text"
-                        value={aadharNumber}
-                        label={langFullData.aadhar}
-                        name="name"
-                        onChange={(e) => {
-                          handleNumber(e);
-                        }}
-                        starRequired={false}
-                      />
-                      <span className="text-danger">{aadharError}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div></div>
-                )}
                 <div className="row">
-                  <div className="col-lg-6 pl-0">
-                    {partyType == "FARMER" ||
-                    partyType == "BUYER" ||
-                    partyType == "TRANSPORTER" ? (
-                      <div>
+                  {partyType == langFullData.farmer.toUpperCase() ||
+                  partyType == langFullData.buyer.toUpperCase() ? (
+                    <div>
+                      <label className="input_field">
+                        Select Type <span className="star-color">*</span>
+                      </label>
+
+                      <div onChange={onChangeValue}>
+                        <input
+                          type="radio"
+                          //className="custom-control-input"
+                          value={partyType.toLowerCase()}
+                          name="radioValue"
+                          id={partyType.toLowerCase()}
+                          checked={
+                            radioValue.toLowerCase() === partyType.toLowerCase()
+                          }
+                          className="radioBtnsVal"
+                        />{" "}
+                        {getText(partyType)}
+                        <input
+                          type="radio"
+                          value="trader"
+                          id="trader"
+                          name="radioValue"
+                          checked={radioValue.toLowerCase() === "trader"}
+                          //className="custom-control-input"
+                          className="radioBtnVal"
+                        />{" "}
+                        {langFullData.trader}
+                      </div>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
+                {partyType == "COOLIE" ? (
+                  <div>
+                    <div className="row">
+                      <div className="col-lg-12 p-0">
                         <InputField
                           type="text"
                           value={mobileNumber}
@@ -906,7 +862,6 @@ const Partner = () => {
                           }}
                           starRequired={true}
                         />
-
                         <span className="text-danger">
                           {requiredNumberField}
                         </span>
@@ -935,240 +890,448 @@ const Partner = () => {
                         />
                         <span className="text-danger">{aadharError}</span>
                       </div>
-                    ) : (
-                      <div></div>
-                    )}
-                    {partyType == "FARMER" ||
-                    partyType == "BUYER" ||
-                    partyType == "TRANSPORTER" ? (
-                      <InputField
-                        type="text"
-                        value={openingBalance}
-                        label={langFullData.openingBalance}
-                        name="name"
-                        onChange={(e) => {
-                          handleOpeninngBal(e);
-                        }}
-                        starRequired={false}
-                      />
-                    ) : (
-                      <div></div>
-                    )}
-                    {/* <LocationFetch onClick={locationFetch} /> */}
-                    <label className="input_field address_text mt-0">
-                      {langFullData.address}
-                    </label>
-                    <div>
-                      <label htmlFor="zip" className="input_field">
-                        {langFullData.pincode}
-                      </label>
-                      <div>
-                        <input
-                          id="zip"
-                          className="form-control"
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {" "}
+                        <label className="input_field address_text mt-0">
+                          {langFullData.address}
+                        </label>
+                      </div>
+                      <div className="col-lg-6">
+                        {" "}
+                        <div
+                          onClick={() => getPosition()}
+                          className="location mt-0"
+                        >
+                          <div className="d-flex align-items-center">
+                            <img src={location_icon} alt="" className="mr-2" />
+                            {langFullData.selectCurrentLocation}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {" "}
+                        <div>
+                          <label htmlFor="zip" className="input_field">
+                            {langFullData.pincode}
+                          </label>
+                          <div>
+                            <input
+                              id="zip"
+                              className="form-control"
+                              type="text"
+                              label="pincode"
+                              name="zip"
+                              onChange={(e) => {
+                                onZip(e);
+                              }}
+                              value={pincode}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-6">
+                        <div>
+                          <label htmlFor="state" className="input_field">
+                            {langFullData.state}
+                          </label>
+                          {isEdit ? (
+                            <input
+                              id="state"
+                              className="form-control"
+                              name="state"
+                              value={stateVal}
+                            />
+                          ) : (
+                            <input
+                              id="state"
+                              className="form-control"
+                              name="state"
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {" "}
+                        <div>
+                          <label htmlFor="city" className="input_field">
+                            District
+                          </label>
+                          <div>
+                            {isEdit ? (
+                              <div>
+                                <InputField
+                                  type="text"
+                                  id="city"
+                                  name="city"
+                                  value={cityVal}
+                                />
+                              </div>
+                            ) : (
+                              <InputField
+                                type="text"
+                                id="city"
+                                name="city"
+                                value={cityVal}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-6">
+                        {" "}
+                        <InputField
                           type="text"
-                          label="pincode"
-                          name="zip"
+                          value={streetVillage}
+                          label={langFullData.streetVillage}
+                          name="name"
                           onChange={(e) => {
-                            onZip(e);
+                            handleStreetName(e);
                           }}
-                          value={pincode}
+                          starRequired={false}
                         />
                       </div>
                     </div>
-                    <div>
-                      <label htmlFor="city" className="input_field">
-                        City
-                      </label>
-                      <div>
-                        {isEdit ? (
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+
+                {partyType == "FARMER" ||
+                partyType == "BUYER" ||
+                partyType == "TRANSPORTER" ? (
+                  <div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        <InputField
+                          type="text"
+                          value={mobileNumber}
+                          label={langFullData.mobileNumber}
+                          name="mobileNumber"
+                          id="mobileNumber"
+                          onChange={(e) => {
+                            handleMobileNumber(e);
+                          }}
+                          starRequired={true}
+                        />
+
+                        <span className="text-danger">
+                          {requiredNumberField}
+                        </span>
+                      </div>
+                      <div className="col-lg-6">
+                        {partyType != "TRANSPORTER" ? (
+                          partyType != "COOLIE" ? (
+                            <div>
+                              <InputField
+                                type="text"
+                                value={shortNameField}
+                                label={langFullData.initialsShortName}
+                                name="name"
+                                onChange={(e) => {
+                                  handleShortName(e);
+                                }}
+                                starRequired={true}
+                              />
+                              <span className="text-danger">
+                                {shortnameError}
+                              </span>
+                              <span className="text-danger">
+                                {requiredshortNameField}
+                              </span>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )
+                        ) : (
                           <div>
                             <InputField
                               type="text"
-                              id="city"
-                              name="city"
-                              value={cityVal}
+                              value={vehicleNum}
+                              label={langFullData.vehicleNumber}
+                              name="name"
+                              onChange={(e) => {
+                                handlevehicleNum(e);
+                              }}
                             />
                           </div>
-                        ) : (
-                          <InputField type="text" id="city" name="city" value={cityVal}/>
                         )}
                       </div>
                     </div>
-                  </div>
-                  <div className="col-lg-6">
-                    {partyType != "TRANSPORTER" ? (
-                      partyType != "COOLIE" ? (
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
                         <div>
+                          <InputField
+                            type="text"
+                            value={nameField}
+                            label={"Name"}
+                            name="name"
+                            id="inputName"
+                            onChange={(e) => {
+                              handleName(e);
+                            }}
+                            starRequired={true}
+                          />
+                          <span className="text-danger">{nameError}</span>
+                          <span className="text-danger">
+                            {requiredNameField}
+                          </span>
+                          <InputField
+                            type="text"
+                            value={aadharNumber}
+                            label={langFullData.aadhar}
+                            name="name"
+                            onChange={(e) => {
+                              handleNumber(e);
+                            }}
+                            starRequired={false}
+                          />
+                          <span className="text-danger">{aadharError}</span>
+                        </div>
+                      </div>
+                      <div className="col-lg-6">
+                        {partyType != "TRANSPORTER" ? (
+                          partyType != "COOLIE" ? (
+                            <div>
+                              <label htmlFor="pic" className="input_field">
+                                {langFullData.profilePic}
+                              </label>
+                              <div className="file-input">
+                                <div className="d-flex align-items-center">
+                                  <div className="input_file">
+                                    {isEdit ? (
+                                      <img
+                                        src={
+                                          isEdit
+                                            ? updateProfilePic === ""
+                                              ? single_bill
+                                              : updateProfilePic
+                                            : single_bill
+                                        }
+                                        // src={
+                                        //   file
+                                        //     ? URL.createObjectURL(file)
+                                        //     : single_bill
+                                        // }
+                                        alt=""
+                                      />
+                                    ) : (
+                                      <img
+                                        src={
+                                          profilePic ? profilePic : single_bill
+                                        }
+                                        // src={
+                                        //   file
+                                        //     ? URL.createObjectURL(file)
+                                        //     : single_bill
+                                        // }
+                                        alt=""
+                                      />
+                                    )}
+                                  </div>
+                                  <div>
+                                    <input
+                                      type="file"
+                                      id="file"
+                                      //onChange={(e) => setFile(e.target.files[0])}
+                                      onChange={(e) => {
+                                        handleProfilePic(e);
+                                      }}
+                                    />
+                                    <label htmlFor="file" className="file">
+                                      {langFullData.chooseFromLibrary}
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )
+                        ) : (
                           <div>
                             <InputField
                               type="text"
-                              value={shortNameField}
-                              label={langFullData.initialsShortName}
-                              name="name"
+                              value={vehicleType}
+                              label={langFullData.vehicleType}
+                              name="vehicleType"
                               onChange={(e) => {
-                                handleShortName(e);
+                                handlevehicleType(e);
                               }}
-                              starRequired={true}
                             />
-                            <span className="text-danger">
-                              {shortnameError}
-                            </span>
-                            <span className="text-danger">
-                              {requiredshortNameField}
-                            </span>
                           </div>
-                          <label htmlFor="pic" className="input_field">
-                            {langFullData.profilePic}
-                          </label>
-                          <div className="file-input">
-                            <div className="d-flex align-items-center">
-                              <div className="input_file">
-                                {isEdit ? (
-                                  <img
-                                    src={
-                                      isEdit
-                                        ? updateProfilePic === ""
-                                          ? single_bill
-                                          : updateProfilePic
-                                        : single_bill
-                                    }
-                                    // src={
-                                    //   file
-                                    //     ? URL.createObjectURL(file)
-                                    //     : single_bill
-                                    // }
-                                    alt=""
-                                  />
-                                ) : (
-                                  <img
-                                    src={profilePic ? profilePic : single_bill}
-                                    // src={
-                                    //   file
-                                    //     ? URL.createObjectURL(file)
-                                    //     : single_bill
-                                    // }
-                                    alt=""
-                                  />
-                                )}
-                              </div>
-                              <div>
-                                <input
-                                  type="file"
-                                  id="file"
-                                  //onChange={(e) => setFile(e.target.files[0])}
-                                  onChange={(e) => {
-                                    handleProfilePic(e);
+                        )}
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {partyType == "FARMER" ||
+                        partyType == "BUYER" ||
+                        partyType == "TRANSPORTER" ? (
+                          <InputField
+                            type="text"
+                            value={openingBalance}
+                            label={langFullData.openingBalance}
+                            name="name"
+                            onChange={(e) => {
+                              handleOpeninngBal(e);
+                            }}
+                            starRequired={false}
+                          />
+                        ) : (
+                          <div></div>
+                        )}
+                      </div>
+                      <div className="col-lg-6">
+                        {partyType == "FARMER" ||
+                        partyType == "BUYER" ||
+                        partyType == "TRANSPORTER" ? (
+                          <div>
+                            <label htmlFor="pic" className="input_field">
+                              {langFullData.asOnDate}
+                            </label>
+                            <label
+                              className="d-flex align-items-baseline date_label"
+                              onClick={(e) => e.preventDefault()}
+                            >
+                              <span className="date_icon m-0">
+                                <img src={date_icon} alt="icon" />
+                              </span>
+                              <div className="date_field partner_date">
+                                <DatePicker
+                                  dateFormat="dd-MMM-yyyy"
+                                  selected={startDate}
+                                  onChange={(date) => setStartDate(date)}
+                                  className="form-control"
+                                  placeholder="Date"
+                                  maxDate={new Date()}
+                                  onKeyDown={(e) => {
+                                    e.preventDefault();
                                   }}
                                 />
-                                <label htmlFor="file" className="file">
-                                  {langFullData.chooseFromLibrary}
-                                </label>
                               </div>
-                            </div>
+                            </label>
+                          </div>
+                        ) : (
+                          <div></div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {" "}
+                        <label className="input_field address_text mt-0">
+                          {langFullData.address}
+                        </label>
+                      </div>
+                      <div className="col-lg-6">
+                        {" "}
+                        <div
+                          onClick={() => getPosition()}
+                          className="location mt-0"
+                        >
+                          <div className="d-flex align-items-center">
+                            <img src={location_icon} alt="" className="mr-2" />
+                            {langFullData.selectCurrentLocation}
                           </div>
                         </div>
-                      ) : (
-                        <div></div>
-                      )
-                    ) : (
-                      <div>
-                        <InputField
-                          type="text"
-                          value={vehicleType}
-                          label={langFullData.vehicleType}
-                          name="vehicleType"
-                          onChange={(e) => {
-                            handlevehicleType(e);
-                          }}
-                        />
-
-                        <InputField
-                          type="text"
-                          value={vehicleNum}
-                          label={langFullData.vehicleNumber}
-                          name="name"
-                          onChange={(e) => {
-                            handlevehicleNum(e);
-                          }}
-                        />
                       </div>
-                    )}
-                    {partyType == "FARMER" ||
-                    partyType == "BUYER" ||
-                    partyType == "TRANSPORTER" ? (
-                      <div>
-                        <label htmlFor="pic" className="input_field">
-                          {langFullData.asOnDate}
-                        </label>
-                        <label
-                          className="d-flex align-items-baseline date_label"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <span className="date_icon m-0">
-                            <img src={date_icon} alt="icon" />
-                          </span>
-                          <div className="date_field partner_date">
-                            <DatePicker
-                              dateFormat="dd-MMM-yyyy"
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {" "}
+                        <div>
+                          <label htmlFor="zip" className="input_field">
+                            {langFullData.pincode}
+                          </label>
+                          <div>
+                            <input
+                              id="zip"
                               className="form-control"
-                              placeholder="Date"
-                              maxDate={new Date()}
+                              type="text"
+                              label="pincode"
+                              name="zip"
+                              onChange={(e) => {
+                                onZip(e);
+                              }}
+                              value={pincode}
                             />
                           </div>
-                        </label>
+                        </div>
                       </div>
-                    ) : (
-                      <div></div>
-                    )}
-
-                    {partyType != "TRANSPORTER" ? (
-                      <div></div>
-                    ) : (
-                      <div className="transpo_height"></div>
-                    )}
-                    <div
-                      onClick={() => getPosition()}
-                      className="location mt-0"
-                    >
-                      <div className="d-flex align-items-center">
-                        <img src={location_icon} alt="" className="mr-2" />
-                        {langFullData.selectCurrentLocation}
+                      <div className="col-lg-6">
+                        <div>
+                          <label htmlFor="state" className="input_field">
+                            {langFullData.state}
+                          </label>
+                          {isEdit ? (
+                            <input
+                              id="state"
+                              className="form-control"
+                              name="state"
+                              value={stateVal}
+                            />
+                          ) : (
+                            <input
+                              id="state"
+                              className="form-control"
+                              name="state"
+                            />
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <label htmlFor="state" className="input_field">
-                        {langFullData.state}
-                      </label>
-                      {isEdit ? (
-                        <input
-                          id="state"
-                          className="form-control"
-                          name="state"
-                          value={stateVal}
+                    <div className="row">
+                      <div className="col-lg-6 pl-0">
+                        {" "}
+                        <div>
+                          <label htmlFor="city" className="input_field">
+                            District
+                          </label>
+                          <div>
+                            {isEdit ? (
+                              <div>
+                                <InputField
+                                  type="text"
+                                  id="city"
+                                  name="city"
+                                  value={cityVal}
+                                />
+                              </div>
+                            ) : (
+                              <InputField
+                                type="text"
+                                id="city"
+                                name="city"
+                                value={cityVal}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-6">
+                        {" "}
+                        <InputField
+                          type="text"
+                          value={streetVillage}
+                          label={langFullData.streetVillage}
+                          name="name"
+                          onChange={(e) => {
+                            handleStreetName(e);
+                          }}
+                          starRequired={false}
                         />
-                      ) : (
-                        <input
-                          id="state"
-                          className="form-control"
-                          name="state"
-                        />
-                      )}
+                      </div>
                     </div>
-                    <InputField
-                      type="text"
-                      value={streetVillage}
-                      label={langFullData.streetVillage}
-                      name="name"
-                      onChange={(e) => {
-                        handleStreetName(e);
-                      }}
-                      starRequired={false}
-                    />
                   </div>
-                </div>
+                ) : (
+                  <div></div>
+                )}
               </form>
             </div>
             <div className="modal-footer p-0">
