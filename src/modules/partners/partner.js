@@ -1205,6 +1205,9 @@ const Partner = () => {
                                   className="form-control"
                                   placeholder="Date"
                                   maxDate={new Date()}
+                                  onKeyDown={(e) => {
+                                    e.preventDefault();
+                                  }}
                                 />
                               </div>
                             </label>

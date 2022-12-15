@@ -16,7 +16,7 @@ import {
 } from "../../actions/billCreationService";
 import { useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import no_data from "../../assets/images/no_data_available.png";
+import no_data from "../../assets/images/NodataAvailable.svg";
 import add from "../../assets/images/add.svg";
 import date_icon from "../../assets/images/date_icon.svg";
 import { useNavigate } from "react-router-dom";
@@ -700,7 +700,7 @@ const BuyerLedger = () => {
                         }
                       >
                         <table
-                          className="table table-bordered ledger-table"
+                          className="table table-bordered"
                           id="ledger-sum"
                         >
                           <thead className="thead-tag">
@@ -708,7 +708,7 @@ const BuyerLedger = () => {
                               <th className="col-1" id="sno">
                                 #
                               </th>
-                              <th className="col-2">RefId | Date</th>
+                              <th className="col-2">Ref ID | Date</th>
                               <th className="col-3">
                                 <p>Item</p>
                                 <p> Unit | Kgs | Rate</p>
@@ -819,7 +819,7 @@ const BuyerLedger = () => {
                                 <th className="col-1" id="sno">
                                   #
                                 </th>
-                                <th className="col-2">RefId | Date</th>
+                                <th className="col-2">Ref ID | Date</th>
                                 <th className="col-3">Received(&#8377;)</th>
                                 <th className="col-3">
                                   To Be Received(&#8377;)
@@ -892,13 +892,13 @@ const BuyerLedger = () => {
                           }
                         >
                           {detailsByDate.length > 0 ? (
-                            <table className="table table-bordered ledger-table">
+                            <table className="table table-bordered">
                               <thead className="thead-tag">
                                 <tr>
                                   <th className="col-1" id="sno">
                                     #
                                   </th>
-                                  <th className="col-2">RefId | Date</th>
+                                  <th className="col-2">Ref ID | Date</th>
                                   <th className="col-3">
                                     <p>Item</p>
                                     <p> Unit | Kgs | Rate</p>
@@ -994,7 +994,9 @@ const BuyerLedger = () => {
                           id="scroll_style"
                         >
                           <form>
-                            <div className="card">
+                            <div className="row">
+                             <div className="col-lg-12">
+                             <div className="card">
                               <div
                                 className="d-flex justify-content-between card-body"
                                 id="details-tag"
@@ -1102,7 +1104,7 @@ const BuyerLedger = () => {
                               <p className="payment-tag">Payment Mode</p>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio1"
@@ -1125,7 +1127,7 @@ const BuyerLedger = () => {
                                 id="radio-btn-in_modal"
                               >
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio2"
@@ -1145,7 +1147,7 @@ const BuyerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio3"
@@ -1165,7 +1167,7 @@ const BuyerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio4"
@@ -1185,7 +1187,7 @@ const BuyerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio5"
@@ -1221,6 +1223,8 @@ const BuyerLedger = () => {
                                   onChange={(e) => setComments(e.target.value)}
                                 ></textarea>
                               </div>
+                            </div>
+                             </div>
                             </div>
                           </form>
                         </div>
