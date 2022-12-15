@@ -8,6 +8,7 @@ import edit from "../../assets/images/edit.svg";
 import globe from "../../assets/images/world.svg";
 import contact from "../../assets/images/contact.svg";
 import market_img from "../../assets/images/mandi.svg";
+import mandiImage from "../../assets/images/mandi_icon.svg";
 import ProfileCard from "../../components/profileCard";
 import ProfileCardWithoutIcon from "../../components/profileCardWithoutIcon";
 import loading from "../../assets/images/loading.gif";
@@ -29,7 +30,7 @@ const MyProfile = () => {
   const [languageId, setLanguageId] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
   const [isMandiEdit, setIsMandiEdit] = useState(false);
-  const submitStatus = localStorage.getItem("submitStatus") ;
+  const submitStatus = localStorage.getItem("submitStatus");
   const dispatch = useDispatch();
   useEffect(() => {
     getProfileDetails();
@@ -63,14 +64,14 @@ const MyProfile = () => {
   };
 
   const onSave = () => {
-    console.log(languageId,"id");
+    console.log(languageId, "id");
     var langid = languageId;
-    if(langid == 0){
-      langid =parseInt(selectedLangId);
-      console.log(langid,selectedLangId,"if");
-      setLanguageId(langid)
+    if (langid == 0) {
+      langid = parseInt(selectedLangId);
+      console.log(langid, selectedLangId, "if");
+      setLanguageId(langid);
     }
-    console.log(langid,"iffff")
+    console.log(langid, "iffff");
     getLanguagesData(langid)
       .then((response) => {
         const langData = response.data.data;
@@ -79,12 +80,14 @@ const MyProfile = () => {
         langData.forEach(({ key, value }) =>
           Object.assign(res, { [key]: value })
         );
-        console.log(langid,selectedLangId);
-        if(langid!==parseInt(selectedLangId)){
-          toast.success("Language Changed Successfully",{toastId:'success'});
+        console.log(langid, selectedLangId);
+        if (langid !== parseInt(selectedLangId)) {
+          toast.success("Language Changed Successfully", {
+            toastId: "success",
+          });
           localStorage.removeItem("languageData");
           localStorage.setItem("languageData", JSON.stringify(res));
-          window.setTimeout( function() {
+          window.setTimeout(function () {
             window.location.reload();
           }, 1500);
         }
@@ -103,44 +106,42 @@ const MyProfile = () => {
       ? localStorage.getItem("businessCreatedStatus")
       : "";
   const [showModal, setShowModal] = useState(false);
-  const editMandiData = (mandiDetails)=>{
+  const editMandiData = (mandiDetails) => {
     setShowModal(true);
     setIsMandiEdit(true);
-    localStorage.setItem("mandiEditStatus",true);
+    localStorage.setItem("mandiEditStatus", true);
     dispatch(mandiInfoActions.mandiSuccess(mandiDetails));
-    localStorage.setItem("mandiEditDetails",JSON.stringify(mandiDetails));
-  }
+    localStorage.setItem("mandiEditDetails", JSON.stringify(mandiDetails));
+  };
   const [showModalStatus, setShowModalStatus] = useState(false);
   const onClickProfiles = () => {
     setShowModal(true);
     setShowModalStatus(true);
-    localStorage.removeItem("mandiEditStatus")
-    localStorage.setItem("mandiEditStatus", false)
-  }
+    localStorage.removeItem("mandiEditStatus");
+    localStorage.setItem("mandiEditStatus", false);
+  };
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
-        {loginData.businessCreated === false &&
-        businessCreatedStatus == "" ? (
+        {loginData.businessCreated === false && businessCreatedStatus == "" ? (
           <div className="row">
-              <div className="col-lg-9 smartboard_div p-0">
-                <div className="complete_profile d-flex justify-content-between align-items-center">
-                  <p>Complete your Mandi Setup</p>
-                  <button onClick={onClickProfiles}>
-                    Complete Now
-                  </button>
-                  {showModalStatus ?
-                    <CompleteProfile
-                      show={showModal}
-                      close={() => setShowModal(false)}
-                    />
-                    : ("")}
-                 
-                </div>
-                <NoDataAvailable />
+            <div className="col-lg-9 smartboard_div p-0">
+              <div className="complete_profile d-flex justify-content-between align-items-center">
+                <p>Complete your Mandi Setup</p>
+                <button onClick={onClickProfiles}>Complete Now</button>
+                {showModalStatus ? (
+                  <CompleteProfile
+                    show={showModal}
+                    close={() => setShowModal(false)}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
-              <div className="col-lg-3"></div>
+              <NoDataAvailable />
             </div>
+            <div className="col-lg-3"></div>
+          </div>
         ) : (
           <div>
             <div className="myprofile_screen" id="scroll_style">
@@ -161,9 +162,7 @@ const MyProfile = () => {
                                   <div className="card_header">
                                     <div className="d-flex align-items-center">
                                       <img src={icon} alt="image" />
-                                      <h6>
-                                        {langFullData.personalDetails}
-                                      </h6>
+                                      <h6>{langFullData.personalDetails}</h6>
                                     </div>
                                   </div>
                                   <div className="card_body">
@@ -199,19 +198,32 @@ const MyProfile = () => {
                                   <div className="card_header">
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
-                                        <img src={market_img} alt="image" id="market-img"/>
+                                        <img
+                                          src={mandiImage}
+                                          alt="image"
+                                          id="market-img"
+                                        />
                                         <h6>{langFullData.businessDetails}</h6>
                                       </div>
-                                      <p onClick={() => editMandiData( profileData.businessDtls)} className="edit_text">
+                                      <p
+                                        onClick={() =>
+                                          editMandiData(
+                                            profileData.businessDtls
+                                          )
+                                        }
+                                        className="edit_text"
+                                      >
                                         <img src={edit} alt="edit-img" />
                                         {/* Edit */}
                                       </p>
-                                      {
-                                        isMandiEdit ? <CompleteProfile
-                                        show={showModal}
-                                        close={() => setShowModal(false)}
-                                      /> : <div className="d-none"></div>
-                                      }
+                                      {isMandiEdit ? (
+                                        <CompleteProfile
+                                          show={showModal}
+                                          close={() => setShowModal(false)}
+                                        />
+                                      ) : (
+                                        <div className="d-none"></div>
+                                      )}
                                     </div>
                                   </div>
                                   <div className="card_body">
@@ -329,13 +341,21 @@ const MyProfile = () => {
                                     <div className="d-flex align-items-center justify-content-between">
                                       <div className="d-flex align-items-center">
                                         <img src={globe} alt="image" />
-                                        <h6>{langFullData.selectYourPreferredLanguage}</h6>
+                                        <h6>
+                                          {
+                                            langFullData.selectYourPreferredLanguage
+                                          }
+                                        </h6>
                                       </div>
                                       <p
                                         onClick={isEdit ? onSave : onEdit}
                                         className="editsave_text"
                                       >
-                                        {isEdit ? "Save" : <img src={edit} alt="edit-img" />}
+                                        {isEdit ? (
+                                          "Save"
+                                        ) : (
+                                          <img src={edit} alt="edit-img" />
+                                        )}
                                       </p>
                                       {/* <p onClick={onSave}>save</p> */}
                                     </div>
