@@ -49,14 +49,14 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 305px);
+    height: calc(100vh - 325px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 290px);
+    height: calc(100vh - 325px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -91,6 +91,19 @@ input[type=radio]:checked+label {
         padding: 10px;
     }
 }
+.tabRowSelected{
+    position: relative;
+}
+.tabRowSelected:after {
+    content: " ";
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    border-top: 10px solid transparent;
+    border-right: none;
+    // border-left: 10px solid black;
+    border-bottom: 10px solid transparent;
+  }
 #horizontal-line{
     margin: 10px 0px;
     border-bottom:1px solid#E4E4E4;
@@ -482,7 +495,7 @@ a:hover{
     cursor: pointer;
   
 }
-.react-datepicker-wrapper:hover{
+.react-datepicker-wrapper:hover, #radio-btn-in_modal:hover{
     cursor: pointer;
   }
   .react-datepicker-wrapper{
@@ -494,3 +507,16 @@ a:hover{
       border: none;
       padding: 0px;
   }
+  input[type=radio].radioBtnVal{
+    accent-color: #16A12C;
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+    transform: scale(1.2);
+  }
+  input[type=radio].radioBtnsVal{
+    accent-color: #16A12C;
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+    transform: scale(1.2);
+  }
+  

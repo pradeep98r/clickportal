@@ -16,7 +16,8 @@ import markets from "../../assets/images/mandi.svg";
 import { Fragment } from "react";
 import SearchField from "../../components/searchField";
 import NoDataAvailable from "../../components/noDataAvailable";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -276,7 +277,9 @@ const CompleteProfile = (props) => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "update partner");
-            toastr.success("Mandi Details Updated Successfully");
+            toast.success("Mandi Details Updated Successfully", {
+              toastId: "success",
+            });
             localStorage.setItem("submitStatus", true);
             props.close();
             window.setTimeout(function () {
@@ -792,9 +795,6 @@ const CompleteProfile = (props) => {
         <div className="modal-dialog  markets_name_popup">
           <div className="modal-content" id="market-modal-content">
             <div className="modal-header date_modal_header market_modal_header">
-              <h5 className="modal-title header2_text" id="mk-header">
-                Select Market
-              </h5>
               <img
                 src={close}
                 alt="image"
@@ -802,9 +802,12 @@ const CompleteProfile = (props) => {
                 onClick={closePopup}
               />
             </div>
-            <div className="modal-body markets_name_modal_mody profileModal markets_name_modal" id="scroll_style">
-              <div className="col-lg-6" id="market-div">
-               
+            <div className="row">
+            <div className="modal-body  markets_name_modal_mody profileModal" id="scroll_style">
+              <div className="col-lg-8" id="market-div">
+                <h5 className="modal-title header2_text" id="mk-header">
+                    Select Market
+                </h5>
                 <SearchField
                     placeholder={langFullData.searchByNameShortCode}
                     val={search}
@@ -873,6 +876,7 @@ const CompleteProfile = (props) => {
                 
               </div>
             </div>
+            </div>
           </div>
         </div>
       </div>
@@ -897,7 +901,7 @@ const CompleteProfile = (props) => {
            </div>
             </div>
             </div>
-            <div className="modal-body market_name_modal_mody px-0 markets_name_modal others_name_modal" id="scroll_style">
+            <div className="modal-body market_name_modal_mody px-0 profileModal" id="scroll_style">
            <div className="container">
            <div className="row">
               <div className="col-lg-12 p-0" id="market-div">
@@ -947,6 +951,7 @@ const CompleteProfile = (props) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </Modal>
   );
 };

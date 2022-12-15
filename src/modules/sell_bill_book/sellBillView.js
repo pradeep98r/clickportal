@@ -683,11 +683,11 @@ const SellBillView = () => {
                   </div>
                   <div className="col-lg-6 ">
                     <div className="row">
-                      <div className="col-lg-2"></div>
-                      <div className="col-lg-5">
-                        <p className="total_value">Gross Total : </p>
+                      <div className="col-lg-4"></div>
+                      <div className="col-lg-4">
+                        <p className="total_value">Gross Total </p>
                       </div>
-                      <div className="col-lg-5">
+                      <div className="col-lg-4">
                         <p className="total_value number_overflow">
                           {singleBillData.grossTotal.toLocaleString("en-IN", {
                             maximumFractionDigits: 2,
@@ -1023,14 +1023,14 @@ const SellBillView = () => {
                               null ? (
                               ""
                             ) : (
-                              <p className="groups_value">
+                              <p className="grouping_value">
                                 Total Bill Amount :
                               </p>
                             )}
                           </div>
                         </div>
                         <div className="col-lg-4">
-                          <p className="groups_value color_green">
+                          <p className="grouping_value color_green">
                             {singleBillData?.grossTotal +
                               (groupFourTotal +
                                 groupThreeTotal +
@@ -1067,11 +1067,11 @@ const SellBillView = () => {
                           singleBillData.cashRcvd === null ? (
                             ""
                           ) : (
-                            <p className="groups_value">Cash Received</p>
+                            <p className="grouping_value">Cash Received</p>
                           )}
                         </div>
                         <div className="col-lg-4">
-                          <p className="groups_value ">
+                          <p className="grouping_value ">
                             {singleBillData.cashRcvd === 0 ||
                             singleBillData.cashRcvd === null
                               ? ""
@@ -1085,15 +1085,15 @@ const SellBillView = () => {
                         <div className="col-lg-2"></div>
                         <div className="col-lg-6">
                           <p
-                            className="groups_value"
+                            className="grouping_value"
                             style={{ display: status ? "block" : "none" }}
                           >
-                            Outstanding Balance:
+                            Outstanding Balance:s
                           </p>
                         </div>
                         <div className="col-lg-4">
                           <p
-                            className="groups_value"
+                            className="grouping_value"
                             style={{ display: status ? "block" : "none" }}
                           >
                             {(singleBillData?.outStBal).toLocaleString(

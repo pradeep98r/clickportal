@@ -48,6 +48,7 @@
   }
 }
 .partner_model_body {
+  padding: 20px 30px;
   max-height: calc(100vh - 240px);
   overflow-y: auto;
 }
@@ -198,4 +199,24 @@ input[type=radio].radioBtnsVal{
   border-top: none;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius:0px
+}
+.default_card{
+  padding: 20px 20px;
+}
+.outline_btn{
+  // font-weight: 600;
+font-size: 16px;
+line-height: 18px;
+}
+.delete_modal_dialog .modal-header, .delete_modal_dialog .modal-footer {
+  border: none;
+  padding: 20px 30px;
+}
+.parnter_pop_up{
+  padding-left: 20px;
+}
+.outline_btn_partner:hover{
+  background-color: #16A12C;
+  color: #fff;
+  border: 1px solid transparent;
 }

@@ -30,10 +30,10 @@ const DeleteModal = ({ openDeleteModal, handleCloseDeleteModal, modalType }) => 
              className="close_icon"
            /> */}
          </Modal.Header>
-         <Modal.Body className="partner_model_body">
+         <Modal.Body className="partner_model_body parnter_pop_up">
            Are you sure you want to delete partner
          </Modal.Body>
-         <Modal.Footer>
+         <Modal.Footer className='delete-moal-popup'>
            <Button
              variant="secondary"
              className="secondary_btn"
