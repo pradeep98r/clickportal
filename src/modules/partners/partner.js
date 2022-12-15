@@ -955,7 +955,7 @@ const Partner = () => {
                         {" "}
                         <div>
                           <label htmlFor="city" className="input_field">
-                            City
+                          District
                           </label>
                           <div>
                             {isEdit ? (
@@ -1283,7 +1283,7 @@ const Partner = () => {
                         {" "}
                         <div>
                           <label htmlFor="city" className="input_field">
-                            City
+                          District
                           </label>
                           <div>
                             {isEdit ? (
