@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Image } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
@@ -296,10 +296,14 @@ const Partner = () => {
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
-          shortNameField.trim().length !== 1)
+          shortNameField.trim().length !== 1) &&
+      (aadharNumber.trim().length == 0
+        ? true
+        : aadharNumber.trim().length < 12
+        ? false
+        : true)
     ) {
       addEditPartnerApiCall();
-      console.log(partyType);
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
       window.setTimeout(function () {
@@ -598,8 +602,8 @@ const Partner = () => {
     setNameError("");
     setStateVal("");
     setStartDate(new Date());
-    setAadharNumber('');
-    setRequiredNumberField('');
+    setAadharNumber("");
+    setRequiredNumberField("");
     $("#Mymodal").modal("hide");
     console.log("hiding");
     $("#state").val("");
@@ -692,6 +696,7 @@ const Partner = () => {
                             <div className="card partner_card" key={index}>
                               <div className="d-flex partner_card_flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center">
+                                  
                                   {partner.profilePic ? (
                                     <img
                                       src={partner.profilePic}
@@ -955,7 +960,7 @@ const Partner = () => {
                         {" "}
                         <div>
                           <label htmlFor="city" className="input_field">
-                          District
+                            District
                           </label>
                           <div>
                             {isEdit ? (
@@ -1286,7 +1291,7 @@ const Partner = () => {
                         {" "}
                         <div>
                           <label htmlFor="city" className="input_field">
-                          District
+                            District
                           </label>
                           <div>
                             {isEdit ? (
