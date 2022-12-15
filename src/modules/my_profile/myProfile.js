@@ -19,6 +19,7 @@ import { mandiInfoActions } from "../../reducers/mandiProfile";
 import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import $ from 'jquery';
 const MyProfile = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -61,6 +62,10 @@ const MyProfile = () => {
   };
   const onEdit = () => {
     setIsEdit(true);
+    $('#land_div').mouseenter(function(){
+     console.log("hover")
+      $('#lang_id').addClass('active');
+  })
   };
 
   const onSave = () => {
@@ -366,6 +371,7 @@ const MyProfile = () => {
                                         {langResponse.map((lang) => (
                                           <div
                                             className="text-center langdiv"
+                                            id="land_div"
                                             key={lang.langId}
                                             onClick={() =>
                                               isEdit
@@ -374,6 +380,7 @@ const MyProfile = () => {
                                             }
                                           >
                                             <div
+                                             id="lang_id"
                                               className={
                                                 "lang_id " +
                                                 languageId +
