@@ -38,7 +38,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const SellerLedger = () => {
   const [search, setSearch] = useState("");
-  const [openTabs, setOpenTabs] = useState(false);
+  const showTabs=localStorage.getItem("openTabs");
+  const [openTabs, setOpenTabs] = useState(showTabs?true:false);
   const [allData, setallData] = useState([]);
   const [ledger, setLedgeres] = useState(allData);
   // const [ledger, setLedgeres] = useState([{}]);
@@ -63,7 +64,8 @@ const SellerLedger = () => {
   //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummary);
 
   const [sellerDetailed, setSellerDetailed] = useState([]);
-  const [isActive, setIsActive] = useState(-1);
+  const active = localStorage.getItem('isActive');
+  const [isActive, setIsActive] = useState(active>=0?active:-1);
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -93,7 +95,7 @@ const SellerLedger = () => {
     fetchSellerLedger();
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
-  }, [clickId]);
+  });
 
   var [dateValue, setDateValue] = useState();
 
@@ -131,10 +133,11 @@ const SellerLedger = () => {
     //getBuyerLedgerSummary(clickId, id);
     setOpenTabs(true);
     setIsActive(indexs);
+    localStorage.setItem('isActive',indexs);
     ledger.filter((item) => {
       if (item.partyId === id) {
         partyId = id;
-        localStorage.setItem("partyId", JSON.stringify(partyId));
+        localStorage.setItem("sellPartyId", JSON.stringify(partyId));
         getSellerLedgerSummary(clickId, id);
         fetchSellerLedgerDetails(clickId, id);
         getOutstandingPaybles(clickId, id);
@@ -200,31 +203,34 @@ const SellerLedger = () => {
     }
   };
   const addRecordPayment = (partyId) => {
+    partyId = JSON.parse(
+      localStorage.getItem("sellPartyId")
+    );
     console.log(partyId);
     const addRecordData = {
       caId: clickId,
-      partyId: JSON.parse(localStorage.getItem("partyId")),
-      date:  moment(selectDate).format("YYYY-MM-DD"),
+      partyId: JSON.parse(localStorage.getItem("sellPartyId")),
+      date: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
     };
     console.log(selectDate);
-    postRecordPayment(addRecordData)
-      .then((response) => {
-        console.log(response.data.data);
-        setIsOpen(false);
-        window.location.reload();
-      },
-      (error) => {
-        toast.error(error.response.data.status.message, {
+    postRecordPayment(addRecordData).then((response)=>{
+      localStorage.setItem('openTabs',true);
+        closePopup();
+        toast.success(response.data.status.message,{
           toastId: "errorr2",
-        });
-      });
-    navigate("/sellerledger");
-    setIsOpen(false);
-    setPaidsRcvd(0);
-    localStorage.removeItem("partyId");
+        })
+        window.setTimeout(function () {
+          window.location.reload();
+        }, 2000);
+        setIsOpen(true);
+    }).catch(error=>{
+      toast.error(error.response.data.status.message,{
+        toastId: "errorr2",
+      })
+    })
   };
   const clearData = () => {
     while (sellerDetailed.length > 0) {
@@ -357,6 +363,16 @@ const SellerLedger = () => {
     setLedgeres(result);
   };
 
+ useEffect(()=>{
+  if(active>=0){
+    console.log("came");
+    var id = JSON.parse(
+    localStorage.getItem("sellPartyId"));
+    getSellerLedgerSummary(clickId, id);
+    fetchSellerLedgerDetails(clickId, id);
+    getOutstandingPaybles(clickId, id);
+  }
+},[])
   return (
     <Fragment>
       <div>
@@ -395,7 +411,7 @@ const SellerLedger = () => {
                                     particularLedger(item.partyId, index);
                                   }}
                                   className={
-                                    isActive === index
+                                    active == index
                                       ? "tabRowSelected"
                                       : "tr-tags"
                                   }
@@ -544,11 +560,11 @@ const SellerLedger = () => {
                   <div className="card details-tag">
                     <div className="card-body" id="card-details">
                       <div className="row">
-                        {isActive !== -1 && (
+                        {active >=0 && (
                           <div className="col-lg-3" id="verticalLines">
                             {ledger.map((item, index) => {
                               partyId = JSON.parse(
-                                localStorage.getItem("partyId")
+                                localStorage.getItem("sellPartyId")
                               );
                               if (item.partyId == partyId) {
                                 return (

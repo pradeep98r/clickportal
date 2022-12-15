@@ -35,7 +35,8 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const BuyerLedger = () => {
-  const [openTabs, setOpenTabs] = useState(false);
+  const showTabs=localStorage.getItem("openTabs");
+  const [openTabs, setOpenTabs] = useState(showTabs?true:false);
   const [allData, setallData] = useState([]);
   const [ledger, setLedgeres] = useState(allData);
   const [data, setData] = useState({});
@@ -56,7 +57,9 @@ const BuyerLedger = () => {
 
   const [ledgerSummaryByDate, setSummaryByDate] = useState([]);
   const [detailsByDate, setDetailsByDate] = useState([]);
-  const [isActive, setIsActive] = useState(-1);
+  const active = localStorage.getItem('isActives');
+  const [isActive, setIsActive] = useState(active>=0?active:-1);
+  console.log(active)
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
   const toggleTab = (type) => {
@@ -111,12 +114,14 @@ const BuyerLedger = () => {
     setShowDatepickerModal(true);
   };
 
+ 
   //Get partner By partyId
   const particularLedger = (id, indexs) => {
     console.log(id);
     //getBuyerLedgerSummary(clickId, id);
     setOpenTabs(true);
     setIsActive(indexs);
+    localStorage.setItem('isActives',indexs);
     ledger.filter((item) => {
       if (item.partyId === id) {
         partyId = id;
@@ -201,19 +206,28 @@ const BuyerLedger = () => {
     console.log(selectDate, addRecordData);
     postRecordPayment(addRecordData).then((response) => {
       console.log(response.data.data);
-      setIsOpen(false);
-      window.location.reload();
+      closePopup();
+      localStorage.setItem('openTabs',true);
+      toast.success(response.data.status.message,{
+        toastId: "errorr2",
+      })
+      window.setTimeout(function () {
+        window.location.reload();
+      }, 2000);;
+      setIsOpen(true);
+
+      //setOpenTabs(true);
     },
     (error) => {
       toast.error(error.response.data.status.message, {
-        toastId: "errorr2",
+        toastId: "error3",
       });
     });
-    setOpenTabs(true);
-    // setIsActive(indexs);
-    // navigate("/buyerledger");
-    setIsOpen(false);
-    localStorage.removeItem("partyId");
+    //setOpenTabs(true);
+    
+    //setIsOpen(false);
+    //setIsOpen(true);
+    //localStorage.removeItem("partyId");
   };
   //Fetch Ledger Summary By Date
   const clearData = () => {
@@ -308,6 +322,15 @@ const BuyerLedger = () => {
       setRequiredCondition("");
     }
   }
+  useEffect(()=>{
+    if(active>=0){
+      var id = JSON.parse(
+      localStorage.getItem("partyId"));
+      getBuyerLedgerSummary(clickId, id);
+      fetchBuyerLedgerDetails(clickId, id);
+      getOutstandingPaybles(clickId, id);
+    }
+  },[])
   return (
     <Fragment>
       <div>
@@ -347,7 +370,7 @@ const BuyerLedger = () => {
                                     particularLedger(item.partyId, index);
                                   }}
                                   className={
-                                    isActive === index
+                                    active==index
                                       ? "tabRowSelected"
                                       : "tr-tags"
                                   }
@@ -493,7 +516,7 @@ const BuyerLedger = () => {
                   <div className="card details-tag">
                     <div className="card-body" id="card-details">
                       <div className="row">
-                        {isActive !== -1 && (
+                        {active >=0 && (
                           <div className="col-lg-3" id="verticalLines">
                             {ledger.map((item, index) => {
                               partyId = JSON.parse(
@@ -609,12 +632,6 @@ const BuyerLedger = () => {
                           Detailed Ledger
                         </button>
                       </div>
-                      {/*<hr style={{color:"blue", marginTop:"25px"}}/>
-                              <div className="images">
-                              <img src={pdf} className="pdf"/>
-                              <img src={share} className="share" />
-                              <img src={print} className="print"/>
-                              </div>*/}
                     </div>
                   </div>
                   {toggleAC === "all" && toggleState === "ledgersummary" && (
@@ -627,6 +644,7 @@ const BuyerLedger = () => {
                             : "content"
                         }
                       >
+                        {ledgerSummary.length > 0 ? (
                         <table className="table table-bordered ledger-table">
                           {/*ledger-table*/}
                           <thead className="thead-tag">
@@ -641,8 +659,7 @@ const BuyerLedger = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {ledgerSummary.length > 0 ? (
-                              ledgerSummary.map((item, index) => {
+                              {ledgerSummary.map((item, index) => {
                                 return (
                                   <tr
                                     className="tr-tags"
@@ -690,13 +707,12 @@ const BuyerLedger = () => {
                                   </tr>
                                 );
                               })
-                            ) : (
-                              <p style={{ fontSize: "20px" }}>
-                                No Data Available!
-                              </p>
-                            )}
+                            }
                           </tbody>
                         </table>
+                        ) : (
+                          <NoDataAvailable />
+                        )}
                       </div>
                     </div>
                   )}
@@ -710,6 +726,7 @@ const BuyerLedger = () => {
                             : "content"
                         }
                       >
+                        {details.length > 0 ? (
                         <table
                           className="table table-bordered"
                           id="ledger-sum"
@@ -730,8 +747,8 @@ const BuyerLedger = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {details.length > 0 ? (
-                              details.map((item, index) => {
+                            
+                              {details.map((item, index) => {
                                 return (
                                   <tr className="tr-tags" key={item.partyId}>
                                     <td className="col-1" id="p-common-sno">
@@ -802,13 +819,12 @@ const BuyerLedger = () => {
                                   </tr>
                                 );
                               })
-                            ) : (
-                              <p style={{ fontSize: "20px" }}>
-                                No Data Available!
-                              </p>
-                            )}
+                              }
                           </tbody>
                         </table>
+                        ) : (
+                          <NoDataAvailable />
+                        )}
                       </div>
                     </div>
                   )}
