@@ -203,8 +203,8 @@ input[type=radio].radioBtnsVal{
 .default_card{
   padding: 20px 20px;
 }
-.outline_btn, .primary_btn:hover {
-  font-weight: 600;
+.outline_btn{
+  // font-weight: 600;
 font-size: 16px;
 line-height: 18px;
 }
@@ -214,4 +214,9 @@ line-height: 18px;
 }
 .parnter_pop_up{
   padding-left: 20px;
+}
+.outline_btn_partner:hover{
+  background-color: #16A12C;
+  color: #fff;
+  border: 1px solid transparent;
 }

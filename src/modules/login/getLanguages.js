@@ -44,7 +44,7 @@ const GetLanguages = () => {
         <div className="d-flex">
           {langResponse.map((lang) => (
             <div
-              className="text-center langdiv"
+              className="text-center langdiv landDiv_screen"
               key={lang.langId}
               onClick={() => langOnclick(lang.langId)}
             >
