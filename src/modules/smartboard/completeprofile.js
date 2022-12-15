@@ -797,7 +797,7 @@ const CompleteProfile = (props) => {
                 onClick={closePopup}
               />
             </div>
-            <div className="modal-body  markets_name_modal_mody profileModal" id="scroll_style">
+            <div className="modal-body markets_name_modal_mody profileModal markets_name_modal" id="scroll_style">
               <div className="col-lg-6" id="market-div">
                
                 <SearchField
@@ -892,7 +892,7 @@ const CompleteProfile = (props) => {
            </div>
             </div>
             </div>
-            <div className="modal-body market_name_modal_mody px-0 profileModal" id="scroll_style">
+            <div className="modal-body market_name_modal_mody px-0 markets_name_modal others_name_modal" id="scroll_style">
            <div className="container">
            <div className="row">
               <div className="col-lg-12 p-0" id="market-div">

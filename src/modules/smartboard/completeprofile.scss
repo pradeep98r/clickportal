@@ -61,7 +61,7 @@
     width: 100%;
     margin: auto;
     overflow: auto;
-    max-height: calc(100vh - 290px);
+    max-height: calc(100vh - 300px);
     background: #FFFFFF;
     border: 1px solid #E4E4E4;
     border-radius: 4px;
@@ -132,7 +132,10 @@ input[type=radio]{
   }
 .profileModal{
     .modal-body {
-        height: 600px;
+        height: 640px;
+    }
+    .others_name_modal{
+        height: 580px;
     }
     .modal-footer{
         position: absolute;
@@ -150,3 +153,26 @@ input[type=radio]{
 }
 #mk-name:hover, .marketfrom:hover{
 cursor: pointer;}
+
+@media(min-width:1600px){
+    .market-names{
+        max-height: calc(100vh - 360px);
+    }
+   .profileModal .markets_name_modal{
+        height: 680px;
+    }
+    .profileModal .others_name_modal{
+        height: 625px;
+    }
+}
+@media(max-width:1400px){
+    .market-names{
+        max-height: calc(100vh - 300px);
+    }
+   .profileModal .markets_name_modal{
+        height: 540px;
+    }
+    .profileModal .others_name_modal{
+        height: 480px;
+    }
+}
