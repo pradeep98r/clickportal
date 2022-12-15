@@ -424,8 +424,6 @@ const BuyerLedger = () => {
                   id="tabsEvents"
                   style={{ display: openTabs ? "block" : "none" }}
                 >
-                  <div style={{ position:"relative" }}>
-
                   <div className="recordbtn-style">
                     <button
                       className="add-record-btns"
@@ -446,8 +444,7 @@ const BuyerLedger = () => {
                   </div>
                   <div className="blockers-tab">
                     <div className="d-flex">
-                     <div>
-                        <button
+                      <button
                         className={
                           toggleAC === "all" ? "tabers active-tab" : "tabers"
                         }
@@ -463,7 +460,6 @@ const BuyerLedger = () => {
                       >
                         Custom
                       </button>
-                     </div>
                       <div
                         className="dateRangePicker"
                         style={{ display: dateDisplay ? "flex" : "none" }}
@@ -481,7 +477,6 @@ const BuyerLedger = () => {
                       </div>
                     </div>
                     <div id="horizontal-lines-tag"></div>
-                  </div>
                   </div>
 
                   <div className="card details-tag">
