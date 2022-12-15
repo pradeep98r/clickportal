@@ -16,7 +16,8 @@ import markets from "../../assets/images/mandi.svg";
 import { Fragment } from "react";
 import SearchField from "../../components/searchField";
 import NoDataAvailable from "../../components/noDataAvailable";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -276,7 +277,9 @@ const CompleteProfile = (props) => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(response, "update partner");
-            toastr.success("Mandi Details Updated Successfully");
+            toast.success("Mandi Details Updated Successfully", {
+              toastId: "success",
+            });
             localStorage.setItem("submitStatus", true);
             props.close();
             window.setTimeout(function () {
@@ -948,6 +951,7 @@ const CompleteProfile = (props) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </Modal>
   );
 };

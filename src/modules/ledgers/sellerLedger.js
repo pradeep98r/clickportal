@@ -332,6 +332,14 @@ const SellerLedger = () => {
       setLedgersData(ledger);
     }
   };
+  const getAmountValue = (e) =>{
+    setPaidsRcvd(
+      e.target.value.replace(/[^\d]/g, "")
+    );
+    if(e.target.value.length > 0){
+      setRequiredCondition("");
+    }
+  }
   const closePopup = () => {
     setPaidsRcvd(0);
     setRequiredCondition('');
@@ -354,11 +362,7 @@ const SellerLedger = () => {
     });
     setLedgeres(result);
   };
- const getAmountValue = (e) =>{
-   var val = (e.target.value).replace(/\D/g, "");
-   console.log(val,e.target.value)
-  setPaidsRcvd(val);
- }
+
  useEffect(()=>{
   if(active>=0){
     console.log("came");
