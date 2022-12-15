@@ -15,7 +15,7 @@ import {
 } from "../../actions/billCreationService";
 import { useEffect } from "react";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import no_data from "../../assets/images/no_data_available.png";
+import no_data from "../../assets/images/NodataAvailable.svg";
 import add from "../../assets/images/add.svg";
 import close_btn from "../../assets/images/close_btn.svg";
 import date_icon from "../../assets/images/date_icon.svg";
@@ -328,6 +328,10 @@ const SellerLedger = () => {
   };
   const closePopup = () => {
     setPaidsRcvd(0);
+    setRequiredCondition('');
+    setPaymentMode("CASH");
+    setComments('');
+    setSelectDate(new Date());
     $("#myModal").modal("hide");
   };
   const handleSearch = (event) => {
@@ -478,7 +482,7 @@ const SellerLedger = () => {
                   id="tabsEvents"
                   style={{ display: openTabs ? "block" : "none" }}
                 >
-                  <div style={{ position:"relative" }}>
+                  <div>
                   <div className="recordbtn-style">
                     <button
                       className="add-record-btns"
@@ -674,7 +678,7 @@ const SellerLedger = () => {
                                 #
                               </th>
                               <th className="col-2">
-                                {langFullData.refId} | {langFullData.date}
+                                Ref ID | {langFullData.date}
                               </th>
                               <th className="col-3">
                                 {langFullData.paid}(&#8377;)
@@ -770,7 +774,7 @@ const SellerLedger = () => {
                                 #
                               </th>
                               <th className="col-2">
-                                {langFullData.refId} | {langFullData.date}
+                                Ref ID | {langFullData.date}
                               </th>
                               <th className="col-3">
                                 <p>{langFullData.item}</p>
@@ -972,7 +976,7 @@ const SellerLedger = () => {
                                   #
                                 </th>
                                 <th className="col-2">
-                                  {langFullData.refId} | {langFullData.date}
+                                  Ref ID | {langFullData.date}
                                 </th>
                                 <th className="col-3">
                                   <p>{langFullData.item}</p>
@@ -1190,7 +1194,7 @@ const SellerLedger = () => {
                               </p>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio1"
@@ -1213,7 +1217,7 @@ const SellerLedger = () => {
                                 id="radio-btn-in_modal"
                               >
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio2"
@@ -1233,7 +1237,7 @@ const SellerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio3"
@@ -1253,7 +1257,7 @@ const SellerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio4"
@@ -1273,7 +1277,7 @@ const SellerLedger = () => {
                               </div>
                               <div className="form-check form-check-inline">
                                 <input
-                                  className="form-check-input"
+                                  className="form-check-input radioBtnVal mb-0"
                                   type="radio"
                                   name="radio"
                                   id="inlineRadio5"

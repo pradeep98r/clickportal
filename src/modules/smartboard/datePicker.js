@@ -189,11 +189,11 @@ function DatePickerModel(props) {
                     <p className="flex_class">
                       <input type="radio" id="tab1" name="tab" value="Daily"
                       onChange={(e)=>{setDateTabs(e.target.value)}}
-                      checked={dateTabs === 'Daily'}  />
+                      checked={dateTabs === 'Daily'} className="radioBtnVal m-0 mr-1" />
                       <label htmlFor="tab1">Daily</label>
                     </p>
                     <div className="flex_class">
-                      <input type="radio" id="tab4" name="tab" value={"Weekly"}
+                      <input type="radio" className="radioBtnVal m-0 mr-1" id="tab4" name="tab" value={"Weekly"}
                       onChange={(e)=>{setDateTabs(e.target.value)}}
                       checked={dateTabs === 'Weekly'} />
                       <label htmlFor="tab4">Weekly</label>
@@ -201,6 +201,7 @@ function DatePickerModel(props) {
                     <div className="flex_class">
                       <input type="radio" id="tab2" name="tab" value={"Monthly"}
                       onChange={(e)=>{setDateTabs(e.target.value)}}
+                      className="radioBtnVal m-0 mr-1"
                       checked={dateTabs === 'Monthly'} />
                       <label htmlFor="tab2">Monthly</label>
                     </div>
@@ -208,6 +209,7 @@ function DatePickerModel(props) {
                       {" "}
                       <input type="radio" id="tab3" name="tab" value={"Yearly"}
                       onChange={(e)=>{setDateTabs(e.target.value)}}
+                      className="radioBtnVal m-0 mr-1"
                       checked={dateTabs === 'Yearly'} />
                       <label htmlFor="tab3">Yearly</label>
                     </div>
@@ -215,6 +217,7 @@ function DatePickerModel(props) {
                     <div className="flex_class">
                       <input type="radio" id="tab5" name="tab" value={"Custom"}
                       onChange={(e)=>{setDateTabs(e.target.value)}} 
+                      className="radioBtnVal m-0 mr-1"
                       checked={dateTabs === 'Custom'} />
                       <label htmlFor="tab5">Custom</label>
                     </div>
@@ -265,8 +268,11 @@ function DatePickerModel(props) {
                   </article>
                  
                   <article className="custom_picker" style={{display:dateTabs==='Custom'?'block':'none'}}>
-                    <div className="flex_class custom_input_div">
-                      <img className="date_icon_in_modal"
+                    <div className="flex_class justify-content-between custom_input_div">
+                      <div>
+                      <p>From</p>
+                     <div className="d-flex">
+                     <img className=""
                         src={date_icon}
                       />
                       <DatePicker
@@ -275,8 +281,16 @@ function DatePickerModel(props) {
                         popperClassName="d-none"
                         dateFormat="yyyy-MM-dd"
                         placeholderText="Select from date"
+                        onKeyDown={(e) => {
+                          e.preventDefault();
+                        }}
                       />
-                      <img className="date_icon_in_modal"
+                     </div>
+                      </div>
+                    <div>
+                    <p>To</p>
+                    <div className="d-flex">
+                    <img className=""
                         src={date_icon}
                       />
                       <DatePicker
@@ -285,7 +299,12 @@ function DatePickerModel(props) {
                         popperClassName="d-none"
                         dateFormat="yyyy-MM-dd"
                         placeholderText="Select to date"
+                        onKeyDown={(e) => {
+                          e.preventDefault();
+                        }}
                       />
+                    </div>
+                    </div>
                     </div>
 
                     <DatePicker

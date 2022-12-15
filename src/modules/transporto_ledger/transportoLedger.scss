@@ -190,7 +190,7 @@ input[type=radio]:checked+label {
     height: 20px;
     margin-left: 860px;
     margin-top:-30px;
-    background:green;
+    background:#16A02C;
     border-radius: 100%;
 }
 .transporter_modal{
@@ -271,13 +271,13 @@ input[type=radio]:checked+label {
     color: #121212;
 }
 #details-tag{
-    width: 540px;
-    height: 80px;
+    // width: 540px;
+    // height: 80px;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    left: 100px;
-    margin: auto;
+    // left: 100px;
+    // margin: auto;
 }
 .react-datepicker-popper{
 }
@@ -304,8 +304,8 @@ input[type=radio]:checked+label {
 }
 #out-paybles{
     margin: auto;
-    padding-top: 10px;
-    padding-left: 40px;
+    // padding-top: 10px;
+    // padding-left: 40px;
 }
 .react-datepicker__input-container input{
     border: none;
@@ -328,8 +328,8 @@ input[type=radio]:checked+label {
     width: 100%;
 }
 #input_in_modal{
-    margin: auto;
-    padding-left: 40px;
+    // margin: auto;
+    // padding-left: 40px;
     //padding-top: 10px;
 }
 #amt-tag{
@@ -340,14 +340,14 @@ input[type=radio]:checked+label {
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    width: 540px;
+    width: 100%;
     padding: 10px;
 }
 #comments{
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    width: 540px;
+    width: 100%;
     padding-top: 5px;
 }
 #submit_btn_in_modal{
@@ -388,9 +388,9 @@ input[type=radio]:checked+label {
     justify-content: center;
 }
 #radios_in_modal{
-    margin: auto;
+    // margin: auto;
     //padding-top: 10px;
-    padding-left: 40px;
+    // padding-left: 40px;
 }
 .payments-tag{
     padding-top: 5px;
@@ -399,9 +399,9 @@ input[type=radio]:checked+label {
     color: #1C1C1C;
 }
 #comment_in_modal{
-    margin: auto;
-    padding-left: 40px;
-    padding-top: 10px;
+    // margin: auto;
+    // padding-left: 40px;
+    // padding-top: 10px;
 }
 #comment-tag{
     font-weight: 500;
@@ -463,8 +463,8 @@ input[type=radio]:checked+label {
     background: none;
 } 
 .active-tabs  {
-    color: green;
-    border-bottom: 2px solid green;
+    color:#16A02C;
+    border-bottom: 2px solid #16A02C;
     
 }
 .bloc-tabs{
@@ -499,8 +499,8 @@ input[type=radio]:checked+label {
     border: none;
 } 
 .active-tab  {
-    color: green;
-    border-bottom: 3px solid green;
+    color: #16A02C;
+    border-bottom: 3px solid #16A02C;
 }
 .active-tab::before {
     content: "";
@@ -610,4 +610,17 @@ input[type=radio]:checked+label {
 }
 #cbbk-tag{
     padding-left: 40px;
+}
+#out-paybles, #input_in_modal, #radios_in_modal, #comment_in_modal, #details-tag{
+    margin-bottom: 20px;
+}
+#radios_in_modal .form-check{
+    margin-right: 30px;
+}
+#amt-tag, .payment-tag, #comment-tag{
+padding-top: 0px;
+margin-bottom: 2px;
+}
+.payment-tag{
+    margin-bottom: 10px;
 }
