@@ -551,11 +551,22 @@ const Step3Modal = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
-    //step2CropEditStatus=true;
+    console.log('edit')
+    step2buyCropTableOnclick(cropEditArray);
+    props.closeStep3Modal();
+  };
+  const closeCropTable = (cropEditArray) =>{
+    step2buyCropTableOnclick(cropEditArray);
+    props.closeStep3Modal();
+    console.log('cancel')
+  }
+  const step2buyCropTableOnclick = (cropEditArray) =>{
+     //step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
-  };
+    console.log("step2")
+  }
   return (
     <Modal
       show={props.show}
@@ -566,7 +577,7 @@ const Step3Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Additions/Deductions
         </h5>
-        <img alt="image" src={clo} onClick={props.closeStep3Modal} />
+        <img alt="image" src={clo} onClick={() => closeCropTable(billEditItem.lineItems)}/>
       </div>
 
       <div className="modal-body">
@@ -1088,7 +1099,7 @@ const Step3Modal = (props) => {
           slectedCropstableArray={props.slectedCropsArray}
         />
       ) : (
-        ""
+        "hh"
       )}
     </Modal>
   );

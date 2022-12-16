@@ -50,14 +50,19 @@ const SelectPartner = (props) => {
   const partySelect = (item) => {
     setGetPartyItem(item);
     setGetPartyName(false);
-    props.parentCallback(item);
+    var itemtype;
     if (props.partyType == "Seller") {
+      localStorage.setItem('selectPartytype','seller');
+      itemtype=localStorage.getItem('selectPartytype');
       localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
     } else if (props.partyType == "Buyer") {
+      localStorage.setItem('selectBuyertype','buyer');
+      itemtype=localStorage.getItem('selectBuyertype');
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
+    props.parentCallback(item,itemtype,props.partyType);
   };
   useEffect(() => {
     console.log("click")

@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import close from "../../assets/images/close.svg";
 import "../../modules/buy_bill_book/step2.scss";
 import SearchField from "../../components/searchField";
+import NoDataAvailable from "../../components/noDataAvailable";
+import tickMark from "../../assets/images/tick_mark.svg"
 const SelectCrop = (props) => {
-  let [allCropsData, allCropResponseData] = useState([]);
+  const [allData, setAllData] = useState([]);
+  let [allCropsData, allCropResponseData] = useState(allData);
   const [cropItem, setSelectCrop] = useState("");
   const [selected, setSelected] = useState([]);
   const langData = localStorage.getItem("languageData");
@@ -13,12 +16,13 @@ const SelectCrop = (props) => {
 
   useEffect(() => {
     fetchCropData();
-  }, []);
+  }, [props.show]);
   const fetchCropData = () => {
     getAllCrops().then((response) => {
       response.data.data.map(item=>{
         Object.assign(item,{cropSelect:""});
       })
+      setAllData(response.data.data);
       allCropResponseData(response.data.data);
     });
   };
@@ -55,31 +59,21 @@ const SelectCrop = (props) => {
       })
       setSelected([]);
     }
+    setSearchValue('');
   }
-  const [searchCropItem, setSearchCropItem] = useState("");
-  let [allCropData, setAllCropData] = useState([]);
-  const [valueActive, setIsValueActive] = useState(false);
-  const searchInput = (searchValue) =>{
-    setSearchCropItem(searchValue);
-    console.log(searchValue)
-    if (searchCropItem !== ""){
-      const filterdNames = allCropsData.filter(item=>{
-        if(item.cropName.toLowerCase().includes(searchValue.toLowerCase())){
-          return item.cropName.toLowerCase().includes(searchValue.toLowerCase());
-        }
-        else if (searchCropItem == "" || searchValue === "") {
-          return setIsValueActive(false);
-        } else {
-          return setIsValueActive(true);
-        }
-      })
-      console.log(filterdNames)
-      setAllCropData(filterdNames)
-    }
-    else{
-      setAllCropData(allCropsData)
-    }
-  }
+
+  const [searchValue, setSearchValue] = useState("");
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.cropName.toLowerCase().includes(value)) {
+        return data.cropName.toLowerCase().search(value) != -1;
+      } 
+    });
+    allCropResponseData(result);
+    setSearchValue(value);
+  };
   return (
     <Modal
       show={props.show}
@@ -104,37 +98,15 @@ const SelectCrop = (props) => {
                       handleSearch(event);
                     }}
                   />
-          {/* <input
-            className="form-control search"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            onChange={(event) => searchInput(event.target.value)}
-          /> */}
+         
         </div>
       </div>
       <div className="modal-body crop_modal_body" id="scroll_style">
           <div className="d-flex flex_width">
-            {searchCropItem.length>1?
-            allCropData
-            .map((crop_item, index) => {
-                return(
-                <div className="col-lg-2">
-                  <div
-                    className={`text-center crop_div mr-0 crop ${
-                      selected.includes(crop_item) && crop_item.cropSelect==="active" ? "active" : ""
-                    }`}
-                    key={index}
-                    onClick={() => addCropOnclick(crop_item)}
-                  >
-                    <img
-                      src={crop_item.imageUrl}
-                      className="flex_class mx-auto"
-                    />
-                    <p className="p-0">{(crop_item.cropName)}</p>
-                  </div>
-                </div>
-            )}):(allCropsData
+            {
+            allCropsData.length > 0
+          ?  (
+              allCropsData
               .map((crop_item, index) => {
                   return(
                   <div className="col-lg-2">
@@ -145,9 +117,12 @@ const SelectCrop = (props) => {
                       key={index}
                       onClick={() => addCropOnclick(crop_item)}
                     >
+                      { selected.includes(crop_item) && crop_item.cropSelect==="active" ?
+                      <img src={tickMark} alt="image" className="crop_tick"/>
+                      : ''}
                       <img
                         src={crop_item.imageUrl}
-                        className="flex_class mx-auto"
+                        className="flex_class mx-auto cropImg"
                       />
                       <p className="p-0">
                         {crop_item.cropName}
@@ -155,10 +130,11 @@ const SelectCrop = (props) => {
                     </div>
                   </div>
               )}))
+              : <div className="d-flex mx-auto"><NoDataAvailable /></div>
           }
           </div>
       </div>
-      <div className="modal-footer">
+      <div className="modal-footer crop_footer">
         <button type="button" className="secondary_btn" onClick={props.close}>
           Cancel
         </button>

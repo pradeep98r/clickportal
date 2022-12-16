@@ -494,11 +494,19 @@ const SellbillStep3Modal = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
+    step2CropTableOnclick(cropEditArray);
+    props.closeStep3Modal();
+  };
+  const step2Cancel = (cropEditArray) => {
+    step2CropTableOnclick(cropEditArray);
+    props.closeStep3Modal();
+  };
+  const step2CropTableOnclick = (cropEditArray) =>{
     step2CropEditStatus = true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
-  };
+  }
   return (
     <Modal
       show={props.show}
@@ -509,7 +517,7 @@ const SellbillStep3Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Additions/Deductions
         </h5>
-        <img alt="image" src={clo} onClick={props.closeStep3Modal} />
+        <img alt="image" src={clo} onClick={() => step2Cancel(billEditItem.lineItems)} />
       </div>
 
       <div className="modal-body">
@@ -1075,7 +1083,7 @@ const SellbillStep3Modal = (props) => {
       {showCropModalStatus ? (
         <SellbillStep2Modal
           show={showCropModal}
-          closeCropModal={() => setShowCropModal(false)}
+          closeStep2CropModal={() => setShowCropModal(false)}
           cropTableEditStatus={true}
           cropEditObject={cropEditvalArray}
           billEditStatus={editStatus?true:false}

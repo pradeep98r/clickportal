@@ -14,7 +14,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import SelectBags from "./bags";
-import { invalid } from "moment";
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -30,6 +29,7 @@ const Step2Modal = (props) => {
   const [cropItemVal, setCropItemVal] = useState({});
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     setCropItemVal(crop);
+    console.log(index2,preferedCrops,"crroponclick")
     setCropId(id);
     Object.assign(
       preferedCrops[index2],
@@ -94,6 +94,7 @@ const Step2Modal = (props) => {
     var lineIt;
     if (props.cropTableEditStatus) {
       if (props.billEditStatus) {
+        console.log(props.cropEditObject,"crops")
         cropResponseData([...props.cropEditObject]);
       } else {
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
@@ -424,6 +425,7 @@ const Step2Modal = (props) => {
         return { ...cropitem[i] };
       }
     });
+    console.log(updatedItem3)
     cropResponseData([...updatedItem3]);
     setrateValue(val);
     setCropId(id);
@@ -444,6 +446,7 @@ const Step2Modal = (props) => {
   };
 
   var dummyList = [];
+  var arrylist = [];
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
@@ -467,15 +470,22 @@ const Step2Modal = (props) => {
                     return null;
                   }
                 });
-               console.log(updatedarr,list,"update arr");
-               for(var k=0; k<updatedarr.length; k++){
-                 if(updatedarr[k]==null){
-                  list.splice(index1, k);
-                   console.log('newcrop remove',index1,list)
-                 }
-                 else{
-                  console.log('samecrop ');
-                  return list;
+                for(var k=0; k<updatedarr.length; k++){
+                  if(updatedarr[k]!=null){
+                    arrylist.push(updatedarr[k]);
+                  }
+                }
+               console.log(updatedarr,arrylist,"update arr");
+               for(var k=0; k<list.length; k++){
+                 for(var t=0; t<arrylist.length; t++){
+                  if(list[k].cropId==arrylist[t].cropId){
+                    list.splice(index1, t);
+                     console.log('newcrop remove',index1)
+                   }
+                   else{
+                    console.log('samecrop ');
+                    // return list;
+                   }
                  }
                }
                console.log(list)
@@ -580,7 +590,7 @@ const Step2Modal = (props) => {
                       ? ""
                       : preferedCropsData[index].count}
                   </div>
-                  <img src={crop.imageUrl} className="flex_class mx-auto " />
+                  <img src={crop.imageUrl} className="flex_class cropImg mx-auto " />
                   <p>{crop.cropName}</p>
                 </div>
               ))}
@@ -618,7 +628,7 @@ const Step2Modal = (props) => {
                                     No of Units({cropData[index].qtyUnit})
                                   </th>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
+                                    (cropData[index].rateType == 'RATE_PER_UNIT' ? cropData[index].qtyUnit.toLowerCase() : cropData[index].rateType) ? (
                                     <th>
                                       Total Weight(
                                       {cropData[index].qtyUnit.toLowerCase() !=
@@ -722,7 +732,7 @@ const Step2Modal = (props) => {
                                     />
                                   </td>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
+                                   (cropData[index].rateType == 'RATE_PER_UNIT' ? cropData[index].qtyUnit.toLowerCase() : cropData[index].rateType) ? (
                                     <td className="col-2">
                                       <input
                                         type="text"
