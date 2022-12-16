@@ -122,6 +122,7 @@ function DatePickerModel(props) {
       lastDate = firstDate;
       props.parentCallback(firstDate,lastDate,dateTabs);
       props.close();
+      console.log(firstDate,lastDate);
     }else if (dateTabs == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
@@ -153,6 +154,7 @@ function DatePickerModel(props) {
       lastDate = moment(endDate).format("YYYY-MM-DD");
       props.parentCallback(firstDate, lastDate,dateTabs);
       props.close();
+      console.log(firstDate,lastDate);
     }
   }
 

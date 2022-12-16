@@ -1056,7 +1056,7 @@ const BillView = (props) => {
                           )}
                         </div>
                         <div className="col-lg-4">
-                          <p className="grouping_value">
+                          <p className="grouping_value color_red">
                             {singleBillData.cashPaid === 0 ||
                             singleBillData.cashPaid === null
                               ? " "
@@ -1079,7 +1079,7 @@ const BillView = (props) => {
                         </div>
                         <div className="col-lg-4">
                           <p
-                            className="grouping_value"
+                            className="grouping_value color_red"
                             style={{ display: status ? "block" : "none" }}
                           >
                             {singleBillData?.outStBal.toLocaleString("en-IN", {
@@ -1152,7 +1152,7 @@ const BillView = (props) => {
                   </div>
                   <div className="col-lg-2">
                     <span
-                      className="out-value"
+                      className="out-value color_red"
                       style={{ display: status ? "block" : "none" }}
                     >
                       {getFinalLedgerbalance()}

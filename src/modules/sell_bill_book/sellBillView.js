@@ -556,7 +556,7 @@ const SellBillView = () => {
                     </div>
                     <div className="billid_date_bg">
                       <p className="small_text text-center">
-                        {singleBillData.billDate}
+                        {moment(singleBillData.billDate).format("DD-MMM-YY")}
                       </p>
                     </div>
                   </div>
@@ -1093,7 +1093,7 @@ const SellBillView = () => {
                         </div>
                         <div className="col-lg-4">
                           <p
-                            className="grouping_value"
+                            className="grouping_value color_green"
                             style={{ display: status ? "block" : "none" }}
                           >
                             {(singleBillData?.outStBal).toLocaleString(
@@ -1187,7 +1187,7 @@ const SellBillView = () => {
                     </div>
                     <div className="col-lg-2">
                       <span
-                        className="out-value"
+                        className="out-value color_green"
                         style={{ display: status ? "block" : "none" }}
                       >
                         {getFinalLedgerbalance()}

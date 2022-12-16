@@ -95,7 +95,7 @@ const SellerLedger = () => {
     fetchSellerLedger();
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
-  });
+  },[]);
 
   var [dateValue, setDateValue] = useState();
 
