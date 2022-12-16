@@ -274,13 +274,9 @@ input[type=radio]:label {
     color: #121212;
 }
 #details-tag{
-    // width: 540px;
-    // height: 80px;
     background: #FFFFFF;
     border: 1px solid #CCCCCC;
     border-radius: 10px;
-    // left: 100px;
-    // margin: auto;
 }
 .react-datepicker-popper{
 }
@@ -289,9 +285,7 @@ input[type=radio]:label {
     width: 35px;
     height: 35px;
     padding: 5px 5px;
-    //position: relative;
-    //top: -85px;
-    //left: 330px;
+
 }
 .date_popper react-datepicker-wrapper{
     padding-left: 100px;
@@ -307,8 +301,6 @@ input[type=radio]:label {
 }
 #out-paybles{
     margin: auto;
-    // padding-top: 10px;
-    // padding-left: 40px;
 }
 .react-datepicker__input-container input{
     border: none;
@@ -317,24 +309,18 @@ input[type=radio]:label {
     font-weight: 500;
     font-size: 13px;
 }
-#horizontal-line-tag{
-    position: absolute;
-    border-bottom:1px solid #E4E4E4;
-    top: 82px;
-}
+// #horizontal-line-tag{
+//     position: absolute;
+//     border-bottom:1px solid #E4E4E4;
+//     top: 82px;
+// }
 #horizontal-line-card{
-    position: relative;
-    top: -10px;
-    padding-bottom: 10px;
-    border-bottom:1px solid#E4E4E4;
-    display: flex;
-    width: 100%;
+        margin: 10px 0px;
+        border-bottom: 1px solid #E4E4E4;
+        display: flex;
+        width: 100%;
 }
-#input_in_modal{
-    // margin: auto;
-    // padding-left: 40px;
-    //padding-top: 10px;
-}
+
 #amt-tag{
     font-weight: 500;
     font-size: 13px;
@@ -397,6 +383,7 @@ input[type=radio]:label {
 }
 .payments-tag{
     padding-top: 0px;
+    margin-bottom: 10px;
     font-weight: 500;
     font-size: 13px;
     color: #1C1C1C;
@@ -416,13 +403,15 @@ input[type=radio]:label {
     font-size: 13px;
     padding: 0px 10px;
     color: black;
+    cursor: pointer;
 }
 .select-tag{
     font-weight: 500;
     font-size: 13px;
-    padding-top: 5px;
+    margin-bottom: 10px;
 }
 #comments-tag{
+    margin-top: 10px;
     font-weight: 500;
     font-size: 13px;
     color: #1C1C1C;
@@ -602,6 +591,11 @@ input[type=radio]:label {
     margin-right: 10px;
     border-radius: 100%;
 }
+.singles-img{
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+}
 .addres-tag{
     font-weight: 500;
     font-size: 11px;
@@ -613,10 +607,10 @@ input[type=radio]:label {
     color:#121212;
 }
 #cbbk-tag{
-    padding-left: 40px;
+    padding-bottom: 10px;
 }
 #out-paybles, #input_in_modal, #radios_in_modal, #comment_in_modal, #details-tag{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 #radios_in_modal .form-check{
     margin-right: 30px;
@@ -633,4 +627,5 @@ input[type=radio].radioBtnValues{
     -ms-transform: scale(1.2); /* IE 9 */
     -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
     transform: scale(1.2);
+    cursor: pointer;
 }
