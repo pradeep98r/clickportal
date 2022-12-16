@@ -31,13 +31,16 @@ import {
   getCurrencyNumberWithOneDigit,
   getCurrencyNumberWithSymbol
 } from "../../components/getCurrencyNumber";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const TransportoLedger = () => {
 
   const [transporter, setTransporter] = useState([{}]);
   const [data, setData] = useState({}, transporter);
   const [search, setSearch] = useState("");
   const [error, setError] = useState();
-  const [openTabs, setOpenTabs] = useState(false);
+  const showTabs = localStorage.getItem('openTransTabs');
+  const [openTabs, setOpenTabs] = useState(showTabs?showTabs:false);
 
   const [ledgerSummary, setLedgerSummary] = useState([{}]);
   const [payLedger, setPayLedger] = useState({}, ledgerSummary);
@@ -57,7 +60,8 @@ const TransportoLedger = () => {
   const [unit, setUnit] = useState("CRATES");
   const [qty, setQty] = useState(0);
   const [openInventory, setOpenInventory] = useState(false);
-  const [isActive, setIsActive] = useState(-1);
+  const active = localStorage.getItem('isTransActive');
+  const [isActive, setIsActive] = useState(active>=0?active:-1);
   const [getInventor, setGetInventory] = useState([]);
   const navigate = useNavigate();
 
@@ -128,6 +132,7 @@ const TransportoLedger = () => {
     transId = id;
     setOpenTabs(true);
     setIsActive(indexs);
+    localStorage.setItem('isTransActive',indexs);
     //getTransportersData(clickId, id);
     transporter.filter((item) => {
       if (item.partyId === id) {
@@ -142,6 +147,7 @@ const TransportoLedger = () => {
       }
     });
   };
+
   // Convert standard date time to normal date
   function convert(str) {
     var date = new Date(str),
@@ -174,27 +180,45 @@ const TransportoLedger = () => {
       addRecordPayment();
     }
   };
+  const getAmountVal = (e) =>{
+    setPaidsRcvd(
+      e.target.value.replace(/[^\d]/g, "")
+    );
+    if(e.target.value.length > 0){
+      setRequiredCondition("");
+    }
+  }
   const addRecordPayment = () => {
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("transId")),
       date: convert(selectDate),
       comments: comments,
-      paidRcvd: paidRcvd,
+      paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
     };
     postRecordPayment(addRecordData)
       .then((response) => {
         console.log(response.data.data);
         setOpenTabs(true);
-        window.location.reload();
+        localStorage.setItem('openTransTabs',true);
+        toast.success(response.data.status.message,{
+          toastId: "errorr2",
+        })
+        closePopup();
+        window.setTimeout(function () {
+          window.location.reload();
+        }, 2000);;
       })
       .catch((error) => {
+        toast.error(error.response.data.status.message, {
+          toastId: "error3",
+        });
         console.log(error);
       });
-    navigate("/transportoledger");
-    localStorage.removeItem("partyId");
-    setIsOpen(false);
+    // navigate("/transportoledger");
+    // localStorage.removeItem("partyId");
+    // setIsOpen(false);
   };
 
   const onSubmitRecordInventory = () => {
@@ -226,17 +250,25 @@ const TransportoLedger = () => {
     addRecordInventory(inventoryRequest)
       .then((response) => {
         console.log(response.data.data);
-        window.location.reload();
-
+        toast.success(response.data.status.message,{
+          toastId: "errorr2",
+        })
+        closePopup();
+        window.setTimeout(function () {
+          window.location.reload();
+        }, 2000);;
       })
       .catch((error) => {
         setError(error);
+        toast.error(error.response.data.status.message, {
+          toastId: "error3",
+        });
         console.log(error.message);
       });
-      setOpenTabs(true);
-    navigate("/transportoledger");
-    setOpenInventory(false);
-    localStorage.removeItem("transId");
+    //   setOpenTabs(true);
+    // navigate("/transportoledger");
+    // setOpenInventory(false);
+    // localStorage.removeItem("transId");
   };
 
   //get Inventory
@@ -318,6 +350,16 @@ const TransportoLedger = () => {
       }
     }
   }
+  useEffect(()=>{
+    if(active>=0){
+      var id=localStorage.getItem('transId');
+      paymentLedger(clickId, id);
+      inventoryLedger(clickId, id);
+      getOutstandingPaybles(clickId,id);
+      getInventoryRecord();
+    }
+   
+  },[])
   return (
     <Fragment>
       <div className="main_div_padding">
@@ -327,7 +369,7 @@ const TransportoLedger = () => {
            <div id="search-field">
            <SearchField placeholder={langFullData.searchByNameShortCode} onChange={(e) => {
                       searchInput(e.target.value);
-                    }} />
+            }} />
             
            </div>
            <div className="table-scroll" id="scroll_style">
@@ -350,7 +392,7 @@ const TransportoLedger = () => {
                                particularLedger(item.partyId, index);
                              }}
                              className={
-                               isActive === index
+                               active == index
                                  ? "tableRowActive"
                                  : "tr-tags"
                              }
@@ -412,7 +454,7 @@ const TransportoLedger = () => {
                                particularLedger(item.partyId, index);
                              }}
                              className={
-                               isActive === index
+                               active == index
                                  ? "tableRowActive"
                                  : "tr-tags"
                              }
@@ -492,10 +534,10 @@ const TransportoLedger = () => {
              id="tabsEvents"
              style={{ display: openTabs ? "block" : "none" }}
            >
-             {isActive !== -1 && (
                <div className="card details-tag">
                  <div className="card-body" id="card-details">
                    <div className="row">
+                   {active >=0 && (
                      <div className="col-lg-3" id="verticalLines">
                        {transporter.map((item, index) => {
                          transId = JSON.parse(localStorage.getItem("transId"));
@@ -550,6 +592,7 @@ const TransportoLedger = () => {
                          }
                        })}
                      </div>
+                   )}
                      {toggleState === "paymentledger" &&(
                       <>
                      <div className="col-lg-3" id="verticalLines">
@@ -611,7 +654,7 @@ const TransportoLedger = () => {
                              ? invLedger.totalCollected.map(item=>{
                                 return item.qty+" "+getCropUnit(item.unit);
                              })
-                             : ''}
+                             : 0}
                          </p>{" "}
                        </p>
                      </div>
@@ -621,7 +664,7 @@ const TransportoLedger = () => {
                          <p className="coloring color_black">
                            {invLedger.balance?invLedger.balance.map(item=>{
                               return item.qty+" "+getCropUnit(item.unit);
-                            }):''
+                            }):0
                           }
                            {/* {payLedger.totalOutStandingBalance
                              ? getCurrencyNumberWithSymbol(payLedger.totalOutStandingBalance)
@@ -676,7 +719,7 @@ const TransportoLedger = () => {
                    </div>
                  </div>
                </div>
-             )}
+             
              {toggleState === "paymentledger" && (
                <div className="modal fade" id="myModal">
                  <div className="modal-dialog transporter_modal modal-dialog-centered">
@@ -784,9 +827,10 @@ const TransportoLedger = () => {
                            <input
                              className="form-cont"
                              id="amtRecieved"
+                             value={paidsRcvd}
                              required
                              onChange={(e) => {
-                               setPaidsRcvd(e.target.value);
+                              getAmountVal(e)
                              }}
                            />
                            <p className="text-valid">{requiredCondition}</p>
@@ -795,7 +839,7 @@ const TransportoLedger = () => {
                            <p className="payments-tag">{langFullData.paymentMode}</p>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio1"
@@ -816,7 +860,7 @@ const TransportoLedger = () => {
                              id="radio-btn-in_modal"
                            >
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio2"
@@ -826,7 +870,7 @@ const TransportoLedger = () => {
                                required
                              />
                              <label
-                               className="form-check-label"
+                               className="form-check-label radioBtnValues"
                                for="inlineRadio2"
                              >
                                {langFullData.upi}
@@ -834,7 +878,7 @@ const TransportoLedger = () => {
                            </div>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio3"
@@ -852,7 +896,7 @@ const TransportoLedger = () => {
                            </div>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-inpu radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio4"
@@ -870,7 +914,7 @@ const TransportoLedger = () => {
                            </div>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio5"
@@ -965,8 +1009,8 @@ const TransportoLedger = () => {
                                </td>
                                <td className="col-3">
                                  <p id="p-common">
-                                   {item.paidRcvd
-                                     ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
+                                   {item.paid
+                                     ? getCurrencyNumberWithOutSymbol(item.paid)
                                      : ''}
                                  </p>
                                </td>
@@ -1250,7 +1294,7 @@ const TransportoLedger = () => {
 
                                <div className="form-check form-check-inline">
                                  <input
-                                   className="form-check-input"
+                                   className="form-check-input radioBtnValues"
                                    type="radio"
                                    name="radio"
                                    id="inlineRadio1"
@@ -1269,7 +1313,7 @@ const TransportoLedger = () => {
                                </div>
                                <div className="form-check form-check-inline">
                                  <input
-                                   className="form-check-input"
+                                   className="form-check-input radioBtnValues"
                                    type="radio"
                                    name="radio"
                                    id="inlineRadio2"
@@ -1287,7 +1331,7 @@ const TransportoLedger = () => {
                                </div>
                                <div className="form-check form-check-inline">
                                  <input
-                                   className="form-check-input"
+                                   className="form-check-input radioBtnValues"
                                    type="radio"
                                    name="radio"
                                    id="inlineRadio3"
@@ -1303,9 +1347,9 @@ const TransportoLedger = () => {
                                    {langFullData.boxes}
                                  </label>
                                </div>
-                               <div className="form-check form-check-inline">
+                               <div className="form-check form-check-inline radioBtnValues">
                                  <input
-                                   className="form-check-input"
+                                   className="form-check-input radioBtnValues"
                                    type="radio"
                                    name="radio"
                                    id="inlineRadio4"
@@ -1380,6 +1424,7 @@ const TransportoLedger = () => {
        </div> : <NoDataAvailable />
        }
       </div>
+      <ToastContainer />
     </Fragment>
   );
 };

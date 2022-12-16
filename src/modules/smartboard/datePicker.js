@@ -122,6 +122,7 @@ function DatePickerModel(props) {
       lastDate = firstDate;
       props.parentCallback(firstDate,lastDate,dateTabs);
       props.close();
+      console.log(firstDate,lastDate);
     }else if (dateTabs == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
@@ -153,6 +154,7 @@ function DatePickerModel(props) {
       lastDate = moment(endDate).format("YYYY-MM-DD");
       props.parentCallback(firstDate, lastDate,dateTabs);
       props.close();
+      console.log(firstDate,lastDate);
     }
   }
 
@@ -272,7 +274,7 @@ function DatePickerModel(props) {
                       <div>
                       <p>From</p>
                      <div className="d-flex">
-                     <img className=""
+                     <img
                         src={date_icon}
                       />
                       <DatePicker
@@ -288,9 +290,9 @@ function DatePickerModel(props) {
                      </div>
                       </div>
                     <div>
-                    <p>To</p>
-                    <div className="d-flex">
-                    <img className=""
+                    <p className="to_in_date">To</p>
+                    <div className="d-flex date_in_custom">
+                      <img
                         src={date_icon}
                       />
                       <DatePicker
@@ -302,6 +304,7 @@ function DatePickerModel(props) {
                         onKeyDown={(e) => {
                           e.preventDefault();
                         }}
+                        // className="date_in_custom"
                       />
                     </div>
                     </div>

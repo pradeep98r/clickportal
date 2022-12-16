@@ -7,6 +7,7 @@ import { getSellBills } from "../../actions/billCreationService";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
+import left_arrow from "../../assets/images/left_arrow.svg";
 import $ from "jquery";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
@@ -59,6 +60,7 @@ const SellBillBook = () => {
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         setAllData(response.data.data);
+        console.log(response.data.data);
         if (response.data.data != null) {
           setSellBillData(response.data.data.singleBills);
         }
@@ -181,7 +183,7 @@ const SellBillBook = () => {
                       role="tabpanel"
                       aria-labelledby="home-tab"
                     >
-                      {sellBillData.length > 0 ? (
+                      {sellBillData.length > 0 && allData!==null>0 ? (
                         <div>
                           <div className="row header_row">
                             <div className="col-lg-4">
@@ -331,12 +333,13 @@ const SellBillBook = () => {
                                   </div>
                                   <div className="col-lg-2 flex_class">
                                     <div className="row">
-                                      <div className="col-lg-12 col-sm-12 col last_col">
+                                      <div className="d-flex col-lg-12 col-sm-12 col last_col">
                                         <p className="crop_name payble_text">
                                           {getCurrencyNumberWithOutSymbol(
                                             bill.totalReceivable
                                           )}
-                                        </p>
+                                        </p>                                      
+                                        <img src={left_arrow} alt="left-arrow" className="left-arrow-img"/>
                                       </div>
                                     </div>
                                   </div>
