@@ -3,6 +3,7 @@ import { getAllCrops } from "../../actions/billCreationService";
 import { useEffect, useState } from "react";
 import close from "../../assets/images/close.svg";
 import "../../modules/buy_bill_book/step2.scss";
+import SearchField from "../../components/searchField";
 const SelectCrop = (props) => {
   let [allCropsData, allCropResponseData] = useState([]);
   const [cropItem, setSelectCrop] = useState("");
@@ -96,13 +97,20 @@ const SelectCrop = (props) => {
           onClick={e=>{props.close()}}
         />
         <div className="d-flex crop_search" role="search">
-          <input
+        <SearchField
+                    placeholder="Search"
+                    val={searchValue}
+                    onChange={(event) => {
+                      handleSearch(event);
+                    }}
+                  />
+          {/* <input
             className="form-control search"
             type="search"
             placeholder="Search"
             aria-label="Search"
             onChange={(event) => searchInput(event.target.value)}
-          />
+          /> */}
         </div>
       </div>
       <div className="modal-body crop_modal_body" id="scroll_style">

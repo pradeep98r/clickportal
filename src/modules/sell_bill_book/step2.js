@@ -467,14 +467,18 @@ const SellbillStep2Modal = (props) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     if (index != -1) {
+      console.log(index,"jkk")
       cropArray.splice(index, 1);
-      var index1 = list.findIndex((obj) => obj == crop);
+      var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
+      console.log(index1,list,crop,"jkk")
       if (index1 != -1) {
         list[index1].count -= 1;
+        console.log(list[index1].count)
         if (list[index1].count == 0) {
           if (props.billEditStatus) {
             list.splice(index1, 1);
           } else {
+            console.log(list[index1].count)
             getPreferredCrops(clickId, clientId, clientSecret)
             .then((response) => {
                 dummyList = response.data.data;
