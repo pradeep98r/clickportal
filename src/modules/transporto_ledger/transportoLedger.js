@@ -795,7 +795,7 @@ const TransportoLedger = () => {
                            <p className="payments-tag">{langFullData.paymentMode}</p>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio1"
@@ -816,7 +816,7 @@ const TransportoLedger = () => {
                              id="radio-btn-in_modal"
                            >
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio2"
@@ -826,7 +826,7 @@ const TransportoLedger = () => {
                                required
                              />
                              <label
-                               className="form-check-label"
+                               className="form-check-label radioBtnValues"
                                for="inlineRadio2"
                              >
                                {langFullData.upi}
@@ -834,7 +834,7 @@ const TransportoLedger = () => {
                            </div>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio3"
@@ -852,7 +852,7 @@ const TransportoLedger = () => {
                            </div>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-inpu radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio4"
@@ -870,7 +870,7 @@ const TransportoLedger = () => {
                            </div>
                            <div className="form-check form-check-inline">
                              <input
-                               className="form-check-input"
+                               className="form-check-input radioBtnValues"
                                type="radio"
                                name="radio"
                                id="inlineRadio5"
@@ -1303,7 +1303,7 @@ const TransportoLedger = () => {
                                    {langFullData.boxes}
                                  </label>
                                </div>
-                               <div className="form-check form-check-inline">
+                               <div className="form-check form-check-inline ">
                                  <input
                                    className="form-check-input"
                                    type="radio"

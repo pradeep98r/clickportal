@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
 import date_icon from "../../assets/images/date_icon.svg";
+import left_arrow from "../../assets/images/left_arrow.svg";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
@@ -40,6 +41,7 @@ function BuyBillBook() {
       : "";
 
   const callbackFunction = (startDate, endDate, dateTab) => {
+    console.log(startDate,endDate);
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
@@ -65,6 +67,7 @@ function BuyBillBook() {
     }
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
+        console.log(fromDate,toDate);
         console.log(response.data.data, "billsss");
         setAllData(response.data.data);
         if (response.data.data != null) {
@@ -211,7 +214,7 @@ function BuyBillBook() {
                           role="tabpanel"
                           aria-labelledby="home-tab"
                         >
-                          {buyBillData.length > 0 ? (
+                          {buyBillData.length > 0  && allData!==null>0? (
                             <div>
                               <div className="row header_row">
                                 <div className="col-lg-4">
@@ -371,12 +374,13 @@ function BuyBillBook() {
                                       </div>
                                       <div className="col-lg-2 flex_class">
                                         <div className="row">
-                                          <div className="col-lg-12 col-sm-12 col last_col">
+                                          <div className="d-flex col-lg-12 col-sm-12 col last_col">
                                             <p className="crop_name payble_text">
                                               {getCurrencyNumberWithOutSymbol(
                                                 bill.totalPayables
                                               )}
                                             </p>
+                                            <img src={left_arrow} alt="left-arrow" className="left-arrow-img"/>
                                           </div>
                                         </div>
                                       </div>

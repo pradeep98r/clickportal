@@ -3,6 +3,7 @@ import "../smartboard/smartboard.scss";
 import "../smartboard/completeprofile.scss";
 import close from "../../assets/images/close.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
+import location_icon from "../../assets/images/location_icon.svg";
 import drop_down_btn from "../../assets/images/dropdown.svg";
 import InputField from "../../components/inputField";
 import { useState, useEffect } from "react";
@@ -684,7 +685,8 @@ const CompleteProfile = (props) => {
             </div>
             <div className="col-lg-6">
               {" "}
-              <div onClick={() => getPosition()} className="location mt-0">
+              <div onClick={() => getPosition()} className="d-flex location mt-0">
+              <img src={location_icon} alt="" className="mr-2" />
                 {langFullData.selectCurrentLocation}
               </div>
             </div>
