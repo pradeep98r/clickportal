@@ -86,7 +86,10 @@ input[type="search"]{
     padding-left: 35px; 
 }
 input[type=radio]:checked+label {
-        color:#16A02C;;
+    color:#16A02C;
+}
+input[type=radio]:label {
+    padding: 0px 5px;
 }
 #inlineRadio1:checked{
     background-color: #16A02C;
@@ -393,7 +396,7 @@ input[type=radio]:checked+label {
     // padding-left: 40px;
 }
 .payments-tag{
-    padding-top: 5px;
+    padding-top: 0px;
     font-weight: 500;
     font-size: 13px;
     color: #1C1C1C;
@@ -411,6 +414,7 @@ input[type=radio]:checked+label {
 .form-check-label{
     font-weight: 600;
     font-size: 13px;
+    padding: 0px 10px;
     color: black;
 }
 .select-tag{
@@ -623,4 +627,10 @@ margin-bottom: 2px;
 }
 .payment-tag{
     margin-bottom: 10px;
+}
+input[type=radio].radioBtnValues{
+    accent-color: #16A12C;
+    -ms-transform: scale(1.2); /* IE 9 */
+    -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
+    transform: scale(1.2);
 }

@@ -467,7 +467,7 @@ const SellbillStep3Modal = (props) => {
   };
   const [mandifEdit, setMandifEdit] = useState(false);
   const mandiOnchangeEvent = (event) => {
-    getMandiFeeInput(event.target.value.replace(/\D/g, ""));
+    getMandiFeeInput(event.target.value.replace(/[^0-9.]/g,''));
     setMandifEdit(true);
   };
   const [levisEdit, setlevisEdit] = useState(false);

@@ -759,8 +759,6 @@ const Partner = () => {
                           ? "Seller"
                           : getText(partyType)}
                       </h6>
-                      <p></p>
-
                       <button
                         className="outline_btn outline_btn_partner mr-2"
                         onClick={() => MybtnModal(partyType)}
