@@ -463,18 +463,23 @@ const SellbillStep2Modal = (props) => {
     cropResponseData([...cropData, crop]);
   };
   var dummyList = [];
+  var arrylist = [];
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     if (index != -1) {
+      console.log(index,"jkk")
       cropArray.splice(index, 1);
-      var index1 = list.findIndex((obj) => obj == crop);
+      var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
+      console.log(index1,list,crop,"jkk")
       if (index1 != -1) {
         list[index1].count -= 1;
+        console.log(list[index1].count)
         if (list[index1].count == 0) {
           if (props.billEditStatus) {
             list.splice(index1, 1);
           } else {
+            console.log(list[index1].count)
             getPreferredCrops(clickId, clientId, clientSecret)
             .then((response) => {
                 dummyList = response.data.data;
@@ -486,15 +491,22 @@ const SellbillStep2Modal = (props) => {
                     return null;
                   }
                 });
-               console.log(updatedarr,list,"update arr");
-               for(var k=0; k<updatedarr.length; k++){
-                 if(updatedarr[k]==null){
-                  list.splice(index1, k);
-                   console.log('newcrop remove',index1,list)
-                 }
-                 else{
-                  console.log('samecrop ');
-                  return list;
+                for(var k=0; k<updatedarr.length; k++){
+                  if(updatedarr[k]!=null){
+                    arrylist.push(updatedarr[k]);
+                  }
+                }
+               console.log(updatedarr,arrylist,"update arr");
+               for(var k=0; k<list.length; k++){
+                 for(var t=0; t<arrylist.length; t++){
+                  if(list[k].cropId==arrylist[t].cropId){
+                    list.splice(index1, t);
+                     console.log('newcrop remove',index1)
+                   }
+                   else{
+                    console.log('samecrop ');
+                    // return list;
+                   }
                  }
                }
                console.log(list)
@@ -548,7 +560,7 @@ const SellbillStep2Modal = (props) => {
                   >
                     {preferedCropsData[index].count == 0 ? '' : preferedCropsData[index].count}
                   </div>
-                  <img src={crop.imageUrl} className="flex_class mx-auto " />
+                  <img src={crop.imageUrl} className="flex_class cropImg mx-auto " />
                   <p>{crop.cropName}</p>
                 </div>
               ))}
@@ -578,7 +590,7 @@ const SellbillStep2Modal = (props) => {
                         <div className="crop_table_view">
 
                           {!setQuantityBasedtable(cropData[index].qtyUnit) ? (
-                            <table class="table table-bordered">
+                            <table className="table table-bordered">
                               <thead>
                                 <tr>
                                   <th>Crop</th>
@@ -586,7 +598,7 @@ const SellbillStep2Modal = (props) => {
                                   <th>Rate Type</th>
                                   <th>No of Units({cropData[index].qtyUnit})</th>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
+                                    (cropData[index].rateType == 'RATE_PER_UNIT' ? cropData[index].qtyUnit.toLowerCase() : cropData[index].rateType) ? (
                                     <th>
                                       Total Weight(
                                       {cropData[index].qtyUnit.toLowerCase() !=
@@ -600,10 +612,18 @@ const SellbillStep2Modal = (props) => {
                                   )}
                                   {
                                     cropData[index].qtyUnit.toLowerCase() === 'bags' ||
-                                      cropData[index].qtyUnit.toLowerCase() === 'sacs' ? (
-                                      <th className="col-2">
-                                        Invidual Weights
-                                      </th>) : ("")
+                                      cropData[index].qtyUnit.toLowerCase() === 'sacs' ? 
+                                      (
+                                        cropData[index].qtyUnit.toLowerCase() !=
+                                          cropData[index].rateType ? (
+                                          <th className="col-2">
+                                            Invidual Weights
+                                          </th>
+                                        ) : (
+                                          ""
+                                        )
+                                      )
+                                      : ("")
                                   }
                                   <th>
                                     Wastage(
@@ -678,7 +698,7 @@ const SellbillStep2Modal = (props) => {
                                     />
                                   </td>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
+                                   (cropData[index].rateType == 'RATE_PER_UNIT' ? cropData[index].qtyUnit.toLowerCase() : cropData[index].rateType) ? (
                                     <td className="col-2">
                                       <input
                                         type="text"
@@ -698,6 +718,8 @@ const SellbillStep2Modal = (props) => {
                                   {
                                     cropData[index].qtyUnit.toLowerCase() === "bags" ||
                                       cropData[index].qtyUnit.toLowerCase() === "sacs" ? (
+                                        cropData[index].qtyUnit.toLowerCase() !=
+                                        cropData[index].rateType ? (
                                       <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
@@ -719,7 +741,8 @@ const SellbillStep2Modal = (props) => {
                                             }}
                                           />
                                         </div>
-                                      </td>
+                                      </td>) : ''
+
                                     ) : ("")
                                   }
                                   <td className="col-1">
@@ -763,7 +786,7 @@ const SellbillStep2Modal = (props) => {
                               </tbody>
                             </table>
                           ) : (
-                            <table class="table table-bordered">
+                            <table className="table table-bordered">
                               <thead>
                                 <tr>
                                   <th>Crop</th>

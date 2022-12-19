@@ -1,8 +1,8 @@
 import React from "react";
 import search_img from "../assets/images/search.svg";
 const BillsSearchField = ({ placeholder, onChange }) => (
-  <div class="form-group has-search mb-0 mr-3">
-    <span class="form-control-feedback">
+  <div className="form-group has-search mb-0 mr-3">
+    <span className="form-control-feedback">
       <img src={search_img} alt="search" />
     </span>
     <input

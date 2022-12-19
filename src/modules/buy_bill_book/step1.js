@@ -12,10 +12,17 @@ const Step1 = () => {
   const langFullData = JSON.parse(langData);
 
   useEffect(() => {
+    localStorage.setItem('selectPartytype',null);
   }, []);
   const [partnerData, setPartnerData] = useState(null);
-  const callbackFunction = (childData) => {
+  const [partType, separtType]= useState('');
+  const [partysType, setpartysType]= useState('');
+  const callbackFunction = (childData,party,type) => {
     setPartnerData(childData);
+    separtType(type.toLowerCase());
+    if(party != null){
+      setpartysType(party.toLowerCase())
+    }
     if(childData.partyType != 'Transporter'){
       localStorage.removeItem("selectedTransporter");
     }
@@ -92,16 +99,17 @@ const Step1 = () => {
         </div>
       </div>
       <div>
-        {partnerData == null ? (
-          ""
+        {partnerData != null &&
+         ((partysType.toLowerCase() == 'seller')?(partType.toLowerCase() == 'transporter' ? true : true) : false) ? (
+           <div className="bottom_div main_div">
+           <div className="d-flex align-items-center justify-content-end">
+             <button className="primary_btn" onClick={addCropModal}>
+               {langFullData.next}
+             </button>
+           </div>
+         </div>
         ) : (
-          <div className="bottom_div main_div">
-            <div className="d-flex align-items-center justify-content-end">
-              <button className="primary_btn" onClick={addCropModal}>
-                {langFullData.next}
-              </button>
-            </div>
-          </div>
+        ''
         )}
         {showCropModalStatus ? (
           <Step2Modal

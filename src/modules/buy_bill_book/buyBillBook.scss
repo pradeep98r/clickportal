@@ -307,7 +307,7 @@ option[value=""][disabled] {
 // crop info styles
 .crop_div {
   margin: 0px 20px 10px 0px;
-  img {
+  .cropImg {
     width: 50px;
   }
   .sub_icons {
@@ -821,12 +821,12 @@ article.on {
 }
 .small_text {
   font-size: 10px;
-  text-align: right;
+  // text-align: right;
 }
 .medium_text {
   font-size: 13px;
   font-weight: 600;
-  text-align: right;
+  // text-align: right;
 }
 .large_text {
   font-size: 32px;
@@ -1041,6 +1041,7 @@ word-wrap: normal;
   padding: 20px;
   justify-content: space-between;
   border-bottom: 1px solid #e4e4e4;
+  width: 100%;
 }
 .date_modal_mody {
   padding: 0px;
