@@ -270,12 +270,12 @@ function DatePickerModel(props) {
                   </article>
                  
                   <article className="custom_picker" style={{display:dateTabs==='Custom'?'block':'none'}}>
-                    <div className="flex_class justify-content-between custom_input_div">
-                      <div>
+                    <div className="flex_class justify-content-between custom_input_div mr-0">
+                      <div className="d-flex align-items-center">
                       <p>From</p>
-                     <div className="d-flex">
+                     <div className="d-flex date_flex">
                      <img
-                        src={date_icon}
+                        src={date_icon} className="d_icon"
                       />
                       <DatePicker
                         selected={startDate}
@@ -289,11 +289,11 @@ function DatePickerModel(props) {
                       />
                      </div>
                       </div>
-                    <div>
-                    <p className="to_in_date">To</p>
-                    <div className="d-flex date_in_custom">
+                    <div className="d-flex align-items-center">
+                    <p >To</p>
+                    <div className="d-flex date_flex">
                       <img
-                        src={date_icon}
+                        src={date_icon} className="d_icon"
                       />
                       <DatePicker
                         selected={endDate}
