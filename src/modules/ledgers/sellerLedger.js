@@ -373,6 +373,11 @@ const SellerLedger = () => {
     getOutstandingPaybles(clickId, id);
   }
 },[])
+const resetInput = (e) => {
+  if(e.target.value == 0){
+    e.target.value = "";
+  }
+}
   return (
     <Fragment>
       <div>
@@ -1200,6 +1205,7 @@ const SellerLedger = () => {
                                 id="amtRecieved"
                                 type="text"
                                 required
+                                onFocus={(e) => resetInput(e)}
                                 value={paidsRcvd}
                                 onChange={(e) => {
                                   getAmountValue(e)

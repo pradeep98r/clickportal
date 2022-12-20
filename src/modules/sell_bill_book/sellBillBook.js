@@ -59,10 +59,14 @@ const SellBillBook = () => {
     }
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
-        setAllData(response.data.data);
+        
         console.log(response.data.data);
         if (response.data.data != null) {
+          setAllData(response.data.data);
           setSellBillData(response.data.data.singleBills);
+        }
+        else{
+          setSellBillData([])
         }
         setLoading(false);
       })
@@ -183,7 +187,7 @@ const SellBillBook = () => {
                       role="tabpanel"
                       aria-labelledby="home-tab"
                     >
-                      {sellBillData.length > 0 && allData!==null>0 ? (
+                      {sellBillData.length > 0 ? (
                         <div>
                           <div className="row header_row">
                             <div className="col-lg-4">
@@ -332,8 +336,8 @@ const SellBillBook = () => {
                                     ))}
                                   </div>
                                   <div className="col-lg-2 flex_class">
-                                    <div className="row">
-                                      <div className="d-flex col-lg-12 col-sm-12 col last_col">
+                                    <div className="row" style={{'width':'100%'}}>
+                                      <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
                                         <p className="crop_name payble_text">
                                           {getCurrencyNumberWithOutSymbol(
                                             bill.totalReceivable

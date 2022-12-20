@@ -69,9 +69,14 @@ function BuyBillBook() {
       .then((response) => {
         console.log(fromDate,toDate);
         console.log(response.data.data, "billsss");
-        setAllData(response.data.data);
         if (response.data.data != null) {
+          console.log('igf')
+        setAllData(response.data.data);
           setBuyBillData(response.data.data.singleBills);
+        }
+        else{
+          setBuyBillData([])
+          console.log(buyBillData)
         }
         setLoading(false);
       })
@@ -79,7 +84,6 @@ function BuyBillBook() {
         console.log(error);
       });
   };
-  const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
   var billViewStatus = false;
   const billOnClick = (id, bill) => {
@@ -214,7 +218,7 @@ function BuyBillBook() {
                           role="tabpanel"
                           aria-labelledby="home-tab"
                         >
-                          {buyBillData.length > 0  && allData!==null>0? (
+                          {buyBillData.length > 0 ? (
                             <div>
                               <div className="row header_row">
                                 <div className="col-lg-4">
@@ -373,8 +377,8 @@ function BuyBillBook() {
                                         ))}
                                       </div>
                                       <div className="col-lg-2 flex_class">
-                                        <div className="row">
-                                          <div className="d-flex col-lg-12 col-sm-12 col last_col">
+                                        <div className="row" style={{'width':'100%'}}>
+                                          <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
                                             <p className="crop_name payble_text">
                                               {getCurrencyNumberWithOutSymbol(
                                                 bill.totalPayables

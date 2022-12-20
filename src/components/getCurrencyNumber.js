@@ -15,7 +15,6 @@ export function getCurrencyNumberWithOutSymbol(number) {
   .replace("₹", "");
 }
 export function getCurrencyNumberWithOneDigit(number) {
-  console.log(number);
   return number == null || number == 0 ?  '': number.toFixed(1);
 }
 export default {

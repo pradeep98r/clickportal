@@ -331,6 +331,11 @@ const BuyerLedger = () => {
       getOutstandingPaybles(clickId, id);
     }
   },[])
+  const resetInput = (e) => {
+    if(e.target.value == 0){
+      e.target.value = "";
+    }
+  }
   return (
     <Fragment>
       <div>
@@ -1117,6 +1122,7 @@ const BuyerLedger = () => {
                               <input
                                 className="form-cont"
                                 id="amtRecieved"
+                                onFocus={(e) => resetInput(e)}
                                 value={paidsRcvd}
                                 required
                                 onChange={(e) => {
