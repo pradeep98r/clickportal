@@ -314,7 +314,6 @@ const BillView = (props) => {
 
   const getCropUnit = (unit) => {
     var unitType = "";
-    console.log(unit)
     switch (unit.toUpperCase()) {
       case "CRATES":
         unitType = "C";
@@ -335,7 +334,6 @@ const BillView = (props) => {
           unitType = "P";
           break;
     }
-    console.log(unitType)
     return unitType;
    
   };
@@ -469,7 +467,6 @@ const BillView = (props) => {
           toast.success(response.data.status.message, {
             toastId: "success1",
           });
-          console.log(editBillRequestObj, "edit bill request");
           console.log(response.data, "edit bill");
           localStorage.setItem("billViewStatus",false)
           navigate("/buy_bill_book");
@@ -1251,7 +1248,7 @@ const BillView = (props) => {
         </div>
         {showStep3ModalStatus ? (
           <Step3Modal
-            show={showStep3Modal}
+            showstep3={showStep3Modal}
             closeStep3Modal={() => setShowStep3Modal(false)}
             slectedCropsArray={slectedCropArray}
             billEditStatus={true}

@@ -495,10 +495,18 @@ const SellbillStep3Modal = (props) => {
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
     step2CropTableOnclick(cropEditArray);
-    props.closeStep3Modal();
   };
   const step2Cancel = (cropEditArray) => {
-    step2CropTableOnclick(cropEditArray);
+    if (!editStatus) {
+      if (step2CropEditStatus) {
+        step2CropTableOnclick(cropEditArray);
+      }
+    } else {
+      setShowCropModalStatus(false);
+      setShowCropModal(false);
+
+      console.log("edit", showCropModalStatus, showCropModal);
+    }
     props.closeStep3Modal();
   };
   const step2CropTableOnclick = (cropEditArray) =>{

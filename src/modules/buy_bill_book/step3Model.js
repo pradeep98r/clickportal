@@ -92,7 +92,7 @@ const Step3Modal = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-
+      console.log(response)
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -149,10 +149,10 @@ const Step3Modal = (props) => {
       if (!transEdit) {
         var totalQty = 0;
         if (!step2CropEditStatus) {
-          for(var i = 0; i<billEditItem.lineItems.length;i++){
+          for (var i = 0; i < billEditItem.lineItems.length; i++) {
             totalQty += parseInt(billEditItem.lineItems[i].qty);
           }
-          localStorage.setItem("totalQty",totalQty);
+          localStorage.setItem("totalQty", totalQty);
           getTransportationValue(billEditItem.transportation / totalunitvalues);
         } else {
           var totalQtyValue = localStorage.getItem("totalQty");
@@ -173,7 +173,7 @@ const Step3Modal = (props) => {
           getRentValue(billEditItem.rent / totalunitvalues);
         } else {
           var totalQtyValue = localStorage.getItem("totalQty");
-          getRentValue(billEditItem.rent / totalQtyValue)
+          getRentValue(billEditItem.rent / totalQtyValue);
           //getRentValue(parseInt(localStorage.getItem("rentVal")));
         }
       }
@@ -183,7 +183,7 @@ const Step3Modal = (props) => {
         );
       }
     }
-  }, [props.show]);
+  }, [props.showstep3]);
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
@@ -248,7 +248,11 @@ const Step3Modal = (props) => {
   };
   const getUnitsTotalValue = (items) => {
     var totalunitvalue = 0;
-    var it = editStatus ? (step2CropEditStatus ? items : items[0].lineItems) : items;
+    var it = editStatus
+      ? step2CropEditStatus
+        ? items
+        : items[0].lineItems
+      : items;
     for (var i = 0; i < it.length; i++) {
       totalunitvalue += editStatus
         ? step2CropEditStatus
@@ -364,7 +368,7 @@ const Step3Modal = (props) => {
     commShown: true,
     comments: "hi",
     createdBy: 0,
-    farmerId: partnerSelectedData.partyId,//partnerSelectedData.partyId,
+    farmerId: partnerSelectedData.partyId, //partnerSelectedData.partyId,
     govtLevies: levisValue,
     grossTotal: grossTotal,
     labourCharges: getTotalUnits(laborChargeValue),
@@ -414,8 +418,8 @@ const Step3Modal = (props) => {
       otherFee: parseInt(otherfeeValue),
       outStBal: outBal,
       paidTo: 0,
-      partyId: billEditItem.farmerId,//partnerSelectedData.partyId,
-      rent:getTotalUnits(rentValue),
+      partyId: billEditItem.farmerId, //partnerSelectedData.partyId,
+      rent: getTotalUnits(rentValue),
       rtComm: getTotalValue(retcommValue),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: getTotalBillAmount() - parseInt(cashpaidValue),
@@ -435,7 +439,7 @@ const Step3Modal = (props) => {
   // post bill request api call
   const postbuybill = () => {
     if (editStatus) {
-      console.log(editBillRequestObj)
+      console.log(editBillRequestObj);
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -443,10 +447,10 @@ const Step3Modal = (props) => {
               toastId: "success1",
             });
             props.closeStep3Modal();
-            console.log("edit")
-            localStorage.setItem("stepOne",false);
-            localStorage.setItem("billViewStatus",false)
-            localStorage.setItem("LinkPath","/buy_bill_book");
+            console.log("edit");
+            localStorage.setItem("stepOne", false);
+            localStorage.setItem("billViewStatus", false);
+            localStorage.setItem("LinkPath", "/buy_bill_book");
             navigate("/buy_bill_book");
           }
         },
@@ -464,11 +468,11 @@ const Step3Modal = (props) => {
               toastId: "success1",
             });
             props.closeStep3Modal();
-            localStorage.setItem("stepOne",false)
-            localStorage.setItem("LinkPath","/buy_bill_book");
+            localStorage.setItem("stepOne", false);
+            localStorage.setItem("LinkPath", "/buy_bill_book");
             navigate("/buy_bill_book");
-            
-            console.log("add")
+
+            console.log("add");
           }
         },
         (error) => {
@@ -493,7 +497,9 @@ const Step3Modal = (props) => {
   };
   const [commEdit, setCommedit] = useState(false);
   const commOnchangeEvent = (event) => {
-    getCommInput(event.target.value.replace(/\D/g, ""));
+    setcommTotalValEditStatus(false);
+    var val = event.target.value.replace(/\D/g, "");
+    getCommInput(val);
     setCommedit(true);
   };
   const [rtcommEdit, setrtCommedit] = useState(false);
@@ -504,27 +510,26 @@ const Step3Modal = (props) => {
   const [transEdit, settransedit] = useState(false);
   const [transValue, settransValue] = useState(0);
   const transOnchangeEvent = (event) => {
-    getTransportationValue(event.target.value.replace(/[^0-9.]/g,''));
+    getTransportationValue(event.target.value.replace(/[^0-9.]/g, ""));
     settransedit(true);
     localStorage.setItem("trVal", event.target.value);
     settransValue(event.target.value);
   };
   const [labourEdit, setLabouredit] = useState(false);
   const labourOnchangeEvent = (event) => {
-    getLaborChargeValue(event.target.value.replace(/[^0-9.]/g,''))//.replace(/\D./g, ""));
+    getLaborChargeValue(event.target.value.replace(/[^0-9.]/g, "")); //.replace(/\D./g, ""));
     localStorage.setItem("labVal", event.target.value);
     setLabouredit(true);
-   
   };
   const [rentEdit, setRentedit] = useState(false);
   const rentOnchangeEvent = (event) => {
-    getRentValue(event.target.value.replace(/[^0-9.]/g,''));
+    getRentValue(event.target.value.replace(/[^0-9.]/g, ""));
     // localStorage.setItem("rentVal", editStatus ? !step2CropEditStatus ?billEditItem.rent/ : : event.target.value);
     setRentedit(true);
   };
   const [mandifEdit, setMandifEdit] = useState(false);
   const mandiOnchangeEvent = (event) => {
-    getMandiFeeInput(event.target.value.replace(/[^0-9.]/g,''));
+    getMandiFeeInput(event.target.value.replace(/[^0-9.]/g, ""));
     setMandifEdit(true);
   };
   const [levisEdit, setlevisEdit] = useState(false);
@@ -550,26 +555,52 @@ const Step3Modal = (props) => {
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
+  console.log("edit", showCropModalStatus, showCropModal);
   const editCropTable = (cropEditArray) => {
-    console.log('edit')
     step2buyCropTableOnclick(cropEditArray);
-    props.closeStep3Modal();
   };
-  const closeCropTable = (cropEditArray) =>{
-    step2buyCropTableOnclick(cropEditArray);
+  const closeCropTable = (cropEditArray) => {
+    console.log(editStatus, step2CropEditStatus);
+    if (!editStatus) {
+      if (step2CropEditStatus) {
+        step2buyCropTableOnclick(cropEditArray);
+      }
+    } else {
+      setShowCropModalStatus(false);
+      setShowCropModal(false);
+
+      console.log("edit", showCropModalStatus, showCropModal);
+    }
     props.closeStep3Modal();
-    console.log('cancel')
-  }
-  const step2buyCropTableOnclick = (cropEditArray) =>{
-     //step2CropEditStatus=true;
+
+    console.log("cancel");
+  };
+  const step2buyCropTableOnclick = (cropEditArray) => {
+    //step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
-    console.log("step2")
-  }
+    console.log("step2");
+    // props.closeStep3Modal();
+  };
+  const [commTotalVal, setcommTotalVal] = useState(0);
+  const [commTotalValEditStatus, setcommTotalValEditStatus] = useState(false);
+  const [totalcommEdit, settotalcommEdit] = useState(false);
+  const commTotalOnchangeEvent = (event) => {
+    var val = event.target.value.replace(/\D/g, "");
+    setcommTotalValEditStatus(true);
+    setcommTotalVal(val);
+    settotalcommEdit(true);
+    var v = (val / grossTotal) * 100;
+    console.log(val);
+    if (v != 0) {
+      v = v.toFixed(2);
+      getCommInput(v);
+    }
+  };
   return (
     <Modal
-      show={props.show}
+      show={props.showstep3}
       close={props.closeStep3Modal}
       className="cropmodal_poopup"
     >
@@ -577,7 +608,11 @@ const Step3Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Additions/Deductions
         </h5>
-        <img alt="image" src={clo} onClick={() => closeCropTable(billEditItem.lineItems)}/>
+        <img
+          alt="image"
+          src={clo}
+          onClick={() => closeCropTable(billEditItem.lineItems)}
+        />
       </div>
 
       <div className="modal-body">
@@ -626,7 +661,6 @@ const Step3Modal = (props) => {
                 </div>
                 <img src={d_arrow} />
               </div>
-             
             </div>
             <div className="date_sec date_step3">
               <div className="date_col d-flex align-items-center justify-content-between">
@@ -770,25 +804,38 @@ const Step3Modal = (props) => {
             )}
             <h5 className="date_sec head_modal p-0">Crop Information </h5>
             <div className="selectparty_field edit_crop_item_div">
-            <div className="d-flex align-items-center justify-content-between">
-              <p className="d-flex align-items-center">
-                {editStatus ?(
-                  <div className="d-flex">
-                  <img src={billEditItem.lineItems[0]?.imageUrl} className="edit_crop_item"/>
-                  <p className="edit_crop_item_len d-flex align-items-center"><p>{billEditItem.lineItems.length}</p><span className="ml-3">Crops</span></p> 
-                  </div>
-                ):(
-                  <div className="d-flex">
-                  <img src={props.slectedCropsArray[0].imageUrl} className="edit_crop_item"/>
-                  <p className="edit_crop_item_len d-flex align-items-center"><p>{props.slectedCropsArray.length}</p><span className="ml-3">Crops</span></p> 
-                  </div>
-                )
-                }
-              </p>
-              <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
+              <div className="d-flex align-items-center justify-content-between">
+                <p className="d-flex align-items-center">
+                  {editStatus ? (
+                    <div className="d-flex">
+                      <img
+                        src={billEditItem.lineItems[0]?.imageUrl}
+                        className="edit_crop_item"
+                      />
+                      <p className="edit_crop_item_len d-flex align-items-center">
+                        <p>{billEditItem.lineItems.length}</p>
+                        <span className="ml-3">Crops</span>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="d-flex">
+                      <img
+                        src={props.slectedCropsArray[0].imageUrl}
+                        className="edit_crop_item"
+                      />
+                      <p className="edit_crop_item_len d-flex align-items-center">
+                        <p>{props.slectedCropsArray.length}</p>
+                        <span className="ml-3">Crops</span>
+                      </p>
+                    </div>
+                  )}
+                </p>
+                <p onClick={() => editCropTable(billEditItem.lineItems)}>
+                  Edit
+                </p>
+              </div>
             </div>
-            </div>
-            
+
             <div className="cropinfo_div">{/* <p>edit</p>  */}</div>
           </div>
           <div className="col-lg-6">
@@ -808,11 +855,16 @@ const Step3Modal = (props) => {
                         ? step2CropEditStatus
                           ? getTotalValue(commValue)
                           : billEditItem.comm
-                        : getTotalValue(commValue)
-                      : getTotalValue(commValue)
+                        : commTotalValEditStatus
+                        ? commTotalVal
+                        : getTotalValue(commValue).toFixed(2)
+                      : commTotalValEditStatus
+                      ? commTotalVal
+                      : getTotalValue(commValue).toFixed(2)
                   }
                   inputValue={commValue}
                   totalTitle="Total"
+                  totalOnChange={(event) => commTotalOnchangeEvent(event)}
                 />
               ) : (
                 ""
@@ -1091,17 +1143,18 @@ const Step3Modal = (props) => {
       <ToastContainer />
       {showCropModalStatus ? (
         <Step2Modal
-          show={showCropModal}
+          showCrop={showCropModal}
           closeCropModal={() => setShowCropModal(false)}
           cropTableEditStatus={true}
           cropEditObject={cropEditvalArray}
-          billEditStatus={editStatus?true:false}
+          billEditStatus={editStatus ? true : false}
           slectedCropstableArray={props.slectedCropsArray}
         />
       ) : (
-        "hh"
+        ""
       )}
     </Modal>
   );
 };
 export default Step3Modal;
+

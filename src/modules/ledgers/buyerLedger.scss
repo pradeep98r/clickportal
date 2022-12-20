@@ -79,7 +79,8 @@ input[type=radio]:checked+label {
     background: #FFFFFF;
 }
 .tabRowSelected{
-    background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
+    // background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
+    background: var(--ono-primary);
     font-weight: 500;
     font-size: 12px;
     color: white;
