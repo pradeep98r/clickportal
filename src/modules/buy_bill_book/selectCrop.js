@@ -41,11 +41,11 @@ const SelectCrop = (props) => {
       setStat(false);
       let newSelected = selected.filter((t) => t.cropId !== crop_item.cropId);
       setSelected(newSelected);
-      //props.cropCallback(crop_item,false);
     }
   };
 
   const addCropClickNext=(event)=>{
+    console.log(selected)
     if(stat===true){
       props.cropCallback(selected,true);
       while(selected.length>0){
@@ -54,6 +54,7 @@ const SelectCrop = (props) => {
     }
     else{
       props.cropCallback(selected,true);
+      console.log(selected)
       selected.map(item=>{
         item.cropSelect="";
       })
@@ -74,6 +75,11 @@ const SelectCrop = (props) => {
     allCropResponseData(result);
     setSearchValue(value);
   };
+  const closeCropModalPopup = () =>{
+    props.close();
+    setSearchValue('');
+    setSelected([]);
+  }
   return (
     <Modal
       show={props.show}
@@ -88,7 +94,7 @@ const SelectCrop = (props) => {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={e=>{props.close()}}
+          onClick={()=>{closeCropModalPopup()}}
         />
         <div className="d-flex crop_search" role="search">
         <SearchField

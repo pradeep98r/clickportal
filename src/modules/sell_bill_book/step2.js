@@ -526,6 +526,11 @@ const SellbillStep2Modal = (props) => {
     setUpdatedItemList(cropArray)
     cropResponseData([...cropArray]);
   };
+  const resetInput = (e) => {
+    if(e.target.value == 0){
+      e.target.value = "";
+    }
+  }
   return (
     <Modal
       show={props.show}
@@ -689,6 +694,7 @@ const SellbillStep2Modal = (props) => {
                                       type="text"
                                       className="form-control"
                                       name="quantity"
+                                      onFocus={(e) => resetInput(e)}
                                       value={cropData[index].qty}
                                       onChange={getQuantityValue(
                                         cropData[index].cropId,
@@ -704,6 +710,7 @@ const SellbillStep2Modal = (props) => {
                                         type="text"
                                         className="form-control"
                                         name="weight"
+                                        onFocus={(e) => resetInput(e)}
                                         value={cropData[index].weight}
                                         onChange={getWeightValue(
                                           cropData[index].cropId,
@@ -750,6 +757,7 @@ const SellbillStep2Modal = (props) => {
                                     <input
                                       type="text"
                                       name="wastage"
+                                      onFocus={(e) => resetInput(e)}
                                       className="form-control wastage_val"
                                       value={cropData[index].wastage}
                                       onChange={getWastageValue(
@@ -764,6 +772,7 @@ const SellbillStep2Modal = (props) => {
                                     <input
                                       type="text"
                                       name="rate"
+                                      onFocus={(e) => resetInput(e)}
                                       className="form-control"
                                       value={cropData[index].rate}
                                       onChange={getRateValue(
@@ -839,6 +848,7 @@ const SellbillStep2Modal = (props) => {
                                       type="text"
                                       className="form-control"
                                       name="weight"
+                                      onFocus={(e) => resetInput(e)}
                                       value={cropData[index].weight}
                                       onChange={getWeightValue(
                                         cropData[index].cropId,
@@ -855,6 +865,7 @@ const SellbillStep2Modal = (props) => {
                                       <input
                                         type="text"
                                         name="wastage"
+                                        onFocus={(e) => resetInput(e)}
                                         className="form-control wastage_val"
                                         value={cropData[index].wastage}
                                         onChange={getWastageValue(
@@ -871,6 +882,7 @@ const SellbillStep2Modal = (props) => {
                                       type="text"
                                       name="rate"
                                       className="form-control"
+                                      onFocus={(e) => resetInput(e)}
                                       value={cropData[index].rate}
                                       onChange={getRateValue(
                                         cropData[index].cropId,

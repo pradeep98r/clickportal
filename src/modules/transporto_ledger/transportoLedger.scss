@@ -16,7 +16,8 @@
     // padding:0px;
 }
 .tableRowActive{
-    background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
+    // background: linear-gradient(180deg, #16A12C 0%, #008916 100%);
+    background: var(--ono-primary);
     font-weight: 500;
     font-size: 12px;
     color: white;
@@ -147,14 +148,14 @@ input[type=radio]:label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 230px);
+    height: calc(100vh - 255px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
 }
 .transporterDetailed{
     width: 100%;
-    height: calc(100vh - 203px);
+    height: calc(100vh - 260px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -163,7 +164,7 @@ input[type=radio]:label {
     background: #FFFFFF;
 }
 .add-record-btn{
-    width: 118px;
+    padding: 0px 10px 0px 20px;
     height: 29px;
     background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, #FFFFFF 100%);
     border: 1px solid #D1D1D1;
@@ -173,6 +174,7 @@ input[type=radio]:label {
     color: #16A12C;
     position: relative;
     top: -20px;
+    margin-right: 10px;
 }
 .recordbtns-style{
     position: relative;
@@ -433,9 +435,9 @@ input[type=radio]:label {
 .bloc-tab {
     display: flex;
     position: relative;
-    left: -450px;
-    top: 25px;
-    padding-top: 10px;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+    padding: 15px 50px 0px;
 }
 #nodata-svg{
     width: 100%;
@@ -628,4 +630,9 @@ input[type=radio].radioBtnValues{
     -webkit-transform: scale(1.2); /* Chrome, Safari, Opera */
     transform: scale(1.2);
     cursor: pointer;
+}
+
+.transporter_inventory_modal_header{
+    border-bottom: 0px;
+    padding-bottom: 0px;
 }
