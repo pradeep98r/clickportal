@@ -23,7 +23,7 @@ const Step1 = () => {
     if(party != null){
       setpartysType(party.toLowerCase())
     }
-    if(childData.partyType != 'Transporter'){
+    if(childData.partyType.toLowerCase() != 'transporter'){
       localStorage.removeItem("selectedTransporter");
     }
     else{

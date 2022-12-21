@@ -281,7 +281,7 @@ function DatePickerModel(props) {
                         selected={startDate}
                         onChange={(date) => setStartsDate(date)}
                         popperClassName="d-none"
-                        dateFormat="yyyy-MM-dd"
+                        dateFormat="dd-MMM-yyyy"
                         placeholderText="Select from date"
                         onKeyDown={(e) => {
                           e.preventDefault();
@@ -299,7 +299,7 @@ function DatePickerModel(props) {
                         selected={endDate}
                         onChange={(date) => setEndDate(date)}
                         popperClassName="d-none"
-                        dateFormat="yyyy-MM-dd"
+                        dateFormat="dd-MMM-yyyy"
                         placeholderText="Select to date"
                         onKeyDown={(e) => {
                           e.preventDefault();

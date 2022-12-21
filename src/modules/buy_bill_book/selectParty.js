@@ -56,12 +56,14 @@ const SelectPartner = (props) => {
       itemtype=localStorage.getItem('selectPartytype');
       localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
+      console.log('trrans',item)
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
     } else if (props.partyType == "Buyer") {
       localStorage.setItem('selectBuyertype','buyer');
       itemtype=localStorage.getItem('selectBuyertype');
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
+   
     props.parentCallback(item,itemtype,props.partyType);
   };
   useEffect(() => {
