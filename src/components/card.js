@@ -1,5 +1,10 @@
 import React from "react";
-
+import {getText} from "./getText";
+const resetInput = (e) => {
+  if(e.target.value == 0){
+    e.target.value = "";
+  }
+}
 const CommonCard = ({
   title,
   rateTitle,
@@ -8,7 +13,8 @@ const CommonCard = ({
   totalTitle,
   unitsTitle,
   inputValue,
-  units
+  units,
+  onChangeTotals
 }) => (
   <div>
     {title == "Transportation" || "Labor Charges" || "Rent" ? (
@@ -28,7 +34,7 @@ const CommonCard = ({
         <div className="card input_card">
           <div className="row">
             <div className="col-lg-3 col-sm-12 title_bg">
-              <h5 className="comm_card_title mb-0">{title}</h5>
+              <h5 className="comm_card_title mb-0">{getText(title)}</h5>
             </div>
 
             <div className="col-lg-3 col-sm-12 col_left_border">
@@ -37,19 +43,27 @@ const CommonCard = ({
                 placeholder=""
                 onChange={onChange}
                 value={inputValue}
+                onFocus={(e) => resetInput(e)}
               />
             </div>
             <div className="col-lg-3 col-sm-12 col_left_border">
               <input type="text" placeholder="" onChange={onChange} value={units}/>
             </div>
             <div className="col-lg-3 col-sm-12 col_left_border">
-              <p className="text-center">{inputText ? inputText : 0.0}</p>
+            <input
+                type="text"
+                placeholder=""
+                onChange={onChangeTotals}
+                value={inputText}
+                onFocus={(e) => resetInput(e)}
+              />
+              {/* <p className="text-center">{inputText ? inputText : 0.0}</p> */}
             </div>
           </div>
         </div>
       </div>
     ) : (
-      "jio"
+      ""
       // <div className="comm_cards">
       //   <h5 className="comm_card_title">{title}</h5>
       //   <div className="row">

@@ -24,6 +24,7 @@ import moment from "moment";
 import { useNavigate, useLocation } from "react-router-dom";
 import Step2Modal from "./step2Modal";
 import clo from "../../assets/images/clo.png";
+import { getText } from "../../components/getText";
 const Step3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -31,23 +32,12 @@ const Step3Modal = (props) => {
   const partnerSelectedData = JSON.parse(
     localStorage.getItem("selectedPartner")
   );
-  const transpoSelectedData = JSON.parse(
-    localStorage.getItem("selectedTransporter")
-  );
+  const [transpoSelectedData, setTranspoSelectedData] = useState({});
+  // const transpoSelectedData =
   const [partyType, setPartnerType] = useState("Seller");
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
-  const [formStatusvalue, setFormStatus] = useState(false);
-  const [rtcommformStatusvalue, setRetComFormStatus] = useState(false);
-  const [transpoformStatusvalue, setTranspoFormStatus] = useState(false);
-  const [labourformStatusvalue, setLabourFormStatus] = useState(false);
-  const [rentformStatusvalue, setRentFormStatus] = useState(false);
-  const [mandifeeformStatusvalue, setMandiFormStatus] = useState(false);
-  const [levisformStatusvalue, setLevisFormStatus] = useState(false);
-  const [otherformStatusvalue, setOtherFormStatus] = useState(false);
-  const [cashformStatusvalue, setCashFormStatus] = useState(false);
-  const [advanceformStatusvalue, setAdvanceFormStatus] = useState(false);
   const [outBal, setOutsBal] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   const editStatus = props.billEditStatus;
@@ -66,9 +56,33 @@ const Step3Modal = (props) => {
   const [totalUnits, setTotalUnits] = useState(0);
   var step2CropEditStatus = props.step2CropEditStatus;
   const [unitPrevVal, setUnitPrevVal] = useState(0);
-  // console.log(props.slectedCropsArray,"ste2 items")
+  const [allGroups, setAllGroups] = useState([]);
+  var tableChangeStatusval;
+  const [tableChangeStatus, setTableChangeStatus] = useState(false);
+  console.log(props.slectedCropsArray[0].lineItems,"items sf")
   useEffect(() => {
     fetchPertnerData(partyType);
+    setTranspoSelectedData(
+      JSON.parse(localStorage.getItem("selectedTransporter"))
+    );
+    var cropArrays = editStatus
+    ? step2CropEditStatus
+      ? props.slectedCropsArray[0].lineItems
+      : billEditItem.lineItems
+    : props.slectedCropsArray;
+    var h = [];
+    console.log(props.slectedCropsArray,step2CropEditStatus)
+    for(var c=0; c<cropArrays.length; c++){
+      if(cropArrays[c].qtyUnit == 'kgs' || cropArrays[c].qtyUnit == 'loads' || cropArrays[c].qtyUnit == 'pieces'){
+        h.push(cropArrays[c]);
+      }
+      
+    }
+    if(cropArrays.length == h.length){
+      console.log(cropArrays,h);
+      tableChangeStatusval = true;
+      setTableChangeStatus(true)
+    }
     if (partnerSelectedData != null) {
       getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
@@ -92,31 +106,30 @@ const Step3Modal = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-      console.log(response)
+      console.log(response);
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
-            if (response[i].settingName === "COMMISSION") {
-              setFormStatus(true);
-            } else if (response[i].settingName === "RETURN_COMMISSION") {
-              setRetComFormStatus(true);
-            } else if (response[i].settingName === "TRANSPORTATION")
-              setTranspoFormStatus(true);
-            else if (response[i].settingName === "LABOUR_CHARGES")
-              setLabourFormStatus(true);
-            else if (response[i].settingName === "RENT")
-              setRentFormStatus(true);
-            else if (response[i].settingName === "MANDI_FEE")
-              setMandiFormStatus(true);
-            else if (response[i].settingName === "GOVT_LEVIES")
-              setLevisFormStatus(true);
-            else if (response[i].settingName === "OTHER_FEE")
-              setOtherFormStatus(true);
-            else if (response[i].settingName === "CASH_RECEIVED")
-              setCashFormStatus(true);
-            else if (response[i].settingName === "ADVANCE")
-              setAdvanceFormStatus(true);
-            else if (response[i].settingName === "OUT_ST_BALANCE")
+            Object.assign(response[i], {
+              settingName: response[i].settingName,
+              tableType: 0,
+              subText: "",
+              subText2: "",
+              totalVal: 0,
+            });
+
+            if (
+              response[i].settingName === "DEFAULT_RATE_TYPE" ||
+              response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
+              response[i].settingName == "WASTAGE"
+            ) {
+              console.log("hey");
+            } else {
+              listSettings(response[i].settingName, response, i);
+              allGroups.push(response[i]);
+            }
+
+            if (response[i].settingName === "OUT_ST_BALANCE")
               setOutBalformStatusvalue(true);
           }
 
@@ -129,61 +142,194 @@ const Step3Modal = (props) => {
         }
       }
     });
-    if (editStatus) {
-      var totalunitvalues = 0;
-      var t = 0;
-      var lineitm = billEditItem.lineItems;
-      for (var i = 0; i < lineitm.length; i++) {
-        totalunitvalues += editStatus
-          ? parseInt(lineitm[i].qty)
-          : parseInt(props.slectedCropsArray[i].qty);
-        // setTotalUnits(totalunitvalues);
-        setUnitPrevVal(parseInt(lineitm[i].qty));
-      }
-      if (!commEdit) {
-        getCommInput((billEditItem.comm / billEditItem.grossTotal) * 100);
-      }
-      if (!rtcommEdit) {
-        getRetCommInput((billEditItem.rtComm / billEditItem.grossTotal) * 100);
-      }
-      if (!transEdit) {
-        var totalQty = 0;
-        if (!step2CropEditStatus) {
-          for (var i = 0; i < billEditItem.lineItems.length; i++) {
-            totalQty += parseInt(billEditItem.lineItems[i].qty);
-          }
-          localStorage.setItem("totalQty", totalQty);
-          getTransportationValue(billEditItem.transportation / totalunitvalues);
-        } else {
-          var totalQtyValue = localStorage.getItem("totalQty");
-          getTransportationValue(billEditItem.transportation / totalQtyValue);
-        }
-      }
-      if (!labourEdit) {
-        if (!step2CropEditStatus) {
-          getLaborChargeValue(billEditItem.labourCharges / totalunitvalues);
-        } else {
-          var totalQtyValue = localStorage.getItem("totalQty");
-          getLaborChargeValue(billEditItem.labourCharges / totalQtyValue);
-          //getLaborChargeValue(parseInt(localStorage.getItem("labVal")));
-        }
-      }
-      if (!rentEdit) {
-        if (!step2CropEditStatus) {
-          getRentValue(billEditItem.rent / totalunitvalues);
-        } else {
-          var totalQtyValue = localStorage.getItem("totalQty");
-          getRentValue(billEditItem.rent / totalQtyValue);
-          //getRentValue(parseInt(localStorage.getItem("rentVal")));
-        }
-      }
-      if (!mandifEdit) {
-        getMandiFeeInput(
-          (billEditItem.mandiFee / billEditItem.grossTotal) * 100
-        );
-      }
-    }
   }, [props.showstep3]);
+  var gTotal = 0;
+  const getGrossTotalValue = (items) => {
+    var total = 0;
+    for (var i = 0; i < items.length; i++) {
+      total += editStatus
+        ? step2CropEditStatus
+          ? items[i].total
+          : items[i].grossTotal
+        : items[i].total;
+      setGrossTotal(total);
+      gTotal = total;
+    }
+  };
+
+  const listSettings = (name, res, index) => {
+    var totalQty = 0;
+    var item = editStatus
+      ? step2CropEditStatus
+        ? props.slectedCropsArray[0].lineItems
+        : props.slectedCropsArray[0].lineItems
+      : props.slectedCropsArray;
+    for (var i = 0; i < item.length; i++) {
+      totalQty += parseInt(item[i].qty);
+    }
+    let updatedItem = res.map((item, j) => {
+      if (j == index) {
+        switch (name) {
+          case "COMMISSION":
+            var trVa = editStatus
+              ? step2CropEditStatus
+                ? (billEditItem?.comm / gTotal) * 100
+                : (billEditItem?.comm / billEditItem?.grossTotal) * 100
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? (trVa / 100) * gTotal
+                : billEditItem.comm
+              : (res[j].value / 100) * gTotal;
+            getCommInput(trVa);
+            res[j] = {
+              ...res[j],
+              tableType: 2,
+              subText: "Default Percentage %",
+              value: trVa.toFixed(2),
+              totalVal: totalV.toFixed(2),
+            };
+            break;
+          case "RETURN_COMMISSION":
+            var trVa = editStatus
+              ? step2CropEditStatus
+                ? (billEditItem?.rtComm / gTotal) * 100
+                : (billEditItem?.rtComm / billEditItem?.grossTotal) * 100
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? (trVa / 100) * gTotal
+                : billEditItem.rtComm
+              : (res[j].value / 100) * gTotal;
+            getRetCommInput(trVa);
+            res[j] = {
+              ...res[j],
+              tableType: 2,
+              subText: "Default Percentage %",
+              value: trVa.toFixed(2),
+              totalVal: totalV.toFixed(2),
+            };
+            break;
+          case "MANDI_FEE":
+            var trVa = editStatus
+              ? step2CropEditStatus
+                ? (billEditItem?.mandiFee / gTotal) * 100
+                : (billEditItem?.mandiFee / billEditItem?.grossTotal) * 100
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? (trVa / 100) * gTotal
+                : billEditItem.mandiFee
+              : (trVa / 100) * gTotal;
+            getMandiFeeInput(trVa);
+            res[j] = {
+              ...res[j],
+              tableType: 2,
+              subText: "Default Percentage %",
+              value: trVa.toFixed(2),
+              totalVal: totalV.toFixed(2),
+            };
+
+            break;
+          case "TRANSPORTATION":
+            var trVa = editStatus
+              ? (tableChangeStatusval ? res[j].value : billEditItem?.transportation / totalQty)
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? totalQty * trVa
+                : billEditItem.transportation
+              : res[j].value * totalQty;
+            getTransportationValue(trVa);
+            res[j] = {
+              ...res[j],
+              tableType: 3,
+              subText: "Per Bag/Box /Creat /Sac",
+              subText2: "Number of Units",
+              totalVal: totalV.toFixed(2),
+              value: trVa.toFixed(2),
+            };
+            break;
+          case "RENT":
+            var trVa = editStatus
+              ? tableChangeStatusval ? res[j].value : billEditItem?.rent / totalQty
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? totalQty * trVa
+                : billEditItem.rent
+              : res[j].value * totalQty;
+            getRentValue(trVa);
+            res[j] = {
+              ...res[j],
+              tableType: 3,
+              subText: "Per Bag/Box /Creat /Sac",
+              subText2: "Number of Units",
+              totalVal: totalV.toFixed(2),
+              value: trVa.toFixed(2),
+            };
+            break;
+          case "LABOUR_CHARGES":
+            console.log(tableChangeStatusval)
+            var trVa = editStatus
+              ? tableChangeStatusval ? res[j].value : billEditItem?.labourCharges / totalQty
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? totalQty * trVa
+                : billEditItem.labourCharges
+              : res[j].value * totalQty;
+            getLaborChargeValue(trVa);
+            res[j] = {
+              ...res[j],
+              tableType: 3,
+              subText: "Per Bag/Box /Creat /Sac",
+              subText2: "Number of Units",
+              totalVal: totalV.toFixed(2),
+              value: trVa.toFixed(2),
+            };
+            break;
+          case "GOVT_LEVIES":
+            var trVa = getSingleValues(billEditItem?.govtLevies, res[j].value);
+            console.log(trVa);
+            getlevisValue(trVa);
+            res[j] = { ...res[j], tableType: 1, value: trVa };
+            break;
+          case "OTHER_FEE":
+            var trVa = getSingleValues(billEditItem?.misc, res[j].value);
+            getOtherfeeValue(trVa);
+            res[j] = { ...res[j], tableType: 1, value: trVa };
+            break;
+          case "CASH_RECEIVED":
+            var trVa = getSingleValues(billEditItem?.cashRcvd, res[j].value);
+
+            res[j] = { ...res[j], tableType: 1, value: trVa };
+            break;
+          case "CASH_PAID":
+            var trVa = getSingleValues(billEditItem?.cashPaid, res[j].value);
+            getCashpaidValue(trVa);
+            setcashPaidStatus(true);
+            res[j] = { ...res[j], tableType: 1, value: trVa };
+            break;
+          case "ADVANCES":
+            var trVa = getSingleValues(billEditItem?.advance, res[j].value);
+            getAdvancesValue(trVa);
+            res[j] = { ...res[j], tableType: 1, value: trVa };
+            break;
+        }
+        return { ...res[j] };
+      } else {
+        return { ...res[j] };
+      }
+    });
+    setAllGroups(updatedItem);
+
+    // return type;
+  };
+  const [cashPaidStatus, setcashPaidStatus] = useState(false);
+  const getSingleValues = (val, v) => {
+    return editStatus ? (step2CropEditStatus ? val : val) : v;
+  };
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(new Date());
@@ -193,10 +339,12 @@ const Step3Modal = (props) => {
     if (type == "Seller") {
       partnerType = "FARMER";
     } else if (type == "Transporter") {
+      console.log(type)
       partnerType = "TRANSPORTER";
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
+        console.log(response.data.data)
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -204,6 +352,7 @@ const Step3Modal = (props) => {
       });
   };
   const [partySelectStatus, setPartySelectStatus] = useState(false);
+  const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
   const partySelect = (item, type) => {
     setGetPartyItem(item);
     if (type == "Seller") {
@@ -215,7 +364,11 @@ const Step3Modal = (props) => {
       setPartySelectStatus(true);
     } else if (type == "Transporter") {
       setTranspoDataStatus(false);
+      setTransportoSelectStatus(true);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+      var h = JSON.parse(localStorage.getItem("selectedTransporter"));
+      setTranspoSelectedData(h);
+      console.log(transpoSelectedData, item);
     }
     setPartnerType(type);
   };
@@ -228,24 +381,13 @@ const Step3Modal = (props) => {
       setPartnerType(type);
       fetchPertnerData(type);
     } else if (type == "Transporter") {
+      console.log(type);
       setTranspoDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
     }
   };
 
-  const getGrossTotalValue = (items) => {
-    // console.log(items,"billittems")
-    var total = 0;
-    for (var i = 0; i < items.length; i++) {
-      total += editStatus
-        ? step2CropEditStatus
-          ? items[i].total
-          : items[i].grossTotal
-        : items[i].total;
-      setGrossTotal(total);
-    }
-  };
   const getUnitsTotalValue = (items) => {
     var totalunitvalue = 0;
     var it = editStatus
@@ -447,7 +589,6 @@ const Step3Modal = (props) => {
               toastId: "success1",
             });
             props.closeStep3Modal();
-            console.log("edit");
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
@@ -495,72 +636,140 @@ const Step3Modal = (props) => {
       setStartDate(new Date());
     }
   };
-  const [commEdit, setCommedit] = useState(false);
-  const commOnchangeEvent = (event) => {
-    setcommTotalValEditStatus(false);
-    var val = event.target.value.replace(/\D/g, "");
-    getCommInput(val);
-    setCommedit(true);
+
+  const [enterVal, setEnterVal] = useState();
+  const advLevOnchangeEvent = (groupLiist, index) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
+
+    let updatedItems = groupLiist.map((item, i) => {
+      if (i == index) {
+        getAdditionValues(groupLiist[i], val);
+        return { ...groupLiist[i], value: val };
+      } else {
+        return { ...groupLiist[i] };
+      }
+    });
+    setAllGroups([...updatedItems]);
+
+    setEnterVal(val);
   };
-  const [rtcommEdit, setrtCommedit] = useState(false);
-  const rtcommOnchangeEvent = (event) => {
-    getRetCommInput(event.target.value.replace(/\D/g, ""));
-    setrtCommedit(true);
+  const fieldOnchangeEvent = (groupLiist, index) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
+
+    let updatedItem3 = groupLiist.map((item, i) => {
+      if (i == index) {
+        getAdditionValues(groupLiist[i], val);
+        return { ...groupLiist[i], value: val, totalVal: getTotalUnits(val) };
+      } else {
+        return { ...groupLiist[i] };
+      }
+    });
+    setAllGroups([...updatedItem3]);
+
+    setEnterVal(val);
   };
-  const [transEdit, settransedit] = useState(false);
-  const [transValue, settransValue] = useState(0);
-  const transOnchangeEvent = (event) => {
-    getTransportationValue(event.target.value.replace(/[^0-9.]/g, ""));
-    settransedit(true);
-    localStorage.setItem("trVal", event.target.value);
-    settransValue(event.target.value);
+  const fieldOnchangeTotals = (groupLiist, index) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
+    let updatedItem = groupLiist.map((item, i) => {
+      if (i == index) {
+        var v = val / totalUnits;
+        if (v != 0) {
+          v = v.toFixed(2);
+        }
+        getAdditionValues(groupLiist[i], v);
+        return { ...groupLiist[i], value: v, totalVal: val };
+      } else {
+        return { ...groupLiist[i] };
+      }
+    });
+    setAllGroups([...updatedItem]);
   };
-  const [labourEdit, setLabouredit] = useState(false);
-  const labourOnchangeEvent = (event) => {
-    getLaborChargeValue(event.target.value.replace(/[^0-9.]/g, "")); //.replace(/\D./g, ""));
-    localStorage.setItem("labVal", event.target.value);
-    setLabouredit(true);
+  const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
+    console.log(e.target.value, "value");
+    // if (val != 0) {
+    let updatedItem2 = groupLiist.map((item, i) => {
+      if (i == index) {
+        getAdditionValues(groupLiist[i], val);
+        return {
+          ...groupLiist[i],
+          value: val,
+          totalVal: getTotalValue(val).toFixed(2),
+        };
+      } else {
+        return { ...groupLiist[i] };
+      }
+    });
+    setAllGroups([...updatedItem2]);
+    // }
+    setEnterVal(val);
   };
-  const [rentEdit, setRentedit] = useState(false);
-  const rentOnchangeEvent = (event) => {
-    getRentValue(event.target.value.replace(/[^0-9.]/g, ""));
-    // localStorage.setItem("rentVal", editStatus ? !step2CropEditStatus ?billEditItem.rent/ : : event.target.value);
-    setRentedit(true);
+  const commRetComTotalOnchangeEvent = (groupLiist, index) => (e) => {
+    var val = e.target.value.replace(/\D/g, "");
+    let updatedItem = groupLiist.map((item, i) => {
+      if (i == index) {
+        var v = (val / grossTotal) * 100;
+        if (v != 0) {
+          v = v.toFixed(2);
+        }
+        getAdditionValues(groupLiist[i], v);
+        return { ...groupLiist[i], value: v, totalVal: val };
+      } else {
+        return { ...groupLiist[i] };
+      }
+    });
+    setAllGroups([...updatedItem]);
   };
-  const [mandifEdit, setMandifEdit] = useState(false);
-  const mandiOnchangeEvent = (event) => {
-    getMandiFeeInput(event.target.value.replace(/[^0-9.]/g, ""));
-    setMandifEdit(true);
+  const getAdditionValues = (groupLiist, v) => {
+    if (groupLiist.settingName.toLowerCase() == "transportation") {
+      getTransportationValue(v);
+    }
+    if (groupLiist.settingName.toLowerCase() == "labour_charges") {
+      getLaborChargeValue(v);
+    }
+    if (groupLiist.settingName.toLowerCase() == "rent") {
+      getRentValue(v);
+    }
+    if (groupLiist.settingName == "COMMISSION") {
+      getCommInput(v);
+    }
+    if (groupLiist.settingName == "RETURN_COMMISSION") {
+      getRetCommInput(v);
+    }
+    if (groupLiist.settingName == "MANDI_FEE") {
+      if (v != "") {
+        getMandiFeeInput(v);
+      }
+    }
+    if (groupLiist.settingName == "OTHER_FEE") {
+      if (v != "") {
+        getOtherfeeValue(v);
+      }
+    }
+    if (groupLiist.settingName == "GOVT_LEVIES") {
+      if (v != "") {
+        getlevisValue(v);
+      }
+    }
+    if (groupLiist.settingName == "CASH_PAID") {
+      if (v != "") {
+        getCashpaidValue(v);
+      }
+    }
+    if (groupLiist.settingName == "ADVANCES") {
+      if (v != "") {
+        getAdvancesValue(v);
+      }
+    }
   };
-  const [levisEdit, setlevisEdit] = useState(false);
-  const levisOnchangeEvent = (event) => {
-    getlevisValue(event.target.value.replace(/\D/g, ""));
-    setlevisEdit(true);
-  };
-  const [otherFEdit, setotherFEdit] = useState(false);
-  const otherFOnchangeEvent = (event) => {
-    getOtherfeeValue(event.target.value.replace(/\D/g, ""));
-    setotherFEdit(true);
-  };
-  const [cashPaidEdit, setCashPaidEdit] = useState(false);
-  const cashPaidOnchangeEvent = (event) => {
-    getCashpaidValue(event.target.value.replace(/\D/g, ""));
-    setCashPaidEdit(true);
-  };
-  const [advEdit, setAdvEdit] = useState(false);
-  const advOnchangeEvent = (event) => {
-    getAdvancesValue(event.target.value.replace(/\D/g, ""));
-    setAdvEdit(true);
-  };
+
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
-  console.log("edit", showCropModalStatus, showCropModal);
   const editCropTable = (cropEditArray) => {
     step2buyCropTableOnclick(cropEditArray);
   };
   const closeCropTable = (cropEditArray) => {
-    console.log(editStatus, step2CropEditStatus);
     if (!editStatus) {
       if (step2CropEditStatus) {
         step2buyCropTableOnclick(cropEditArray);
@@ -568,34 +777,18 @@ const Step3Modal = (props) => {
     } else {
       setShowCropModalStatus(false);
       setShowCropModal(false);
-
-      console.log("edit", showCropModalStatus, showCropModal);
     }
     props.closeStep3Modal();
-
-    console.log("cancel");
   };
   const step2buyCropTableOnclick = (cropEditArray) => {
-    //step2CropEditStatus=true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
-    console.log("step2");
-    // props.closeStep3Modal();
   };
-  const [commTotalVal, setcommTotalVal] = useState(0);
-  const [commTotalValEditStatus, setcommTotalValEditStatus] = useState(false);
-  const [totalcommEdit, settotalcommEdit] = useState(false);
-  const commTotalOnchangeEvent = (event) => {
-    var val = event.target.value.replace(/\D/g, "");
-    setcommTotalValEditStatus(true);
-    setcommTotalVal(val);
-    settotalcommEdit(true);
-    var v = (val / grossTotal) * 100;
-    console.log(val);
-    if (v != 0) {
-      v = v.toFixed(2);
-      getCommInput(v);
+
+  const resetInput = (e) => {
+    if (e.target.value == 0) {
+      e.target.value = "";
     }
   };
   return (
@@ -698,19 +891,51 @@ const Step3Modal = (props) => {
                     <div className="d-flex align-items-center">
                       <img src={single_bill} className="icon_user" />
                       <div>
-                        <h5>{transpoSelectedData.partyName}</h5>
+                        {transportoSelectStatus}
+                        <h5>
+                          {editStatus
+                            ? transportoSelectStatus
+                              ? transpoSelectedData.partyName
+                              : billEditItem.transporterName
+                            : transpoSelectedData.partyName}
+                          {/* {transpoSelectedData.partyName} */}
+                        </h5>
                         <h6>
-                          {transpoSelectedData.partyType} -{" "}
-                          {transpoSelectedData.partyId} |{" "}
-                          {transpoSelectedData.mobile}
+                          {/* {transpoSelectedData.mobile } */}
+                          {editStatus
+                            ? transportoSelectStatus
+                              ? transpoSelectedData.partyType +
+                                "-" +
+                                transpoSelectedData.partyId +
+                                " | " +
+                                transpoSelectedData.mobile
+                              : "TRANSPORTER" + "-" + billEditItem.transporterId
+                            : transpoSelectedData.partyType +
+                              "-" +
+                              transpoSelectedData.partyId +
+                              " | " +
+                              transpoSelectedData.mobile}
                         </h6>
-                        <p>{transpoSelectedData.address.addressLine}</p>
+                        <p>
+                          {editStatus
+                            ? transportoSelectStatus
+                              ? transpoSelectedData?.address?.addressLine
+                              : ""
+                            : transpoSelectedData?.address?.addressLine}
+                        </p>
                       </div>
                     </div>
                   </div>
                   <img src={d_arrow} />
                 </div>
-                {transpoDataStatus ? (
+                
+              </div>
+            ) : (
+              <p onClick={() => partnerClick("Transporter")} className="select_transporter">
+                Select Transporter
+              </p>
+            )}
+            {transpoDataStatus ? (
                   <div className="partners_div" id="scroll_style">
                     <div className="d-flex searchparty" role="search">
                       <input
@@ -729,30 +954,7 @@ const Step3Modal = (props) => {
                         <div>
                           <ul>
                             {partnerData
-                              .filter((item) => {
-                                if (searchPartyItem === "") {
-                                  return item;
-                                } else if (
-                                  item.partyName
-                                    .toLowerCase()
-                                    .includes(searchPartyItem.toLowerCase())
-                                ) {
-                                  return item;
-                                } else if (
-                                  item.mobile
-                                    .toLowerCase()
-                                    .includes(searchPartyItem)
-                                ) {
-                                  return item;
-                                } else if (
-                                  item.partyId
-                                    .toString()
-                                    .toLowerCase()
-                                    .includes(searchPartyItem)
-                                ) {
-                                  return item;
-                                }
-                              })
+                              
                               .map((item) => {
                                 return (
                                   <li
@@ -798,10 +1000,6 @@ const Step3Modal = (props) => {
                 ) : (
                   ""
                 )}
-              </div>
-            ) : (
-              ""
-            )}
             <h5 className="date_sec head_modal p-0">Crop Information </h5>
             <div className="selectparty_field edit_crop_item_div">
               <div className="d-flex align-items-center justify-content-between">
@@ -844,246 +1042,89 @@ const Step3Modal = (props) => {
               className="card default_card comm_total_card"
               id="scroll_style"
             >
-              {formStatusvalue == true ? (
-                <CommissionCard
-                  title="Commission"
-                  rateTitle="Default Percentage %"
-                  onChange={(event) => commOnchangeEvent(event)}
-                  inputText={
-                    editStatus
-                      ? !commEdit
-                        ? step2CropEditStatus
-                          ? getTotalValue(commValue)
-                          : billEditItem.comm
-                        : commTotalValEditStatus
-                        ? commTotalVal
-                        : getTotalValue(commValue).toFixed(2)
-                      : commTotalValEditStatus
-                      ? commTotalVal
-                      : getTotalValue(commValue).toFixed(2)
-                  }
-                  inputValue={commValue}
-                  totalTitle="Total"
-                  totalOnChange={(event) => commTotalOnchangeEvent(event)}
-                />
-              ) : (
-                ""
-              )}
-              {rtcommformStatusvalue == true ? (
-                <CommissionCard
-                  title="Return Commission"
-                  rateTitle="Default Percentage %"
-                  onChange={(event) => rtcommOnchangeEvent(event)}
-                  inputText={
-                    editStatus
-                      ? !rtcommEdit
-                        ? step2CropEditStatus
-                          ? getTotalValue(retcommValue)
-                          : billEditItem.rtComm
-                        : getTotalValue(retcommValue)
-                      : getTotalValue(retcommValue)
-                  }
-                  inputValue={retcommValue}
-                  totalTitle="Total"
-                />
-              ) : (
-                ""
-              )}
-
-              {transpoformStatusvalue ? (
-                <CommonCard
-                  title="Transportation"
-                  rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) => transOnchangeEvent(event)}
-                  inputText={
-                    editStatus
-                      ? !transEdit
-                        ? step2CropEditStatus
-                          ? getTotalUnits(transportationValue)
-                          : billEditItem.transportation
-                        : getTotalUnits(transportationValue)
-                      : getTotalUnits(transportationValue)
-                  }
-                  inputValue={transportationValue}
-                  totalTitle="Total"
-                  unitsTitle="Number of Units"
-                  units={totalUnits}
-                />
-              ) : (
-                ""
-              )}
-              {labourformStatusvalue ? (
-                <CommonCard
-                  title="Labour Charges"
-                  rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) => labourOnchangeEvent(event)}
-                  inputText={
-                    editStatus
-                      ? !labourEdit
-                        ? step2CropEditStatus
-                          ? getTotalUnits(laborChargeValue)
-                          : billEditItem.labourCharges
-                        : getTotalUnits(laborChargeValue)
-                      : getTotalUnits(laborChargeValue)
-                  }
-                  inputValue={laborChargeValue}
-                  totalTitle="Total"
-                  unitsTitle="Number of Units"
-                  units={totalUnits}
-                />
-              ) : (
-                ""
-              )}
-              {rentformStatusvalue ? (
-                <CommonCard
-                  title="Rent"
-                  rateTitle="Per Bag/Sac/Box/Crate"
-                  onChange={(event) => rentOnchangeEvent(event)}
-                  inputText={
-                    editStatus
-                      ? !rentEdit
-                        ? step2CropEditStatus
-                          ? getTotalUnits(rentValue)
-                          : billEditItem.rent
-                        : getTotalUnits(rentValue)
-                      : getTotalUnits(rentValue)
-                  }
-                  inputValue={rentValue}
-                  totalTitle="Total"
-                  unitsTitle="Number of Units"
-                  units={totalUnits}
-                />
-              ) : (
-                ""
-              )}
-              {mandifeeformStatusvalue ? (
-                <CommissionCard
-                  title="Mandi Fee"
-                  rateTitle="Default Percentage %"
-                  onChange={(event) => mandiOnchangeEvent(event)}
-                  inputText={
-                    editStatus
-                      ? !mandifEdit
-                        ? step2CropEditStatus
-                          ? getTotalValue(mandifeeValue)
-                          : billEditItem.mandiFee
-                        : getTotalValue(parseInt(mandifeeValue))
-                      : getTotalValue(parseInt(mandifeeValue))
-                  }
-                  inputValue={mandifeeValue}
-                  totalTitle="Total"
-                />
-              ) : (
-                ""
-              )}
-              {levisformStatusvalue ? (
-                <div className="comm_cards">
-                  <div className="card input_card">
-                    <div className="row">
-                      <div className="col-lg-3 title_bg">
-                        <h5 className="comm_card_title mb-0">Govt. Levies</h5>
-                      </div>
-                      <div className="col-lg-9 col-sm-12 col_left_border">
-                        <input
-                          type="text"
-                          placeholder=""
-                          value={
-                            editStatus
-                              ? !levisEdit
-                                ? billEditItem.govtLevies
-                                : levisValue
-                              : levisValue
-                          }
-                          onChange={(event) => levisOnchangeEvent(event)}
+              {allGroups.length > 0
+                ? allGroups.map((item, index) => {
+                    if (item.tableType == 2) {
+                      return (
+                        <CommissionCard
+                          title={item.settingName}
+                          rateTitle={item.subText}
+                          onChange={commRetCommOnchangeEvent(allGroups, index)}
+                          inputValue={allGroups[index].value}
+                          inputText={allGroups[index].totalVal}
+                          totalTitle="Total"
+                          totalOnChange={commRetComTotalOnchangeEvent(
+                            allGroups,
+                            index
+                          )}
                         />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {otherformStatusvalue ? (
-                <div className="comm_cards">
-                  <div className="card input_card">
-                    <div className="row">
-                      <div className="col-lg-3 title_bg">
-                        <h5 className="comm_card_title mb-0">Other Fee</h5>
-                      </div>
-                      <div className="col-lg-9 col-sm-12 col_left_border">
-                        <input
-                          type="text"
-                          placeholder=""
-                          value={
-                            editStatus
-                              ? !otherFEdit
-                                ? billEditItem.misc
-                                : otherfeeValue
-                              : otherfeeValue
-                          }
-                          onChange={(event) => otherFOnchangeEvent(event)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {cashformStatusvalue ? (
-                <div className="comm_cards">
-                  <div className="card input_card">
-                    <div className="row">
-                      <div className="col-lg-3 title_bg">
-                        <h5 className="comm_card_title mb-0">Cash Paid</h5>
-                      </div>
-                      <div className="col-lg-9 col-sm-12 col_left_border">
-                        <input
-                          type="text"
-                          placeholder=""
-                          value={
-                            editStatus
-                              ? !cashPaidEdit
-                                ? billEditItem.cashPaid
-                                : cashpaidValue
-                              : cashpaidValue
-                          }
-                          onChange={(event) => cashPaidOnchangeEvent(event)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
-              {advanceformStatusvalue ? (
-                <div className="comm_cards">
-                  <div className="card input_card">
-                    <div className="row">
-                      <div className="col-lg-3 title_bg">
-                        <h5 className="comm_card_title mb-0">Advances</h5>
-                      </div>
-                      <div className="col-lg-9 col-sm-12 col_left_border">
-                        <input
-                          type="text"
-                          placeholder=""
-                          value={
-                            editStatus
-                              ? !advEdit
-                                ? billEditItem.advance
-                                : advancesValue
-                              : advancesValue
-                          }
-                          onChange={(event) => advOnchangeEvent(event)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                ""
-              )}
+                      );
+                    } else if (allGroups[index].tableType == 3) {
+                      return (
+                        tableChangeStatus ?  <div className="comm_cards">
+                        <div className="card input_card">
+                          <div className="row">
+                            <div className="col-lg-3 title_bg">
+                              <h5 className="comm_card_title mb-0">
+                                {getText(allGroups[index].settingName)}
+                              </h5>
+                            </div>
+                            <div className="col-lg-9 col-sm-12 col_left_border">
+                              <input
+                                type="text"
+                                placeholder=""
+                                onFocus={(e) => resetInput(e)}
+                                value={allGroups[index].value}
+                                onChange={advLevOnchangeEvent(
+                                  allGroups,
+                                  index
+                                )}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div> :
+                        (<CommonCard
+                          title={allGroups[index].settingName}
+                          rateTitle={allGroups[index].subText}
+                          onChange={fieldOnchangeEvent(allGroups, index)}
+                          inputValue={allGroups[index].value}
+                          inputText={allGroups[index].totalVal}
+                          totalTitle="Total"
+                          unitsTitle={allGroups[index].subText2}
+                          units={totalUnits}
+                          onChangeTotals={fieldOnchangeTotals(allGroups, index)}
+                        />)
+                      );
+                    } else if (allGroups[index].tableType == 1) {
+                      return (
+                        <div className="comm_cards">
+                          <div className="card input_card">
+                            <div className="row">
+                              <div className="col-lg-3 title_bg">
+                                <h5 className="comm_card_title mb-0">
+                                  {getText(allGroups[index].settingName)}
+                                </h5>
+                              </div>
+                              <div className="col-lg-9 col-sm-12 col_left_border">
+                                <input
+                                  type="text"
+                                  placeholder=""
+                                  onFocus={(e) => resetInput(e)}
+                                  value={allGroups[index].value}
+                                  onChange={advLevOnchangeEvent(
+                                    allGroups,
+                                    index
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })
+                : ""}
             </div>
           </div>
           <div className="col-lg-3 pl-0">
@@ -1109,7 +1150,14 @@ const Step3Modal = (props) => {
               {cashpaidValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Paid</h5>
-                  <h6 className="black_color">-{cashpaidValue}</h6>
+                  <h6 className="black_color">
+                    -
+                    {billEditItem?.cashPaid
+                      ? cashPaidStatus
+                        ? cashpaidValue
+                        : billEditItem?.cashPaid
+                      : cashpaidValue}
+                  </h6>
                 </div>
               ) : (
                 ""
@@ -1157,4 +1205,3 @@ const Step3Modal = (props) => {
   );
 };
 export default Step3Modal;
-

@@ -202,7 +202,8 @@ const Step2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
-    console.log("step2next")
+    console.log("step2next");
+    console.log(updatedItemList,props.slectedCropstableArray)
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
         cropData[k].total =
@@ -234,7 +235,7 @@ const Step2Modal = (props) => {
               cropData[i].status = 1;
             }
           }
-          props.slectedCropstableArray[0].lineItems = cropData;
+          props.slectedCropstableArray[0].lineItems = updatedItemList.length != 0 ? updatedItemList : cropData ;
         }
       }
       //return cropData[index];
@@ -313,9 +314,13 @@ const Step2Modal = (props) => {
           });
           return null;
         } else if (cropData[index].weight == 0) {
-          toast.error("Please enter weight", {
-            toastId: "error2",
-          });
+          console.log(cropData[index].qtyUnit,cropData[index].rateType)
+          // if(cropData[index].rateType != 'RATE_PER_UNIT'){
+            toast.error("Please enter weight", {
+              toastId: "error2",
+            });
+          // }
+         
           return null;
         } else if (cropData[index].rate == 0) {
           toast.error("Please enter rate", {
@@ -450,10 +455,19 @@ const Step2Modal = (props) => {
 
   var dummyList = [];
   var arrylist = [];
+  var cropDeletedList = [];
   const deleteCrop = (crop, cropArray) => {
+    console.log(showStep3Modal);
     var index = cropArray.indexOf(crop);
+   
     var list = preferedCropsData;
     if (index != -1) {
+ 
+      Object.assign(cropArray[index], { status: 0 });
+      cropArray[index].total = 0;
+      cropArray[index].qty = 0;
+      cropDeletedList.push(cropArray[index]);
+      console.log(cropDeletedList)
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
       if (index1 != -1) {
@@ -469,7 +483,6 @@ const Step2Modal = (props) => {
                   if (item.cropId == list[index1].cropId) {
                     return { ...dummyList[i] };
                   } else {
-                    console.log("else");
                     return null;
                   }
                 });
@@ -483,13 +496,13 @@ const Step2Modal = (props) => {
                   for (var t = 0; t < arrylist.length; t++) {
                     if (list[k].cropId == arrylist[t].cropId) {
                       list.splice(index1, t);
-                      console.log("newcrop remove", index1);
                     } else {
                       console.log("samecrop ");
                       // return list;
                     }
                   }
                 }
+                setShowStep3Modal(false);
                 console.log(list);
                 setPreferedCropsData([...list]);
               })
@@ -500,8 +513,8 @@ const Step2Modal = (props) => {
         }
       }
     }
-
-    setUpdatedItemList(cropArray);
+    console.log(cropDeletedList,cropArray)
+    setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
   //const [checked, setChecked] = useState(false);
@@ -1021,7 +1034,7 @@ const Step2Modal = (props) => {
           step2CropEditStatus={props.billEditStatus ? true : false}
         />
       ) : (
-        ""
+        "step3"
       )}
       <ToastContainer />
       {showBagsModalStatus ? (
