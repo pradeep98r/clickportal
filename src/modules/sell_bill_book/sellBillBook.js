@@ -253,7 +253,7 @@ const SellBillBook = () => {
                                                 bill.buyerId}
                                             </h6>
                                             <h6 className="address">
-                                              {bill.farmerAddress}
+                                              {bill.buyerAddress}
                                             </h6>
                                           </div>
                                         </div>
@@ -338,7 +338,7 @@ const SellBillBook = () => {
                                   <div className="col-lg-2 flex_class">
                                     <div className="row" style={{'width':'100%'}}>
                                       <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
-                                        <p className="crop_name payble_text">
+                                        <p className="crop_name payble_text color_green">
                                           {getCurrencyNumberWithOutSymbol(
                                             bill.totalReceivable
                                           )}

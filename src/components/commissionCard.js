@@ -1,4 +1,5 @@
 import React from "react";
+import { getText } from "./getText";
 const resetInput = (e) => {
   if(e.target.value == 0){
     e.target.value = "";
@@ -27,7 +28,7 @@ const CommissionCard = ({
       <div className="card input_card">
         <div className="row">
           <div className="col-lg-3 col-sm-12 d-flex align-items-center title_bg">
-            <h5 className="comm_card_title mb-0">{title}</h5>
+            <h5 className="comm_card_title mb-0">{getText(title)}</h5>
           </div>
           <div className="col-lg-5 col-sm-12 col_left_border">
             <input
