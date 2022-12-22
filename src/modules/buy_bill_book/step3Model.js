@@ -388,7 +388,7 @@ const Step3Modal = (props) => {
       setPartnerType(type);
       fetchPertnerData(type);
     } else if (type == "Transporter") {
-      console.log(type);
+      // console.log(type);
       setTranspoDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
@@ -430,12 +430,13 @@ const Step3Modal = (props) => {
         Number(advancesValue)
     );
     let totalValue = grossTotal - t;
-    console.log(totalValue,'total bill')
+    // console.log(totalValue,'total bill')
     if (addRetComm) {
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
       return (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
+    
   };
   const getActualPayble = () => {
     var actualPay = getTotalBillAmount() - Number(cashpaidValue);
@@ -451,6 +452,9 @@ const Step3Modal = (props) => {
     }
     return actualPay;
   };
+  const getTotalPayble = () =>{
+    return (Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2));
+  }
   const getFinalLedgerbalance = () => {
     var t = Number(
       getTotalUnits(transportationValue) +
@@ -514,7 +518,7 @@ const Step3Modal = (props) => {
     billStatus: "Completed",
     caId: clickId,
     cashPaid: Number(cashpaidValue),
-    comm: getTotalValue(Number(commValue)),
+    comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
     commShown: true,
     comments: "hi",
@@ -522,18 +526,18 @@ const Step3Modal = (props) => {
     farmerId: partnerSelectedData.partyId, //partnerSelectedData.partyId,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
-    labourCharges: getTotalUnits(laborChargeValue),
+    labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
-    mandiFee: getTotalValue(mandifeeValue),
+    mandiFee: Number(getTotalValue(mandifeeValue)).toFixed(2),
     misc: Number(otherfeeValue),
     outStBal: 0,
     paidTo: 100,
-    rent: getTotalUnits(rentValue),
-    rtComm: (getTotalValue(retcommValue)),
+    rent: Number(getTotalUnits(rentValue).toFixed(2)),
+    rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
-    totalPayble: getTotalBillAmount() - parseInt(cashpaidValue),
-    transportation: getTotalUnits(transportationValue),
+    totalPayble: getTotalPayble(),
+    transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -547,7 +551,7 @@ const Step3Modal = (props) => {
       advance: Number(advancesValue),
       billDate: partnerSelectDate,
       cashRcvd: Number(cashpaidValue),
-      comm: getTotalValue((commValue)),
+      comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
       comments: "hi",
       // customFields: [
@@ -562,19 +566,19 @@ const Step3Modal = (props) => {
       // ],
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
-      labourCharges: getTotalUnits(laborChargeValue),
+      labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
-      mandiFee: getTotalValue((mandifeeValue)),
+      mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
       otherFee: Number(otherfeeValue),
       outStBal: outBal,
       paidTo: 0,
       partyId: billEditItem.farmerId, //partnerSelectedData.partyId,
-      rent: getTotalUnits(rentValue),
-      rtComm: getTotalValue(retcommValue),
+      rent: Number(getTotalUnits(rentValue).toFixed(2)),
+      rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
-      totalPayRecieevable: getTotalBillAmount() - parseInt(cashpaidValue),
-      transportation: getTotalUnits(transportationValue),
+      totalPayRecieevable: getTotalPayble(),
+      transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
         transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
@@ -611,6 +615,7 @@ const Step3Modal = (props) => {
         }
       );
     } else {
+      console.log(getTotalUnits(Number(rentValue)),getTotalUnits((transportationValue)))
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -667,6 +672,7 @@ const Step3Modal = (props) => {
 
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
+        console.log(val,typeof(val))
         getAdditionValues(groupLiist[i], val);
         return { ...groupLiist[i], value: val, totalVal: Number(getTotalUnits(val).toFixed(2)) };
       } else {
@@ -695,7 +701,6 @@ const Step3Modal = (props) => {
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
-    console.log(e.target.value, "value");
     // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
@@ -1173,9 +1178,7 @@ const Step3Modal = (props) => {
                 <div className="totals_value">
                   <h5>Total Paybles (₹)</h5>
                   <h6>
-                    {(getTotalBillAmount() - parseInt(cashpaidValue)).toFixed(
-                      2
-                    )}
+                    {getTotalPayble()}
                   </h6>
                 </div>
               )}

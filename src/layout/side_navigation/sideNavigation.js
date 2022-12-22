@@ -147,7 +147,6 @@ function SideNavigation() {
   // activeLink: null,
 
   const [activeLink, setactiveLink] = useState(0);
-  console.log(activeLink);
   const handleClick = (id, path) => {
     setactiveLink(id);
     if (path === "/buy_bill_book") {
@@ -164,7 +163,6 @@ function SideNavigation() {
   const getPathsId = () => {
     var id = 1;
     var linkPath = localStorage.getItem("LinkPath");
-    console.log(activeLink, linkPath, "else");
     switch (linkPath) {
       case "/smartboard":
         id = 1;

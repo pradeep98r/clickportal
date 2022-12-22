@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import "../buy_bill_book/buyBillBook.scss";
+import {qtyValues} from "../../components/qtyValues";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
@@ -19,6 +20,7 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
+
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -41,7 +43,6 @@ function BuyBillBook() {
       : "";
 
   const callbackFunction = (startDate, endDate, dateTab) => {
-    console.log(startDate,endDate);
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
@@ -56,7 +57,6 @@ function BuyBillBook() {
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
     } else if (dateTab === "Yearly") {
-      console.log("yearly", dateTab);
       setDateValue(moment(fromDate).format("YYYY"));
     } else {
       setDateValue(
@@ -67,21 +67,17 @@ function BuyBillBook() {
     }
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(fromDate,toDate);
         console.log(response.data.data, "billsss");
         if (response.data.data != null) {
-          console.log('igf')
-        setAllData(response.data.data);
+          setAllData(response.data.data);
           setBuyBillData(response.data.data.singleBills);
-        }
-        else{
-          setBuyBillData([])
-          console.log(buyBillData)
+        } else {
+          setBuyBillData([]);
         }
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error.message)
+        console.log(error.message);
         console.log(error);
       });
   };
@@ -107,35 +103,11 @@ function BuyBillBook() {
     localStorage.setItem("stepOne", stepOneHeader);
   };
 
-  const getCropUnit = (unit) => {
-    var unitType = "";
-    switch (unit.toLowerCase()) {
-      case "crates":
-        unitType = "C";
-        break;
-      case "boxes":
-        unitType = "BX";
-        break;
-      case "bags":
-        unitType = "BG";
-        break;
-      case "sacs":
-        unitType = "S";
-        break;
-      case "loads":
-        unitType = "L";
-        break;
-      case "Pieces":
-        unitType = "P";
-        break;
-    }
-    return unitType;
-  };
-  
+
+
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
-    console.log(allData);
     result = allData.singleBills.filter((data) => {
       if (data.farmerName.toLowerCase().includes(value)) {
         return data.farmerName.toLowerCase().search(value) != -1;
@@ -145,7 +117,6 @@ function BuyBillBook() {
         return data.farmerId.toString().search(value) != -1;
       }
     });
-    console.log(result);
     setBuyBillData(result);
   };
   return (
@@ -328,37 +299,9 @@ function BuyBillBook() {
                                               </p>
                                             </div>
                                             <div className="col-lg-4 col-sm-12 col flex_class">
-                                              <p className="crop_name">
-                                                {(crop.qty == 0
-                                                  ? ""
-                                                  : getCurrencyNumberWithOneDigit(
-                                                      crop.qty
-                                                    )) +
-                                                  getCropUnit(
-                                                    crop.qtyUnit
-                                                  )}{" "}
-                                                {crop.qty == 0 ? "" : "|"}{" "}
-                                                {getCurrencyNumberWithOneDigit(
-                                                  crop.weight
-                                                ) + "KGS"}
-                                                <span className="color_red">
-                                                  {crop.wastage != "0"
-                                                    ? crop.wastage != null
-                                                      ? " - " +
-                                                        getCurrencyNumberWithOneDigit(
-                                                          crop.wastage
-                                                        ) +
-                                                        langFullData.kgs
-                                                      : ""
-                                                    : ""}
-                                                </span>
-                                                {/* {crop.qtyUnit + ":" + crop.qty}  */}
-                                                {/* |
-                                            Weight:{" "}
-                                            {crop.weight == null
-                                              ? "0"
-                                              : crop.weight} */}
-                                              </p>
+                                              {/* {crop.qtyUnit+crop.qty} */}
+                                              <div> {qtyValues(crop.qty,crop.qtyUnit,crop.weight,crop.wastage,crop.rateType)}</div>
+                                            
                                             </div>
                                             <div className="col-lg-2 col-sm-12 col flex_class">
                                               <p className="number_overflow crop_name">
@@ -378,14 +321,21 @@ function BuyBillBook() {
                                         ))}
                                       </div>
                                       <div className="col-lg-2 flex_class">
-                                        <div className="row" style={{'width':'100%'}}>
+                                        <div
+                                          className="row"
+                                          style={{ width: "100%" }}
+                                        >
                                           <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
                                             <p className="crop_name payble_text">
                                               {getCurrencyNumberWithOutSymbol(
                                                 bill.totalPayables
                                               )}
                                             </p>
-                                            <img src={left_arrow} alt="left-arrow" className="left-arrow-img"/>
+                                            <img
+                                              src={left_arrow}
+                                              alt="left-arrow"
+                                              className="left-arrow-img"
+                                            />
                                           </div>
                                         </div>
                                       </div>
