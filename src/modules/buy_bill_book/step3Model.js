@@ -59,29 +59,33 @@ const Step3Modal = (props) => {
   const [allGroups, setAllGroups] = useState([]);
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
-  console.log(props.slectedCropsArray[0].lineItems,"items sf")
+  // console.log(props.slectedCropsArray[0].lineItems, "items sf");
   useEffect(() => {
     fetchPertnerData(partyType);
     setTranspoSelectedData(
       JSON.parse(localStorage.getItem("selectedTransporter"))
     );
     var cropArrays = editStatus
-    ? step2CropEditStatus
-      ? props.slectedCropsArray[0].lineItems
-      : billEditItem.lineItems
-    : props.slectedCropsArray;
+      ? step2CropEditStatus
+        ? props.slectedCropsArray[0].lineItems
+        : billEditItem.lineItems
+      : props.slectedCropsArray;
     var h = [];
-    console.log(props.slectedCropsArray,step2CropEditStatus)
-    for(var c=0; c<cropArrays.length; c++){
-      if(cropArrays[c].qtyUnit == 'kgs' || cropArrays[c].qtyUnit == 'loads' || cropArrays[c].qtyUnit == 'pieces'){
+    // console.log(props.slectedCropsArray,step2CropEditStatus)
+    for (var c = 0; c < cropArrays.length; c++) {
+      if (
+        cropArrays[c].qtyUnit == "kgs" ||
+        cropArrays[c].qtyUnit == "loads" ||
+        cropArrays[c].qtyUnit == "pieces"
+      ) {
+        h.push(cropArrays[c]);
+      } else if (cropArrays[c].qtyUnit == "") {
         h.push(cropArrays[c]);
       }
-      
     }
-    if(cropArrays.length == h.length){
-      console.log(cropArrays,h);
+    if (cropArrays.length == h.length) {
       tableChangeStatusval = true;
-      setTableChangeStatus(true)
+      setTableChangeStatus(true);
     }
     if (partnerSelectedData != null) {
       getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
@@ -106,7 +110,7 @@ const Step3Modal = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-      console.log(response);
+    
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -233,7 +237,9 @@ const Step3Modal = (props) => {
             break;
           case "TRANSPORTATION":
             var trVa = editStatus
-              ? (tableChangeStatusval ? res[j].value : billEditItem?.transportation / totalQty)
+              ? tableChangeStatusval
+                ? res[j].value
+                : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
@@ -252,7 +258,9 @@ const Step3Modal = (props) => {
             break;
           case "RENT":
             var trVa = editStatus
-              ? tableChangeStatusval ? res[j].value : billEditItem?.rent / totalQty
+              ? tableChangeStatusval
+                ? res[j].value
+                : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
@@ -270,9 +278,10 @@ const Step3Modal = (props) => {
             };
             break;
           case "LABOUR_CHARGES":
-            console.log(tableChangeStatusval)
             var trVa = editStatus
-              ? tableChangeStatusval ? res[j].value : billEditItem?.labourCharges / totalQty
+              ? tableChangeStatusval
+                ? res[j].value
+                : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
@@ -291,7 +300,7 @@ const Step3Modal = (props) => {
             break;
           case "GOVT_LEVIES":
             var trVa = getSingleValues(billEditItem?.govtLevies, res[j].value);
-            console.log(trVa);
+           
             getlevisValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
@@ -339,12 +348,10 @@ const Step3Modal = (props) => {
     if (type == "Seller") {
       partnerType = "FARMER";
     } else if (type == "Transporter") {
-      console.log(type)
       partnerType = "TRANSPORTER";
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
-        console.log(response.data.data)
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -368,7 +375,7 @@ const Step3Modal = (props) => {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedTransporter"));
       setTranspoSelectedData(h);
-      console.log(transpoSelectedData, item);
+      // console.log(transpoSelectedData, item);
     }
     setPartnerType(type);
   };
@@ -412,17 +419,18 @@ const Step3Modal = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
-    var t = parseInt(
+    var t = Number(
       getTotalValue(commValue) +
         getTotalUnits(transportationValue) +
         getTotalUnits(laborChargeValue) +
         getTotalUnits(rentValue) +
-        getTotalValue(parseInt(mandifeeValue)) +
-        parseInt(levisValue) +
-        parseInt(otherfeeValue) +
-        parseInt(advancesValue)
+        getTotalValue(mandifeeValue) +
+        Number(levisValue) +
+        Number(otherfeeValue) +
+        Number(advancesValue)
     );
     let totalValue = grossTotal - t;
+    console.log(totalValue,'total bill')
     if (addRetComm) {
       return (totalValue + getTotalValue(retcommValue)).toFixed(2);
     } else {
@@ -430,7 +438,7 @@ const Step3Modal = (props) => {
     }
   };
   const getActualPayble = () => {
-    var actualPay = getTotalBillAmount() - parseInt(cashpaidValue);
+    var actualPay = getTotalBillAmount() - Number(cashpaidValue);
     if (!includeComm) {
       actualPay = actualPay - getTotalValue(commValue);
     }
@@ -444,14 +452,14 @@ const Step3Modal = (props) => {
     return actualPay;
   };
   const getFinalLedgerbalance = () => {
-    var t = parseInt(
+    var t = Number(
       getTotalUnits(transportationValue) +
         getTotalUnits(laborChargeValue) +
         getTotalUnits(rentValue) +
-        getTotalValue(parseInt(mandifeeValue)) +
-        parseInt(levisValue) +
-        parseInt(otherfeeValue) +
-        parseInt(advancesValue)
+        getTotalValue((mandifeeValue)) +
+        Number(levisValue) +
+        Number(otherfeeValue) +
+        Number(advancesValue)
     );
     var finalValue = grossTotal - t;
     var finalVal = 0;
@@ -469,7 +477,8 @@ const Step3Modal = (props) => {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    return (parseInt(finalVal) + outBal).toFixed(2) - parseInt(cashpaidValue);
+    // console.log((Number(finalVal) + outBal).toFixed(2) - Number(cashpaidValue))
+    return (Number(finalVal) + outBal).toFixed(2) - Number(cashpaidValue);
   };
   var lineItemsArray = [];
 
@@ -499,29 +508,29 @@ const Step3Modal = (props) => {
   }
   // }
   const billRequestObj = {
-    actualPayble: getActualPayble(),
-    advance: advancesValue,
+    actualPayble: Number(getActualPayble()),
+    advance: Number(advancesValue),
     billDate: partnerSelectDate,
     billStatus: "Completed",
     caId: clickId,
-    cashPaid: cashpaidValue,
+    cashPaid: Number(cashpaidValue),
     comm: getTotalValue(commValue),
     commIncluded: includeComm,
     commShown: true,
     comments: "hi",
     createdBy: 0,
     farmerId: partnerSelectedData.partyId, //partnerSelectedData.partyId,
-    govtLevies: levisValue,
+    govtLevies: Number(levisValue),
     grossTotal: grossTotal,
     labourCharges: getTotalUnits(laborChargeValue),
     less: addRetComm,
     lineItems: lineItemsArray,
-    mandiFee: getTotalValue(parseInt(mandifeeValue)),
-    misc: parseInt(otherfeeValue),
+    mandiFee: getTotalValue((mandifeeValue)),
+    misc: Number(otherfeeValue),
     outStBal: 0,
     paidTo: 100,
     rent: getTotalUnits(rentValue),
-    rtComm: getTotalValue(retcommValue),
+    rtComm: (getTotalValue(retcommValue)),
     rtCommIncluded: includeRetComm,
     totalPayble: getTotalBillAmount() - parseInt(cashpaidValue),
     transportation: getTotalUnits(transportationValue),
@@ -535,10 +544,10 @@ const Step3Modal = (props) => {
     action: "UPDATE",
     billAttributes: {
       actualPayRecieevable: getActualPayble(),
-      advance: advancesValue,
+      advance: Number(advancesValue),
       billDate: partnerSelectDate,
-      cashRcvd: cashpaidValue,
-      comm: getTotalValue(commValue),
+      cashRcvd: Number(cashpaidValue),
+      comm: getTotalValue((commValue)),
       commIncluded: includeComm,
       comments: "hi",
       // customFields: [
@@ -551,13 +560,13 @@ const Step3Modal = (props) => {
       //     "less": true
       //   }
       // ],
-      govtLevies: levisValue,
+      govtLevies: Number(levisValue),
       grossTotal: grossTotal,
       labourCharges: getTotalUnits(laborChargeValue),
       less: addRetComm,
-      mandiFee: getTotalValue(parseInt(mandifeeValue)),
-      misc: parseInt(otherfeeValue),
-      otherFee: parseInt(otherfeeValue),
+      mandiFee: getTotalValue((mandifeeValue)),
+      misc: Number(otherfeeValue),
+      otherFee: Number(otherfeeValue),
       outStBal: outBal,
       paidTo: 0,
       partyId: billEditItem.farmerId, //partnerSelectedData.partyId,
@@ -639,7 +648,7 @@ const Step3Modal = (props) => {
 
   const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    var val = e.target.value.replace(/[^0-9.]/g,'');
 
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
@@ -654,12 +663,12 @@ const Step3Modal = (props) => {
     setEnterVal(val);
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    var val = e.target.value.replace(/[^0-9.]/g,'');
 
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
-        return { ...groupLiist[i], value: val, totalVal: getTotalUnits(val) };
+        return { ...groupLiist[i], value: val, totalVal: Number(getTotalUnits(val).toFixed(2)) };
       } else {
         return { ...groupLiist[i] };
       }
@@ -669,7 +678,7 @@ const Step3Modal = (props) => {
     setEnterVal(val);
   };
   const fieldOnchangeTotals = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItem = groupLiist.map((item, i) => {
       if (i == index) {
         var v = val / totalUnits;
@@ -677,7 +686,7 @@ const Step3Modal = (props) => {
           v = v.toFixed(2);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: val };
+        return { ...groupLiist[i], value: v, totalVal: Number(val.toFixed(2)) };
       } else {
         return { ...groupLiist[i] };
       }
@@ -685,7 +694,7 @@ const Step3Modal = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    var val = e.target.value.replace(/[^0-9.]/g, "");
     console.log(e.target.value, "value");
     // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
@@ -694,7 +703,7 @@ const Step3Modal = (props) => {
         return {
           ...groupLiist[i],
           value: val,
-          totalVal: getTotalValue(val).toFixed(2),
+          totalVal: Number(getTotalValue(val).toFixed(2)),
         };
       } else {
         return { ...groupLiist[i] };
@@ -705,7 +714,7 @@ const Step3Modal = (props) => {
     setEnterVal(val);
   };
   const commRetComTotalOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItem = groupLiist.map((item, i) => {
       if (i == index) {
         var v = (val / grossTotal) * 100;
@@ -713,7 +722,7 @@ const Step3Modal = (props) => {
           v = v.toFixed(2);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: val };
+        return { ...groupLiist[i], value: v, totalVal: Number(val.toFixed(2)) };
       } else {
         return { ...groupLiist[i] };
       }
@@ -928,78 +937,70 @@ const Step3Modal = (props) => {
                   </div>
                   <img src={d_arrow} />
                 </div>
-                
               </div>
             ) : (
-              <p onClick={() => partnerClick("Transporter")} className="select_transporter">
+              <p
+                onClick={() => partnerClick("Transporter")}
+                className="select_transporter"
+              >
                 Select Transporter
               </p>
             )}
             {transpoDataStatus ? (
-                  <div className="partners_div" id="scroll_style">
-                    <div className="d-flex searchparty" role="search">
-                      <input
-                        className="form-control mb-0"
-                        type="search"
-                        placeholder="Search"
-                        aria-label="Search"
-                        onChange={(event) =>
-                          setSearchPartyItem(event.target.value)
-                        }
-                      />
-                    </div>
+              <div className="partners_div" id="scroll_style">
+                <div className="d-flex searchparty" role="search">
+                  <input
+                    className="form-control mb-0"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    onChange={(event) => setSearchPartyItem(event.target.value)}
+                  />
+                </div>
 
+                <div>
+                  {partnerData.length > 0 ? (
                     <div>
-                      {partnerData.length > 0 ? (
-                        <div>
-                          <ul>
-                            {partnerData
-                              
-                              .map((item) => {
-                                return (
-                                  <li
-                                    key={item.partyId}
-                                    onClick={() =>
-                                      partySelect(item, "Transporter")
-                                    }
-                                    className={
-                                      "nav-item " +
-                                      (item == getPartyItem
-                                        ? "active_class"
-                                        : "")
-                                    }
-                                  >
-                                    <div className="partner_card">
-                                      <div className="d-flex align-items-center">
-                                        <img
-                                          src={single_bill}
-                                          className="icon_user"
-                                        />
-                                        <div>
-                                          <h5>{item.partyName}</h5>
-                                          <h6>
-                                            {item.trader
-                                              ? "TRADER"
-                                              : item.partyType}{" "}
-                                            - {item.partyId} | {item.mobile}
-                                          </h6>
-                                          <p>{item.address.addressLine}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                );
-                              })}
-                          </ul>
-                        </div>
-                      ) : (
-                        <p></p>
-                      )}
+                      <ul>
+                        {partnerData.map((item) => {
+                          return (
+                            <li
+                              key={item.partyId}
+                              onClick={() => partySelect(item, "Transporter")}
+                              className={
+                                "nav-item " +
+                                (item == getPartyItem ? "active_class" : "")
+                              }
+                            >
+                              <div className="partner_card">
+                                <div className="d-flex align-items-center">
+                                  <img
+                                    src={single_bill}
+                                    className="icon_user"
+                                  />
+                                  <div>
+                                    <h5>{item.partyName}</h5>
+                                    <h6>
+                                      {item.trader ? "TRADER" : item.partyType}{" "}
+                                      - {item.partyId} | {item.mobile}
+                                    </h6>
+                                    <p>{item.address.addressLine}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
-                  </div>
-                ) : (
-                  ""
-                )}
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
             <h5 className="date_sec head_modal p-0">Crop Information </h5>
             <div className="selectparty_field edit_crop_item_div">
               <div className="d-flex align-items-center justify-content-between">
@@ -1060,31 +1061,32 @@ const Step3Modal = (props) => {
                         />
                       );
                     } else if (allGroups[index].tableType == 3) {
-                      return (
-                        tableChangeStatus ?  <div className="comm_cards">
-                        <div className="card input_card">
-                          <div className="row">
-                            <div className="col-lg-3 title_bg">
-                              <h5 className="comm_card_title mb-0">
-                                {getText(allGroups[index].settingName)}
-                              </h5>
-                            </div>
-                            <div className="col-lg-9 col-sm-12 col_left_border">
-                              <input
-                                type="text"
-                                placeholder=""
-                                onFocus={(e) => resetInput(e)}
-                                value={allGroups[index].value}
-                                onChange={advLevOnchangeEvent(
-                                  allGroups,
-                                  index
-                                )}
-                              />
+                      return tableChangeStatus ? (
+                        <div className="comm_cards">
+                          <div className="card input_card">
+                            <div className="row">
+                              <div className="col-lg-3 title_bg">
+                                <h5 className="comm_card_title mb-0">
+                                  {getText(allGroups[index].settingName)}
+                                </h5>
+                              </div>
+                              <div className="col-lg-9 col-sm-12 col_left_border">
+                                <input
+                                  type="text"
+                                  placeholder=""
+                                  onFocus={(e) => resetInput(e)}
+                                  value={allGroups[index].value}
+                                  onChange={advLevOnchangeEvent(
+                                    allGroups,
+                                    index
+                                  )}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div> :
-                        (<CommonCard
+                      ) : (
+                        <CommonCard
                           title={allGroups[index].settingName}
                           rateTitle={allGroups[index].subText}
                           onChange={fieldOnchangeEvent(allGroups, index)}
@@ -1094,7 +1096,7 @@ const Step3Modal = (props) => {
                           unitsTitle={allGroups[index].subText2}
                           units={totalUnits}
                           onChangeTotals={fieldOnchangeTotals(allGroups, index)}
-                        />)
+                        />
                       );
                     } else if (allGroups[index].tableType == 1) {
                       return (
