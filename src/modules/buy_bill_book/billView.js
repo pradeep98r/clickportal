@@ -15,6 +15,7 @@ import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
+import {qtyValues} from "../../components/qtyValues";
 import { getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -328,10 +329,13 @@ const BillView = (props) => {
         unitType = "S";
         break;
         case "LOADS":
-          unitType = "L";
+          unitType = "LDS";
           break;
           case "PIECES":
-          unitType = "P";
+          unitType = "PCS";
+          break;
+          case "KGS":
+          unitType = "KGS";
           break;
     }
     return unitType;
@@ -572,22 +576,24 @@ const BillView = (props) => {
                       </h6>
                     </div>
                   </div>
-                  <div className="col-lg-3">
+                  {singleBillData.farmerAddress != '' ? <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">Address: </p>
                       <h6 className="small_text">
                         {singleBillData.farmerAddress}
                       </h6>
                     </div>
-                  </div>
-                  <div className="col-lg-3">
+                  </div> : ''}
+                  
+                  {singleBillData.transporterId != 0 ? <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">Transporter :</p>
                       <h6 className="small_text">
                         {singleBillData.transporterName}
                       </h6>
                     </div>
-                  </div>
+                  </div> : ''}
+                  
                 </div>
                 <div className="row">
                   <div className="col-lg-8"></div>
@@ -625,22 +631,8 @@ const BillView = (props) => {
                           <td className="col-3">
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
-                            <p>
-                              {item.qty == null || item.qty == 0
-                                ? ""
-                                : getCurrencyNumberWithOneDigit(item.qty) +
-                                  " " +
-                                  (item.qtyUnit.toLowerCase() =='loads' ? '' :getCropUnit(item.qtyUnit)) +
-                                  " | "}
-                              {item.weight == null || item.weight == 0
-                                ? ""
-                                : getCurrencyNumberWithOneDigit(item.weight) + (item.qtyUnit.toLowerCase() =='loads' ? getCropUnit(item.qtyUnit):(" KGS  "))}
-                              <span className="red_text">
-                                {item.wastage == null || item.wastage == 0
-                                  ? ""
-                                  : - getCurrencyNumberWithOneDigit(item.wastage) + " KGS "}
-                              </span>
-                            </p>
+                            <div> {qtyValues(item.qty,item.qtyUnit,item.weight,item.wastage,item.rateType)}</div>
+                           
                           </td>
                           <td className="col-2">{getCurrencyNumberWithOutSymbol(item.rate)}</td>
                           <td className="col-2 color_red">

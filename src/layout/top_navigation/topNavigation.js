@@ -13,7 +13,6 @@ function TopNavigation() {
 
   const linkValue = localStorage.getItem("LinkId");
   var linkPath = localStorage.getItem("LinkPath");
-  console.log(linkPath)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
