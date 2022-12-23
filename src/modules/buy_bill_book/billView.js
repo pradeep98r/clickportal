@@ -17,6 +17,7 @@ import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
 import {qtyValues} from "../../components/qtyValues";
 import { getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
+
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.clickId;
@@ -1246,6 +1247,7 @@ const BillView = (props) => {
             billEditStatus={true}
             step2CropEditStatus={false}
             editCancelStatus={editCancelStatus}
+            dateSelected = {new Date(singleBillData.billDate)}
           />
         ) : (
           ""

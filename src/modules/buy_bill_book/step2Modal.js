@@ -1027,6 +1027,7 @@ const Step2Modal = (props) => {
               : updatedItemList
           }
           step2CropEditStatus={props.billEditStatus ? true : false}
+          dateSelected={props.selectedBilldate}
         />
       ) : (
         ""
