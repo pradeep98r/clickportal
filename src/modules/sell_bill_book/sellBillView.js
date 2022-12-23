@@ -6,6 +6,7 @@ import moment from "moment/moment";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import edit from "../../assets/images/edit_round.svg";
 import { Navigate, useNavigate } from "react-router-dom";
+import { qtyValues } from "../../components/qtyValues";
 import {
   getMandiDetails,
   getSystemSettings,
@@ -625,7 +626,8 @@ const SellBillView = () => {
                           <td className="col-3">
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
-                            <p>
+                            <div> {qtyValues(item.qty,item.qtyUnit,item.weight,item.wastage,item.rateType)}</div>
+                            {/* <p>
                               {item.qty == null || item.qty == 0
                                 ? ""
                                 : getCurrencyNumberWithOneDigit(item.qty) +
@@ -640,7 +642,7 @@ const SellBillView = () => {
                                   ? ""
                                   : - getCurrencyNumberWithOneDigit(item.wastage) + " KGS "}
                               </span>
-                            </p>
+                            </p> */}
                           </td>
                           <td className="col-2">
                             {item.rate
@@ -1298,6 +1300,7 @@ const SellBillView = () => {
           slectedSellCropsArray={slectedCropArray}
           billEditStatus={true}
           step2CropEditStatus={false}
+          sellBilldateSelected = {new Date(singleBillData.billDate)}
         />
       ) : (
         ""

@@ -55,7 +55,6 @@ const Step3Modal = (props) => {
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   var step2CropEditStatus = props.step2CropEditStatus;
-  const [unitPrevVal, setUnitPrevVal] = useState(0);
   const [allGroups, setAllGroups] = useState([]);
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
@@ -72,7 +71,6 @@ const Step3Modal = (props) => {
         : billEditItem.lineItems
       : props.slectedCropsArray;
     var h = [];
-    // console.log(props.slectedCropsArray,step2CropEditStatus)
     for (var c = 0; c < cropArrays.length; c++) {
       if (
         cropArrays[c].qtyUnit == "kgs" ||

@@ -15,6 +15,7 @@ import loading from "../../assets/images/loading.gif";
 import NoDataAvailable from "../../components/noDataAvailable";
 import BillsSearchField from "../../components/billsSearchField";
 import { getText } from "../../components/getText";
+import { qtyValues } from "../../components/qtyValues";
 import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
@@ -293,7 +294,8 @@ const SellBillBook = () => {
                                           </p>
                                         </div>
                                         <div className="col-lg-4 col-sm-12 col flex_class">
-                                          <p className="crop_name">
+                                        <div> {qtyValues(crop.qty,crop.qtyUnit,crop.weight,crop.wastage,crop.rateType)}</div>
+                                          {/* <p className="crop_name">
                                             {(crop.qty == 0
                                               ? ""
                                               : getCurrencyNumberWithOneDigit(
@@ -315,7 +317,7 @@ const SellBillBook = () => {
                                                   : ""
                                                 : ""}
                                             </span>
-                                          </p>
+                                          </p> */}
                                         </div>
                                         <div className="col-lg-2 col-sm-12 col flex_class">
                                           <p className="number_overflow crop_name">

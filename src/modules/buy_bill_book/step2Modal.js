@@ -236,7 +236,6 @@ const Step2Modal = (props) => {
           }
         }
       }
-      //return cropData[index];
     });
     props.slectedCropstableArray[0].lineItems =
       updatedItemList.length != 0 ? updatedItemList : cropData;
@@ -457,7 +456,6 @@ const Step2Modal = (props) => {
   var cropDeletedList = [];
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
-
     var list = preferedCropsData;
     if (index != -1) {
       Object.assign(cropArray[index], { status: 0 });
