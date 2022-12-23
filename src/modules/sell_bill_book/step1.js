@@ -110,6 +110,7 @@ const SellebillStep1 = () => {
             closeStep2CropModal={() => setShowCropModal(false)}
             cropTableEditStatus = {false}
             billEditStatus={false}
+            selectedSellBilldate = {selectedDate}
           />
         ) : (
           ""
