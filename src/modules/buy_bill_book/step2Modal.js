@@ -28,10 +28,12 @@ const Step2Modal = (props) => {
   const [cropClear, setCropClear] = useState(false);
   const [cropItemVal, setCropItemVal] = useState({});
   const cropOnclick = (crop, id, index2, preferedCrops) => {
+    console.log(crop)
     setCropItemVal(crop);
     setCropId(id);
+    console.log(index2,preferedCrops,props.cropEditObject)
     Object.assign(
-      preferedCrops[index2],
+      crop,
       { wastage: 0 },
       { qty: 0 },
       { rateType: "kgs" },
@@ -40,7 +42,7 @@ const Step2Modal = (props) => {
       { total: 0 },
       { bags: [] },
       { status: 1 },
-      { id: 0 }
+      // { id: 0 }
       // { unitType:  preferedCrops[index2] }
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
@@ -76,10 +78,8 @@ const Step2Modal = (props) => {
           var index1 = preferedCropsData.findIndex(
             (obj) => obj.cropId == response.data.data[index].cropId
           );
-          console.log(preferedCropsData, index1, index);
           if (index1 != -1) {
             response.data.data.splice(index, 1);
-            console.log(preferedCropsData);
           }
         });
 
@@ -116,10 +116,8 @@ const Step2Modal = (props) => {
           (obj) => obj.cropId === item.cropId
         );
         if (k != -1) {
-          console.log("if");
           preferedCropsData[k].count++;
         } else {
-          console.log("else");
           preferedCropsData.push(cropArr[index]);
           if (cropArr[index].rateType == "RATE_PER_KG") {
             cropArr[index].rateType = "kgs";
@@ -127,14 +125,7 @@ const Step2Modal = (props) => {
           Object.assign(cropArr[index], { count: 1 }, { cropActive: true });
         }
       });
-      // for (var i = 0; i < cropArr.length; i++) {
-      //   preferedCropsData.push(cropArr[i]);
-      //   if (cropArr[i].rateType == "RATE_PER_KG") {
-      //     cropArr[i].rateType = "kgs";
-      //   }
-      //   Object.assign(cropArr[i], { count: 1 }, { cropActive: true });
-
-      // }
+     
     }
   }, []);
 
@@ -236,21 +227,17 @@ const Step2Modal = (props) => {
           );
           if (index1 == index) {
             if (lineitem[index1].id == 0) {
-              console.log("if");
               cropData[index].status = 1;
             } else {
-              console.log("else 1");
               cropData[index].status = 2;
             }
           } else {
-            console.log("else sec");
             cropData[index].status = 1;
           }
         }
       }
       //return cropData[index];
     });
-    console.log(cropData, updatedItemList);
     props.slectedCropstableArray[0].lineItems =
       updatedItemList.length != 0 ? updatedItemList : cropData;
 
@@ -478,7 +465,6 @@ const Step2Modal = (props) => {
       cropArray[index].qty = 0;
       cropArray[index].qtyUnit = "";
       cropDeletedList.push(cropArray[index]);
-      console.log(cropDeletedList);
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
       if (index1 != -1) {
@@ -1041,9 +1027,10 @@ const Step2Modal = (props) => {
               : updatedItemList
           }
           step2CropEditStatus={props.billEditStatus ? true : false}
+          dateSelected={props.selectedBilldate}
         />
       ) : (
-        "step3"
+        ""
       )}
       <ToastContainer />
       {showBagsModalStatus ? (

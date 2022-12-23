@@ -117,6 +117,7 @@ const Step1 = () => {
             closeCropModal={() => setShowCropModal(false)}
             cropTableEditStatus = {false}
             billEditStatus={false}
+            selectedBilldate = {selectedDate}
           />
         ) : (
           ""

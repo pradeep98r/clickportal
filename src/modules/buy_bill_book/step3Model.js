@@ -61,6 +61,7 @@ const Step3Modal = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   // console.log(props.slectedCropsArray[0].lineItems, "items sf");
   useEffect(() => {
+    console.log(props.dateSelected,"date")
     fetchPertnerData(partyType);
     setTranspoSelectedData(
       JSON.parse(localStorage.getItem("selectedTransporter"))
@@ -341,7 +342,7 @@ const Step3Modal = (props) => {
   };
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
-  const [selectedDate, setStartDate] = useState(new Date());
+  const [selectedDate, setStartDate] = useState(props.dateSelected);
   const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
   const fetchPertnerData = (type) => {
     var partnerType = "Seller";
