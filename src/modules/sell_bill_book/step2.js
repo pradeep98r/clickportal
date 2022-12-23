@@ -6,8 +6,8 @@ import { getPreferredCrops } from "../../actions/billCreationService";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import toastr from "toastr";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import SelectCrop from "../buy_bill_book/selectCrop";
 import SellbillStep3Modal from "./step3";
 import $, { merge } from "jquery";
@@ -32,7 +32,8 @@ const SellbillStep2Modal = (props) => {
   const cropOnclick = (crop, id, index, preferedCrops) => {
     setCropId(id);
     Object.assign(
-      preferedCrops[index],
+      // preferedCrops[index],
+      crop,
       { wastage: 0 },
       { qty: 0 },
       { rateType: "kgs" },
@@ -49,7 +50,8 @@ const SellbillStep2Modal = (props) => {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
-    preferedCropsData[index].units = "Crates";
+    console.log(cropData, preferedCrops[index]);
+    // preferedCropsData[index].units = "Crates";
   };
   const allCropData = () => {
     setCropInfoModalStatus(true);
@@ -59,14 +61,28 @@ const SellbillStep2Modal = (props) => {
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
-        response.data.data.map((item) => {
-          Object.assign(item, { count: 0 }, { cropActive: false }, { qtyUnit: "Crates" }, { bags: [], }, { weight: 0 },
+        response.data.data.map((item, index) => {
+          Object.assign(
+            item,
+            { count: 0 },
+            { cropActive: false },
+            { qtyUnit: "Crates" },
+            { bags: [] },
+            { weight: 0 },
             { rate: 0 },
-            { total: 0 }, { wastage: 0 },
+            { total: 0 },
+            { wastage: 0 },
             { qty: 0 },
-            { status: 1 });
+            { status: 1 }
+          );
+          var index1 = preferedCropsData.findIndex(
+            (obj) => obj.cropId == response.data.data[index].cropId
+          );
+          if (index1 != -1) {
+            response.data.data.splice(index, 1);
+          }
         });
-        setPreferedCropsData(response.data.data);
+        setPreferedCropsData([...preferedCropsData, ...response.data.data]);
       })
       .catch((error) => {
         console.log(error);
@@ -74,7 +90,7 @@ const SellbillStep2Modal = (props) => {
   };
   useEffect(() => {
     fetchData();
-    console.log(preferedCropsData, "pre")
+    console.log(preferedCropsData, "pre");
     var lineIt;
     if (props.cropTableEditStatus) {
       if (props.billEditStatus) {
@@ -87,21 +103,22 @@ const SellbillStep2Modal = (props) => {
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
       cropArr.map((item, index) => {
-        var k = preferedCropsData.findIndex((obj) => obj.cropId === item.cropId);
+        var k = preferedCropsData.findIndex(
+          (obj) => obj.cropId === item.cropId
+        );
         if (k != -1) {
           preferedCropsData[k].count++;
           console.log(preferedCropsData[k].count, cropData, "cropData");
-        }
-        else {
-          console.log("came to else")
+        } else {
+          console.log("came to else");
           preferedCropsData.push(cropArr[index]);
           if (cropArr[index].rateType == "RATE_PER_KG") {
             cropArr[index].rateType = "kgs";
           }
           Object.assign(cropArr[index], { count: 1 }, { cropActive: true });
         }
-      })
-      console.log(cropArr, preferedCropsData)
+      });
+      // console.log(cropArr, preferedCropsData)
       // for (var i = 0; i < cropArr.length; i++) {
       //   preferedCropsData.push(cropArr[i]);
       //   if (cropArr[i].rateType == "RATE_PER_KG") {
@@ -114,20 +131,42 @@ const SellbillStep2Modal = (props) => {
 
   var arr = [];
   const cropDataFunction = (childData, status) => {
-    console.log(childData)
+    console.log(childData);
     if (status === true) {
       var list = preferedCropsData;
-      console.log(childData, list)
+      console.log(childData, list);
       childData.map((i, ind) => {
         var index = list.findIndex((obj) => obj.cropId == i.cropId);
         if (index != -1) {
+          Object.assign(
+            i,
+            { cropActive: true },
+            { cropSelect: "active" },
+            { wastage: 0 },
+            { qty: 0 },
+            { rateType: "kgs" },
+            { weight: 0 },
+            { rate: 0 },
+            { total: 0 },
+            { qtyUnit: "crates" },
+            { checked: false },
+            { bags: [] },
+            { status: 1 }
+          );
           var existedItem = list[index];
           existedItem.count += 1;
           list[index] = existedItem;
           setPreferedCropsData([...list, ...arr]);
-          cropData.push(list[index]);
+          cropData.push(i);
           cropResponseData([...cropData]);
-          Object.assign(list[index], { cropActive: true }, { qtyUnit: "crates" });
+          Object.assign(
+            list[index],
+            { cropActive: true },
+            { qtyUnit: "crates" },
+            { addInv: false },
+            { status: 1 }
+            // {id:0}
+          );
         } else {
           Object.assign(
             i,
@@ -142,7 +181,8 @@ const SellbillStep2Modal = (props) => {
             { total: 0 },
             { qtyUnit: "Crates" },
             { bags: [] },
-            { status: 1 }
+            { status: 1 },
+            { id: 0 }
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -162,22 +202,18 @@ const SellbillStep2Modal = (props) => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const addStep3Modal = () => {
-
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
         cropData[k].total =
-          (cropData[k].weight - cropData[k].wastage) *
-          cropData[k].rate;
+          (cropData[k].weight - cropData[k].wastage) * cropData[k].rate;
       } else {
         cropData[k].total =
-          (cropData[k].qty - cropData[k].wastage) *
-          cropData[k].rate;
+          (cropData[k].qty - cropData[k].wastage) * cropData[k].rate;
       }
     }
+    var h = [];
     cropData.map((item, index) => {
-      if (
-        cropData[index].rate != 0
-      ) {
+      if (cropData[index].rate != 0) {
         setShowStep3ModalStatus(true);
         setShowStep3Modal(true);
         setUpdatedItemList(cropData);
@@ -186,56 +222,46 @@ const SellbillStep2Modal = (props) => {
           var lineitem = props.billEditStatus
             ? props.cropEditObject
             : JSON.parse(localStorage.getItem("lineItemsEdit"));
-          for (var i = 0; i < cropData.length; i++) {
-            var index = lineitem.findIndex(
-              (obj) => obj.cropId == cropData[i].cropId
-            );
-            if (index != -1) {
-              cropData[i].status = 2;
-              console.log(cropData[i].status);
+          // for (var i = 0; i < cropData.length; i++) {
+          var index1 = lineitem.findIndex(
+            (obj) => obj.cropId == cropData[index].cropId
+          );
+          if (index1 == index) {
+            if (lineitem[index1].id == 0) {
+              cropData[index].status = 1;
             } else {
-              console.log(cropData[i].status, "else");
-              cropData[i].status = 1;
+              cropData[index].status = 2;
             }
+          } else {
+            cropData[index].status = 1;
           }
-          props.slectedCropstableArray[0].lineItems = cropData;
+          // }
+          props.slectedCropstableArray[0].lineItems =
+            updatedItemList.length != 0 ? updatedItemList : cropData;
         }
-        // if (cropData[index].rateType == "kgs") {
-        //   cropData[index].total =
-        //     (cropData[index].weight - cropData[index].wastage) *
-        //     cropData[index].rate;
-        // } else {
-        //   cropData[index].total =
-        //     (cropData[index].qty - cropData[index].wastage) *
-        //     cropData[index].rate;
-        // }
-        console.log(cropData)
+        if (h.length > 0) {
+          var h1 = h.map((item, index) => {
+            if (h[index] != null) {
+              if (h.length == cropData.length) {
+                return item;
+              }
+            }
+          });
+        }
       }
-    })
-
+    });
   };
-  var arrays = []
+  var arrays = [];
   const addStep2Next = () => {
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         console.log(cropData[index].qtyUnit, cropData[index].rateType);
         Object.assign(cropData[index], { status: 1 });
 
-        if (cropData[index].qtyUnit.toLowerCase() === 'loads' || cropData[index].qtyUnit.toLowerCase() === 'pieces') {
-          if (cropData[index].weight == 0) {
-            toast.error('Please enter weight', {
-              toastId: "error2"
-            });
-            return null;
-          }
-          else if (cropData[index].rate == 0) {
-            toast.error('Please enter rate', {
-              toastId: "error3"
-            });
-            return null;
-          }
-        }
-        else if (cropData[index].qtyUnit.toLowerCase() === "kgs") {
+        if (
+          cropData[index].qtyUnit.toLowerCase() === "loads" ||
+          cropData[index].qtyUnit.toLowerCase() === "pieces"
+        ) {
           if (cropData[index].weight == 0) {
             toast.error("Please enter weight", {
               toastId: "error2",
@@ -247,23 +273,35 @@ const SellbillStep2Modal = (props) => {
             });
             return null;
           }
-        }
-        else if (cropData[index].qtyUnit.toLowerCase() === cropData[index].rateType.toLowerCase()) {
+        } else if (cropData[index].qtyUnit.toLowerCase() === "kgs") {
+          if (cropData[index].weight == 0) {
+            toast.error("Please enter weight", {
+              toastId: "error2",
+            });
+            return null;
+          } else if (cropData[index].rate == 0) {
+            toast.error("Please enter rate", {
+              toastId: "error3",
+            });
+            return null;
+          }
+        } else if (
+          cropData[index].qtyUnit.toLowerCase() ===
+          cropData[index].rateType.toLowerCase()
+        ) {
           console.log(cropData[index].qtyUnit, cropData[index].rateType);
           if (cropData[index].qty == 0) {
-            toast.error('Please enter Quantity', {
-              toastId: "error1"
+            toast.error("Please enter Quantity", {
+              toastId: "error1",
+            });
+            return null;
+          } else if (cropData[index].rate == 0) {
+            toast.error("Please enter rate", {
+              toastId: "error3",
             });
             return null;
           }
-          else if (cropData[index].rate == 0) {
-            toast.error('Please enter rate', {
-              toastId: "error3"
-            });
-            return null;
-          }
-        }
-        else if (
+        } else if (
           cropData[index].qty == 0 &&
           !setQuantityBasedtable(cropData[index].qtyUnit)
         ) {
@@ -278,20 +316,17 @@ const SellbillStep2Modal = (props) => {
         //   });
         //   return null;
         // }
-
         else if (cropData[index].weight == 0) {
-          toast.error('Please enter weight', {
-            toastId: "error2"
+          toast.error("Please enter weight", {
+            toastId: "error2",
           });
           return null;
-        }
-        else if (cropData[index].rate == 0) {
-          toast.error('Please enter rate', {
-            toastId: "error3"
+        } else if (cropData[index].rate == 0) {
+          toast.error("Please enter rate", {
+            toastId: "error3",
           });
           return null;
-        }
-        else if (
+        } else if (
           setQuantityBasedtable(cropData[index].qtyUnit) &&
           cropData[index].weight != 0 &&
           cropData[index].rate != 0
@@ -306,7 +341,7 @@ const SellbillStep2Modal = (props) => {
         addStep3Modal();
       }
     }
-  }
+  };
   const setQuantityBasedtable = (unitType) => {
     var t = false;
     if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
@@ -321,13 +356,11 @@ const SellbillStep2Modal = (props) => {
 
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
-
-        arr1.push({ ...cropData[i], qtyUnit: e.target.value })
+        arr1.push({ ...cropData[i], qtyUnit: e.target.value });
         return { ...cropData[i], qtyUnit: e.target.value };
-      }
-      else {
+      } else {
         cropResponseData([...cropData]);
-        return { ...cropData[i] }
+        return { ...cropData[i] };
       }
     });
     cropResponseData([...updatedItemList]);
@@ -345,10 +378,9 @@ const SellbillStep2Modal = (props) => {
     let updatedItems1 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], qty: val };
-      }
-      else {
+      } else {
         cropResponseData([...cropitem]);
-        return { ...cropitem[i] }
+        return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItems1]);
@@ -362,10 +394,9 @@ const SellbillStep2Modal = (props) => {
     let updatedItems2 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], weight: val };
-      }
-      else {
+      } else {
         cropResponseData([...cropitem]);
-        return { ...cropitem[i] }
+        return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItems2]);
@@ -374,14 +405,13 @@ const SellbillStep2Modal = (props) => {
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g,'');
+    var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems3 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], wastage: val };
-      }
-      else {
+      } else {
         cropResponseData([...cropitem]);
-        return { ...cropitem[i] }
+        return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItems3]);
@@ -396,10 +426,9 @@ const SellbillStep2Modal = (props) => {
     let updatedItems4 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], rate: val };
-      }
-      else {
+      } else {
         cropResponseData([...cropitem]);
-        return { ...cropitem[i] }
+        return { ...cropitem[i] };
       }
     });
     cropResponseData([...updatedItems4]);
@@ -435,7 +464,7 @@ const SellbillStep2Modal = (props) => {
     if (crd[ink].bags.length > 0) {
       setEditBagsStatus(true);
     }
-  }
+  };
   const callbackFunction = (childData, invArr) => {
     let updatedItems = cropData.map((item, i) => {
       if (i == arIndex) {
@@ -464,24 +493,29 @@ const SellbillStep2Modal = (props) => {
   };
   var dummyList = [];
   var arrylist = [];
+  var cropDeletedList = [];
   const deleteCrop = (crop, cropArray) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     if (index != -1) {
-      console.log(index,"jkk")
+      Object.assign(cropArray[index], { status: 0 });
+      cropArray[index].total = 0;
+      cropArray[index].qty = 0;
+      cropArray[index].qtyUnit = "";
+      cropDeletedList.push(cropArray[index]);
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
-      console.log(index1,list,crop,"jkk")
+      console.log(index1, list, crop, "jkk");
       if (index1 != -1) {
         list[index1].count -= 1;
-        console.log(list[index1].count)
+        console.log(list[index1].count);
         if (list[index1].count == 0) {
           if (props.billEditStatus) {
             list.splice(index1, 1);
           } else {
-            console.log(list[index1].count)
+            console.log(list[index1].count);
             getPreferredCrops(clickId, clientId, clientSecret)
-            .then((response) => {
+              .then((response) => {
                 dummyList = response.data.data;
                 let updatedarr = dummyList.map((item, i) => {
                   if (item.cropId == list[index1].cropId) {
@@ -491,46 +525,42 @@ const SellbillStep2Modal = (props) => {
                     return null;
                   }
                 });
-                for(var k=0; k<updatedarr.length; k++){
-                  if(updatedarr[k]!=null){
+                for (var k = 0; k < updatedarr.length; k++) {
+                  if (updatedarr[k] != null) {
                     arrylist.push(updatedarr[k]);
                   }
                 }
-               console.log(updatedarr,arrylist,"update arr");
-               for(var k=0; k<list.length; k++){
-                 for(var t=0; t<arrylist.length; t++){
-                  if(list[k].cropId==arrylist[t].cropId){
-                    list.splice(index1, t);
-                     console.log('newcrop remove',index1)
-                   }
-                   else{
-                    console.log('samecrop ');
-                    // return list;
-                   }
-                 }
-               }
-               console.log(list)
-               setPreferedCropsData([...list]);
-             
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-           
-            
-           
+                console.log(updatedarr, arrylist, "update arr");
+                for (var k = 0; k < list.length; k++) {
+                  for (var t = 0; t < arrylist.length; t++) {
+                    if (list[k].cropId == arrylist[t].cropId) {
+                      list.splice(index1, t);
+                      console.log("newcrop remove", index1);
+                    } else {
+                      console.log("samecrop ");
+                      // return list;
+                    }
+                  }
+                }
+                console.log(list);
+                setShowStep3Modal(false);
+                setPreferedCropsData([...list]);
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }
         }
       }
     }
-    setUpdatedItemList(cropArray)
+    setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
   const resetInput = (e) => {
-    if(e.target.value == 0){
+    if (e.target.value == 0) {
       e.target.value = "";
     }
-  }
+  };
   return (
     <Modal
       show={props.show}
@@ -553,19 +583,29 @@ const SellbillStep2Modal = (props) => {
                 <div
                   className="text-center crop_div crop_div_ui"
                   key={crop.cropId}
-                  onClick={() => cropOnclick(crop, crop.cropId, index, preferedCropsData)}
+                  onClick={() =>
+                    cropOnclick(crop, crop.cropId, index, preferedCropsData)
+                  }
                 >
                   <div
                     style={{
                       display:
                         preferedCropsData[index].cropActive === true
-                          ? preferedCropsData[index].count == 0 ? 'none' : "block"
+                          ? preferedCropsData[index].count == 0
+                            ? "none"
+                            : "block"
                           : "none",
-                    }} className="crp_count"
+                    }}
+                    className="crp_count"
                   >
-                    {preferedCropsData[index].count == 0 ? '' : preferedCropsData[index].count}
+                    {preferedCropsData[index].count == 0
+                      ? ""
+                      : preferedCropsData[index].count}
                   </div>
-                  <img src={crop.imageUrl} className="flex_class cropImg mx-auto " />
+                  <img
+                    src={crop.imageUrl}
+                    className="flex_class cropImg mx-auto "
+                  />
                   <p>{crop.cropName}</p>
                 </div>
               ))}
@@ -593,7 +633,6 @@ const SellbillStep2Modal = (props) => {
                     >
                       <div className="d-flex crop_table_delete_div">
                         <div className="crop_table_view">
-
                           {!setQuantityBasedtable(cropData[index].qtyUnit) ? (
                             <table className="table table-bordered">
                               <thead>
@@ -601,13 +640,17 @@ const SellbillStep2Modal = (props) => {
                                   <th>Crop</th>
                                   <th>Unit Type</th>
                                   <th>Rate Type</th>
-                                  <th>No of Units({cropData[index].qtyUnit})</th>
-                                  {cropData[index].qtyUnit.toLowerCase() !=
-                                    (cropData[index].rateType == 'RATE_PER_UNIT' ? cropData[index].qtyUnit.toLowerCase() : cropData[index].rateType) ? (
+                                  <th>
+                                    No of Units({cropData[index].qtyUnit})
+                                  </th>
+                                  {cropData[index].qtyUnit?.toLowerCase() !=
+                                  (cropData[index].rateType == "RATE_PER_UNIT"
+                                    ? cropData[index].qtyUnit?.toLowerCase()
+                                    : cropData[index].rateType) ? (
                                     <th>
                                       Total Weight(
-                                      {cropData[index].qtyUnit.toLowerCase() !=
-                                        cropData[index].rateType
+                                      {cropData[index].qtyUnit?.toLowerCase() !=
+                                      cropData[index].rateType
                                         ? "kgs"
                                         : cropData[index].qtyUnit}
                                       )
@@ -615,32 +658,32 @@ const SellbillStep2Modal = (props) => {
                                   ) : (
                                     ""
                                   )}
-                                  {
-                                    cropData[index].qtyUnit.toLowerCase() === 'bags' ||
-                                      cropData[index].qtyUnit.toLowerCase() === 'sacs' ? 
-                                      (
-                                        cropData[index].qtyUnit.toLowerCase() !=
-                                          cropData[index].rateType ? (
-                                          <th className="col-2">
-                                            Invidual Weights
-                                          </th>
-                                        ) : (
-                                          ""
-                                        )
-                                      )
-                                      : ("")
-                                  }
+                                  {cropData[index].qtyUnit?.toLowerCase() ===
+                                    "bags" ||
+                                  cropData[index].qtyUnit?.toLowerCase() ===
+                                    "sacs" ? (
+                                    cropData[index].qtyUnit?.toLowerCase() !=
+                                    cropData[index].rateType ? (
+                                      <th className="col-2">
+                                        Invidual Weights
+                                      </th>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
                                   <th>
                                     Wastage(
-                                    {cropData[index].qtyUnit.toLowerCase() !=
-                                      cropData[index].rateType
+                                    {cropData[index].qtyUnit?.toLowerCase() !=
+                                    cropData[index].rateType
                                       ? "kgs"
                                       : cropData[index].qtyUnit}
                                     )
                                   </th>
 
                                   <th>Rate(₹)</th>
-                                <th>Total(₹)</th>
+                                  <th>Total(₹)</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -661,7 +704,11 @@ const SellbillStep2Modal = (props) => {
                                     <select
                                       className="form-control qty_dropdown dropdown"
                                       value={cropData[index].qtyUnit}
-                                      onChange={getQuantity(cropData, index, crop)}
+                                      onChange={getQuantity(
+                                        cropData,
+                                        index,
+                                        crop
+                                      )}
                                     >
                                       <option value="Crates">Crates</option>
                                       <option value="Bags">Bags</option>
@@ -704,7 +751,9 @@ const SellbillStep2Modal = (props) => {
                                     />
                                   </td>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                   (cropData[index].rateType == 'RATE_PER_UNIT' ? cropData[index].qtyUnit.toLowerCase() : cropData[index].rateType) ? (
+                                  (cropData[index].rateType == "RATE_PER_UNIT"
+                                    ? cropData[index].qtyUnit.toLowerCase()
+                                    : cropData[index].rateType) ? (
                                     <td className="col-2">
                                       <input
                                         type="text"
@@ -722,16 +771,20 @@ const SellbillStep2Modal = (props) => {
                                   ) : (
                                     ""
                                   )}
-                                  {
-                                    cropData[index].qtyUnit.toLowerCase() === "bags" ||
-                                      cropData[index].qtyUnit.toLowerCase() === "sacs" ? (
-                                        cropData[index].qtyUnit.toLowerCase() !=
-                                        cropData[index].rateType ? (
+                                  {cropData[index].qtyUnit.toLowerCase() ===
+                                    "bags" ||
+                                  cropData[index].qtyUnit.toLowerCase() ===
+                                    "sacs" ? (
+                                    cropData[index].qtyUnit.toLowerCase() !=
+                                    cropData[index].rateType ? (
                                       <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type">
-
-                                            {cropData[index].bags != null && cropData[index].bags.length > 0 ? 'Edit' : 'Add'} {cropData[index].qtyUnit}
+                                            {cropData[index].bags != null &&
+                                            cropData[index].bags.length > 0
+                                              ? "Edit"
+                                              : "Add"}{" "}
+                                            {cropData[index].qtyUnit}
                                           </p>
                                           <input
                                             type="checkbox"
@@ -748,10 +801,13 @@ const SellbillStep2Modal = (props) => {
                                             }}
                                           />
                                         </div>
-                                      </td>) : ''
-
-                                    ) : ("")
-                                  }
+                                      </td>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
                                   <td className="col-1">
                                     {" "}
                                     <input
@@ -783,13 +839,15 @@ const SellbillStep2Modal = (props) => {
                                     />
                                   </td>
                                   <td className="col-2">
-                                    <p className="totals">{cropData[index].rateType == "kgs"
-                                      ? (cropData[index].weight -
-                                        cropData[index].wastage) *
-                                      cropData[index].rate
-                                      : (cropData[index].qty -
-                                        cropData[index].wastage) *
-                                      cropData[index].rate}</p>
+                                    <p className="totals">
+                                      {cropData[index].rateType == "kgs"
+                                        ? (cropData[index].weight -
+                                            cropData[index].wastage) *
+                                          cropData[index].rate
+                                        : (cropData[index].qty -
+                                            cropData[index].wastage) *
+                                          cropData[index].rate}
+                                    </p>
                                   </td>
                                 </tr>
                               </tbody>
@@ -831,7 +889,11 @@ const SellbillStep2Modal = (props) => {
                                     <select
                                       className="form-control qty_dropdown dropdown"
                                       value={cropData[index].qtyUnit}
-                                      onChange={getQuantity(cropData, index, crop)}
+                                      onChange={getQuantity(
+                                        cropData,
+                                        index,
+                                        crop
+                                      )}
                                     >
                                       <option value="Crates">Crates</option>
                                       <option value="Bags">Bags</option>
@@ -892,13 +954,15 @@ const SellbillStep2Modal = (props) => {
                                     />
                                   </td>
                                   <td className="col-2">
-                                    <p className="totals">{
-                                      cropData[index].qtyUnit == 'loads' ? (cropData[index].weight *
-                                        cropData[index].rate) :
-                                        (cropData[index].weight -
-                                          cropData[index].wastage) *
-                                        cropData[index].rate
-                                    }</p></td>
+                                    <p className="totals">
+                                      {cropData[index].qtyUnit == "loads"
+                                        ? cropData[index].weight *
+                                          cropData[index].rate
+                                        : (cropData[index].weight -
+                                            cropData[index].wastage) *
+                                          cropData[index].rate}
+                                    </p>
+                                  </td>
                                 </tr>
                               </tbody>
                             </table>
@@ -960,9 +1024,12 @@ const SellbillStep2Modal = (props) => {
           // slectedSellCropsArray={selectedSellbillCropsData}
           billEditStatus={props.billEditStatus ? true : false}
           slectedSellCropsArray={
-            props.billEditStatus ? props.slectedCropstableArray : updatedItemList
+            props.billEditStatus
+              ? props.slectedCropstableArray
+              : updatedItemList
           }
           step2CropEditStatus={props.billEditStatus ? true : false}
+          sellBilldateSelected={props.selectedSellBilldate}
         />
       ) : (
         ""
