@@ -561,6 +561,14 @@ const SellbillStep2Modal = (props) => {
       e.target.value = "";
     }
   };
+  const closeCropModalPopupSell = () =>{
+    props.closeStep2CropModal();
+    cropResponseData([]);
+    for(var i = 0; i<preferedCropsData.length; i++){
+      preferedCropsData[i].count = 0;
+    }
+  }
+
   return (
     <Modal
       show={props.show}
@@ -571,7 +579,7 @@ const SellbillStep2Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.addCrop}
         </h5>
-        <img alt="image" src={clo} onClick={props.closeStep2CropModal} />
+        <img alt="image" src={clo} onClick={()=>closeCropModalPopupSell()} />
       </div>
 
       <div className="modal-body">

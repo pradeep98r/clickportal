@@ -1,4 +1,5 @@
 export function getCurrencyNumberWithSymbol(number) {
+  console.log(number)
   return number == null || number == 0 ? '':number.toLocaleString("en-IN", {
     maximumFractionDigits: 2,
     style: "currency",
