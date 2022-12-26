@@ -30,9 +30,7 @@ const SellbillStep3Modal = (props) => {
   const clickId = loginData.clickId;
   const navigate = useNavigate();
   const partnerSelectedData = JSON.parse(localStorage.getItem("selectedBuyer"));
-  const transpoSelectedData = JSON.parse(
-    localStorage.getItem("selectedTransporter")
-  );
+  const [transpoSelectedData, setTranspoSelectedData] = useState({});
   const [partyType, setPartnerType] = useState("Buyer");
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
@@ -59,6 +57,10 @@ const SellbillStep3Modal = (props) => {
   useEffect(() => {
     console.log(props.slectedSellCropsArray[0],"step3")
     fetchPertnerData(partyType);
+    setTranspoSelectedData(
+      JSON.parse(localStorage.getItem("selectedTransporter"))
+    );
+    console.log(JSON.parse(localStorage.getItem("selectedTransporter"),'trans'))
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? props.slectedSellCropsArray[0].lineItems
@@ -328,11 +330,15 @@ const SellbillStep3Modal = (props) => {
       });
   };
   const [partySelectStatus, setPartySelectStatus] = useState(false);
+  const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
   const partySelect = (item, type) => {
     setGetPartyItem(item);
     if (type == "Transporter") {
       setTranspoDataStatus(false);
+      setTransportoSelectStatus(true);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+      var h = JSON.parse(localStorage.getItem("selectedTransporter"));
+      setTranspoSelectedData(h);
       getOutstandingBal(clickId, item.partyId).then((res) => {
         setOutsBal(res.data.data);
       });
@@ -640,7 +646,7 @@ const SellbillStep3Modal = (props) => {
           v = v.toFixed(2);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: Number(val.toFixed(2)) };
+        return { ...groupLiist[i], value: v, totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }
@@ -675,7 +681,7 @@ const SellbillStep3Modal = (props) => {
           v = v.toFixed(2);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: Number(val.toFixed(2)) };
+        return { ...groupLiist[i], value: v, totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }
@@ -846,120 +852,112 @@ const SellbillStep3Modal = (props) => {
               <div className="transporter_div">
                 <div
                   className="selectparty_field d-flex align-items-center justify-content-between"
-                  // onClick={() => partnerClick("Transporter")}
+                  onClick={() => partnerClick("Transporter")}
                 >
                   <div className="partner_card">
                     <div className="d-flex align-items-center">
                       <img src={single_bill} className="icon_user" />
                       <div>
-                        <h5>{transpoSelectedData.partyName}</h5>
+                        {transportoSelectStatus}
+                        <h5>
+                          {editStatus
+                            ? transportoSelectStatus
+                              ? transpoSelectedData.partyName
+                              : billEditItem.transporterName
+                            : transpoSelectedData.partyName}
+                          {/* {transpoSelectedData.partyName} */}
+                        </h5>
                         <h6>
-                          {transpoSelectedData.partyType} -{" "}
-                          {transpoSelectedData.partyId} |{" "}
-                          {transpoSelectedData.mobile}
+                          {/* {transpoSelectedData.mobile } */}
+                          {editStatus
+                            ? transportoSelectStatus
+                              ? transpoSelectedData.partyType +
+                                "-" +
+                                transpoSelectedData.partyId +
+                                " | " +
+                                transpoSelectedData.mobile
+                              : "TRANSPORTER" + "-" + billEditItem.transporterId
+                            : transpoSelectedData.partyType +
+                              "-" +
+                              transpoSelectedData.partyId +
+                              " | " +
+                              transpoSelectedData.mobile}
                         </h6>
-                        <p>{transpoSelectedData.address.addressLine}</p>
+                        <p>
+                          {editStatus
+                            ? transportoSelectStatus
+                              ? transpoSelectedData?.address?.addressLine
+                              : ""
+                            : transpoSelectedData?.address?.addressLine}
+                        </p>
                       </div>
                     </div>
                   </div>
                   <img src={d_arrow} />
                 </div>
-                {transpoDataStatus ? (
-                  <div className="partners_div" id="scroll_style">
-                    <div className="d-flex searchparty" role="search">
-                      <input
-                        className="form-control mb-0"
-                        type="search"
-                        placeholder="Search"
-                        aria-label="Search"
-                        onChange={(event) =>
-                          setSearchPartyItem(event.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div>
-                      {partnerData.length > 0 ? (
-                        <div>
-                          <ul>
-                            {partnerData
-                              .filter((item) => {
-                                if (searchPartyItem === "") {
-                                  return item;
-                                } else if (
-                                  item.partyName
-                                    .toLowerCase()
-                                    .includes(searchPartyItem.toLowerCase())
-                                ) {
-                                  return item;
-                                } else if (
-                                  item.mobile
-                                    .toLowerCase()
-                                    .includes(searchPartyItem)
-                                ) {
-                                  return item;
-                                } else if (
-                                  item.partyId
-                                    .toString()
-                                    .toLowerCase()
-                                    .includes(searchPartyItem)
-                                ) {
-                                  return item;
-                                }
-                              })
-                              .map((item) => {
-                                return (
-                                  <li
-                                    key={item.partyId}
-                                    onClick={() =>
-                                      partySelect(item, "Transporter")
-                                    }
-                                    className={
-                                      "nav-item " +
-                                      (item == getPartyItem
-                                        ? "active_class"
-                                        : "")
-                                    }
-                                  >
-                                    <div className="partner_card">
-                                      <div className="d-flex align-items-center">
-                                        <img
-                                          src={single_bill}
-                                          className="icon_user"
-                                        />
-                                        <div>
-                                          <h5>{item.partyName}</h5>
-                                          <h6>
-                                            {item.trader
-                                              ? "TRADER"
-                                              : item.partyType}{" "}
-                                            - {item.partyId} | {item.mobile}
-                                          </h6>
-                                          <p>{item.address.addressLine}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </li>
-                                );
-                              })}
-                          </ul>
-                        </div>
-                      ) : (
-                        <p></p>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )}
               </div>
             ) : (
-              <div>
-                {/* <div
-                  className="selectparty_field d-flex align-items-center justify-content-between"
-                  onClick={() => partnerClick("Transporter")}
-                ></div> */}
+              <p
+                onClick={() => partnerClick("Transporter")}
+                className="select_transporter"
+              >
+                Select Transporter
+              </p>
+            )}
+            {transpoDataStatus ? (
+              <div className="partners_div" id="scroll_style">
+                <div className="d-flex searchparty" role="search">
+                  <input
+                    className="form-control mb-0"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                    onChange={(event) => setSearchPartyItem(event.target.value)}
+                  />
+                </div>
+
+                <div>
+                  {partnerData.length > 0 ? (
+                    <div>
+                      <ul>
+                        {partnerData.map((item) => {
+                          return (
+                            <li
+                              key={item.partyId}
+                              onClick={() => partySelect(item, "Transporter")}
+                              className={
+                                "nav-item " +
+                                (item == getPartyItem ? "active_class" : "")
+                              }
+                            >
+                              <div className="partner_card">
+                                <div className="d-flex align-items-center">
+                                  <img
+                                    src={single_bill}
+                                    className="icon_user"
+                                  />
+                                  <div>
+                                    <h5>{item.partyName}</h5>
+                                    <h6>
+                                      {item.trader ? "TRADER" : item.partyType}{" "}
+                                      - {item.partyId} | {item.mobile}
+                                    </h6>
+                                    <p>{item.address.addressLine}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
               </div>
+            ) : (
+              ""
             )}
             <h5 className="date_sec head_modal">Crop Information </h5>
             <div className="selectparty_field edit_crop_item_div">

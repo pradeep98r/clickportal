@@ -53,6 +53,11 @@ function DatePickerModel(props) {
   const [weekEndDate, setweekEndDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
   );
+  // Getter
+var hideIfNoPrevNext = $( ".week-picker" ).datepicker( "option", "hideIfNoPrevNext" );
+ 
+// Setter
+$( ".week-picker" ).datepicker( "option", "hideIfNoPrevNext", true );
   $(function () {
     var startWeekDate = moment(new Date()).format("YYYY-MMM-DD");
     var endWeekDate = new Date();
@@ -63,10 +68,13 @@ function DatePickerModel(props) {
           .addClass("ui-state-active");
       }, 1);
     };
+
     $(".week-picker").datepicker({
+      showOtherMonths: false,
+      selectOtherMonths: false,
       maxDate: new Date(),
-      showOtherMonths: true,
-      selectOtherMonths: true,
+      // showOtherMonths: true,
+      // selectOtherMonths: true,
       dateFormat: "dd-MM-yy",
       onSelect: function (dateText, inst) {
         var date = $(this).datepicker("getDate");
@@ -171,7 +179,7 @@ function DatePickerModel(props) {
      
        <Modal show={props.show} close={props.close} id="datePopupmodal"
        aria-labelledby="contained-modal-title-vcenter"
-       centered className="samrtboard_calender">
+       centered className="samrtboard_calender bills_calender">
             <div className="modal-header date_modal_header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
                 Select Dates

@@ -20,7 +20,7 @@ import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
 import close from "../../assets/images/close.svg";
 import {
   getCurrencyNumberWithOutSymbol,
-  getCurrencyNumberWithOneDigit,
+  getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
 const SellBillView = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -573,22 +573,24 @@ const SellBillView = () => {
                       <h6 className="small_text">{singleBillData.buyerName}</h6>
                     </div>
                   </div>
-                  <div className="col-lg-3">
+                  {singleBillData.buyerAddress != '' ? <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">Address: </p>
                       <h6 className="small_text">
                         {singleBillData.buyerAddress}
                       </h6>
                     </div>
-                  </div>
-                  <div className="col-lg-3">
+                  </div> : ''}
+                  
+                  {singleBillData.transporterId != 0 ? <div className="col-lg-3">
                     <div className="partner_info">
                       <p className="small_text">Transporter :</p>
                       <h6 className="small_text">
                         {singleBillData.transporterName}
                       </h6>
                     </div>
-                  </div>
+                  </div> : ''}
+                 
                 </div>
                 {/* table */}
                 <div className="row">
@@ -1077,7 +1079,7 @@ const SellBillView = () => {
                             {singleBillData.cashRcvd === 0 ||
                             singleBillData.cashRcvd === null
                               ? ""
-                              : singleBillData.cashRcvd}
+                              : '-' + getCurrencyNumberWithSymbol(singleBillData?.cashRcvd)}
                           </p>
                         </div>
                       </div>

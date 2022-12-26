@@ -16,7 +16,7 @@ import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
 import {qtyValues} from "../../components/qtyValues";
-import { getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
+import { getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
 
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -1050,7 +1050,7 @@ const BillView = (props) => {
                             {singleBillData.cashPaid === 0 ||
                             singleBillData.cashPaid === null
                               ? " "
-                              : -singleBillData?.cashPaid}
+                              : '-' + getCurrencyNumberWithSymbol(singleBillData?.cashPaid)}
                           </p>
                         </div>
                       </div>

@@ -22,10 +22,11 @@ const SellebillStep1 = () => {
     if(party != null){
       setpartysType(party.toLowerCase())
     }
-    if(childData.partyType != 'Transporter'){
+    if(childData.partyType.toLowerCase() != 'transporter'){
         localStorage.removeItem("selectedTransporter");
       }
       else{
+        console.log('transsell',childData)
         localStorage.setItem("selectedTransporter", JSON.stringify(childData));
       }
   };

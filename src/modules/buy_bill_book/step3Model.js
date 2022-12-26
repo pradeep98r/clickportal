@@ -691,7 +691,7 @@ const Step3Modal = (props) => {
           v = v.toFixed(2);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: Number(val.toFixed(2)) };
+        return { ...groupLiist[i], value: v, totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }
@@ -726,7 +726,7 @@ const Step3Modal = (props) => {
           v = v.toFixed(2);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: Number(val.toFixed(2)) };
+        return { ...groupLiist[i], value: v, totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }
@@ -1177,7 +1177,7 @@ const Step3Modal = (props) => {
                 <div className="totals_value">
                   <h5>Total Paybles (₹)</h5>
                   <h6>
-                    {getTotalPayble()}
+                    {getTotalPayble().toFixed(2)}
                   </h6>
                 </div>
               )}

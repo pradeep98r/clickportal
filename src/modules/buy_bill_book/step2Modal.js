@@ -29,8 +29,6 @@ const Step2Modal = (props) => {
   const [cropItemVal, setCropItemVal] = useState({});
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     console.log(crop)
-    setCropItemVal(crop);
-    setCropId(id);
     console.log(index2,preferedCrops,props.cropEditObject)
     Object.assign(
       crop,
@@ -558,6 +556,13 @@ const Step2Modal = (props) => {
       e.target.value = "";
     }
   };
+  const closeCropModalPopup = () =>{
+    props.closeCropModal();
+    cropResponseData([]);
+    for(var i = 0; i<preferedCropsData.length; i++){
+      preferedCropsData[i].count = 0;
+    }
+  }
   return (
     <Modal
       show={props.showCrop}
@@ -568,7 +573,7 @@ const Step2Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Add Crop Information
         </h5>
-        <img alt="image" src={clo} onClick={props.closeCropModal} />
+        <img alt="image" src={clo} onClick={()=>closeCropModalPopup()} />
       </div>
 
       <div className="modal-body">
@@ -577,7 +582,8 @@ const Step2Modal = (props) => {
           {preferedCropsData.length > 0 && (
             <div className="d-flex total_crops_div">
               {preferedCropsData.map((crop, index) => (
-                <div
+                <div className="">
+                  <div
                   className="text-center crop_div crop_div_ui"
                   key={crop.cropId}
                   onClick={() =>
@@ -604,6 +610,7 @@ const Step2Modal = (props) => {
                     className="flex_class cropImg mx-auto "
                   />
                   <p>{crop.cropName}</p>
+                </div>
                 </div>
               ))}
             </div>
