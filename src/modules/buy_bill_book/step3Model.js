@@ -522,7 +522,7 @@ const Step3Modal = (props) => {
     commShown: true,
     comments: "hi",
     createdBy: 0,
-    farmerId: partnerSelectedData.partyId, //partnerSelectedData.partyId,
+    farmerId: editStatus ? billEditItem.farmerId : partnerSelectedData.partyId, //partnerSelectedData.partyId,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
     labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
@@ -836,6 +836,7 @@ const Step3Modal = (props) => {
                     <img src={single_bill} className="icon_user" />
                     <div>
                       <h5>
+                        
                         {editStatus
                           ? partySelectStatus
                             ? partnerSelectedData.partyName
