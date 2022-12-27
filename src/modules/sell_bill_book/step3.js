@@ -491,7 +491,7 @@ const SellbillStep3Modal = (props) => {
     commShown: true,
     comments: "hi",
     createdBy: 0,
-    buyerId: partnerSelectedData.partyId,
+    buyerId: editStatus ? billEditItem.buyerId : partnerSelectedData.partyId,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
     labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
@@ -790,7 +790,7 @@ const SellbillStep3Modal = (props) => {
                         {editStatus
                           ? partySelectStatus
                             ? partnerSelectedData.partyName
-                            : billEditItem.farmerName
+                            : billEditItem.buyerName
                           : partnerSelectedData.partyName}
                       </h5>
                       <h6>

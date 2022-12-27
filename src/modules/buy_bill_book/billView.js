@@ -1294,7 +1294,7 @@ const BillView = (props) => {
                 <div className="col-lg-1"></div>
               </div>
             </div>
-            <div className="modal-footer">
+            <div className="modal-footer p-2">
               <div className="d-flex">
                   <button
                     type="button"
