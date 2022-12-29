@@ -17,7 +17,7 @@ import SelectBags from "./bags";
 var array = [];
 const Step2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   let [preferedCropsData, setPreferedCropsData] = useState([]);

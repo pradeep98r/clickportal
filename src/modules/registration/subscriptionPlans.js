@@ -21,7 +21,7 @@ const SubscriptionPlans = (props) => {
   const [promotions, setPromotions] = useState([]);
   const [isActive, setIsActive] = useState(-1);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [anualPrice, setAnualPrice] = useState("0");
 
   const navigate = useNavigate();

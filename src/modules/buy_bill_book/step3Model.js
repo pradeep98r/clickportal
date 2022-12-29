@@ -27,7 +27,7 @@ import clo from "../../assets/images/clo.png";
 import { getText } from "../../components/getText";
 const Step3Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const navigate = useNavigate();
   const partnerSelectedData = JSON.parse(
     localStorage.getItem("selectedPartner")
@@ -54,14 +54,16 @@ const Step3Modal = (props) => {
   const [advancesValue, getAdvancesValue] = useState(0);
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
+  const [cstmFieldVal, getcstmFieldVal] = useState(0);
   var step2CropEditStatus = props.step2CropEditStatus;
   const [allGroups, setAllGroups] = useState([]);
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   // console.log(props.slectedCropsArray[0].lineItems, "items sf");
+  const [isShown, setisShown] = useState(false);
   useEffect(() => {
-    console.log(props.dateSelected,"date")
     fetchPertnerData(partyType);
+    console.log(allGroups)
     setTranspoSelectedData(
       JSON.parse(localStorage.getItem("selectedTransporter"))
     );
@@ -73,9 +75,9 @@ const Step3Modal = (props) => {
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
-        cropArrays[c].qtyUnit == "kgs" ||
-        cropArrays[c].qtyUnit == "loads" ||
-        cropArrays[c].qtyUnit == "pieces"
+        cropArrays[c].qtyUnit.toLowerCase() == "kgs" ||
+        cropArrays[c].qtyUnit.toLowerCase() == "loads" ||
+        cropArrays[c].qtyUnit.toLowerCase() == "pieces"
       ) {
         h.push(cropArrays[c]);
       } else if (cropArrays[c].qtyUnit == "") {
@@ -87,7 +89,11 @@ const Step3Modal = (props) => {
       setTableChangeStatus(true);
     }
     if (partnerSelectedData != null) {
-      getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
+      var pID = editStatus
+        ? billEditItem.farmerId
+        : partnerSelectedData.partyId;
+      getOutstandingBal(clickId, pID).then((res) => {
+        console.log(res.data.data);
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
@@ -109,7 +115,7 @@ const Step3Modal = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-    
+      console.log(response);
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -119,6 +125,7 @@ const Step3Modal = (props) => {
               subText: "",
               subText2: "",
               totalVal: 0,
+              cstmName: "",
             });
 
             if (
@@ -138,6 +145,7 @@ const Step3Modal = (props) => {
 
           if (response[i].settingName === "COMMISSION") {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
+            setisShown(response[i].isShown == 1 ? true : false)
           } else if (response[i].settingName === "RETURN_COMMISSION") {
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
@@ -159,7 +167,7 @@ const Step3Modal = (props) => {
       gTotal = total;
     }
   };
-
+  const [cstmField, setCstmField] = useState([]);
   const listSettings = (name, res, index) => {
     var totalQty = 0;
     var item = editStatus
@@ -169,6 +177,10 @@ const Step3Modal = (props) => {
       : props.slectedCropsArray;
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
+    }
+    var substring = "CUSTOM_FIELD";
+    if (name.includes(substring)) {
+      substring = name;
     }
     let updatedItem = res.map((item, j) => {
       if (j == index) {
@@ -299,7 +311,7 @@ const Step3Modal = (props) => {
             break;
           case "GOVT_LEVIES":
             var trVa = getSingleValues(billEditItem?.govtLevies, res[j].value);
-           
+
             getlevisValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
@@ -323,6 +335,38 @@ const Step3Modal = (props) => {
             var trVa = getSingleValues(billEditItem?.advance, res[j].value);
             getAdvancesValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
+            break;
+          case substring:
+            if (res[j].fieldType == "SIMPLE") {
+              var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
+              res[j] = {
+                ...res[j],
+                settingName: res[j].customFieldName,
+                cstmName: res[j].settingName,
+                tableType: 1,
+                value: trVa,
+              };
+            }
+            if (res[j].fieldType == "COMPLEX_RS") {
+              var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
+              res[j] = {
+                ...res[j],
+                settingName: res[j].customFieldName,
+                cstmName: res[j].settingName,
+                tableType: 3,
+                value: trVa,
+              };
+            }
+            if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
+              var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
+              res[j] = {
+                ...res[j],
+                settingName: res[j].customFieldName,
+                cstmName: res[j].settingName,
+                tableType: 2,
+                value: trVa,
+              };
+            }
             break;
         }
         return { ...res[j] };
@@ -357,6 +401,7 @@ const Step3Modal = (props) => {
         console.log(error);
       });
   };
+  const [questionsTitle, setQuestionsTitle] = useState([]);
   const [partySelectStatus, setPartySelectStatus] = useState(false);
   const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
   const partySelect = (item, type) => {
@@ -417,10 +462,13 @@ const Step3Modal = (props) => {
   const getTotalUnits = (val) => {
     return val * totalUnits;
   };
+  const [enterVal, setEnterVal] = useState();
+  const [cstmval, setCstmval] = useState(false);
   const getTotalBillAmount = () => {
+    // console.log(questionsTitle)
     var t = Number(
-      getTotalValue(commValue) +
-        getTotalUnits(transportationValue) +
+      // getTotalValue(commValue) +
+      getTotalUnits(transportationValue) +
         getTotalUnits(laborChargeValue) +
         getTotalUnits(rentValue) +
         getTotalValue(mandifeeValue) +
@@ -429,17 +477,30 @@ const Step3Modal = (props) => {
         Number(advancesValue)
     );
     let totalValue = grossTotal - t;
-    // console.log(totalValue,'total bill')
-    if (addRetComm) {
-      return (totalValue + getTotalValue(retcommValue)).toFixed(2);
-    } else {
-      return (totalValue - getTotalValue(retcommValue)).toFixed(2);
+    for (var i = 0; i < questionsTitle.length; i++) {
+      if (questionsTitle[i].less) {
+        var t = 0;
+
+        totalValue = totalValue - Number(questionsTitle[i].fee);
+      } else {
+        totalValue = totalValue + Number(questionsTitle[i].fee);
+      }
     }
-    
+    if (includeComm) {
+      if(isShown){
+        totalValue = totalValue + getTotalValue(commValue);
+      }
+    }
+    if (addRetComm) {
+      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
+    } else {
+      totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
+    }
+    return totalValue;
   };
   const getActualPayble = () => {
     var actualPay = getTotalBillAmount() - Number(cashpaidValue);
-    if (!includeComm) {
+    if (includeComm) {
       actualPay = actualPay - getTotalValue(commValue);
     }
     if (!includeRetComm) {
@@ -451,23 +512,25 @@ const Step3Modal = (props) => {
     }
     return actualPay;
   };
-  const getTotalPayble = () =>{
-    return (Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2));
-  }
+  const getTotalPayble = () => {
+    return Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2);
+  };
   const getFinalLedgerbalance = () => {
     var t = Number(
       getTotalUnits(transportationValue) +
         getTotalUnits(laborChargeValue) +
         getTotalUnits(rentValue) +
-        getTotalValue((mandifeeValue)) +
+        getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
         Number(advancesValue)
     );
     var finalValue = grossTotal - t;
-    var finalVal = 0;
+    var finalVal = finalValue;
     if (includeComm) {
+    //  if(isShown){
       finalVal = finalValue + getTotalValue(commValue);
+    //  }
     }
     if (addRetComm) {
       if (includeRetComm) {
@@ -476,12 +539,13 @@ const Step3Modal = (props) => {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
-      if (includeRetComm) {
+      // if (includeRetComm) {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
-      }
+      // }
     }
-    // console.log((Number(finalVal) + outBal).toFixed(2) - Number(cashpaidValue))
-    return (Number(finalVal) + outBal).toFixed(2) - Number(cashpaidValue);
+    var outBalance = editStatus ? billEditItem?.outStBal : outBal;
+    console.log((Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue),finalVal,outBal)
+    return (Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue);
   };
   var lineItemsArray = [];
 
@@ -510,6 +574,7 @@ const Step3Modal = (props) => {
     });
   }
   // }
+
   const billRequestObj = {
     actualPayble: Number(getActualPayble()),
     advance: Number(advancesValue),
@@ -523,12 +588,13 @@ const Step3Modal = (props) => {
     comments: "hi",
     createdBy: 0,
     farmerId: editStatus ? billEditItem.farmerId : partnerSelectedData.partyId, //partnerSelectedData.partyId,
+    customFields: questionsTitle,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
     labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
-    mandiFee: Number(getTotalValue(mandifeeValue)).toFixed(2),
+    mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
     misc: Number(otherfeeValue),
     outStBal: 0,
     paidTo: 100,
@@ -553,16 +619,7 @@ const Step3Modal = (props) => {
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
       comments: "hi",
-      // customFields: [
-      //   {
-      //     "comments": "string",
-      //     "fee": 0,
-      //     "field": "string",
-      //     "fieldName": "string",
-      //     "fieldType": "string",
-      //     "less": true
-      //   }
-      // ],
+      customFields: editStatus ? (cstmval ? questionsTitle : billEditItem?.customFields) : questionsTitle,
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
       labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
@@ -614,7 +671,6 @@ const Step3Modal = (props) => {
         }
       );
     } else {
-      console.log(getTotalUnits(Number(rentValue)),getTotalUnits((transportationValue)))
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -650,30 +706,76 @@ const Step3Modal = (props) => {
     }
   };
 
-  const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g,'');
-
+    var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
+        groupLiist[i].value = val;
+        let tab = [...questionsTitle];
+        let tabIndex = tab.findIndex((x) => x.index === index);
+        if (tabIndex !== -1) {
+          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
+        } else {
+          tab.push({
+            comments: "string",
+            fee: getTargetValue(e.target.value, groupLiist[i], i),
+            field: groupLiist[i].cstmName,
+            fieldName: groupLiist[i].settingName,
+            fieldType: groupLiist[i].fieldType,
+            index: index,
+            less: groupLiist[i].addToGt == 1 ? false : true,
+          });
+          setCstmval(true);
+        }
+        setQuestionsTitle(tab);
         getAdditionValues(groupLiist[i], val);
+
         return { ...groupLiist[i], value: val };
       } else {
         return { ...groupLiist[i] };
       }
     });
     setAllGroups([...updatedItems]);
-
     setEnterVal(val);
   };
+  const getTargetValue = (val, list, index) => {
+    console.log(Number(val), list);
+    if (list.fieldType == "SIMPLE") {
+      return (list.fee = Number(val));
+    } else if (list.fieldType == "COMPLEX_RS") {
+      return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+    } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
+      return (list.fee = Number(getTotalValue(val).toFixed(2)));
+    }
+  };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g,'');
+    var val = e.target.value.replace(/[^0-9.]/g, "");
 
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
-        console.log(val,typeof(val))
         getAdditionValues(groupLiist[i], val);
-        return { ...groupLiist[i], value: val, totalVal: Number(getTotalUnits(val).toFixed(2)) };
+        let tab = [...questionsTitle];
+        let tabIndex = tab.findIndex((x) => x.index === index);
+        if (tabIndex !== -1) {
+          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
+        } else {
+          tab.push({
+            comments: "string",
+            fee: getTargetValue(e.target.value, groupLiist[i], i),
+            field: groupLiist[i].cstmName,
+            fieldName: groupLiist[i].settingName,
+            fieldType: groupLiist[i].fieldType,
+            index: index,
+            less: groupLiist[i].addToGt == 1 ? false : true,
+          });
+          setCstmval(true);
+        }
+        setQuestionsTitle(tab);
+        return {
+          ...groupLiist[i],
+          value: val,
+          totalVal: Number(getTotalUnits(val).toFixed(2)),
+        };
       } else {
         return { ...groupLiist[i] };
       }
@@ -690,6 +792,23 @@ const Step3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
+        let tab = [...questionsTitle];
+        let tabIndex = tab.findIndex((x) => x.index === index);
+        if (tabIndex !== -1) {
+          tab[tabIndex].fee = Number(e.target.value);
+        } else {
+          tab.push({
+            comments: "string",
+            fee: Number(e.target.value),
+            field: groupLiist[i].cstmName,
+            fieldName: groupLiist[i].settingName,
+            fieldType: groupLiist[i].fieldType,
+            index: index,
+            less: groupLiist[i].addToGt == 1 ? false : true,
+          });
+          setCstmval(true);
+        }
+        setQuestionsTitle(tab);
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -704,6 +823,23 @@ const Step3Modal = (props) => {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
+        let tab = [...questionsTitle];
+        let tabIndex = tab.findIndex((x) => x.index === index);
+        if (tabIndex !== -1) {
+          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
+        } else {
+          tab.push({
+            comments: "string",
+            fee: getTargetValue(e.target.value, groupLiist[i], i),
+            field: groupLiist[i].cstmName,
+            fieldName: groupLiist[i].settingName,
+            fieldType: groupLiist[i].fieldType,
+            index: index,
+            less: groupLiist[i].addToGt == 1 ? false : true,
+          });
+          setCstmval(true);
+        }
+        setQuestionsTitle(tab);
         return {
           ...groupLiist[i],
           value: val,
@@ -725,6 +861,23 @@ const Step3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
+        let tab = [...questionsTitle];
+        let tabIndex = tab.findIndex((x) => x.index === index);
+        if (tabIndex !== -1) {
+          tab[tabIndex].fee = Number(e.target.value);
+        } else {
+          tab.push({
+            comments: "string",
+            fee: Number(e.target.value),
+            field: groupLiist[i].cstmName,
+            fieldName: groupLiist[i].settingName,
+            fieldType: groupLiist[i].fieldType,
+            index: index,
+            less: groupLiist[i].addToGt == 1 ? false : true,
+          });
+          setCstmval(true);
+        }
+        setQuestionsTitle(tab);
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -733,6 +886,7 @@ const Step3Modal = (props) => {
     });
     setAllGroups([...updatedItem]);
   };
+
   const getAdditionValues = (groupLiist, v) => {
     if (groupLiist.settingName.toLowerCase() == "transportation") {
       getTransportationValue(v);
@@ -772,6 +926,12 @@ const Step3Modal = (props) => {
     if (groupLiist.settingName == "ADVANCES") {
       if (v != "") {
         getAdvancesValue(v);
+      }
+    }
+    var subString = "CUSTOM_FIELD";
+    if (groupLiist.cstmName.includes(subString)) {
+      if (v != "") {
+        getcstmFieldVal(v);
       }
     }
   };
@@ -836,7 +996,6 @@ const Step3Modal = (props) => {
                     <img src={single_bill} className="icon_user" />
                     <div>
                       <h5>
-                        
                         {editStatus
                           ? partySelectStatus
                             ? partnerSelectedData.partyName
@@ -1080,7 +1239,7 @@ const Step3Modal = (props) => {
                                   type="text"
                                   placeholder=""
                                   onFocus={(e) => resetInput(e)}
-                                  value={allGroups[index].value}
+                                  value={allGroups[index].totalVal}
                                   onChange={advLevOnchangeEvent(
                                     allGroups,
                                     index
@@ -1148,7 +1307,7 @@ const Step3Modal = (props) => {
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Outstanding Balance (₹)</h5>
-                  <h6>{outBal != 0 ? outBal.toFixed(2) : "0"}</h6>
+                  <h6>{outBal != 0 ? editStatus ? billEditItem?.outStBal : outBal.toFixed(2) : "0"}</h6>
                 </div>
               ) : (
                 ""
@@ -1177,9 +1336,7 @@ const Step3Modal = (props) => {
               ) : (
                 <div className="totals_value">
                   <h5>Total Paybles (₹)</h5>
-                  <h6>
-                    {getTotalPayble().toFixed(2)}
-                  </h6>
+                  <h6>{getTotalPayble().toFixed(2)}</h6>
                 </div>
               )}
             </div>

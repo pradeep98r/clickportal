@@ -13,7 +13,7 @@ const Registration = () => {
   };
   const navigate = useNavigate();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const obj = {
     address: {
       addressLine: "",

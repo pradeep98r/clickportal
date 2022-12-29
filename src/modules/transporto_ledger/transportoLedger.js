@@ -67,7 +67,7 @@ const TransportoLedger = () => {
   const navigate = useNavigate();
 
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   let transId = 0;
 
   const langData = localStorage.getItem("languageData");

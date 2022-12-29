@@ -28,7 +28,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
   const [saveType, setSaveType] = useState("FARMER");
