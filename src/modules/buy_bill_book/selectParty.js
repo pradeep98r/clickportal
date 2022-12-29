@@ -28,6 +28,7 @@ const SelectPartner = (props) => {
     getPartnerData(clickId, partnerType)
       .then((response) => {
         setAllData(response.data.data);
+        
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -44,9 +45,12 @@ const SelectPartner = (props) => {
     } else {
       setGetPartyName(false);
     }
-    setsearchValue('');
-    fetchPertnerData();
-    console.log("came to click event");
+    // setsearchValue('');
+    if(searchValue != ''){
+      fetchPertnerData();  
+    }
+    // fetchPertnerData();
+    console.log("came to click event",partnerData);
   };
   const partySelect = (item) => {
     setGetPartyItem(item);

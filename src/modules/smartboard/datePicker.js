@@ -188,7 +188,13 @@ function DatePickerModel(props) {
     >
       <div className="modal-header date_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          Select Dates
+       Select {dateTabs == "Daily"
+                  ? "Date"
+                  : dateTabs == "Weekly"
+                  ? "Week"
+                  : dateTabs == "Monthly"
+                  ? "Month"
+                  : dateTabs == "Year"}
         </h5>
         <img
           src={close}

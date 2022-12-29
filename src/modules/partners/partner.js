@@ -466,7 +466,7 @@ const Partner = () => {
       ""
     );
     pincodeValue = pincodeValue.replace(/\D/g, "");
-    console.log(address, pincodeValue, "address");
+    console.log(address, pincodeValue,pincode, "address");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
     $("#city").val(city);
