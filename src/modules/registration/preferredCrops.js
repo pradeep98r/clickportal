@@ -14,7 +14,7 @@ const PreferredCrops = () => {
     });
   }, []);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [cropItem, setSelectCrop] = useState("");
   const [allCropsData, allCropResponseData] = useState([]);
   const [selected, setSelected] = useState([]);

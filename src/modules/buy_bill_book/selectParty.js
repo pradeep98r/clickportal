@@ -8,7 +8,7 @@ import NoDataAvailable from "../../components/noDataAvailable";
 import SearchField from "../../components/searchField";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -28,6 +28,7 @@ const SelectPartner = (props) => {
     getPartnerData(clickId, partnerType)
       .then((response) => {
         setAllData(response.data.data);
+        
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -44,8 +45,12 @@ const SelectPartner = (props) => {
     } else {
       setGetPartyName(false);
     }
-   
-    console.log("came to click event");
+    // setsearchValue('');
+    if(searchValue != ''){
+      fetchPertnerData();  
+    }
+    // fetchPertnerData();
+    console.log("came to click event",partnerData);
   };
   const partySelect = (item) => {
     setGetPartyItem(item);
@@ -74,7 +79,7 @@ const SelectPartner = (props) => {
       setGetPartyName(false);
     }
   }, []);
- 
+ const [searchValue, setsearchValue]= useState('');
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
@@ -88,6 +93,7 @@ const SelectPartner = (props) => {
       }
     });
     setpartnerData(result);
+    setsearchValue(value)
   };
  
   return (

@@ -23,7 +23,7 @@ import {
 
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const [buyBillData, setBuyBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ function BuyBillBook() {
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
-      : "";
+      :loginData.useStatus == 'WRITER' ? "writer": 'ca';;
 
   const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
@@ -123,7 +123,7 @@ function BuyBillBook() {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {loginData.businessCreated === false &&
+          {(loginData.businessCreated === false ? (loginData.useStatus == "WRITER") : true) &&
           businessCreatedStatus == "" ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">

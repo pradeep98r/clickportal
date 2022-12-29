@@ -7,6 +7,8 @@ import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import caImage from "../../assets/images/ca_img.svg"
+import { getProfile } from "../../actions/profileService"
+
 function TopNavigation() {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -16,7 +18,19 @@ function TopNavigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
-  
+  const [profileData, setProfileData] = useState(null);
+  // const getProfileDetails = () => {
+   
+  // };
+  useEffect(() => {
+    getProfile(loginUserDetails.caId)
+      .then((response) => {
+        setProfileData(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   const logOutFunction = () => {
     caches.keys().then((names) => {
       names.forEach((name) => {
@@ -42,7 +56,7 @@ function TopNavigation() {
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));
   var stepOneSingleBill = JSON.parse(localStorage.getItem("stepOneSingleBook"));
-   
+   console.log(profileData,loginUserDetails)
   const backToBuyBillBook = () => {
     localStorage.setItem("billViewStatus", false);
     localStorage.setItem("stepOne", false);
@@ -158,14 +172,14 @@ function TopNavigation() {
                   <div className="d-flex align-items-center" onClick={()=>profileClick()}>
                     <img src = {caImage} className="mr-2" alt="image"/>
                     <div>
-                    <h5>{loginUserDetails.profile.profile != null
-                    ? loginUserDetails.profile.profile.fullName
+                    <h5>{profileData != null
+                    ? profileData.personalDtls.ownerName
                     : ""}
                     </h5>
                      <p>
                       Click ID:
-                      {loginUserDetails.profile.profile != null
-                        ? loginUserDetails.profile.profile.clickId
+                      {loginUserDetails != null
+                        ? loginUserDetails.clickId
                         : loginUserDetails.clickId}
                     </p>
                     </div>

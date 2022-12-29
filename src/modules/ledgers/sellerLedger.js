@@ -46,7 +46,7 @@ const SellerLedger = () => {
   const [data, setData] = useState({}, ledger);
   const [error, setError] = useState();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [ledgerSummary, setSummary] = useState([{}]);
   const [summaryData, setSummaryData] = useState({}, ledgerSummary);
   const [details, setDetails] = useState([{}]);

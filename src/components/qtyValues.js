@@ -37,7 +37,7 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
         qtyUnit.toLowerCase() == "kgs"
           ? ""
           : getCropUnit(qtyUnit))}
-      {qty == 0 ? "" : weight == 0 || weight == null ? "" : " | "}
+      {(qty == 0 || qty == null) ? "" : weight == 0 || weight == null ? "" : " | "}
       {getCurrencyNumberWithOneDigit(weight) +
         (qtyUnit.toLowerCase() == "loads" ||
         qtyUnit.toLowerCase() == "pieces" ||

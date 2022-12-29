@@ -28,7 +28,7 @@ import SelectPartner from "./selectParty";
 var array = [];
 function BillCreation() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   let [responseData, setResponseData] = useState([]);

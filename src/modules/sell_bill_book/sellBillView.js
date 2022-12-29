@@ -7,6 +7,7 @@ import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import edit from "../../assets/images/edit_round.svg";
 import { Navigate, useNavigate } from "react-router-dom";
 import { qtyValues } from "../../components/qtyValues";
+import SellBillBook from "./sellBillBook";
 import {
   getMandiDetails,
   getSystemSettings,
@@ -24,20 +25,23 @@ import {
 } from "../../components/getCurrencyNumber";
 const SellBillView = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  console.log(singleBillData);
+  
   const [displayCancel, setDisplayCancel] = useState(false);
   const navigate = useNavigate();
-
+  // const [billviewStatus, setBillViewStatus] = useState(false);
   useEffect(() => {
     cancelBillStatus();
     getBusinessDetails();
     getBuyBillsById();
+    // setBillViewStatus(true);
+    localStorage.setItem("billViiewSttatus",true);
+    localStorage.setItem("billDate",singleBillData.billDate);
   }, []);
 
   const cancelBillStatus = () => {
@@ -69,6 +73,7 @@ const SellBillView = () => {
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
+  const [isShown, setisShown] = useState(false);
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       billSettingData(res.data.data.billSetting);
@@ -82,6 +87,10 @@ const SellBillView = () => {
             setIncludeComm(
               res.data.data.billSetting[i].includeInLedger == 1 ? true : false
             );
+            setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+            if(!(res.data.data.billSetting[i].isShown)){
+              setStatus(true);
+            }
           }
           if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
             setStatus(true);
@@ -109,6 +118,7 @@ const SellBillView = () => {
             setIncludeComm(
               res.data.data.billSetting[i].includeInLedger == 1 ? true : false
             );
+            setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
           } else if (
             res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
           ) {
@@ -133,6 +143,7 @@ const SellBillView = () => {
             setIncludeComm(
               res.data.data.billSetting[i].includeInLedger == 1 ? true : false
             );
+            setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
           } else if (
             res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
           ) {
@@ -157,6 +168,7 @@ const SellBillView = () => {
             setIncludeComm(
               res.data.data.billSetting[i].includeInLedger == 1 ? true : false
             );
+            setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
           } else if (
             res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
           ) {
@@ -175,62 +187,62 @@ const SellBillView = () => {
   };
   const handleGroupNames = (name) => {
     var value = 0;
+    var substring = "CUSTOM_FIELD";
+    if (name?.includes(substring)) {
+      substring = name;
+    }
     switch (name) {
       case "COMMISSION":
-        value = singleBillData?.comm;
+        value = singleBillData?.commShown ? singleBillData?.comm : 0;
         break;
       case "RETURN_COMMISSION":
         value = singleBillData?.rtComm;
-        grOne.map((item) => {
+        grone.map((item) => {
           if (item.addToGt == 1) {
-            value = -singleBillData?.rtComm;
-            console.log(value);
+            value = +singleBillData?.rtComm;
             return value;
           } else if (
             item.addToGt == 0 &&
             item.settingName === "RETURN_COMMISSION"
           ) {
-            value = "+" + singleBillData?.rtComm;
-            console.log(value);
+            value = -singleBillData?.rtComm;
             return value;
           }
         });
-        grTwo.map((item) => {
+        console.log(grTwo)
+        grtwo.map((item) => {
           if (item.addToGt == 1) {
-            value = -singleBillData?.rtComm;
+            value = +singleBillData?.rtComm;
             return value;
           } else if (
             item.addToGt == 0 &&
             item.settingName === "RETURN_COMMISSION"
           ) {
-            value = "+" + singleBillData?.rtComm;
-            console.log(value);
+            value =  -singleBillData?.rtComm;
             return value;
           }
         });
-        grThree.map((item) => {
+        grthree.map((item) => {
           if (item.addToGt == 1) {
-            value = -singleBillData?.rtComm;
+            value = +singleBillData?.rtComm;
             return value;
           } else if (
             item.addToGt == 0 &&
             item.settingName === "RETURN_COMMISSION"
           ) {
-            value = "+" + singleBillData?.rtComm;
-            console.log(value);
+            value = -singleBillData?.rtComm;
             return value;
           }
         });
         grFour.map((item) => {
           if (item.addToGt == 1) {
-            value = -singleBillData?.rtComm;
+            value = +singleBillData?.rtComm;
             return value;
           } else if (
             item.addToGt == 0 &&
             item.settingName === "RETURN_COMMISSION"
           ) {
-            value = "+" + singleBillData?.rtComm;
-            console.log(value);
+            value = -singleBillData?.rtComm;
             return value;
           }
         });
@@ -260,38 +272,16 @@ const SellBillView = () => {
       case "ADVANCES":
         value = singleBillData?.advance;
         break;
-      case "CUSTOM_FIELD1":
+        case substring:
         singleBillData.customFields.map((item) => {
+          if(item.fee != 0){
           if (item.field === name) {
             value = item.fee;
             return value;
-          }
+          }}
         });
         break;
-      case "CUSTOM_FIELD2":
-        singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = item.fee;
-            return value;
-          }
-        });
-        break;
-      case "CUSTOM_FIELD3":
-        singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = item.fee;
-            return value;
-          }
-        });
-        break;
-      case "CUSTOM_FIELD4":
-        singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = item.fee;
-            return value;
-          }
-        });
-        break;
+   
     }
     return value;
   };
@@ -322,7 +312,11 @@ const SellBillView = () => {
     }
     return unitType;
   };
-  const handleSettingName = (item) => {
+  const handleSettingName = (item,list) => {
+    var substring = "CUSTOM_FIELD";
+    if (item?.includes(substring)) {
+      substring = item;
+    }
     switch (item) {
       case "COMM_INCLUDE":
         item = "";
@@ -348,6 +342,21 @@ const SellBillView = () => {
       case "CASH_RECEIVED":
         item = "";
         break;
+        case "COMMISSION":
+         if(!(list.isShown)){
+          item = "";
+         }
+          break;
+          case substring:
+            singleBillData.customFields.map((items) => {
+              if (items.fee != 0) {
+                if (items.field === item) {
+                  item = items.field;
+                  return item;
+                }
+              }
+            });
+            break;
     }
     return item;
   };
@@ -375,33 +384,25 @@ const SellBillView = () => {
         singleBillData.govtLevies +
         singleBillData.otherFee
     );
-    console.log(t);
     var finalValue = singleBillData.grossTotal + t;
-    console.log(finalValue);
     var finalVal = finalValue;
     if (includeComm) {
       finalVal = finalVal + singleBillData.comm;
-      console.log(finalVal);
     }
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = finalVal + singleBillData.rtComm;
-        console.log(finalVal);
       }
     } else {
-      if (includeRetComm) {
+      // if (includeRetComm) {
         finalVal = finalVal - singleBillData.rtComm;
-        console.log(finalVal);
-      }
+      // }
     }
     var cashRecieved =
       singleBillData.cashRcvd === null ? 0 : singleBillData.cashRcvd;
-    console.log(
-      (parseInt(finalVal) + singleBillData.outStBal).toFixed(2) -
-        parseInt(singleBillData.cashRcvd === null ? 0 : singleBillData.cashRcvd)
-    );
+  
     return (
-      (parseInt(finalVal) + singleBillData.outStBal).toFixed(2) - cashRecieved
+      (Number(finalVal) + singleBillData.outStBal).toFixed(2) - cashRecieved
     ).toFixed(2);
   };
   const [showStep3Modal, setShowStep3Modal] = useState(false);
@@ -465,6 +466,7 @@ const SellBillView = () => {
     updatedOn: "",
     writerId: 0,
   };
+  const [sellbillbookStatus,setsellbillbookStatus] = useState(false);
   const cancelbillApiCall = () => {
     editbuybillApi(editBillRequestObj).then(
       (response) => {
@@ -475,6 +477,7 @@ const SellBillView = () => {
           console.log(editBillRequestObj, "edit bill request");
           console.log(response.data, "edit bill");
           localStorage.setItem("billViewStatus", false);
+          setsellbillbookStatus(true);
           navigate("/sellbillbook");
         }
       },
@@ -627,24 +630,8 @@ const SellBillView = () => {
                           </td>
                           <td className="col-3">
                             {" "}
-                            {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
                             <div> {qtyValues(item.qty,item.qtyUnit,item.weight,item.wastage,item.rateType)}</div>
-                            {/* <p>
-                              {item.qty == null || item.qty == 0
-                                ? ""
-                                : getCurrencyNumberWithOneDigit(item.qty) +
-                                  " " +
-                                  (item.qtyUnit.toLowerCase() =='loads' ? '' :getCropUnit(item.qtyUnit)) +
-                                  " | "}
-                              {item.weight == null || item.weight == 0
-                                ? ""
-                                : getCurrencyNumberWithOneDigit(item.weight) + (item.qtyUnit.toLowerCase() =='loads' ? getCropUnit(item.qtyUnit):(" KGS  "))}
-                              <span className="red_text">
-                                {item.wastage == null || item.wastage == 0
-                                  ? ""
-                                  : - getCurrencyNumberWithOneDigit(item.wastage) + " KGS "}
-                              </span>
-                            </p> */}
+                          
                           </td>
                           <td className="col-2">
                             {item.rate
@@ -716,7 +703,7 @@ const SellBillView = () => {
                                 <p className="groups_value">
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                       ? " "
                                       : handleGroupNames(item.settingName) ===
                                           0 ||
@@ -724,13 +711,13 @@ const SellBillView = () => {
                                           null
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll("_", " ")}
+                                    :( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(item.settingName)}
@@ -741,7 +728,7 @@ const SellBillView = () => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName,item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -789,7 +776,7 @@ const SellBillView = () => {
                                   {" "}
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                       ? " "
                                       : handleGroupNames(item.settingName) ===
                                           0 ||
@@ -797,13 +784,13 @@ const SellBillView = () => {
                                           null
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll("_", " ")}
+                                    : ( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(item.settingName)}
@@ -814,7 +801,7 @@ const SellBillView = () => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName,item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -863,7 +850,7 @@ const SellBillView = () => {
                                   {" "}
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                       ? " "
                                       : handleGroupNames(item.settingName) ===
                                           0 ||
@@ -871,16 +858,13 @@ const SellBillView = () => {
                                           null
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll(
-                                        "_",
-                                        " "
-                                      )}{" "}
+                                    : ( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}{" "}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(item.settingName)}
@@ -891,7 +875,7 @@ const SellBillView = () => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName,item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -942,7 +926,7 @@ const SellBillView = () => {
                                   {" "}
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                       ? " "
                                       : handleGroupNames(item.settingName) ===
                                           0 ||
@@ -950,13 +934,13 @@ const SellBillView = () => {
                                           null
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll("_", " ")}
+                                    : ( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName,item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(item.settingName)}
@@ -967,7 +951,7 @@ const SellBillView = () => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName,item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -1307,6 +1291,7 @@ const SellBillView = () => {
       ) : (
         ""
       )}
+{sellbillbookStatus ? <SellBillBook selectedBillviewDate={singleBillData.billDate}/> : ''}
       <div className="modal fade" id="cancelBill">
         <div className="modal-dialog cancelBill_modal_popup">
           <div className="modal-content">
@@ -1372,6 +1357,7 @@ const SellBillView = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

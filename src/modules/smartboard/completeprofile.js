@@ -21,7 +21,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
