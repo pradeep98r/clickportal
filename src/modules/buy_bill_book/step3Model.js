@@ -488,7 +488,7 @@ const Step3Modal = (props) => {
     }
     if (includeComm) {
       if(isShown){
-        totalValue = totalValue + getTotalValue(commValue);
+        totalValue = totalValue - getTotalValue(commValue);
       }
     }
     if (addRetComm) {
@@ -501,8 +501,11 @@ const Step3Modal = (props) => {
   const getActualPayble = () => {
     var actualPay = getTotalBillAmount() - Number(cashpaidValue);
     if (includeComm) {
+     if(!isShown){
       actualPay = actualPay - getTotalValue(commValue);
+     }
     }
+    console.log(actualPay,getTotalBillAmount())
     if (!includeRetComm) {
       if (addRetComm) {
         actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
