@@ -15,18 +15,22 @@ import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
-import {qtyValues} from "../../components/qtyValues";
-import { getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
+import { qtyValues } from "../../components/qtyValues";
+import {
+  getCurrencyNumberWithOneDigit,
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithSymbol,
+} from "../../components/getCurrencyNumber";
 
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  // console.log(singleBillData)
+  console.log(singleBillData);
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -70,6 +74,7 @@ const BillView = (props) => {
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       billSettingData(res.data.data.billSetting);
+      console.log(res.data.data.billSetting)
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
         if (
           res.data.data.billSetting[i].groupId === 1 &&
@@ -174,6 +179,10 @@ const BillView = (props) => {
 
   const handleGroupNames = (name) => {
     var value = 0;
+    var substring = "CUSTOM_FIELD";
+    if (name?.includes(substring)) {
+      substring = name;
+    }
     switch (name) {
       case "COMMISSION":
         value = -singleBillData?.comm;
@@ -253,35 +262,13 @@ const BillView = (props) => {
       case "ADVANCES":
         value = -singleBillData?.advance;
         break;
-      case "CUSTOM_FIELD1":
+      case substring:
         singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = -item.fee;
-            return value;
-          }
-        });
-        break;
-      case "CUSTOM_FIELD2":
-        singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = -item.fee;
-            return value;
-          }
-        });
-        break;
-      case "CUSTOM_FIELD3":
-        singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = -item.fee;
-            return value;
-          }
-        });
-        break;
-      case "CUSTOM_FIELD4":
-        singleBillData.customFields.map((item) => {
-          if (item.field === name) {
-            value = -item.fee;
-            return value;
+          if (item.fee != 0) {
+            if (item.field === name) {
+              value = -item.fee;
+              return value;
+            }
           }
         });
         break;
@@ -329,21 +316,24 @@ const BillView = (props) => {
       case "SACS":
         unitType = "S";
         break;
-        case "LOADS":
-          unitType = "LDS";
-          break;
-          case "PIECES":
-          unitType = "PCS";
-          break;
-          case "KGS":
-          unitType = "KGS";
-          break;
+      case "LOADS":
+        unitType = "LDS";
+        break;
+      case "PIECES":
+        unitType = "PCS";
+        break;
+      case "KGS":
+        unitType = "KGS";
+        break;
     }
     return unitType;
-   
   };
 
-  const handleSettingName = (item) => {
+  const handleSettingName = (item, list) => {
+    var substring = "CUSTOM_FIELD";
+    if (item?.includes(substring)) {
+      substring = item;
+    }
     switch (item) {
       case "COMM_INCLUDE":
         item = "";
@@ -369,6 +359,21 @@ const BillView = (props) => {
       case "CASH_RECEIVED":
         item = "";
         break;
+      case "COMMISSION":
+        if (!list.isShown) {
+          item = "";
+        }
+        break;
+      case substring:
+        singleBillData.customFields.map((items) => {
+          if (items.fee != 0) {
+            if (items.field === item) {
+              item = items.field;
+              return item;
+            }
+          }
+        });
+        break;
     }
     return item;
   };
@@ -392,13 +397,13 @@ const BillView = (props) => {
         finalVal = finalVal + singleBillData.rtComm;
       }
     } else {
-      if (includeRetComm) {
-        finalVal = finalVal - singleBillData.rtComm;
-      }
+      // if (includeRetComm) {
+      finalVal = finalVal - singleBillData.rtComm;
+      // }
     }
     return (
-      (parseInt(finalVal) + singleBillData.outStBal).toFixed(2) -
-      parseInt(singleBillData.cashPaid)
+      (Number(finalVal) + singleBillData.outStBal).toFixed(2) -
+      Number(singleBillData.cashPaid)
     ).toFixed(2);
   };
 
@@ -473,7 +478,7 @@ const BillView = (props) => {
             toastId: "success1",
           });
           console.log(response.data, "edit bill");
-          localStorage.setItem("billViewStatus",false)
+          localStorage.setItem("billViewStatus", false);
           navigate("/buy_bill_book");
         }
       },
@@ -510,9 +515,7 @@ const BillView = (props) => {
                   </div>
                   <div className="col-lg-1"></div>
                   <div className="col-lg-2 text-end">
-                    <p className="small_text">
-                    Phone
-                    </p>
+                    <p className="small_text">Phone</p>
                     <p className="medium_text">
                       {mandiData.businessDtls?.mobile}
                     </p>
@@ -577,24 +580,31 @@ const BillView = (props) => {
                       </h6>
                     </div>
                   </div>
-                  {singleBillData.farmerAddress != '' ? <div className="col-lg-3">
-                    <div className="partner_info">
-                      <p className="small_text">Address: </p>
-                      <h6 className="small_text">
-                        {singleBillData.farmerAddress}
-                      </h6>
+                  {singleBillData.farmerAddress != "" ? (
+                    <div className="col-lg-3">
+                      <div className="partner_info">
+                        <p className="small_text">Address: </p>
+                        <h6 className="small_text">
+                          {singleBillData.farmerAddress}
+                        </h6>
+                      </div>
                     </div>
-                  </div> : ''}
-                  
-                  {singleBillData.transporterId != 0 ? <div className="col-lg-3">
-                    <div className="partner_info">
-                      <p className="small_text">Transporter :</p>
-                      <h6 className="small_text">
-                        {singleBillData.transporterName}
-                      </h6>
+                  ) : (
+                    ""
+                  )}
+
+                  {singleBillData.transporterId != 0 ? (
+                    <div className="col-lg-3">
+                      <div className="partner_info">
+                        <p className="small_text">Transporter :</p>
+                        <h6 className="small_text">
+                          {singleBillData.transporterName}
+                        </h6>
+                      </div>
                     </div>
-                  </div> : ''}
-                  
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div className="row">
                   <div className="col-lg-8"></div>
@@ -632,10 +642,20 @@ const BillView = (props) => {
                           <td className="col-3">
                             {" "}
                             {/* <p>{item.qtyUnit + ":" + item.qty}</p> */}
-                            <div> {qtyValues(item.qty,item.qtyUnit,item.weight,item.wastage,item.rateType)}</div>
-                           
+                            <div>
+                              {" "}
+                              {qtyValues(
+                                item.qty,
+                                item.qtyUnit,
+                                item.weight,
+                                item.wastage,
+                                item.rateType
+                              )}
+                            </div>
                           </td>
-                          <td className="col-2">{getCurrencyNumberWithOutSymbol(item.rate)}</td>
+                          <td className="col-2">
+                            {getCurrencyNumberWithOutSymbol(item.rate)}
+                          </td>
                           <td className="col-2 color_red">
                             {getCurrencyNumberWithOutSymbol(item.total)}
                           </td>
@@ -699,21 +719,18 @@ const BillView = (props) => {
                                 <p className="groups_value">
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll(
-                                        "_",
-                                        " "
-                                      )}{" "}
+                                    : ( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}{" "}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(item.settingName)}
@@ -724,7 +741,7 @@ const BillView = (props) => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName, item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -772,21 +789,18 @@ const BillView = (props) => {
                                   {" "}
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll(
-                                        "_",
-                                        " "
-                                      )}{" "}
+                                    : ( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}{" "}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(
@@ -799,7 +813,7 @@ const BillView = (props) => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName, item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -848,21 +862,18 @@ const BillView = (props) => {
                                   {" "}
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll(
-                                        "_",
-                                        " "
-                                      )}{" "}
+                                    :( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}{" "}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(
@@ -875,7 +886,7 @@ const BillView = (props) => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName, item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -924,20 +935,21 @@ const BillView = (props) => {
                               <div className="col-lg-6">
                                 <p className="groups_value">
                                   {" "}
+                                  {/* {'hloo'+ item.settingName +  handleSettingName(item.settingName, item)} */}
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   )
                                     ? " "
-                                    : item.settingName?.replaceAll("_", " ")}
+                                    : ( item.settingName.includes("CUSTOM_FIELD") ? item.customFieldName : item.settingName?.replaceAll("_", " "))}
                                 </p>
                               </div>
                               <div className="col-lg-4">
                                 <p className="groups_value">
                                   {handleGroupNames(
-                                    handleSettingName(item.settingName)
+                                    handleSettingName(item.settingName, item)
                                   ) === 0
                                     ? " "
                                     : handleGroupNames(item.settingName)}
@@ -948,7 +960,7 @@ const BillView = (props) => {
                               className={
                                 (
                                   item.settingName !==
-                                  handleSettingName(item.settingName)
+                                  handleSettingName(item.settingName, item)
                                     ? " "
                                     : handleGroupNames(item.settingName) === 0
                                 )
@@ -1002,7 +1014,9 @@ const BillView = (props) => {
                           0 ? (
                             ""
                           ) : (
-                            <p className="grouping_value">Total Bill Amount :</p>
+                            <p className="grouping_value">
+                              Total Bill Amount :
+                            </p>
                           )}
                         </div>
                         <div className="col-lg-4">
@@ -1050,7 +1064,10 @@ const BillView = (props) => {
                             {singleBillData.cashPaid === 0 ||
                             singleBillData.cashPaid === null
                               ? " "
-                              : '-' + getCurrencyNumberWithSymbol(singleBillData?.cashPaid)}
+                              : "-" +
+                                getCurrencyNumberWithSymbol(
+                                  singleBillData?.cashPaid
+                                )}
                           </p>
                         </div>
                       </div>
@@ -1083,72 +1100,72 @@ const BillView = (props) => {
                     </div>
                   </div>
                 </div>
-                {!status ?(
-                <div className="row out-st-bal align-items-center">
-                  <div className="col-lg-5">
-                    <div className="d-flex footer-img">
-                      <img src={ono_connect_click} alt="ono_connect" />
+                {!status ? (
+                  <div className="row out-st-bal align-items-center">
+                    <div className="col-lg-5">
+                      <div className="d-flex footer-img">
+                        <img src={ono_connect_click} alt="ono_connect" />
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="col-lg-2"></div>
-                  <div className="col-lg-3">
-                    {singleBillData.totalPayables === 0 ? (
-                      "" || singleBillData.totalPayables === null
-                    ) : (
+
+                    <div className="col-lg-2"></div>
+                    <div className="col-lg-3">
+                      {singleBillData.totalPayables === 0 ? (
+                        "" || singleBillData.totalPayables === null
+                      ) : (
+                        <p
+                          className="groups_value"
+                          style={{ display: !status ? "block" : "none" }}
+                        >
+                          Total Payables :
+                        </p>
+                      )}
+                    </div>
+                    <div className="col-lg-2">
                       <p
-                        className="groups_value"
+                        className="groups_value color_red"
                         style={{ display: !status ? "block" : "none" }}
                       >
-                        Total Payables :
+                        {singleBillData.totalPayables === 0 ||
+                        singleBillData.totalPayables === null
+                          ? " "
+                          : singleBillData?.totalPayables.toLocaleString(
+                              "en-IN",
+                              {
+                                maximumFractionDigits: 2,
+                                style: "currency",
+                                currency: "INR",
+                              }
+                            )}
                       </p>
-                    )}
-                  </div>
-                  <div className="col-lg-2">
-                    <p
-                      className="groups_value color_red"
-                      style={{ display: !status ? "block" : "none" }}
-                    >
-                      {singleBillData.totalPayables === 0 ||
-                      singleBillData.totalPayables === null
-                        ? " "
-                        : singleBillData?.totalPayables.toLocaleString(
-                            "en-IN",
-                            {
-                              maximumFractionDigits: 2,
-                              style: "currency",
-                              currency: "INR",
-                            }
-                          )}
-                    </p>
-                  </div>
-                </div>
-                ):(
-                  <div className="row out-st-bal align-items-center">
-                  <div className="col-lg-2">
-                    <div className="d-flex footer-img">
-                      <img src={ono_connect_click} alt="ono_connect" />
                     </div>
                   </div>
-                  
-                  <div className="col-lg-3"></div>
-                  <div className="col-lg-5">
-                    <p
-                      className="out-st"
-                      style={{ display: status ? "block" : "none" }}
-                    >
-                      Final Ledger Balance
-                    </p>
+                ) : (
+                  <div className="row out-st-bal align-items-center">
+                    <div className="col-lg-2">
+                      <div className="d-flex footer-img">
+                        <img src={ono_connect_click} alt="ono_connect" />
+                      </div>
+                    </div>
+
+                    <div className="col-lg-3"></div>
+                    <div className="col-lg-5">
+                      <p
+                        className="out-st"
+                        style={{ display: status ? "block" : "none" }}
+                      >
+                        Final Ledger Balance
+                      </p>
+                    </div>
+                    <div className="col-lg-2">
+                      <span
+                        className="out-value color_red"
+                        style={{ display: status ? "block" : "none" }}
+                      >
+                        {getFinalLedgerbalance()}
+                      </span>
+                    </div>
                   </div>
-                  <div className="col-lg-2">
-                    <span
-                      className="out-value color_red"
-                      style={{ display: status ? "block" : "none" }}
-                    >
-                      {getFinalLedgerbalance()}
-                    </span>
-                  </div>
-                </div>
                 )}
                 <div className="row">
                   <div className="col-lg-6">
@@ -1213,26 +1230,24 @@ const BillView = (props) => {
                 ""
               ) : (
                 <div>
-                
                   <div className="d-flex more-info action_icons">
-                 <div className="items_div">
-                 <img
-                      src={cancel}
-                      alt="img"
-                      className=""
-                      onClick={handleCheckEvent}
-                    />
-                    <p>Cancel</p>
-                   </div>
-                  <div className="items_div">
-                  <img
-                      src={edit}
-                      alt="img"
-                      onClick={() => editBill(singleBillData)}
-                    />
-                    <p>Edit</p>
+                    <div className="items_div">
+                      <img
+                        src={cancel}
+                        alt="img"
+                        className=""
+                        onClick={handleCheckEvent}
+                      />
+                      <p>Cancel</p>
                     </div>
-                    
+                    <div className="items_div">
+                      <img
+                        src={edit}
+                        alt="img"
+                        onClick={() => editBill(singleBillData)}
+                      />
+                      <p>Edit</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1247,7 +1262,7 @@ const BillView = (props) => {
             billEditStatus={true}
             step2CropEditStatus={false}
             editCancelStatus={editCancelStatus}
-            dateSelected = {new Date(singleBillData.billDate)}
+            dateSelected={new Date(singleBillData.billDate)}
           />
         ) : (
           ""
@@ -1296,22 +1311,22 @@ const BillView = (props) => {
             </div>
             <div className="modal-footer p-2">
               <div className="d-flex">
-                  <button
-                    type="button"
-                    className="secondary_btn mr-2"
-                    onClick={closePopup}
-                    data-bs-dismiss="modal"
-                  >
-                    NO
-                  </button>
-                  <button
-                    type="button"
-                    className="primary_btn"
-                    onClick={() => cancelBill(singleBillData)}
-                    data-bs-dismiss="modal"
-                  >
-                    YES
-                  </button>
+                <button
+                  type="button"
+                  className="secondary_btn mr-2"
+                  onClick={closePopup}
+                  data-bs-dismiss="modal"
+                >
+                  NO
+                </button>
+                <button
+                  type="button"
+                  className="primary_btn"
+                  onClick={() => cancelBill(singleBillData)}
+                  data-bs-dismiss="modal"
+                >
+                  YES
+                </button>
               </div>
             </div>
           </div>

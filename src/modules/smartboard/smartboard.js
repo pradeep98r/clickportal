@@ -27,7 +27,7 @@ import tickMark from "../../assets/images/tick_mark.svg";
 const SmartBoard = () => {
   const [tabType, setTabType] = useState("Daily");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [smartboardData, setSmartboardData] = useState({});
   const [outStandingBal, setOutStandingBal] = useState({});
   const [salesReprtData, setsalesReprtData] = useState({});
@@ -292,7 +292,7 @@ const SmartBoard = () => {
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
-      : "";
+      : loginData.useStatus == 'WRITER' ? "writer": 'ca';
   const [showModalStatus, setShowModalStatus] = useState(false);
   const onClickProfiles = () => {
     setShowModal(true);
@@ -326,7 +326,7 @@ const SmartBoard = () => {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {loginData.businessCreated === false &&
+          {(loginData.businessCreated === false ? (loginData.useStatus == "WRITER" ? true : false) : true) &&
           businessCreatedStatus == "" ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">

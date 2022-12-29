@@ -156,6 +156,9 @@ function SideNavigation() {
       localStorage.setItem("billViewStatus", false);
       localStorage.setItem("stepOneSingleBook", false);
     }
+    else if(path === "/partner"){
+      localStorage.setItem("partyType", 'FARMER');
+    }
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);
   };

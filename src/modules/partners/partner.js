@@ -28,7 +28,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
   const [saveType, setSaveType] = useState("FARMER");
@@ -466,7 +466,7 @@ const Partner = () => {
       ""
     );
     pincodeValue = pincodeValue.replace(/\D/g, "");
-    console.log(address, pincodeValue, "address");
+    console.log(address, pincodeValue,pincode, "address");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
     $("#city").val(city);

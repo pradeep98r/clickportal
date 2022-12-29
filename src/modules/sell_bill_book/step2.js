@@ -16,7 +16,7 @@ import SelectBags from "../buy_bill_book/bags";
 var array = [];
 const SellbillStep2Modal = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
 
@@ -50,7 +50,6 @@ const SellbillStep2Modal = (props) => {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
-    console.log(cropData, preferedCrops[index]);
     // preferedCropsData[index].units = "Crates";
   };
   const allCropData = () => {
@@ -90,7 +89,6 @@ const SellbillStep2Modal = (props) => {
   };
   useEffect(() => {
     fetchData();
-    console.log(preferedCropsData, "pre");
     var lineIt;
     if (props.cropTableEditStatus) {
       if (props.billEditStatus) {
@@ -99,7 +97,6 @@ const SellbillStep2Modal = (props) => {
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         cropResponseData([...lineIt]);
         setUpdatedItemList(lineIt);
-        console.log(lineIt, props.cropEditObject);
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
       cropArr.map((item, index) => {
@@ -108,7 +105,6 @@ const SellbillStep2Modal = (props) => {
         );
         if (k != -1) {
           preferedCropsData[k].count++;
-          console.log(preferedCropsData[k].count, cropData, "cropData");
         } else {
           console.log("came to else");
           preferedCropsData.push(cropArr[index]);
@@ -131,7 +127,6 @@ const SellbillStep2Modal = (props) => {
 
   var arr = [];
   const cropDataFunction = (childData, status) => {
-    console.log(childData);
     if (status === true) {
       var list = preferedCropsData;
       console.log(childData, list);

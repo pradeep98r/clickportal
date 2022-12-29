@@ -20,25 +20,33 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
-const SellBillBook = () => {
+const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const clickId = loginData.clickId;
+  const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const [sellBillData, setSellBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-
+  const billViiewSttatus = localStorage.getItem("billViiewSttatus");
+  const billViiewDate = localStorage.getItem("billDate");
+  var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
+  // console.log(billViiewDate)
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
   var [dateValue, setDateValue] = useState();
-
+  window.addEventListener('load', function(event) {
+    console.log('hello world',typeof(props.selectedBillviewDate));
+    // bDate = '';
+  });
   const callbackFunction = (startDate, endDate, dateTab) => {
-    var fromDate = moment(startDate).format("YYYY-MM-DD");
-    var toDate = moment(endDate).format("YYYY-MM-DD");
+    console.log(bDate, "selected data");
+    var fromDate = moment(bDate ? bDate :startDate).format("YYYY-MM-DD");
+    var toDate = moment(bDate ? bDate :endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
+    console.log(bDate,fromDate,toDate,startDate, "selected data");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -58,16 +66,15 @@ const SellBillBook = () => {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
+
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
-        
         console.log(response.data.data);
         if (response.data.data != null) {
           setAllData(response.data.data);
           setSellBillData(response.data.data.singleBills);
-        }
-        else{
-          setSellBillData([])
+        } else {
+          setSellBillData([]);
         }
         setLoading(false);
       })
@@ -294,30 +301,16 @@ const SellBillBook = () => {
                                           </p>
                                         </div>
                                         <div className="col-lg-4 col-sm-12 col flex_class">
-                                        <div> {qtyValues(crop.qty,crop.qtyUnit,crop.weight,crop.wastage,crop.rateType)}</div>
-                                          {/* <p className="crop_name">
-                                            {(crop.qty == 0
-                                              ? ""
-                                              : getCurrencyNumberWithOneDigit(
-                                                  crop.qty
-                                                )) +
-                                              getCropUnit(crop.qtyUnit)}{" "}
-                                            {crop.qty == 0 ? "" : "|"}{" "}
-                                            {getCurrencyNumberWithOneDigit(
-                                              crop.weight
-                                            ) + "KGS"}
-                                            <span className="color_red">
-                                              {crop.wastage != "0"
-                                                ? crop.wastage != null
-                                                  ? " - " +
-                                                    getCurrencyNumberWithOneDigit(
-                                                      crop.wastage
-                                                    ) +
-                                                    langFullData.kgs
-                                                  : ""
-                                                : ""}
-                                            </span>
-                                          </p> */}
+                                          <div>
+                                            {" "}
+                                            {qtyValues(
+                                              crop.qty,
+                                              crop.qtyUnit,
+                                              crop.weight,
+                                              crop.wastage,
+                                              crop.rateType
+                                            )}
+                                          </div>
                                         </div>
                                         <div className="col-lg-2 col-sm-12 col flex_class">
                                           <p className="number_overflow crop_name">
@@ -333,19 +326,25 @@ const SellBillBook = () => {
                                             )}
                                           </p>
                                         </div>
-                                       
                                       </div>
                                     ))}
                                   </div>
                                   <div className="col-lg-2 flex_class">
-                                    <div className="row" style={{'width':'100%'}}>
+                                    <div
+                                      className="row"
+                                      style={{ width: "100%" }}
+                                    >
                                       <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
                                         <p className="crop_name payble_text color_green">
                                           {getCurrencyNumberWithOutSymbol(
                                             bill.totalReceivable
                                           )}
-                                        </p>                                      
-                                        <img src={left_arrow} alt="left-arrow" className="left-arrow-img"/>
+                                        </p>
+                                        <img
+                                          src={left_arrow}
+                                          alt="left-arrow"
+                                          className="left-arrow-img"
+                                        />
                                       </div>
                                     </div>
                                   </div>
@@ -370,6 +369,7 @@ const SellBillBook = () => {
           show={showDatepickerModal}
           close={() => setShowDatepickerModal(false)}
           parentCallback={callbackFunction}
+          defaultDate={billViiewDate}
         />
       ) : (
         <p></p>
