@@ -522,7 +522,9 @@ const SellbillStep3Modal = (props) => {
   const getActualRcvd = () => {
     var actualRcvd = getTotalBillAmount() - Number(cashRcvdValue);
     if (includeComm) {
-        actualRcvd = actualRcvd + getTotalValue(commValue);
+        if(!isShown){
+          actualRcvd = actualRcvd + getTotalValue(commValue);
+        }
     }
     if (!includeRetComm) {
       if (addRetComm) {
