@@ -477,15 +477,18 @@ const Step3Modal = (props) => {
         Number(advancesValue)
     );
     let totalValue = grossTotal - t;
+    console.log(totalValue,questionsTitle)
     for (var i = 0; i < questionsTitle.length; i++) {
+      if(questionsTitle[i].field != ''){
       if (questionsTitle[i].less) {
         var t = 0;
-
         totalValue = totalValue - Number(questionsTitle[i].fee);
       } else {
         totalValue = totalValue + Number(questionsTitle[i].fee);
       }
     }
+    }
+    console.log(totalValue)
     if (includeComm) {
       if(isShown){
         totalValue = totalValue - getTotalValue(commValue);
@@ -496,6 +499,7 @@ const Step3Modal = (props) => {
     } else {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
+ 
     return totalValue;
   };
   const getActualPayble = () => {
@@ -714,6 +718,7 @@ const Step3Modal = (props) => {
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         groupLiist[i].value = val;
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -729,8 +734,9 @@ const Step3Modal = (props) => {
             less: groupLiist[i].addToGt == 1 ? false : true,
           });
           setCstmval(true);
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], val);
 
         return { ...groupLiist[i], value: val };
@@ -757,6 +763,7 @@ const Step3Modal = (props) => {
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -774,6 +781,7 @@ const Step3Modal = (props) => {
           setCstmval(true);
         }
         setQuestionsTitle(tab);
+      }
         return {
           ...groupLiist[i],
           value: val,
@@ -795,6 +803,7 @@ const Step3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -812,6 +821,7 @@ const Step3Modal = (props) => {
           setCstmval(true);
         }
         setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -826,6 +836,7 @@ const Step3Modal = (props) => {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -843,6 +854,7 @@ const Step3Modal = (props) => {
           setCstmval(true);
         }
         setQuestionsTitle(tab);
+      }
         return {
           ...groupLiist[i],
           value: val,
@@ -864,6 +876,7 @@ const Step3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -881,6 +894,7 @@ const Step3Modal = (props) => {
           setCstmval(true);
         }
         setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {

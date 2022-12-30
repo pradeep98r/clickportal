@@ -696,9 +696,10 @@ const Partner = () => {
                             <div className="card partner_card" key={index}>
                               <div className="d-flex partner_card_flex justify-content-between align-items-center">
                                 <div className="d-flex align-items-center">
-                                  
+                                  {/* {partner.profilePic} */}
                                   {partner.profilePic ? (
-                                    <img
+                                    // <Image  source={{uri: partner.profilePic}}/>
+                                    <Image
                                       src={partner.profilePic}
                                       alt="profile_img"
                                       className="user_img"
