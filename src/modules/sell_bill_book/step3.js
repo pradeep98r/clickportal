@@ -447,13 +447,14 @@ const SellbillStep3Modal = (props) => {
      }
     }
     for (var i = 0; i < questionsTitle.length; i++) {
+      if(questionsTitle[i].field != ''){
       if (questionsTitle[i].less) {
         var t = 0;
-
         totalValue = totalValue - Number(questionsTitle[i].fee);
       } else {
         totalValue = totalValue + Number(questionsTitle[i].fee);
       }
+    }
     }
     if (addRetComm) {
       totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
@@ -661,6 +662,7 @@ const SellbillStep3Modal = (props) => {
 
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -677,6 +679,7 @@ const SellbillStep3Modal = (props) => {
           });
         }
         setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], val);
         return { ...groupLiist[i], value: val };
       } else {
@@ -692,6 +695,7 @@ const SellbillStep3Modal = (props) => {
 
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -707,7 +711,7 @@ const SellbillStep3Modal = (props) => {
             less: groupLiist[i].addToGt == 1 ? false : true,
           });
         }
-        setQuestionsTitle(tab);
+        setQuestionsTitle(tab);}
         getAdditionValues(groupLiist[i], val);
         return { ...groupLiist[i], value: val, totalVal: Number(getTotalUnits(val).toFixed(2)) };
       } else {
@@ -726,6 +730,7 @@ const SellbillStep3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -742,6 +747,7 @@ const SellbillStep3Modal = (props) => {
           });
         }
         setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -755,6 +761,7 @@ const SellbillStep3Modal = (props) => {
     // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -771,6 +778,7 @@ const SellbillStep3Modal = (props) => {
           });
         }
         setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], val);
         return {
           ...groupLiist[i],
@@ -793,6 +801,7 @@ const SellbillStep3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
+        if(groupLiist[i].cstmName != ''){
         let tab = [...questionsTitle];
         let tabIndex = tab.findIndex((x) => x.index === index);
         if (tabIndex !== -1) {
@@ -809,6 +818,7 @@ const SellbillStep3Modal = (props) => {
           });
         }
         setQuestionsTitle(tab);
+      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
