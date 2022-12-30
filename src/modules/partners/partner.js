@@ -671,7 +671,7 @@ const Partner = () => {
               );
             })}
           </ul>
-          <div className="tab-content ps-0 pt-3">
+          <div className="tab-content">
             <div
               className="tab-pane active"
               id={partyType}

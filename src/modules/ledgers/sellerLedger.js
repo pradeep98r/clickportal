@@ -607,11 +607,7 @@ const resetInput = (e) => {
                                           <p className="mobilee-tag">
                                             {item.mobile}
                                           </p>
-                                          <p className="address-tag">
-                                            {item.partyAddress
-                                              ? item.partyAddress
-                                              : ""}
-                                          </p>
+                                         
                                         </div>
                                       </div>
                                     </div>
