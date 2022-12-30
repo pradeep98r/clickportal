@@ -95,18 +95,17 @@ const SellbillStep3Modal = (props) => {
     );
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-      console.log(response)
+      console.log(response);
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "SELL") {
           if (response[i].formStatus === 1) {
-           
             Object.assign(response[i], {
               settingName: response[i].settingName,
               tableType: 0,
               subText: "",
               subText2: "",
               totalVal: 0,
-              cstmName:''
+              cstmName: "",
             });
 
             if (
@@ -119,14 +118,13 @@ const SellbillStep3Modal = (props) => {
               listSettings(response[i].settingName, response, i);
               allGroups.push(response[i]);
             }
-             if (response[i].settingName === "OUT_ST_BALANCE")
+            if (response[i].settingName === "OUT_ST_BALANCE")
               setOutBalformStatusvalue(true);
           }
 
           if (response[i].settingName === "COMMISSION") {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-            setisShown(response[i].isShown == 1 ? true : false)
-            
+            setisShown(response[i].isShown == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
@@ -134,7 +132,6 @@ const SellbillStep3Modal = (props) => {
         }
       }
     });
-   
   }, []);
   const [questionsTitle, setQuestionsTitle] = useState([]);
   var gTotal = 0;
@@ -285,7 +282,7 @@ const SellbillStep3Modal = (props) => {
             break;
           case "GOVT_LEVIES":
             var trVa = getSingleValues(billEditItem?.govtLevies, res[j].value);
-           
+
             getlevisValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
@@ -294,7 +291,7 @@ const SellbillStep3Modal = (props) => {
             getOtherfeeValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
-          
+
           case "CASH_RECEIVED":
             var trVa = getSingleValues(billEditItem?.cashRcvd, res[j].value);
             getCashRcvdValue(trVa);
@@ -306,7 +303,7 @@ const SellbillStep3Modal = (props) => {
             getAdvancesValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
-            case substring:
+          case substring:
             if (res[j].fieldType == "SIMPLE") {
               var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
               res[j] = {
@@ -418,7 +415,7 @@ const SellbillStep3Modal = (props) => {
           ? parseInt(items[i].qty)
           : items[i].lineItems[i].qty
         : parseInt(items[i].qty);
-        gTotal = total;
+      gTotal = total;
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
     }
@@ -427,12 +424,12 @@ const SellbillStep3Modal = (props) => {
     return (value / 100) * grossTotal;
   };
   const getTotalUnits = (val) => {
-    return (val * totalUnits);
+    return val * totalUnits;
   };
   const getTotalBillAmount = () => {
     var t = Number(
       // getTotalValue(commValue) +
-        getTotalUnits(transportationValue) +
+      getTotalUnits(transportationValue) +
         getTotalUnits(laborChargeValue) +
         getTotalUnits(rentValue) +
         getTotalValue(mandifeeValue) +
@@ -441,20 +438,20 @@ const SellbillStep3Modal = (props) => {
         Number(advancesValue)
     );
     let totalValue = grossTotal + t;
-    if(includeComm){
-     if(isShown){
-      totalValue = totalValue + getTotalValue(commValue);
-     }
-    }
-    for (var i = 0; i < questionsTitle.length; i++) {
-      if(questionsTitle[i].field != ''){
-      if (questionsTitle[i].less) {
-        var t = 0;
-        totalValue = totalValue - Number(questionsTitle[i].fee);
-      } else {
-        totalValue = totalValue + Number(questionsTitle[i].fee);
+    if (includeComm) {
+      if (isShown) {
+        totalValue = totalValue + getTotalValue(commValue);
       }
     }
+    for (var i = 0; i < questionsTitle.length; i++) {
+      if (questionsTitle[i].field != "") {
+        if (questionsTitle[i].less) {
+          var t = 0;
+          totalValue = totalValue - Number(questionsTitle[i].fee);
+        } else {
+          totalValue = totalValue + Number(questionsTitle[i].fee);
+        }
+      }
     }
     if (addRetComm) {
       totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
@@ -463,9 +460,9 @@ const SellbillStep3Modal = (props) => {
     }
     return totalValue;
   };
-  const getTotalRcble = () =>{
-    return (Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2));
-  }
+  const getTotalRcble = () => {
+    return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+  };
   const getFinalLedgerbalance = () => {
     var t = Number(
       getTotalUnits(transportationValue) +
@@ -479,19 +476,32 @@ const SellbillStep3Modal = (props) => {
     var finalValue = grossTotal + t;
     var finalVal = finalValue;
     if (includeComm) {
-      finalVal = finalValue + getTotalValue(commValue);
+      if (isShown) {
+        finalVal = finalValue + getTotalValue(commValue);
+      }
+    }
+    for (var i = 0; i < questionsTitle.length; i++) {
+      if (questionsTitle[i].field != "") {
+        if (questionsTitle[i].less) {
+          var t = 0;
+          finalVal = finalVal - Number(questionsTitle[i].fee);
+        } else {
+          finalVal = finalVal + Number(questionsTitle[i].fee);
+        }
+      }
     }
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = finalVal + getTotalValue(retcommValue);
       }
     } else {
-      // if (includeRetComm) {
-        finalVal = finalVal - getTotalValue(retcommValue);
-      // }
+      finalVal = finalVal - getTotalValue(retcommValue);
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    return (Number(finalVal) + outBalance).toFixed(2) - Number(cashRcvdValue).toFixed(2);
+    return (
+      (Number(finalVal) + outBalance).toFixed(2) -
+      Number(cashRcvdValue).toFixed(2)
+    );
   };
   var lineItemsArray = [];
   // var cropArray = props.slectedSellCropsArray;
@@ -523,18 +533,19 @@ const SellbillStep3Modal = (props) => {
   const getActualRcvd = () => {
     var actualRcvd = getTotalBillAmount() - Number(cashRcvdValue);
     if (includeComm) {
-        if(!isShown){
-          actualRcvd = actualRcvd + getTotalValue(commValue);
-        }
+      if (!isShown) {
+        actualRcvd = actualRcvd + getTotalValue(commValue);
+      }
     }
-    if (!includeRetComm) {
-      if (addRetComm) {
+    if (addRetComm) {
+      if (!includeRetComm) {
         actualRcvd = (actualRcvd - getTotalValue(retcommValue)).toFixed(2);
-      } else {
+      }
+    } else {
+      if (!includeRetComm) {
         actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
       }
     }
-    console.log(actualRcvd)
     return actualRcvd;
   };
   const sellBillRequestObj = {
@@ -555,14 +566,14 @@ const SellbillStep3Modal = (props) => {
     labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
-    mandiFee:  Number(getTotalValue(mandifeeValue).toFixed(2)),
+    mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
     otherFee: Number(otherfeeValue),
     outStBal: outBal,
     paidTo: 100,
     rent: Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
-    totalReceivable:Number(getTotalRcble().toFixed(2)),
+    totalReceivable: Number(getTotalRcble().toFixed(2)),
     transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
@@ -587,12 +598,12 @@ const SellbillStep3Modal = (props) => {
       grossTotal: grossTotal,
       labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
-      mandiFee:  Number(getTotalValue(mandifeeValue).toFixed(2)),
+      mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
       otherFee: Number(otherfeeValue).toFixed(2),
       outStBal: outBal,
       paidTo: 0,
-      partyId: billEditItem.buyerId,//partnerSelectedData.partyId,
+      partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
       rent: Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
@@ -622,8 +633,8 @@ const SellbillStep3Modal = (props) => {
             console.log(editBillRequestObj, "edit bill request");
             console.log(response);
             props.closeStep3Modal();
-            localStorage.setItem("stepOneSingleBook",false);
-            localStorage.setItem("billViewStatus",false)
+            localStorage.setItem("stepOneSingleBook", false);
+            localStorage.setItem("billViewStatus", false);
             navigate("/sellbillbook");
           }
         },
@@ -641,9 +652,9 @@ const SellbillStep3Modal = (props) => {
             toast.success(response.data.status.description, {
               toastId: "success1",
             });
-          
+
             props.closeStep3Modal();
-            localStorage.setItem("stepOneSingleBook",false);
+            localStorage.setItem("stepOneSingleBook", false);
             navigate("/sellbillbook");
           }
         },
@@ -658,28 +669,32 @@ const SellbillStep3Modal = (props) => {
 
   const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g,'');
+    var val = e.target.value.replace(/[^0-9.]/g, "");
 
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: getTargetValue(e.target.value, groupLiist[i], i),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = getTargetValue(
+              e.target.value,
+              groupLiist[i],
+              i
+            );
+          } else {
+            tab.push({
+              comments: "string",
+              fee: getTargetValue(e.target.value, groupLiist[i], i),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         getAdditionValues(groupLiist[i], val);
         return { ...groupLiist[i], value: val };
       } else {
@@ -691,29 +706,38 @@ const SellbillStep3Modal = (props) => {
     setEnterVal(val);
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g,'');
+    var val = e.target.value.replace(/[^0-9.]/g, "");
 
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: getTargetValue(e.target.value, groupLiist[i], i),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = getTargetValue(
+              e.target.value,
+              groupLiist[i],
+              i
+            );
+          } else {
+            tab.push({
+              comments: "string",
+              fee: getTargetValue(e.target.value, groupLiist[i], i),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);}
         getAdditionValues(groupLiist[i], val);
-        return { ...groupLiist[i], value: val, totalVal: Number(getTotalUnits(val).toFixed(2)) };
+        return {
+          ...groupLiist[i],
+          value: val,
+          totalVal: Number(getTotalUnits(val).toFixed(2)),
+        };
       } else {
         return { ...groupLiist[i] };
       }
@@ -730,24 +754,24 @@ const SellbillStep3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = Number(e.target.value);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: Number(e.target.value),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = Number(e.target.value);
+          } else {
+            tab.push({
+              comments: "string",
+              fee: Number(e.target.value),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -761,24 +785,28 @@ const SellbillStep3Modal = (props) => {
     // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: getTargetValue(e.target.value, groupLiist[i], i),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = getTargetValue(
+              e.target.value,
+              groupLiist[i],
+              i
+            );
+          } else {
+            tab.push({
+              comments: "string",
+              fee: getTargetValue(e.target.value, groupLiist[i], i),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         getAdditionValues(groupLiist[i], val);
         return {
           ...groupLiist[i],
@@ -801,24 +829,24 @@ const SellbillStep3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = Number(e.target.value);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: Number(e.target.value),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = Number(e.target.value);
+          } else {
+            tab.push({
+              comments: "string",
+              fee: Number(e.target.value),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -892,16 +920,15 @@ const SellbillStep3Modal = (props) => {
     } else {
       setShowCropModalStatus(false);
       setShowCropModal(false);
-
     }
     props.closeStep3Modal();
   };
-  const step2CropTableOnclick = (cropEditArray) =>{
+  const step2CropTableOnclick = (cropEditArray) => {
     step2CropEditStatus = true;
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
-  }
+  };
   const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
@@ -917,7 +944,11 @@ const SellbillStep3Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Additions/Deductions
         </h5>
-        <img alt="image" src={clo} onClick={() => step2Cancel(billEditItem.lineItems)} />
+        <img
+          alt="image"
+          src={clo}
+          onClick={() => step2Cancel(billEditItem.lineItems)}
+        />
       </div>
 
       <div className="modal-body">
@@ -1248,7 +1279,13 @@ const SellbillStep3Modal = (props) => {
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Outstanding Balance (₹)</h5>
-                  <h6 className="color_green">{outBal != 0 ? editStatus ? billEditItem?.outStBal : outBal.toFixed(2) : "0"}</h6>
+                  <h6 className="color_green">
+                    {outBal != 0
+                      ? editStatus
+                        ? billEditItem?.outStBal
+                        : outBal.toFixed(2)
+                      : "0"}
+                  </h6>
                 </div>
               ) : (
                 ""
@@ -1257,8 +1294,9 @@ const SellbillStep3Modal = (props) => {
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Received</h5>
-                  <h6 className="black_color">-
-                  {billEditItem?.cashRcvd
+                  <h6 className="black_color">
+                    -
+                    {billEditItem?.cashRcvd
                       ? cashRcdStatus
                         ? cashRcvdValue
                         : billEditItem?.cashRcvd
@@ -1276,9 +1314,7 @@ const SellbillStep3Modal = (props) => {
               ) : (
                 <div className="totals_value">
                   <h5>Total Receivables (₹)</h5>
-                  <h6 className="color_green">
-                    {getTotalRcble().toFixed(2)}
-                  </h6>
+                  <h6 className="color_green">{getTotalRcble().toFixed(2)}</h6>
                 </div>
               )}
             </div>
@@ -1299,7 +1335,7 @@ const SellbillStep3Modal = (props) => {
           closeStep2CropModal={() => setShowCropModal(false)}
           cropTableEditStatus={true}
           cropEditObject={cropEditvalArray}
-          billEditStatus={editStatus?true:false}
+          billEditStatus={editStatus ? true : false}
           slectedCropstableArray={props.slectedSellCropsArray}
         />
       ) : (
