@@ -63,7 +63,6 @@ const Step3Modal = (props) => {
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
     fetchPertnerData(partyType);
-    console.log(allGroups)
     setTranspoSelectedData(
       JSON.parse(localStorage.getItem("selectedTransporter"))
     );
@@ -145,7 +144,7 @@ const Step3Modal = (props) => {
 
           if (response[i].settingName === "COMMISSION") {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-            setisShown(response[i].isShown == 1 ? true : false)
+            setisShown(response[i].isShown == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
             setAddRetComm(response[i].addToGt == 1 ? true : false);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
@@ -477,20 +476,18 @@ const Step3Modal = (props) => {
         Number(advancesValue)
     );
     let totalValue = grossTotal - t;
-    console.log(totalValue,questionsTitle)
     for (var i = 0; i < questionsTitle.length; i++) {
-      if(questionsTitle[i].field != ''){
-      if (questionsTitle[i].less) {
-        var t = 0;
-        totalValue = totalValue - Number(questionsTitle[i].fee);
-      } else {
-        totalValue = totalValue + Number(questionsTitle[i].fee);
+      if (questionsTitle[i].field != "") {
+        if (questionsTitle[i].less) {
+          var t = 0;
+          totalValue = totalValue - Number(questionsTitle[i].fee);
+        } else {
+          totalValue = totalValue + Number(questionsTitle[i].fee);
+        }
       }
     }
-    }
-    console.log(totalValue)
     if (includeComm) {
-      if(isShown){
+      if (isShown) {
         totalValue = totalValue - getTotalValue(commValue);
       }
     }
@@ -499,21 +496,22 @@ const Step3Modal = (props) => {
     } else {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
     }
- 
+
     return totalValue;
   };
   const getActualPayble = () => {
     var actualPay = getTotalBillAmount() - Number(cashpaidValue);
     if (includeComm) {
-     if(!isShown){
-      actualPay = actualPay - getTotalValue(commValue);
-     }
+      if (!isShown) {
+        actualPay = actualPay - getTotalValue(commValue);
+      }
     }
-    console.log(actualPay,getTotalBillAmount())
-    if (!includeRetComm) {
-      if (addRetComm) {
+    if (addRetComm) {
+      if (!includeRetComm) {
         actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
-      } else {
+      }
+    } else {
+      if (!includeRetComm) {
         actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
       }
     }
@@ -535,23 +533,31 @@ const Step3Modal = (props) => {
     var finalValue = grossTotal - t;
     var finalVal = finalValue;
     if (includeComm) {
-    //  if(isShown){
-      finalVal = finalValue + getTotalValue(commValue);
-    //  }
+      if (isShown) {
+        finalVal = finalValue - getTotalValue(commValue);
+      }
+    }
+    for (var i = 0; i < questionsTitle.length; i++) {
+      if (questionsTitle[i].field != "") {
+        if (questionsTitle[i].less) {
+          var t = 0;
+          finalVal = finalVal - Number(questionsTitle[i].fee);
+        } else {
+          finalVal = finalVal + Number(questionsTitle[i].fee);
+        }
+      }
     }
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
-      } else {
-        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
-      // if (includeRetComm) {
+      if (includeRetComm) {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
-      // }
+      }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    console.log((Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue),finalVal,outBal)
+
     return (Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue);
   };
   var lineItemsArray = [];
@@ -626,7 +632,11 @@ const Step3Modal = (props) => {
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
       comments: "hi",
-      customFields: editStatus ? (cstmval ? questionsTitle : billEditItem?.customFields) : questionsTitle,
+      customFields: editStatus
+        ? cstmval
+          ? questionsTitle
+          : billEditItem?.customFields
+        : questionsTitle,
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
       labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
@@ -718,25 +728,29 @@ const Step3Modal = (props) => {
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         groupLiist[i].value = val;
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: getTargetValue(e.target.value, groupLiist[i], i),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
-          setCstmval(true);
-          setQuestionsTitle(tab);
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = getTargetValue(
+              e.target.value,
+              groupLiist[i],
+              i
+            );
+          } else {
+            tab.push({
+              comments: "string",
+              fee: getTargetValue(e.target.value, groupLiist[i], i),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+            setCstmval(true);
+            setQuestionsTitle(tab);
+          }
         }
-      }
         getAdditionValues(groupLiist[i], val);
 
         return { ...groupLiist[i], value: val };
@@ -748,7 +762,6 @@ const Step3Modal = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
-    console.log(Number(val), list);
     if (list.fieldType == "SIMPLE") {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
@@ -763,25 +776,29 @@ const Step3Modal = (props) => {
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: getTargetValue(e.target.value, groupLiist[i], i),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
-          setCstmval(true);
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = getTargetValue(
+              e.target.value,
+              groupLiist[i],
+              i
+            );
+          } else {
+            tab.push({
+              comments: "string",
+              fee: getTargetValue(e.target.value, groupLiist[i], i),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+            setCstmval(true);
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         return {
           ...groupLiist[i],
           value: val,
@@ -803,25 +820,25 @@ const Step3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = Number(e.target.value);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: Number(e.target.value),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
-          setCstmval(true);
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = Number(e.target.value);
+          } else {
+            tab.push({
+              comments: "string",
+              fee: Number(e.target.value),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+            setCstmval(true);
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -836,25 +853,29 @@ const Step3Modal = (props) => {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = getTargetValue(e.target.value, groupLiist[i], i);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: getTargetValue(e.target.value, groupLiist[i], i),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
-          setCstmval(true);
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = getTargetValue(
+              e.target.value,
+              groupLiist[i],
+              i
+            );
+          } else {
+            tab.push({
+              comments: "string",
+              fee: getTargetValue(e.target.value, groupLiist[i], i),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+            setCstmval(true);
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         return {
           ...groupLiist[i],
           value: val,
@@ -876,25 +897,25 @@ const Step3Modal = (props) => {
         if (v != 0) {
           v = v.toFixed(2);
         }
-        if(groupLiist[i].cstmName != ''){
-        let tab = [...questionsTitle];
-        let tabIndex = tab.findIndex((x) => x.index === index);
-        if (tabIndex !== -1) {
-          tab[tabIndex].fee = Number(e.target.value);
-        } else {
-          tab.push({
-            comments: "string",
-            fee: Number(e.target.value),
-            field: groupLiist[i].cstmName,
-            fieldName: groupLiist[i].settingName,
-            fieldType: groupLiist[i].fieldType,
-            index: index,
-            less: groupLiist[i].addToGt == 1 ? false : true,
-          });
-          setCstmval(true);
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = Number(e.target.value);
+          } else {
+            tab.push({
+              comments: "string",
+              fee: Number(e.target.value),
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+            setCstmval(true);
+          }
+          setQuestionsTitle(tab);
         }
-        setQuestionsTitle(tab);
-      }
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -1324,7 +1345,13 @@ const Step3Modal = (props) => {
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Outstanding Balance (₹)</h5>
-                  <h6>{outBal != 0 ? editStatus ? billEditItem?.outStBal : outBal.toFixed(2) : "0"}</h6>
+                  <h6>
+                    {outBal != 0
+                      ? editStatus
+                        ? billEditItem?.outStBal
+                        : outBal.toFixed(2)
+                      : "0"}
+                  </h6>
                 </div>
               ) : (
                 ""
