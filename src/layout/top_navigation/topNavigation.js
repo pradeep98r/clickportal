@@ -56,7 +56,6 @@ function TopNavigation() {
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));
   var stepOneSingleBill = JSON.parse(localStorage.getItem("stepOneSingleBook"));
-   console.log(profileData,loginUserDetails)
   const backToBuyBillBook = () => {
     localStorage.setItem("billViewStatus", false);
     localStorage.setItem("stepOne", false);

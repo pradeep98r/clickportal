@@ -647,6 +647,7 @@ const Partner = () => {
     setPartnerData(result);
     setSearchValue(value);
   };
+  
   return (
     <div>
       <div className="main_div_padding">
@@ -783,6 +784,7 @@ const Partner = () => {
                     </div>
                     {/* <OutlineButton text="Add Seller" /> */}
                   </div>
+           
                 </div>
               </div>
             </div>
