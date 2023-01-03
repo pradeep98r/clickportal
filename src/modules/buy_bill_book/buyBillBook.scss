@@ -637,7 +637,11 @@ input:focus-visible {
   padding: 8px 5px;
   
 }
-.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected{
+  background-color: transparent!important;
+  color: #000!important;
+}
+.react-datepicker__month--selected.react-datepicker__month-text--keyboard-selected,
 .react-datepicker__month-text:hover {
   background-color: var(--ono-primary) !important;
   border-radius: 6px !important;
@@ -646,6 +650,9 @@ input:focus-visible {
 .react-datepicker__month .react-datepicker__month-text,
 .react-datepicker__month .react-datepicker__quarter-text {
   width: 5rem !important;
+}
+.react-datepicker__month--disabled{
+  color: #ccc!important;
 }
 // buyer info in step3 css
 .buyer_info_style {
