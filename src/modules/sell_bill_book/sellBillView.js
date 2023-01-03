@@ -209,7 +209,6 @@ const SellBillView = () => {
             return value;
           }
         });
-        console.log(grTwo)
         grtwo.map((item) => {
           if (item.addToGt == 1) {
             value = +singleBillData?.rtComm;

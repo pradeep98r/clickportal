@@ -28,8 +28,11 @@ const SelectPartner = (props) => {
     getPartnerData(clickId, partnerType)
       .then((response) => {
         setAllData(response.data.data);
-        
         setpartnerData(response.data.data);
+        // var t = JSON.parse(localStorage.getItem("selectedSearchItem"))
+        // console.log(t);
+        // setGetPartyItem(t)
+        // console.log(getPartyItem, "fetch");
       })
       .catch((error) => {
         console.log(error);
@@ -39,6 +42,7 @@ const SelectPartner = (props) => {
   const [getPartyName, setGetPartyName] = useState(false);
   const [count, setCount] = useState(0);
   const selectParty = () => {
+    console.log(getPartyItem);
     setCount(count + 1);
     if (count % 2 == 0) {
       setGetPartyName(true);
@@ -46,40 +50,41 @@ const SelectPartner = (props) => {
       setGetPartyName(false);
     }
     // setsearchValue('');
-    if(searchValue != ''){
-      fetchPertnerData();  
+    if (searchValue != "") {
+      // setAllData([])
+      fetchPertnerData();
     }
     // fetchPertnerData();
-    console.log("came to click event",partnerData);
+    console.log("came to click event", partnerData);
   };
   const partySelect = (item) => {
     setGetPartyItem(item);
+    // localStorage.setItem("selectedSearchItem", JSON.stringify(item));
     setGetPartyName(false);
     var itemtype;
     if (props.partyType == "Seller") {
-      localStorage.setItem('selectPartytype','seller');
-      itemtype=localStorage.getItem('selectPartytype');
+      localStorage.setItem("selectPartytype", "seller");
+      itemtype = localStorage.getItem("selectPartytype");
       localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
-      console.log('trrans',item)
+      console.log("trrans", item);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
     } else if (props.partyType == "Buyer") {
-      localStorage.setItem('selectBuyertype','buyer');
-      itemtype=localStorage.getItem('selectBuyertype');
+      localStorage.setItem("selectBuyertype", "buyer");
+      itemtype = localStorage.getItem("selectBuyertype");
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
-   
-    props.parentCallback(item,itemtype,props.partyType);
+    props.parentCallback(item, itemtype, props.partyType);
   };
   useEffect(() => {
-    console.log("click")
+    console.log("click");
     fetchPertnerData();
-     if(props.onClickPage){
-       console.log("click")
+    if (props.onClickPage) {
+      console.log("click");
       setGetPartyName(false);
     }
   }, []);
- const [searchValue, setsearchValue]= useState('');
+  const [searchValue, setsearchValue] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
@@ -92,10 +97,12 @@ const SelectPartner = (props) => {
         return data.partyId.toString().search(value) != -1;
       }
     });
-    setpartnerData(result);
-    setsearchValue(value)
+    if (value != "") {
+      setpartnerData(result);
+    }
+    setsearchValue(value);
   };
- 
+
   return (
     <div>
       <div onClick={selectParty}>

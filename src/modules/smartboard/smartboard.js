@@ -439,7 +439,7 @@ const SmartBoard = () => {
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
                                         <h5 className="color_head_subtext">
-                                          {langFullData.pendingReceivables}{" "}
+                                          Pending Receivables
                                         </h5>
                                         {outStandingBal.pendingRecievables ==
                                         0 ? (
@@ -477,7 +477,8 @@ const SmartBoard = () => {
                                       </div>
                                       <div className="col-lg-6 col2">
                                         <h5 className="color_head_subtext">
-                                          {langData.sellBills}{" "}
+                                          {/* {langData.sellBills}{" "} */}
+                                          Sell Bills
                                         </h5>
                                         {outStandingBal.totalSellBills == 0 ? (
                                           <p className="nodata">
@@ -497,7 +498,16 @@ const SmartBoard = () => {
                                         <p>
                                           {outStandingBal.totalSellBills == 0
                                             ? ""
-                                            : langFullData.seeAll}
+                                            :    <a
+                                            id="buyer-link"
+                                            href="/sellbillbook"
+                                            onClick={() => {
+                                              handleLinks("/sellbillbook");
+                                            }}
+                                          >
+                                            {langFullData.seeAll}
+                                          </a>
+                                            }
                                         </p>
                                       </div>
                                     </div>
@@ -563,7 +573,12 @@ const SmartBoard = () => {
                                         <p className="color_blue">
                                           {outStandingBal.totalBuyBills == 0
                                             ? ""
-                                            : langFullData.seeAll}
+                                            : <a
+                                            href="/buy_bill_book"
+                                            onClick={() => {
+                                              handleLinks("/buy_bill_book");
+                                            }}
+                                          >{langFullData.seeAll} </a>}
                                         </p>
                                       </div>
                                     </div>
@@ -1397,6 +1412,7 @@ const SmartBoard = () => {
                           placeholder="Date"
                           maxDate={new Date()}
                           inline
+                          disabledKeyboardNavigation
                         />
                       </div>
                     );
@@ -1420,6 +1436,7 @@ const SmartBoard = () => {
                           maxDate={new Date()}
                           showFourColumnMonthYearPicker
                           inline
+                          disabledKeyboardNavigation
                         />
                       </div>
                     );
@@ -1435,6 +1452,7 @@ const SmartBoard = () => {
                           maxDate={new Date()}
                           showFourColumnMonthYearPicker
                           inline
+                          disabledKeyboardNavigation
                         />
                       </div>
                     );

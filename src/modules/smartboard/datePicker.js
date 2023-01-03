@@ -94,10 +94,12 @@ function DatePickerModel(props) {
         );
         var dateFormat =
           inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-        var weekFdate = moment(startWeekDate).format("YYYY-MMM-DD");
+        var weekFdate = moment(startWeekDate, "DD-MMM-YYYY");
         var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
+        console.log(weekFdate, weekLdate, "Dates");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
+        // moment(startWeekDate, "MM-DD-YYYY");
         setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
         setweekEndDate(moment(endWeekDate).format("DD-MMM-YYYY"));
         $("#endWeekDate").text(
@@ -116,7 +118,7 @@ function DatePickerModel(props) {
         selectCurrentWeek();
       },
     });
-    console.log(weekFirstDate, weekLastDate, "Dates");
+  
   });
 
   //const [active, setActive] =useState(false);
@@ -138,7 +140,7 @@ function DatePickerModel(props) {
     } else if (dateTabs == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
-      console.log(firstDate, lastDate);
+      console.log(firstDate, lastDate,"week");
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
     } else if (dateTabs == "Yearly") {
@@ -188,13 +190,14 @@ function DatePickerModel(props) {
     >
       <div className="modal-header date_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-       Select {dateTabs == "Daily"
-                  ? "Date"
-                  : dateTabs == "Weekly"
-                  ? "Week"
-                  : dateTabs == "Monthly"
-                  ? "Month"
-                  : dateTabs == "Year"}
+          Select{" "}
+          {dateTabs == "Daily"
+            ? "Date"
+            : dateTabs == "Weekly"
+            ? "Week"
+            : dateTabs == "Monthly"
+            ? "Month"
+            : dateTabs == "Year"}
         </h5>
         <img
           src={close}
@@ -293,6 +296,7 @@ function DatePickerModel(props) {
                 placeholder="Date"
                 maxDate={new Date()}
                 inline
+                disabledKeyboardNavigation
               />
             </article>
             <article
@@ -318,6 +322,7 @@ function DatePickerModel(props) {
                 maxDate={new Date()}
                 showThreeColumnMonthYearPicker
                 inline
+                disabledKeyboardNavigation
               />
             </article>
             <article
@@ -334,6 +339,7 @@ function DatePickerModel(props) {
                   maxDate={new Date()}
                   showFourColumnMonthYearPicker
                   inline
+                  disabledKeyboardNavigation
                 />
               </h2>
             </article>

@@ -304,8 +304,22 @@ const SellbillStep3Modal = (props) => {
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
           case substring:
+            var newitem;
+            var newItem;
+            newItem = editStatus ? billEditItem?.customFields.map((items,i) => {
+              if (items.fee != 0) {
+                console.log(items.field,res[j].settingName)
+                if (items.field === res[j].settingName) {
+                  newitem = items.fee;
+                 
+                  return newitem;
+                }
+              }
+            }) : newitem = res[j].value;
+            setQuestionsTitle(editStatus ? step2CropEditStatus ? billEditItem?.customFields : billEditItem?.customFields : [])
             if (res[j].fieldType == "SIMPLE") {
-              var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
+              // var trVa = res[j].value != 0 ? getSingleValues(newitem) : 0;
+              var trVa = getSingleValues(newitem);
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
@@ -315,23 +329,45 @@ const SellbillStep3Modal = (props) => {
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
-              var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
+              // var trVa = getSingleValues(newitem);
+              var trVa = editStatus
+              ? tableChangeStatusval
+                ? res[j].value
+                : Number((newitem / totalQty).toFixed(2))
+              : res[j].value;
+              var totalV = editStatus
+              ? step2CropEditStatus
+                ? Number((totalQty * trVa).toFixed(2))
+                : newitem
+              : res[j].value * totalQty;
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 3,
                 value: trVa,
+                totalVal:totalV
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
-              var trVa = res[j].value != 0 ? getSingleValues(res[j].value) : 0;
+              var trVa = editStatus
+              ? step2CropEditStatus
+                ? (newitem / gTotal) * 100
+                : (newitem / billEditItem?.grossTotal) * 100
+              : res[j].value;
+            var totalV = editStatus
+              ? step2CropEditStatus
+                ? (trVa / 100) * gTotal
+                : newitem
+              : (trVa / 100) * gTotal;
+              // var trVa =getSingleValues(newitem);
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 2,
                 value: trVa,
+                totalVal:totalV
               };
             }
             break;
@@ -1012,6 +1048,9 @@ const SellbillStep3Modal = (props) => {
                   className="form-control"
                   placeholder="Date"
                   maxDate={new Date()}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                  }}
                 />
                 <label className="custom-control custom-checkbox mb-0">
                   <input

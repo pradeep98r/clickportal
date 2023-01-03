@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
-import logout from "../../assets/images/logout.svg"
+import logout from "../../assets/images/logout.svg";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 
@@ -155,12 +155,14 @@ function SideNavigation() {
     } else if (path === "/sellbillbook") {
       localStorage.setItem("billViewStatus", false);
       localStorage.setItem("stepOneSingleBook", false);
-    }
-    else if(path === "/partner"){
-      localStorage.setItem("partyType", 'FARMER');
+    } else if (path === "/partner") {
+      localStorage.setItem("partyType", "FARMER");
     }
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);
+    // localStorage.removeItem('isActives','');
+    localStorage.setItem("partyId", 0);
+    localStorage.setItem("sellPartyId", 0);
   };
 
   const getPathsId = () => {
@@ -245,13 +247,12 @@ function SideNavigation() {
               );
             })}
           </ul>
-          <div className="logout_btn">   
-           <button onClick={logOutFunction} className="d-flex mx-auto">
-           <img src={logout} alt="image" className="mr-2"/> Logout
-           </button>
-         </div>
+          <div className="logout_btn">
+            <button onClick={logOutFunction} className="d-flex mx-auto">
+              <img src={logout} alt="image" className="mr-2" /> Logout
+            </button>
+          </div>
         </div>
-       
       </div>
     </div>
   );

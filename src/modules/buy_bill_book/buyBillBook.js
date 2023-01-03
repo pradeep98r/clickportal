@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import "../buy_bill_book/buyBillBook.scss";
-import {qtyValues} from "../../components/qtyValues";
+import { qtyValues } from "../../components/qtyValues";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
@@ -29,8 +29,8 @@ function BuyBillBook() {
   const [isLoading, setLoading] = useState(true);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-
   useEffect(() => {
+    
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
@@ -40,12 +40,15 @@ function BuyBillBook() {
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
-      :loginData.useStatus == 'WRITER' ? "writer": 'ca';;
+      : loginData.useStatus == "WRITER"
+      ? "writer"
+      : "ca";
 
   const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
+    console.log(fromDate, toDate, "billbook");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -65,6 +68,7 @@ function BuyBillBook() {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
+    console.log("heyyy")
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
         console.log(response.data.data, "billsss");
@@ -103,8 +107,6 @@ function BuyBillBook() {
     localStorage.setItem("stepOne", stepOneHeader);
   };
 
-
-
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
@@ -123,8 +125,9 @@ function BuyBillBook() {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {(loginData.businessCreated === false ? (loginData.useStatus == "WRITER") : true) &&
-          businessCreatedStatus == "" ? (
+          {(loginData.businessCreated === false
+            ? loginData.useStatus == "WRITER"
+            : true) && businessCreatedStatus == "" ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
@@ -300,8 +303,16 @@ function BuyBillBook() {
                                             </div>
                                             <div className="col-lg-4 col-sm-12 col flex_class">
                                               {/* {crop.qtyUnit+crop.qty} */}
-                                              <div> {qtyValues(crop.qty,crop.qtyUnit,crop.weight,crop.wastage,crop.rateType)}</div>
-                                            
+                                              <div>
+                                                {" "}
+                                                {qtyValues(
+                                                  crop.qty,
+                                                  crop.qtyUnit,
+                                                  crop.weight,
+                                                  crop.wastage,
+                                                  crop.rateType
+                                                )}
+                                              </div>
                                             </div>
                                             <div className="col-lg-2 col-sm-12 col flex_class">
                                               <p className="number_overflow crop_name">
