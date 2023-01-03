@@ -86,8 +86,8 @@ const SmartBoard = () => {
         );
         var dateFormat =
           inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-        var weekFdate = moment(startWeekDate).format("YYYY-MMM-DD");
-        var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
+        var weekFdate = moment(startWeekDate).format("YYYY-MM-DD");
+        var weekLdate = moment(endWeekDate).format("YYYY-MM-DD");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
         setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
@@ -217,6 +217,7 @@ const SmartBoard = () => {
     } else if (tabType == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
+      console.log(firstDate,lastDate,'week')
     }
     closePopup();
     getSmartboardData(clickId, tabType, firstDate, lastDate)
@@ -842,7 +843,7 @@ const SmartBoard = () => {
                                                       buyCropOnclick(buyCrop)
                                                     }
                                                   >
-                                                    {cropItem == buyCrop ? (
+                                                    {buycropItem == buyCrop ? (
                                                       <img
                                                         src={tickMark}
                                                         alt="image"
@@ -1133,7 +1134,14 @@ const SmartBoard = () => {
                                   </h4>
                                   <p className="trans_title color_blue">
                                     {buyRecentTxs.length != 0
-                                      ? langFullData.seeAll
+                                      ? <a
+                                      href="/sellerledger"
+                                      onClick={() => {
+                                        handleLinks("/sellerledger");
+                                      }}
+                                    >
+                                      {langFullData.seeAll}
+                                    </a>
                                       : ""}
                                   </p>
                                 </div>
@@ -1207,7 +1215,17 @@ const SmartBoard = () => {
                                   </h4>
                                   <p className="trans_title color_blue">
                                     {sellRecentTxs.length != 0
-                                      ? langFullData.seeAll
+                                      ? 
+                                      <a
+                                      // id="buyer-link"
+                                      href="/buyerledger"
+                                      onClick={() => {
+                                        handleLinks("/buyerledger");
+                                      }}
+                                    >
+                                      {langFullData.seeAll}
+                                    </a>
+                                      
                                       : ""}
                                   </p>
                                 </div>

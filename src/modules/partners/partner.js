@@ -459,14 +459,15 @@ const Partner = () => {
   };
   // Dispatching city, state, and zip code to store state
   const setZip = (address) => {
-    let pincode = address.results[0].formatted_address;
-
-    var pincodeValue = pincode.replace(
-      address.results[0].address_components[0].long_name,
-      ""
-    );
+    var pincodeValue;
+    // let pincode = address.results[0].formatted_address;
+    for(var i=0; i<address.results[0].address_components.length; i++){
+      if(address.results[0].address_components[i].types[0] == 'postal_code'){
+        pincodeValue = address.results[0].address_components[i].long_name
+      }
+    }
     pincodeValue = pincodeValue.replace(/\D/g, "");
-    console.log(address, pincodeValue,pincode, "address");
+    console.log(pincodeValue, "address");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
     $("#city").val(city);

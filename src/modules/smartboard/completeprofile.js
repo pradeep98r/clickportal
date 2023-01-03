@@ -29,7 +29,6 @@ const CompleteProfile = (props) => {
   const [allMarketsData, setAllMarketsData] = useState(allData);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(mandiData);
   useEffect(() => {
     getAllMarkets().then(
       (response) => {
@@ -123,7 +122,6 @@ const CompleteProfile = (props) => {
     useState("");
   const handleAlternateMobileNumber = (e) => {
     mobileNumberValidation(e, "alternateMobile");
-    console.log(e);
     //console.log(e.ta)
   };
   const [pincode, setPincode] = useState(
@@ -206,7 +204,6 @@ const CompleteProfile = (props) => {
   const [cityValError, setCityValError] = useState("");
   const [stateValError, setStateValError] = useState("");
   const onSubmit = () => {
-    console.log(pincode, shopNumberField, mandiShortCode, mobileNumber);
     if (
       mandiNameField.trim().length !== 0 &&
       mobileNumber.trim().length !== 0 &&
@@ -247,8 +244,6 @@ const CompleteProfile = (props) => {
       setStreetvillageError("Please enter street or village");
     }
   };
-  console.log(mandiData.businessId);
-  console.log(mandiData.marketId);
   const obj = {
     altMobile: alternateMobileNumber,
     //mandiEditStatus == "true" ? mandiData.altMobile : alternateMobileNumber,
@@ -273,7 +268,6 @@ const CompleteProfile = (props) => {
   };
   const addEditMandiSetupApiCall = () => {
     if (mandiEditStatus == "true") {
-      console.log("edi mandi");
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -354,15 +348,21 @@ const CompleteProfile = (props) => {
   };
   // Dispatching city, state, and zip code to store state
   const setZip = (address) => {
-    let pincode = address.results[0].formatted_address;
-    var pincodeValue = pincode.replace(
-      address.results[0].address_components[0].long_name,
-      ""
-    );
+    var pincodeValue;
+    // let pincode = address.results[0].formatted_address;
+    for(var i=0; i<address.results[0].address_components.length; i++){
+      if(address.results[0].address_components[i].types[0] == 'postal_code'){
+        pincodeValue = address.results[0].address_components[i].long_name
+      }
+    }
+    // var pincodeValue = pincode.replace(
+    //   address.results[0].address_components[0].long_name,
+    //   ""
+    // );
     pincodeValue = pincodeValue.replace(/\D/g, "");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
-    console.log(pincodeValue);
+    console.log(pincodeValue,address.results[0]);
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
@@ -462,11 +462,9 @@ const CompleteProfile = (props) => {
   const [selectMarket, setSelectedOption] = useState("marke name");
   const [selectMarketId, setSelectedMarketId] = useState(0);
   const selectedValue = (e) => {
-    console.log(e.target.value);
     setSelectedOption(e.target.value);
     allMarketsData.map((item) => {
       if (item.marketName === e.target.value) {
-        console.log(item.marketId, "id");
         setSelectedMarketId(item.marketId);
       }
     });
@@ -486,7 +484,6 @@ const CompleteProfile = (props) => {
   };
   const handleMarketName = () => {
     openMarketNamePopUpModal();
-    console.log("Drop Down Cicked");
   };
   // const [search, setSearch] = useState("");
   const [marketName, setMarketname] = useState([]);
@@ -525,10 +522,8 @@ const CompleteProfile = (props) => {
       //openOtheModalPopUp();
       //setMarketName(marketname)
       handleOtherName();
-      console.log("other");
     } else {
       setMarketName(name);
-      console.log(name, "mkName");
       closePopup();
     }
   };
