@@ -59,7 +59,7 @@ const BuyerLedger = () => {
   const [detailsByDate, setDetailsByDate] = useState([]);
   const active = localStorage.getItem('isActives');
   const [isActive, setIsActive] = useState(active>=0?active:-1);
-  console.log(active)
+ 
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
   const toggleTab = (type) => {
@@ -69,7 +69,6 @@ const BuyerLedger = () => {
   const toggleAllCustom = (type) => {
     setToggleAC(type);
     if (type === "custom") {
-      console.log(type, dateDisplay);
       setDateDisplay(true);
       setToggleState("ledgersummary");
     } else if (type === "all") {
@@ -88,10 +87,10 @@ const BuyerLedger = () => {
   const fetchBuyerLedger = () => {
     getBuyerLedgers(clickId)
       .then((response) => {
-        console.log(response);
         setData(response.data.data);
         setallData(response.data.data.ledgers);
         setLedgeres(response.data.data.ledgers);
+        // console.log(response.data.data.ledgers)
         setallLedgersSummary(response.data.data.ledgers);
       })
       .catch((error) => {
@@ -117,7 +116,7 @@ const BuyerLedger = () => {
  
   //Get partner By partyId
   const particularLedger = (id, indexs) => {
-    console.log(id);
+   
     //getBuyerLedgerSummary(clickId, id);
     setOpenTabs(true);
     setIsActive(indexs);
@@ -140,8 +139,7 @@ const BuyerLedger = () => {
 
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      console.log(response);
-      console.log(response.data);
+     
       setPaidRcvd(response.data.data);
     });
   };
@@ -150,6 +148,7 @@ const BuyerLedger = () => {
     getLedgerSummary(clickId, partyId)
       .then((response) => {
         setSummaryData(response.data.data);
+        console.log(response.data.data)
         setSummary(response.data.data.ledgerSummary);
       })
       .catch((error) => {
@@ -194,7 +193,6 @@ const BuyerLedger = () => {
     partyId = JSON.parse(
       localStorage.getItem("partyId")
     );
-    console.log(partyId);
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("partyId")),
@@ -203,9 +201,7 @@ const BuyerLedger = () => {
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
     };
-    console.log(selectDate, addRecordData);
     postRecordPayment(addRecordData).then((response) => {
-      console.log(response.data.data);
       closePopup();
       localStorage.setItem('openTabs',true);
       toast.success(response.data.status.message,{
@@ -255,7 +251,6 @@ const BuyerLedger = () => {
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
     } else if (dateTab === "Yearly") {
-      console.log("yearly", dateTab);
       setDateValue(moment(fromDate).format("YYYY"));
     } else {
       setDateValue(
@@ -270,7 +265,7 @@ const BuyerLedger = () => {
       var toDate = moment(endDate).format("YYYY-MM-DD");
       getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
         .then((response) => {
-          console.log(response);
+          console.log(response.data.data.ledgerSummary,"custom ledger summary")
           setSummaryByDate(response.data.data.ledgerSummary);
         })
         .catch((error) => {
@@ -282,7 +277,6 @@ const BuyerLedger = () => {
       var toDate = moment(endDate).format("YYYY-MM-DD");
       getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
         .then((response) => {
-          console.log(response);
           setDetailsByDate(response.data.data.details);
         })
         .catch((error) => {
@@ -368,6 +362,9 @@ const BuyerLedger = () => {
                         </thead>
                         <tbody>
                           {ledger.map((item, index) => {
+                            partyId = JSON.parse(
+                              localStorage.getItem("partyId")
+                            );
                             return (
                               <Fragment>
                                 <tr
@@ -375,7 +372,7 @@ const BuyerLedger = () => {
                                     particularLedger(item.partyId, index);
                                   }}
                                   className={
-                                    active==index
+                                    partyId==item.partyId
                                       ? "tabRowSelected"
                                       : "tr-tags"
                                   }
@@ -452,7 +449,9 @@ const BuyerLedger = () => {
                 )}
               </div>
               <div className="col-lg-8">
-                <div
+                {partyId != 0 ? 
+                <div>
+                  <div
                   className="no_data_found"
                   style={{ display: openTabs ? "none" : "block" }}
                 >
@@ -1271,6 +1270,11 @@ const BuyerLedger = () => {
                     </div>
                   </div>
                 </div>
+                </div> : 
+               <img src={no_data} className="no-data-img nodataimage" />
+                
+                }
+               
               </div>
             </div>
           ) : (

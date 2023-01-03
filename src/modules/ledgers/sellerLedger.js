@@ -81,7 +81,6 @@ const SellerLedger = () => {
   const toggleAllCustom = (type) => {
     setToggleAC(type);
     if (type === "custom") {
-      console.log(type);
       setDateDisplay(true);
       setToggleState("ledgersummary");
     } else if (type === "all") {
@@ -121,6 +120,7 @@ const SellerLedger = () => {
         setData(response.data.data);
         setallData(response.data.data.ledgers);
         setLedgeres(response.data.data.ledgers);
+        console.log(response.data.data.ledgers)
         setallLedgersSummary(response.data.data.ledgers);
       })
       .catch((error) => {
@@ -129,7 +129,6 @@ const SellerLedger = () => {
   };
   //Get partner By partyId
   const particularLedger = (id, indexs) => {
-    console.log(id);
     //getBuyerLedgerSummary(clickId, id);
     setOpenTabs(true);
     setIsActive(indexs);
@@ -151,7 +150,6 @@ const SellerLedger = () => {
 
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      console.log(response);
       setPaidRcvd(response.data.data);
     });
   };
@@ -160,6 +158,7 @@ const SellerLedger = () => {
     getLedgerSummary(clickId, partyId)
       .then((response) => {
         setSummaryData(response.data.data);
+        console.log(ledgerSummary,"ledgers")
         setSummary(response.data.data.ledgerSummary);
       })
       .catch((error) => {
@@ -206,7 +205,6 @@ const SellerLedger = () => {
     partyId = JSON.parse(
       localStorage.getItem("sellPartyId")
     );
-    console.log(partyId);
     const addRecordData = {
       caId: clickId,
       partyId: JSON.parse(localStorage.getItem("sellPartyId")),
@@ -215,7 +213,6 @@ const SellerLedger = () => {
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
     };
-    console.log(selectDate);
     postRecordPayment(addRecordData).then((response)=>{
       localStorage.setItem('openTabs',true);
         closePopup();
@@ -409,14 +406,18 @@ const resetInput = (e) => {
                         </thead>
                         <tbody>
                           {ledger.map((item, index) => {
+                             partyId = JSON.parse(
+                              localStorage.getItem("sellPartyId")
+                            );
                             return (
                               <Fragment>
+                                
                                 <tr
                                   onClick={(id, indexs) => {
                                     particularLedger(item.partyId, index);
                                   }}
                                   className={
-                                    active == index
+                                    partyId == item.partyId
                                       ? "tabRowSelected"
                                       : "tr-tags"
                                   }
@@ -496,6 +497,7 @@ const resetInput = (e) => {
                 )}
               </div>
               <div className="col-lg-8">
+               {partyId != 0 ? <div>
                 <div
                   className="no_data_found"
                   style={{ display: openTabs ? "none" : "block" }}
@@ -1354,6 +1356,9 @@ const resetInput = (e) => {
                     </div>
                   </div>
                 </div>
+               </div> : <div className="d-flex align-items-center">
+               <img src={no_data} className="no-data-img nodataimage" />
+                 </div>}
               </div>
             </div>
           ) : (
