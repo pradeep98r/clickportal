@@ -68,6 +68,9 @@ const SellebillStep1 = () => {
                   className="form-control"
                   placeholder="Date"
                   maxDate={new Date()}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                  }}
                 />
                 <label className="custom-control custom-checkbox mb-0">
                   <input

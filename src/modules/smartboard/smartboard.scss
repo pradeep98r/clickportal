@@ -490,3 +490,7 @@
 .bills_calender .react-datepicker__navigation--next {
   right: 0px;
 }
+.react-datepicker__day.react-datepicker__day--keyboard-selected, .react-datepicker__month-text--keyboard-selected {
+  background: none!important;
+  // color: black;
+}
