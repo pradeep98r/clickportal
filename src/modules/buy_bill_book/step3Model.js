@@ -625,7 +625,7 @@ const Step3Modal = (props) => {
     actualPayble: Number(getActualPayble()),
     advance: Number(advancesValue),
     billDate: partnerSelectDate,
-    billStatus: "Completed",
+    billStatus: "COMPLETED",
     caId: clickId,
     cashPaid: Number(cashpaidValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),

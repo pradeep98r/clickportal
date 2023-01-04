@@ -365,7 +365,7 @@ const SellerLedger = () => {
     console.log("came");
     var id = JSON.parse(
     localStorage.getItem("sellPartyId"));
-    getSellerLedgerSummary(clickId, id);
+    // getSellerLedgerSummary(clickId, id);
     fetchSellerLedgerDetails(clickId, id);
     getOutstandingPaybles(clickId, id);
   }
