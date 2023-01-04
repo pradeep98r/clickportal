@@ -304,7 +304,7 @@ const SellbillStep3Modal = (props) => {
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
           case substring:
-            var newitem;
+            var newitem =0;
             var newItem;
             newItem = editStatus ? billEditItem?.customFields.map((items,i) => {
               if (items.fee != 0) {
@@ -467,8 +467,8 @@ const SellbillStep3Modal = (props) => {
     var t = Number(
       // getTotalValue(commValue) +
       (transTotalValue !=0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2))) +
-        getTotalUnits(laborChargeValue) +
-        getTotalUnits(rentValue) +
+        (labourTotalValue !=0 ? Number(labourTotalValue) : getTotalUnits(laborChargeValue)) +
+        (rentTotalValue != 0 ? Number(rentTotalValue) :getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -502,9 +502,9 @@ const SellbillStep3Modal = (props) => {
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
-      getTotalUnits(transportationValue) +
-        getTotalUnits(laborChargeValue) +
-        getTotalUnits(rentValue) +
+      (transTotalValue !=0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2))) +
+      (labourTotalValue !=0 ? Number(labourTotalValue) : getTotalUnits(laborChargeValue)) +
+        (rentTotalValue != 0 ? Number(rentTotalValue) :getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -586,6 +586,8 @@ const SellbillStep3Modal = (props) => {
     return actualRcvd;
   };
   const[transTotalValue,setTransTotalValue] = useState(0);
+  const[labourTotalValue,setLaborTotalValue] = useState(0);
+  const[rentTotalValue,setRentTotalValue] = useState(0);
   const sellBillRequestObj = {
     actualReceivable: Number(getActualRcvd()),
     advance: Number(advancesValue),
@@ -601,14 +603,14 @@ const SellbillStep3Modal = (props) => {
     buyerId: editStatus ? billEditItem.buyerId : partnerSelectedData.partyId,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
-    labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
+    labourCharges:labourTotalValue != 0 ? Number(labourTotalValue) : Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
     mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
     otherFee: Number(otherfeeValue),
     outStBal: outBal,
     paidTo: 100,
-    rent: Number(getTotalUnits(rentValue).toFixed(2)),
+    rent: rentTotalValue != 0 ? Number(rentTotalValue) :Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalReceivable: Number(getTotalRcble().toFixed(2)),
@@ -634,7 +636,7 @@ const SellbillStep3Modal = (props) => {
       customFields: questionsTitle,
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
-      labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
+      labourCharges: labourTotalValue !=0 ? Number(labourTotalValue) :Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
@@ -642,11 +644,11 @@ const SellbillStep3Modal = (props) => {
       outStBal: outBal,
       paidTo: 0,
       partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
-      rent: Number(getTotalUnits(rentValue).toFixed(2)),
+      rent: rentTotalValue != 0 ? Number(rentTotalValue) :Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: Number(getTotalRcble().toFixed(2)),
-      transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
+      transportation: transTotalValue !=0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
         transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
@@ -906,6 +908,12 @@ const SellbillStep3Modal = (props) => {
   const getOnchangeTotals = (groupLiist, v) => {
     if (groupLiist.settingName.toLowerCase() == "transportation") {
       setTransTotalValue(v);
+    }
+    if (groupLiist.settingName.toLowerCase() == "labour_charges") {
+      setLaborTotalValue(v);
+    }
+    if (groupLiist.settingName.toLowerCase() == "rent") {
+      setRentTotalValue(v);
     }
   }
   const getAdditionValues = (groupLiist, v) => {
