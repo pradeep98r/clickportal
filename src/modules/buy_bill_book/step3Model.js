@@ -336,14 +336,13 @@ const Step3Modal = (props) => {
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
           case substring:
-            var newitem;
+            var newitem=0;
             var newItem;
             newItem = editStatus ? billEditItem?.customFields.map((items,i) => {
               if (items.fee != 0) {
                 console.log(items.field,res[j].settingName)
                 if (items.field === res[j].settingName) {
                   newitem = items.fee;
-                 
                   return newitem;
                 }
               }
@@ -410,6 +409,9 @@ const Step3Modal = (props) => {
 
     // return type;
   };
+  const[transTotalValue,setTransTotalValue] = useState(0);
+  const[labourTotalValue,setLaborTotalValue] = useState(0);
+  const[rentTotalValue,setRentTotalValue] = useState(0);
   const [cashPaidStatus, setcashPaidStatus] = useState(false);
   const getSingleValues = (val, v) => {
     return editStatus ? (step2CropEditStatus ? val : val) : v;
@@ -500,9 +502,9 @@ const Step3Modal = (props) => {
     // console.log(questionsTitle)
     var t = Number(
       // getTotalValue(commValue) +
-      getTotalUnits(transportationValue) +
-        getTotalUnits(laborChargeValue) +
-        getTotalUnits(rentValue) +
+     (transTotalValue != 0 ? Number(transTotalValue) : getTotalUnits(transportationValue)) +
+        (labourTotalValue != 0 ? Number(labourTotalValue) : getTotalUnits(laborChargeValue)) +
+        (rentTotalValue != 0 ? Number(rentTotalValue) : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -555,9 +557,9 @@ const Step3Modal = (props) => {
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
-      getTotalUnits(transportationValue) +
-        getTotalUnits(laborChargeValue) +
-        getTotalUnits(rentValue) +
+      (transTotalValue != 0 ? Number(transTotalValue) : getTotalUnits(transportationValue)) +
+      (labourTotalValue != 0 ? Number(labourTotalValue) : getTotalUnits(laborChargeValue)) +
+      (rentTotalValue != 0 ? Number(rentTotalValue) : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -637,18 +639,18 @@ const Step3Modal = (props) => {
     customFields: questionsTitle,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
-    labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
+    labourCharges: labourTotalValue != 0 ? Number(labourTotalValue) :Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
     mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
     misc: Number(otherfeeValue),
     outStBal: 0,
     paidTo: 100,
-    rent: Number(getTotalUnits(rentValue).toFixed(2)),
+    rent:rentTotalValue !=0 ?Number(rentTotalValue) : Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalPayble: getTotalPayble(),
-    transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
+    transportation: transTotalValue != 0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -672,7 +674,7 @@ const Step3Modal = (props) => {
         : questionsTitle,
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
-      labourCharges: Number(getTotalUnits(laborChargeValue).toFixed(2)),
+      labourCharges: labourTotalValue != 0 ? Number(labourTotalValue) :Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
@@ -680,11 +682,11 @@ const Step3Modal = (props) => {
       outStBal: outBal,
       paidTo: 0,
       partyId: billEditItem.farmerId, //partnerSelectedData.partyId,
-      rent: Number(getTotalUnits(rentValue).toFixed(2)),
+      rent: rentTotalValue !=0 ?Number(rentTotalValue) : Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: getTotalPayble(),
-      transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
+      transportation:transTotalValue != 0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
         transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
@@ -872,6 +874,7 @@ const Step3Modal = (props) => {
           }
           setQuestionsTitle(tab);
         }
+        getOnchangeTotals(groupLiist[i], val)
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -957,7 +960,17 @@ const Step3Modal = (props) => {
     });
     setAllGroups([...updatedItem]);
   };
-
+  const getOnchangeTotals = (groupLiist, v) => {
+    if (groupLiist.settingName.toLowerCase() == "transportation") {
+      setTransTotalValue(v);
+    }
+    if (groupLiist.settingName.toLowerCase() == "labour_charges") {
+      setLaborTotalValue(v);
+    }
+    if (groupLiist.settingName.toLowerCase() == "rent") {
+      setRentTotalValue(v);
+    }
+  }
   const getAdditionValues = (groupLiist, v) => {
     if (groupLiist.settingName.toLowerCase() == "transportation") {
       getTransportationValue(v);
