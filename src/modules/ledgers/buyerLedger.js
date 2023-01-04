@@ -122,6 +122,7 @@ const BuyerLedger = () => {
     setIsActive(indexs);
     localStorage.setItem('isActives',indexs);
     ledger.filter((item) => {
+      console.log(item.partyId,id)
       if (item.partyId === id) {
         partyId = id;
         localStorage.setItem("partyId", JSON.stringify(partyId));
@@ -320,7 +321,7 @@ const BuyerLedger = () => {
     if(active>=0){
       var id = JSON.parse(
       localStorage.getItem("partyId"));
-      getBuyerLedgerSummary(clickId, id);
+      // getBuyerLedgerSummary(clickId, id);
       fetchBuyerLedgerDetails(clickId, id);
       getOutstandingPaybles(clickId, id);
     }

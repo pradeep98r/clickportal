@@ -463,9 +463,10 @@ const SellbillStep3Modal = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
+
     var t = Number(
       // getTotalValue(commValue) +
-      getTotalUnits(transportationValue) +
+      (transTotalValue !=0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2))) +
         getTotalUnits(laborChargeValue) +
         getTotalUnits(rentValue) +
         getTotalValue(mandifeeValue) +
@@ -584,6 +585,7 @@ const SellbillStep3Modal = (props) => {
     }
     return actualRcvd;
   };
+  const[transTotalValue,setTransTotalValue] = useState(0);
   const sellBillRequestObj = {
     actualReceivable: Number(getActualRcvd()),
     advance: Number(advancesValue),
@@ -610,7 +612,7 @@ const SellbillStep3Modal = (props) => {
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalReceivable: Number(getTotalRcble().toFixed(2)),
-    transportation: Number(getTotalUnits(transportationValue).toFixed(2)),
+    transportation:transTotalValue !=0 ? Number(transTotalValue) : Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -681,7 +683,7 @@ const SellbillStep3Modal = (props) => {
         }
       );
     } else {
-      console.log(sellBillRequestObj, "post req");
+      console.log(sellBillRequestObj,transTotalValue, "post req");
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
@@ -808,6 +810,7 @@ const SellbillStep3Modal = (props) => {
           }
           setQuestionsTitle(tab);
         }
+        getOnchangeTotals(groupLiist[i], val);
         getAdditionValues(groupLiist[i], v);
         return { ...groupLiist[i], value: v, totalVal: val };
       } else {
@@ -900,6 +903,11 @@ const SellbillStep3Modal = (props) => {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
     }
   };
+  const getOnchangeTotals = (groupLiist, v) => {
+    if (groupLiist.settingName.toLowerCase() == "transportation") {
+      setTransTotalValue(v);
+    }
+  }
   const getAdditionValues = (groupLiist, v) => {
     if (groupLiist.settingName.toLowerCase() == "transportation") {
       getTransportationValue(v);

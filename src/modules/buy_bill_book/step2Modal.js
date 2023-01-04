@@ -235,8 +235,13 @@ const Step2Modal = (props) => {
         }
       }
     });
-    props.slectedCropstableArray[0].lineItems =
+    // var selectedArray = props.billEditStatus ? ;
+    console.log(props.slectedCropstableArray)
+    if(props.billEditStatus){
+      props.slectedCropstableArray[0].lineItems =
       updatedItemList.length != 0 ? updatedItemList : cropData;
+    }
+   
 
     if (h.length > 0) {
       var h1 = h.map((item, index) => {

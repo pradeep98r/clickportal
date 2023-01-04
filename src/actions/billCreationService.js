@@ -91,6 +91,7 @@ export function getAllCrops() {
   });
 }
 export function getSystemSettings(clickId) {
+  console.log('settiings api')
   return axiosCommon.get(
     `/click/bcp-settings/caId/${clickId}`
   );
