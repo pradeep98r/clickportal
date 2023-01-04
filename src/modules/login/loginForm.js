@@ -121,7 +121,7 @@ const LoginForm = () => {
     validateOTP(obj).then(
       (resp) => {
         if (resp.data.status.type === "SUCCESS") {
-          setotpError("heyyy");
+          // setotpError("heyyy");
           dispatch(authActions.login(true));
           dispatch(userInfoActions.loginSuccess(resp.data.data));
           localStorage.setItem("clientId", resp.data.data.authKeys.clientId);
