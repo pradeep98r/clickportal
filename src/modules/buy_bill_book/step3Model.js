@@ -146,7 +146,7 @@ const Step3Modal = (props) => {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
             setisShown(response[i].isShown == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
-            setAddRetComm(response[i].addToGt == 1 ? true : false);
+            setAddRetComm(response[i].addToGt == 1 ? false : true);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
         }
