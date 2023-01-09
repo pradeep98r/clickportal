@@ -25,14 +25,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Step2Modal from "./step2Modal";
 import clo from "../../assets/images/clo.png";
 import { getText } from "../../components/getText";
+import Step3PartySelect from "./step3PartySelect";
 const Step3Modal = (props) => {
+  console.log(props.selectedBuyerSellerData)
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const navigate = useNavigate();
-  const partnerSelectedData = JSON.parse(
-    localStorage.getItem("selectedPartner")
-  );
+  const [partnerSelectDate, setpartnerSelectDate] = useState("");
+  const [partnerSelectedData, setpartnerSelectedData] = useState({});
   const [transpoSelectedData, setTranspoSelectedData] = useState({});
+  console.log(partnerSelectedData)
   // const transpoSelectedData =
   const [partyType, setPartnerType] = useState("Seller");
   const [includeComm, setIncludeComm] = useState("");
@@ -62,10 +64,7 @@ const Step3Modal = (props) => {
   // console.log(props.slectedCropsArray[0].lineItems, "items sf");
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
-    fetchPertnerData(partyType);
-    setTranspoSelectedData(
-      JSON.parse(localStorage.getItem("selectedTransporter"))
-    );
+    
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? props.slectedCropsArray[0].lineItems
@@ -418,60 +417,13 @@ const Step3Modal = (props) => {
   };
   const [getPartyItem, setGetPartyItem] = useState(null);
   let [partnerData, setpartnerData] = useState([]);
+  console.log(props.dateSelected,"step3billdate")
   const [selectedDate, setStartDate] = useState(props.dateSelected);
-  const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
-  const fetchPertnerData = (type) => {
-    var partnerType = "Seller";
-    if (type == "Seller") {
-      partnerType = "FARMER";
-    } else if (type == "Transporter") {
-      partnerType = "TRANSPORTER";
-    }
-    getPartnerData(clickId, partnerType)
-      .then((response) => {
-        setpartnerData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  
   const [questionsTitle, setQuestionsTitle] = useState([]);
   const [partySelectStatus, setPartySelectStatus] = useState(false);
   const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
-  const partySelect = (item, type) => {
-    setGetPartyItem(item);
-    if (type == "Seller") {
-      setPartnerDataStatus(false);
-      localStorage.setItem("selectedPartner", JSON.stringify(item));
-      getOutstandingBal(clickId, item.partyId).then((res) => {
-        setOutsBal(res.data.data);
-      });
-      setPartySelectStatus(true);
-    } else if (type == "Transporter") {
-      setTranspoDataStatus(false);
-      setTransportoSelectStatus(true);
-      localStorage.setItem("selectedTransporter", JSON.stringify(item));
-      var h = JSON.parse(localStorage.getItem("selectedTransporter"));
-      setTranspoSelectedData(h);
-      // console.log(transpoSelectedData, item);
-    }
-    setPartnerType(type);
-  };
-  const [searchPartyItem, setSearchPartyItem] = useState("");
-  const [partnerDataStatus, setPartnerDataStatus] = useState(false);
-  const [transpoDataStatus, setTranspoDataStatus] = useState(false);
-  const partnerClick = (type) => {
-    if (type == "Seller") {
-      setPartnerDataStatus(true);
-      setPartnerType(type);
-      fetchPertnerData(type);
-    } else if (type == "Transporter") {
-      // console.log(type);
-      setTranspoDataStatus(true);
-      setPartnerType(type);
-      fetchPertnerData(type);
-    }
-  };
+ 
 
   const getUnitsTotalValue = (items) => {
     var totalunitvalue = 0;
@@ -1048,6 +1000,11 @@ const Step3Modal = (props) => {
       e.target.value = "";
     }
   };
+  const callbackFunctionPartySelect = (child, childData, trans) => {
+    setpartnerSelectDate(child);
+    setpartnerSelectedData(childData);
+    setTranspoSelectedData(trans);
+  };
   return (
     <Modal
       show={props.showstep3}
@@ -1068,225 +1025,15 @@ const Step3Modal = (props) => {
       <div className="modal-body">
         <div className="row">
           <div className="col-lg-3 pr-0">
-            <h5 className="head_modal">Bill Information </h5>
-
-            <div className="party_div">
-              <div
-                className="selectparty_field d-flex align-items-center justify-content-between"
-                // onClick={() => partnerClick("Seller")}
-              >
-                <div className="partner_card">
-                  <div className="d-flex align-items-center">
-                    <img src={single_bill} className="icon_user" />
-                    <div>
-                      <h5>
-                        {editStatus
-                          ? partySelectStatus
-                            ? partnerSelectedData.partyName
-                            : billEditItem.farmerName
-                          : partnerSelectedData.partyName}
-                      </h5>
-                      <h6>
-                        {editStatus
-                          ? partySelectStatus
-                            ? partnerSelectedData.partyType
-                            : billEditItem.partyType
-                          : partnerSelectedData.partyType}{" "}
-                        -{" "}
-                        {editStatus
-                          ? partySelectStatus
-                            ? partnerSelectedData.partyId
-                            : billEditItem.farmerId
-                          : partnerSelectedData.partyId}{" "}
-                        |{" "}
-                        {editStatus
-                          ? partySelectStatus
-                            ? partnerSelectedData.mobile
-                            : billEditItem.farmerMobile
-                          : partnerSelectedData.mobile}
-                      </h6>
-                      <p>{partnerData.farmerAddress}</p>
-                    </div>
-                  </div>
-                </div>
-                <img src={d_arrow} />
-              </div>
-            </div>
-            <div className="date_sec date_step3">
-              <div className="date_col d-flex align-items-center justify-content-between">
-                <DatePicker
-                  dateFormat="dd-MMM-yyyy"
-                  selected={selectedDate}
-                  onChange={(date) => setStartDate(date)}
-                  className="form-control"
-                  placeholder="Date"
-                  maxDate={new Date()}
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-                <label className="custom-control custom-checkbox mb-0">
-                  <input
-                    type="checkbox"
-                    checked={checked && localStorage.getItem("defaultDate")}
-                    className="custom-control-input"
-                    id="modal_checkbox"
-                    value="my-value"
-                    onChange={handleCheckEvent}
-                  />
-                  <span className="custom-control-indicator"></span>
-                  <span className="custom-control-description">
-                    Set as a Default Date
-                  </span>
-                </label>
-              </div>
-            </div>
-            {transpoSelectedData != null ? (
-              <div className="transporter_div">
-                <div
-                  className="selectparty_field d-flex align-items-center justify-content-between"
-                  onClick={() => partnerClick("Transporter")}
-                >
-                  <div className="partner_card">
-                    <div className="d-flex align-items-center">
-                      <img src={single_bill} className="icon_user" />
-                      <div>
-                        {transportoSelectStatus}
-                        <h5>
-                          {editStatus
-                            ? transportoSelectStatus
-                              ? transpoSelectedData.partyName
-                              : billEditItem.transporterName
-                            : transpoSelectedData.partyName}
-                          {/* {transpoSelectedData.partyName} */}
-                        </h5>
-                        <h6>
-                          {/* {transpoSelectedData.mobile } */}
-                          {editStatus
-                            ? transportoSelectStatus
-                              ? transpoSelectedData.partyType +
-                                "-" +
-                                transpoSelectedData.partyId +
-                                " | " +
-                                transpoSelectedData.mobile
-                              : "TRANSPORTER" + "-" + billEditItem.transporterId
-                            : transpoSelectedData.partyType +
-                              "-" +
-                              transpoSelectedData.partyId +
-                              " | " +
-                              transpoSelectedData.mobile}
-                        </h6>
-                        <p>
-                          {editStatus
-                            ? transportoSelectStatus
-                              ? transpoSelectedData?.address?.addressLine
-                              : ""
-                            : transpoSelectedData?.address?.addressLine}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <img src={d_arrow} />
-                </div>
-              </div>
-            ) : (
-              <p
-                onClick={() => partnerClick("Transporter")}
-                className="select_transporter"
-              >
-                Select Transporter
-              </p>
-            )}
-            {transpoDataStatus ? (
-              <div className="partners_div" id="scroll_style">
-                <div className="d-flex searchparty" role="search">
-                  <input
-                    className="form-control mb-0"
-                    type="search"
-                    placeholder="Search"
-                    aria-label="Search"
-                    onChange={(event) => setSearchPartyItem(event.target.value)}
-                  />
-                </div>
-
-                <div>
-                  {partnerData.length > 0 ? (
-                    <div>
-                      <ul>
-                        {partnerData.map((item) => {
-                          return (
-                            <li
-                              key={item.partyId}
-                              onClick={() => partySelect(item, "Transporter")}
-                              className={
-                                "nav-item " +
-                                (item == getPartyItem ? "active_class" : "")
-                              }
-                            >
-                              <div className="partner_card">
-                                <div className="d-flex align-items-center">
-                                  <img
-                                    src={single_bill}
-                                    className="icon_user"
-                                  />
-                                  <div>
-                                    <h5>{item.partyName}</h5>
-                                    <h6>
-                                      {item.trader ? "TRADER" : item.partyType}{" "}
-                                      - {item.partyId} | {item.mobile}
-                                    </h6>
-                                    <p>{item.address.addressLine}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  ) : (
-                    <p></p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
-            <h5 className="date_sec head_modal p-0">Crop Information </h5>
-            <div className="selectparty_field edit_crop_item_div">
-              <div className="d-flex align-items-center justify-content-between">
-                <p className="d-flex align-items-center">
-                  {editStatus ? (
-                    <div className="d-flex">
-                      <img
-                        src={billEditItem.lineItems[0]?.imageUrl}
-                        className="edit_crop_item"
-                      />
-                      <p className="edit_crop_item_len d-flex align-items-center">
-                        <p>{billEditItem.lineItems.length}</p>
-                        <span className="ml-3">Crops</span>
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="d-flex">
-                      <img
-                        src={props.slectedCropsArray[0].imageUrl}
-                        className="edit_crop_item"
-                      />
-                      <p className="edit_crop_item_len d-flex align-items-center">
-                        <p>{props.slectedCropsArray.length}</p>
-                        <span className="ml-3">Crops</span>
-                      </p>
-                    </div>
-                  )}
-                </p>
-                <p onClick={() => editCropTable(billEditItem.lineItems)}>
-                  Edit
-                </p>
-              </div>
-            </div>
-
-            <div className="cropinfo_div">{/* <p>edit</p>  */}</div>
+          <Step3PartySelect
+              parentSelectedParty={callbackFunctionPartySelect}
+              billEditItemval={props.slectedCropsArray}
+              selectdDate={props.sellBilldateSelected}
+              step2CropEditStatus={props.step2CropEditStatus}
+              editStatus={props.billEditStatus}
+              selectedPartyType = 'seller'
+              selectedBuyerSellerData={props.selectedBuyerSellerData}
+            />
           </div>
           <div className="col-lg-6">
             <h5 className="head_modal">Additions/Deductions</h5>
@@ -1444,7 +1191,7 @@ const Step3Modal = (props) => {
         </div>
       </div>
       <ToastContainer />
-      {showCropModalStatus ? (
+      {/* {showCropModalStatus ? (
         <Step2Modal
           showCrop={showCropModal}
           closeCropModal={() => setShowCropModal(false)}
@@ -1452,10 +1199,11 @@ const Step3Modal = (props) => {
           cropEditObject={cropEditvalArray}
           billEditStatus={editStatus ? true : false}
           slectedCropstableArray={props.slectedCropsArray}
+          selectedBilldate={selectedDate}
         />
       ) : (
         ""
-      )}
+      )} */}
     </Modal>
   );
 };

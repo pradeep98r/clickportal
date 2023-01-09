@@ -4,6 +4,7 @@ import buyerReducer from './reducers/buyerSlice';
 import authReducer from './reducers/authSlice';
 import userInfoReducer from './reducers/userInfoSlice';
 import  mandiInfoReducer from './reducers/mandiProfile';
+import stepsReducer from './reducers/stepsSlice';
 
 export default configureStore({
     reducer:{
@@ -11,6 +12,7 @@ export default configureStore({
         buyerInfo:buyerReducer,
         auth: authReducer,
         userInfo: userInfoReducer,
-        mandiInfo:mandiInfoReducer
+        mandiInfo:mandiInfoReducer,
+        stepsInfo:stepsReducer
     }
 })

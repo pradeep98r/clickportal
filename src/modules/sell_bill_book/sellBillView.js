@@ -1286,6 +1286,7 @@ const SellBillView = () => {
           billEditStatus={true}
           step2CropEditStatus={false}
           sellBilldateSelected = {new Date(singleBillData.billDate)}
+          selectedBillData={slectedCropArray}
         />
       ) : (
         ""

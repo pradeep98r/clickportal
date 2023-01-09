@@ -31,7 +31,6 @@ const MyProfile = () => {
   const [languageId, setLanguageId] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
   const [isMandiEdit, setIsMandiEdit] = useState(false);
-  const submitStatus = localStorage.getItem("submitStatus");
   const dispatch = useDispatch();
   useEffect(() => {
     getProfileDetails();
@@ -54,9 +53,6 @@ const MyProfile = () => {
         console.log(error);
       });
   };
-  // if(submitStatus){
-  //   getProfileDetails();
-  // }
   const langOnclick = (id) => {
     setLanguageId(id);
   };

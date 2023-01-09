@@ -108,4 +108,9 @@
     transform: translate3d(5px, 35.5px, 0px) !important;
   }
 }
+.steps_modal{
+    .modal-content{
+        height: calc(100vh - 70px);
+    }
+}
 

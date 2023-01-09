@@ -1,34 +1,37 @@
 import SelectPartner from "./selectParty";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
-import moment from "moment";
+import BillDateSelection from "./billDateSelection";
 import Step2Modal from "./step2Modal";
+import { useSelector } from "react-redux";
 const Step1 = () => {
-  const [selectedDate, setStartDate] = useState(new Date());
-  //   ($("#modal_checkbox").val());
-
+  const users  = useSelector(state => state.buyerInfo);
+  console.log(users,"allusers")
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-
   useEffect(() => {
-    localStorage.setItem('selectPartytype',null);
+    localStorage.setItem("selectPartytype", null);
   }, []);
   const [partnerData, setPartnerData] = useState(null);
-  const [partType, separtType]= useState('');
-  const [partysType, setpartysType]= useState('');
-  const callbackFunction = (childData,party,type) => {
-    setPartnerData(childData);
+  const [partType, separtType] = useState("");
+  const [partysType, setpartysType] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedBuyerSellerData, setSelectedBuyerSellerData] = useState({})
+  const callbackFunction = (childData, party, type) => {
+    setPartnerData(users.buyerInfo);
+    setSelectedBuyerSellerData(users.buyerInfo)
     separtType(type.toLowerCase());
-    if(party != null){
-      setpartysType(party.toLowerCase())
+    if (users.buyerInfo.itemType != null) {
+      setpartysType(users.buyerInfo.itemType.toLowerCase());
     }
-    if(childData.partyType.toLowerCase() != 'transporter'){
+    if (users.buyerInfo.partyType.toLowerCase() != "transporter") {
       localStorage.removeItem("selectedTransporter");
+    } else {
+      localStorage.setItem("selectedTransporter", JSON.stringify(users.buyerInfo));
     }
-    else{
-      localStorage.setItem("selectedTransporter", JSON.stringify(childData));
-    }
+  };
+  const callbackFunctionDate = (date) => {
+    setSelectedDate(date);
   };
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
@@ -36,18 +39,6 @@ const Step1 = () => {
     setShowCropModalStatus(true);
     setShowCropModal(true);
   };
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () =>{
-    if(!checked){
-      setChecked(!checked)
-      localStorage.setItem("defaultDate",true);
-      setStartDate(selectedDate);
-    } else{
-      setChecked(!checked);
-      localStorage.removeItem("defaultDate");
-      setStartDate(new Date());
-    }
-  }
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {
     setonClickPage(true);
@@ -66,61 +57,43 @@ const Step1 = () => {
               />
             </div>
             <div className="col-lg-5 ">
-              <div className="date_col d-flex align-items-center justify-content-between">
-                <DatePicker
-                  dateFormat="dd-MMM-yyyy"
-                  selected={selectedDate}
-                  onChange={(date) => setStartDate(date)}
-                  className="form-control"
-                  placeholder="Date"
-                  maxDate={new Date()}
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-                <label className="custom-control custom-checkbox mb-0">
-                  <input
-                    type="checkbox"
-                    checked={checked && localStorage.getItem("defaultDate")}
-                    className="custom-control-input"
-                    id="modal_checkbox"
-                    value="my-value"
-                    onChange={handleCheckEvent}
-                  />
-                  <span className="custom-control-indicator"></span>
-                  <span className="custom-control-description">
-                    {langFullData.setAsADefault}{langFullData.date}
-                  </span>
-                </label>
-              </div>
+              <BillDateSelection parentCallbackDate={callbackFunctionDate} />
             </div>
             <div className="col-lg-3 p-0">
-              <SelectPartner partyType="Transporter"  
-              parentCallback={callbackFunction}/>
+              <SelectPartner
+                partyType="Transporter"
+                parentCallback={callbackFunction}
+              />
             </div>
           </div>
         </div>
       </div>
       <div>
         {partnerData != null &&
-         ((partysType.toLowerCase() == 'seller')?(partType.toLowerCase() == 'transporter' ? true : true) : false) ? (
-           <div className="bottom_div main_div">
-           <div className="d-flex align-items-center justify-content-end">
-             <button className="primary_btn" onClick={addCropModal}>
-               {langFullData.next}
-             </button>
-           </div>
-         </div>
+        (partysType.toLowerCase() == "seller"
+          ? partType.toLowerCase() == "transporter"
+            ? true
+            : true
+          : false) ? (
+          <div className="bottom_div main_div">
+            <div className="d-flex align-items-center justify-content-end">
+              <button className="primary_btn" onClick={addCropModal}>
+                {langFullData.next}
+              </button>
+            </div>
+          </div>
         ) : (
-        ''
+          ""
         )}
         {showCropModalStatus ? (
           <Step2Modal
-          showCrop={showCropModal}
+            showCrop={showCropModal}
             closeCropModal={() => setShowCropModal(false)}
-            cropTableEditStatus = {false}
+            cropTableEditStatus={false}
             billEditStatus={false}
-            selectedBilldate = {selectedDate}
+            selectedBilldate={selectedDate}
+            selectedPartyType = 'seller'
+            selectedBuyerSellerData={selectedBuyerSellerData}
           />
         ) : (
           ""

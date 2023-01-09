@@ -14,8 +14,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import _ from "lodash";
 import SelectBags from "./bags";
+import SellbillStep3Modal from "../sell_bill_book/step3";
+import { useSelector } from "react-redux";
+import buyerSlice from "../../reducers/buyerSlice";
 var array = [];
 const Step2Modal = (props) => {
+  const users  = useSelector(state => state.buyerInfo);
+  console.log(users,"allusers")
+  console.log(props.slectedCropstableArray,props.billEditStatus,"billeditstep2")
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
@@ -26,10 +32,9 @@ const Step2Modal = (props) => {
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
   const [cropClear, setCropClear] = useState(false);
-  const [cropItemVal, setCropItemVal] = useState({});
   const cropOnclick = (crop, id, index2, preferedCrops) => {
-    console.log(crop)
-    console.log(index2,preferedCrops,props.cropEditObject)
+    console.log(crop);
+    console.log(index2, preferedCrops, props.cropEditObject);
     Object.assign(
       crop,
       { wastage: 0 },
@@ -39,7 +44,7 @@ const Step2Modal = (props) => {
       { rate: 0 },
       { total: 0 },
       { bags: [] },
-      { status: 1 },
+      { status: 1 }
       // { id: 0 }
       // { unitType:  preferedCrops[index2] }
     );
@@ -87,8 +92,9 @@ const Step2Modal = (props) => {
         console.log(error);
       });
   };
-
+const [billEditItem,setBillEditItem] = useState([]);
   useEffect(() => {
+    setBillEditItem(props.slectedCropstableArray);
     fetchData();
     var lineIt;
     if (props.cropTableEditStatus) {
@@ -123,7 +129,6 @@ const Step2Modal = (props) => {
           Object.assign(cropArr[index], { count: 1 }, { cropActive: true });
         }
       });
-     
     }
   }, []);
 
@@ -198,6 +203,9 @@ const Step2Modal = (props) => {
   const [updatedItemList, setUpdatedItemList] = useState([]);
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
+  const [showStep3SellModal, setShowStep3SellModal] = useState(false);
+  const [showStep3SellModalStatus, setShowStep3SellModalStatus] =
+    useState(false);
   const addStep3Modal = () => {
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
@@ -213,8 +221,14 @@ const Step2Modal = (props) => {
     cropData.map((item, index) => {
       if (cropData[index].rate != 0) {
         setUpdatedItemList(cropData);
-        setShowStep3ModalStatus(true);
-        setShowStep3Modal(true);
+        if(props.selectedPartyType.toLowerCase() == 'seller'){
+          setShowStep3ModalStatus(true);
+          setShowStep3Modal(true);
+        }
+       else if(props.selectedPartyType.toLowerCase() == 'buyer'){
+        setShowStep3SellModal(true);
+        setShowStep3SellModalStatus(true)
+       }
         localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
         if (props.billEditStatus) {
           var lineitem = props.billEditStatus
@@ -236,12 +250,11 @@ const Step2Modal = (props) => {
       }
     });
     // var selectedArray = props.billEditStatus ? ;
-    console.log(props.slectedCropstableArray)
-    if(props.billEditStatus){
+    if (props.billEditStatus) {
+      
       props.slectedCropstableArray[0].lineItems =
-      updatedItemList.length != 0 ? updatedItemList : cropData;
+        updatedItemList.length != 0 ? updatedItemList : cropData;
     }
-   
 
     if (h.length > 0) {
       var h1 = h.map((item, index) => {
@@ -509,7 +522,6 @@ const Step2Modal = (props) => {
         }
       }
     }
-    console.log(cropDeletedList, cropArray);
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
@@ -561,13 +573,13 @@ const Step2Modal = (props) => {
       e.target.value = "";
     }
   };
-  const closeCropModalPopup = () =>{
+  const closeCropModalPopup = () => {
     props.closeCropModal();
     cropResponseData([]);
-    for(var i = 0; i<preferedCropsData.length; i++){
+    for (var i = 0; i < preferedCropsData.length; i++) {
       preferedCropsData[i].count = 0;
     }
-  }
+  };
   return (
     <Modal
       show={props.showCrop}
@@ -578,7 +590,7 @@ const Step2Modal = (props) => {
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
           Add Crop Information
         </h5>
-        <img alt="image" src={clo} onClick={()=>closeCropModalPopup()} />
+        <img alt="image" src={clo} onClick={() => closeCropModalPopup()} />
       </div>
 
       <div className="modal-body">
@@ -589,33 +601,33 @@ const Step2Modal = (props) => {
               {preferedCropsData.map((crop, index) => (
                 <div className="">
                   <div
-                  className="text-center crop_div crop_div_ui"
-                  key={crop.cropId}
-                  onClick={() =>
-                    cropOnclick(crop, crop.cropId, index, preferedCropsData)
-                  }
-                >
-                  <div
-                    style={{
-                      display:
-                        preferedCropsData[index].cropActive === true
-                          ? preferedCropsData[index].count == 0
-                            ? "none"
-                            : "block"
-                          : "none",
-                    }}
-                    className="crp_count"
+                    className="text-center crop_div crop_div_ui"
+                    key={crop.cropId}
+                    onClick={() =>
+                      cropOnclick(crop, crop.cropId, index, preferedCropsData)
+                    }
                   >
-                    {preferedCropsData[index].count == 0
-                      ? ""
-                      : preferedCropsData[index].count}
+                    <div
+                      style={{
+                        display:
+                          preferedCropsData[index].cropActive === true
+                            ? preferedCropsData[index].count == 0
+                              ? "none"
+                              : "block"
+                            : "none",
+                      }}
+                      className="crp_count"
+                    >
+                      {preferedCropsData[index].count == 0
+                        ? ""
+                        : preferedCropsData[index].count}
+                    </div>
+                    <img
+                      src={crop.imageUrl}
+                      className="flex_class cropImg mx-auto "
+                    />
+                    <p>{crop.cropName}</p>
                   </div>
-                  <img
-                    src={crop.imageUrl}
-                    className="flex_class cropImg mx-auto "
-                  />
-                  <p>{crop.cropName}</p>
-                </div>
                 </div>
               ))}
             </div>
@@ -1029,7 +1041,6 @@ const Step2Modal = (props) => {
         <Step3Modal
           showstep3={showStep3Modal}
           closeStep3Modal={() => setShowStep3Modal(false)}
-          // slectedCropsArray={selectedCropsData}
           billEditStatus={props.billEditStatus ? true : false}
           slectedCropsArray={
             props.billEditStatus
@@ -1038,6 +1049,26 @@ const Step2Modal = (props) => {
           }
           step2CropEditStatus={props.billEditStatus ? true : false}
           dateSelected={props.selectedBilldate}
+          selectedPartyType = {props.selectedPartyType}
+          selectedBuyerSellerData={props.selectedBuyerSellerData}
+        />
+      ) : (
+        ""
+      )}
+      {showStep3SellModal ? (
+        <SellbillStep3Modal
+          show={showStep3SellModalStatus}
+          closeStep3Modal={() => setShowStep3SellModal(false)}
+          billEditStatus={props.billEditStatus ? true : false}
+          slectedSellCropsArray={
+            props.billEditStatus
+              ? props.slectedCropstableArray
+              : updatedItemList
+          }
+          step2CropEditStatus={props.billEditStatus ? true : false}
+          sellBilldateSelected={props.selectedBilldate}
+          selectedPartyType = {props.selectedPartyType}
+          selectedBuyerSellerData={props.selectedBuyerSellerData}
         />
       ) : (
         ""

@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 export const buyerSlice = createSlice({
     name: 'buyerInfo',
     initialState: {
-        buyerInfo: null
+        buyerInfo: null,
+        partyType:''
     },
     reducers: {
         selectBuyer: (state, action) => {
             state.buyerInfo = action.payload;
+            console.log(action.payload,"paylooad")
         },
     },
 });

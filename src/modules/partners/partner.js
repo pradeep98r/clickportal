@@ -476,16 +476,6 @@ const Partner = () => {
     setPincode(pincodeValue);
     setCityVal(city);
     setStateVal(state);
-    // localStorage.setItem("cityValue", city);
-    // var $input;
-    // var $text = $(document.createElement("input"));
-    // $text.attr("value", city);
-    // $text.attr("type", "text");
-    // $text.attr("type", "text");
-    // $text.attr("class", "form-control");
-    // $input = $text;
-    // $("#city-input-wrapper").html($input);
-    // console.log(pincodeValue, city, state);
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");

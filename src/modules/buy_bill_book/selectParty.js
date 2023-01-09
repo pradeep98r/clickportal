@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, } from "react";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
@@ -6,16 +6,20 @@ import "../../modules/buy_bill_book/step1.scss";
 import { useNavigate } from "react-router-dom";
 import NoDataAvailable from "../../components/noDataAvailable";
 import SearchField from "../../components/searchField";
+import { useDispatch,useSelector } from "react-redux";
+import { selectBuyer } from "../../reducers/buyerSlice";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const users  = useSelector(state => state.buyerInfo);
+  console.log(users)
   const clickId = loginData.caId;
-
+  const dispatch = useDispatch();
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
   const navigate = useNavigate();
-  const [getPartyItem, setGetPartyItem] = useState(null);
+  const [getPartyItem, setGetPartyItem] = useState(users.buyerInfo);
   const fetchPertnerData = () => {
     var partnerType = "";
     if (props.partyType == "Seller") {
@@ -29,10 +33,6 @@ const SelectPartner = (props) => {
       .then((response) => {
         setAllData(response.data.data);
         setpartnerData(response.data.data);
-        // var t = JSON.parse(localStorage.getItem("selectedSearchItem"))
-        // console.log(t);
-        // setGetPartyItem(t)
-        // console.log(getPartyItem, "fetch");
       })
       .catch((error) => {
         console.log(error);
@@ -58,6 +58,8 @@ const SelectPartner = (props) => {
     console.log("came to click event", partnerData);
   };
   const partySelect = (item) => {
+    Object.assign(
+      item,{itemtype:'',partyType:''})
     setGetPartyItem(item);
     // localStorage.setItem("selectedSearchItem", JSON.stringify(item));
     setGetPartyName(false);
@@ -65,16 +67,24 @@ const SelectPartner = (props) => {
     if (props.partyType == "Seller") {
       localStorage.setItem("selectPartytype", "seller");
       itemtype = localStorage.getItem("selectPartytype");
-      localStorage.setItem("selectedPartner", JSON.stringify(item));
+      props.parentCallback(item, itemtype, props.partyType);
+      item.itemtype = 'seller';
+      item.partyType=props.partyType;
+      dispatch(selectBuyer(item));
+      // localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
       console.log("trrans", item);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
     } else if (props.partyType == "Buyer") {
       localStorage.setItem("selectBuyertype", "buyer");
       itemtype = localStorage.getItem("selectBuyertype");
-      localStorage.setItem("selectedBuyer", JSON.stringify(item));
+      props.parentCallback(item, itemtype, props.partyType);
+      item.itemtype = 'buyer';
+      item.partyType=props.partyType;
+      dispatch(selectBuyer(item));
+      // localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
-    props.parentCallback(item, itemtype, props.partyType);
+    
   };
   useEffect(() => {
     console.log("click");
