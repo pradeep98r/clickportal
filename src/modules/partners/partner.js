@@ -221,7 +221,7 @@ const Partner = () => {
       uploadProfilePic(clickId, mobileNumber, req)
         .then((response) => {
           setUpdateProfilePic(response.data.data);
-          console.log(updateProfilePic);
+          
         })
         .catch((error) => {
           console.log(error);

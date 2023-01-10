@@ -12,7 +12,6 @@ import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
-import { qtyValues } from "../../components/qtyValues";
 
 import BusinessDetails from "./business_details";
 import CropDetails from "./crop_details";
@@ -23,17 +22,7 @@ import { useSelector } from "react-redux";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const clientId = loginData.authKeys.clientId;
-  const clientSecret = loginData.authKeys.clientSecret;
-  //const [mandiData, setMandiData] = useState({});
   const  billData = useSelector((state)=> state.billViewInfo);
-  //const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
- // const [billSettingResponse, billSettingData] = useState([]);
-  // console.log(singleBillData);
-  var groupOne = [];
-  var grouptwo = [];
-  var groupthree = [];
-  var groupfour = [];
 
   const [displayCancel, setDisplayCancel] = useState(false);
 
@@ -41,7 +30,7 @@ const BillView = (props) => {
 
   useEffect(() => {
     cancelBillStatus();
-  }, []);
+  }, [clickId]);
 
   const cancelBillStatus = () => {
     if (billData.billViewInfo.billStatus === "CANCELLED") {
@@ -51,40 +40,6 @@ const BillView = (props) => {
     }
   };
  
-  const [includeComm, setIncludeComm] = useState("");
-  const [includeRetComm, setIncludeRetComm] = useState("");
-  const [addRetComm, setAddRetComm] = useState(false);
-  const [status, setStatus] = useState(false);
-
-  const getFinalLedgerbalance = () => {
-    var t = parseInt(
-      billData.billViewInfo.transportation +
-      billData.billViewInfo.labourCharges +
-      billData.billViewInfo.rent +
-      billData.billViewInfo.mandiFee +
-      billData.billViewInfo.govtLevies +
-      billData.billViewInfo.misc +
-      billData.billViewInfo.advance
-    );
-    var finalValue = billData.billViewInfo.grossTotal - t;
-    var finalVal = finalValue;
-    if (includeComm) {
-      finalVal = finalVal - billData.billViewInfo.comm;
-    }
-    if (addRetComm) {
-      if (includeRetComm) {
-        finalVal = finalVal + billData.billViewInfo.rtComm;
-      }
-    } else {
-      // if (includeRetComm) {
-      finalVal = finalVal - billData.billViewInfo.rtComm;
-      // }
-    }
-    return (
-      (Number(finalVal) + billData.billViewInfo.outStBal).toFixed(2) -
-      Number(billData.billViewInfo.cashPaid)
-    ).toFixed(2);
-  };
 
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
@@ -109,30 +64,25 @@ const BillView = (props) => {
       actualPayRecieevable: billData.billViewInfo.actualPaybles,
       advance: billData.billViewInfo.advance,
       billDate: billData.billViewInfo.billDate,
-      cashRcvd: billData.billViewInfo.cashPaid,
+      cashPaid: billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
+                billData.billViewInfo.cashPaid:0,
+      cashRcvd:billData.billViewInfo.partyType.toUpperCase()==='BUYER'?billData.billViewInfo.cashRcvd:0,
       comm: billData.billViewInfo.comm,
       commIncluded: billData.billViewInfo.commIncluded,
       comments: billData.billViewInfo.comments,
-      // customFields: [
-      //   {
-      //     "comments": "string",
-      //     "fee": 0,
-      //     "field": "string",
-      //     "fieldName": "string",
-      //     "fieldType": "string",
-      //     "less": true
-      //   }
-      // ],
       govtLevies: billData.billViewInfo.govtLevies,
       grossTotal: billData.billViewInfo.grossTotal,
       labourCharges: billData.billViewInfo.labourCharges,
       less: billData.billViewInfo.less,
       mandiFee: billData.billViewInfo.mandiData,
-      misc: billData.billViewInfo.misc,
-      otherFee: billData.billViewInfo.misc,
+      misc:billData.billViewInfo.partyType.toUpperCase()==='FARMER'? billData.billViewInfo.otherFee:
+          billData.billViewInfo.misc,
+      otherFee:billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
+         billData.billViewInfo.misc:billData.billViewInfo.otherFee,
       outStBal: billData.billViewInfo.outStBal,
       paidTo: 0,
-      partyId: billData.billViewInfo.farmerId,
+      partyId:billData.billViewInfo.partyType.toUpperCase()==='FARMMER'?
+            billData.billViewInfo.buyerId:billData.billViewInfo.farmerId,
       rent: billData.billViewInfo.rent,
       rtComm: billData.billViewInfo.rtComm,
       rtCommIncluded: billData.billViewInfo.rtCommIncluded,
@@ -141,7 +91,7 @@ const BillView = (props) => {
       transporterId: billData.billViewInfo.transporterId,
     },
     billId: billData.billViewInfo.billId,
-    billType: "BUY",
+    billType:billData.billViewInfo.partyType.toUpperCase()==='FARMER'? "BUY":'SELL',
     caBSeq: billData.billViewInfo.caBSeq,
     caId: clickId,
     lineItems: billData.billViewInfo.lineItems,
@@ -149,61 +99,9 @@ const BillView = (props) => {
     updatedOn: "",
     writerId: 0,
   };
-  const editSellBillRequestObj = {
-    action: "CANCEL",
-    billAttributes: {
-      actualPayRecieevable: billData.billViewInfo.actualReceivable,
-      advance: billData.billViewInfo.advance,
-      billDate: billData.billViewInfo.billDate,
-      cashRcvd: billData.billViewInfo.cashRcvd,
-      comm: billData.billViewInfo.comm,
-      commIncluded: billData.billViewInfo.commIncluded,
-      comments: billData.billViewInfo.comments,
-      // customFields: [
-      //   {
-      //     "comments": "string",
-      //     "fee": 0,
-      //     "field": "string",
-      //     "fieldName": "string",
-      //     "fieldType": "string",
-      //     "less": true
-      //   }
-      // ],
-      govtLevies: billData.billViewInfo.govtLevies,
-      grossTotal: billData.billViewInfo.grossTotal,
-      labourCharges: billData.billViewInfo.labourCharges,
-      less: billData.billViewInfo.less,
-      mandiFee: billData.billViewInfo.mandiData,
-      misc: billData.billViewInfo.misc,
-      otherFee: billData.billViewInfo.misc,
-      outStBal: billData.billViewInfo.outStBal,
-      paidTo: 0,
-      partyId: billData.billViewInfo.buyerId,
-      rrent: billData.billViewInfo.rent,
-      rtComm: billData.billViewInfo.rtComm,
-      rtCommIncluded: billData.billViewInfo.rtCommIncluded,
-      totalPayRecieevable: billData.billViewInfo.totalReceivable,
-      transportation: billData.billViewInfo.transportation,
-      transporterId: billData.billViewInfo.transporterId,
-    },
-    billId: billData.billViewInfo.billId,
-    billType: "SELL",
-    caBSeq: billData.billViewInfo.caBSeq,
-    caId: clickId,
-    lineItems: billData.billViewInfo.lineItems,
-    updatedBy: 0,
-    updatedOn: "",
-    writerId: 0,
-  };
+
   const cancelbillApiCall = () => {
-    var obj=null
-    if(billData.billViewInfo.partyType.toUpperCase() ==='FARMER'){
-      obj=editBillRequestObj
-    }else{
-      obj=editSellBillRequestObj;
-      console.log(obj);
-    }
-    editbuybillApi(obj).then(
+    editbuybillApi(editBillRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.message, {

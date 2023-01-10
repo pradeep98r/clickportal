@@ -6,10 +6,7 @@ import { useSelector } from 'react-redux';
 export const BusinessDetails = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const clientId = loginData.authKeys.clientId;
-  const clientSecret = loginData.authKeys.clientSecret;
   const [mandiData, setMandiData] = useState({});
-  //const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const  billData = useSelector((state)=> state.billViewInfo);
   console.log(billData);
   useEffect(()=>{
