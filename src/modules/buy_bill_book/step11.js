@@ -9,10 +9,6 @@ import Step2Modal from "./step2Modal";
 const Step11 = (props) => {
   const dispatch = useDispatch();
   const users  = useSelector(state => state.buyerInfo);
-//   const nextStep = () => {
-//       console.log('step11 nnext')
-//     dispatch(selectSteps("step2"));
-//   };
   const cancelStep = () => {
     console.log('billbook nnext');
 };
@@ -45,11 +41,9 @@ const callbackFunctionDate = (date) => {
   setSelectedDate(date);
   
 };
-const [showCropModal, setShowCropModal] = useState(false);
-const [showCropModalStatus, setShowCropModalStatus] = useState(false);
 const addCropModal = () => {
   dispatch(selectSteps('step2'))
-  props.billEditStatuscallback(false,selectedDate);
+  props.billEditStatuscallback(false,selectedDate,false);
 };
 const [onClickPage, setonClickPage] = useState(false);
 document.body.addEventListener("click", function (evt) {

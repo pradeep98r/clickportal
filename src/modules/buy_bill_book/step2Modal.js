@@ -114,7 +114,7 @@ const [billEditItem,setBillEditItem] = useState([]);
         // preferedCropsData = lineIt;
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
-
+         console.log(lineIt,props.billEditStatus)
       cropArr.map((item, index) => {
         var k = preferedCropsData.findIndex(
           (obj) => obj.cropId === item.cropId
