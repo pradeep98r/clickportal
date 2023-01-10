@@ -479,9 +479,9 @@ const Step3Modal = (props) => {
       }
     }
     if (addRetComm) {
-      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
-    } else {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
+    } else {
+      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
     }
 
     return totalValue;
@@ -536,11 +536,11 @@ const Step3Modal = (props) => {
     }
     if (addRetComm) {
       if (includeRetComm) {
-        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if (includeRetComm) {
-        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
