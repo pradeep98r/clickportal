@@ -5,7 +5,7 @@ import authReducer from './reducers/authSlice';
 import userInfoReducer from './reducers/userInfoSlice';
 import  mandiInfoReducer from './reducers/mandiProfile';
 import stepsReducer from './reducers/stepsSlice';
-
+import selectedCropsReducer from './reducers/selectedCropsSlice';
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -13,6 +13,7 @@ export default configureStore({
         auth: authReducer,
         userInfo: userInfoReducer,
         mandiInfo:mandiInfoReducer,
-        stepsInfo:stepsReducer
+        stepsInfo:stepsReducer,
+        selectedCropsInfo:selectedCropsReducer
     }
 })

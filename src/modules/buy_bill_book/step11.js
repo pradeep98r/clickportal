@@ -6,10 +6,9 @@ import { useState, useEffect } from "react";
 import BillDateSelection from "./billDateSelection";
 import Step2Modal from "./step2Modal";
 
-const Step11 = () => {
+const Step11 = (props) => {
   const dispatch = useDispatch();
   const users  = useSelector(state => state.buyerInfo);
-  console.log('step11')
 //   const nextStep = () => {
 //       console.log('step11 nnext')
 //     dispatch(selectSteps("step2"));
@@ -21,36 +20,36 @@ const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 useEffect(() => {
   localStorage.setItem("selectPartytype", null);
-}, []);
+  console.log(users.buyerInfo,"data partyinfo")
+  setPartnerData(users.buyerInfo);
+  setSelectedBuyerSellerData(users.buyerInfo)
+  separtType(users.buyerInfo?.partyType.toLowerCase());
+  if (users.buyerInfo?.itemtype != null) {
+    setpartysType(users.buyerInfo?.itemtype.toLowerCase());
+  }
+  if (users.buyerInfo?.partyType.toLowerCase() != "transporter") {
+    localStorage.removeItem("selectedTransporter");
+  } else {
+    localStorage.setItem("selectedTransporter", JSON.stringify(users.buyerInfo));
+  }
+}, [users.buyerInfo]);
 const [partnerData, setPartnerData] = useState(null);
 const [partType, separtType] = useState("");
 const [partysType, setpartysType] = useState("");
 const [selectedDate, setSelectedDate] = useState(new Date());
 const [selectedBuyerSellerData, setSelectedBuyerSellerData] = useState({})
 const callbackFunction = (childData, party, type) => {
-  console.log(users.buyerInfo,"data")
-  setPartnerData(users.buyerInfo);
-  setSelectedBuyerSellerData(childData)
-  separtType(type.toLowerCase());
-  if (party != null) {
-    setpartysType(party.toLowerCase());
-  }
-  if (childData.partyType.toLowerCase() != "transporter") {
-    localStorage.removeItem("selectedTransporter");
-  } else {
-    localStorage.setItem("selectedTransporter", JSON.stringify(childData));
-  }
+ 
 };
 const callbackFunctionDate = (date) => {
   setSelectedDate(date);
+  
 };
 const [showCropModal, setShowCropModal] = useState(false);
 const [showCropModalStatus, setShowCropModalStatus] = useState(false);
 const addCropModal = () => {
-  setShowCropModalStatus(true);
-  setShowCropModal(true);
-  console.log('step11 nnext')
-  dispatch(selectSteps("step2"));
+  dispatch(selectSteps('step2'))
+  props.billEditStatuscallback(false,selectedDate);
 };
 const [onClickPage, setonClickPage] = useState(false);
 document.body.addEventListener("click", function (evt) {
@@ -82,12 +81,13 @@ document.body.addEventListener("click", function (evt) {
         </div>
       </div>
       <div>
+          {/* { partysType + partType} */}
         {partnerData != null &&
         (partysType.toLowerCase() == "seller"
           ? partType.toLowerCase() == "transporter"
             ? true
             : true
-          : false) ? (
+          : true) ? (
           <div className="bottom_div">
             <div className="d-flex align-items-center justify-content-end">
             <button className="secondary_btn" onClick = {cancelStep}>cancel</button>
@@ -99,7 +99,7 @@ document.body.addEventListener("click", function (evt) {
         ) : (
           ""
         )}
-        {showCropModalStatus ? (
+        {/* {showCropModalStatus ? (
           <Step2Modal
             showCrop={showCropModal}
             closeCropModal={() => setShowCropModal(false)}
@@ -111,7 +111,7 @@ document.body.addEventListener("click", function (evt) {
           />
         ) : (
           ""
-        )}
+        )} */}
       </div>
     </div>
     </div>

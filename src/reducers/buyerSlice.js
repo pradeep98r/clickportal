@@ -4,12 +4,11 @@ export const buyerSlice = createSlice({
     name: 'buyerInfo',
     initialState: {
         buyerInfo: null,
-        partyType:''
     },
     reducers: {
         selectBuyer: (state, action) => {
             state.buyerInfo = action.payload;
-            console.log(action.payload,"paylooad")
+            // console.log(action.payload,"paylooad")
         },
     },
 });

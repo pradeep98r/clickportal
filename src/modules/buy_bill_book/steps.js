@@ -4,8 +4,34 @@ import { useSelector } from "react-redux";
 import Step22 from "./step222";
 import clo from "../../assets/images/clo.png";
 import Step33 from "./step33";
+import { useState } from "react";
 const Steps = (props) => {
   const selectedStep = useSelector((state) => state.stepsInfo);
+  const [selctedCrops, setSelctedCrops] = useState([])
+  const callbackfunction = (chaild,editStatus) =>{
+   console.log(chaild,editStatus,"crops");
+   setSelctedCrops(chaild)
+  }
+  const [billStatus, setBillstatus] = useState(false)
+  const [selectedDate, setselectedDate] = useState(false)
+
+  const [cropEditObject,setcropEditObject] = useState([])
+  const [slectedCropstableArray,setslectedCropstableArray] = useState([])
+  const [selectedPartyType, setselectedPartyType] = useState('');
+  const [cropTableEditStatus, setcropTableEditStatus] = useState(false);
+  const billeditCallback = (billEditStatus,
+    selectedBilldate) =>{
+    setBillstatus(billEditStatus)
+    setselectedDate(selectedBilldate);
+    console.log(billEditStatus)
+  }
+  const step3ChildCallback = (cropTableEditStatus,cropEditObject,billEditStatus,slectedCropstableArray,
+    selectedPartyType,selectedBilldate,selectedBuyerSellerData) =>{
+    setcropEditObject(cropEditObject);
+    setslectedCropstableArray(slectedCropstableArray)
+    setselectedPartyType(selectedPartyType);
+    setcropTableEditStatus(cropTableEditStatus)
+  }
   return (
     <Modal
       show={props.showStepsModal}
@@ -27,16 +53,31 @@ const Steps = (props) => {
         </h5>
         <img alt="image" src={clo} onClick={props.closeStepsModal} />
       </div>
+      <div className="modal-body p-0">
       {(() => {
         switch (selectedStep.stepsInfo) {
           case "step1":
-            return <Step11 />;
+            return <Step11 billEditStatuscallback = {billeditCallback} />;
           case "step2":
-            return <Step22 />;
+            return <Step22 parentcall={callbackfunction} billEditStatus = {billStatus}
+            selectdDate={selectedDate}
+            cropTableEditStatus={true}
+            cropEditObject={cropEditObject}
+            slectedCropstableArray={slectedCropstableArray}
+            selectedPartyType={selectedPartyType}
+            selectedBilldate={selectedDate}
+            />;
           case "step3":
-            return <Step33 />;
+            return <Step33 slectedCropsArray = {selctedCrops} 
+            step3ParentCallback = {step3ChildCallback}
+            billEditStatus = {billStatus}
+            selectdDate={selectedDate}
+            // selectedBuyerSellerData={props.selectedBuyerSellerData}
+            />;
         }
       })()}
+      </div>
+      
     </Modal>
   );
 };

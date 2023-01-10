@@ -11,7 +11,6 @@ import { selectBuyer } from "../../reducers/buyerSlice";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const users  = useSelector(state => state.buyerInfo);
-  console.log(users)
   const clickId = loginData.caId;
   const dispatch = useDispatch();
   const langData = localStorage.getItem("languageData");
@@ -42,7 +41,6 @@ const SelectPartner = (props) => {
   const [getPartyName, setGetPartyName] = useState(false);
   const [count, setCount] = useState(0);
   const selectParty = () => {
-    console.log(getPartyItem);
     setCount(count + 1);
     if (count % 2 == 0) {
       setGetPartyName(true);
@@ -55,25 +53,23 @@ const SelectPartner = (props) => {
       fetchPertnerData();
     }
     // fetchPertnerData();
-    console.log("came to click event", partnerData);
   };
   const partySelect = (item) => {
     Object.assign(
-      item,{itemtype:'',partyType:''})
+      item,{itemtype:''},{date:''})
     setGetPartyItem(item);
     // localStorage.setItem("selectedSearchItem", JSON.stringify(item));
     setGetPartyName(false);
     var itemtype;
     if (props.partyType == "Seller") {
-      localStorage.setItem("selectPartytype", "seller");
-      itemtype = localStorage.getItem("selectPartytype");
+      // localStorage.setItem("selectPartytype", "seller");
+      // itemtype = localStorage.getItem("selectPartytype");
       props.parentCallback(item, itemtype, props.partyType);
       item.itemtype = 'seller';
       item.partyType=props.partyType;
       dispatch(selectBuyer(item));
       // localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
-      console.log("trrans", item);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
     } else if (props.partyType == "Buyer") {
       localStorage.setItem("selectBuyertype", "buyer");
@@ -87,13 +83,11 @@ const SelectPartner = (props) => {
     
   };
   useEffect(() => {
-    console.log("click");
     fetchPertnerData();
     if (props.onClickPage) {
-      console.log("click");
       setGetPartyName(false);
     }
-  }, []);
+  }, [users.buyerInfo]);
   const [searchValue, setsearchValue] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
@@ -132,7 +126,7 @@ const SelectPartner = (props) => {
                     {getPartyItem.partyType} - {getPartyItem.partyId} |{" "}
                     {getPartyItem.mobile}
                   </h6>
-                  <p>{getPartyItem.address.addressLine}</p>
+                  <p>{getPartyItem.address?.addressLine}</p>
                 </div>
               </div>
             </div>
@@ -174,7 +168,7 @@ const SelectPartner = (props) => {
                                 {item.trader ? "TRADER" : item.partyType} -{" "}
                                 {item.partyId} | {item.mobile}
                               </h6>
-                              <p>{item.address.addressLine}</p>
+                              <p>{item.address?.addressLine}</p>
                             </div>
                           </div>
                         </div>

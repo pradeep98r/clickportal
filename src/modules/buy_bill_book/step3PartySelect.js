@@ -5,11 +5,13 @@ import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
 import Step2Modal from "./step2Modal";
+import { useDispatch } from "react-redux";
 import {
   getPartnerData,
   getOutstandingBal,
 } from "../../actions/billCreationService";
 import BillDateSelection from "./billDateSelection";
+import { selectSteps } from "../../reducers/stepsSlice";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -18,7 +20,6 @@ const Step3PartySelect = (props) => {
     props.selectedPartyType.toLowerCase() == "buyer"
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
-      console.log(props.selectedBuyerSellerData)
   const [transpoSelectedData, setTranspoSelectedData] = useState({});
   const [getPartyItem, setGetPartyItem] = useState(null);
   const editStatus = props.editStatus;
@@ -26,9 +27,9 @@ const Step3PartySelect = (props) => {
   var step2CropEditStatus = props.step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(props.selectdDate);
+  console.log(selectedDate)
   const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
   const [outBal, setOutsBal] = useState(0);
-  console.log(props.billEditItemval);
   useEffect(() => {
     fetchPertnerData(partyType);
     setTranspoSelectedData(
@@ -39,11 +40,12 @@ const Step3PartySelect = (props) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
-    console.log(transpoSelectedData, partnerSelectedData);
+    // props.billEditStatuscallback(true,cropEditvalArray,editStatus ? true : false,props.billEditItemval,props.selectedPartyType,selectedDate,props.selectedBuyerSellerData);
     props.parentSelectedParty(
       partnerSelectDate,
       partnerSelectedData,
-      transpoSelectedData
+      transpoSelectedData,
+      true,cropEditvalArray,editStatus ? true : false,props.billEditItemval,props.selectedPartyType,selectedDate,props.selectedBuyerSellerData
     );
   }, []);
   const fetchPertnerData = (type) => {
@@ -125,12 +127,14 @@ const Step3PartySelect = (props) => {
   const editCropTable = (cropEditArray) => {
     step2CropTableOnclick(cropEditArray);
   };
-
+  const dispatch = useDispatch();
   const step2CropTableOnclick = (cropEditArray) => {
     step2CropEditStatus = true;
+    dispatch(selectSteps('step2'))
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
+  
   };
   return (
     <div className="">
@@ -317,7 +321,8 @@ const Step3PartySelect = (props) => {
           <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
         </div>
       </div>
-      {showCropModalStatus ? (
+     
+      {/* {showCropModalStatus ? (
         <Step2Modal
           showCrop={showCropModal}
           closeCropModal={() => setShowCropModal(false)}
@@ -331,7 +336,7 @@ const Step3PartySelect = (props) => {
         />
       ) : (
         ""
-      )}
+      )} */}
     </div>
   );
 };
