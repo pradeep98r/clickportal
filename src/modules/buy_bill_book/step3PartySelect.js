@@ -20,20 +20,22 @@ const Step3PartySelect = (props) => {
     props.selectedPartyType.toLowerCase() == "buyer"
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
-  const [transpoSelectedData, setTranspoSelectedData] = useState({});
+  const [transpoSelectedData, setTranspoSelectedData] = useState((props.transpoSelectedData));
+  console.log(transpoSelectedData,props.transpoSelectedData)
   const [getPartyItem, setGetPartyItem] = useState(null);
   const editStatus = props.editStatus;
   const billEditItem = props.billEditItemval[0];
   var step2CropEditStatus = props.step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(props.selectdDate);
-  console.log(selectedDate)
+  console.log(selectedDate,props.selectdDate)
   const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
   const [outBal, setOutsBal] = useState(0);
   useEffect(() => {
     fetchPertnerData(partyType);
     setTranspoSelectedData(
-      JSON.parse(localStorage.getItem("selectedTransporter"))
+        props.transpoSelectedData
+    //   JSON.parse(localStorage.getItem("selectedTransporter"))
     );
     if (partnerSelectedData != null) {
       getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
@@ -183,7 +185,7 @@ const Step3PartySelect = (props) => {
         </div>
       </div>
       <div className="date_sec date_step3">
-        <BillDateSelection parentCallbackDate={callbackFunctionDate} />
+        <BillDateSelection parentCallbackDate={callbackFunctionDate} billDate= {selectedDate} />
       </div>
       {transpoSelectedData != null ? (
         <div className="transporter_div">

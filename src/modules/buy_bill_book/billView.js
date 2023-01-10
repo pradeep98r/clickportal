@@ -21,7 +21,9 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
-
+import { selectSteps } from "../../reducers/stepsSlice";
+import { useDispatch } from "react-redux";
+import Steps from "./steps";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -411,12 +413,20 @@ const BillView = (props) => {
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const [slectedCropArray, setSlectedCropArray] = useState([]);
   const [editCancelStatus, setEditCancelStatus] = useState(false);
+  const dispatch = useDispatch();
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const editBill = (itemVal) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    setShowStep3ModalStatus(true);
-    setShowStep3Modal(true);
+    console.log('edit')
+    dispatch(selectSteps("step3"));
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    // props.parentcall(updatedItemList, props.billEditStatus);
+    // setShowStep3ModalStatus(true);
+    // setShowStep3Modal(true);
     setEditCancelStatus(true);
   };
   const cancelBill = (itemVal) => {
@@ -1254,6 +1264,7 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
+       
         {showStep3ModalStatus ? (
           <Step3Modal
             showstep3={showStep3Modal}
@@ -1268,6 +1279,11 @@ const BillView = (props) => {
           ""
         )}
       </div>
+      {showStepsModalStatus ? (
+        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ) : (
+        ""
+      )}
       <div className="modal fade" id="cancelBill">
         <div className="modal-dialog cancelBill_modal_popup">
           <div className="modal-content">

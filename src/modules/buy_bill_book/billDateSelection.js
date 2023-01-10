@@ -5,7 +5,8 @@ import moment from "moment";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const BillDateSelection = (props) => {
-  const [selectedDate, setStartDate] = useState(new Date());
+    console.log(props.billDate)
+  const [selectedDate, setStartDate] = useState(props.billDate != null ? props.billDate : new Date());
   props.parentCallbackDate(selectedDate)
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () => {

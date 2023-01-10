@@ -8,37 +8,38 @@ import { getPreferredCrops } from "../../actions/billCreationService";
 import SelectCrop from "./selectCrop";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
-import Step3Modal from "./step3Model";
-import toastr from "toastr";
-import $, { inArray, merge } from "jquery";
-import clo from "../../assets/images/clo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import _ from "lodash";
 import SelectBags from "./bags";
-import SellbillStep3Modal from "../sell_bill_book/step3";
-import { selectedCrops } from "../../reducers/selectedCropsSlice";
 var array = [];
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const dispatch = useDispatch();
-  const selectedStep = useSelector((state) => state.stepsInfo);
-  const nextStep = () => {};
-  const previousStep = () => {
-    dispatch(selectBuyer(users.buyerInfo));
-    dispatch(selectSteps("step1"));
-  };
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   let [preferedCropsData, setPreferedCropsData] = useState([]);
   let [cropData, cropResponseData] = useState(array);
-  console.log(cropData, "cropdata");
   const [cropInfoModal, setCropInfoModal] = useState(false);
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
-  const [cropClear, setCropClear] = useState(false);
+  const [updatedItemList, setUpdatedItemList] = useState([]);
+  const [showStep3Modal, setShowStep3Modal] = useState(false);
+  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
+  const [showStep3SellModal, setShowStep3SellModal] = useState(false);
+  const [showStep3SellModalStatus, setShowStep3SellModalStatus] =
+    useState(false);
+  const [quantityValue, setunitValue] = useState();
+  const [wastagesValue, setwastageValue] = useState();
+  const [rateDefaultValue, setrateValue] = useState();
+  const [weightDefaultValue, setweightValue] = useState();
+  // navigate to previous step
+  const previousStep = () => {
+    dispatch(selectBuyer(users.buyerInfo));
+    dispatch(selectSteps("step1"));
+  };
+  //   click on particular crop function
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     console.log(crop);
     console.log(index2, preferedCrops, props.cropEditObject);
@@ -52,22 +53,19 @@ const Step22 = (props) => {
       { total: 0 },
       { bags: [] },
       { status: 1 }
-      // { id: 0 }
-      // { unitType:  preferedCrops[index2] }
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
-
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
-    // preferedCropsData[index2].units = "Crates";
   };
+  //   getting all crops popup when click on other crop
   const allCropData = () => {
     setCropInfoModalStatus(true);
     setCropInfoModal(true);
-    setCropClear(true);
   };
+  //   fetching preferred crops data
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
@@ -99,15 +97,13 @@ const Step22 = (props) => {
         console.log(error);
       });
   };
-  const [billEditItem, setBillEditItem] = useState([]);
+  //   to get crop data oon refresh
   useEffect(() => {
-    setBillEditItem(props.slectedCropstableArray);
     fetchData();
     var lineIt;
     console.log(props.billEditStatus, props.cropTableEditStatus);
     if (props.cropTableEditStatus) {
       if (props.billEditStatus) {
-        // console.log(props.cropEditObject, "crops");
         for (var d = 0; d < props.cropEditObject.length; d++) {
           if (props.cropEditObject[d].qtyUnit == "") {
             props.cropEditObject.splice(d, 1);
@@ -122,7 +118,6 @@ const Step22 = (props) => {
           setUpdatedItemList(lineIt);
           setPreferedCropsData([...lineIt]);
         }
-        // preferedCropsData = lineIt;
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
       console.log(cropArr, props.billEditStatus, lineIt);
@@ -144,6 +139,7 @@ const Step22 = (props) => {
   }, []);
 
   var arr = [];
+  //   getting selected crops from crops popup
   const cropDataFunction = (childData, status) => {
     if (status === true) {
       var list = preferedCropsData;
@@ -210,13 +206,7 @@ const Step22 = (props) => {
       setPreferedCropsData(deSelectedCrop);
     }
   };
-
-  const [updatedItemList, setUpdatedItemList] = useState([]);
-  const [showStep3Modal, setShowStep3Modal] = useState(false);
-  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
-  const [showStep3SellModal, setShowStep3SellModal] = useState(false);
-  const [showStep3SellModalStatus, setShowStep3SellModalStatus] =
-    useState(false);
+  // function to nevigate to step3 page
   const addStep3Modal = () => {
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
@@ -275,8 +265,7 @@ const Step22 = (props) => {
       });
     }
   };
-
-  const selectedCropsInfo = useSelector((state) => state.selectedCropsInfo);
+  // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
     if (cropData.length > 0) {
@@ -370,6 +359,7 @@ const Step22 = (props) => {
       }
     }
   };
+  //   getting quantity type to change tables(kgs or crates..)
   const setQuantityBasedtable = (unitType) => {
     var t = false;
     if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
@@ -377,7 +367,7 @@ const Step22 = (props) => {
     }
     return t;
   };
-
+//   getting quantiy and rate values from dropdowns
   var arr1 = [];
   const getQuantity = (cropData, index1, crop) => (e) => {
     cropData[index1].rateType = "kgs";
@@ -397,13 +387,8 @@ const Step22 = (props) => {
     cropData[index].rateType = e.target.value;
     cropResponseData([...cropData]);
   };
-  const [quantityValue, setunitValue] = useState();
-  const [wastagesValue, setwastageValue] = useState();
-  const [rateDefaultValue, setrateValue] = useState();
-  const [weightDefaultValue, setweightValue] = useState();
-
+//   getting input values(quantity,weight,wastage,rate) from input fields
   var arr = [];
-
   const getQuantityValue = (id, index, cropitem) => (e) => {
     var val = e.target.value.replace(/\D/g, "");
     let updatedItem = cropitem.map((item, i) => {
@@ -449,7 +434,6 @@ const Step22 = (props) => {
     setUpdatedItemList(updatedItem2);
     setCropId(id);
   };
-  const [selectedCropsData, setSelectedCropsData] = useState([]);
   const getRateValue = (id, index, cropitem) => (e) => {
     var val = e.target.value.replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
@@ -463,13 +447,14 @@ const Step22 = (props) => {
     cropResponseData([...updatedItem3]);
     setrateValue(val);
     setCropId(id);
-    setSelectedCropsData(updatedItem3);
     setUpdatedItemList(updatedItem3);
 
     if (props.billEditStatus) {
       props.slectedCropstableArray[0].lineItems = updatedItem3;
     }
   };
+
+//   clone crop (copy crop) function
   const cloneCrop = (crop) => {
     var list = preferedCropsData;
     var index = list.findIndex((obj) => obj == crop);
@@ -478,7 +463,7 @@ const Step22 = (props) => {
     }
     cropResponseData([...cropData, crop]);
   };
-
+// delete crop funnction
   var dummyList = [];
   var arrylist = [];
   var cropDeletedList = [];
@@ -537,7 +522,7 @@ const Step22 = (props) => {
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
-  //const [checked, setChecked] = useState(false);
+//   getting individual bags popup function
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
   const [showBagsModal, setShowBagsModal] = useState(false);
   const arrobject = [];
@@ -562,6 +547,7 @@ const Step22 = (props) => {
       setEditBagsStatus(true);
     }
   };
+//   gettinng inndividual bags data
   const callbackFunction = (childData, invArr) => {
     let updatedItems = cropData.map((item, i) => {
       if (i == arIndex) {
@@ -580,18 +566,13 @@ const Step22 = (props) => {
     });
     cropResponseData([...updatedItems]);
   };
+//   click on input to reset 0 to enter value
   const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
     }
   };
-  const closeCropModalPopup = () => {
-    props.closeCropModal();
-    cropResponseData([]);
-    for (var i = 0; i < preferedCropsData.length; i++) {
-      preferedCropsData[i].count = 0;
-    }
-  };
+ 
   return (
     <div>
       <div className="main_div_padding">

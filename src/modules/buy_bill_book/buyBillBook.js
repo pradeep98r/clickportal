@@ -22,7 +22,8 @@ import {
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
 import { useDispatch } from "react-redux";
-import { selectSteps } from "../../reducers/stepsSlice"
+import { selectSteps } from "../../reducers/stepsSlice";
+import { selectBuyer } from "../../reducers/buyerSlice"
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -112,6 +113,7 @@ function BuyBillBook() {
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
     dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
   };
 
   const handleSearch = (event) => {

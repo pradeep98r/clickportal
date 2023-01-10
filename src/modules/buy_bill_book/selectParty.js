@@ -8,9 +8,11 @@ import NoDataAvailable from "../../components/noDataAvailable";
 import SearchField from "../../components/searchField";
 import { useDispatch,useSelector } from "react-redux";
 import { selectBuyer } from "../../reducers/buyerSlice";
+import { selectTrans } from "../../reducers/transSlice";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const users  = useSelector(state => state.buyerInfo);
+  const transusers  = useSelector(state => state.transInfo);
   const clickId = loginData.caId;
   const dispatch = useDispatch();
   const langData = localStorage.getItem("languageData");
@@ -18,7 +20,7 @@ const SelectPartner = (props) => {
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
   const navigate = useNavigate();
-  const [getPartyItem, setGetPartyItem] = useState(users.buyerInfo);
+  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' ? users.buyerInfo : transusers.transInfo);
   const fetchPertnerData = () => {
     var partnerType = "";
     if (props.partyType == "Seller") {
@@ -71,6 +73,7 @@ const SelectPartner = (props) => {
       // localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+      dispatch(selectTrans(item))
     } else if (props.partyType == "Buyer") {
       localStorage.setItem("selectBuyertype", "buyer");
       itemtype = localStorage.getItem("selectBuyertype");

@@ -1,19 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { selectSteps } from "../../reducers/stepsSlice";
-import buyerSlice from "../../reducers/buyerSlice";
 import "../../modules/buy_bill_book/step2.scss";
 import "../../modules/buy_bill_book/step3.scss";
 import { useState, useEffect } from "react";
-import single_bill from "../../assets/images/bills/single_bill.svg";
-import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
 import {
-  getPartnerData,
   getSystemSettings,
   getOutstandingBal,
 } from "../../actions/billCreationService";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import {
@@ -22,14 +16,12 @@ import {
 } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import moment from "moment";
-import { useNavigate, useLocation } from "react-router-dom";
-import Step2Modal from "./step2Modal";
-import clo from "../../assets/images/clo.png";
+import { useNavigate } from "react-router-dom";
 import { getText } from "../../components/getText";
 import Step3PartySelect from "./step3PartySelect";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
+  const transusers  = useSelector(state => state.transInfo);
   console.log(users, "step11");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -38,10 +30,9 @@ const Step33 = (props) => {
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     users.buyerInfo
   );
-  const [transpoSelectedData, setTranspoSelectedData] = useState({});
-  console.log(partnerSelectDate);
-  // const transpoSelectedData =
-  const [partyType, setPartnerType] = useState("Seller");
+  const [transpoSelectedData, setTranspoSelectedData] = useState(transusers.transInfo);
+
+  console.log(partnerSelectDate,transusers.transInfo);
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
@@ -151,7 +142,7 @@ const Step33 = (props) => {
             setIncludeComm(response[i].includeInLedger == 1 ? true : false);
             setisShown(response[i].isShown == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
-            setAddRetComm(response[i].addToGt == 1 ? true : false);
+            setAddRetComm(response[i].addToGt == 1 ? false : true);
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
         }
@@ -464,9 +455,7 @@ const Step33 = (props) => {
   const [enterVal, setEnterVal] = useState();
   const [cstmval, setCstmval] = useState(false);
   const getTotalBillAmount = () => {
-    // console.log(questionsTitle)
     var t = Number(
-      // getTotalValue(commValue) +
       (transTotalValue != 0
         ? Number(transTotalValue)
         : getTotalUnits(transportationValue)) +
@@ -498,9 +487,9 @@ const Step33 = (props) => {
       }
     }
     if (addRetComm) {
-      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
-    } else {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
+    } else {
+      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
     }
 
     return totalValue;
@@ -561,11 +550,11 @@ const Step33 = (props) => {
     }
     if (addRetComm) {
       if (includeRetComm) {
-        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if (includeRetComm) {
-        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
@@ -805,7 +794,6 @@ const Step33 = (props) => {
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
-
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1018,29 +1006,30 @@ const Step33 = (props) => {
     }
   };
 
-  const [showCropModal, setShowCropModal] = useState(false);
-  const [showCropModalStatus, setShowCropModalStatus] = useState(false);
-  const [cropEditvalArray, setcropEditvalArray] = useState([]);
-  const editCropTable = (cropEditArray) => {
-    step2buyCropTableOnclick(cropEditArray);
-  };
-  const closeCropTable = (cropEditArray) => {
-    if (!editStatus) {
-      if (step2CropEditStatus) {
-        step2buyCropTableOnclick(cropEditArray);
-      }
-    } else {
-      setShowCropModalStatus(false);
-      setShowCropModal(false);
-    }
-    props.closeStep3Modal();
-  };
-  const step2buyCropTableOnclick = (cropEditArray) => {
-    setShowCropModalStatus(true);
-    setShowCropModal(true);
-    setcropEditvalArray(cropEditArray);
-  };
+//   const [showCropModal, setShowCropModal] = useState(false);
+//   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
+//   const [cropEditvalArray, setcropEditvalArray] = useState([]);
+//   const editCropTable = (cropEditArray) => {
+//     step2buyCropTableOnclick(cropEditArray);
+//   };
+//   const closeCropTable = (cropEditArray) => {
+//     if (!editStatus) {
+//       if (step2CropEditStatus) {
+//         step2buyCropTableOnclick(cropEditArray);
+//       }
+//     } else {
+//       setShowCropModalStatus(false);
+//       setShowCropModal(false);
+//     }
+//     props.closeStep3Modal();
+//   };
+//   const step2buyCropTableOnclick = (cropEditArray) => {
+//     setShowCropModalStatus(true);
+//     setShowCropModal(true);
+//     setcropEditvalArray(cropEditArray);
+//   };
 
+//   click on input to reset 0 to enter value
   const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
@@ -1100,11 +1089,12 @@ const Step33 = (props) => {
             <Step3PartySelect
               parentSelectedParty={callbackFunctionPartySelect}
               billEditItemval={props.slectedCropsArray}
-              selectdDate={props.selectdDate}
+              selectdDate={partnerSelectDate}
               step2CropEditStatus={props.step2CropEditStatus}
               editStatus={props.billEditStatus}
               selectedPartyType="seller"
               selectedBuyerSellerData={partnerSelectedData}
+              transpoSelectedData={transpoSelectedData}
             />
           </div>
           <div className="col-lg-6">

@@ -6,6 +6,7 @@ import userInfoReducer from './reducers/userInfoSlice';
 import  mandiInfoReducer from './reducers/mandiProfile';
 import stepsReducer from './reducers/stepsSlice';
 import selectedCropsReducer from './reducers/selectedCropsSlice';
+import transReducer from './reducers/transSlice';
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -14,6 +15,7 @@ export default configureStore({
         userInfo: userInfoReducer,
         mandiInfo:mandiInfoReducer,
         stepsInfo:stepsReducer,
-        selectedCropsInfo:selectedCropsReducer
+        selectedCropsInfo:selectedCropsReducer,
+        transInfo:transReducer
     }
 })

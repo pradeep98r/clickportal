@@ -67,7 +67,7 @@ const Steps = (props) => {
         {(() => {
           switch (selectedStep.stepsInfo) {
             case "step1":
-              return <Step11 billEditStatuscallback={billeditCallback} />;
+              return <Step11 billEditStatuscallback={billeditCallback}  closem={props.closeStepsModal}/>;
             case "step2":
               return (
                 <Step22
