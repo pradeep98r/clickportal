@@ -133,7 +133,7 @@ const RoutesConfig = () => {
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />
                 <Route path="/bill_view/:billId" element={<BillView />} />
-                <Route path="/sell_bill_view/:billId" element={<SellBillView />} />
+                {/* <Route path="/sell_bill_view/:billId" element={<SellBillView />} /> */}
                 <Route path="/calender" element={<Calender />} />
                 <Route path="buyerledger" element={<BuyerLedger />}>
                 </Route>

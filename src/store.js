@@ -5,6 +5,7 @@ import authReducer from './reducers/authSlice';
 import userInfoReducer from './reducers/userInfoSlice';
 import  mandiInfoReducer from './reducers/mandiProfile';
 import stepsReducer from './reducers/stepsSlice';
+import billViewReducer from './reducers/billViewSlice'
 
 export default configureStore({
     reducer:{
@@ -13,6 +14,7 @@ export default configureStore({
         auth: authReducer,
         userInfo: userInfoReducer,
         mandiInfo:mandiInfoReducer,
-        stepsInfo:stepsReducer
+        stepsInfo:stepsReducer,
+        billViewInfo: billViewReducer,
     }
 })

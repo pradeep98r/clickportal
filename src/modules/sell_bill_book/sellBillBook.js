@@ -20,6 +20,8 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
+import { useDispatch, useSelector } from "react-redux";
+import { billViewInfo } from "../../reducers/billViewSlice"
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -31,6 +33,10 @@ const SellBillBook = (props) => {
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
+  
+  const  billData = useSelector((state)=> state.billViewInfo);
+  const dispatch = useDispatch();
+  console.log(billData)
   // console.log(billViiewDate)
   useEffect(() => {
     callbackFunction();
@@ -90,10 +96,13 @@ const SellBillBook = (props) => {
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
-    navigate(generatePath(`/sell_bill_view/${id}`, { id }));
+    // navigate(generatePath(`/sell_bill_view/${id}`, { id }));
+    navigate(generatePath(`/bill_view/${id}`, { id }))
     localStorage.setItem("billId", id);
+    dispatch(billViewInfo(bill));
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
   };
+  console.log(billData);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   const onclickDate = () => {
