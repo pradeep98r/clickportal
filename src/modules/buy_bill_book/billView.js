@@ -201,6 +201,10 @@ const BillView = (props) => {
                 </div>
               </div>
               <div className="hr-line"></div>
+              <div className="more-info">
+                <p class-className="more-p-tag">Actions</p>
+              </div>
+              <div className="hr-line"></div>
               {billData.billViewInfo.billStatus == "CANCELLED" ? (
                 ""
               ) : (
