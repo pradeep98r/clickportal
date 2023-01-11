@@ -50,16 +50,10 @@ const BillView = (props) => {
     var arr = [];
     console.log(itemVal,"check");
     arr.push(itemVal);
-    // if(billData.billViewInfo.partyType.toUpperCase() ==='FARMER'){
       setSlectedCropArray(arr);
       setShowStep3ModalStatus(true);
       setShowStep3Modal(true);
       setEditCancelStatus(true);
-    // }else{
-    //   setSlectedCropArray(arr);
-    //   setShowStep3ModalStatus(true);
-    //   setShowStep3Modal(true);
-    // }
     
   };
   const cancelBill = (itemVal) => {
