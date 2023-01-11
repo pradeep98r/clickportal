@@ -18,6 +18,7 @@ import CropDetails from "./crop_details";
 import BillViewFooter from "./billViewFooter";
 import GroupTotals from "./groupTotals";
 import { useSelector } from "react-redux";
+import SellbillStep3Modal from "../sell_bill_book/step3";
 
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -47,11 +48,19 @@ const BillView = (props) => {
   const [editCancelStatus, setEditCancelStatus] = useState(false);
   const editBill = (itemVal) => {
     var arr = [];
+    console.log(itemVal,"check");
     arr.push(itemVal);
-    setSlectedCropArray(arr);
-    setShowStep3ModalStatus(true);
-    setShowStep3Modal(true);
-    setEditCancelStatus(true);
+    // if(billData.billViewInfo.partyType.toUpperCase() ==='FARMER'){
+      setSlectedCropArray(arr);
+      setShowStep3ModalStatus(true);
+      setShowStep3Modal(true);
+      setEditCancelStatus(true);
+    // }else{
+    //   setSlectedCropArray(arr);
+    //   setShowStep3ModalStatus(true);
+    //   setShowStep3Modal(true);
+    // }
+    
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
@@ -79,7 +88,8 @@ const BillView = (props) => {
           billData.billViewInfo.misc,
       otherFee:billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
          billData.billViewInfo.misc:billData.billViewInfo.otherFee,
-      outStBal: billData.billViewInfo.outStBal,
+
+      outStBal:billData.billViewInfo.outStBal,
       paidTo: 0,
       partyId:billData.billViewInfo.partyType.toUpperCase()==='FARMMER'?
             billData.billViewInfo.buyerId:billData.billViewInfo.farmerId,
@@ -101,6 +111,7 @@ const BillView = (props) => {
   };
 
   const cancelbillApiCall = () => {
+    console.log(editBillRequestObj,"edit")
     editbuybillApi(editBillRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -224,7 +235,8 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
-        {showStep3ModalStatus ? (
+        {billData.billViewInfo.partyType.toUpperCase() ==='FARMER'?
+          showStep3ModalStatus ? (
           <Step3Modal
             showstep3={showStep3Modal}
             closeStep3Modal={() => setShowStep3Modal(false)}
@@ -236,7 +248,18 @@ const BillView = (props) => {
           />
         ) : (
           ""
-        )}
+        ):
+        showStep3ModalStatus ? (
+          <SellbillStep3Modal
+          show={showStep3Modal}
+          closeStep3Modal={() => setShowStep3Modal(false)}
+          slectedSellCropsArray={slectedCropArray}
+          billEditStatus={true}
+          step2CropEditStatus={false}
+          sellBilldateSelected = {new Date(billData.billViewInfo.billDate)}
+          selectedBillData={slectedCropArray}
+        />
+          ):('')}
       </div>
       <div className="modal fade" id="cancelBill">
         <div className="modal-dialog cancelBill_modal_popup">

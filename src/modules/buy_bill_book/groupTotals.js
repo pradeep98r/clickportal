@@ -491,7 +491,7 @@ const GroupTotals = () => {
 
     if (addRetComm && billData.billViewInfo.partyType.toUpperCase()==='FARMER') {
       if (includeRetComm) {
-        finalVal = finalVal - billData.billViewInfo.rtComm;
+        finalVal = finalVal + billData.billViewInfo.rtComm;
       }
     } else {
       finalVal = finalVal + billData.billViewInfo.rtComm;

@@ -12,6 +12,7 @@ export const BusinessDetails = () => {
   useEffect(()=>{
     getBusinessDetails();
   },[]);
+
   const getBusinessDetails = () => {
     getMandiDetails(clickId)
       .then((response) => {
