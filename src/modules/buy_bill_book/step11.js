@@ -28,7 +28,7 @@ const Step11 = (props) => {
     if (users.buyerInfo?.itemtype != null) {
       setpartysType(users.buyerInfo?.itemtype.toLowerCase());
     }
-    if (users.buyerInfo?.partyType.toLowerCase() != "transporter") {
+    if (users.buyerInfo?.partyType.toLowerCase() !== "transporter") {
       localStorage.removeItem("selectedTransporter");
     } else {
       localStorage.setItem(
@@ -55,8 +55,9 @@ const Step11 = (props) => {
     dispatch(editStatus(false));
     dispatch(tableEditStatus(false));
     dispatch(billDate(selectedDate));
-    if(linkPath==='/sellbillbook'){
+    if(linkPath ==='/sellbillbook'){
       dispatch(selectedParty("buyer"));
+      console.log("selected as buyer");
     }else{
       dispatch(selectedParty("seller"));
     }
@@ -73,7 +74,7 @@ const Step11 = (props) => {
             <div className="row">
               <div className="col-lg-4 p-0">
                 <SelectPartner
-                  partyType={linkPath !== null && linkPath=== " " && linkPath === '/sellbillbook' ? 'Buyer':"Seller"}
+                  partyType={linkPath === '/sellbillbook' ? 'Buyer':"Seller"}
                   parentCallback={callbackFunction}
                   onClickPage={onClickPage}
                 />
@@ -95,8 +96,8 @@ const Step11 = (props) => {
         </div>
         <div>
           {partnerData != null &&
-          (partysType.toLowerCase() == "seller"
-            ? partType.toLowerCase() == "transporter"
+          (partysType.toLowerCase() === "seller" || partysType.toLowerCase() === "buyer"
+            ? partType.toLowerCase() === "transporter"
               ? true
               : true
             : true) ? (

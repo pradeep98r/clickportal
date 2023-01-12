@@ -28,8 +28,9 @@ const Step3PartySelect = (props) => {
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const clickId = loginData.caId;
   const [partyType, setPartnerType] = useState(selectedPartyType);
+  console.log(billEditItemInfo,"party")
   const partnerSelectedData =
-    selectedPartyType.toLowerCase() == "buyer"
+    selectedPartyType.toLowerCase() === "buyer"
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
   const [transpoSelectedData, setTranspoSelectedData] = useState(
@@ -39,7 +40,7 @@ const Step3PartySelect = (props) => {
   const billeditStatus = billEditItemInfo?.billEditStatus;
 
   const billEditItem = props.billEditItemval;
-  console.log(billEditItemInfo,"billEdit Itme");
+  console.log(billEditItem,"billEdit Itme");
   var step2CropEditStatus = step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(billDateSelected);
@@ -338,11 +339,11 @@ const Step3PartySelect = (props) => {
             {billeditStatus ? (
               <div className="d-flex">
                 <img
-                  src={billEditItem.lineItems[0]?.imageUrl}
+                  src={billEditItem[0].lineItems[0]?.imageUrl}
                   className="edit_crop_item"
                 />
                 <p className="edit_crop_item_len d-flex align-items-center">
-                  <p>{billEditItem.lineItems.length}</p>
+                  <p>{billEditItem[0].lineItems[0].length}</p>
                   <span className="ml-3">Crops</span>
                 </p>
               </div>
