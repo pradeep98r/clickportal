@@ -1053,7 +1053,6 @@ const Step33 = (props) => {
       //   selectedPartyType,
       //   selectedBilldate
     );
-    console.log(cropEditObject)
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
     // setcropTableEditStatus(cropTableEditStatus);

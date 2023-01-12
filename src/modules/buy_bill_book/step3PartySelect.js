@@ -141,11 +141,11 @@ const Step3PartySelect = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
-    console.log(cropEditArray);
     step2CropTableOnclick(cropEditArray);
   };
   const dispatch = useDispatch();
   const step2CropTableOnclick = (cropEditArray) => {
+      console.log(cropEditArray,props.billEditItemval)
     step2CropEditStatus = true;
     dispatch(selectSteps("step2"));
     setShowCropModalStatus(true);
@@ -155,7 +155,6 @@ const Step3PartySelect = (props) => {
     dispatch(billDate(partnerSelectDate));
     dispatch(selectedParty(selectedPartyType));
     dispatch(tableEditStatus(true));
-    console.log(cropEditArray);
     props.parentSelectedParty(
       //   partnerSelectDate,
       partnerSelectedData,
