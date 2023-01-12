@@ -1053,22 +1053,16 @@ const Step33 = (props) => {
       //   selectedPartyType,
       //   selectedBilldate
     );
+    console.log(cropEditObject);
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
-    // setcropTableEditStatus(cropTableEditStatus);
-    // setselectedPartyType(selectedPartyType);
-    // setselectedbilldate(selectedBilldate);
   };
   const dispatch = useDispatch();
   const previousStep = () => {
     dispatch(selectSteps("step2"));
     props.step3ParentCallback(
-      cropTableEditStatus,
       cropEditObject,
-      props.billEditStatus,
       slectedCropstableArray,
-      selectedPartyType,
-      selectedBilldate
     );
   };
   return (
@@ -1251,7 +1245,7 @@ const Step33 = (props) => {
             Previous
           </button>
           <button className="primary_btn" onClick={() => postbuybill()}>
-            Next
+            Submit
           </button>
         </div>
       </div>

@@ -18,7 +18,7 @@ import {
 var array = [];
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
-  console.log(props.slectedCropstableArray);
+  console.log(props.slectedCropstableArray,props.cropEditObject);
   const dispatch = useDispatch();
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billEditStatus = billEditItemInfo?.billEditStatus;
@@ -48,6 +48,7 @@ const Step22 = (props) => {
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
+    
   };
   //   click on particular crop function
   const cropOnclick = (crop, id, index2, preferedCrops) => {
@@ -118,15 +119,25 @@ const Step22 = (props) => {
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
+    var a = [];
     // console.log(billEditStatus, cropTableEditStatus);
     if (cropTableEditStatus) {
       if (billEditStatus) {
         for (var d = 0; d < cropObjectArr.length; d++) {
+            let object = { ...cropObjectArr[d] };
           if (cropObjectArr[d].qtyUnit == "") {
             cropObjectArr.splice(d, 1);
           }
+          if (cropObjectArr[d].rateType === "RATE_PER_KG") {
+            object = { ...object, rateType: "kgs" };
+            // cropObjectArr[d].rateType = 'kgs';
+            console.log(object,a)
+            a.push(object)
+            // cropObjectArr[d] = { ...object }
+          }
         }
-        cropResponseData([...cropObjectArr]);
+        console.log(a)
+        cropResponseData([...a]);
       } else {
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         console.log(lineIt);
@@ -148,8 +159,9 @@ const Step22 = (props) => {
           let clonedObject = { ...cropArr[index] };
           if (cropArr[index].rateType === "RATE_PER_KG") {
             clonedObject = { ...clonedObject, rateType: "kgs" };
+            // cropArr[index] = clonedObject;
           }
-          console.log(clonedObject, preferedCropsData,cropObjectArr);
+          console.log(clonedObject, cropArr,cropObjectArr);
           Object.assign(clonedObject, { count: 1 }, { cropActive: true });
           preferedCropsData.push(clonedObject);
         }
