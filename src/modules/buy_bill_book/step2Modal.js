@@ -250,10 +250,9 @@ const [billEditItem,setBillEditItem] = useState([]);
       }
     });
     // var selectedArray = props.billEditStatus ? ;
-    if (props.billEditStatus) {
-      
+    if (props.billEditStatus) {     
       props.slectedCropstableArray[0].lineItems =
-        updatedItemList.length != 0 ? updatedItemList : cropData;
+      updatedItemList.length != 0 ? updatedItemList : cropData;
     }
 
     if (h.length > 0) {
