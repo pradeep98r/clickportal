@@ -5,6 +5,7 @@ import Step22 from "./step222";
 import clo from "../../assets/images/clo.png";
 import Step33 from "./step33";
 import { useState } from "react";
+import SellBillStep3 from "../sell_bill_book/sellBillStep3";
 const Steps = (props) => {
   const selectedStep = useSelector((state) => state.stepsInfo);
   const [selctedCrops, setSelctedCrops] = useState([]);
@@ -16,7 +17,10 @@ const Steps = (props) => {
   const [selectedDate, setselectedDate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
-  
+
+  const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
+  console.log(partyType,"parties");
+
   const billeditCallback = (
     billEditStatus,
     selectedBilldate,
@@ -77,7 +81,7 @@ const Steps = (props) => {
                 //   selectedBilldate={selectedDate}
                 />
               );
-            case "step3":
+            case partyType.toUpperCase()==='SELLER' && "step3" :
               return (
                 <Step33
                   slectedCropsArray={selctedCrops}
@@ -88,6 +92,16 @@ const Steps = (props) => {
                   // selectedBuyerSellerData={props.selectedBuyerSellerData}
                 />
               );
+            case partyType.toUpperCase() ==='BUYER' && "step3":
+              return(
+                <SellBillStep3 
+                  slectedSellCropsArray={selctedCrops}
+                  step3ParentCallback={step3ChildCallback}
+                  billEditStatus={billStatus}
+                  selectdDate={selectedDate}
+                  closem={props.closeStepsModal}
+                />
+              )
           }
         })()}
       </div>

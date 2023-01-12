@@ -33,6 +33,7 @@ const Step33 = (props) => {
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     users.buyerInfo
   );
+  console.log(partnerSelectedData,"party1");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );

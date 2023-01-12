@@ -39,6 +39,7 @@ const Step22 = (props) => {
   const [wastagesValue, setwastageValue] = useState();
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
+
   // navigate to previous step
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));

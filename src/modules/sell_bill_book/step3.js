@@ -968,22 +968,22 @@ const SellbillStep3Modal = (props) => {
   };
   console.log(props.sellBilldateSelected);
   return (
-    <Modal
-      show={props.show}
-      close={props.closeStep3Modal}
-      className="cropmodal_poopup"
-    >
-      <div className="modal-header date_modal_header smartboard_modal_header">
-        <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          Additions/Deductions
-        </h5>
-        <img
-          alt="image"
-          src={clo}
-          onClick={() => step2Cancel(billEditItem.lineItems)}
-        />
-      </div>
-
+    // <Modal
+    //   show={props.show}
+    //   close={props.closeStep3Modal}
+    //   className="cropmodal_poopup"
+    // >
+    //   <div className="modal-header date_modal_header smartboard_modal_header">
+    //     <h5 className="modal-title header2_text" id="staticBackdropLabel">
+    //       Additions/Deductions
+    //     </h5>
+    //     <img
+    //       alt="image"
+    //       src={clo}
+    //       onClick={() => step2Cancel(billEditItem.lineItems)}
+    //     />
+    //   </div>
+    <div>
       <div className="modal-body">
         <div className="row">
           <div className="col-lg-3 pr-0">
@@ -1153,7 +1153,8 @@ const SellbillStep3Modal = (props) => {
         </div>
       </div>
       <ToastContainer />
-    </Modal>
+    </div>
+    // </Modal>
   );
 };
 export default SellbillStep3Modal;

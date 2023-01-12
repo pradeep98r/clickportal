@@ -39,6 +39,7 @@ const Step3PartySelect = (props) => {
   const billeditStatus = billEditItemInfo?.billEditStatus;
 
   const billEditItem = props.billEditItemval;
+  console.log(billEditItemInfo,"billEdit Itme");
   var step2CropEditStatus = step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(billDateSelected);

@@ -20,6 +20,10 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
+import { useDispatch } from "react-redux";
+import { selectSteps } from "../../reducers/stepsSlice";
+import { selectBuyer } from "../../reducers/buyerSlice"
+import Steps from "../buy_bill_book/steps";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -32,6 +36,7 @@ const SellBillBook = (props) => {
   const billViiewDate = localStorage.getItem("billDate");
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
   // console.log(billViiewDate)
+  const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
@@ -100,10 +105,18 @@ const SellBillBook = (props) => {
     setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
   };
+
   var stepOneHeader = false;
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const handleStep1Header = () => {
     stepOneHeader = true;
-    localStorage.setItem("stepOneSingleBook", stepOneHeader);
+    localStorage.setItem("stepOne", stepOneHeader);
+    //stepOneSingleBook
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
   };
   const getCropUnit = (unit) => {
     var unitType = "";
@@ -180,7 +193,7 @@ const SellBillBook = (props) => {
                     />
                     <a
                       className="primary_btn add_bills_btn"
-                      href="/sellbillstep1"
+                      // href="/sellbillstep1"
                       onClick={handleStep1Header}
                     >
                       {langFullData.singleBill}
@@ -373,6 +386,11 @@ const SellBillBook = (props) => {
         />
       ) : (
         <p></p>
+      )}
+      {showStepsModalStatus ? (
+        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ) : (
+        ""
       )}
     </div>
   );
