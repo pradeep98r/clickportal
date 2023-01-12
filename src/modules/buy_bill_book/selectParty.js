@@ -23,6 +23,7 @@ const SelectPartner = (props) => {
   const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' ? users.buyerInfo : transusers.transInfo);
   const fetchPertnerData = () => {
     var partnerType = "";
+
     if (props.partyType == "Seller") {
       partnerType = "FARMER";
     } else if (props.partyType == "Transporter") {

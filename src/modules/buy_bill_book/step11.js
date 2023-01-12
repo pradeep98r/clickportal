@@ -47,13 +47,19 @@ const Step11 = (props) => {
   const callbackFunctionDate = (date) => {
     setSelectedDate(date);
   };
+  const linkPath = localStorage.getItem('LinkPath');
+  console.log(linkPath);
   const addCropModal = () => {
     dispatch(selectSteps("step2"));
     dispatch(selectBill({}));
     dispatch(editStatus(false));
     dispatch(tableEditStatus(false));
     dispatch(billDate(selectedDate));
-    dispatch(selectedParty("seller"));
+    if(linkPath==='/sellbillbook'){
+      dispatch(selectedParty("buyer"));
+    }else{
+      dispatch(selectedParty("seller"));
+    }
   };
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {
@@ -67,7 +73,7 @@ const Step11 = (props) => {
             <div className="row">
               <div className="col-lg-4 p-0">
                 <SelectPartner
-                  partyType="Seller"
+                  partyType={linkPath !== null && linkPath=== " " && linkPath === '/sellbillbook' ? 'Buyer':"Seller"}
                   parentCallback={callbackFunction}
                   onClickPage={onClickPage}
                 />
