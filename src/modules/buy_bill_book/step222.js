@@ -11,10 +11,15 @@ import copy_icon from "../../assets/images/copy.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectBags from "./bags";
+import {billViewStatus,cropEditStatus } from "../../reducers/billEditItemSlice";
 var array = [];
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const dispatch = useDispatch();
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billEditStatus = billEditItemInfo?.billEditStatus;
+  const cropTableEditStatus = billEditItemInfo?.cropTableEditStatus;
+  dispatch(cropEditStatus(billEditStatus ? true : false))
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
@@ -52,13 +57,15 @@ const Step22 = (props) => {
       { rate: 0 },
       { total: 0 },
       { bags: [] },
-      { status: 1 }
+      { status: 1 },
+      {qtyUnit:'Crates'}
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
     if (crop.cropId === id) {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
+    console.log(cropData)
   };
   //   getting all crops popup when click on other crop
   const allCropData = () => {
@@ -99,11 +106,13 @@ const Step22 = (props) => {
   };
   //   to get crop data oon refresh
   useEffect(() => {
+      console.log("useeffect",props.cropEditObject)
+    dispatch(billViewStatus(billEditStatus))
     fetchData();
     var lineIt;
-    console.log(props.billEditStatus, props.cropTableEditStatus);
-    if (props.cropTableEditStatus) {
-      if (props.billEditStatus) {
+    // console.log(billEditStatus, cropTableEditStatus);
+    if (cropTableEditStatus) {
+      if (billEditStatus) {
         for (var d = 0; d < props.cropEditObject.length; d++) {
           if (props.cropEditObject[d].qtyUnit == "") {
             props.cropEditObject.splice(d, 1);
@@ -119,8 +128,8 @@ const Step22 = (props) => {
           setPreferedCropsData([...lineIt]);
         }
       }
-      var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
-      console.log(cropArr, props.billEditStatus, lineIt);
+      var cropArr = billEditStatus ? props.cropEditObject : lineIt;
+      console.log(cropArr, billEditStatus, lineIt);
       cropArr?.map((item, index) => {
         var k = preferedCropsData.findIndex(
           (obj) => obj.cropId === item.cropId
@@ -230,8 +239,8 @@ const Step22 = (props) => {
           setShowStep3SellModalStatus(true);
         }
         localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
-        if (props.billEditStatus) {
-          var lineitem = props.billEditStatus
+        if (billEditStatus) {
+          var lineitem = billEditStatus
             ? props.cropEditObject
             : JSON.parse(localStorage.getItem("lineItemsEdit"));
           var index1 = lineitem.findIndex(
@@ -250,7 +259,7 @@ const Step22 = (props) => {
       }
     });
     // var selectedArray = props.billEditStatus ? ;
-    if (props.billEditStatus) {
+    if (billEditStatus) {
       props.slectedCropstableArray[0].lineItems =
         updatedItemList.length != 0 ? updatedItemList : cropData;
     }
@@ -355,7 +364,7 @@ const Step22 = (props) => {
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
-        props.parentcall(updatedItemList, props.billEditStatus);
+        props.parentcall(updatedItemList, billEditStatus);
       }
     }
   };
@@ -449,7 +458,7 @@ const Step22 = (props) => {
     setCropId(id);
     setUpdatedItemList(updatedItem3);
 
-    if (props.billEditStatus) {
+    if (billEditStatus) {
       props.slectedCropstableArray[0].lineItems = updatedItem3;
     }
   };
@@ -481,7 +490,7 @@ const Step22 = (props) => {
       if (index1 != -1) {
         list[index1].count -= 1;
         if (list[index1].count == 0) {
-          if (props.billEditStatus) {
+          if (billEditStatus) {
             list.splice(index1, 1);
           } else {
             getPreferredCrops(clickId, clientId, clientSecret)

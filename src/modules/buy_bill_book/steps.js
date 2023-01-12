@@ -16,8 +16,7 @@ const Steps = (props) => {
   const [selectedDate, setselectedDate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
-  const [selectedPartyType, setselectedPartyType] = useState("");
-  const [cropTableEditStatus, setcropTableEditStatus] = useState(false);
+  
   const billeditCallback = (
     billEditStatus,
     selectedBilldate,
@@ -25,22 +24,19 @@ const Steps = (props) => {
   ) => {
     setBillstatus(billEditStatus);
     setselectedDate(selectedBilldate);
-    console.log(billEditStatus);
-    setcropTableEditStatus(cropTableEditStatus);
   };
   const step3ChildCallback = (
-    cropTableEditStatus,
+    // cropTableEditStatus,
     cropEditObject,
-    billEditStatus,
+    // billEditStatus,
     slectedCropstableArray,
-    selectedPartyType,
-    selectedBilldate,
-    selectedBuyerSellerData
+    // selectedPartyType,
+    // selectedBilldate,
+    // selectedBuyerSellerData
   ) => {
+      console.log(cropEditObject,slectedCropstableArray)
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
-    setselectedPartyType(selectedPartyType);
-    setcropTableEditStatus(cropTableEditStatus);
   };
   return (
     <Modal
@@ -67,18 +63,18 @@ const Steps = (props) => {
         {(() => {
           switch (selectedStep.stepsInfo) {
             case "step1":
-              return <Step11 billEditStatuscallback={billeditCallback}  closem={props.closeStepsModal}/>;
+              return <Step11 billEditStatuscallback={billeditCallback} />;
             case "step2":
               return (
                 <Step22
                   parentcall={callbackfunction}
-                  billEditStatus={billStatus}
-                  selectdDate={selectedDate}
-                  cropTableEditStatus={cropTableEditStatus}
+                //   billEditStatus={billStatus}
+                //   selectdDate={selectedDate}
+                //   cropTableEditStatus={cropTableEditStatus}
                   cropEditObject={cropEditObject}
                   slectedCropstableArray={slectedCropstableArray}
-                  selectedPartyType={selectedPartyType}
-                  selectedBilldate={selectedDate}
+                //   selectedPartyType={selectedPartyType}
+                //   selectedBilldate={selectedDate}
                 />
               );
             case "step3":

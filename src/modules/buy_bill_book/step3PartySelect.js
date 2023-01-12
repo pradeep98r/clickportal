@@ -5,49 +5,64 @@ import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
 import Step2Modal from "./step2Modal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getPartnerData,
   getOutstandingBal,
 } from "../../actions/billCreationService";
 import BillDateSelection from "./billDateSelection";
 import { selectSteps } from "../../reducers/stepsSlice";
+import {
+  selectBill,
+  editStatus,
+  billDate,
+  tableEditStatus,
+  billViewStatus,
+  selectedParty,
+} from "../../reducers/billEditItemSlice";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateSelected = billEditItemInfo?.selectedBillDate;
+  const selectedPartyType = billEditItemInfo?.selectedPartyType;
+  var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const clickId = loginData.caId;
-  const [partyType, setPartnerType] = useState(props.selectedPartyType);
+  const [partyType, setPartnerType] = useState(selectedPartyType);
   const partnerSelectedData =
-    props.selectedPartyType.toLowerCase() == "buyer"
+    selectedPartyType.toLowerCase() == "buyer"
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
-  const [transpoSelectedData, setTranspoSelectedData] = useState((props.transpoSelectedData));
-  console.log(transpoSelectedData,props.transpoSelectedData)
+  const [transpoSelectedData, setTranspoSelectedData] = useState(
+    props.transpoSelectedData
+  );
   const [getPartyItem, setGetPartyItem] = useState(null);
-  const editStatus = props.editStatus;
-  const billEditItem = props.billEditItemval[0];
-  var step2CropEditStatus = props.step2CropEditStatus;
+  const billeditStatus = billEditItemInfo?.billEditStatus;
+
+  const billEditItem = props.billEditItemval;
+  var step2CropEditStatus = step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
-  const [selectedDate, setStartDate] = useState(props.selectdDate);
-  console.log(selectedDate,props.selectdDate)
-  const partnerSelectDate = moment(selectedDate).format("YYYY-MM-DD");
+  const [selectedDate, setStartDate] = useState(billDateSelected);
+  const partnerSelectDate = selectedDate;
   const [outBal, setOutsBal] = useState(0);
   useEffect(() => {
     fetchPertnerData(partyType);
-    setTranspoSelectedData(
-        props.transpoSelectedData
-    //   JSON.parse(localStorage.getItem("selectedTransporter"))
-    );
+    if (billEditItem.transporterId != 0) {
+      setTranspoSelectedData(props.transpoSelectedData);
+    } else {
+      setTranspoSelectedData(null);
+    }
     if (partnerSelectedData != null) {
       getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
-    // props.billEditStatuscallback(true,cropEditvalArray,editStatus ? true : false,props.billEditItemval,props.selectedPartyType,selectedDate,props.selectedBuyerSellerData);
     props.parentSelectedParty(
-      partnerSelectDate,
+      //   partnerSelectDate,
       partnerSelectedData,
       transpoSelectedData,
-      true,cropEditvalArray,editStatus ? true : false,props.billEditItemval,props.selectedPartyType,selectedDate,props.selectedBuyerSellerData
+      //   true,
+      cropEditvalArray,
+      props.billEditItemval
     );
   }, []);
   const fetchPertnerData = (type) => {
@@ -81,7 +96,6 @@ const Step3PartySelect = (props) => {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedTransporter"));
       setTranspoSelectedData(h);
-      console.log(h, "trans");
       props.parentSelectedParty(
         partnerSelectDate,
         partnerSelectedData,
@@ -127,16 +141,29 @@ const Step3PartySelect = (props) => {
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
   const [cropEditvalArray, setcropEditvalArray] = useState([]);
   const editCropTable = (cropEditArray) => {
+    console.log(cropEditArray);
     step2CropTableOnclick(cropEditArray);
   };
   const dispatch = useDispatch();
   const step2CropTableOnclick = (cropEditArray) => {
     step2CropEditStatus = true;
-    dispatch(selectSteps('step2'))
+    dispatch(selectSteps("step2"));
     setShowCropModalStatus(true);
     setShowCropModal(true);
     setcropEditvalArray(cropEditArray);
-  
+    dispatch(editStatus(billeditStatus));
+    dispatch(billDate(partnerSelectDate));
+    dispatch(selectedParty(selectedPartyType));
+    dispatch(tableEditStatus(true));
+    console.log(cropEditArray);
+    props.parentSelectedParty(
+      //   partnerSelectDate,
+      partnerSelectedData,
+      transpoSelectedData,
+      //   true,
+      cropEditArray,
+      props.billEditItemval
+    );
   };
   return (
     <div className="">
@@ -152,29 +179,35 @@ const Step3PartySelect = (props) => {
               <img src={single_bill} className="icon_user" />
               <div>
                 <h5>
-                  {editStatus
+                  {billeditStatus
                     ? partySelectStatus
                       ? partnerSelectedData.partyName
+                      : billEditItem.partyType == "FARMER"
+                      ? billEditItem.farmerName
                       : billEditItem.buyerName
                     : partnerSelectedData.partyName}
                 </h5>
                 <h6>
-                  {editStatus
+                  {billeditStatus
                     ? partySelectStatus
                       ? partnerSelectedData.partyType
                       : billEditItem.partyType
                     : partnerSelectedData.partyType}{" "}
                   -{" "}
-                  {editStatus
+                  {billeditStatus
                     ? partySelectStatus
                       ? partnerSelectedData.partyId
+                      : billEditItem.partyType == "FARMER"
+                      ? billEditItem.farmerId
                       : billEditItem.buyerId
                     : partnerSelectedData.partyId}{" "}
                   |{" "}
-                  {editStatus
+                  {billeditStatus
                     ? partySelectStatus
                       ? partnerSelectedData.mobile
-                      : billEditItem.mobile
+                      : billEditItem.partyType == "FARMER"
+                      ? billEditItem.farmerMobile
+                      : billEditItem.buyerMobile
                     : partnerSelectedData.mobile}
                 </h6>
                 <p>{partnerData.buyerAddress}</p>
@@ -185,7 +218,10 @@ const Step3PartySelect = (props) => {
         </div>
       </div>
       <div className="date_sec date_step3">
-        <BillDateSelection parentCallbackDate={callbackFunctionDate} billDate= {selectedDate} />
+        <BillDateSelection
+          parentCallbackDate={callbackFunctionDate}
+          billDate={selectedDate}
+        />
       </div>
       {transpoSelectedData != null ? (
         <div className="transporter_div">
@@ -199,7 +235,7 @@ const Step3PartySelect = (props) => {
                 <div>
                   {transportoSelectStatus}
                   <h5>
-                    {editStatus
+                    {billeditStatus
                       ? transportoSelectStatus
                         ? transpoSelectedData.partyName
                         : billEditItem.transporterName
@@ -208,7 +244,7 @@ const Step3PartySelect = (props) => {
                   </h5>
                   <h6>
                     {/* {transpoSelectedData.mobile } */}
-                    {editStatus
+                    {billeditStatus
                       ? transportoSelectStatus
                         ? transpoSelectedData.partyType +
                           "-" +
@@ -223,7 +259,7 @@ const Step3PartySelect = (props) => {
                         transpoSelectedData.mobile}
                   </h6>
                   <p>
-                    {editStatus
+                    {billeditStatus
                       ? transportoSelectStatus
                         ? transpoSelectedData?.address?.addressLine
                         : ""
@@ -299,7 +335,7 @@ const Step3PartySelect = (props) => {
       <div className="selectparty_field edit_crop_item_div">
         <div className="d-flex align-items-center justify-content-between">
           <p className="d-flex align-items-center">
-            {editStatus ? (
+            {billeditStatus ? (
               <div className="d-flex">
                 <img
                   src={billEditItem.lineItems[0]?.imageUrl}
@@ -312,7 +348,10 @@ const Step3PartySelect = (props) => {
               </div>
             ) : (
               <div className="d-flex">
-                <img src={billEditItem.imageUrl} className="edit_crop_item" />
+                <img
+                  src={billEditItem[0].imageUrl}
+                  className="edit_crop_item"
+                />
                 <p className="edit_crop_item_len d-flex align-items-center">
                   <p>{props.billEditItemval.length}</p>
                   <span className="ml-3">Crops</span>
@@ -320,10 +359,10 @@ const Step3PartySelect = (props) => {
               </div>
             )}
           </p>
-          <p onClick={() => editCropTable(billEditItem.lineItems)}>Edit</p>
+          <p onClick={() => editCropTable(billEditItem)}>Edit</p>
         </div>
       </div>
-     
+
       {/* {showCropModalStatus ? (
         <Step2Modal
           showCrop={showCropModal}

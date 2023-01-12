@@ -1,13 +1,23 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState, useEffect } from "react";
-import moment from "moment";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { billDate } from "../../reducers/billEditItemSlice";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const BillDateSelection = (props) => {
-    console.log(props.billDate)
-  const [selectedDate, setStartDate] = useState(props.billDate != null ? props.billDate : new Date());
-  props.parentCallbackDate(selectedDate)
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateselected = billEditItemInfo?.selectedBillDate;
+  const [selectedDate, setStartDate] = useState(
+    billDateselected != null ? billDateselected : new Date()
+  );
+  //   props.parentCallbackDate(selectedDate)
+  const dispatch = useDispatch();
+  const onclickDate = (date) => {
+    setStartDate(date);
+    dispatch(billDate(date));
+  };
+
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () => {
     if (!checked) {
@@ -25,7 +35,7 @@ const BillDateSelection = (props) => {
       <DatePicker
         dateFormat="dd-MMM-yyyy"
         selected={selectedDate}
-        onChange={(date) => setStartDate(date)}
+        onChange={(date) => onclickDate(date)}
         className="form-control"
         placeholder="Date"
         maxDate={new Date()}

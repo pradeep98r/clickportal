@@ -4,10 +4,18 @@ import SelectPartner from "./selectParty";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState, useEffect } from "react";
 import BillDateSelection from "./billDateSelection";
-
+import {
+  selectBill,
+  editStatus,
+  billDate,
+  tableEditStatus,
+  selectedParty,
+} from "../../reducers/billEditItemSlice";
 const Step11 = (props) => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.buyerInfo);
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateSelected = billEditItemInfo?.selectedBillDate;
   const cancelStep = () => {
     props.closem();
   };
@@ -32,14 +40,20 @@ const Step11 = (props) => {
   const [partnerData, setPartnerData] = useState(null);
   const [partType, separtType] = useState("");
   const [partysType, setpartysType] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    billDateSelected != null ? billDateSelected : new Date()
+  );
   const callbackFunction = (childData, party, type) => {};
   const callbackFunctionDate = (date) => {
     setSelectedDate(date);
   };
   const addCropModal = () => {
     dispatch(selectSteps("step2"));
-    props.billEditStatuscallback(false, selectedDate, false);
+    dispatch(selectBill({}));
+    dispatch(editStatus(false));
+    dispatch(tableEditStatus(false));
+    dispatch(billDate(selectedDate));
+    dispatch(selectedParty("seller"));
   };
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {

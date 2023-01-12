@@ -24,6 +24,7 @@ import {
 import { selectSteps } from "../../reducers/stepsSlice";
 import { useDispatch } from "react-redux";
 import Steps from "./steps";
+import { selectBill,editStatus, billDate, tableEditStatus,billViewStatus,selectedParty } from "../../reducers/billEditItemSlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -32,7 +33,6 @@ const BillView = (props) => {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  console.log(singleBillData);
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -46,6 +46,7 @@ const BillView = (props) => {
     cancelBillStatus();
     getBusinessDetails();
     getBuyBillsById();
+    dispatch(billViewStatus(true))
   }, []);
 
   const cancelBillStatus = () => {
@@ -424,6 +425,17 @@ const BillView = (props) => {
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
+    dispatch(selectBill(arr[0]))
+    dispatch(editStatus(true))
+    dispatch(tableEditStatus(false))
+    dispatch(billDate(new Date(singleBillData.billDate)))
+    dispatch(selectedParty(singleBillData.partyType));
+    // props.parentcall(
+    //   false,
+    //   true,
+    //   new Date(singleBillData.billDate),
+    //   slectedCropArray,
+    // );
     // props.parentcall(updatedItemList, props.billEditStatus);
     // setShowStep3ModalStatus(true);
     // setShowStep3Modal(true);
@@ -1264,7 +1276,7 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
-       
+      
         {showStep3ModalStatus ? (
           <Step3Modal
             showstep3={showStep3Modal}

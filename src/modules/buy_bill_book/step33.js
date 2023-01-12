@@ -4,6 +4,7 @@ import "../../modules/buy_bill_book/step2.scss";
 import "../../modules/buy_bill_book/step3.scss";
 import { useState, useEffect } from "react";
 import "../../modules/buy_bill_book/step1.scss";
+import moment from "moment";
 import {
   getSystemSettings,
   getOutstandingBal,
@@ -21,27 +22,31 @@ import { getText } from "../../components/getText";
 import Step3PartySelect from "./step3PartySelect";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
-  const transusers  = useSelector(state => state.transInfo);
-  console.log(users, "step11");
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateSelected = billEditItemInfo?.selectedBillDate;
+  var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
+  const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const navigate = useNavigate();
-  const [partnerSelectDate, setpartnerSelectDate] = useState(props.selectdDate);
+  var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     users.buyerInfo
   );
-  const [transpoSelectedData, setTranspoSelectedData] = useState(transusers.transInfo);
-
-  console.log(partnerSelectDate,transusers.transInfo);
+  const [transpoSelectedData, setTranspoSelectedData] = useState(
+    transusers.transInfo
+  );
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
   const [outBal, setOutsBal] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
-  const editStatus = props.billEditStatus;
-  const billEditItem = props.billEditStatus
-    ? props.slectedCropsArray[0]
+  const editStatus = billEditItemInfo?.billEditStatus;
+
+  const billEditItem = editStatus
+    ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
+    console.log(billEditItemInfo.selectedBillInfo)
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -55,16 +60,14 @@ const Step33 = (props) => {
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   const [cstmFieldVal, getcstmFieldVal] = useState(0);
-  var step2CropEditStatus = props.step2CropEditStatus;
   const [allGroups, setAllGroups] = useState([]);
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
-  // console.log(props.slectedCropsArray[0].lineItems, "items sf");
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
     var cropArrays = editStatus
       ? step2CropEditStatus
-        ? props.slectedCropsArray[0].lineItems
+        ? billEditItemInfo.selectedBillInfo.lineItems
         : billEditItem.lineItems
       : props.slectedCropsArray;
     var h = [];
@@ -88,29 +91,27 @@ const Step33 = (props) => {
         ? billEditItem.farmerId
         : partnerSelectedData.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
-        console.log(res.data.data);
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
-
+  
     getGrossTotalValue(
       editStatus
         ? step2CropEditStatus
-          ? props.slectedCropsArray[0].lineItems
-          : props.slectedCropsArray
+          ? props.slectedCropsArray
+          : billEditItemInfo.selectedBillInfo.lineItems
         : props.slectedCropsArray
     );
     getUnitsTotalValue(
       editStatus
         ? step2CropEditStatus
-          ? props.slectedCropsArray[0].lineItems
-          : props.slectedCropsArray
+          ? props.slectedCropsArray
+          : billEditItemInfo.selectedBillInfo.lineItems
         : props.slectedCropsArray
     );
 
     getSystemSettings(clickId).then((res) => {
       var response = res.data.data.billSetting;
-      console.log(response);
       for (var i = 0; i < response.length; i++) {
         if (response[i].billType === "BUY") {
           if (response[i].formStatus === 1) {
@@ -156,19 +157,19 @@ const Step33 = (props) => {
       total += editStatus
         ? step2CropEditStatus
           ? items[i].total
-          : items[i].grossTotal
+          : items[i].total
         : items[i].total;
       setGrossTotal(total);
       gTotal = total;
     }
+    console.log(total, editStatus, step2CropEditStatus);
   };
-  const [cstmField, setCstmField] = useState([]);
   const listSettings = (name, res, index) => {
     var totalQty = 0;
     var item = editStatus
       ? step2CropEditStatus
-        ? props.slectedCropsArray[0].lineItems
-        : props.slectedCropsArray[0].lineItems
+        ? props.slectedCropsArray
+        : billEditItemInfo.selectedBillInfo.lineItems
       : props.slectedCropsArray;
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
@@ -337,7 +338,6 @@ const Step33 = (props) => {
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
                   if (items.fee != 0) {
-                    console.log(items.field, res[j].settingName);
                     if (items.field === res[j].settingName) {
                       newitem = items.fee;
                       return newitem;
@@ -420,22 +420,13 @@ const Step33 = (props) => {
   const getSingleValues = (val, v) => {
     return editStatus ? (step2CropEditStatus ? val : val) : v;
   };
-  const [getPartyItem, setGetPartyItem] = useState(null);
-  let [partnerData, setpartnerData] = useState([]);
-  console.log(props.dateSelected, "step3billdate");
-  const [selectedDate, setStartDate] = useState(props.dateSelected);
+  const [selectedDate, setStartDate] = useState(billDateSelected);
 
   const [questionsTitle, setQuestionsTitle] = useState([]);
-  const [partySelectStatus, setPartySelectStatus] = useState(false);
-  const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
 
   const getUnitsTotalValue = (items) => {
     var totalunitvalue = 0;
-    var it = editStatus
-      ? step2CropEditStatus
-        ? items
-        : items[0].lineItems
-      : items;
+    var it = editStatus ? (step2CropEditStatus ? items : items) : items;
     for (var i = 0; i < it.length; i++) {
       totalunitvalue += editStatus
         ? step2CropEditStatus
@@ -567,10 +558,9 @@ const Step33 = (props) => {
 
   var cropArray = editStatus
     ? step2CropEditStatus
-      ? props.slectedCropsArray[0].lineItems
+      ? billEditItemInfo.selectedBillInfo.lineItems
       : billEditItem.lineItems
     : props.slectedCropsArray;
-  console.log(props.slectedCropsArray, editStatus);
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -718,7 +708,7 @@ const Step33 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-           
+
             navigate("/buy_bill_book");
             // props.closem();
             console.log("add");
@@ -1006,30 +996,30 @@ const Step33 = (props) => {
     }
   };
 
-//   const [showCropModal, setShowCropModal] = useState(false);
-//   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
-//   const [cropEditvalArray, setcropEditvalArray] = useState([]);
-//   const editCropTable = (cropEditArray) => {
-//     step2buyCropTableOnclick(cropEditArray);
-//   };
-//   const closeCropTable = (cropEditArray) => {
-//     if (!editStatus) {
-//       if (step2CropEditStatus) {
-//         step2buyCropTableOnclick(cropEditArray);
-//       }
-//     } else {
-//       setShowCropModalStatus(false);
-//       setShowCropModal(false);
-//     }
-//     props.closeStep3Modal();
-//   };
-//   const step2buyCropTableOnclick = (cropEditArray) => {
-//     setShowCropModalStatus(true);
-//     setShowCropModal(true);
-//     setcropEditvalArray(cropEditArray);
-//   };
+  //   const [showCropModal, setShowCropModal] = useState(false);
+  //   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
+  //   const [cropEditvalArray, setcropEditvalArray] = useState([]);
+  //   const editCropTable = (cropEditArray) => {
+  //     step2buyCropTableOnclick(cropEditArray);
+  //   };
+  //   const closeCropTable = (cropEditArray) => {
+  //     if (!editStatus) {
+  //       if (step2CropEditStatus) {
+  //         step2buyCropTableOnclick(cropEditArray);
+  //       }
+  //     } else {
+  //       setShowCropModalStatus(false);
+  //       setShowCropModal(false);
+  //     }
+  //     props.closeStep3Modal();
+  //   };
+  //   const step2buyCropTableOnclick = (cropEditArray) => {
+  //     setShowCropModalStatus(true);
+  //     setShowCropModal(true);
+  //     setcropEditvalArray(cropEditArray);
+  //   };
 
-//   click on input to reset 0 to enter value
+  //   click on input to reset 0 to enter value
   const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
@@ -1040,34 +1030,35 @@ const Step33 = (props) => {
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
   const [selectedPartyType, setselectedPartyType] = useState("");
-  const [cropTableEditStatus, setcropTableEditStatus] = useState(false);
+  const [cropTableEditStatus, setcropTableEditStatus] = useState(
+    billEditItemInfo?.cropTableEditStatus
+  );
   const callbackFunctionPartySelect = (
-    child,
-    childData,
+    partyselectedarray,
     trans,
-    cropTableEditStatus,
+    // cropTableEditStatus,
     cropEditObject,
-    billEditStatus,
-    slectedCropstableArray,
-    selectedPartyType,
-    selectedBilldate
+    // billEditStatus,
+    slectedCropstableArray
+    // selectedPartyType,
+    // selectedBilldate
   ) => {
-    setpartnerSelectDate(child);
-    setpartnerSelectedData(childData);
+    setpartnerSelectedData(partyselectedarray);
     setTranspoSelectedData(trans);
     props.step3ParentCallback(
-      cropTableEditStatus,
+      //   cropTableEditStatus,
       cropEditObject,
-      billEditStatus,
-      slectedCropstableArray,
-      selectedPartyType,
-      selectedBilldate
+      //   billEditStatus,
+      slectedCropstableArray
+      //   selectedPartyType,
+      //   selectedBilldate
     );
+    console.log(cropEditObject)
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
-    setcropTableEditStatus(cropTableEditStatus);
-    setselectedPartyType(selectedPartyType);
-    setselectedbilldate(selectedBilldate);
+    // setcropTableEditStatus(cropTableEditStatus);
+    // setselectedPartyType(selectedPartyType);
+    // setselectedbilldate(selectedBilldate);
   };
   const dispatch = useDispatch();
   const previousStep = () => {
@@ -1088,13 +1079,21 @@ const Step33 = (props) => {
           <div className="col-lg-3 p-0">
             <Step3PartySelect
               parentSelectedParty={callbackFunctionPartySelect}
-              billEditItemval={props.slectedCropsArray}
-              selectdDate={partnerSelectDate}
-              step2CropEditStatus={props.step2CropEditStatus}
-              editStatus={props.billEditStatus}
-              selectedPartyType="seller"
-              selectedBuyerSellerData={partnerSelectedData}
-              transpoSelectedData={transpoSelectedData}
+              billEditItemval={billEditItem}
+              //   selectdDate={partnerSelectDate}
+              //   step2CropEditStatus={step2CropEditStatus}
+              //   editStatus={editStatus}
+              //   selectedPartyType="seller"
+              selectedBuyerSellerData={
+                editStatus
+                  ? billEditItemInfo.selectedBillInfo
+                  : partnerSelectedData
+              }
+              transpoSelectedData={
+                editStatus
+                  ? billEditItemInfo.selectedBillInfo
+                  : transpoSelectedData
+              }
             />
           </div>
           <div className="col-lg-6">
