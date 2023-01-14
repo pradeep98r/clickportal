@@ -19,6 +19,7 @@ import {
 import clo from "../../assets/images/clo.png"
 import moment from "moment";
 import { selectSteps } from '../../reducers/stepsSlice';
+import $ from "jquery";
 const SellBillStep3 = (props) => {
     const users = useSelector((state) => state.buyerInfo);
     console.log(users,"users");
@@ -29,21 +30,25 @@ const SellBillStep3 = (props) => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
     const navigate = useNavigate();
-
+    console.log(users.buyerInfo,"buyerInfoe");
+    var buyerInfo = users.buyerInfo;
     var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
     const [partnerSelectedData, setpartnerSelectedData] = useState(
-        users.buyerInfo
+        //users.buyerInfo
+        buyerInfo
     );
-    console.log(partnerSelectedData,"partner");
+    console.log(partnerSelectedData,"partnerSelected",buyerInfo,"buyerInfo", users,"users");
     const [transpoSelectedData, setTranspoSelectedData] = useState(
         transusers.transInfo
     );
+    console.log(transpoSelectedData,"trans");
     const [includeComm, setIncludeComm] = useState("");
     const [includeRetComm, setIncludeRetComm] = useState("");
     const [addRetComm, setAddRetComm] = useState(false);
     const [outBal, setOutsBal] = useState(0);
     const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
     const editStatus = billEditItemInfo?.billEditStatus;
+    console.log(editStatus,"edit status")
     const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedSellCropsArray;
@@ -577,7 +582,7 @@ const SellBillStep3 = (props) => {
         commShown: isShown,
         comments: "hi",
         createdBy: 0,
-        buyerId: editStatus ? billEditItem.buyerId : partnerSelectedData.partyId,
+        buyerId: editStatus ? billEditItem.buyerId : buyerInfo.partyId,//partnerSelectedData.partyId,
         govtLevies: Number(levisValue),
         grossTotal: grossTotal,
         labourCharges:
@@ -700,7 +705,31 @@ const SellBillStep3 = (props) => {
           );
         }
     };
-    
+    const handleInputValueEvent = (e) =>{
+      $('input').keypress(function (e) {
+        var a = [];
+        var k = e.which;
+        if(e.charCode === 46) {
+            // if dot is the first symbol
+            if(e.target.value.length === 0 ) {
+                e.preventDefault();
+                return;
+            }
+            
+            // if there are dots already 
+            if( e.target.value.indexOf('.') !== -1 ) {
+               e.preventDefault();
+               return;
+            }   
+            
+            a.push(e.charCode);
+        }
+        for (i = 48; i < 58; i++)
+            a.push(i);
+        if (!($.inArray(k, a) >= 0))
+            e.preventDefault();
+      });
+    }
     const [enterVal, setEnterVal] = useState();
     const advLevOnchangeEvent = (groupLiist, index) => (e) => {
       var val = e.target.value.replace(/[^0-9.]/g, "");
@@ -816,7 +845,9 @@ const SellBillStep3 = (props) => {
       setAllGroups([...updatedItem]);
     };
     const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-      var val = e.target.value.replace(/[^0-9.]/g, "");
+      // var val = e.target.value.replace(/[^0-9.]/g, "");
+      handleInputValueEvent(e);
+      var val=e.target.value;
       // if (val != 0) {
       let updatedItem2 = groupLiist.map((item, i) => {
         if (i == index) {
@@ -1161,7 +1192,7 @@ const SellBillStep3 = (props) => {
                     {outBalformStatusvalue ? (
                         <div className="totals_value">
                         <h5>Final Ledger Balance (₹)</h5>
-                        <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+                        <h6 className="color_green">{getFinalLedgerbalance().toFixed(2)}</h6>
                         </div>
                     ) : (
                         <div className="totals_value">

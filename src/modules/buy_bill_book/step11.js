@@ -26,6 +26,7 @@ const Step11 = (props) => {
     setPartnerData(users.buyerInfo);
     separtType(users.buyerInfo?.partyType.toLowerCase());
     if (users.buyerInfo?.itemtype != null) {
+      console.log(users.buyerInfo?.itemtype,"itemType");
       setpartysType(users.buyerInfo?.itemtype.toLowerCase());
     }
     if (users.buyerInfo?.partyType.toLowerCase() !== "transporter") {
@@ -48,7 +49,7 @@ const Step11 = (props) => {
     setSelectedDate(date);
   };
   const linkPath = localStorage.getItem('LinkPath');
-  console.log(linkPath);
+  console.log(linkPath,partysType,users.buyerInfo?.partyType,users.buyerInfo,"info");
   const addCropModal = () => {
     dispatch(selectSteps("step2"));
     dispatch(selectBill({}));

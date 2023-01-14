@@ -20,7 +20,8 @@ const SelectPartner = (props) => {
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
   const navigate = useNavigate();
-  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' ? users.buyerInfo : transusers.transInfo);
+  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
+  props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : transusers.transInfo);
   const fetchPertnerData = () => {
     var partnerType = "";
 
@@ -65,6 +66,8 @@ const SelectPartner = (props) => {
     setGetPartyName(false);
     var itemtype;
     if (props.partyType == "Seller") {
+      localStorage.setItem("selectBuyertype", "seller");
+      itemtype = localStorage.getItem("selectBuyertype");
       // localStorage.setItem("selectPartytype", "seller");
       // itemtype = localStorage.getItem("selectPartytype");
       props.parentCallback(item, itemtype, props.partyType);

@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { getText } from "../../components/getText";
 import Step3PartySelect from "./step3PartySelect";
+import $ from "jquery";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -47,7 +48,6 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
-    console.log(billEditItemInfo.selectedBillInfo)
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -736,6 +736,31 @@ const Step33 = (props) => {
     }
   };
 
+  const handleInputValueEvent = (e) =>{
+    $('input').keypress(function (e) {
+      var a = [];
+      var k = e.which;
+      if(e.charCode === 46) {
+          // if dot is the first symbol
+          if(e.target.value.length === 0 ) {
+              e.preventDefault();
+              return;
+          }
+          
+          // if there are dots already 
+          if( e.target.value.indexOf('.') !== -1 ) {
+             e.preventDefault();
+             return;
+          }   
+          
+          a.push(e.charCode);
+      }
+      for (i = 48; i < 58; i++)
+          a.push(i);
+      if (!($.inArray(k, a) >= 0))
+          e.preventDefault();
+    });
+  }
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
@@ -861,8 +886,10 @@ const Step33 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    // var val = e.target.value.replace(/[^0-9.]/g, "");
+    handleInputValueEvent(e);
     // if (val != 0) {
+      var val = e.target.value;
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);

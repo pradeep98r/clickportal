@@ -20,6 +20,7 @@ import {
   billViewStatus,
   selectedParty,
 } from "../../reducers/billEditItemSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -28,14 +29,17 @@ const Step3PartySelect = (props) => {
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const clickId = loginData.caId;
   const [partyType, setPartnerType] = useState(selectedPartyType);
-  console.log(billEditItemInfo,"party")
+  console.log(billEditItemInfo,selectedPartyType,"party")
   const partnerSelectedData =
-    selectedPartyType.toLowerCase() === "buyer"
+    selectedPartyType.toLowerCase() === "buyer" || selectedPartyType.toLowerCase() === 'seller'
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
+  const [partySelecteData, setPartySelectedData] = useState(partnerSelectedData);
+      console.log(partySelecteData,"partnerSelected Data");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
   );
+  console.log(props.transpoSelectedData,"transpoSelectedData");
   const [getPartyItem, setGetPartyItem] = useState(null);
   const billeditStatus = billEditItemInfo?.billEditStatus;
 
@@ -46,6 +50,7 @@ const Step3PartySelect = (props) => {
   const [selectedDate, setStartDate] = useState(billDateSelected);
   const partnerSelectDate = selectedDate;
   const [outBal, setOutsBal] = useState(0);
+  const linkPath = localStorage.getItem('LinkPath');
   useEffect(() => {
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
@@ -60,7 +65,8 @@ const Step3PartySelect = (props) => {
     }
     props.parentSelectedParty(
       //   partnerSelectDate,
-      partnerSelectedData,
+      partySelecteData,
+      // partnerSelectedData,
       transpoSelectedData,
       //   true,
       cropEditvalArray,
@@ -90,28 +96,43 @@ const Step3PartySelect = (props) => {
   };
   const [partySelectStatus, setPartySelectStatus] = useState(false);
   const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
+  const users = useSelector((state) => state.buyerInfo);
   const partySelect = (item, type) => {
+    console.log(type,"selectType");
     setGetPartyItem(item);
     if (type == "Transporter") {
+      console.log("came to trans");
       setTranspoDataStatus(false);
       setTransportoSelectStatus(true);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedTransporter"));
       setTranspoSelectedData(h);
       props.parentSelectedParty(
-        partnerSelectDate,
-        partnerSelectedData,
+        partySelecteData,
         h,
+        partnerSelectDate,
+        // partnerSelectedData,
+  
         outBal
       );
       getOutstandingBal(clickId, item.partyId).then((res) => {
         setOutsBal(res.data.data);
       });
-    } else if (type == "Buyer") {
+    } else if (type == "Buyer" || type === "BUYER" && linkPath === '/sellbillbook') {
+      console.log("came to buyer select",item);
       setTranspoDataStatus(false);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
+      var h = JSON.parse(localStorage.getItem("selectedBuyer"));
+      setPartySelectedData(h);
+      dispatch(selectBuyer(item));
+      console.log(users.buyerInfo,"step3 buyerInfo");
+      setPartnerDataStatus(false);
       setPartySelectStatus(true);
-    } else if (type == "Seller") {
+      
+    } else if (type == "Seller" || type === "FARMER" && linkPath === '/buy_bill_book') {
+      console.log("came to Seller");
+      setPartySelectedData(item);
+      dispatch(selectBuyer(partySelecteData));
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
       getOutstandingBal(clickId, item.partyId).then((res) => {
@@ -121,22 +142,42 @@ const Step3PartySelect = (props) => {
     }
     setPartnerType(type);
   };
+  console.log(users.buyerInfo,"step3 buyerInfo1");
   const [searchPartyItem, setSearchPartyItem] = useState("");
   const [partnerDataStatus, setPartnerDataStatus] = useState(false);
   const [transpoDataStatus, setTranspoDataStatus] = useState(false);
+  const [count, setCount] = useState(0);
+
   const partnerClick = (type) => {
-    if (type == "Buyer") {
-      setPartnerDataStatus(true);
-      setPartnerType(type);
-      fetchPertnerData(type);
+    console.log(type,"clickType")
+    setCount(count + 1);
+    if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
+      if (count % 2 == 0) {
+        setPartnerDataStatus(true);
+      } else {
+        setPartnerDataStatus(false);
+      }
+      //setPartnerDataStatus(true);
+      setPartnerType("Buyer");
+      fetchPertnerData("Buyer");
     } else if (type == "Transporter") {
-      setTranspoDataStatus(true);
+      if (count % 2 == 0) {
+        setTranspoDataStatus(true);
+      } else {
+        setTranspoDataStatus(false);
+      }
+      //setTranspoDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
-    } else if (type == "Seller") {
-      setPartnerDataStatus(true);
+    } else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
+      if (count % 2 == 0) {
+        setPartnerDataStatus(true);
+      } else {
+        setPartnerDataStatus(false);
+      }
+      //setPartnerDataStatus(true);
       setPartnerType(type);
-      fetchPertnerData(type);
+      fetchPertnerData("Seller");
     }
   };
   const [showCropModal, setShowCropModal] = useState(false);
@@ -166,14 +207,15 @@ const Step3PartySelect = (props) => {
       props.billEditItemval
     );
   };
+  console.log(billeditStatus,partySelectStatus,"status");
   return (
     <div className="">
       <h5 className="head_modal">Bill Information </h5>
-
+      {partySelecteData !== null?(
       <div className="party_div">
         <div
           className="selectparty_field d-flex align-items-center justify-content-between"
-          onClick={() => partnerClick("Buyer")}
+          onClick={() => partnerClick(partySelecteData.partyType)}//"Buyer")}
         >
           <div className="partner_card">
             <div className="d-flex align-items-center">
@@ -182,34 +224,34 @@ const Step3PartySelect = (props) => {
                 <h5>
                   {billeditStatus
                     ? partySelectStatus
-                      ? partnerSelectedData.partyName
+                      ? partySelecteData.partyName
                       : billEditItem.partyType == "FARMER"
                       ? billEditItem.farmerName
                       : billEditItem.buyerName
-                    : partnerSelectedData.partyName}
+                    : partySelecteData.partyName}
                 </h5>
                 <h6>
                   {billeditStatus
                     ? partySelectStatus
-                      ? partnerSelectedData.partyType
+                      ? partySelecteData.partyType
                       : billEditItem.partyType
-                    : partnerSelectedData.partyType}{" "}
+                    : partySelecteData.partyType}{" "}
                   -{" "}
                   {billeditStatus
                     ? partySelectStatus
-                      ? partnerSelectedData.partyId
+                      ? partySelecteData.partyId
                       : billEditItem.partyType == "FARMER"
                       ? billEditItem.farmerId
                       : billEditItem.buyerId
-                    : partnerSelectedData.partyId}{" "}
+                    : partySelecteData.partyId}{" "}
                   |{" "}
                   {billeditStatus
                     ? partySelectStatus
-                      ? partnerSelectedData.mobile
+                      ? partySelecteData.mobile
                       : billEditItem.partyType == "FARMER"
                       ? billEditItem.farmerMobile
                       : billEditItem.buyerMobile
-                    : partnerSelectedData.mobile}
+                    : partySelecteData.mobile}
                 </h6>
                 <p>{partnerData.buyerAddress}</p>
               </div>
@@ -218,6 +260,56 @@ const Step3PartySelect = (props) => {
           <img src={d_arrow} />
         </div>
       </div>
+      ):('')}
+      {partnerDataStatus?(
+      <div className="partners_div" id="scroll_style">
+        <div className="d-flex searchparty" role="search">
+          <input
+            className="form-control mb-0"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            onChange={(event) => setSearchPartyItem(event.target.value)}
+          />
+        </div>
+        <div>
+          {partnerData.length > 0 ? (
+            <div>
+              <ul>
+                {partnerData.map((item) => {
+                  return (
+                    <li
+                      key={item.partyId}
+                      onClick={() => partySelect(item, partySelecteData.partyType)}
+                      className={
+                        "nav-item " +
+                        (item == getPartyItem ? "active_class" : "")
+                      }
+                    >
+                      <div className="partner_card">
+                        <div className="d-flex align-items-center">
+                          <img src={single_bill} className="icon_user" />
+                          <div>
+                            <h5>{item.partyName}</h5>
+                            <h6>
+                              {item.trader ? "TRADER" : item.partyType} -{" "}
+                              {item.partyId} | {item.mobile}
+                            </h6>
+                            <p>{item.address.addressLine}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ) : (
+            <p></p>
+          )}
+        </div>
+      </div>
+      ):('')}
       <div className="date_sec date_step3">
         <BillDateSelection
           parentCallbackDate={callbackFunctionDate}
@@ -234,7 +326,6 @@ const Step3PartySelect = (props) => {
               <div className="d-flex align-items-center">
                 <img src={single_bill} className="icon_user" />
                 <div>
-                  {transportoSelectStatus}
                   <h5>
                     {billeditStatus
                       ? transportoSelectStatus

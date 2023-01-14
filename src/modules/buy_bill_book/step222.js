@@ -45,6 +45,7 @@ const Step22 = (props) => {
   const [weightDefaultValue, setweightValue] = useState();
   var cropObjectArr = [];
   // navigate to previous step
+  console.log(users.buyerInfo,"buyerInfo")
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
