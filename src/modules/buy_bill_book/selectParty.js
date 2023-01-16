@@ -111,8 +111,11 @@ const SelectPartner = (props) => {
         return data.partyId.toString().search(value) != -1;
       }
     });
+    console.log(value,"value");
     if (value != "") {
       setpartnerData(result);
+    } else if(value === ""){
+      setpartnerData(allData);
     }
     setsearchValue(value);
   };

@@ -46,7 +46,8 @@ const Step3PartySelect = (props) => {
 
   const billEditItem = props.billEditItemval;
   var step2CropEditStatus = step2CropEditStatus;
-  let [partnerData, setpartnerData] = useState([]);
+  const [allData, setAllData] = useState([]);
+  let [partnerData, setpartnerData] = useState(allData);
   const [selectedDate, setStartDate] = useState(billDateSelected);
   const partnerSelectDate = selectedDate;
   const [outBal, setOutsBal] = useState(0);
@@ -85,6 +86,7 @@ const Step3PartySelect = (props) => {
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
+        setAllData(response.data.data);
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -211,7 +213,7 @@ const Step3PartySelect = (props) => {
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
-    result = partnerData.filter((data) => {
+    result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
         return data.mobile.search(value) != -1;
       } else if (data.partyName.toLowerCase().includes(value)) {
@@ -222,6 +224,8 @@ const Step3PartySelect = (props) => {
     });
     if (value != "") {
       setpartnerData(result);
+    } else if(value === ""){
+      setpartnerData(allData);
     }
     setsearchValue(value);
   };
