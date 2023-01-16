@@ -21,6 +21,8 @@ import { useNavigate } from "react-router-dom";
 import { getText } from "../../components/getText";
 import Step3PartySelect from "./step3PartySelect";
 import $ from "jquery";
+import { selectTrans } from "../../reducers/transSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -31,8 +33,10 @@ const Step33 = (props) => {
   const clickId = loginData.caId;
   const navigate = useNavigate();
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
+  var buyerInfo = users.buyerInfo;
   const [partnerSelectedData, setpartnerSelectedData] = useState(
-    users.buyerInfo
+    //users.buyerInfo
+    buyerInfo
   );
   console.log(partnerSelectedData,"party1");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
@@ -1087,7 +1091,9 @@ const Step33 = (props) => {
   };
   const dispatch = useDispatch();
   const previousStep = () => {
-    dispatch(selectSteps("step2"));
+    dispatch(selectSteps("step2"));;
+    dispatch(selectBuyer(buyerInfo));
+    dispatch(selectTrans(transusers.transInfo));
     props.step3ParentCallback(
       cropEditObject,
       slectedCropstableArray,

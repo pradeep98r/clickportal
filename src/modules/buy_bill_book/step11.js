@@ -49,7 +49,6 @@ const Step11 = (props) => {
     setSelectedDate(date);
   };
   const linkPath = localStorage.getItem('LinkPath');
-  console.log(linkPath,partysType,users.buyerInfo?.partyType,users.buyerInfo,"info");
   const addCropModal = () => {
     dispatch(selectSteps("step2"));
     dispatch(selectBill({}));
@@ -58,7 +57,6 @@ const Step11 = (props) => {
     dispatch(billDate(selectedDate));
     if(linkPath ==='/sellbillbook'){
       dispatch(selectedParty("buyer"));
-      console.log("selected as buyer");
     }else{
       dispatch(selectedParty("seller"));
     }

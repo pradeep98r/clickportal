@@ -21,6 +21,7 @@ import {
   selectedParty,
 } from "../../reducers/billEditItemSlice";
 import { selectBuyer } from "../../reducers/buyerSlice";
+import SearchField from "../../components/searchField";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -29,13 +30,13 @@ const Step3PartySelect = (props) => {
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const clickId = loginData.caId;
   const [partyType, setPartnerType] = useState(selectedPartyType);
-  console.log(billEditItemInfo,selectedPartyType,"party")
+  const langData = localStorage.getItem("languageData");
+  const langFullData = JSON.parse(langData);
   const partnerSelectedData =
     selectedPartyType.toLowerCase() === "buyer" || selectedPartyType.toLowerCase() === 'seller'
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
   const [partySelecteData, setPartySelectedData] = useState(partnerSelectedData);
-      console.log(partySelecteData,"partnerSelected Data");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
   );
@@ -44,7 +45,6 @@ const Step3PartySelect = (props) => {
   const billeditStatus = billEditItemInfo?.billEditStatus;
 
   const billEditItem = props.billEditItemval;
-  console.log(billEditItem,"billEdit Itme");
   var step2CropEditStatus = step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(billDateSelected);
@@ -98,10 +98,12 @@ const Step3PartySelect = (props) => {
   const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
   const users = useSelector((state) => state.buyerInfo);
   const partySelect = (item, type) => {
-    console.log(type,"selectType");
+    if (searchValue != "") {
+      // setAllData([])
+      fetchPertnerData();
+    }
     setGetPartyItem(item);
     if (type == "Transporter") {
-      console.log("came to trans");
       setTranspoDataStatus(false);
       setTransportoSelectStatus(true);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
@@ -119,7 +121,6 @@ const Step3PartySelect = (props) => {
         setOutsBal(res.data.data);
       });
     } else if (type == "Buyer" || type === "BUYER" && linkPath === '/sellbillbook') {
-      console.log("came to buyer select",item);
       setTranspoDataStatus(false);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedBuyer"));
@@ -130,7 +131,6 @@ const Step3PartySelect = (props) => {
       setPartySelectStatus(true);
       
     } else if (type == "Seller" || type === "FARMER" && linkPath === '/buy_bill_book') {
-      console.log("came to Seller");
       setPartySelectedData(item);
       dispatch(selectBuyer(partySelecteData));
       setPartnerDataStatus(false);
@@ -207,6 +207,24 @@ const Step3PartySelect = (props) => {
       props.billEditItemval
     );
   };
+  const [searchValue, setsearchValue] = useState("");
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = partnerData.filter((data) => {
+      if (data.mobile.includes(value)) {
+        return data.mobile.search(value) != -1;
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
+      } else if (data.partyId.toString().includes(value)) {
+        return data.partyId.toString().search(value) != -1;
+      }
+    });
+    if (value != "") {
+      setpartnerData(result);
+    }
+    setsearchValue(value);
+  };
   console.log(billeditStatus,partySelectStatus,"status");
   return (
     <div className="">
@@ -264,13 +282,19 @@ const Step3PartySelect = (props) => {
       {partnerDataStatus?(
       <div className="partners_div" id="scroll_style">
         <div className="d-flex searchparty" role="search">
-          <input
+            <SearchField
+                placeholder={langFullData.search}
+                onChange={(event) => {
+                  handleSearch(event);
+                }}
+              />
+          {/* <input
             className="form-control mb-0"
             type="search"
             placeholder="Search"
             aria-label="Search"
             onChange={(event) => setSearchPartyItem(event.target.value)}
-          />
+          /> */}
         </div>
         <div>
           {partnerData.length > 0 ? (
@@ -374,13 +398,12 @@ const Step3PartySelect = (props) => {
       {transpoDataStatus ? (
         <div className="partners_div" id="scroll_style">
           <div className="d-flex searchparty" role="search">
-            <input
-              className="form-control mb-0"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-              onChange={(event) => setSearchPartyItem(event.target.value)}
-            />
+            <SearchField
+                placeholder={langFullData.search}
+                onChange={(event) => {
+                  handleSearch(event);
+                }}
+              />
           </div>
 
           <div>

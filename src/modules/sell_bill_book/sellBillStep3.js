@@ -20,6 +20,8 @@ import clo from "../../assets/images/clo.png"
 import moment from "moment";
 import { selectSteps } from '../../reducers/stepsSlice';
 import $ from "jquery";
+import { selectTrans } from '../../reducers/transSlice';
+import { selectBuyer } from '../../reducers/buyerSlice';
 const SellBillStep3 = (props) => {
     const users = useSelector((state) => state.buyerInfo);
     console.log(users,"users");
@@ -30,7 +32,6 @@ const SellBillStep3 = (props) => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
     const navigate = useNavigate();
-    console.log(users.buyerInfo,"buyerInfoe");
     var buyerInfo = users.buyerInfo;
     var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
     const [partnerSelectedData, setpartnerSelectedData] = useState(
@@ -48,12 +49,10 @@ const SellBillStep3 = (props) => {
     const [outBal, setOutsBal] = useState(0);
     const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
     const editStatus = billEditItemInfo?.billEditStatus;
-    console.log(editStatus,"edit status")
     const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedSellCropsArray;
 
-    console.log(billEditItem,props.slectedSellCropsArray);
     const [commValue, getCommInput] = useState(0);
     const [retcommValue, getRetCommInput] = useState(0);
     const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -1027,14 +1026,21 @@ const SellBillStep3 = (props) => {
     const dispatch = useDispatch();
     const previousStep = () => {
         dispatch(selectSteps("step2"));
+        dispatch(selectBuyer(buyerInfo));
+        dispatch(selectTrans(transusers.transInfo));
         props.step3ParentCallback(
-        cropTableEditStatus,
-        cropEditObject,
-        props.billEditStatus,
-        slectedCropstableArray,
-        selectedPartyType,
-        selectedBilldate
+          cropEditObject,
+          slectedCropstableArray,
         );
+        // console.log(slectedCropstableArray,cropEditObject,"cropstable");
+        // props.step3ParentCallback(
+        // cropTableEditStatus,
+        // cropEditObject,
+        // props.billEditStatus,
+        // slectedCropstableArray,
+        // selectedPartyType,
+        // selectedBilldate
+        // );
     };
   return (
     <div>

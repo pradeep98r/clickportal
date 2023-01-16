@@ -18,7 +18,6 @@ import {
 var array = [];
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
-  console.log(props.slectedCropstableArray,props.cropEditObject);
   const dispatch = useDispatch();
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billEditStatus = billEditItemInfo?.billEditStatus;
@@ -45,11 +44,10 @@ const Step22 = (props) => {
   const [weightDefaultValue, setweightValue] = useState();
   var cropObjectArr = [];
   // navigate to previous step
-  console.log(users.buyerInfo,"buyerInfo")
+  console.log(users.buyerInfo, "buyerInfo")
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
-    
   };
   //   click on particular crop function
   const cropOnclick = (crop, id, index2, preferedCrops) => {
@@ -115,8 +113,9 @@ const Step22 = (props) => {
   useEffect(() => {
     cropObjectArr = billEditStatus
       ? props.cropEditObject.lineItems
-      : props.cropEditObject;
-    console.log("useeffect", cropObjectArr);
+      : props.cropEditObject
+    // === null?'':props.slectedCropstableArray;
+    console.log("useeffect", cropTableEditStatus, cropObjectArr);
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
@@ -125,14 +124,14 @@ const Step22 = (props) => {
     if (cropTableEditStatus) {
       if (billEditStatus) {
         for (var d = 0; d < cropObjectArr.length; d++) {
-            let object = { ...cropObjectArr[d] };
+          let object = { ...cropObjectArr[d] };
           if (cropObjectArr[d].qtyUnit == "") {
             cropObjectArr.splice(d, 1);
           }
           if (cropObjectArr[d].rateType === "RATE_PER_KG") {
             object = { ...object, rateType: "kgs" };
             // cropObjectArr[d].rateType = 'kgs';
-            console.log(object,a)
+            console.log(object, a)
             a.push(object)
             // cropObjectArr[d] = { ...object }
           }
@@ -162,11 +161,20 @@ const Step22 = (props) => {
             clonedObject = { ...clonedObject, rateType: "kgs" };
             // cropArr[index] = clonedObject;
           }
-          console.log(clonedObject, cropArr,cropObjectArr);
+          console.log(clonedObject, cropArr, cropObjectArr);
           Object.assign(clonedObject, { count: 1 }, { cropActive: true });
           preferedCropsData.push(clonedObject);
         }
       });
+    } else {
+      console.log("came to else part",props.slectedCropstableArray)
+      for(var i = 0; i<props.slectedCropstableArray.length; i++){
+        if(props.slectedCropstableArray[i] !==null){
+          cropResponseData([...props.slectedCropstableArray]);
+          setUpdatedItemList(props.slectedCropstableArray);
+          setPreferedCropsData([...props.slectedCropstableArray]);
+        }
+      }
     }
   }, []);
 
@@ -678,13 +686,13 @@ const Step22 = (props) => {
                                     No of Units({cropData[index].qtyUnit})
                                   </th>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                  (cropData[index].rateType == "RATE_PER_UNIT"
-                                    ? cropData[index].qtyUnit.toLowerCase()
-                                    : cropData[index].rateType) ? (
+                                    (cropData[index].rateType == "RATE_PER_UNIT"
+                                      ? cropData[index].qtyUnit.toLowerCase()
+                                      : cropData[index].rateType) ? (
                                     <th>
                                       Total Weight(
                                       {cropData[index].qtyUnit.toLowerCase() !=
-                                      cropData[index].rateType
+                                        cropData[index].rateType
                                         ? "kgs"
                                         : cropData[index].qtyUnit}
                                       )
@@ -694,10 +702,10 @@ const Step22 = (props) => {
                                   )}
                                   {cropData[index].qtyUnit.toLowerCase() ===
                                     "bags" ||
-                                  cropData[index].qtyUnit.toLowerCase() ===
+                                    cropData[index].qtyUnit.toLowerCase() ===
                                     "sacs" ? (
                                     cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
+                                      cropData[index].rateType ? (
                                       <th className="col-2">
                                         Invidual Weights
                                       </th>
@@ -710,7 +718,7 @@ const Step22 = (props) => {
                                   <th>
                                     Wastage(
                                     {cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType
+                                      cropData[index].rateType
                                       ? "kgs"
                                       : cropData[index].qtyUnit}
                                     )
@@ -785,9 +793,9 @@ const Step22 = (props) => {
                                     />
                                   </td>
                                   {cropData[index].qtyUnit.toLowerCase() !=
-                                  (cropData[index].rateType == "RATE_PER_UNIT"
-                                    ? cropData[index].qtyUnit.toLowerCase()
-                                    : cropData[index].rateType) ? (
+                                    (cropData[index].rateType == "RATE_PER_UNIT"
+                                      ? cropData[index].qtyUnit.toLowerCase()
+                                      : cropData[index].rateType) ? (
                                     <td className="col-2">
                                       <input
                                         type="text"
@@ -807,15 +815,15 @@ const Step22 = (props) => {
                                   )}
                                   {cropData[index].qtyUnit.toLowerCase() ===
                                     "bags" ||
-                                  cropData[index].qtyUnit.toLowerCase() ===
+                                    cropData[index].qtyUnit.toLowerCase() ===
                                     "sacs" ? (
                                     cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
+                                      cropData[index].rateType ? (
                                       <td className="col-2">
                                         <div className="d-flex">
                                           <p className="unit-type mt-0">
                                             {cropData[index].bags !== null &&
-                                            cropData[index].bags.length > 0
+                                              cropData[index].bags.length > 0
                                               ? "Edit"
                                               : "Add"}{" "}
                                             {cropData[index].qtyUnit}
@@ -876,11 +884,11 @@ const Step22 = (props) => {
                                     <p className="totals">
                                       {cropData[index].rateType == "kgs"
                                         ? (cropData[index].weight -
-                                            cropData[index].wastage) *
-                                          cropData[index].rate
+                                          cropData[index].wastage) *
+                                        cropData[index].rate
                                         : (cropData[index].qty -
-                                            cropData[index].wastage) *
-                                          cropData[index].rate}
+                                          cropData[index].wastage) *
+                                        cropData[index].rate}
                                     </p>
                                   </td>
                                 </tr>
@@ -991,10 +999,10 @@ const Step22 = (props) => {
                                     <p className="totals">
                                       {cropData[index].qtyUnit == "loads"
                                         ? cropData[index].weight *
-                                          cropData[index].rate
+                                        cropData[index].rate
                                         : (cropData[index].weight -
-                                            cropData[index].wastage) *
-                                          cropData[index].rate}
+                                          cropData[index].wastage) *
+                                        cropData[index].rate}
                                     </p>
                                   </td>
                                 </tr>

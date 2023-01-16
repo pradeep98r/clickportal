@@ -20,8 +20,11 @@ const SelectPartner = (props) => {
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
   const navigate = useNavigate();
+  console.log(props.partyType,"party types");
   const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
-  props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : transusers.transInfo);
+  props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : 
+  props.partyType.toLowerCase() === 'transporter'? transusers.transInfo:'');
+  console.log(transusers.transInfo,"select party");
   const fetchPertnerData = () => {
     var partnerType = "";
 
