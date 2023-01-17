@@ -75,7 +75,9 @@ const Steps = (props) => {
         {(() => {
           switch (selectedStep.stepsInfo) {
             case "step1":
-              return <Step11 billEditStatuscallback={billeditCallback} />;
+              return <Step11 
+              billEditStatuscallback={billeditCallback}
+              closem={props.closeStepsModal} />;
             case "step2":
               return (
                 <Step22
@@ -85,11 +87,12 @@ const Steps = (props) => {
                 //   cropTableEditStatus={cropTableEditStatus}
                   cropEditObject={cropEditObject}
                   slectedCropstableArray={slectedCropstableArray}
+                  closem={props.closeStepsModal}
                 //   selectedPartyType={selectedPartyType}
                 //   selectedBilldate={selectedDate}
                 />
               );
-            case partyType.toUpperCase()==='SELLER' && "step3" :
+            case partyType.toUpperCase()==='SELLER' || partyType.toUpperCase()==='FARMER' && "step3" :
               return (
                 <Step33
                   slectedCropsArray={selctedCrops}

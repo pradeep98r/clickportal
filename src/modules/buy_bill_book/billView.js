@@ -418,6 +418,7 @@ const BillView = (props) => {
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const editBill = (itemVal) => {
+    console.log(singleBillData.partyType);
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);

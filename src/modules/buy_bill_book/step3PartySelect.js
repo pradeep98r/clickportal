@@ -32,10 +32,12 @@ const Step3PartySelect = (props) => {
   const [partyType, setPartnerType] = useState(selectedPartyType);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
+  console.log(selectedPartyType,"party type");
   const partnerSelectedData =
     selectedPartyType.toLowerCase() === "buyer" || selectedPartyType.toLowerCase() === 'seller'
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
+      
   const [partySelecteData, setPartySelectedData] = useState(partnerSelectedData);
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
@@ -44,6 +46,7 @@ const Step3PartySelect = (props) => {
   const [getPartyItem, setGetPartyItem] = useState(null);
   const billeditStatus = billEditItemInfo?.billEditStatus;
 
+  console.log(billeditStatus,props.selectedBuyerSellerData,"status");
   const billEditItem = props.billEditItemval;
   var step2CropEditStatus = step2CropEditStatus;
   const [allData, setAllData] = useState([]);
@@ -229,7 +232,7 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-  console.log(billeditStatus,partySelectStatus,"status");
+
   return (
     <div className="">
       <h5 className="head_modal">Bill Information </h5>
@@ -311,7 +314,7 @@ const Step3PartySelect = (props) => {
                       onClick={() => partySelect(item, partySelecteData.partyType)}
                       className={
                         "nav-item " +
-                        (item == getPartyItem ? "active_class" : "")
+                        (item.partyId == getPartyItem?.partyId ? "active_class" : "")
                       }
                     >
                       <div className="partner_card">
@@ -457,11 +460,11 @@ const Step3PartySelect = (props) => {
             {billeditStatus ? (
               <div className="d-flex">
                 <img
-                  src={billEditItem[0].lineItems[0]?.imageUrl}
+                  src={billEditItem.lineItems[0]?.imageUrl}
                   className="edit_crop_item"
                 />
                 <p className="edit_crop_item_len d-flex align-items-center">
-                  <p>{billEditItem[0].lineItems[0].length}</p>
+                  <p>{billEditItem.lineItems[0]?.length}</p>
                   <span className="ml-3">Crops</span>
                 </p>
               </div>

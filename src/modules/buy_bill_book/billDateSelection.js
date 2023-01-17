@@ -9,8 +9,9 @@ const BillDateSelection = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateselected = billEditItemInfo?.selectedBillDate;
   const [selectedDate, setStartDate] = useState(
-    billDateselected != null ? billDateselected : new Date()
+    billDateselected !== null ? billDateselected : new Date()
   );
+  console.log(billDateselected,selectedDate,"dates");
   //   props.parentCallbackDate(selectedDate)
   const dispatch = useDispatch();
   const onclickDate = (date) => {

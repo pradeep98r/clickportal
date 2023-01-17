@@ -26,7 +26,8 @@ import { selectBuyer } from "../../reducers/buyerSlice";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
-  const billDateSelected = billEditItemInfo?.selectedBillDate;
+  const billDateSelected = billEditItemInfo.selectedBillDate!==null?billEditItemInfo.selectedBillDate:
+    new Date();
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -38,6 +39,7 @@ const Step33 = (props) => {
     //users.buyerInfo
     buyerInfo
   );
+  console.log(partnerSelectDate,"Date");
   console.log(partnerSelectedData,"party1");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
@@ -713,7 +715,10 @@ const Step33 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-
+            props.closem();
+            window.setTimeout(function () {
+              window.location.reload();
+            }, 2000);
             navigate("/buy_bill_book");
             // props.closem();
             console.log("add");

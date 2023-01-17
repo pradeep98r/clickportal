@@ -24,7 +24,7 @@ const SelectPartner = (props) => {
   const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
   props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : 
   props.partyType.toLowerCase() === 'transporter'? transusers.transInfo:'');
-  console.log(transusers.transInfo,"select party");
+  console.log(transusers.transInfo, getPartyItem,"select party");
   const fetchPertnerData = () => {
     var partnerType = "";
 
@@ -119,7 +119,6 @@ const SelectPartner = (props) => {
     }
     setsearchValue(value);
   };
-
   return (
     <div>
       <div onClick={selectParty}>
@@ -169,7 +168,7 @@ const SelectPartner = (props) => {
                         onClick={() => partySelect(item)}
                         className={
                           "nav-item " +
-                          (item == getPartyItem ? "active_class" : "")
+                          (item.partyId == getPartyItem?.partyId ? "active_class" : "")
                         }
                       >
                         <div className="partner_card">

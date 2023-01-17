@@ -11,12 +11,17 @@ import {
   tableEditStatus,
   selectedParty,
 } from "../../reducers/billEditItemSlice";
+import { selectTrans } from "../../reducers/transSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 const Step11 = (props) => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateSelected = billEditItemInfo?.selectedBillDate;
+  console.log(billDateSelected,"selected");
   const cancelStep = () => {
+    dispatch(selectTrans(null)); 
+    dispatch(selectBuyer(null));
     props.closem();
   };
   const langData = localStorage.getItem("languageData");
@@ -54,7 +59,8 @@ const Step11 = (props) => {
     dispatch(selectBill({}));
     dispatch(editStatus(false));
     dispatch(tableEditStatus(false));
-    dispatch(billDate(selectedDate));
+    console.log(selectedDate,"selected step1 date")
+    dispatch(billDate(billDateSelected));
     if(linkPath ==='/sellbillbook'){
       dispatch(selectedParty("buyer"));
     }else{
@@ -81,7 +87,7 @@ const Step11 = (props) => {
               <div className="col-lg-5 ">
                 <BillDateSelection
                   parentCallbackDate={callbackFunctionDate}
-                  billDate={null}
+                  billDate={selectedDate}//{null}
                 />
               </div>
               <div className="col-lg-3 p-0">

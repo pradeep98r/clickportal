@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SelectBags from "./bags";
 import {
+  billDate,
   billViewStatus,
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
@@ -42,12 +43,16 @@ const Step22 = (props) => {
   const [wastagesValue, setwastageValue] = useState();
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
+
+  const date= billEditItemInfo.selectedBillDate !== null?billEditItemInfo.selectedBillDate:new Date();
+  console.log(billEditItemInfo,date,"date");
   var cropObjectArr = [];
   // navigate to previous step
   console.log(users.buyerInfo, "buyerInfo")
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
+    dispatch(billDate(date));
   };
   //   click on particular crop function
   const cropOnclick = (crop, id, index2, preferedCrops) => {

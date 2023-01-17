@@ -26,7 +26,9 @@ const SellBillStep3 = (props) => {
     const users = useSelector((state) => state.buyerInfo);
     console.log(users,"users");
     const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
-    const billDateSelected = billEditItemInfo?.selectedBillDate;
+    const billDateSelected = billEditItemInfo.selectedBillDate !==null?billEditItemInfo.selectedBillDate:
+    new Date();
+    console.log(billDateSelected,"selected");
     var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
     const transusers = useSelector((state) => state.transInfo);
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -38,6 +40,7 @@ const SellBillStep3 = (props) => {
         //users.buyerInfo
         buyerInfo
     );
+    console.log(partnerSelectDate,"dater");
     console.log(partnerSelectedData,"partnerSelected",buyerInfo,"buyerInfo", users,"users");
     const [transpoSelectedData, setTranspoSelectedData] = useState(
         transusers.transInfo
@@ -670,6 +673,7 @@ const SellBillStep3 = (props) => {
                 });
                 console.log(editBillRequestObj, "edit bill request");
                 console.log(response);
+                props.closem();
                 props.closeStep3Modal();
                 localStorage.setItem("stepOneSingleBook", false);
                 localStorage.setItem("billViewStatus", false);
@@ -690,8 +694,11 @@ const SellBillStep3 = (props) => {
                 toast.success(response.data.status.description, {
                   toastId: "success1",
                 });
-    
+                props.closem();
                 props.closeStep3Modal();
+                window.setTimeout(function () {
+                  window.location.reload();
+                }, 2000);
                 localStorage.setItem("stepOneSingleBook", false);
                 navigate("/sellbillbook");
               }
