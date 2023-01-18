@@ -45,10 +45,8 @@ const Step22 = (props) => {
   const [weightDefaultValue, setweightValue] = useState();
 
   const date= billEditItemInfo.selectedBillDate !== null?billEditItemInfo.selectedBillDate:new Date();
-  console.log(billEditItemInfo,date,"date");
   var cropObjectArr = [];
   // navigate to previous step
-  console.log(users.buyerInfo, "buyerInfo")
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
@@ -120,7 +118,7 @@ const Step22 = (props) => {
       ? props.cropEditObject.lineItems
       : props.cropEditObject
     // === null?'':props.slectedCropstableArray;
-    console.log("useeffect", cropTableEditStatus, cropObjectArr);
+    console.log("useeffect", cropTableEditStatus,billEditStatus,cropObjectArr,props.cropEditObject);
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
@@ -251,7 +249,10 @@ const Step22 = (props) => {
       setPreferedCropsData(deSelectedCrop);
     }
   };
-  // function to nevigate to step3 page
+
+  //To store props.selectedCropsTable Array
+  const[propsSelectedCrops, setPropsSelectedCrops] = useState(props.slectedCropstableArray);
+    // function to nevigate to step3 page
   const addStep3Modal = () => {
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
@@ -296,8 +297,9 @@ const Step22 = (props) => {
     });
     // var selectedArray = props.billEditStatus ? ;
     if (billEditStatus) {
-      props.slectedCropstableArray.lineItems =
-        updatedItemList.length != 0 ? updatedItemList : cropData;
+      setPropsSelectedCrops(cropData.length !== 0 ? cropData : updatedItemList);
+      // props.slectedCropstableArray.lineItems =
+      //   updatedItemList.length != 0 ? updatedItemList : cropData;
     }
 
     if (h.length > 0) {
@@ -400,7 +402,8 @@ const Step22 = (props) => {
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
-        props.parentcall(updatedItemList, billEditStatus);
+        props.parentcall(cropData, billEditStatus);
+        props.slectedCropstableArray=cropData;
       }
     }
   };

@@ -15,13 +15,13 @@ const Steps = (props) => {
     console.log(chaild, editStatus, "crops");
     setSelctedCrops(chaild);
   };
+  console.log(selctedCrops,"selected crops")
   const [billStatus, setBillstatus] = useState(false);
   const [selectedDate, setselectedDate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
 
   const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
-  console.log(partyType,"parties");
 
   const billeditCallback = (
     billEditStatus,
@@ -48,7 +48,6 @@ const Steps = (props) => {
   const dispatch = useDispatch();
   const clearData=(e)=>{
     dispatch(selectTrans(null)); 
-    dispatch(selectBuyer(null));
   }
   return (
     <Modal
@@ -92,7 +91,7 @@ const Steps = (props) => {
                 //   selectedBilldate={selectedDate}
                 />
               );
-            case partyType.toUpperCase()==='SELLER' || partyType.toUpperCase()==='FARMER' && "step3" :
+            case partyType.toUpperCase() ==='SELLER' && "step3" :
               return (
                 <Step33
                   slectedCropsArray={selctedCrops}

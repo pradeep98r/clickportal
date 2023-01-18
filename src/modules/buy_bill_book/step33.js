@@ -39,8 +39,6 @@ const Step33 = (props) => {
     //users.buyerInfo
     buyerInfo
   );
-  console.log(partnerSelectDate,"Date");
-  console.log(partnerSelectedData,"party1");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -54,6 +52,7 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
+    console.log(billEditItem,"billeditItem");
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -93,6 +92,7 @@ const Step33 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
+
     if (partnerSelectedData != null) {
       var pID = editStatus
         ? billEditItem.farmerId
@@ -587,7 +587,7 @@ const Step33 = (props) => {
     });
   }
   // }
-
+  console.log(lineItemsArray,"lineItems")
   const billRequestObj = {
     actualPayble: Number(getActualPayble()),
     advance: Number(advancesValue),
@@ -692,11 +692,16 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            props.closeStep3Modal();
+            console.log(response,billRequestObj,"see")
+            props.closem();
+            // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             navigate("/buy_bill_book");
+            // window.setTimeout(function () {
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {
@@ -716,11 +721,10 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             props.closem();
+            navigate("/buy_bill_book");
             window.setTimeout(function () {
               window.location.reload();
             }, 2000);
-            navigate("/buy_bill_book");
-            // props.closem();
             console.log("add");
           }
         },

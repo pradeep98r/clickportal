@@ -11,7 +11,6 @@ const BillDateSelection = (props) => {
   const [selectedDate, setStartDate] = useState(
     billDateselected !== null ? billDateselected : new Date()
   );
-  console.log(billDateselected,selectedDate,"dates");
   //   props.parentCallbackDate(selectedDate)
   const dispatch = useDispatch();
   const onclickDate = (date) => {

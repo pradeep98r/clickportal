@@ -32,7 +32,6 @@ const Step3PartySelect = (props) => {
   const [partyType, setPartnerType] = useState(selectedPartyType);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  console.log(selectedPartyType,"party type");
   const partnerSelectedData =
     selectedPartyType.toLowerCase() === "buyer" || selectedPartyType.toLowerCase() === 'seller'
       ? props.selectedBuyerSellerData
@@ -42,11 +41,8 @@ const Step3PartySelect = (props) => {
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
   );
-  console.log(props.transpoSelectedData,"transpoSelectedData");
   const [getPartyItem, setGetPartyItem] = useState(null);
   const billeditStatus = billEditItemInfo?.billEditStatus;
-
-  console.log(billeditStatus,props.selectedBuyerSellerData,"status");
   const billEditItem = props.billEditItemval;
   var step2CropEditStatus = step2CropEditStatus;
   const [allData, setAllData] = useState([]);
@@ -131,7 +127,6 @@ const Step3PartySelect = (props) => {
       var h = JSON.parse(localStorage.getItem("selectedBuyer"));
       setPartySelectedData(h);
       dispatch(selectBuyer(item));
-      console.log(users.buyerInfo,"step3 buyerInfo");
       setPartnerDataStatus(false);
       setPartySelectStatus(true);
       
@@ -147,14 +142,12 @@ const Step3PartySelect = (props) => {
     }
     setPartnerType(type);
   };
-  console.log(users.buyerInfo,"step3 buyerInfo1");
   const [searchPartyItem, setSearchPartyItem] = useState("");
   const [partnerDataStatus, setPartnerDataStatus] = useState(false);
   const [transpoDataStatus, setTranspoDataStatus] = useState(false);
   const [count, setCount] = useState(0);
 
   const partnerClick = (type) => {
-    console.log(type,"clickType")
     setCount(count + 1);
     if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
       if (count % 2 == 0) {
@@ -193,7 +186,6 @@ const Step3PartySelect = (props) => {
   };
   const dispatch = useDispatch();
   const step2CropTableOnclick = (cropEditArray) => {
-      console.log(cropEditArray,props.billEditItemval)
     step2CropEditStatus = true;
     dispatch(selectSteps("step2"));
     setShowCropModalStatus(true);
@@ -275,7 +267,7 @@ const Step3PartySelect = (props) => {
                       ? partySelecteData.mobile
                       : billEditItem.partyType == "FARMER"
                       ? billEditItem.farmerMobile
-                      : billEditItem.buyerMobile
+                      : billEditItem.mobile
                     : partySelecteData.mobile}
                 </h6>
                 <p>{partnerData.buyerAddress}</p>
@@ -460,11 +452,11 @@ const Step3PartySelect = (props) => {
             {billeditStatus ? (
               <div className="d-flex">
                 <img
-                  src={billEditItem.lineItems[0]?.imageUrl}
+                  src={billEditItem.lineItems[0].imageUrl}
                   className="edit_crop_item"
                 />
                 <p className="edit_crop_item_len d-flex align-items-center">
-                  <p>{billEditItem.lineItems[0]?.length}</p>
+                  <p>{billEditItem.lineItems.length}</p>
                   <span className="ml-3">Crops</span>
                 </p>
               </div>

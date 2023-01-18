@@ -8,7 +8,7 @@ import "../sell_bill_book/step3.scss";
 import { useState, useEffect } from "react";
 import "../../modules/buy_bill_book/step1.scss";
 import Step3PartySelect from "../buy_bill_book/step3PartySelect";
-import { getSystemSettings } from "../../actions/billCreationService";
+import { getOutstandingBal, getSystemSettings } from "../../actions/billCreationService";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import { getText } from "../../components/getText";
@@ -28,7 +28,6 @@ const SellBillStep3 = (props) => {
     const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
     const billDateSelected = billEditItemInfo.selectedBillDate !==null?billEditItemInfo.selectedBillDate:
     new Date();
-    console.log(billDateSelected,"selected");
     var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
     const transusers = useSelector((state) => state.transInfo);
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -40,12 +39,9 @@ const SellBillStep3 = (props) => {
         //users.buyerInfo
         buyerInfo
     );
-    console.log(partnerSelectDate,"dater");
-    console.log(partnerSelectedData,"partnerSelected",buyerInfo,"buyerInfo", users,"users");
     const [transpoSelectedData, setTranspoSelectedData] = useState(
         transusers.transInfo
     );
-    console.log(transpoSelectedData,"trans");
     const [includeComm, setIncludeComm] = useState("");
     const [includeRetComm, setIncludeRetComm] = useState("");
     const [addRetComm, setAddRetComm] = useState(false);
@@ -55,7 +51,7 @@ const SellBillStep3 = (props) => {
     const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedSellCropsArray;
-
+    console.log(props.slectedCropstableArray);
     const [commValue, getCommInput] = useState(0);
     const [retcommValue, getRetCommInput] = useState(0);
     const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -79,6 +75,7 @@ const SellBillStep3 = (props) => {
             ? billEditItemInfo.selectedBillInfo.lineItems
             : billEditItem.lineItems
           : props.slectedSellCropsArray;
+          console.log(cropArrays,"cropArraus");
         var h = [];
         for (var c = 0; c < cropArrays.length; c++) {
           if (
@@ -95,11 +92,19 @@ const SellBillStep3 = (props) => {
           tableChangeStatusval = true;
           setTableChangeStatus(true);
         }
+        if (partnerSelectedData != null) {
+          var pID = editStatus
+            ? billEditItem.buyerId
+            : partnerSelectedData.buyerId;
+          getOutstandingBal(clickId, pID).then((res) => {
+            setOutsBal(res.data.data == null ? 0 : res.data.data);
+          });
+        }
         getGrossTotalValue(
           editStatus
             ? step2CropEditStatus
-              ? billEditItemInfo.selectedBillInfo.lineItems
-              : props.slectedSellCropsArray
+              ? props.slectedSellCropsArray
+              :billEditItemInfo.selectedBillInfo.lineItems 
             : props.slectedSellCropsArray
         );
         getSystemSettings(clickId).then((res) => {
@@ -155,7 +160,7 @@ const SellBillStep3 = (props) => {
         var item = editStatus
         ? step2CropEditStatus
             ? props.slectedSellCropsArray
-            : props.billEditItemInfo.selectedBillInfo.lineItems
+            : billEditItemInfo.selectedBillInfo.lineItems
         : props.slectedSellCropsArray;
         for (var i = 0; i < item.length; i++) {
         totalQty += parseInt(item[i].qty);
@@ -416,17 +421,18 @@ const SellBillStep3 = (props) => {
           total += editStatus
             ? step2CropEditStatus
               ? items[i].total
-              : items[i].grossTotal
+              : items[i].total
             : items[i].total;
           totalunitvalue += editStatus
             ? step2CropEditStatus
               ? parseInt(items[i].qty)
-              : items[i].lineItems[i].qty
+              :parseInt(items[i].qty)// items[i].lineItems[i].qty
             : parseInt(items[i].qty);
           gTotal = total;
           setGrossTotal(total);
           setTotalUnits(totalunitvalue);
         }
+
     };
     const getTotalValue = (value) => {
         return (value / 100) * grossTotal;
@@ -550,6 +556,7 @@ const SellBillStep3 = (props) => {
         bags: cropArray[i].bags,
       });
     }
+    console.log(lineItemsArray,"lineItems Array");
     const getActualRcvd = () => {
       var actualRcvd = getTotalBillAmount() - Number(cashRcvdValue);
       if (includeComm) {
@@ -638,7 +645,7 @@ const SellBillStep3 = (props) => {
           otherFee: Number(otherfeeValue).toFixed(2),
           outStBal: outBal,
           paidTo: 0,
-          partyId: billEditItem.partyId, //partnerSelectedData.partyId,
+          partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
           rent:
             rentTotalValue != 0
               ? Number(rentTotalValue)
@@ -674,10 +681,13 @@ const SellBillStep3 = (props) => {
                 console.log(editBillRequestObj, "edit bill request");
                 console.log(response);
                 props.closem();
-                props.closeStep3Modal();
+                // props.closeStep3Modal();
                 localStorage.setItem("stepOneSingleBook", false);
                 localStorage.setItem("billViewStatus", false);
                 navigate("/sellbillbook");
+                window.setTimeout(function () {
+                  window.location.reload();
+                }, 2000);
               }
             },
             (error) => {
@@ -695,12 +705,12 @@ const SellBillStep3 = (props) => {
                   toastId: "success1",
                 });
                 props.closem();
-                props.closeStep3Modal();
+                // props.closeStep3Modal();
+                localStorage.setItem("stepOneSingleBook", false);
+                navigate("/sellbillbook");
                 window.setTimeout(function () {
                   window.location.reload();
                 }, 2000);
-                localStorage.setItem("stepOneSingleBook", false);
-                navigate("/sellbillbook");
               }
             },
             (error) => {
@@ -1074,7 +1084,7 @@ const SellBillStep3 = (props) => {
             <div
               className="card default_card comm_total_card"
               id="scroll_style"
-            >
+              >
               {allGroups.length > 0
                 ? allGroups.map((item, index) => {
                     if (item.tableType == 2) {

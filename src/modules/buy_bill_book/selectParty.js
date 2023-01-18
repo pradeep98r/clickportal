@@ -19,6 +19,7 @@ const SelectPartner = (props) => {
   const langFullData = JSON.parse(langData);
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
+
   const navigate = useNavigate();
   console.log(props.partyType,"party types");
   const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
