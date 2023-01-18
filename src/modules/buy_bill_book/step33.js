@@ -20,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { getText } from "../../components/getText";
 import Step3PartySelect from "./step3PartySelect";
+import { tableEditStatus } from "../../reducers/billEditItemSlice";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -1061,8 +1062,10 @@ const Step33 = (props) => {
   const dispatch = useDispatch();
   const previousStep = () => {
     dispatch(selectSteps("step2"));
+    console.log(cropEditObject,slectedCropstableArray)
+    dispatch(tableEditStatus(true))
     props.step3ParentCallback(
-      cropEditObject,
+        props.slectedCropsArray,
       slectedCropstableArray,
     );
   };

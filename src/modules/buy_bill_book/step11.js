@@ -40,27 +40,28 @@ const Step11 = (props) => {
   const [partnerData, setPartnerData] = useState(null);
   const [partType, separtType] = useState("");
   const [partysType, setpartysType] = useState("");
-  const [selectedDate, setSelectedDate] = useState(
-    billDateSelected != null ? billDateSelected : new Date()
-  );
+//   const [selectedDate, setSelectedDate] = useState(
+//     billDateSelected != null ? billDateSelected : new Date()
+//   );
   const callbackFunction = (childData, party, type) => {};
   const callbackFunctionDate = (date) => {
-    setSelectedDate(date);
+    // setSelectedDate(date);
   };
   const linkPath = localStorage.getItem('LinkPath');
-  console.log(linkPath);
   const addCropModal = () => {
     dispatch(selectSteps("step2"));
     dispatch(selectBill({}));
     dispatch(editStatus(false));
-    dispatch(tableEditStatus(false));
-    dispatch(billDate(selectedDate));
+    dispatch(tableEditStatus(billEditItemInfo?.cropTableEditStatus ? true :false));
+    // dispatch(billDate(selectedDate));
     if(linkPath ==='/sellbillbook'){
       dispatch(selectedParty("buyer"));
-      console.log("selected as buyer");
     }else{
       dispatch(selectedParty("seller"));
     }
+    var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
+    console.log(billEditItemInfo?.cropTableEditStatus)
+    props.billEditStatuscallback(h);
   };
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {

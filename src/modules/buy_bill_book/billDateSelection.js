@@ -1,6 +1,6 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { billDate } from "../../reducers/billEditItemSlice";
 const langData = localStorage.getItem("languageData");
@@ -17,7 +17,9 @@ const BillDateSelection = (props) => {
     setStartDate(date);
     dispatch(billDate(date));
   };
-
+  useEffect(() => {
+    dispatch(billDate(selectedDate));
+  },[])
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
   const handleCheckEvent = () => {
     if (!checked) {

@@ -827,6 +827,8 @@ article.on {
   border-top: 0px;
   border-radius: 0px 0px 10px 10px;
   background:#FFFFFF ;
+  overflow-y: auto;
+  height: calc(100vh - 300px);
 }
 .small_text {
   font-size: 10px;
@@ -969,8 +971,8 @@ word-wrap: normal;
   background-color: blue;
 }
 .buy_bills_view {
-  overflow-y: auto;
-  height: calc(100vh - 140px);
+  // overflow-y: auto;
+  // height: calc(100vh - 140px);
 }
 .left-arrow-img{
   // padding: 0px 50px;

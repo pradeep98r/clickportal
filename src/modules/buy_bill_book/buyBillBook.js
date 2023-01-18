@@ -24,6 +24,7 @@ import {
 import { useDispatch } from "react-redux";
 import { selectSteps } from "../../reducers/stepsSlice";
 import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectTrans } from "../../reducers/transSlice"
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -114,6 +115,7 @@ function BuyBillBook() {
     setShowStepsModal(true);
     dispatch(selectSteps('step1'))
     dispatch(selectBuyer(null));
+    dispatch(selectTrans(null))
   };
 
   const handleSearch = (event) => {
