@@ -58,7 +58,6 @@ const Step11 = (props) => {
     dispatch(selectSteps("step2"));
     dispatch(selectBill({}));
     dispatch(editStatus(false));
-    console.log(selectedDate,"selected step1 date")
     dispatch(billDate(billDateSelected));
     dispatch(tableEditStatus(billEditItemInfo?.cropTableEditStatus ? true :false));
     // dispatch(billDate(selectedDate));
@@ -91,7 +90,7 @@ const Step11 = (props) => {
               <div className="col-lg-5 ">
                 <BillDateSelection
                   parentCallbackDate={callbackFunctionDate}
-                  billDate={selectedDate}//{null}
+                  billDate={null}//{null}
                 />
               </div>
               <div className="col-lg-3 p-0">

@@ -568,7 +568,7 @@ const Step33 = (props) => {
     ? step2CropEditStatus
       ? props.slectedCropsArray
       :billEditItemInfo.selectedBillInfo.lineItems
-      : billEditItem.lineItems
+      : props.slectedCropsArray//billEditItem.lineItems
     // : props.slectedCropsArray;
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
