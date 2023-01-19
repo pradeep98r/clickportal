@@ -11,15 +11,16 @@ import { selectBuyer } from "../../reducers/buyerSlice";
 const Steps = (props) => {
   const selectedStep = useSelector((state) => state.stepsInfo);
   const [selctedCrops, setSelctedCrops] = useState([]);
+  const [billStatus, setBillstatus] = useState(false);
+  const [selectedDate, setselectedDate] = useState(false);
+  const [cropEditObject, setcropEditObject] = useState([]);
+  const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
   const callbackfunction = (chaild, editStatus) => {
     console.log(chaild, editStatus, "crops");
     setSelctedCrops(chaild);
   };
   console.log(selctedCrops,"selected crops")
-  const [billStatus, setBillstatus] = useState(false);
-  const [selectedDate, setselectedDate] = useState(false);
-  const [cropEditObject, setcropEditObject] = useState([]);
-  const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
+  
 
   const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
 

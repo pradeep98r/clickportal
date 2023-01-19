@@ -45,8 +45,10 @@ const Step22 = (props) => {
   const [weightDefaultValue, setweightValue] = useState();
 
   const date= billEditItemInfo.selectedBillDate !== null?billEditItemInfo.selectedBillDate:new Date();
+  console.log(billEditItemInfo,date,"date");
   var cropObjectArr = [];
   // navigate to previous step
+  console.log(users.buyerInfo, "buyerInfo")
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
@@ -118,7 +120,7 @@ const Step22 = (props) => {
       ? props.cropEditObject.lineItems
       : props.cropEditObject
     // === null?'':props.slectedCropstableArray;
-    console.log("useeffect", cropTableEditStatus,billEditStatus,cropObjectArr,props.cropEditObject);
+    console.log(cropObjectArr,"cropObjjArr");
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
@@ -250,9 +252,8 @@ const Step22 = (props) => {
     }
   };
 
-  //To store props.selectedCropsTable Array
-  const[propsSelectedCrops, setPropsSelectedCrops] = useState(props.slectedCropstableArray);
-    // function to nevigate to step3 page
+  const [propsSelectedCrops, setPropsSelected] = useState(props.slectedCropstableArray.lineItems);
+  // function to nevigate to step3 page
   const addStep3Modal = () => {
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
@@ -276,17 +277,21 @@ const Step22 = (props) => {
           setShowStep3SellModalStatus(true);
         }
         localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
+        console.log(cropObjectArr,billEditStatus,"values")
         if (billEditStatus) {
           var lineitem = billEditStatus
-            ? cropObjectArr
+            ? props.cropEditObject.lineItems
             : JSON.parse(localStorage.getItem("lineItemsEdit"));
+            console.log(lineitem,"lineItem");
           var index1 = lineitem.findIndex(
-            (obj) => obj.cropId == cropData[index].cropId
+            (obj) => obj.cropId == item.cropId//cropData[index].cropId
           );
+          console.log(index1,index,"indexes")
           if (index1 == index) {
             if (lineitem[index1].id == 0) {
               cropData[index].status = 1;
             } else {
+              console.log("came to 2")
               cropData[index].status = 2;
             }
           } else {
@@ -297,7 +302,7 @@ const Step22 = (props) => {
     });
     // var selectedArray = props.billEditStatus ? ;
     if (billEditStatus) {
-      setPropsSelectedCrops(cropData.length !== 0 ? cropData : updatedItemList);
+      setPropsSelected(cropData.length != 0 ? cropData : updatedItemList);
       // props.slectedCropstableArray.lineItems =
       //   updatedItemList.length != 0 ? updatedItemList : cropData;
     }
@@ -403,7 +408,6 @@ const Step22 = (props) => {
         addStep3Modal();
         dispatch(selectSteps("step3"));
         props.parentcall(cropData, billEditStatus);
-        props.slectedCropstableArray=cropData;
       }
     }
   };

@@ -52,7 +52,6 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
-    console.log(billEditItem,"billeditItem");
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -565,9 +564,10 @@ const Step33 = (props) => {
 
   var cropArray = editStatus
     ? step2CropEditStatus
-      ? billEditItemInfo.selectedBillInfo.lineItems
+      ? props.slectedCropsArray
+      :billEditItemInfo.selectedBillInfo.lineItems
       : billEditItem.lineItems
-    : props.slectedCropsArray;
+    // : props.slectedCropsArray;
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -587,7 +587,7 @@ const Step33 = (props) => {
     });
   }
   // }
-  console.log(lineItemsArray,"lineItems")
+
   const billRequestObj = {
     actualPayble: Number(getActualPayble()),
     advance: Number(advancesValue),
@@ -692,16 +692,15 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(response,billRequestObj,"see")
             props.closem();
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             navigate("/buy_bill_book");
-            // window.setTimeout(function () {
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
@@ -722,6 +721,7 @@ const Step33 = (props) => {
             localStorage.setItem("LinkPath", "/buy_bill_book");
             props.closem();
             navigate("/buy_bill_book");
+            // props.closem();
             window.setTimeout(function () {
               window.location.reload();
             }, 2000);
