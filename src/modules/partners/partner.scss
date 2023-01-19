@@ -102,8 +102,8 @@
   margin-bottom: 0;
   .date_icon img {
     position: absolute;
-    top: 10px;
-    left: 50px;
+    top: 12px;
+    left: 60px;
     z-index: 99;
     width: 15px;
   }
@@ -223,4 +223,11 @@ line-height: 18px;
   background-color: #16A12C;
   color: #fff;
   border: 1px solid transparent;
+}
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
 }

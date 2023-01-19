@@ -108,6 +108,11 @@ const SelectBags = (props) => {
     var arr2 = [...invArr, ...arr1];
     setInvArr(arr2);
   };
+  const resetInput = (e) => {
+    if (e.target.value == 0) {
+      e.target.value = "";
+    }
+  };
   return (
     <Modal
       show={props.show}
@@ -154,6 +159,7 @@ const SelectBags = (props) => {
                       name="totalbags"
                       value={props.cropsArray[0].unitValue}
                       onChange={addInvQuantityValue(0)}
+                      onFocus={(e) => resetInput(e)}
                     />
                   </td>
                   <td className="col-3">
@@ -163,6 +169,7 @@ const SelectBags = (props) => {
                       name="totalweight"
                       value={getInvTotalValue()}
                       onChange={getInvTotalValue}
+                      onFocus={(e) => resetInput(e)}
                     />
                   </td>
                 </tr>
@@ -190,6 +197,7 @@ const SelectBags = (props) => {
                               name="weight"
                               value={invArr[i].weight - invArr[i].wastage}
                               onChange={getInvWeightValue(invArr, i)}
+                              onFocus={(e) => resetInput(e)}
                             />
                           </td>
                           <td className="col-3">
@@ -199,6 +207,7 @@ const SelectBags = (props) => {
                               className="form-control wastage_val mb-0"
                               value={invArr[i].wastage}
                               onChange={getInvWastageValue(invArr, i)}
+                              onFocus={(e) => resetInput(e)}
                             />
                           </td>
                         </tr>

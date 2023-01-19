@@ -24,6 +24,7 @@ import {
 import { useDispatch } from "react-redux";
 import { selectSteps } from "../../reducers/stepsSlice";
 import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectTrans } from "../../reducers/transSlice"
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -114,6 +115,7 @@ function BuyBillBook() {
     setShowStepsModal(true);
     dispatch(selectSteps('step1'))
     dispatch(selectBuyer(null));
+    dispatch(selectTrans(null))
   };
 
   const handleSearch = (event) => {
@@ -300,7 +302,7 @@ function BuyBillBook() {
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         {bill.lineItems.map((crop, index) => (
-                                          <div className="row" key={index}>
+                                          <div className="row crops_row_bills" key={index}>
                                             <div className="col-lg-4 col-sm-12 col">
                                               <p className="flex_class crop_name">
                                                 <img

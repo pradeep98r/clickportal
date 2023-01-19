@@ -25,12 +25,14 @@ const Steps = (props) => {
   const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
 
   const billeditCallback = (
-    billEditStatus,
-    selectedBilldate,
-    cropTableEditStatus
+      crops
+    // billEditStatus,
+    // selectedBilldate,
+    // cropTableEditStatus
   ) => {
-    setBillstatus(billEditStatus);
-    setselectedDate(selectedBilldate);
+    setcropEditObject(crops);
+    // setBillstatus(billEditStatus);
+    // setselectedDate(selectedBilldate);
   };
   console.log(slectedCropstableArray,"array");
   const step3ChildCallback = (
@@ -42,7 +44,7 @@ const Steps = (props) => {
     // selectedBilldate,
     // selectedBuyerSellerData
   ) => {
-      console.log(cropEditObject,slectedCropstableArray)
+     console.log(cropEditObject,slectedCropstableArray)
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
@@ -69,7 +71,7 @@ const Steps = (props) => {
             }
           })()}
         </h5>
-        <img alt="image" src={clo} onClick={e=>{clearData(e);props.closeStepsModal();}} />
+        <img alt="image" src={clo} className="cloose" onClick={e=>{clearData(e);props.closeStepsModal();}} />
       </div>
       <div className="modal-body p-0">
         {(() => {

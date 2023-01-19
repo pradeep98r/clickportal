@@ -445,7 +445,7 @@ const Step3PartySelect = (props) => {
       ) : (
         ""
       )}
-      <h5 className="date_sec head_modal">Crop Information </h5>
+      <h5 className="date_sec head_modal pb-0">Crop Information </h5>
       <div className="selectparty_field edit_crop_item_div">
         <div className="d-flex align-items-center justify-content-between">
           <p className="d-flex align-items-center">

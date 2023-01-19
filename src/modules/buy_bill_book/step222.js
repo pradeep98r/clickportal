@@ -15,6 +15,7 @@ import {
   billDate,
   billViewStatus,
   cropEditStatus,
+  tableEditStatus
 } from "../../reducers/billEditItemSlice";
 var array = [];
 const Step22 = (props) => {
@@ -24,6 +25,7 @@ const Step22 = (props) => {
   const billEditStatus = billEditItemInfo?.billEditStatus;
   const cropTableEditStatus = billEditItemInfo?.cropTableEditStatus;
   dispatch(cropEditStatus(billEditStatus ? true : false));
+  console.log(cropTableEditStatus)
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
@@ -53,11 +55,11 @@ const Step22 = (props) => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
     dispatch(billDate(date));
+    localStorage.setItem('lineItemsEdit',JSON.stringify(updatedItemList));
+    dispatch(tableEditStatus(true))
   };
   //   click on particular crop function
   const cropOnclick = (crop, id, index2, preferedCrops) => {
-    console.log(crop);
-    console.log(index2, preferedCrops, props.cropEditObject);
     Object.assign(
       crop,
       { wastage: 0 },
@@ -75,7 +77,6 @@ const Step22 = (props) => {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
-    console.log(cropData);
   };
   //   getting all crops popup when click on other crop
   const allCropData = () => {
@@ -118,14 +119,12 @@ const Step22 = (props) => {
   useEffect(() => {
     cropObjectArr = billEditStatus
       ? props.cropEditObject.lineItems
-      : props.cropEditObject
-    // === null?'':props.slectedCropstableArray;
-    console.log(cropObjectArr,"cropObjjArr");
+      : props.cropEditObject;
+      console.log(cropObjectArr)
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
     var a = [];
-    // console.log(billEditStatus, cropTableEditStatus);
     if (cropTableEditStatus) {
       if (billEditStatus) {
         for (var d = 0; d < cropObjectArr.length; d++) {
@@ -141,11 +140,10 @@ const Step22 = (props) => {
             // cropObjectArr[d] = { ...object }
           }
         }
-        console.log(a)
         cropResponseData([...a]);
       } else {
+          console.log(cropObjectArr,lineIt)
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
-        console.log(lineIt);
         if (lineIt != null) {
           cropResponseData([...lineIt]);
           setUpdatedItemList(lineIt);
@@ -153,7 +151,6 @@ const Step22 = (props) => {
         }
       }
       var cropArr = billEditStatus ? cropObjectArr : lineIt;
-      console.log(cropArr, billEditStatus, lineIt);
       cropArr?.map((item, index) => {
         var k = preferedCropsData.findIndex(
           (obj) => obj.cropId === item.cropId
@@ -527,7 +524,9 @@ const Step22 = (props) => {
       cropArray[index].total = 0;
       cropArray[index].qty = 0;
       cropArray[index].qtyUnit = "";
-      cropDeletedList.push(cropArray[index]);
+      if(billEditStatus){
+        cropDeletedList.push(cropArray[index]);
+      }
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
       if (index1 != -1) {
@@ -536,13 +535,14 @@ const Step22 = (props) => {
           if (billEditStatus) {
             list.splice(index1, 1);
           } else {
+              console.log('else')
             getPreferredCrops(clickId, clientId, clientSecret)
               .then((response) => {
                 dummyList = response.data.data;
                 let updatedarr = dummyList.map((item, i) => {
                   if (item.cropId == list[index1].cropId) {
                     return { ...dummyList[i] };
-                  } else {
+                  } else if((item.cropId != list[index1].cropId)) {
                     return null;
                   }
                 });
@@ -551,6 +551,8 @@ const Step22 = (props) => {
                     arrylist.push(updatedarr[k]);
                   }
                 }
+
+                console.log(dummyList,list[index1],updatedarr,arrylist)
                 for (var k = 0; k < list.length; k++) {
                   for (var t = 0; t < arrylist.length; t++) {
                     if (list[k].cropId == arrylist[t].cropId) {
@@ -560,6 +562,9 @@ const Step22 = (props) => {
                       // return list;
                     }
                   }
+                }
+                if(arrylist.length == 0){
+                    list.splice(index1, 1);
                 }
                 setShowStep3Modal(false);
                 setPreferedCropsData([...list]);
@@ -668,7 +673,7 @@ const Step22 = (props) => {
           )}
           <div
             className="text-center crop_div other_Crop"
-            onClick={allCropData}
+            onClick={()=>allCropData()}
           >
             <img src={other_crop} />
             <p>Other Crop</p>
