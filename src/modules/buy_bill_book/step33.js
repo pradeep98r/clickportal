@@ -76,6 +76,7 @@ const Step33 = (props) => {
         ? billEditItemInfo.selectedBillInfo.lineItems
         : billEditItem.lineItems
       : props.slectedCropsArray;
+      console.log(cropArrays,"cropArrays")
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -515,6 +516,7 @@ const Step33 = (props) => {
     return Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2);
   };
   const getFinalLedgerbalance = () => {
+      console.log(transTotalValue,transportationValue,rentTotalValue,rentValue,labourTotalValue,laborChargeValue)
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
@@ -1105,10 +1107,10 @@ const Step33 = (props) => {
     dispatch(selectSteps("step2"));;
     dispatch(selectBuyer(buyerInfo));
     dispatch(selectTrans(transusers.transInfo));
-    console.log(cropEditObject,slectedCropstableArray)
+    console.log(cropEditObject,props.slectedCropsArray,slectedCropstableArray)
     dispatch(tableEditStatus(true))
     props.step3ParentCallback(
-        props.slectedCropsArray,
+        slectedCropstableArray,
       slectedCropstableArray,
     );
   };

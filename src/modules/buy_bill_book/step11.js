@@ -18,7 +18,6 @@ const Step11 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateSelected = billEditItemInfo?.selectedBillDate;
-  console.log(billDateSelected,"selected");
   const cancelStep = () => {
     dispatch(selectTrans(null)); 
     dispatch(selectBuyer(null));
@@ -31,7 +30,6 @@ const Step11 = (props) => {
     setPartnerData(users.buyerInfo);
     separtType(users.buyerInfo?.partyType.toLowerCase());
     if (users.buyerInfo?.itemtype != null) {
-      console.log(users.buyerInfo?.itemtype,"itemType");
       setpartysType(users.buyerInfo?.itemtype.toLowerCase());
     }
     if (users.buyerInfo?.partyType.toLowerCase() !== "transporter") {
@@ -67,7 +65,7 @@ const Step11 = (props) => {
       dispatch(selectedParty("seller"));
     }
     var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
-    console.log(billEditItemInfo?.cropTableEditStatus)
+    console.log(billEditItemInfo?.cropTableEditStatus,h)
     props.billEditStatuscallback(h);
   };
   const [onClickPage, setonClickPage] = useState(false);

@@ -21,11 +21,9 @@ const SelectPartner = (props) => {
   let [partnerData, setpartnerData] = useState(allData);
 
   const navigate = useNavigate();
-  console.log(props.partyType,"party types");
   const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
   props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : 
   props.partyType.toLowerCase() === 'transporter'? transusers.transInfo:'');
-  console.log(transusers.transInfo, getPartyItem,"select party");
   const fetchPertnerData = () => {
     var partnerType = "";
 
@@ -112,7 +110,6 @@ const SelectPartner = (props) => {
         return data.partyId.toString().search(value) != -1;
       }
     });
-    console.log(value,"value");
     if (value != "") {
       setpartnerData(result);
     } else if(value === ""){
