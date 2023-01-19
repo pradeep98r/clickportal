@@ -19,8 +19,13 @@ const SelectPartner = (props) => {
   const langFullData = JSON.parse(langData);
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
+
   const navigate = useNavigate();
-  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' ? users.buyerInfo : transusers.transInfo);
+  console.log(props.partyType,"party types");
+  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
+  props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : 
+  props.partyType.toLowerCase() === 'transporter'? transusers.transInfo:'');
+  console.log(transusers.transInfo, getPartyItem,"select party");
   const fetchPertnerData = () => {
     var partnerType = "";
 
@@ -65,6 +70,8 @@ const SelectPartner = (props) => {
     setGetPartyName(false);
     var itemtype;
     if (props.partyType == "Seller") {
+      localStorage.setItem("selectBuyertype", "seller");
+      itemtype = localStorage.getItem("selectBuyertype");
       // localStorage.setItem("selectPartytype", "seller");
       // itemtype = localStorage.getItem("selectPartytype");
       props.parentCallback(item, itemtype, props.partyType);
@@ -105,12 +112,14 @@ const SelectPartner = (props) => {
         return data.partyId.toString().search(value) != -1;
       }
     });
+    console.log(value,"value");
     if (value != "") {
       setpartnerData(result);
+    } else if(value === ""){
+      setpartnerData(allData);
     }
     setsearchValue(value);
   };
-
   return (
     <div>
       <div onClick={selectParty}>
@@ -160,7 +169,7 @@ const SelectPartner = (props) => {
                         onClick={() => partySelect(item)}
                         className={
                           "nav-item " +
-                          (item == getPartyItem ? "active_class" : "")
+                          (item.partyId == getPartyItem?.partyId ? "active_class" : "")
                         }
                       >
                         <div className="partner_card">

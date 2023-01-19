@@ -421,15 +421,14 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    console.log('edit')
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
     dispatch(selectBill(arr[0]))
     dispatch(editStatus(true))
     dispatch(tableEditStatus(false))
-    dispatch(billDate(new Date(singleBillData.billDate)))
-    dispatch(selectedParty(singleBillData.partyType));
+    dispatch(billDate(new Date(singleBillData.billDate)));
+    dispatch(selectedParty('SELLER'));
     // props.parentcall(
     //   false,
     //   true,

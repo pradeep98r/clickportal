@@ -8,7 +8,7 @@ import "../sell_bill_book/step3.scss";
 import { useState, useEffect } from "react";
 import "../../modules/buy_bill_book/step1.scss";
 import Step3PartySelect from "../buy_bill_book/step3PartySelect";
-import { getSystemSettings } from "../../actions/billCreationService";
+import { getOutstandingBal, getSystemSettings } from "../../actions/billCreationService";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import { getText } from "../../components/getText";
@@ -19,22 +19,26 @@ import {
 import clo from "../../assets/images/clo.png"
 import moment from "moment";
 import { selectSteps } from '../../reducers/stepsSlice';
+import $ from "jquery";
+import { selectTrans } from '../../reducers/transSlice';
+import { selectBuyer } from '../../reducers/buyerSlice';
 const SellBillStep3 = (props) => {
     const users = useSelector((state) => state.buyerInfo);
     console.log(users,"users");
     const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
-    const billDateSelected = billEditItemInfo?.selectedBillDate;
+    const billDateSelected = billEditItemInfo.selectedBillDate !==null?billEditItemInfo.selectedBillDate:
+    new Date();
     var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
     const transusers = useSelector((state) => state.transInfo);
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
     const navigate = useNavigate();
-
+    var buyerInfo = users.buyerInfo;
     var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
     const [partnerSelectedData, setpartnerSelectedData] = useState(
-        users.buyerInfo
+        //users.buyerInfo
+        buyerInfo
     );
-    console.log(partnerSelectedData,"partner");
     const [transpoSelectedData, setTranspoSelectedData] = useState(
         transusers.transInfo
     );
@@ -47,8 +51,7 @@ const SellBillStep3 = (props) => {
     const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedSellCropsArray;
-
-    console.log(billEditItem,props.slectedSellCropsArray);
+    console.log(props.slectedCropstableArray);
     const [commValue, getCommInput] = useState(0);
     const [retcommValue, getRetCommInput] = useState(0);
     const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -72,6 +75,7 @@ const SellBillStep3 = (props) => {
             ? billEditItemInfo.selectedBillInfo.lineItems
             : billEditItem.lineItems
           : props.slectedSellCropsArray;
+          console.log(cropArrays,"cropArraus");
         var h = [];
         for (var c = 0; c < cropArrays.length; c++) {
           if (
@@ -88,11 +92,19 @@ const SellBillStep3 = (props) => {
           tableChangeStatusval = true;
           setTableChangeStatus(true);
         }
+        if (partnerSelectedData != null) {
+          var pID = editStatus
+            ? billEditItem.buyerId
+            : partnerSelectedData.buyerId;
+          getOutstandingBal(clickId, pID).then((res) => {
+            setOutsBal(res.data.data == null ? 0 : res.data.data);
+          });
+        }
         getGrossTotalValue(
           editStatus
             ? step2CropEditStatus
-              ? billEditItemInfo.selectedBillInfo.lineItems
-              : props.slectedSellCropsArray
+              ? props.slectedSellCropsArray
+              :billEditItemInfo.selectedBillInfo.lineItems 
             : props.slectedSellCropsArray
         );
         getSystemSettings(clickId).then((res) => {
@@ -148,7 +160,7 @@ const SellBillStep3 = (props) => {
         var item = editStatus
         ? step2CropEditStatus
             ? props.slectedSellCropsArray
-            : props.billEditItemInfo.selectedBillInfo.lineItems
+            : billEditItemInfo.selectedBillInfo.lineItems
         : props.slectedSellCropsArray;
         for (var i = 0; i < item.length; i++) {
         totalQty += parseInt(item[i].qty);
@@ -409,17 +421,18 @@ const SellBillStep3 = (props) => {
           total += editStatus
             ? step2CropEditStatus
               ? items[i].total
-              : items[i].grossTotal
+              : items[i].total
             : items[i].total;
           totalunitvalue += editStatus
             ? step2CropEditStatus
               ? parseInt(items[i].qty)
-              : items[i].lineItems[i].qty
+              :parseInt(items[i].qty)// items[i].lineItems[i].qty
             : parseInt(items[i].qty);
           gTotal = total;
           setGrossTotal(total);
           setTotalUnits(totalunitvalue);
         }
+
     };
     const getTotalValue = (value) => {
         return (value / 100) * grossTotal;
@@ -543,6 +556,7 @@ const SellBillStep3 = (props) => {
         bags: cropArray[i].bags,
       });
     }
+    console.log(lineItemsArray,"lineItems Array");
     const getActualRcvd = () => {
       var actualRcvd = getTotalBillAmount() - Number(cashRcvdValue);
       if (includeComm) {
@@ -577,7 +591,7 @@ const SellBillStep3 = (props) => {
         commShown: isShown,
         comments: "hi",
         createdBy: 0,
-        buyerId: editStatus ? billEditItem.buyerId : partnerSelectedData.partyId,
+        buyerId: editStatus ? billEditItem.buyerId : buyerInfo.partyId,//partnerSelectedData.partyId,
         govtLevies: Number(levisValue),
         grossTotal: grossTotal,
         labourCharges:
@@ -631,7 +645,7 @@ const SellBillStep3 = (props) => {
           otherFee: Number(otherfeeValue).toFixed(2),
           outStBal: outBal,
           paidTo: 0,
-          partyId: billEditItem.partyId, //partnerSelectedData.partyId,
+          partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
           rent:
             rentTotalValue != 0
               ? Number(rentTotalValue)
@@ -666,10 +680,14 @@ const SellBillStep3 = (props) => {
                 });
                 console.log(editBillRequestObj, "edit bill request");
                 console.log(response);
-                props.closeStep3Modal();
+                props.closem();
+                // props.closeStep3Modal();
                 localStorage.setItem("stepOneSingleBook", false);
                 localStorage.setItem("billViewStatus", false);
                 navigate("/sellbillbook");
+                window.setTimeout(function () {
+                  window.location.reload();
+                }, 2000);
               }
             },
             (error) => {
@@ -686,10 +704,13 @@ const SellBillStep3 = (props) => {
                 toast.success(response.data.status.description, {
                   toastId: "success1",
                 });
-    
-                props.closeStep3Modal();
+                props.closem();
+                // props.closeStep3Modal();
                 localStorage.setItem("stepOneSingleBook", false);
                 navigate("/sellbillbook");
+                window.setTimeout(function () {
+                  window.location.reload();
+                }, 2000);
               }
             },
             (error) => {
@@ -700,7 +721,31 @@ const SellBillStep3 = (props) => {
           );
         }
     };
-    
+    const handleInputValueEvent = (e) =>{
+      $('input').keypress(function (e) {
+        var a = [];
+        var k = e.which;
+        if(e.charCode === 46) {
+            // if dot is the first symbol
+            if(e.target.value.length === 0 ) {
+                e.preventDefault();
+                return;
+            }
+            
+            // if there are dots already 
+            if( e.target.value.indexOf('.') !== -1 ) {
+               e.preventDefault();
+               return;
+            }   
+            
+            a.push(e.charCode);
+        }
+        for (i = 48; i < 58; i++)
+            a.push(i);
+        if (!($.inArray(k, a) >= 0))
+            e.preventDefault();
+      });
+    }
     const [enterVal, setEnterVal] = useState();
     const advLevOnchangeEvent = (groupLiist, index) => (e) => {
       var val = e.target.value.replace(/[^0-9.]/g, "");
@@ -816,7 +861,9 @@ const SellBillStep3 = (props) => {
       setAllGroups([...updatedItem]);
     };
     const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-      var val = e.target.value.replace(/[^0-9.]/g, "");
+      // var val = e.target.value.replace(/[^0-9.]/g, "");
+      handleInputValueEvent(e);
+      var val=e.target.value;
       // if (val != 0) {
       let updatedItem2 = groupLiist.map((item, i) => {
         if (i == index) {
@@ -996,14 +1043,21 @@ const SellBillStep3 = (props) => {
     const dispatch = useDispatch();
     const previousStep = () => {
         dispatch(selectSteps("step2"));
+        dispatch(selectBuyer(buyerInfo));
+        dispatch(selectTrans(transusers.transInfo));
         props.step3ParentCallback(
-        cropTableEditStatus,
-        cropEditObject,
-        props.billEditStatus,
-        slectedCropstableArray,
-        selectedPartyType,
-        selectedBilldate
+          cropEditObject,
+          slectedCropstableArray,
         );
+        // console.log(slectedCropstableArray,cropEditObject,"cropstable");
+        // props.step3ParentCallback(
+        // cropTableEditStatus,
+        // cropEditObject,
+        // props.billEditStatus,
+        // slectedCropstableArray,
+        // selectedPartyType,
+        // selectedBilldate
+        // );
     };
   return (
     <div>
@@ -1030,7 +1084,7 @@ const SellBillStep3 = (props) => {
             <div
               className="card default_card comm_total_card"
               id="scroll_style"
-            >
+              >
               {allGroups.length > 0
                 ? allGroups.map((item, index) => {
                     if (item.tableType == 2) {
@@ -1161,7 +1215,7 @@ const SellBillStep3 = (props) => {
                     {outBalformStatusvalue ? (
                         <div className="totals_value">
                         <h5>Final Ledger Balance (₹)</h5>
-                        <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+                        <h6 className="color_green">{getFinalLedgerbalance().toFixed(2)}</h6>
                         </div>
                     ) : (
                         <div className="totals_value">

@@ -1,25 +1,28 @@
 import { Modal } from "react-bootstrap";
 import Step11 from "./step11";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Step22 from "./step222";
 import clo from "../../assets/images/clo.png";
 import Step33 from "./step33";
 import { useState } from "react";
 import SellBillStep3 from "../sell_bill_book/sellBillStep3";
+import { selectTrans } from "../../reducers/transSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 const Steps = (props) => {
   const selectedStep = useSelector((state) => state.stepsInfo);
   const [selctedCrops, setSelctedCrops] = useState([]);
-  const callbackfunction = (chaild, editStatus) => {
-    console.log(chaild, editStatus, "crops");
-    setSelctedCrops(chaild);
-  };
   const [billStatus, setBillstatus] = useState(false);
   const [selectedDate, setselectedDate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
+  const callbackfunction = (chaild, editStatus) => {
+    console.log(chaild, editStatus, "crops");
+    setSelctedCrops(chaild);
+  };
+  console.log(selctedCrops,"selected crops")
+  
 
   const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
-  console.log(partyType,"parties");
 
   const billeditCallback = (
       crops
@@ -31,6 +34,7 @@ const Steps = (props) => {
     // setBillstatus(billEditStatus);
     // setselectedDate(selectedBilldate);
   };
+  console.log(slectedCropstableArray,"array");
   const step3ChildCallback = (
     // cropTableEditStatus,
     cropEditObject,
@@ -44,6 +48,10 @@ const Steps = (props) => {
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
+  const dispatch = useDispatch();
+  const clearData=(e)=>{
+    dispatch(selectTrans(null)); 
+  }
   return (
     <Modal
       show={props.showStepsModal}
@@ -63,13 +71,15 @@ const Steps = (props) => {
             }
           })()}
         </h5>
-        <img alt="image" src={clo} className="cloose" onClick={props.closeStepsModal} />
+        <img alt="image" src={clo} className="cloose" onClick={e=>{clearData(e);props.closeStepsModal();}} />
       </div>
       <div className="modal-body p-0">
         {(() => {
           switch (selectedStep.stepsInfo) {
             case "step1":
-              return <Step11 billEditStatuscallback={billeditCallback} />;
+              return <Step11 
+              billEditStatuscallback={billeditCallback}
+              closem={props.closeStepsModal} />;
             case "step2":
               return (
                 <Step22
@@ -79,11 +89,12 @@ const Steps = (props) => {
                 //   cropTableEditStatus={cropTableEditStatus}
                   cropEditObject={cropEditObject}
                   slectedCropstableArray={slectedCropstableArray}
+                  closem={props.closeStepsModal}
                 //   selectedPartyType={selectedPartyType}
                 //   selectedBilldate={selectedDate}
                 />
               );
-            case partyType.toUpperCase()==='SELLER' && "step3" :
+            case partyType.toUpperCase() ==='SELLER' && "step3" :
               return (
                 <Step33
                   slectedCropsArray={selctedCrops}

@@ -20,19 +20,25 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { getText } from "../../components/getText";
 import Step3PartySelect from "./step3PartySelect";
+import $ from "jquery";
+import { selectTrans } from "../../reducers/transSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 import { tableEditStatus } from "../../reducers/billEditItemSlice";
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
-  const billDateSelected = billEditItemInfo?.selectedBillDate;
+  const billDateSelected = billEditItemInfo.selectedBillDate!==null?billEditItemInfo.selectedBillDate:
+    new Date();
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const navigate = useNavigate();
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
+  var buyerInfo = users.buyerInfo;
   const [partnerSelectedData, setpartnerSelectedData] = useState(
-    users.buyerInfo
+    //users.buyerInfo
+    buyerInfo
   );
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
@@ -86,6 +92,7 @@ const Step33 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
+
     if (partnerSelectedData != null) {
       var pID = editStatus
         ? billEditItem.farmerId
@@ -559,9 +566,10 @@ const Step33 = (props) => {
 
   var cropArray = editStatus
     ? step2CropEditStatus
-      ? billEditItemInfo.selectedBillInfo.lineItems
-      : billEditItem.lineItems
-    : props.slectedCropsArray;
+      ? props.slectedCropsArray
+      :billEditItemInfo.selectedBillInfo.lineItems
+      : props.slectedCropsArray//billEditItem.lineItems
+    // : props.slectedCropsArray;
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -686,11 +694,15 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            props.closeStep3Modal();
+            props.closem();
+            // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             navigate("/buy_bill_book");
+            window.setTimeout(function () {
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
@@ -709,9 +721,13 @@ const Step33 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-
+            props.closem();
             navigate("/buy_bill_book");
             // props.closem();
+            window.setTimeout(function () {
+              window.location.reload();
+            }, 2000);
+            console.log("add");
           }
         },
         (error) => {
@@ -735,6 +751,31 @@ const Step33 = (props) => {
     }
   };
 
+  const handleInputValueEvent = (e) =>{
+    $('input').keypress(function (e) {
+      var a = [];
+      var k = e.which;
+      if(e.charCode === 46) {
+          // if dot is the first symbol
+          if(e.target.value.length === 0 ) {
+              e.preventDefault();
+              return;
+          }
+          
+          // if there are dots already 
+          if( e.target.value.indexOf('.') !== -1 ) {
+             e.preventDefault();
+             return;
+          }   
+          
+          a.push(e.charCode);
+      }
+      for (i = 48; i < 58; i++)
+          a.push(i);
+      if (!($.inArray(k, a) >= 0))
+          e.preventDefault();
+    });
+  }
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
@@ -860,8 +901,10 @@ const Step33 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    // var val = e.target.value.replace(/[^0-9.]/g, "");
+    handleInputValueEvent(e);
     // if (val != 0) {
+      var val = e.target.value;
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1059,7 +1102,9 @@ const Step33 = (props) => {
   };
   const dispatch = useDispatch();
   const previousStep = () => {
-    dispatch(selectSteps("step2"));
+    dispatch(selectSteps("step2"));;
+    dispatch(selectBuyer(buyerInfo));
+    dispatch(selectTrans(transusers.transInfo));
     console.log(cropEditObject,slectedCropstableArray)
     dispatch(tableEditStatus(true))
     props.step3ParentCallback(
