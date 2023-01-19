@@ -1189,7 +1189,7 @@ const BillView = (props) => {
                     </div>
                   </div>
                 )}
-                <div className="row">
+                <div className="row onoFooter_row">
                   <div className="col-lg-6">
                     <p className="ono-footer">
                       ONO-{moment(singleBillData.billDate).format("DDMMYYYY")}

@@ -34,7 +34,6 @@ const Step33 = (props) => {
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     users.buyerInfo
   );
-  console.log(partnerSelectedData,"party1");
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -48,7 +47,6 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
-    console.log(billEditItemInfo.selectedBillInfo)
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -164,7 +162,6 @@ const Step33 = (props) => {
       setGrossTotal(total);
       gTotal = total;
     }
-    console.log(total, editStatus, step2CropEditStatus);
   };
   const listSettings = (name, res, index) => {
     var totalQty = 0;
@@ -245,6 +242,7 @@ const Step33 = (props) => {
 
             break;
           case "TRANSPORTATION":
+             
             var trVa = editStatus
               ? tableChangeStatusval
                 ? res[j].value
@@ -252,9 +250,9 @@ const Step33 = (props) => {
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
-                ? totalQty * trVa
+                ? tableChangeStatusval ? trVa : totalQty * trVa
                 : billEditItem.transportation
-              : res[j].value * totalQty;
+              : tableChangeStatusval ? res[j].value : res[j].value * totalQty;
             getTransportationValue(trVa);
             res[j] = {
               ...res[j],
@@ -273,9 +271,9 @@ const Step33 = (props) => {
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
-                ? totalQty * trVa
+                ? tableChangeStatusval ? trVa : totalQty * trVa
                 : billEditItem.rent
-              : res[j].value * totalQty;
+              : tableChangeStatusval ? res[j].value : res[j].value * totalQty;
             getRentValue(trVa);
             res[j] = {
               ...res[j],
@@ -294,9 +292,9 @@ const Step33 = (props) => {
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
-                ? totalQty * trVa
+                ? tableChangeStatusval ? trVa : totalQty * trVa
                 : billEditItem.labourCharges
-              : res[j].value * totalQty;
+              : tableChangeStatusval ? res[j].value : res[j].value * totalQty;
             getLaborChargeValue(trVa);
             res[j] = {
               ...res[j],
@@ -448,16 +446,17 @@ const Step33 = (props) => {
   const [enterVal, setEnterVal] = useState();
   const [cstmval, setCstmval] = useState(false);
   const getTotalBillAmount = () => {
+      console.log(transportationValue,transTotalValue)
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
-        : getTotalUnits(transportationValue)) +
+        : tableChangeStatus ? Number(transportationValue) : getTotalUnits(transportationValue)) +
         (labourTotalValue != 0
           ? Number(labourTotalValue)
-          : getTotalUnits(laborChargeValue)) +
+          : tableChangeStatus ? Number(laborChargeValue) : getTotalUnits(laborChargeValue)) +
         (rentTotalValue != 0
           ? Number(rentTotalValue)
-          : getTotalUnits(rentValue)) +
+          : tableChangeStatus ? Number(rentValue) :getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -713,7 +712,6 @@ const Step33 = (props) => {
 
             navigate("/buy_bill_book");
             // props.closem();
-            console.log("add");
           }
         },
         (error) => {
@@ -952,6 +950,7 @@ const Step33 = (props) => {
   const getAdditionValues = (groupLiist, v) => {
     if (groupLiist.settingName.toLowerCase() == "transportation") {
       getTransportationValue(v);
+      console.log(v)
     }
     if (groupLiist.settingName.toLowerCase() == "labour_charges") {
       getLaborChargeValue(v);
@@ -1055,7 +1054,6 @@ const Step33 = (props) => {
       //   selectedPartyType,
       //   selectedBilldate
     );
-    console.log(cropEditObject);
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
@@ -1131,7 +1129,7 @@ const Step33 = (props) => {
                                   type="text"
                                   placeholder=""
                                   onFocus={(e) => resetInput(e)}
-                                  value={allGroups[index].totalVal}
+                                  value={allGroups[index].value}
                                   onChange={advLevOnchangeEvent(
                                     allGroups,
                                     index

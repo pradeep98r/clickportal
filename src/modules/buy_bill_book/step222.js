@@ -49,13 +49,8 @@ const Step22 = (props) => {
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
-    // props.step3ParentCallback(
-    //     cropObjectArr,
-    //     slectedCropstableArray,
-    //   );
     localStorage.setItem('lineItemsEdit',JSON.stringify(updatedItemList));
     dispatch(tableEditStatus(true))
-    // dispatch(cropEditStatus(true));
   };
   //   click on particular crop function
   const cropOnclick = (crop, id, index2, preferedCrops) => {
@@ -119,6 +114,7 @@ const Step22 = (props) => {
     cropObjectArr = billEditStatus
       ? props.cropEditObject.lineItems
       : props.cropEditObject;
+      console.log(cropObjectArr)
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
@@ -504,7 +500,9 @@ const Step22 = (props) => {
       cropArray[index].total = 0;
       cropArray[index].qty = 0;
       cropArray[index].qtyUnit = "";
-      cropDeletedList.push(cropArray[index]);
+      if(billEditStatus){
+        cropDeletedList.push(cropArray[index]);
+      }
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
       if (index1 != -1) {
@@ -651,7 +649,7 @@ const Step22 = (props) => {
           )}
           <div
             className="text-center crop_div other_Crop"
-            onClick={allCropData}
+            onClick={()=>allCropData()}
           >
             <img src={other_crop} />
             <p>Other Crop</p>

@@ -1177,3 +1177,27 @@ font-size: 12px;
     }
   }
 }
+.onoFooter_row{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.crops_row_bills{
+  border-bottom: 1px solid #e4e4e4;
+}
+.crops_row_bills:last-child {
+  border-bottom: none;
+}
+.dateSelection{
+  position: relative;
+  .dateIcon{
+    position: absolute;
+    z-index: 99;
+    top: 7px;
+    left: 10px;
+  }
+  .react-datepicker__input-container input{
+    padding-left: 30px;
+    width: 130px!important;
+  }
+}

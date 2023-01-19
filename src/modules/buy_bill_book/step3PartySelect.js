@@ -28,7 +28,6 @@ const Step3PartySelect = (props) => {
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const clickId = loginData.caId;
   const [partyType, setPartnerType] = useState(selectedPartyType);
-  console.log(billEditItemInfo,"party")
   const partnerSelectedData =
     selectedPartyType.toLowerCase() === "buyer"
       ? props.selectedBuyerSellerData
@@ -40,7 +39,6 @@ const Step3PartySelect = (props) => {
   const billeditStatus = billEditItemInfo?.billEditStatus;
 
   const billEditItem = props.billEditItemval;
-  console.log(billEditItem,"billEdit Itme");
   var step2CropEditStatus = step2CropEditStatus;
   let [partnerData, setpartnerData] = useState([]);
   const [selectedDate, setStartDate] = useState(billDateSelected);
@@ -147,7 +145,6 @@ const Step3PartySelect = (props) => {
   };
   const dispatch = useDispatch();
   const step2CropTableOnclick = (cropEditArray) => {
-      console.log(cropEditArray,props.billEditItemval)
     step2CropEditStatus = true;
     dispatch(selectSteps("step2"));
     setShowCropModalStatus(true);
