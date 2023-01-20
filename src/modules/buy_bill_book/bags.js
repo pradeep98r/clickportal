@@ -74,25 +74,43 @@ const SelectBags = (props) => {
   var wastageSum = 0;
   var totalw = 0;
   const addInvidualWeights = () => {
+    if(quantityVal == 0 && props.cropsArray[0].qty == 0){
+      toast.error("Please ener number of bags",{
+        toastId:'error1'
+      })
+      return null;
+    }
     for (var l = 0; l < invArr.length; l++) {
+        if(invArr[l].weight === 0){
+          toast.error("Please enter weight", {
+            toastId: "erroe2",
+          })
+          return null;
+      }
       wastageSum += parseInt(invArr[l].wastage);
       totalw += parseInt(invArr[l].weight);
+      
     }
-    props.cropsArray[0].wastage = wastageSum;
-    props.cropsArray[0].weight = totalw;
-    props.cropsArray[0].qty = quantityVal;
-    props.cropsArray[0].checked = false
-    props.parentCallback(props.cropsArray, invArr);
-    setInvArr([]);
-    setQuantityVal(0);
-    if(totalw == 0){
-      toast.success("Please enter weight", {
-        toastId: "success1",
-      });
-    }
-    else{
+    if(quantityVal !== 0 && totalVal !== 0){
+      props.cropsArray[0].wastage = wastageSum;
+      props.cropsArray[0].weight = totalw;
+      props.cropsArray[0].qty = quantityVal;
+      props.cropsArray[0].checked = false
+      props.parentCallback(props.cropsArray, invArr);
+      setInvArr([]);
+      setQuantityVal(0);
       props.closeBagsModal();
-    }  
+    }
+    console.log(invArr,"imvArr");
+    props.closeBagsModal();
+    // if(totalw == 0){
+    //   toast.success("Please enter weight", {
+    //     toastId: "success1",
+    //   });
+    // }
+    // else{
+      
+    //}  
   };
   var arr1 = [];
   const addInvTab = () => {
@@ -113,6 +131,11 @@ const SelectBags = (props) => {
       e.target.value = "";
     }
   };
+  const clearAddInvBags = (e) =>{
+    resetInput(e);
+    setInvArr([]);
+    setQuantityVal(0);
+  }
   return (
     <Modal
       show={props.show}
@@ -127,7 +150,7 @@ const SelectBags = (props) => {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={props.closeBagsModal}
+          onClick={(e)=>{clearAddInvBags(e);props.closeBagsModal()}}
         />
       </div>
       <div className="modal-body add_inv_weights" id="scroll_style">
@@ -157,7 +180,8 @@ const SelectBags = (props) => {
                       type="text"
                       className="form-control mb-0"
                       name="totalbags"
-                      value={props.cropsArray[0].unitValue}
+                      value={props.editBagsStatus?props.cropsArray[0].qty:quantityVal}
+                      // value={props.cropsArray[0].unitValue}
                       onChange={addInvQuantityValue(0)}
                       onFocus={(e) => resetInput(e)}
                     />

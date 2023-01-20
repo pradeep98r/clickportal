@@ -680,12 +680,13 @@ const SellBillStep3 = (props) => {
                 });
                 console.log(editBillRequestObj, "edit bill request");
                 console.log(response);
-                props.closem();
+                
                 // props.closeStep3Modal();
                 localStorage.setItem("stepOneSingleBook", false);
                 localStorage.setItem("billViewStatus", false);
-                navigate("/sellbillbook");
                 window.setTimeout(function () {
+                  props.closem();
+                  navigate("/sellbillbook");
                   window.location.reload();
                 }, 2000);
               }
@@ -704,11 +705,12 @@ const SellBillStep3 = (props) => {
                 toast.success(response.data.status.description, {
                   toastId: "success1",
                 });
-                props.closem();
                 // props.closeStep3Modal();
                 localStorage.setItem("stepOneSingleBook", false);
-                navigate("/sellbillbook");
+                
                 window.setTimeout(function () {
+                  props.closem();
+                  navigate("/sellbillbook");
                   window.location.reload();
                 }, 2000);
               }
