@@ -23,12 +23,18 @@ import Step3PartySelect from "./step3PartySelect";
 import $ from "jquery";
 import { selectTrans } from "../../reducers/transSlice";
 import { selectBuyer } from "../../reducers/buyerSlice";
-import { tableEditStatus } from "../../reducers/billEditItemSlice";
+import {
+  tableEditStatus,
+  fromBillbook,
+} from "../../reducers/billEditItemSlice";
+
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
-  const billDateSelected = billEditItemInfo.selectedBillDate!==null?billEditItemInfo.selectedBillDate:
-    new Date();
+  const billDateSelected =
+    billEditItemInfo.selectedBillDate !== null
+      ? billEditItemInfo.selectedBillDate
+      : new Date();
   var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
   const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -36,9 +42,10 @@ const Step33 = (props) => {
   const navigate = useNavigate();
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
   var buyerInfo = users.buyerInfo;
+  const editStatus = billEditItemInfo?.billEditStatus;
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     //users.buyerInfo
-    buyerInfo
+    editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
@@ -48,7 +55,6 @@ const Step33 = (props) => {
   const [addRetComm, setAddRetComm] = useState(false);
   const [outBal, setOutsBal] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
-  const editStatus = billEditItemInfo?.billEditStatus;
 
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
@@ -73,11 +79,11 @@ const Step33 = (props) => {
   useEffect(() => {
     var cropArrays = editStatus
       ? step2CropEditStatus
-        // ? billEditItemInfo.selectedBillInfo.lineItems
-        ? props.slectedCropsArray
+        ? // ? billEditItemInfo.selectedBillInfo.lineItems
+          props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
-      console.log(cropArrays,step2CropEditStatus,billEditItem.lineItems,props.slectedCropsArray,"cropArrays")
+
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -94,16 +100,17 @@ const Step33 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
-
+    console.log(partnerSelectedData);
     if (partnerSelectedData != null) {
       var pID = editStatus
         ? billEditItem.farmerId
         : partnerSelectedData.partyId;
+      console.log(pID);
       getOutstandingBal(clickId, pID).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
     }
-  
+
     getGrossTotalValue(
       editStatus
         ? step2CropEditStatus
@@ -138,7 +145,7 @@ const Step33 = (props) => {
               response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
               response[i].settingName == "WASTAGE"
             ) {
-              console.log("hey");
+              console.log("");
             } else {
               listSettings(response[i].settingName, response, i);
               allGroups.push(response[i]);
@@ -251,7 +258,6 @@ const Step33 = (props) => {
 
             break;
           case "TRANSPORTATION":
-             
             var trVa = editStatus
               ? tableChangeStatusval
                 ? res[j].value
@@ -259,9 +265,13 @@ const Step33 = (props) => {
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
-                ? tableChangeStatusval ? trVa : totalQty * trVa
+                ? tableChangeStatusval
+                  ? trVa
+                  : totalQty * trVa
                 : billEditItem.transportation
-              : tableChangeStatusval ? res[j].value : res[j].value * totalQty;
+              : tableChangeStatusval
+              ? res[j].value
+              : res[j].value * totalQty;
             getTransportationValue(trVa);
             res[j] = {
               ...res[j],
@@ -280,9 +290,13 @@ const Step33 = (props) => {
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
-                ? tableChangeStatusval ? trVa : totalQty * trVa
+                ? tableChangeStatusval
+                  ? trVa
+                  : totalQty * trVa
                 : billEditItem.rent
-              : tableChangeStatusval ? res[j].value : res[j].value * totalQty;
+              : tableChangeStatusval
+              ? res[j].value
+              : res[j].value * totalQty;
             getRentValue(trVa);
             res[j] = {
               ...res[j],
@@ -301,9 +315,13 @@ const Step33 = (props) => {
               : res[j].value;
             var totalV = editStatus
               ? step2CropEditStatus
-                ? tableChangeStatusval ? trVa : totalQty * trVa
+                ? tableChangeStatusval
+                  ? trVa
+                  : totalQty * trVa
                 : billEditItem.labourCharges
-              : tableChangeStatusval ? res[j].value : res[j].value * totalQty;
+              : tableChangeStatusval
+              ? res[j].value
+              : res[j].value * totalQty;
             getLaborChargeValue(trVa);
             res[j] = {
               ...res[j],
@@ -458,13 +476,19 @@ const Step33 = (props) => {
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
-        : tableChangeStatus ? Number(transportationValue) : getTotalUnits(transportationValue)) +
+        : tableChangeStatus
+        ? Number(transportationValue)
+        : getTotalUnits(transportationValue)) +
         (labourTotalValue != 0
           ? Number(labourTotalValue)
-          : tableChangeStatus ? Number(laborChargeValue) : getTotalUnits(laborChargeValue)) +
+          : tableChangeStatus
+          ? Number(laborChargeValue)
+          : getTotalUnits(laborChargeValue)) +
         (rentTotalValue != 0
           ? Number(rentTotalValue)
-          : tableChangeStatus ? Number(rentValue) :getTotalUnits(rentValue)) +
+          : tableChangeStatus
+          ? Number(rentValue)
+          : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -516,17 +540,22 @@ const Step33 = (props) => {
     return Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2);
   };
   const getFinalLedgerbalance = () => {
-      console.log(transTotalValue,transportationValue,rentTotalValue,rentValue,labourTotalValue,laborChargeValue)
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
-        : tableChangeStatus ? Number(transportationValue) : getTotalUnits(transportationValue)) +
+        : tableChangeStatus
+        ? Number(transportationValue)
+        : getTotalUnits(transportationValue)) +
         (labourTotalValue != 0
           ? Number(labourTotalValue)
-          :tableChangeStatus ? Number(laborChargeValue) : getTotalUnits(laborChargeValue)) +
+          : tableChangeStatus
+          ? Number(laborChargeValue)
+          : getTotalUnits(laborChargeValue)) +
         (rentTotalValue != 0
           ? Number(rentTotalValue)
-          :  tableChangeStatus ? Number(rentValue) : getTotalUnits(rentValue)) +
+          : tableChangeStatus
+          ? Number(rentValue)
+          : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -569,9 +598,9 @@ const Step33 = (props) => {
   var cropArray = editStatus
     ? step2CropEditStatus
       ? props.slectedCropsArray
-      :billEditItemInfo.selectedBillInfo.lineItems
-      : props.slectedCropsArray//billEditItem.lineItems
-    // : props.slectedCropsArray;
+      : billEditItemInfo.selectedBillInfo.lineItems
+    : props.slectedCropsArray; //billEditItem.lineItems
+  // : props.slectedCropsArray;
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -733,7 +762,6 @@ const Step33 = (props) => {
               navigate("/buy_bill_book");
               window.location.reload();
             }, 2000);
-            console.log("add");
           }
         },
         (error) => {
@@ -757,31 +785,29 @@ const Step33 = (props) => {
     }
   };
 
-  const handleInputValueEvent = (e) =>{
-    $('input').keypress(function (e) {
+  const handleInputValueEvent = (e) => {
+    $("input").keypress(function (e) {
       var a = [];
       var k = e.which;
-      if(e.charCode === 46) {
-          // if dot is the first symbol
-          if(e.target.value.length === 0 ) {
-              e.preventDefault();
-              return;
-          }
-          
-          // if there are dots already 
-          if( e.target.value.indexOf('.') !== -1 ) {
-             e.preventDefault();
-             return;
-          }   
-          
-          a.push(e.charCode);
-      }
-      for (i = 48; i < 58; i++)
-          a.push(i);
-      if (!($.inArray(k, a) >= 0))
+      if (e.charCode === 46) {
+        // if dot is the first symbol
+        if (e.target.value.length === 0) {
           e.preventDefault();
+          return;
+        }
+
+        // if there are dots already
+        if (e.target.value.indexOf(".") !== -1) {
+          e.preventDefault();
+          return;
+        }
+
+        a.push(e.charCode);
+      }
+      for (i = 48; i < 58; i++) a.push(i);
+      if (!($.inArray(k, a) >= 0)) e.preventDefault();
     });
-  }
+  };
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
@@ -910,7 +936,7 @@ const Step33 = (props) => {
     // var val = e.target.value.replace(/[^0-9.]/g, "");
     handleInputValueEvent(e);
     // if (val != 0) {
-      var val = e.target.value;
+    var val = e.target.value;
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1045,29 +1071,6 @@ const Step33 = (props) => {
     }
   };
 
-  //   const [showCropModal, setShowCropModal] = useState(false);
-  //   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
-  //   const [cropEditvalArray, setcropEditvalArray] = useState([]);
-  //   const editCropTable = (cropEditArray) => {
-  //     step2buyCropTableOnclick(cropEditArray);
-  //   };
-  //   const closeCropTable = (cropEditArray) => {
-  //     if (!editStatus) {
-  //       if (step2CropEditStatus) {
-  //         step2buyCropTableOnclick(cropEditArray);
-  //       }
-  //     } else {
-  //       setShowCropModalStatus(false);
-  //       setShowCropModal(false);
-  //     }
-  //     props.closeStep3Modal();
-  //   };
-  //   const step2buyCropTableOnclick = (cropEditArray) => {
-  //     setShowCropModalStatus(true);
-  //     setShowCropModal(true);
-  //     setcropEditvalArray(cropEditArray);
-  //   };
-
   //   click on input to reset 0 to enter value
   const resetInput = (e) => {
     if (e.target.value == 0) {
@@ -1107,15 +1110,18 @@ const Step33 = (props) => {
   };
   const dispatch = useDispatch();
   const previousStep = () => {
-    dispatch(selectSteps("step2"));;
+    dispatch(selectSteps("step2"));
     dispatch(selectBuyer(buyerInfo));
-    dispatch(selectTrans(transusers.transInfo));
-    dispatch(tableEditStatus(true))
-    props.step3ParentCallback(
-         slectedCropstableArray,
-        slectedCropstableArray,
+    dispatch(
+      selectTrans(
+        transusers.transInfo != null
+          ? transusers.transInfo
+          : transpoSelectedData
+      )
     );
-    
+    dispatch(tableEditStatus(true));
+    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray);
+    dispatch(fromBillbook(false));
   };
   return (
     <div>
