@@ -24,6 +24,7 @@ import { useDispatch } from "react-redux";
 import { selectSteps } from "../../reducers/stepsSlice";
 import { selectBuyer } from "../../reducers/buyerSlice"
 import Steps from "../buy_bill_book/steps";
+import { fromBillbook } from "../../reducers/billEditItemSlice";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -117,6 +118,7 @@ const SellBillBook = (props) => {
     setShowStepsModal(true);
     dispatch(selectSteps('step1'))
     dispatch(selectBuyer(null));
+    dispatch(fromBillbook(true));
   };
   const getCropUnit = (unit) => {
     var unitType = "";
