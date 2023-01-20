@@ -23,7 +23,6 @@ export const billEditItemSlice = createSlice({
     },
     billDate: (state, action) => {
       state.selectedBillDate = action.payload;
-      console.log(action.payload)
     },
     billViewStatus: (state, action) => {
       state.fromBillview = action.payload;

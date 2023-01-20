@@ -24,7 +24,7 @@ const Step22 = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billEditStatus = billEditItemInfo?.billEditStatus;
   const cropTableEditStatus = billEditItemInfo?.cropTableEditStatus;
-  dispatch(cropEditStatus(billEditStatus ? true : false));
+  
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
@@ -49,7 +49,6 @@ const Step22 = (props) => {
  
   var cropObjectArr = [];
   // navigate to previous step
-  console.log(users.buyerInfo, "buyerInfo")
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
@@ -120,6 +119,8 @@ const Step22 = (props) => {
   };
   //   to get crop data oon refresh
   useEffect(() => {
+    dispatch(cropEditStatus(billEditStatus ? true : false));
+      console.log("step22 useeffect one time",cropTableEditStatus,billEditStatus,props.slectedCropstableArray)
     cropObjectArr = billEditStatus
       ? props.cropEditObject.lineItems
       : props.cropEditObject;
@@ -140,7 +141,14 @@ const Step22 = (props) => {
             a.push(object)
             // cropObjectArr[d] = { ...object }
           }
+          else{
+            object = { ...object, qtyUnit: cropObjectArr[d].qtyUnit };
+            // cropObjectArr[d].rateType = 'kgs';
+            
+            a.push(object)
+          }
         }
+        console.log(a,cropObjectArr)
         cropResponseData([...a]);
       } else {
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
@@ -283,7 +291,6 @@ const Step22 = (props) => {
           var index1 = lineitem.findIndex(
             (obj) => obj.cropId == cropData[index].cropId
           );
-          console.log(updatedItemList,cropData,lineitem,"before")
           if (index1 == index) {
             if (lineitem[index1].id == 0) {
                 console.log('id0')
@@ -302,7 +309,6 @@ const Step22 = (props) => {
     });
     // var selectedArray = props.billEditStatus ? ;
     if (billEditStatus) {
-        console.log(updatedItemList,cropData)
         dArray = (updatedItemList.length != 0 ? updatedItemList : cropData);
       // props.slectedCropstableArray.lineItems =
       //   updatedItemList.length != 0 ? updatedItemList : cropData;
@@ -408,7 +414,6 @@ const Step22 = (props) => {
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
-        console.log(dArray)
         props.parentcall(dArray.length != 0 ? dArray : cropData, billEditStatus);
       }
     }
@@ -416,7 +421,7 @@ const Step22 = (props) => {
   //   getting quantity type to change tables(kgs or crates..)
   const setQuantityBasedtable = (unitType) => {
     var t = false;
-    if (unitType == "kgs" || unitType == "loads" || unitType == "pieces") {
+    if (unitType.toLowerCase() == "kgs" || unitType.toLowerCase() == "loads" || unitType == "pieces") {
       t = true;
     }
     return t;
@@ -529,7 +534,6 @@ const Step22 = (props) => {
       cropArray[index].total = 0;
       cropArray[index].qty = 0;
       cropArray[index].qtyUnit = "";
-      console.log(billEditStatus,cropArray[index])
     //   if(billEditStatus){
         cropDeletedList.push(cropArray[index]);
     //   }
@@ -580,7 +584,7 @@ const Step22 = (props) => {
         }
       }
     }
-    console.log(cropArray,cropDeletedList,"deleted list")
+    // console.log(cropArray,cropDeletedList,"deleted list")
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
@@ -779,7 +783,7 @@ const Step22 = (props) => {
                                       <option value="Sacs">Sacs </option>
                                       <option value="Boxes">Boxes </option>
                                       <option value="kgs">Kgs </option>
-                                      <option value="loads">Loads </option>
+                                      <option value="Loads">Loads </option>
                                       <option value="pieces">Pieces </option>
                                     </select>
                                   </td>
@@ -925,7 +929,7 @@ const Step22 = (props) => {
                                   <th>
                                     Total Weight({cropData[index].qtyUnit})
                                   </th>
-                                  {cropData[index].qtyUnit == "loads" ? (
+                                  {cropData[index].qtyUnit?.toLowerCase() == "loads" ? (
                                     ""
                                   ) : (
                                     <th>Wastage({cropData[index].qtyUnit})</th>
@@ -983,7 +987,7 @@ const Step22 = (props) => {
                                       )}
                                     />
                                   </td>
-                                  {cropData[index].qtyUnit == "loads" ? (
+                                  {cropData[index].qtyUnit?.toLowerCase() == "loads" ? (
                                     ""
                                   ) : (
                                     <td className="col-2">
@@ -1019,7 +1023,7 @@ const Step22 = (props) => {
                                   </td>
                                   <td className="col-2">
                                     <p className="totals">
-                                      {cropData[index].qtyUnit == "loads"
+                                      {cropData[index].qtyUnit?.toLowerCase() == "loads"
                                         ? cropData[index].weight *
                                         cropData[index].rate
                                         : (cropData[index].weight -

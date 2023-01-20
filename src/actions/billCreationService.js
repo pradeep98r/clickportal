@@ -9,7 +9,6 @@ export function deletePartnerId(partyId, clickId) {
   );
 }
 export function getBuyBills(clickId, fromDate, toDate) {
-  console.log(fromDate,toDate,"bills api");
   return axiosCommon.get(
     `/click/bills/buy-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}`
   );
@@ -91,7 +90,6 @@ export function getAllCrops() {
   });
 }
 export function getSystemSettings(clickId) {
-  console.log('settiings api')
   return axiosCommon.get(
     `/click/bcp-settings/caId/${clickId}`
   );

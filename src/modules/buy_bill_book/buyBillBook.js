@@ -52,7 +52,6 @@ function BuyBillBook() {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    console.log(fromDate, toDate, "billbook");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -72,10 +71,8 @@ function BuyBillBook() {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    console.log("heyyy");
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response.data.data, "billsss");
         if (response.data.data != null) {
           setAllData(response.data.data);
           setBuyBillData(response.data.data.singleBills);
