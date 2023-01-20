@@ -1257,7 +1257,7 @@ const BillView = (props) => {
                         src={cancel}
                         alt="img"
                         className=""
-                        onClick={handleCheckEvent}
+                        onClick={()=>handleCheckEvent}
                       />
                       <p>Cancel</p>
                     </div>
@@ -1276,7 +1276,7 @@ const BillView = (props) => {
           </div>
         </div>
       
-        {showStep3ModalStatus ? (
+        {/* {showStep3ModalStatus ? (
           <Step3Modal
             showstep3={showStep3Modal}
             closeStep3Modal={() => setShowStep3Modal(false)}
@@ -1288,7 +1288,7 @@ const BillView = (props) => {
           />
         ) : (
           ""
-        )}
+        )} */}
       </div>
       {showStepsModalStatus ? (
         <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
