@@ -48,6 +48,10 @@ const Steps = (props) => {
   const dispatch = useDispatch();
   const clearData=(e)=>{
     dispatch(selectTrans(null)); 
+    setcropEditObject([]);
+    setslectedCropstableArray([]);
+    console.log(cropEditObject,slectedCropstableArray)
+    // props.billEditStatuscallback(h);
   }
   return (
     <Modal

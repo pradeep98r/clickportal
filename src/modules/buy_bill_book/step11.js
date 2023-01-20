@@ -64,9 +64,11 @@ const Step11 = (props) => {
     }else{
       dispatch(selectedParty("seller"));
     }
-    var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
-    console.log(billEditItemInfo?.cropTableEditStatus,h)
-    props.billEditStatuscallback(h);
+    if(!(billEditItemInfo?.fromBillBook)){
+        console.log(billEditItemInfo?.fromBillBook,!billEditItemInfo?.fromBillBook)
+        var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
+        props.billEditStatuscallback(h);
+    }
   };
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {

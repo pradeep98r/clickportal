@@ -19,9 +19,11 @@ import {
   tableEditStatus,
   billViewStatus,
   selectedParty,
+  fromBillbook
 } from "../../reducers/billEditItemSlice";
 import { selectBuyer } from "../../reducers/buyerSlice";
 import SearchField from "../../components/searchField";
+import { selectTrans } from "../../reducers/transSlice";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -195,6 +197,12 @@ const Step3PartySelect = (props) => {
     dispatch(billDate(partnerSelectDate));
     dispatch(selectedParty(selectedPartyType));
     dispatch(tableEditStatus(true));
+    dispatch(fromBillbook(false));
+    dispatch(
+        selectTrans(
+           transpoSelectedData
+        )
+      );
     props.parentSelectedParty(
       //   partnerSelectDate,
       partnerSelectedData,

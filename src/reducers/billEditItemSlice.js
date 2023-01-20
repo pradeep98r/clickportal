@@ -9,7 +9,8 @@ export const billEditItemSlice = createSlice({
     selectedBillDate: null,
     fromBillview: false,
     selectedParty:'',
-    step2CropEditStatus:false
+    step2CropEditStatus:false,
+    fromBillBook:false
   },
   reducers: {
     selectBill: (state, action) => {
@@ -33,6 +34,9 @@ export const billEditItemSlice = createSlice({
   cropEditStatus: (state, action) => {
     state.step2CropEditStatus = action.payload;
 },
+fromBillbook: (state, action) => {
+  state.fromBillBook = action.payload;
+},
   },
 });
 
@@ -43,7 +47,8 @@ export const {
   billDate,
   billViewStatus,
   selectedParty,
-  cropEditStatus
+  cropEditStatus,
+  fromBillbook
 } = billEditItemSlice.actions;
 
 export default billEditItemSlice.reducer;
