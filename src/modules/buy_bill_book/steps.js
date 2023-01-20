@@ -16,10 +16,8 @@ const Steps = (props) => {
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
   const callbackfunction = (chaild, editStatus) => {
-    console.log(chaild, editStatus, "crops");
     setSelctedCrops(chaild);
   };
-  console.log(selctedCrops,"selected crops")
   
 
   const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
@@ -34,7 +32,6 @@ const Steps = (props) => {
     // setBillstatus(billEditStatus);
     // setselectedDate(selectedBilldate);
   };
-  console.log(slectedCropstableArray,"array");
   const step3ChildCallback = (
     // cropTableEditStatus,
     cropEditObject,
@@ -44,7 +41,7 @@ const Steps = (props) => {
     // selectedBilldate,
     // selectedBuyerSellerData
   ) => {
-     console.log(cropEditObject,slectedCropstableArray)
+     console.log(cropEditObject,"cropobject")
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };

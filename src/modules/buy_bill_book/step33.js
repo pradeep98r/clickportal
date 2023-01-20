@@ -73,10 +73,11 @@ const Step33 = (props) => {
   useEffect(() => {
     var cropArrays = editStatus
       ? step2CropEditStatus
-        ? billEditItemInfo.selectedBillInfo.lineItems
+        // ? billEditItemInfo.selectedBillInfo.lineItems
+        ? props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
-      console.log(cropArrays,"cropArrays")
+      console.log(cropArrays,step2CropEditStatus,billEditItem.lineItems,props.slectedCropsArray,"cropArrays")
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -454,7 +455,6 @@ const Step33 = (props) => {
   const [enterVal, setEnterVal] = useState();
   const [cstmval, setCstmval] = useState(false);
   const getTotalBillAmount = () => {
-      console.log(transportationValue,transTotalValue)
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
@@ -520,13 +520,13 @@ const Step33 = (props) => {
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
-        : getTotalUnits(transportationValue)) +
+        : tableChangeStatus ? Number(transportationValue) : getTotalUnits(transportationValue)) +
         (labourTotalValue != 0
           ? Number(labourTotalValue)
-          : getTotalUnits(laborChargeValue)) +
+          :tableChangeStatus ? Number(laborChargeValue) : getTotalUnits(laborChargeValue)) +
         (rentTotalValue != 0
           ? Number(rentTotalValue)
-          : getTotalUnits(rentValue)) +
+          :  tableChangeStatus ? Number(rentValue) : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -995,7 +995,6 @@ const Step33 = (props) => {
   const getAdditionValues = (groupLiist, v) => {
     if (groupLiist.settingName.toLowerCase() == "transportation") {
       getTransportationValue(v);
-      console.log(v)
     }
     if (groupLiist.settingName.toLowerCase() == "labour_charges") {
       getLaborChargeValue(v);
@@ -1107,7 +1106,6 @@ const Step33 = (props) => {
     dispatch(selectSteps("step2"));;
     dispatch(selectBuyer(buyerInfo));
     dispatch(selectTrans(transusers.transInfo));
-    console.log(cropEditObject,props.slectedCropsArray,slectedCropstableArray)
     dispatch(tableEditStatus(true))
     props.step3ParentCallback(
         slectedCropstableArray,

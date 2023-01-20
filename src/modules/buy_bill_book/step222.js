@@ -46,7 +46,7 @@ const Step22 = (props) => {
   const [weightDefaultValue, setweightValue] = useState();
 
   const date= billEditItemInfo.selectedBillDate !== null?billEditItemInfo.selectedBillDate:new Date();
-  console.log(billEditItemInfo,date,"date");
+ 
   var cropObjectArr = [];
   // navigate to previous step
   console.log(users.buyerInfo, "buyerInfo")
@@ -123,7 +123,6 @@ const Step22 = (props) => {
     cropObjectArr = billEditStatus
       ? props.cropEditObject.lineItems
       : props.cropEditObject;
-      console.log(cropObjectArr,billEditStatus,props.cropEditObject)
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt;
@@ -144,7 +143,6 @@ const Step22 = (props) => {
         }
         cropResponseData([...a]);
       } else {
-          console.log(cropObjectArr,lineIt)
         lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         if (lineIt != null) {
           cropResponseData([...lineIt]);
@@ -167,7 +165,6 @@ const Step22 = (props) => {
           }
           Object.assign(clonedObject, { count: 1 }, { cropActive: true });
           preferedCropsData.push(clonedObject);
-          console.log(preferedCropsData)
         }
       });
     } else {
@@ -252,6 +249,7 @@ const Step22 = (props) => {
 
   const [propsSelectedCrops, setPropsSelected] = useState(props.slectedCropstableArray.lineItems);
   // function to nevigate to step3 page
+  var dArray = [];
   const addStep3Modal = () => {
     for (var k = 0; k < cropData.length; k++) {
       if (cropData[k].rateType == "kgs") {
@@ -279,25 +277,33 @@ const Step22 = (props) => {
           var lineitem = billEditStatus
             ? props.cropEditObject.lineItems
             : JSON.parse(localStorage.getItem("lineItemsEdit"));
-            console.log(lineitem,"lineItem");
+        //   var index1 = lineitem.findIndex(
+        //     (obj) => obj.cropId == item.cropId//cropData[index].cropId
+        //   );
           var index1 = lineitem.findIndex(
-            (obj) => obj.cropId == item.cropId//cropData[index].cropId
+            (obj) => obj.cropId == cropData[index].cropId
           );
+          console.log(updatedItemList,cropData,lineitem,"before")
           if (index1 == index) {
             if (lineitem[index1].id == 0) {
+                console.log('id0')
               cropData[index].status = 1;
             } else {
+                console.log('id updated')
               cropData[index].status = 2;
             }
-          } else {
-            cropData[index].status = 1;
           }
+        //    else {
+        //     console.log('idnew')
+        //     cropData[index].status = 1;
+        //   }
         }
       }
     });
     // var selectedArray = props.billEditStatus ? ;
     if (billEditStatus) {
-      setPropsSelected(cropData.length != 0 ? cropData : updatedItemList);
+        console.log(updatedItemList,cropData)
+        dArray = (updatedItemList.length != 0 ? updatedItemList : cropData);
       // props.slectedCropstableArray.lineItems =
       //   updatedItemList.length != 0 ? updatedItemList : cropData;
     }
@@ -402,7 +408,8 @@ const Step22 = (props) => {
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
-        props.parentcall(cropData, billEditStatus);
+        console.log(dArray)
+        props.parentcall(dArray.length != 0 ? dArray : cropData, billEditStatus);
       }
     }
   };
@@ -522,10 +529,10 @@ const Step22 = (props) => {
       cropArray[index].total = 0;
       cropArray[index].qty = 0;
       cropArray[index].qtyUnit = "";
-      console.log(billEditStatus)
-      if(billEditStatus){
+      console.log(billEditStatus,cropArray[index])
+    //   if(billEditStatus){
         cropDeletedList.push(cropArray[index]);
-      }
+    //   }
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
       if (index1 != -1) {
@@ -573,7 +580,7 @@ const Step22 = (props) => {
         }
       }
     }
-    console.log(cropDeletedList,"deleted list")
+    console.log(cropArray,cropDeletedList,"deleted list")
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
