@@ -163,7 +163,6 @@ const Partner = () => {
 
   function onChangeValue(event) {
     setradioValue(event.target.value.toUpperCase());
-    console.log(event.target.value.toUpperCase(), "radio value");
   }
   const [partnerItem, setPartnerItem] = useState({});
   const [isEdit, setIsEdit] = useState(false);
@@ -172,7 +171,6 @@ const Partner = () => {
     setIsEdit(true);
     partnerData.map((item) => {
       if (item.partyId == partner.partyId) {
-        console.log(partner.trader);
         setPartnerItem(item);
         setAadharNumber(partner.aadharNum);
         setmobileNumber(partner.mobile);
@@ -205,7 +203,6 @@ const Partner = () => {
   const [profilePic, setProfilePic] = useState("");
   const [updateProfilePic, setUpdateProfilePic] = useState("");
   const handleProfilePic = (e) => {
-    console.log(e);
     if (isEdit) {
       console.log("came to edit");
       setFile(e.target.files[0]);
@@ -216,13 +213,11 @@ const Partner = () => {
       uploadProfilePic(clickId, mobileNumber, req)
         .then((response) => {
           setUpdateProfilePic(response.data.data);
-          console.log(updateProfilePic);
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
-      console.log("came to normal");
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],
@@ -231,7 +226,6 @@ const Partner = () => {
       uploadProfilePic(clickId, mobileNumber, req)
         .then((response) => {
           setProfilePic(response.data.data);
-          console.log(profilePic);
         })
         .catch((error) => {
           console.log(error);
@@ -283,7 +277,6 @@ const Partner = () => {
     return exitStatus;
   };
   const onSubmit = () => {
-    console.log(aadharNumber.trim().length);
     if (handleExitPartner(mobileNumber)) {
       toast.error("Partner Already Existed", {
         toastId: "error5",
@@ -306,9 +299,7 @@ const Partner = () => {
       addEditPartnerApiCall();
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
-      window.setTimeout(function () {
-        window.location.reload();
-      }, 2000);
+    
     } else if (aadharNumber.trim().length < 12) {
       setAadharError("Minimum Adhar number length should be 12");
     } else if (nameField.trim().length === 0) {
@@ -322,29 +313,28 @@ const Partner = () => {
     } else if (shortNameField.trim().length === 1) {
       setShortNameError("Name should be min 2 characters");
     }
-    console.log("done");
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
-      console.log("ediitt", obj);
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            console.log(response, "edit partner");
             tabEvent(partyType);
             toast.success("Updated Successfully", {
               toastId: "success2",
             });
+           
+            handleRefreshClick(); 
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
+          handleRefreshClick();
         }
       );
     } else {
-      console.log("create", obj);
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -352,19 +342,38 @@ const Partner = () => {
             toast.success(response.data.status.message, {
               toastId: "success2",
             });
+            handleRefreshClick(); 
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
+          handleRefreshClick(); 
         }
       );
     }
     closeAddModal();
   };
+  const handleRefreshClick = async () => {
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        registration.unregister();
+      });
+    });
+    caches.keys().then((keyList) => {
+      return Promise.all(
+        keyList.map((key) => {
+          return caches.delete(key);
+        })
+      );
+    });
+    window.setTimeout(function () {
+      window.location.reload();
+    }, 2000);
+    console.log("hardrefresh")
+  }
   const tabEvent = (type) => {
-    console.log(type, "type");
     setPartyType(type);
     setAadharNumber("");
     setCityVal("");
@@ -391,7 +400,6 @@ const Partner = () => {
       .then((response) => {
         setAllData(response.data.data);
         setPartnerData(response.data.data);
-        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -420,7 +428,6 @@ const Partner = () => {
     },
   ];
   const getPosition = () => {
-    console.log("pos");
     setStreetVillage("");
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(showPosition, posError);
@@ -467,7 +474,6 @@ const Partner = () => {
       }
     }
     pincodeValue = pincodeValue.replace(/\D/g, "");
-    console.log(pincodeValue, "address");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
     $("#city").val(city);
@@ -476,16 +482,6 @@ const Partner = () => {
     setPincode(pincodeValue);
     setCityVal(city);
     setStateVal(state);
-    // localStorage.setItem("cityValue", city);
-    // var $input;
-    // var $text = $(document.createElement("input"));
-    // $text.attr("value", city);
-    // $text.attr("type", "text");
-    // $text.attr("type", "text");
-    // $text.attr("class", "form-control");
-    // $input = $text;
-    // $("#city-input-wrapper").html($input);
-    // console.log(pincodeValue, city, state);
   };
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
@@ -512,7 +508,6 @@ const Partner = () => {
 
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    console.log(locality);
   }
 
   function geocodeResponseToCityState(geocodeJSON) {
@@ -547,25 +542,15 @@ const Partner = () => {
     } else {
       console.log("error: no address components found");
     }
-    console.log(parsedLocalities);
     return parsedLocalities;
   }
   function fillCityAndStateFields(localities) {
     var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    console.log(locality.city);
     var city = localities[0].city;
     setCityVal(city);
     setStateVal(locality.state);
-    // var $text = $(document.createElement("input"));
-    // $text.attr("value", city);
-    // $text.attr("type", "text");
-    // $text.attr("type", "text");
-    // $text.attr("class", "form-control");
-    // $input = $text;
-    // $("#city-input-wrapper").html($input);
-    console.log(city, locality.state);
   }
 
   const [rVal, setrVal] = useState(false);

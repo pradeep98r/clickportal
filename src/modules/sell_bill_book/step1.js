@@ -1,11 +1,10 @@
 
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
 import { useState, useEffect } from "react";
 import SelectPartner from "../buy_bill_book/selectParty";
-import SellbillStep2Modal from "./step2";
+import BillDateSelection from "../buy_bill_book/billDateSelection";
+import Step2Modal from "../buy_bill_book/step2Modal";
 const SellebillStep1 = () => {
-  const [selectedDate, setStartDate] = useState(new Date());
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
 
@@ -15,10 +14,12 @@ const SellebillStep1 = () => {
   const [partnerData, setPartnerData] = useState(null);
   const [partType, separtType]= useState('');
   const [partysType, setpartysType]= useState('');
+  const [selectedBuyerSellerData, setSelectedBuyerSellerData] = useState({})
   const callbackFunction = (childData,party,type) => {
     setPartnerData(childData);
-    console.log(party,type,childData)
+    console.log(childData,party,type,"data")
     separtType(type.toLowerCase());
+    setSelectedBuyerSellerData(childData)
     if(party != null){
       setpartysType(party.toLowerCase())
     }
@@ -36,18 +37,11 @@ const SellebillStep1 = () => {
     setShowCropModalStatus(true);
     setShowCropModal(true);
   };
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () =>{
-    if(!checked){
-      setChecked(!checked)
-      localStorage.setItem("defaultDate",true);
-      setStartDate(selectedDate);
-    } else{
-      setChecked(!checked);
-      localStorage.removeItem("defaultDate");
-      setStartDate(new Date());
-    }
-  }
+ 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const callbackFunctionDate = (date) => {
+    setSelectedDate(date);
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -60,33 +54,7 @@ const SellebillStep1 = () => {
               />
             </div>
             <div className="col-lg-5 ">
-              <div className="date_col d-flex align-items-center justify-content-between">
-                <DatePicker
-                  dateFormat="dd-MMM-yyyy"
-                  selected={selectedDate}
-                  onChange={(date) => setStartDate(date)}
-                  className="form-control"
-                  placeholder="Date"
-                  maxDate={new Date()}
-                  onKeyDown={(e) => {
-                    e.preventDefault();
-                  }}
-                />
-                <label className="custom-control custom-checkbox mb-0">
-                  <input
-                    type="checkbox"
-                    checked={checked && localStorage.getItem("defaultDate")}
-                    className="custom-control-input"
-                    id="modal_checkbox"
-                    value="my-value"
-                    onChange={handleCheckEvent}
-                  />
-                  <span className="custom-control-indicator"></span>
-                  <span className="custom-control-description">
-                  {langFullData.setAsADefault}{langFullData.date}
-                  </span>
-                </label>
-              </div>
+              <BillDateSelection parentCallbackDate={callbackFunctionDate} />
             </div>
             <div className="col-lg-3 p-0">
               <SelectPartner partyType="Transporter"  
@@ -109,12 +77,14 @@ const SellebillStep1 = () => {
         ''
         )}
         {showCropModalStatus ? (
-          <SellbillStep2Modal
-            show={showCropModal}
-            closeStep2CropModal={() => setShowCropModal(false)}
-            cropTableEditStatus = {false}
+          <Step2Modal
+            showCrop={showCropModal}
+            closeCropModal={() => setShowCropModal(false)}
+            cropTableEditStatus={false}
             billEditStatus={false}
-            selectedSellBilldate = {selectedDate}
+            selectedBilldate={selectedDate}
+            selectedPartyType = 'buyer'
+            selectedBuyerSellerData={selectedBuyerSellerData}
           />
         ) : (
           ""

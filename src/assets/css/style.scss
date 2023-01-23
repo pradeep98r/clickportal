@@ -205,6 +205,9 @@ ul {
     padding: 20px 30px;
   }
 }
+.cloose:hover{
+  cursor: pointer;
+}
 // bills
 .bottom_div {
   background-color: var(--ono-white);
@@ -212,6 +215,7 @@ ul {
   position: absolute;
   bottom: 0;
   width: 100%;
+  border-radius: 0px 0px 8px 8px;
   .primary_btn {
     margin-left: 20px;
   }

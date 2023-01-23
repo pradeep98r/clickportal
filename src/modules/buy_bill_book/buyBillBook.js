@@ -16,11 +16,16 @@ import loading from "../../assets/images/loading.gif";
 import NoDataAvailable from "../../components/noDataAvailable";
 import BillsSearchField from "../../components/billsSearchField";
 import { getText } from "../../components/getText";
+import Steps from "./steps";
 import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
-
+import { useDispatch } from "react-redux";
+import { selectSteps } from "../../reducers/stepsSlice";
+import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectTrans } from "../../reducers/transSlice";
+import {fromBillbook} from "../../reducers/billEditItemSlice"
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -29,8 +34,8 @@ function BuyBillBook() {
   const [isLoading, setLoading] = useState(true);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
+  const dispatch = useDispatch();
   useEffect(() => {
-    
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
@@ -48,7 +53,6 @@ function BuyBillBook() {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    console.log(fromDate, toDate, "billbook");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -68,10 +72,8 @@ function BuyBillBook() {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    console.log("heyyy")
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response.data.data, "billsss");
         if (response.data.data != null) {
           setAllData(response.data.data);
           setBuyBillData(response.data.data.singleBills);
@@ -102,9 +104,17 @@ function BuyBillBook() {
     setShowDatepickerModal(true);
   };
   var stepOneHeader = false;
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const handleStep1Header = () => {
     stepOneHeader = true;
     localStorage.setItem("stepOne", stepOneHeader);
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
+    dispatch(selectTrans(null))
+    dispatch(fromBillbook(true));
   };
 
   const handleSearch = (event) => {
@@ -178,7 +188,7 @@ function BuyBillBook() {
 
                         <a
                           className="primary_btn add_bills_btn"
-                          href="/step1"
+                          // href="/step1"
                           onClick={handleStep1Header}
                         >
                           {langFullData.singleBill}
@@ -291,7 +301,7 @@ function BuyBillBook() {
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         {bill.lineItems.map((crop, index) => (
-                                          <div className="row" key={index}>
+                                          <div className="row crops_row_bills" key={index}>
                                             <div className="col-lg-4 col-sm-12 col">
                                               <p className="flex_class crop_name">
                                                 <img
@@ -377,6 +387,11 @@ function BuyBillBook() {
         />
       ) : (
         <p></p>
+      )}
+      {showStepsModalStatus ? (
+        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ) : (
+        ""
       )}
     </div>
   );

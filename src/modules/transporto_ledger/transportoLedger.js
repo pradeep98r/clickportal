@@ -837,6 +837,9 @@ const TransportoLedger = () => {
                                     maxDate={new Date()}
                                     placeholder="Date"
                                     required
+                                    onKeyDown={(e) => {
+                                      e.preventDefault();
+                                    }}
                                   ></DatePicker>
                                 </div>
                               </div>

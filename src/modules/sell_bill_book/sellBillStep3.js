@@ -1,10 +1,18 @@
-import { Modal } from "react-bootstrap";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../modules/buy_bill_book/step2.scss";
 import "../sell_bill_book/step3.scss";
 import { useState, useEffect } from "react";
 import "../../modules/buy_bill_book/step1.scss";
 import Step3PartySelect from "../buy_bill_book/step3PartySelect";
-import { getSystemSettings } from "../../actions/billCreationService";
+import {
+  getDefaultSystemSettings,
+  getOutstandingBal,
+  getSystemSettings,
+} from "../../actions/billCreationService";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
 import { getText } from "../../components/getText";
@@ -12,25 +20,47 @@ import {
   postsellbillApi,
   editbuybillApi,
 } from "../../actions/billCreationService";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 import clo from "../../assets/images/clo.png";
-const SellbillStep3Modal = (props) => {
+import moment from "moment";
+import { selectSteps } from "../../reducers/stepsSlice";
+import $ from "jquery";
+import { selectTrans } from "../../reducers/transSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
+import {
+  fromBillbook,
+  tableEditStatus,
+} from "../../reducers/billEditItemSlice";
+const SellBillStep3 = (props) => {
+  const users = useSelector((state) => state.buyerInfo);
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateSelected =
+    billEditItemInfo.selectedBillDate !== null
+      ? billEditItemInfo.selectedBillDate
+      : new Date();
+  var step2CropEditStatus = billEditItemInfo?.step2CropEditStatus;
+  const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const navigate = useNavigate();
-  const [partnerSelectDate, setpartnerSelectDate] = useState("");
-  const [partnerSelectedData, setpartnerSelectedData] = useState({});
-  const [transpoSelectedData, setTranspoSelectedData] = useState({});
+  var buyerInfo = users.buyerInfo;
+  var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
+  const editStatus = billEditItemInfo?.billEditStatus;
+  const [partnerSelectedData, setpartnerSelectedData] = useState(
+    editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
+  );
+  const [transpoSelectedData, setTranspoSelectedData] = useState(
+    transusers.transInfo
+  );
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
   const [outBal, setOutsBal] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
-  const editStatus = props.billEditStatus;
-  const billEditItem = props.slectedSellCropsArray[0];
-  var step2CropEditStatus = props.step2CropEditStatus;
+
+  const billEditItem = editStatus
+    ? billEditItemInfo.selectedBillInfo
+    : props.slectedSellCropsArray;
+    console.log(billEditItem,"billEditItem")
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -41,18 +71,20 @@ const SellbillStep3Modal = (props) => {
   const [otherfeeValue, getOtherfeeValue] = useState(0);
   const [cashRcvdValue, getCashRcvdValue] = useState(0);
   const [advancesValue, getAdvancesValue] = useState(0);
+  const [grossTotal, setGrossTotal] = useState(0);
+  const [totalUnits, setTotalUnits] = useState(0);
 
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   var tableChangeStatusval;
   const [isShown, setisShown] = useState(false);
   const [allGroups, setAllGroups] = useState([]);
-  console.log(props.slectedSellCropsArray)
   useEffect(() => {
     var cropArrays = editStatus
       ? step2CropEditStatus
-        ? props.slectedSellCropsArray[0].lineItems
+        ? billEditItemInfo.selectedBillInfo.lineItems
         : billEditItem.lineItems
       : props.slectedSellCropsArray;
+      console.log(billEditItem.lineItems,"billEditItem.lineItems")
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -69,53 +101,102 @@ const SellbillStep3Modal = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
+    if (partnerSelectedData != null) {
+      var pID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
+      getOutstandingBal(clickId, pID).then((res) => {
+        setOutsBal(res.data.data == null ? 0 : res.data.data);
+      });
+    }
     getGrossTotalValue(
       editStatus
         ? step2CropEditStatus
-          ? props.slectedSellCropsArray[0].lineItems
-          : props.slectedSellCropsArray
+          ? props.slectedSellCropsArray
+          : billEditItemInfo.selectedBillInfo.lineItems
         : props.slectedSellCropsArray
     );
     getSystemSettings(clickId).then((res) => {
-      var response = res.data.data.billSetting;
-      console.log(response);
-      for (var i = 0; i < response.length; i++) {
-        if (response[i].billType === "SELL") {
-          if (response[i].formStatus === 1) {
-            Object.assign(response[i], {
-              settingName: response[i].settingName,
-              tableType: 0,
-              subText: "",
-              subText2: "",
-              totalVal: 0,
-              cstmName: "",
-            });
+      var response;
+      if(res.data.data.billSetting.length >0){
+        response = res.data.data.billSetting;
+        for (var i = 0; i < response.length; i++) {
+          if (response[i].billType === "SELL") {
+            if (response[i].formStatus === 1) {
+              Object.assign(response[i], {
+                settingName: response[i].settingName,
+                tableType: 0,
+                subText: "",
+                subText2: "",
+                totalVal: 0,
+                cstmName: "",
+              });
 
-            if (
-              response[i].settingName === "DEFAULT_RATE_TYPE" ||
-              response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
-              response[i].settingName == "WASTAGE"
-            ) {
-              console.log("hey");
-            } else {
-              listSettings(response[i].settingName, response, i);
-              allGroups.push(response[i]);
+              if (
+                response[i].settingName === "DEFAULT_RATE_TYPE" ||
+                response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
+                response[i].settingName == "WASTAGE"
+              ) {
+                console.log("hey");
+              } else {
+                listSettings(response[i].settingName, response, i);
+                allGroups.push(response[i]);
+              }
+              if (response[i].settingName === "OUT_ST_BALANCE")
+                setOutBalformStatusvalue(true);
             }
-            if (response[i].settingName === "OUT_ST_BALANCE")
-              setOutBalformStatusvalue(true);
-          }
 
-          if (response[i].settingName === "COMMISSION") {
-            setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-            setisShown(response[i].isShown == 1 ? true : false);
-          } else if (response[i].settingName === "RETURN_COMMISSION") {
-            setAddRetComm(response[i].addToGt == 1 ? false : true);
-            setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+            if (response[i].settingName === "COMMISSION") {
+              setIncludeComm(response[i].includeInLedger == 1 ? true : false);
+              setisShown(response[i].isShown == 1 ? true : false);
+            } else if (response[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(response[i].addToGt == 1 ? false : true);
+              setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+            }
           }
         }
+      } else{ getDefaultSystemSettings().then((res)=>{
+        response = res.data.data;
+        for (var i = 0; i < response.length; i++) {
+          if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
+            if (response[i].status === 1) {
+              Object.assign(response[i], {
+                settingName: response[i].name,
+                tableType: 0,
+                subText: "",
+                subText2: "",
+                totalVal: 0,
+                cstmName: "",
+                value : 0,
+              });
+
+              if (
+                response[i].name === "DEFAULT_RATE_TYPE" ||
+                response[i].name === "SKIP_INDIVIDUAL_EXP" ||
+                response[i].name == "WASTAGE"
+              ) {
+                console.log("hey");
+              } else {
+                listSettings(response[i].name, response, i);
+                allGroups.push(response[i]);
+              }
+              if (response[i].name === "OUT_ST_BALANCE")
+                setOutBalformStatusvalue(true);
+            }
+
+            if (response[i].name === "COMMISSION") {
+              setIncludeComm(true);
+              setisShown(true);
+            } else if (response[i].name === "RETURN_COMMISSION") {
+              setAddRetComm(false);
+              setIncludeRetComm(true);
+            }
+          }
+        }
+      })
+
       }
     });
   }, []);
+
   const [questionsTitle, setQuestionsTitle] = useState([]);
   var gTotal = 0;
   const [cashRcdStatus, setcashRcdStatus] = useState(false);
@@ -127,9 +208,10 @@ const SellbillStep3Modal = (props) => {
     var totalQtyBill = 0;
     var item = editStatus
       ? step2CropEditStatus
-        ? props.slectedSellCropsArray[0].lineItems
-        : props.slectedSellCropsArray[0].lineItems
+        ? props.slectedSellCropsArray
+        : billEditItemInfo.selectedBillInfo.lineItems
       : props.slectedSellCropsArray;
+      console.log(item, billEditItemInfo.selectedBillInfo.lineItems,step2CropEditStatus,props.slectedSellCropsArray)
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
       // console.log(totalQty,"qtyy")
@@ -211,11 +293,8 @@ const SellbillStep3Modal = (props) => {
             var trVa = editStatus
               ? tableChangeStatusval
                 ? res[j].value
-                : step2CropEditStatus
-                ? billEditItem?.transportation / totalQty
                 : billEditItem?.transportation / totalQty
               : res[j].value;
-            console.log(trVa, totalQty, "trans");
             var totalV = editStatus
               ? step2CropEditStatus
                 ? totalQty * trVa
@@ -302,7 +381,6 @@ const SellbillStep3Modal = (props) => {
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
                   if (items.fee != 0) {
-                    console.log(items.field, res[j].settingName);
                     if (items.field === res[j].settingName) {
                       newitem = items.fee;
 
@@ -318,7 +396,7 @@ const SellbillStep3Modal = (props) => {
                   : billEditItem?.customFields
                 : []
             );
-            if (res[j].fieldType == "SIMPLE") {
+            if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
               // var trVa = res[j].value != 0 ? getSingleValues(newitem) : 0;
               var trVa = getSingleValues(newitem);
               res[j] = {
@@ -382,22 +460,20 @@ const SellbillStep3Modal = (props) => {
 
     // return type;
   };
-
-  const [grossTotal, setGrossTotal] = useState(0);
-  const [totalUnits, setTotalUnits] = useState(0);
   const getGrossTotalValue = (items) => {
     var total = 0;
     var totalunitvalue = 0;
+    console.log(items,"gross")
     for (var i = 0; i < items.length; i++) {
       total += editStatus
         ? step2CropEditStatus
           ? items[i].total
-          : items[i].grossTotal
+          : items[i].total
         : items[i].total;
       totalunitvalue += editStatus
         ? step2CropEditStatus
           ? parseInt(items[i].qty)
-          : items[i].lineItems[i].qty
+          : parseInt(items[i].qty) // items[i].lineItems[i].qty
         : parseInt(items[i].qty);
       gTotal = total;
       setGrossTotal(total);
@@ -503,9 +579,10 @@ const SellbillStep3Modal = (props) => {
   // var cropArray = props.slectedSellCropsArray;
   var cropArray = editStatus
     ? step2CropEditStatus
-      ? props.slectedSellCropsArray[0].lineItems
-      : billEditItem.lineItems
+      ? props.slectedSellCropsArray
+      : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedSellCropsArray;
+    console.log(cropArray,"lineitems arrray")
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -519,7 +596,7 @@ const SellbillStep3Modal = (props) => {
       id: cropArray[i].id,
       sellBillId: billEditItem.billId,
       //bags:[],
-      partyId: billEditItem.buyerId,
+      partyId: cropArray[i].buyerId,
       status: cropArray[i].status,
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
@@ -544,6 +621,7 @@ const SellbillStep3Modal = (props) => {
     }
     return actualRcvd;
   };
+
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -551,7 +629,7 @@ const SellbillStep3Modal = (props) => {
     actualReceivable: Number(getActualRcvd()),
     advance: Number(advancesValue),
     billDate: partnerSelectDate,
-    billStatus: "Completed",
+    billStatus: "COMPLETED",
     caId: clickId,
     cashRcvd: Number(cashRcvdValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -559,7 +637,7 @@ const SellbillStep3Modal = (props) => {
     commShown: isShown,
     comments: "hi",
     createdBy: 0,
-    buyerId: editStatus ? billEditItem.buyerId : partnerSelectedData.partyId,
+    buyerId: editStatus ? billEditItem.buyerId : buyerInfo.partyId, //partnerSelectedData.partyId,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
     labourCharges:
@@ -637,7 +715,7 @@ const SellbillStep3Modal = (props) => {
     updatedOn: "",
     writerId: 0,
   };
-  // post bill request api call
+
   const postsellbill = () => {
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
@@ -647,11 +725,15 @@ const SellbillStep3Modal = (props) => {
               toastId: "success1",
             });
             console.log(editBillRequestObj, "edit bill request");
-            console.log(response);
-            props.closeStep3Modal();
+            
+            // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
-            navigate("/sellbillbook");
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
@@ -668,10 +750,14 @@ const SellbillStep3Modal = (props) => {
             toast.success(response.data.status.description, {
               toastId: "success1",
             });
-
-            props.closeStep3Modal();
+            
+            // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
-            navigate("/sellbillbook");
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
@@ -682,7 +768,29 @@ const SellbillStep3Modal = (props) => {
       );
     }
   };
+  const handleInputValueEvent = (e) => {
+    $("input").keypress(function (e) {
+      var a = [];
+      var k = e.which;
+      if (e.charCode === 46) {
+        // if dot is the first symbol
+        if (e.target.value.length === 0) {
+          e.preventDefault();
+          return;
+        }
 
+        // if there are dots already
+        if (e.target.value.indexOf(".") !== -1) {
+          e.preventDefault();
+          return;
+        }
+
+        a.push(e.charCode);
+      }
+      for (i = 48; i < 58; i++) a.push(i);
+      if (!($.inArray(k, a) >= 0)) e.preventDefault();
+    });
+  };
   const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
@@ -798,7 +906,9 @@ const SellbillStep3Modal = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    // var val = e.target.value.replace(/[^0-9.]/g, "");
+    handleInputValueEvent(e);
+    var val = e.target.value;
     // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
@@ -934,67 +1044,83 @@ const SellbillStep3Modal = (props) => {
       }
     }
   };
-  const [showCropModal, setShowCropModal] = useState(false);
-  const [showCropModalStatus, setShowCropModalStatus] = useState(false);
-  const [cropEditvalArray, setcropEditvalArray] = useState([]);
 
-  const step2Cancel = (cropEditArray) => {
-    if (!editStatus) {
-      if (step2CropEditStatus) {
-        step2CropTableOnclick(cropEditArray);
-      }
-    } else {
-      setShowCropModalStatus(false);
-      setShowCropModal(false);
-    }
-    props.closeStep3Modal();
-  };
-  const step2CropTableOnclick = (cropEditArray) => {
-    step2CropEditStatus = true;
-    setShowCropModalStatus(true);
-    setShowCropModal(true);
-    setcropEditvalArray(cropEditArray);
-  };
   const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
     }
   };
 
-  const callbackFunctionPartySelect = (child, childData, trans) => {
-    setpartnerSelectDate(child);
-    setpartnerSelectedData(childData);
+  const [selectedBilldate, setselectedbilldate] = useState(false);
+  const [cropEditObject, setcropEditObject] = useState([]);
+  const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
+  const [selectedPartyType, setselectedPartyType] = useState("");
+  const [cropTableEditStatus, setcropTableEditStatus] = useState(
+    billEditItemInfo?.cropTableEditStatus
+  );
+  const [selectedCrops, setselectedCrops] = useState(
+    []
+   );
+  const callbackFunctionPartySelect = (
+    partyselectedarray,
+    trans,
+    // cropTableEditStatus,
+    cropEditObject,
+    // billEditStatus,
+    slectedCropstableArray,
+    selectedCrops
+    // selectedPartyType,
+    // selectedBilldate
+  ) => {
+    setpartnerSelectedData(partyselectedarray);
     setTranspoSelectedData(trans);
+    props.step3ParentCallback(
+      //   cropTableEditStatus,
+      cropEditObject,
+      //   billEditStatus,
+      slectedCropstableArray,
+      selectedCrops
+      //   selectedPartyType,
+      //   selectedBilldate
+    );
+    setcropEditObject(cropEditObject);
+    setselectedCrops(selectedCrops);
+    setslectedCropstableArray(slectedCropstableArray);
   };
-  console.log(props.sellBilldateSelected);
+  const dispatch = useDispatch();
+  const previousStep = () => {
+    dispatch(selectSteps("step2"));
+    dispatch(selectBuyer(buyerInfo));
+    dispatch(
+      selectTrans(
+        transusers.transInfo != null
+          ? transusers.transInfo
+          : transpoSelectedData
+      )
+    );
+    dispatch(fromBillbook(false));
+    dispatch(tableEditStatus(true));
+    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray,selectedCrops);
+  };
   return (
-    // <Modal
-    //   show={props.show}
-    //   close={props.closeStep3Modal}
-    //   className="cropmodal_poopup"
-    // >
-    //   <div className="modal-header date_modal_header smartboard_modal_header">
-    //     <h5 className="modal-title header2_text" id="staticBackdropLabel">
-    //       Additions/Deductions
-    //     </h5>
-    //     <img
-    //       alt="image"
-    //       src={clo}
-    //       onClick={() => step2Cancel(billEditItem.lineItems)}
-    //     />
-    //   </div>
     <div>
-      <div className="modal-body">
+      <div className="main_div_padding">
         <div className="row">
-          <div className="col-lg-3 pr-0">
+          <div className="col-lg-3 p-0">
             <Step3PartySelect
               parentSelectedParty={callbackFunctionPartySelect}
-              billEditItemval={props.slectedSellCropsArray}
-              selectdDate={props.sellBilldateSelected}
-              step2CropEditStatus={props.step2CropEditStatus}
-              editStatus={props.billEditStatus}
-              selectedPartyType = 'buyer'
-              selectedBuyerSellerData={props.selectedBuyerSellerData}
+              billEditItemval={billEditItem}
+              selectedBuyerSellerData={
+                editStatus
+                  ? billEditItemInfo.selectedBillInfo
+                  : partnerSelectedData
+              }
+              transpoSelectedData={
+                editStatus
+                  ? billEditItemInfo.selectedBillInfo
+                  : transpoSelectedData
+              }
+              selectedCrop={editStatus ? step2CropEditStatus ? props.slectedSellCropsArray :  billEditItemInfo.selectedBillInfo: props.slectedSellCropsArray}
             />
           </div>
           <div className="col-lg-6">
@@ -1035,7 +1161,7 @@ const SellbillStep3Modal = (props) => {
                                   type="text"
                                   placeholder=""
                                   onFocus={(e) => resetInput(e)}
-                                  value={allGroups[index].totalVal}
+                                  value={allGroups[index].value}
                                   onChange={advLevOnchangeEvent(
                                     allGroups,
                                     index
@@ -1133,7 +1259,9 @@ const SellbillStep3Modal = (props) => {
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Final Ledger Balance (₹)</h5>
-                  <h6 className="color_green">{getFinalLedgerbalance()}</h6>
+                  <h6 className="color_green">
+                    {getFinalLedgerbalance().toFixed(2)}
+                  </h6>
                 </div>
               ) : (
                 <div className="totals_value">
@@ -1144,17 +1272,20 @@ const SellbillStep3Modal = (props) => {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
-      <div className="bottom_div main_div popup_bottom_div step3_bottom">
+      <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-end">
-          <button className="primary_btn" onClick={postsellbill}>
+          <button className="secondary_btn" onClick={() => previousStep()}>
+            Previous
+          </button>
+          <button className="primary_btn" onClick={() => postsellbill()}>
             Next
           </button>
         </div>
       </div>
-      <ToastContainer />
     </div>
-    // </Modal>
   );
 };
-export default SellbillStep3Modal;
+
+export default SellBillStep3;
