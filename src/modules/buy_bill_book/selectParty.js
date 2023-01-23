@@ -6,13 +6,14 @@ import "../../modules/buy_bill_book/step1.scss";
 import { useNavigate } from "react-router-dom";
 import NoDataAvailable from "../../components/noDataAvailable";
 import SearchField from "../../components/searchField";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectBuyer } from "../../reducers/buyerSlice";
 import { selectTrans } from "../../reducers/transSlice";
+import $ from "jquery";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const users  = useSelector(state => state.buyerInfo);
-  const transusers  = useSelector(state => state.transInfo);
+  const users = useSelector(state => state.buyerInfo);
+  const transusers = useSelector(state => state.transInfo);
   const clickId = loginData.caId;
   const dispatch = useDispatch();
   const langData = localStorage.getItem("languageData");
@@ -21,9 +22,9 @@ const SelectPartner = (props) => {
   let [partnerData, setpartnerData] = useState(allData);
 
   const navigate = useNavigate();
-  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' || 
-  props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo : 
-  props.partyType.toLowerCase() === 'transporter'? transusers.transInfo:'');
+  const [getPartyItem, setGetPartyItem] = useState(props.partyType.toLowerCase() == 'seller' ||
+    props.partyType.toLowerCase() == 'buyer' ? users.buyerInfo :
+    props.partyType.toLowerCase() === 'transporter' ? transusers.transInfo : '');
   const fetchPertnerData = () => {
     var partnerType = "";
 
@@ -43,26 +44,23 @@ const SelectPartner = (props) => {
         console.log(error);
       });
   };
-
+  var bodyClickCount = 0;
   const [getPartyName, setGetPartyName] = useState(false);
   const [count, setCount] = useState(0);
   const selectParty = () => {
     setCount(count + 1);
-    if (count % 2 == 0) {
+    if (count % 2 == 0 || bodyClickCount % 2 != 0) {
       setGetPartyName(true);
     } else {
       setGetPartyName(false);
     }
-    // setsearchValue('');
     if (searchValue != "") {
-      // setAllData([])
       fetchPertnerData();
     }
-    // fetchPertnerData();
   };
   const partySelect = (item) => {
     Object.assign(
-      item,{itemtype:''},{date:''})
+      item, { itemtype: '' }, { date: '' })
     setGetPartyItem(item);
     // localStorage.setItem("selectedSearchItem", JSON.stringify(item));
     setGetPartyName(false);
@@ -74,7 +72,7 @@ const SelectPartner = (props) => {
       // itemtype = localStorage.getItem("selectPartytype");
       props.parentCallback(item, itemtype, props.partyType);
       item.itemtype = 'seller';
-      item.partyType=props.partyType;
+      item.partyType = props.partyType;
       dispatch(selectBuyer(item));
       // localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
@@ -85,14 +83,23 @@ const SelectPartner = (props) => {
       itemtype = localStorage.getItem("selectBuyertype");
       props.parentCallback(item, itemtype, props.partyType);
       item.itemtype = 'buyer';
-      item.partyType=props.partyType;
+      item.partyType = props.partyType;
       dispatch(selectBuyer(item));
       // localStorage.setItem("selectedBuyer", JSON.stringify(item));
     }
-    
+
   };
+
   useEffect(() => {
     fetchPertnerData();
+    $(document).mouseup(function (e) {
+      var container = $(".partners_div");
+      if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+        bodyClickCount++;
+      }
+    });
+  
     if (props.onClickPage) {
       setGetPartyName(false);
     }
@@ -112,7 +119,7 @@ const SelectPartner = (props) => {
     });
     if (value != "") {
       setpartnerData(result);
-    } else if(value === ""){
+    } else if (value === "") {
       setpartnerData(allData);
     }
     setsearchValue(value);

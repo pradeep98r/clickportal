@@ -725,13 +725,15 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            props.closem();
+
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-            navigate("/buy_bill_book");
+            
             window.setTimeout(function () {
+              props.closem();
+              navigate("/buy_bill_book");
               window.location.reload();
             }, 2000);
           }
@@ -745,17 +747,19 @@ const Step33 = (props) => {
     } else {
       postbuybillApi(billRequestObj).then(
         (response) => {
+          console.log(response);
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.description, {
               toastId: "success1",
             });
+            
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-            props.closem();
-            navigate("/buy_bill_book");
             // props.closem();
             window.setTimeout(function () {
+              props.closem();
+              navigate("/buy_bill_book");
               window.location.reload();
             }, 2000);
           }
