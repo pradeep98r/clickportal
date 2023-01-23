@@ -8,7 +8,7 @@ export const stepsSlice = createSlice({
     reducers: {
         selectSteps: (state, action) => {
             state.stepsInfo = action.payload;
-            console.log(action.payload,"paylooad")
+            // console.log(action.payload,"paylooad")
         },
     },
 });

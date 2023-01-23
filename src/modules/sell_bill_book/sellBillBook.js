@@ -22,6 +22,10 @@ import {
 } from "../../components/getCurrencyNumber";
 import { useDispatch, useSelector } from "react-redux";
 import { billViewInfo } from "../../reducers/billViewSlice"
+import { selectSteps } from "../../reducers/stepsSlice";
+import { selectBuyer } from "../../reducers/buyerSlice"
+import Steps from "../buy_bill_book/steps";
+import { fromBillbook } from "../../reducers/billEditItemSlice";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -35,24 +39,20 @@ const SellBillBook = (props) => {
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
   
   const  billData = useSelector((state)=> state.billViewInfo);
-  const dispatch = useDispatch();
-  console.log(billData)
   // console.log(billViiewDate)
+  const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
   var [dateValue, setDateValue] = useState();
   window.addEventListener('load', function(event) {
-    console.log('hello world',typeof(props.selectedBillviewDate));
     // bDate = '';
   });
   const callbackFunction = (startDate, endDate, dateTab) => {
-    console.log(bDate, "selected data");
     var fromDate = moment(bDate ? bDate :startDate).format("YYYY-MM-DD");
     var toDate = moment(bDate ? bDate :endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    console.log(bDate,fromDate,toDate,startDate, "selected data");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -102,17 +102,25 @@ const SellBillBook = (props) => {
     dispatch(billViewInfo(bill));
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
   };
-  console.log(billData);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   const onclickDate = () => {
     setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
   };
+
   var stepOneHeader = false;
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const handleStep1Header = () => {
     stepOneHeader = true;
-    localStorage.setItem("stepOneSingleBook", stepOneHeader);
+    localStorage.setItem("stepOne", stepOneHeader);
+    //stepOneSingleBook
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
+    dispatch(fromBillbook(true));
   };
   const getCropUnit = (unit) => {
     var unitType = "";
@@ -189,7 +197,7 @@ const SellBillBook = (props) => {
                     />
                     <a
                       className="primary_btn add_bills_btn"
-                      href="/sellbillstep1"
+                      // href="/sellbillstep1"
                       onClick={handleStep1Header}
                     >
                       {langFullData.singleBill}
@@ -382,6 +390,11 @@ const SellBillBook = (props) => {
         />
       ) : (
         <p></p>
+      )}
+      {showStepsModalStatus ? (
+        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ) : (
+        ""
       )}
     </div>
   );

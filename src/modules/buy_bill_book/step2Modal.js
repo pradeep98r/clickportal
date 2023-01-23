@@ -114,7 +114,7 @@ const [billEditItem,setBillEditItem] = useState([]);
         // preferedCropsData = lineIt;
       }
       var cropArr = props.billEditStatus ? props.cropEditObject : lineIt;
-
+         console.log(lineIt,props.billEditStatus)
       cropArr.map((item, index) => {
         var k = preferedCropsData.findIndex(
           (obj) => obj.cropId === item.cropId
@@ -250,10 +250,9 @@ const [billEditItem,setBillEditItem] = useState([]);
       }
     });
     // var selectedArray = props.billEditStatus ? ;
-    if (props.billEditStatus) {
-      
+    if (props.billEditStatus) {     
       props.slectedCropstableArray[0].lineItems =
-        updatedItemList.length != 0 ? updatedItemList : cropData;
+      updatedItemList.length != 0 ? updatedItemList : cropData;
     }
 
     if (h.length > 0) {

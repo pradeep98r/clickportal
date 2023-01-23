@@ -395,6 +395,7 @@ option[value=""][disabled] {
   table {
     border-radius: 10px;
     margin-top: 10px;
+    margin-bottom: 0px;
   }
   th {
     color: var(--ono-primary-text);
@@ -826,6 +827,8 @@ article.on {
   border-top: 0px;
   border-radius: 0px 0px 10px 10px;
   background:#FFFFFF ;
+  overflow-y: auto;
+  height: calc(100vh - 300px);
 }
 .small_text {
   font-size: 10px;
@@ -968,8 +971,8 @@ word-wrap: normal;
   background-color: blue;
 }
 .buy_bills_view {
-  overflow-y: auto;
-  height: calc(100vh - 140px);
+  // overflow-y: auto;
+  // height: calc(100vh - 140px);
 }
 .left-arrow-img{
   // padding: 0px 50px;
@@ -1172,5 +1175,29 @@ font-size: 12px;
       margin: 0 auto;
       margin-bottom: 5px;
     }
+  }
+}
+.onoFooter_row{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.crops_row_bills{
+  border-bottom: 1px solid #e4e4e4;
+}
+.crops_row_bills:last-child {
+  border-bottom: none;
+}
+.dateSelection{
+  position: relative;
+  .dateIcon{
+    position: absolute;
+    z-index: 99;
+    top: 7px;
+    left: 10px;
+  }
+  .react-datepicker__input-container input{
+    padding-left: 30px;
+    width: 130px!important;
   }
 }

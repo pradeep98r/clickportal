@@ -40,6 +40,7 @@ const Step3Modal = (props) => {
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
+  
   const [outBal, setOutsBal] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
   const editStatus = props.billEditStatus;
@@ -146,6 +147,7 @@ const Step3Modal = (props) => {
             setisShown(response[i].isShown == 1 ? true : false);
           } else if (response[i].settingName === "RETURN_COMMISSION") {
             setAddRetComm(response[i].addToGt == 1 ? false : true);
+            console.log(response[i].addToGt)
             setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
           }
         }
@@ -479,9 +481,9 @@ const Step3Modal = (props) => {
       }
     }
     if (addRetComm) {
-      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
-    } else {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
+    } else {
+      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
     }
 
     return totalValue;
@@ -536,11 +538,11 @@ const Step3Modal = (props) => {
     }
     if (addRetComm) {
       if (includeRetComm) {
-        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if (includeRetComm) {
-        finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
+        finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;

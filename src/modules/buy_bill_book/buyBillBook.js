@@ -24,6 +24,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { selectSteps } from "../../reducers/stepsSlice"
 import { billViewInfo } from "../../reducers/billViewSlice"
+import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectTrans } from "../../reducers/transSlice";
+import {fromBillbook} from "../../reducers/billEditItemSlice"
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -54,7 +57,6 @@ function BuyBillBook() {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    console.log(fromDate, toDate, "billbook");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -74,10 +76,8 @@ function BuyBillBook() {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    console.log("heyyy");
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response.data.data, "billsss");
         if (response.data.data != null) {
           setAllData(response.data.data);
           setBuyBillData(response.data.data.singleBills);
@@ -117,6 +117,9 @@ function BuyBillBook() {
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
     dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
+    dispatch(selectTrans(null))
+    dispatch(fromBillbook(true));
   };
 
   const handleSearch = (event) => {
@@ -303,7 +306,7 @@ function BuyBillBook() {
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         {bill.lineItems.map((crop, index) => (
-                                          <div className="row" key={index}>
+                                          <div className="row crops_row_bills" key={index}>
                                             <div className="col-lg-4 col-sm-12 col">
                                               <p className="flex_class crop_name">
                                                 <img

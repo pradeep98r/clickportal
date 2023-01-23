@@ -23,6 +23,10 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
+import { useDispatch } from "react-redux";
+import { billDate, editStatus, selectBill, selectedParty, tableEditStatus, cropEditStatus } from "../../reducers/billEditItemSlice";
+import { selectSteps } from "../../reducers/stepsSlice";
+import Steps from "../buy_bill_book/steps";
 const SellBillView = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -31,7 +35,7 @@ const SellBillView = () => {
   const [mandiData, setMandiData] = useState({});
   const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const [billSettingResponse, billSettingData] = useState([]);
-  
+  const dispatch = useDispatch();
   const [displayCancel, setDisplayCancel] = useState(false);
   const navigate = useNavigate();
   // const [billviewStatus, setBillViewStatus] = useState(false);
@@ -407,12 +411,41 @@ const SellBillView = () => {
   const [showStep3Modal, setShowStep3Modal] = useState(false);
   const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const [slectedCropArray, setSlectedCropArray] = useState([]);
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [editCancelStatus, setEditCancelStatus] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
+  
   const editBill = (itemVal) => {
+    console.log(singleBillData.partyType);
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    setShowStep3ModalStatus(true);
-    setShowStep3Modal(true);
+    console.log('edit')
+    dispatch(selectSteps("step3"));
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectBill(arr[0]))
+    dispatch(editStatus(true))
+    dispatch(tableEditStatus(false))
+    dispatch(billDate(new Date(singleBillData.billDate)))
+    dispatch(selectedParty(singleBillData.partyType));
+    dispatch(cropEditStatus(false));
+    // var arr = [];
+    // arr.push(itemVal);
+    // setSlectedCropArray(arr);
+    // console.log('edit')
+    // dispatch(selectSteps("step3"))
+    // setShowStepsModalStatus(true);
+    // setShowStepsModal(true);
+    // // setShowStep3ModalStatus(true);
+    // // setShowStep3Modal(true);
+    // // setShowStepsModal(true);
+    // dispatch(selectBill(arr[0]))
+    // dispatch(editStatus(true))
+    // dispatch(tableEditStatus(false))
+    // dispatch(billDate(new Date(singleBillData.billDate)))
+    // dispatch(selectedParty(singleBillData.partyType));
+    // setEditCancelStatus(true);
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
@@ -1277,7 +1310,7 @@ const SellBillView = () => {
             </div>
           </div>
         </div>
-      </div>
+
       {showStep3ModalStatus ? (
         <SellbillStep3Modal
           show={showStep3Modal}
@@ -1291,7 +1324,11 @@ const SellBillView = () => {
       ) : (
         ""
       )}
-{sellbillbookStatus ? <SellBillBook selectedBillviewDate={singleBillData.billDate}/> : ''}
+      </div>
+      {showStepsModalStatus?(
+        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ):('')}
+        {/* sellbillbookStatus ? <SellBillBook selectedBillviewDate={singleBillData.billDate}/> : ''} */}
       <div className="modal fade" id="cancelBill">
         <div className="modal-dialog cancelBill_modal_popup">
           <div className="modal-content">
