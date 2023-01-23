@@ -11,7 +11,6 @@ export const BusinessDetails = () => {
   const [mandiData, setMandiData] = useState({});
   //const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
   const  billData = useSelector((state)=> state.billViewInfo);
-  console.log(billData);
   useEffect(()=>{
     getBusinessDetails();
   },[]);
