@@ -58,7 +58,7 @@ const Step33 = (props) => {
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
 
   const billEditItem = editStatus
-    ? billEditItemInfo.selectedBillInfo
+    ?  billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
@@ -84,7 +84,7 @@ const Step33 = (props) => {
           props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
-
+      console.log(cropArrays)
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -101,12 +101,10 @@ const Step33 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
-    console.log(partnerSelectedData);
     if (partnerSelectedData != null) {
       var pID = editStatus
         ? billEditItem.farmerId
         : partnerSelectedData.partyId;
-      console.log(pID);
       getOutstandingBal(clickId, pID).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
@@ -212,7 +210,7 @@ const Step33 = (props) => {
       }
       
     });
-  }, [props.showstep3]);
+  }, []);
   var gTotal = 0;
   const getGrossTotalValue = (items) => {
     var total = 0;
@@ -430,7 +428,7 @@ const Step33 = (props) => {
                   : billEditItem?.customFields
                 : []
             );
-            if (res[j].fieldType == "SIMPLE") {
+            if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
               var trVa = getSingleValues(newitem);
               res[j] = {
                 ...res[j],
@@ -1133,8 +1131,8 @@ const Step33 = (props) => {
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
   const [selectedPartyType, setselectedPartyType] = useState("");
-  const [cropTableEditStatus, setcropTableEditStatus] = useState(
-    billEditItemInfo?.cropTableEditStatus
+  const [selectedCrops, setselectedCrops] = useState(
+   []
   );
   const callbackFunctionPartySelect = (
     partyselectedarray,
@@ -1142,7 +1140,8 @@ const Step33 = (props) => {
     // cropTableEditStatus,
     cropEditObject,
     // billEditStatus,
-    slectedCropstableArray
+    slectedCropstableArray,
+    selectedCrops
     // selectedPartyType,
     // selectedBilldate
   ) => {
@@ -1152,12 +1151,14 @@ const Step33 = (props) => {
       //   cropTableEditStatus,
       cropEditObject,
       //   billEditStatus,
-      slectedCropstableArray
+      slectedCropstableArray,
+      selectedCrops
       //   selectedPartyType,
       //   selectedBilldate
     );
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
+    setselectedCrops(selectedCrops)
   };
   const dispatch = useDispatch();
   const previousStep = () => {
@@ -1171,7 +1172,7 @@ const Step33 = (props) => {
       )
     );
     dispatch(tableEditStatus(true));
-    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray);
+    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray,selectedCrops);
     dispatch(fromBillbook(false));
   };
   return (
@@ -1196,6 +1197,7 @@ const Step33 = (props) => {
                   ? billEditItemInfo.selectedBillInfo
                   : transpoSelectedData
               }
+              selectedCrop={editStatus ? step2CropEditStatus ? props.slectedCropsArray :  billEditItemInfo.selectedBillInfo: props.slectedCropsArray}
             />
           </div>
           <div className="col-lg-6">

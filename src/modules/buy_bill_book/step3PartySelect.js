@@ -38,7 +38,6 @@ const Step3PartySelect = (props) => {
     selectedPartyType.toLowerCase() === "buyer" || selectedPartyType.toLowerCase() === 'seller'
       ? props.selectedBuyerSellerData
       : props.selectedBuyerSellerData;
-      
   const [partySelecteData, setPartySelectedData] = useState(partnerSelectedData);
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
@@ -54,6 +53,7 @@ const Step3PartySelect = (props) => {
   const [outBal, setOutsBal] = useState(0);
   const linkPath = localStorage.getItem('LinkPath');
   useEffect(() => {
+    
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
       setTranspoSelectedData(props.transpoSelectedData);
@@ -72,7 +72,8 @@ const Step3PartySelect = (props) => {
       transpoSelectedData,
       //   true,
       cropEditvalArray,
-      props.billEditItemval
+      props.billEditItemval,
+      props.selectedCrop
     );
   }, []);
   const fetchPertnerData = (type) => {
@@ -209,7 +210,8 @@ const Step3PartySelect = (props) => {
       transpoSelectedData,
       //   true,
       cropEditArray,
-      props.billEditItemval
+      props.billEditItemval,
+      props.selectedCrop
     );
   };
   const [searchValue, setsearchValue] = useState("");
