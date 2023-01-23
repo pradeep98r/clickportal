@@ -15,6 +15,7 @@ const Steps = (props) => {
   const [selectedDate, setselectedDate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
+  const [slectedCrops, setslectedCrops] = useState([]);
   const callbackfunction = (chaild, editStatus) => {
     setSelctedCrops(chaild);
   };
@@ -37,11 +38,12 @@ const Steps = (props) => {
     cropEditObject,
     // billEditStatus,
     slectedCropstableArray,
+    selectedCrops
     // selectedPartyType,
     // selectedBilldate,
     // selectedBuyerSellerData
   ) => {
-     console.log(cropEditObject,"cropobject")
+     setslectedCrops(selectedCrops);
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
@@ -50,7 +52,6 @@ const Steps = (props) => {
     dispatch(selectTrans(null)); 
     setcropEditObject([]);
     setslectedCropstableArray([]);
-    console.log(cropEditObject,slectedCropstableArray)
     // props.billEditStatuscallback(h);
   }
   return (
@@ -91,6 +92,7 @@ const Steps = (props) => {
                   cropEditObject={cropEditObject}
                   slectedCropstableArray={slectedCropstableArray}
                   closem={props.closeStepsModal}
+                  slectedCrops={slectedCrops}
                 //   selectedPartyType={selectedPartyType}
                 //   selectedBilldate={selectedDate}
                 />
@@ -103,6 +105,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
+                  
                   // selectedBuyerSellerData={props.selectedBuyerSellerData}
                 />
               );

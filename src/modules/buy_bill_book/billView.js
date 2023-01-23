@@ -24,7 +24,7 @@ import {
 import { selectSteps } from "../../reducers/stepsSlice";
 import { useDispatch } from "react-redux";
 import Steps from "./steps";
-import { selectBill,editStatus, billDate, tableEditStatus,billViewStatus,selectedParty } from "../../reducers/billEditItemSlice";
+import { selectBill,editStatus, billDate, tableEditStatus,billViewStatus,selectedParty,cropEditStatus } from "../../reducers/billEditItemSlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -429,6 +429,7 @@ const BillView = (props) => {
     dispatch(tableEditStatus(false))
     dispatch(billDate(new Date(singleBillData.billDate)));
     dispatch(selectedParty('SELLER'));
+    dispatch(cropEditStatus(false));
     // props.parentcall(
     //   false,
     //   true,

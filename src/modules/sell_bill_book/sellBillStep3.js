@@ -59,6 +59,7 @@ const SellBillStep3 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedSellCropsArray;
+    console.log(billEditItem,"billEditItem")
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -82,6 +83,7 @@ const SellBillStep3 = (props) => {
         ? billEditItemInfo.selectedBillInfo.lineItems
         : billEditItem.lineItems
       : props.slectedSellCropsArray;
+      console.log(billEditItem.lineItems,"billEditItem.lineItems")
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -98,7 +100,6 @@ const SellBillStep3 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
-    console.log(partnerSelectedData, billEditItem);
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
@@ -150,7 +151,7 @@ const SellBillStep3 = (props) => {
         }
       }
     });
-  }, [props.showstep3]);
+  }, []);
 
   const [questionsTitle, setQuestionsTitle] = useState([]);
   var gTotal = 0;
@@ -166,6 +167,7 @@ const SellBillStep3 = (props) => {
         ? props.slectedSellCropsArray
         : billEditItemInfo.selectedBillInfo.lineItems
       : props.slectedSellCropsArray;
+      console.log(item, billEditItemInfo.selectedBillInfo.lineItems,step2CropEditStatus,props.slectedSellCropsArray)
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
       // console.log(totalQty,"qtyy")
@@ -350,7 +352,7 @@ const SellBillStep3 = (props) => {
                   : billEditItem?.customFields
                 : []
             );
-            if (res[j].fieldType == "SIMPLE") {
+            if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
               // var trVa = res[j].value != 0 ? getSingleValues(newitem) : 0;
               var trVa = getSingleValues(newitem);
               res[j] = {
@@ -417,6 +419,7 @@ const SellBillStep3 = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     var totalunitvalue = 0;
+    console.log(items,"gross")
     for (var i = 0; i < items.length; i++) {
       total += editStatus
         ? step2CropEditStatus
@@ -532,9 +535,10 @@ const SellBillStep3 = (props) => {
   // var cropArray = props.slectedSellCropsArray;
   var cropArray = editStatus
     ? step2CropEditStatus
-      ? billEditItemInfo.selectedBillInfo.lineItems
-      : billEditItem.lineItems
+      ? props.slectedSellCropsArray
+      : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedSellCropsArray;
+    console.log(cropArray,"lineitems arrray")
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -1010,13 +1014,17 @@ const SellBillStep3 = (props) => {
   const [cropTableEditStatus, setcropTableEditStatus] = useState(
     billEditItemInfo?.cropTableEditStatus
   );
+  const [selectedCrops, setselectedCrops] = useState(
+    []
+   );
   const callbackFunctionPartySelect = (
     partyselectedarray,
     trans,
     // cropTableEditStatus,
     cropEditObject,
     // billEditStatus,
-    slectedCropstableArray
+    slectedCropstableArray,
+    selectedCrops
     // selectedPartyType,
     // selectedBilldate
   ) => {
@@ -1026,11 +1034,13 @@ const SellBillStep3 = (props) => {
       //   cropTableEditStatus,
       cropEditObject,
       //   billEditStatus,
-      slectedCropstableArray
+      slectedCropstableArray,
+      selectedCrops
       //   selectedPartyType,
       //   selectedBilldate
     );
     setcropEditObject(cropEditObject);
+    setselectedCrops(selectedCrops);
     setslectedCropstableArray(slectedCropstableArray);
   };
   const dispatch = useDispatch();
@@ -1046,7 +1056,7 @@ const SellBillStep3 = (props) => {
     );
     dispatch(fromBillbook(false));
     dispatch(tableEditStatus(true));
-    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray);
+    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray,selectedCrops);
   };
   return (
     <div>
@@ -1066,6 +1076,7 @@ const SellBillStep3 = (props) => {
                   ? billEditItemInfo.selectedBillInfo
                   : transpoSelectedData
               }
+              selectedCrop={editStatus ? step2CropEditStatus ? props.slectedSellCropsArray :  billEditItemInfo.selectedBillInfo: props.slectedSellCropsArray}
             />
           </div>
           <div className="col-lg-6">
