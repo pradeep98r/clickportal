@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import "../../modules/buy_bill_book/step1.scss";
 import Step3PartySelect from "../buy_bill_book/step3PartySelect";
 import {
+  getDefaultSystemSettings,
   getOutstandingBal,
   getSystemSettings,
 } from "../../actions/billCreationService";
@@ -113,41 +114,84 @@ const SellBillStep3 = (props) => {
         : props.slectedSellCropsArray
     );
     getSystemSettings(clickId).then((res) => {
-      var response = res.data.data.billSetting;
-      for (var i = 0; i < response.length; i++) {
-        if (response[i].billType === "SELL") {
-          if (response[i].formStatus === 1) {
-            Object.assign(response[i], {
-              settingName: response[i].settingName,
-              tableType: 0,
-              subText: "",
-              subText2: "",
-              totalVal: 0,
-              cstmName: "",
-            });
+      var response;
+      if(res.data.data.billSetting.length >0){
+        response = res.data.data.billSetting;
+        for (var i = 0; i < response.length; i++) {
+          if (response[i].billType === "SELL") {
+            if (response[i].formStatus === 1) {
+              Object.assign(response[i], {
+                settingName: response[i].settingName,
+                tableType: 0,
+                subText: "",
+                subText2: "",
+                totalVal: 0,
+                cstmName: "",
+              });
 
-            if (
-              response[i].settingName === "DEFAULT_RATE_TYPE" ||
-              response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
-              response[i].settingName == "WASTAGE"
-            ) {
-              console.log("hey");
-            } else {
-              listSettings(response[i].settingName, response, i);
-              allGroups.push(response[i]);
+              if (
+                response[i].settingName === "DEFAULT_RATE_TYPE" ||
+                response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
+                response[i].settingName == "WASTAGE"
+              ) {
+                console.log("hey");
+              } else {
+                listSettings(response[i].settingName, response, i);
+                allGroups.push(response[i]);
+              }
+              if (response[i].settingName === "OUT_ST_BALANCE")
+                setOutBalformStatusvalue(true);
             }
-            if (response[i].settingName === "OUT_ST_BALANCE")
-              setOutBalformStatusvalue(true);
-          }
 
-          if (response[i].settingName === "COMMISSION") {
-            setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-            setisShown(response[i].isShown == 1 ? true : false);
-          } else if (response[i].settingName === "RETURN_COMMISSION") {
-            setAddRetComm(response[i].addToGt == 1 ? false : true);
-            setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+            if (response[i].settingName === "COMMISSION") {
+              setIncludeComm(response[i].includeInLedger == 1 ? true : false);
+              setisShown(response[i].isShown == 1 ? true : false);
+            } else if (response[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(response[i].addToGt == 1 ? false : true);
+              setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+            }
           }
         }
+      } else{ getDefaultSystemSettings().then((res)=>{
+        response = res.data.data;
+        for (var i = 0; i < response.length; i++) {
+          if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
+            if (response[i].status === 1) {
+              Object.assign(response[i], {
+                settingName: response[i].name,
+                tableType: 0,
+                subText: "",
+                subText2: "",
+                totalVal: 0,
+                cstmName: "",
+                value : 0,
+              });
+
+              if (
+                response[i].name === "DEFAULT_RATE_TYPE" ||
+                response[i].name === "SKIP_INDIVIDUAL_EXP" ||
+                response[i].name == "WASTAGE"
+              ) {
+                console.log("hey");
+              } else {
+                listSettings(response[i].name, response, i);
+                allGroups.push(response[i]);
+              }
+              if (response[i].name === "OUT_ST_BALANCE")
+                setOutBalformStatusvalue(true);
+            }
+
+            if (response[i].name === "COMMISSION") {
+              setIncludeComm(true);
+              setisShown(true);
+            } else if (response[i].name === "RETURN_COMMISSION") {
+              setAddRetComm(false);
+              setIncludeRetComm(true);
+            }
+          }
+        }
+      })
+
       }
     });
   }, [props.showstep3]);

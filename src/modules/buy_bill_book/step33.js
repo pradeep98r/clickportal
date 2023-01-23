@@ -8,6 +8,7 @@ import moment from "moment";
 import {
   getSystemSettings,
   getOutstandingBal,
+  getDefaultSystemSettings,
 } from "../../actions/billCreationService";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
@@ -127,43 +128,89 @@ const Step33 = (props) => {
     );
 
     getSystemSettings(clickId).then((res) => {
-      var response = res.data.data.billSetting;
-      for (var i = 0; i < response.length; i++) {
-        if (response[i].billType === "BUY") {
-          if (response[i].formStatus === 1) {
-            Object.assign(response[i], {
-              settingName: response[i].settingName,
-              tableType: 0,
-              subText: "",
-              subText2: "",
-              totalVal: 0,
-              cstmName: "",
-            });
-
-            if (
-              response[i].settingName === "DEFAULT_RATE_TYPE" ||
-              response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
-              response[i].settingName == "WASTAGE"
-            ) {
-              console.log("");
-            } else {
-              listSettings(response[i].settingName, response, i);
-              allGroups.push(response[i]);
+      var response;
+      if(res.data.data.billSetting.length >0){
+         response = res.data.data.billSetting;
+         for (var i = 0; i < response.length; i++) {
+          if (response[i].billType === "BUY") {
+            if (response[i].formStatus === 1) {
+              Object.assign(response[i], {
+                settingName: response[i].settingName,
+                tableType: 0,
+                subText: "",
+                subText2: "",
+                totalVal: 0,
+                cstmName: "",
+              });
+  
+              if (
+                response[i].settingName === "DEFAULT_RATE_TYPE" ||
+                response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
+                response[i].settingName == "WASTAGE"
+              ) {
+                console.log("");
+              } else {
+                listSettings(response[i].settingName, response, i);
+                allGroups.push(response[i]);
+              }
+  
+              if (response[i].settingName === "OUT_ST_BALANCE")
+                setOutBalformStatusvalue(true);
             }
-
-            if (response[i].settingName === "OUT_ST_BALANCE")
-              setOutBalformStatusvalue(true);
-          }
-
-          if (response[i].settingName === "COMMISSION") {
-            setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-            setisShown(response[i].isShown == 1 ? true : false);
-          } else if (response[i].settingName === "RETURN_COMMISSION") {
-            setAddRetComm(response[i].addToGt == 1 ? false : true);
-            setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+  
+            if (response[i].settingName === "COMMISSION") {
+              setIncludeComm(response[i].includeInLedger == 1 ? true : false);
+              setisShown(response[i].isShown == 1 ? true : false);
+            } else if (response[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(response[i].addToGt == 1 ? false : true);
+              setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+            }
           }
         }
+      } else{
+        getDefaultSystemSettings().then((res)=>{
+          response = res.data.data;
+          for (var i = 0; i < response.length; i++) {
+            if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
+              if (response[i].status === 1) {
+                console.log(response[i].name,i,"names");
+                Object.assign(response[i], {
+                  settingName: response[i].name,
+                  tableType: 0,
+                  subText: "",
+                  subText2: "",
+                  totalVal: 0,
+                  cstmName: "",
+                  value: 0,
+                });
+    
+                if (
+                  response[i].name === "DEFAULT_RATE_TYPE" ||
+                  response[i].name === "SKIP_INDIVIDUAL_EXP" ||
+                  response[i].name == "WASTAGE"
+                ) {
+                  console.log("");
+                } else {
+                  listSettings(response[i].name, response, i);
+                  allGroups.push(response[i]);
+                }
+    
+                if (response[i].name === "OUT_ST_BALANCE")
+                  setOutBalformStatusvalue(true);
+              }
+    
+              if (response[i].name === "COMMISSION") {
+                setIncludeComm(true);
+                setisShown(true);
+              } else if (response[i].name === "RETURN_COMMISSION") {
+                setAddRetComm(false);
+                setIncludeRetComm(true);
+              }
+            }
+          }
+        })
       }
+      
     });
   }, [props.showstep3]);
   var gTotal = 0;
@@ -180,6 +227,7 @@ const Step33 = (props) => {
     }
   };
   const listSettings = (name, res, index) => {
+    console.log(res,"res")
     var totalQty = 0;
     var item = editStatus
       ? step2CropEditStatus
@@ -258,6 +306,7 @@ const Step33 = (props) => {
 
             break;
           case "TRANSPORTATION":
+            console.log(name,"namer")
             var trVa = editStatus
               ? tableChangeStatusval
                 ? res[j].value
@@ -272,6 +321,7 @@ const Step33 = (props) => {
               : tableChangeStatusval
               ? res[j].value
               : res[j].value * totalQty;
+
             getTransportationValue(trVa);
             res[j] = {
               ...res[j],
@@ -281,6 +331,7 @@ const Step33 = (props) => {
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
             };
+            console.log(res[j].tableType,"tableTye");
             break;
           case "RENT":
             var trVa = editStatus
@@ -343,11 +394,11 @@ const Step33 = (props) => {
             getOtherfeeValue(trVa);
             res[j] = { ...res[j], tableType: 1, value: trVa };
             break;
-          case "CASH_RECEIVED":
-            var trVa = getSingleValues(billEditItem?.cashRcvd, res[j].value);
+          // case "CASH_RECEIVED":
+          //   var trVa = getSingleValues(billEditItem?.cashRcvd, res[j].value);
 
-            res[j] = { ...res[j], tableType: 1, value: trVa };
-            break;
+          //   res[j] = { ...res[j], tableType: 1, value: trVa };
+          //   break;
           case "CASH_PAID":
             var trVa = getSingleValues(billEditItem?.cashPaid, res[j].value);
             getCashpaidValue(trVa);
