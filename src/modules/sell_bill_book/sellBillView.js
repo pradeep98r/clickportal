@@ -24,7 +24,7 @@ import {
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
 import { useDispatch } from "react-redux";
-import { billDate, editStatus, selectBill, selectedParty, tableEditStatus } from "../../reducers/billEditItemSlice";
+import { billDate, editStatus, selectBill, selectedParty, tableEditStatus, cropEditStatus } from "../../reducers/billEditItemSlice";
 import { selectSteps } from "../../reducers/stepsSlice";
 import Steps from "../buy_bill_book/steps";
 const SellBillView = () => {
@@ -429,6 +429,7 @@ const SellBillView = () => {
     dispatch(tableEditStatus(false))
     dispatch(billDate(new Date(singleBillData.billDate)))
     dispatch(selectedParty(singleBillData.partyType));
+    dispatch(cropEditStatus(false));
     // var arr = [];
     // arr.push(itemVal);
     // setSlectedCropArray(arr);
