@@ -20,7 +20,8 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { billViewInfo } from "../../reducers/billViewSlice"
 import { selectSteps } from "../../reducers/stepsSlice";
 import { selectBuyer } from "../../reducers/buyerSlice"
 import Steps from "../buy_bill_book/steps";
@@ -36,6 +37,8 @@ const SellBillBook = (props) => {
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
+  
+  const  billData = useSelector((state)=> state.billViewInfo);
   // console.log(billViiewDate)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -44,15 +47,12 @@ const SellBillBook = (props) => {
   }, []);
   var [dateValue, setDateValue] = useState();
   window.addEventListener('load', function(event) {
-    console.log('hello world',typeof(props.selectedBillviewDate));
     // bDate = '';
   });
   const callbackFunction = (startDate, endDate, dateTab) => {
-    console.log(bDate, "selected data");
     var fromDate = moment(bDate ? bDate :startDate).format("YYYY-MM-DD");
     var toDate = moment(bDate ? bDate :endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    console.log(bDate,fromDate,toDate,startDate, "selected data");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -96,8 +96,10 @@ const SellBillBook = (props) => {
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
-    navigate(generatePath(`/sell_bill_view/${id}`, { id }));
+    // navigate(generatePath(`/sell_bill_view/${id}`, { id }));
+    navigate(generatePath(`/bill_view/${id}`, { id }))
     localStorage.setItem("billId", id);
+    dispatch(billViewInfo(bill));
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);

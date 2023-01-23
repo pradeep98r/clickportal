@@ -21,8 +21,9 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
-import { useDispatch } from "react-redux";
-import { selectSteps } from "../../reducers/stepsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { selectSteps } from "../../reducers/stepsSlice"
+import { billViewInfo } from "../../reducers/billViewSlice"
 import { selectBuyer } from "../../reducers/buyerSlice"
 import { selectTrans } from "../../reducers/transSlice";
 import {fromBillbook} from "../../reducers/billEditItemSlice"
@@ -34,7 +35,10 @@ function BuyBillBook() {
   const [isLoading, setLoading] = useState(true);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
+
+  const  billData = useSelector((state)=> state.billViewInfo);
   const dispatch = useDispatch();
+  console.log(billData);
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
@@ -94,6 +98,7 @@ function BuyBillBook() {
     localStorage.setItem("billViewStatus", billViewStatus);
     navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
+    dispatch(billViewInfo(bill));
     localStorage.setItem("selectedBillData", JSON.stringify(bill));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
