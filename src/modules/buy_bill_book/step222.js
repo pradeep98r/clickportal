@@ -624,6 +624,7 @@ const Step22 = (props) => {
   const [arIndex, setarIndex] = useState(0);
   const [editBagsStatus, setEditBagsStatus] = useState(false);
   const handleCheckEvent = (crd, ink, cr) => {
+    localStorage.setItem("bagsChecked",true);
     let updatedItem = crd.map((item, i) => {
       if (i == ink) {
         setarIndex(ink);
@@ -666,7 +667,7 @@ const Step22 = (props) => {
       e.target.value = "";
     }
   };
-
+  var invbagsChecked = localStorage.getItem('bagsChecked');
   return (
     <div>
       <div className="main_div_padding">
@@ -884,7 +885,7 @@ const Step22 = (props) => {
                                           </p>
                                           <input
                                             type="checkbox"
-                                            checked={cropData[index].checked}
+                                            checked={invbagsChecked?true:cropData[index].checked}
                                             id="modal_checkbox"
                                             value="my-value"
                                             className="checkbox_t"

@@ -102,6 +102,7 @@ const SelectBags = (props) => {
       props.closeBagsModal();
     }
     console.log(invArr,"imvArr");
+    console.log(props.cropsArray[0].qty,quantityVal,"values");
     props.closeBagsModal();
     // if(totalw == 0){
     //   toast.success("Please enter weight", {
@@ -121,8 +122,14 @@ const SelectBags = (props) => {
       weight: 0,
     };
     arr1.push(addObj);
-    setQuantityVal(parseInt(quantityVal) + 1);
-    props.cropsArray[0].unitValue = parseInt(quantityVal) + 1;
+    if(props.editBagsStatus){
+      setQuantityVal(parseInt(props.cropsArray[0].qty) + 1)
+      props.cropsArray[0].qty = parseInt(props.cropsArray[0].qty) + 1;
+    } else{
+      setQuantityVal(parseInt(quantityVal) + 1);
+      props.cropsArray[0].unitValue = parseInt(quantityVal) + 1;
+    }
+    
     var arr2 = [...invArr, ...arr1];
     setInvArr(arr2);
   };
