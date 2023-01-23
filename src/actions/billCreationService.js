@@ -95,6 +95,12 @@ export function getSystemSettings(clickId) {
   );
 }
 
+export function getDefaultSystemSettings(){
+  return axiosCommon.get(
+    `/click/bcp-settings`
+  )
+}
+
 export function getMandiDetails(clickId) {
   return axiosCommon.get(
     `/account/click/profiles/caId/${clickId}`

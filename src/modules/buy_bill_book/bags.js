@@ -66,7 +66,7 @@ const SelectBags = (props) => {
   const getInvTotalValue = () => {
     invArr.map((item) => {
       console.log(item.weight,"weight")
-      totalVal += parseInt(item.weight);
+      totalVal += parseInt(+item.weight||0);
     });
     console.log(totalVal,"totalValue");
     return totalVal;
@@ -104,14 +104,6 @@ const SelectBags = (props) => {
     console.log(invArr,"imvArr");
     console.log(props.cropsArray[0].qty,quantityVal,"values");
     props.closeBagsModal();
-    // if(totalw == 0){
-    //   toast.success("Please enter weight", {
-    //     toastId: "success1",
-    //   });
-    // }
-    // else{
-      
-    //}  
   };
   var arr1 = [];
   const addInvTab = () => {
@@ -142,6 +134,7 @@ const SelectBags = (props) => {
     resetInput(e);
     setInvArr([]);
     setQuantityVal(0);
+    props.cropsArray[0].checked = false
   }
   return (
     <Modal
@@ -199,7 +192,7 @@ const SelectBags = (props) => {
                       className="form-control mb-0"
                       name="totalweight"
                       value={getInvTotalValue()}
-                      onChange={getInvTotalValue}
+                      onChange={()=>getInvTotalValue}
                       onFocus={(e) => resetInput(e)}
                     />
                   </td>
