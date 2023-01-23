@@ -204,10 +204,15 @@ const Partner = () => {
   const [updateProfilePic, setUpdateProfilePic] = useState("");
   const handleProfilePic = (e) => {
     if (isEdit) {
+      var output = document.getElementById('output');
+      output.src = URL.createObjectURL(e.target.files[0]);
+      output.onload = function() {
+        URL.revokeObjectURL(output.src)
+      }
       console.log("came to edit");
       setFile(e.target.files[0]);
       var req = {
-        file: e.target.files[0],
+        file:e.target.files[0],
         type: partyType,
       };
       uploadProfilePic(clickId, mobileNumber, req)
@@ -217,6 +222,7 @@ const Partner = () => {
         .catch((error) => {
           console.log(error);
         });
+      console.log(updateProfilePic);
     } else {
       setFile(e.target.files[0]);
       let req = {
@@ -1099,7 +1105,9 @@ const Partner = () => {
                                               ? single_bill
                                               : updateProfilePic
                                             : single_bill
-                                        }
+                                        } 
+                                        id="output"
+                                        
                                         // src={
                                         //   file
                                         //     ? URL.createObjectURL(file)

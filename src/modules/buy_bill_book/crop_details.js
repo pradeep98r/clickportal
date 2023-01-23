@@ -7,7 +7,6 @@ import {
 } from "../../components/getCurrencyNumber";
 import { qtyValues } from "../../components/qtyValues";
 const CropDetails = () => {
-    //const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
     const  billData = useSelector((state)=> state.billViewInfo);
     var cratesTotal = 0;
     var sacsTotal = 0;

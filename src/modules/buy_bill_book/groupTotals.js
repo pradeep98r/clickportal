@@ -4,19 +4,17 @@ import {
     getCurrencyNumberWithOutSymbol,
     getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
-import moment from "moment/moment";
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getSystemSettings } from '../../actions/billCreationService';
 import { useSelector } from 'react-redux';
-import SellBillGroupTotals from '../sell_bill_book/sellBillGroupTotals';
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 const GroupTotals = () => {
     var groupOneTotal = 0;
   var groupTwoTotal = 0;
   var groupThreeTotal = 0;
   var groupFourTotal = 0;
-  //const singleBillData = JSON.parse(localStorage.getItem("selectedBillData"));
+
   const  billData = useSelector((state)=> state.billViewInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -40,108 +38,217 @@ const GroupTotals = () => {
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
   const [status, setStatus] = useState(false);
-
+  const [isShown, setisShown] = useState(false);
+  
   const getBuyBillsById = () => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       billSettingData(res.data.data.billSetting);
       console.log(res.data.data.billSetting)
       for (var i = 0; i < res.data.data.billSetting.length; i++) {
-        if (
-          res.data.data.billSetting[i].groupId === 1 &&
-          res.data.data.billSetting[i].billType === "BUY" &&
-          res.data.data.billSetting[i].formStatus === 1
-        ) {
-          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-            setIncludeComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          }
-          if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
-            setStatus(true);
-          } else if (
-            res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+        if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+          if (
+            res.data.data.billSetting[i].groupId === 1 &&
+            res.data.data.billSetting[i].billType === "BUY" &&
+            res.data.data.billSetting[i].formStatus === 1
           ) {
-            setAddRetComm(
-              res.data.data.billSetting[i].addToGt == 1 ? true : false
-            );
-            setIncludeRetComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            }
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+              setStatus(true);
+            } else if (
+              res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+              setAddRetComm(
+                res.data.data.billSetting[i].addToGt == 1 ? true : false
+              );
+              setIncludeRetComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            }
+            groupOne = [res.data.data.billSetting[i], ...groupOne];
+            setGroupOne([groupone, ...groupOne]);
+          } else if (
+            res.data.data.billSetting[i].groupId === 2 &&
+            res.data.data.billSetting[i].billType === "BUY" &&
+            res.data.data.billSetting[i].formStatus === 1
+          ) {
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+              setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            } else if (
+              res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+              setAddRetComm(
+                res.data.data.billSetting[i].addToGt == 1 ? true : false
+              );
+              setIncludeRetComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            }
+            grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+            setGroupTwo([groupTwo, ...grouptwo]);
+          } else if (
+            res.data.data.billSetting[i].groupId === 3 &&
+            res.data.data.billSetting[i].billType === "BUY" &&
+            res.data.data.billSetting[i].formStatus === 1
+          ) {
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+              setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            } else if (
+              res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+              setAddRetComm(
+                res.data.data.billSetting[i].addToGt == 1 ? true : false
+              );
+              setIncludeRetComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            }
+            groupthree = [res.data.data.billSetting[i], ...groupthree];
+            setGroupThree([groupThree, ...groupthree]);
+          } else if (
+            res.data.data.billSetting[i].groupId === 4 &&
+            res.data.data.billSetting[i].billType === "BUY" &&
+            res.data.data.billSetting[i].formStatus === 1
+          ) {
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+              setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+              setIncludeComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            } else if (
+              res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+              setAddRetComm(
+                res.data.data.billSetting[i].addToGt == 1 ? true : false
+              );
+              setIncludeRetComm(
+                res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+              );
+            }
+            groupfour = [res.data.data.billSetting[i], ...groupfour];
+            setGroupFour([groupFour, ...groupfour]);
           }
-          groupOne = [res.data.data.billSetting[i], ...groupOne];
-          setGroupOne([groupone, ...groupOne]);
+        }
+        else{
+          if (
+            res.data.data.billSetting[i].groupId === 1 &&
+            res.data.data.billSetting[i].billType === "SELL" &&
+            res.data.data.billSetting[i].formStatus === 1
+        ) {
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+                if (!(res.data.data.billSetting[i].isShown)) {
+                    setStatus(true);
+                }
+            }
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+                setStatus(true);
+            } else if (
+                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+                setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? true : false
+                );
+                setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+            }
+            groupOne = [res.data.data.billSetting[i], ...groupOne];
+            setGroupOne([groupone, ...groupOne]);
         } else if (
-          res.data.data.billSetting[i].groupId === 2 &&
-          res.data.data.billSetting[i].billType === "BUY" &&
-          res.data.data.billSetting[i].formStatus === 1
+            res.data.data.billSetting[i].groupId === 2 &&
+            res.data.data.billSetting[i].billType === "SELL" &&
+            res.data.data.billSetting[i].formStatus === 1
         ) {
-          if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
-            setStatus(true);
-          }
-          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-            setIncludeComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          } else if (
-            res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-          ) {
-            setAddRetComm(
-              res.data.data.billSetting[i].addToGt == 1 ? true : false
-            );
-            setIncludeRetComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          }
-          grouptwo = [res.data.data.billSetting[i], ...grouptwo];
-          setGroupTwo([groupTwo, ...grouptwo]);
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+                setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+            } else if (
+                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+                setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? true : false
+                );
+                setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+            }
+            grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+            setGroupTwo([groupTwo, ...grouptwo]);
         } else if (
-          res.data.data.billSetting[i].groupId === 3 &&
-          res.data.data.billSetting[i].billType === "BUY" &&
-          res.data.data.billSetting[i].formStatus === 1
+            res.data.data.billSetting[i].groupId === 3 &&
+            res.data.data.billSetting[i].billType === "SELL" &&
+            res.data.data.billSetting[i].formStatus === 1
         ) {
-          if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
-            setStatus(true);
-          }
-          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-            setIncludeComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          } else if (
-            res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-          ) {
-            setAddRetComm(
-              res.data.data.billSetting[i].addToGt == 1 ? true : false
-            );
-            setIncludeRetComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          }
-          groupthree = [res.data.data.billSetting[i], ...groupthree];
-          setGroupThree([groupThree, ...groupthree]);
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+                setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+            } else if (
+                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+                setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? true : false
+                );
+                setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+            }
+            groupthree = [res.data.data.billSetting[i], ...groupthree];
+            setGroupThree([groupThree, ...groupthree]);
         } else if (
-          res.data.data.billSetting[i].groupId === 4 &&
-          res.data.data.billSetting[i].billType === "BUY" &&
-          res.data.data.billSetting[i].formStatus === 1
+            res.data.data.billSetting[i].groupId === 4 &&
+            res.data.data.billSetting[i].billType === "SELL" &&
+            res.data.data.billSetting[i].formStatus === 1
         ) {
-          if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
-            setStatus(true);
-          }
-          if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-            setIncludeComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          } else if (
-            res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-          ) {
-            setAddRetComm(
-              res.data.data.billSetting[i].addToGt == 1 ? true : false
-            );
-            setIncludeRetComm(
-              res.data.data.billSetting[i].includeInLedger == 1 ? true : false
-            );
-          }
-          groupfour = [res.data.data.billSetting[i], ...groupfour];
-          setGroupFour([groupFour, ...groupfour]);
+            if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
+                setStatus(true);
+            }
+            if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+            } else if (
+                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+            ) {
+                setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? true : false
+                );
+                setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1 ? true : false
+                );
+            }
+            groupfour = [res.data.data.billSetting[i], ...groupfour];
+            setGroupFour([groupFour, ...groupfour]);
+        }
         }
       }
     });
@@ -155,7 +262,11 @@ const GroupTotals = () => {
     }
     switch (name) {
       case "COMMISSION":
-        value = -billData.billViewInfo?.comm;
+        if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+          value = -billData.billViewInfo?.comm;
+        } else{
+          value = billData.billViewInfo?.commShown ? billData.billViewInfo?.comm : 0;
+        }
         break;
       case "RETURN_COMMISSION":
         groupone.map((item) => {
@@ -208,39 +319,75 @@ const GroupTotals = () => {
         });
         break;
       case "TRANSPORTATION":
-        value = -billData.billViewInfo?.transportation;
+        if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+          value = -billData.billViewInfo?.transportation;
+        }else{
+          value = billData.billViewInfo?.transportation;
+        }
         break;
       case "LABOUR_CHARGES":
-        value = -billData.billViewInfo?.labourCharges;
+        if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+          value = -billData.billViewInfo?.labourCharges;
+        }else{
+          value = billData.billViewInfo?.labourCharges;
+        }
         break;
       case "RENT":
-        value = -billData.billViewInfo?.rent;
+        if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+          value = -billData.billViewInfo?.rent;
+        }else{
+          value = billData.billViewInfo?.rent;
+        }
         break;
       case "MANDI_FEE":
-        value = -billData.billViewInfo?.mandiFee;
+        if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+          value = -billData.billViewInfo?.mandiFee;
+        }
+        else{
+          value = billData.billViewInfo?.mandiFee;
+        }
         break;
       case "OTHER_FEE":
-        if (billData.billViewInfo.partyType === "BUYER") {
-          value = -billData.billViewInfo?.otherFee;
-        } else {
+        if (billData.billViewInfo.partyType.toUpperCase() === "FARMER") {
           value = -billData.billViewInfo?.misc;
+        } else {
+          value = -billData.billViewInfo?.otherFee;
         }
         break;
       case "GOVT_LEVIES":
-        value = -billData.billViewInfo?.govtLevies;
+        if (billData.billViewInfo.partyType.toUpperCase() === "FARMER"){
+          value = -billData.billViewInfo?.govtLevies;
+        }else{
+          value = billData.billViewInfo?.govtLevies;
+        }
         break;
       case "ADVANCES":
-        value = -billData.billViewInfo?.advance;
+        if (billData.billViewInfo.partyType.toUpperCase() === "FARMER"){
+          value = -billData.billViewInfo?.advance;
+        }else{
+          value = billData.billViewInfo?.advance;
+        }
         break;
       case substring:
-        billData.billViewInfo.customFields.map((item) => {
-          if (item.fee != 0) {
-            if (item.field === name) {
-              value = -item.fee;
-              return value;
+        if (billData.billViewInfo.partyType.toUpperCase() === "FARMER"){
+          billData.billViewInfo.customFields.map((item) => {
+            if (item.fee != 0) {
+              if (item.field === name) {
+                value = -item.fee;
+                return value;
+              }
             }
-          }
-        });
+          });
+        }else{
+          billData.billViewInfo.customFields.map((item) => {
+            if (item.fee != 0) {
+                if (item.field === name) {
+                    value = item.fee;
+                    return value;
+                }
+            }
+          });
+        }
         break;
     }
     return value;
@@ -260,34 +407,6 @@ const GroupTotals = () => {
   groupFour.map((item) => {
     return (groupFourTotal += handleGroupNames(item.settingName));
   });
-
-  const getCropUnit = (unit) => {
-    var unitType = "";
-    switch (unit.toUpperCase()) {
-      case "CRATES":
-        unitType = "C";
-        break;
-      case "BOXES":
-        unitType = "BX";
-        break;
-      case "BAGS":
-        unitType = "Bg";
-        break;
-      case "SACS":
-        unitType = "S";
-        break;
-      case "LOADS":
-        unitType = "LDS";
-        break;
-      case "PIECES":
-        unitType = "PCS";
-        break;
-      case "KGS":
-        unitType = "KGS";
-        break;
-    }
-    return unitType;
-  };
 
   const handleSettingName = (item, list) => {
     var substring = "CUSTOM_FIELD";
@@ -338,7 +457,8 @@ const GroupTotals = () => {
     return item;
   };
   const getFinalLedgerbalance = () => {
-    var t = parseInt(
+    if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+        var t = parseInt(
         billData.billViewInfo.transportation +
         billData.billViewInfo.labourCharges +
         billData.billViewInfo.rent +
@@ -346,29 +466,52 @@ const GroupTotals = () => {
         billData.billViewInfo.govtLevies +
         billData.billViewInfo.misc +
         billData.billViewInfo.advance
-    );
-    var finalValue = billData.billViewInfo.grossTotal - t;
-    var finalVal = finalValue;
-    if (includeComm) {
-      finalVal = finalVal - billData.billViewInfo.comm;
+      );
+    }else{
+      var t = parseInt(
+        billData.billViewInfo.transportation +
+        billData.billViewInfo.labourCharges +
+        billData.billViewInfo.rent +
+        billData.billViewInfo.mandiFee +
+        billData.billViewInfo.govtLevies +
+        billData.billViewInfo.otherFee
+      );
     }
-    if (addRetComm) {
+    if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+      var finalValue = billData.billViewInfo.grossTotal - t;
+    }else{
+      var finalValue = billData.billViewInfo.grossTotal + t;
+    }
+    var finalVal = finalValue;
+    if (includeComm && billData.billViewInfo.partyType.toUpperCase==='FARMER') {
+      finalVal = finalVal - billData.billViewInfo.comm;
+    }else{
+      finalVal = finalVal + billData.billViewInfo.comm;
+    }
+
+    if (addRetComm && billData.billViewInfo.partyType.toUpperCase()==='FARMER') {
       if (includeRetComm) {
         finalVal = finalVal + billData.billViewInfo.rtComm;
       }
     } else {
-      // if (includeRetComm) {
-      finalVal = finalVal - billData.billViewInfo.rtComm;
-      // }
+      finalVal = finalVal + billData.billViewInfo.rtComm;
     }
-    return (
-      (Number(finalVal) + billData.billViewInfo.outStBal).toFixed(2) -
-      Number(billData.billViewInfo.cashPaid)
-    ).toFixed(2);
+    if(billData.billViewInfo.partyType.toUpperCase()==='FARMER'){
+      return (
+        (Number(finalVal) + billData.billViewInfo.outStBal).toFixed(2) -
+        Number(billData.billViewInfo.cashPaid)
+      ).toFixed(2);
+    }
+    else{
+      var cashRecieved =
+            billData.billViewInfo.cashRcvd === null ? 0 : billData.billViewInfo.cashRcvd;
+        return (
+            (Number(finalVal) + billData.billViewInfo.outStBal).toFixed(2) - cashRecieved
+        ).toFixed(2);
+    }
   };
     return (
         <div>
-        {billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
             <div>
             <div className="row">
                 <div className="col-lg-6"></div>
@@ -684,7 +827,8 @@ const GroupTotals = () => {
                                 )}
                             </div>
                             <div className="col-lg-4">
-                                <p className="grouping_value color_red">
+                                <p className={billData.billViewInfo.partyType.toUpperCase()==='FARMER'
+                                ?"grouping_value color_red":'grouping_value color_green'}>
                                     {billData.billViewInfo?.grossTotal +
                                         (groupFourTotal +
                                             groupThreeTotal +
@@ -714,6 +858,7 @@ const GroupTotals = () => {
                     </div>
                     </div>
                     <div>
+                      {billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
                         <div className="row">
                             <div className="col-lg-2"></div>
                             <div className="col-lg-6">
@@ -734,7 +879,27 @@ const GroupTotals = () => {
                                         )}
                                 </p>
                             </div>
+                        </div>:
+                        <div className="row">
+                        <div className="col-lg-2"></div>
+                        <div className="col-lg-6">
+                            {billData.billViewInfo.cashRcvd === 0 ||
+                                billData.billViewInfo.cashRcvd === null ? (
+                                ""
+                            ) : (
+                                <p className="grouping_value">Cash Received</p>
+                            )}
                         </div>
+                        <div className="col-lg-4">
+                            <p className="grouping_value ">
+                                {billData.billViewInfo.cashRcvd === 0 ||
+                                    billData.billViewInfo.cashRcvd === null
+                                    ? ""
+                                    : '-' + getCurrencyNumberWithSymbol(billData.billViewInfo?.cashRcvd)}
+                            </p>
+                        </div>
+                      </div>
+                      }
                     </div>
                     <div></div>
                     <div>
@@ -750,7 +915,8 @@ const GroupTotals = () => {
                             </div>
                             <div className="col-lg-4">
                                 <p
-                                    className="grouping_value color_red"
+                                    className={billData.billViewInfo.partyType.toUpperCase()==='FARMER'
+                                    ?"grouping_value color_red":'grouping_value color_green'}
                                     style={{ display: status ? "block" : "none" }}
                                 >
                                     {billData.billViewInfo?.outStBal.toLocaleString("en-IN", {
@@ -773,7 +939,9 @@ const GroupTotals = () => {
                     </div>
 
                     <div className="col-lg-2"></div>
-                    <div className="col-lg-3">
+                    {billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
+                      <div>
+                      <div className="col-lg-3">
                       {billData.billViewInfo.totalPayables === 0 ? (
                         "" || billData.billViewInfo.totalPayables === null
                       ) : (
@@ -796,6 +964,37 @@ const GroupTotals = () => {
                           : billData.billViewInfo?.totalPayables}
                       </p>
                     </div>
+                    </div>:
+                      <div>
+                          <div className="col-lg-3">
+                          {billData.billViewInfo.totalReceivable === 0 ||
+                              billData.billViewInfo.totalReceivable === null ? (
+                              ""
+                          ) : (
+                              <p
+                                  className="groups_value"
+                                  style={{ display: !status ? "block" : "none" }}
+                              >
+                                  Total Receivables:
+                              </p>
+                          )}
+                      </div>
+                      <div className="col-lg-2">
+                          {billData.billViewInfo.totalReceivable === 0 ||
+                              billData.billViewInfo.totalReceivable === null ? (
+                              ""
+                          ) : (
+                              <p
+                                  className="groups_value color_green"
+                                  style={{ display: !status ? "block" : "none" }}
+                              >
+                                  {billData.billViewInfo?.totalReceivable}
+                              </p>
+                          )}
+                      </div>
+                      </div>
+                    }
+                    
                   </div>
                 ) : (
                   <div className="row out-st-bal align-items-center">
@@ -816,17 +1015,20 @@ const GroupTotals = () => {
                     </div>
                     <div className="col-lg-2">
                       <span
-                        className="out-value color_red"
+                        className={billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
+                        "out-value color_red":'out-value color_green'}
                         style={{ display: status ? "block" : "none" }}
                       >
-                        {getFinalLedgerbalance()}
+                        {getFinalLedgerbalance().toLocaleString("en-IN", {
+                                            maximumFractionDigits: 2,
+                                            style: "currency",
+                                            currency: "INR",
+                                        })}
                       </span>
                     </div>
                   </div>
                 )}
             </div>
-          :<SellBillGroupTotals />  
-        }
         </div>
     )
 }
