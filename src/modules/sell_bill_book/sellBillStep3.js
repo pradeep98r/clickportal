@@ -60,7 +60,6 @@ const SellBillStep3 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedSellCropsArray;
-    console.log(billEditItem,"billEditItem")
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -84,7 +83,6 @@ const SellBillStep3 = (props) => {
         ? billEditItemInfo.selectedBillInfo.lineItems
         : billEditItem.lineItems
       : props.slectedSellCropsArray;
-      console.log(billEditItem.lineItems,"billEditItem.lineItems")
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -118,6 +116,7 @@ const SellBillStep3 = (props) => {
       var response;
       if(res.data.data.billSetting.length >0){
         response = res.data.data.billSetting;
+        console.log(response,"settings")
         for (var i = 0; i < response.length; i++) {
           if (response[i].billType === "SELL") {
             if (response[i].formStatus === 1) {
@@ -135,7 +134,7 @@ const SellBillStep3 = (props) => {
                 response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
                 response[i].settingName == "WASTAGE"
               ) {
-                console.log("hey");
+                console.log("");
               } else {
                 listSettings(response[i].settingName, response, i);
                 allGroups.push(response[i]);
@@ -173,7 +172,7 @@ const SellBillStep3 = (props) => {
                 response[i].name === "SKIP_INDIVIDUAL_EXP" ||
                 response[i].name == "WASTAGE"
               ) {
-                console.log("hey");
+                console.log("");
               } else {
                 listSettings(response[i].name, response, i);
                 allGroups.push(response[i]);
@@ -211,7 +210,6 @@ const SellBillStep3 = (props) => {
         ? props.slectedSellCropsArray
         : billEditItemInfo.selectedBillInfo.lineItems
       : props.slectedSellCropsArray;
-      console.log(item, billEditItemInfo.selectedBillInfo.lineItems,step2CropEditStatus,props.slectedSellCropsArray)
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
       // console.log(totalQty,"qtyy")
@@ -399,13 +397,16 @@ const SellBillStep3 = (props) => {
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
               // var trVa = res[j].value != 0 ? getSingleValues(newitem) : 0;
               var trVa = getSingleValues(newitem);
+              
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
                 value: trVa,
+                fieldType:'SIMPlE'
               };
+              console.log(trVa,res[j],"null valye")
             }
             if (res[j].fieldType == "COMPLEX_RS") {
               // var trVa = getSingleValues(newitem);
@@ -463,7 +464,6 @@ const SellBillStep3 = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     var totalunitvalue = 0;
-    console.log(items,"gross")
     for (var i = 0; i < items.length; i++) {
       total += editStatus
         ? step2CropEditStatus
@@ -582,7 +582,6 @@ const SellBillStep3 = (props) => {
       ? props.slectedSellCropsArray
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedSellCropsArray;
-    console.log(cropArray,"lineitems arrray")
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -724,8 +723,6 @@ const SellBillStep3 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(editBillRequestObj, "edit bill request");
-            
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
@@ -743,7 +740,6 @@ const SellBillStep3 = (props) => {
         }
       );
     } else {
-      console.log(sellBillRequestObj, transTotalValue, "post req");
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
@@ -794,7 +790,6 @@ const SellBillStep3 = (props) => {
   const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
-
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -816,6 +811,7 @@ const SellBillStep3 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
+            console.log(tab,groupLiist[i],e.target.value,"nulltype")
           }
           setQuestionsTitle(tab);
         }
@@ -983,7 +979,7 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const getTargetValue = (val, list, index) => {
-    if (list.fieldType == "SIMPLE") {
+    if (list.fieldType == "SIMPlE") {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
       return (list.fee = Number(getTotalUnits(val).toFixed(2)));
