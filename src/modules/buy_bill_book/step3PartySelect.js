@@ -152,16 +152,17 @@ const Step3PartySelect = (props) => {
 
   const partnerClick = (type) => {
     setCount(count + 1);
-    if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
-      if (count % 2 == 0) {
-        setPartnerDataStatus(true);
-      } else {
-        setPartnerDataStatus(false);
-      }
-      //setPartnerDataStatus(true);
-      setPartnerType("Buyer");
-      fetchPertnerData("Buyer");
-    } else if (type == "Transporter") {
+    // if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
+    //   if (count % 2 == 0) {
+    //     setPartnerDataStatus(true);
+    //   } else {
+    //     setPartnerDataStatus(false);
+    //   }
+    //   //setPartnerDataStatus(true);
+    //   setPartnerType("Buyer");
+    //   fetchPertnerData("Buyer");
+    // } else 
+    if (type == "Transporter") {
       if (count % 2 == 0) {
         setTranspoDataStatus(true);
       } else {
@@ -170,16 +171,17 @@ const Step3PartySelect = (props) => {
       //setTranspoDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
-    } else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
-      if (count % 2 == 0) {
-        setPartnerDataStatus(true);
-      } else {
-        setPartnerDataStatus(false);
-      }
-      //setPartnerDataStatus(true);
-      setPartnerType(type);
-      fetchPertnerData("Seller");
-    }
+    } 
+    // else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
+    //   if (count % 2 == 0) {
+    //     setPartnerDataStatus(true);
+    //   } else {
+    //     setPartnerDataStatus(false);
+    //   }
+    //   //setPartnerDataStatus(true);
+    //   setPartnerType(type);
+    //   fetchPertnerData("Seller");
+    // }
   };
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);

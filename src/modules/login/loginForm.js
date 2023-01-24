@@ -27,6 +27,7 @@ const LoginForm = () => {
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
     setInvalidError(false);
+    setotpErrorStatus(false)
   };
   navigator.geolocation.getCurrentPosition(function (position) {
     setLatValue(position.coords.latitude);
@@ -35,10 +36,12 @@ const LoginForm = () => {
   const [otpValue, setOtpValue] = useState("");
   const [viewOtpForm, setViewOtpForm] = useState(false);
   const [otpError, setotpError] = useState("");
+  const [otpErrorStatus, setotpErrorStatus] = useState(false);
   const handleOtpChange = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 6);
     setOtpValue(number);
+    setotpErrorStatus(false);
   };
 
   const dispatch = useDispatch();
@@ -61,6 +64,8 @@ const LoginForm = () => {
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {
+    setotpErrorStatus(false);
+    setOtpValue('');
     console.log(obj);
     doLogin(obj).then(
       (response) => {
@@ -147,11 +152,13 @@ const LoginForm = () => {
             toastId: "success2",
           });
         } else {
-          setotpError("The entered otp is incorrect");
+          setotpErrorStatus(true);
+          setotpError("The entered OTP is incorrect");
         }
       },
       (error) => {
-        setotpError("The entered otp is incorrect");
+        setotpErrorStatus(true)
+        setotpError("The entered OTP is incorrect");
       }
     );
   };
@@ -242,6 +249,7 @@ const LoginForm = () => {
                       name="phone"
                       autoComplete="false"
                       className="form-control"
+                      style={{color: otpErrorStatus == false ? "#495057" : "#FD0D1B"}}
                       id="phone"
                       value={otpValue}
                       onChange={(event) => handleOtpChange(event)}
