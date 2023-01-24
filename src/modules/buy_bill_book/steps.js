@@ -2,12 +2,11 @@ import { Modal } from "react-bootstrap";
 import Step11 from "./step11";
 import { useDispatch, useSelector } from "react-redux";
 import Step22 from "./step222";
-import clo from "../../assets/images/clo.png";
 import Step33 from "./step33";
 import { useState } from "react";
 import SellBillStep3 from "../sell_bill_book/sellBillStep3";
 import { selectTrans } from "../../reducers/transSlice";
-import { selectBuyer } from "../../reducers/buyerSlice";
+import clo from "../../assets/images/close.svg";
 const Steps = (props) => {
   const selectedStep = useSelector((state) => state.stepsInfo);
   const [selctedCrops, setSelctedCrops] = useState([]);
@@ -54,6 +53,7 @@ const Steps = (props) => {
     setslectedCropstableArray([]);
     // props.billEditStatuscallback(h);
   }
+  
   return (
     <Modal
       show={props.showStepsModal}
@@ -65,7 +65,7 @@ const Steps = (props) => {
           {(() => {
             switch (selectedStep.stepsInfo) {
               case "step1":
-                return "Add Information";
+                return "Bill Information";
               case "step2":
                 return "Add Crop Information";
               case "step3":

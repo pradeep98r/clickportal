@@ -534,8 +534,11 @@ const CompleteProfile = (props) => {
   };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
-      <div className="modal-header date_modal_header smartboard_modal_header">
-        <h5 className="modal-title header2_text" id="staticBackdropLabel">
+      
+      <div className="modal-body partner_model_body profileModal" id="">
+        <form>
+          <div className="d-flex justify-content-between mb-2">
+          <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.businessDetails}
         </h5>
         <img
@@ -544,11 +547,10 @@ const CompleteProfile = (props) => {
           className="close_icon"
           onClick={props.close}
         />
-      </div>
-      <div className="modal-body partner_model_body profileModal" id="scroll_style">
-        <form>
+          </div>
+          <div className="partner_model_scroll" id="scroll_style">
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col-lg-6 pl-0">
               <label htmlFor="zip" className="input_field">
                 {langFullData.marketName}
                 <span className="star-color">*</span>
@@ -580,7 +582,7 @@ const CompleteProfile = (props) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col-lg-6 pl-0">
               <InputField
                 type="text"
                 value={mandiTypeField}
@@ -610,7 +612,7 @@ const CompleteProfile = (props) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col-lg-6 pl-0">
               <InputField
                 type="text"
                 value={shopNumberField}
@@ -640,7 +642,7 @@ const CompleteProfile = (props) => {
             </div>
           </div>
           <div className="row">
-          <div className="col-lg-6">
+          <div className="col-lg-6 pl-0">
               <InputField
                 type="text"
                 value={mobileNumber}
@@ -672,7 +674,7 @@ const CompleteProfile = (props) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col-lg-6 pl-0">
               {" "}
               <label className="input_field address_text mt-0">
                 {langFullData.address}
@@ -687,7 +689,7 @@ const CompleteProfile = (props) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col-lg-6 pl-0">
               <div>
                 <label htmlFor="zip" className="input_field">
                   {langFullData.pincode}<span className="star-color">*</span>
@@ -729,7 +731,7 @@ const CompleteProfile = (props) => {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-6">
+            <div className="col-lg-6 pl-0">
               {" "}
               <div>
                 <label htmlFor="city" className="input_field">
@@ -775,36 +777,52 @@ const CompleteProfile = (props) => {
               }
             </span>
           </div>
+          </div>
         </form>
       </div>
-
-      <div className="modal-footer">
-        <button
+      <div className="modal-footer modal_common_footer">
+              <div className="row">
+                <div className="col-lg-6 pl-0">
+                  <button
+                    type="button"
+                    className="secondary_btn"
+                    // id="close_modal"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div className="col-lg-6">
+                <button
           type="button"
-          className="primary_btn cont_btn w-100 m-0"
+          className="primary_btn"
           // onClick={props.close onSubmit()}
           onClick={() => onSubmit()}
         >
           UPDATE
         </button>
-      </div>
+                </div>
+              </div>
+            </div>
+      
       <div className="modal fade profileModal" id="marketNamePopUpModal">
         <div className="modal-dialog  markets_name_popup">
           <div className="modal-content" id="market-modal-content">
-            <div className="modal-header date_modal_header market_modal_header">
-              <img
+            
+            <div className="row">
+            <div className="modal-body markets_name_modal_mody profileModal markets_name_modal" id="scroll_style">
+              <div className="col-lg-8" id="market-div">
+               <div className="d-flex align-items-center justify-content-between">
+               <h5 className="modal-title header2_text" id="mk-header">
+                    Select Market
+                </h5>
+                <img
                 src={close}
                 alt="image"
                 className="close_icon"
                 onClick={closePopup}
               />
-            </div>
-            <div className="row">
-            <div className="modal-body markets_name_modal_mody profileModal markets_name_modal" id="scroll_style">
-              <div className="col-lg-8" id="market-div">
-                <h5 className="modal-title header2_text" id="mk-header">
-                    Select Market
-                </h5>
+               </div>
                 <SearchField
                     placeholder={langFullData.searchByNameShortCode}
                     val={search}
@@ -885,7 +903,15 @@ const CompleteProfile = (props) => {
             <div className="container">
            <div className="row">
            <div className="col-lg-12 p-0">
-           <h5 className="modal-title header2_text pl-0" id="mk-header">
+           
+           </div>
+           </div>
+            </div>
+            </div>
+            <div className="modal-body market_name_modal_mody px-0 profileModal others_name_modal" id="scroll_style">
+           <div className="container">
+             <div className="d-flex justify-content-between align-items-center mb-2">
+             <h5 className="modal-title header2_text pl-0" id="mk-header">
                 Select Market
               </h5>
               <img
@@ -894,12 +920,7 @@ const CompleteProfile = (props) => {
                 className="close_icon othermarkerClose"
                 onClick={closeOtheModalPopUp}
               />
-           </div>
-           </div>
-            </div>
-            </div>
-            <div className="modal-body market_name_modal_mody px-0 profileModal others_name_modal" id="scroll_style">
-           <div className="container">
+             </div>
            <div className="row">
               <div className="col-lg-12 p-0" id="market-div">
                <div>

@@ -26,6 +26,8 @@ import { selectSteps } from "../../reducers/stepsSlice";
 import { selectBuyer } from "../../reducers/buyerSlice"
 import Steps from "../buy_bill_book/steps";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
+import no_data_icon from "../../assets/images/NodataAvailable.svg";
+import addbill_icon from "../../assets/images/addbill.svg";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -167,7 +169,7 @@ const SellBillBook = (props) => {
               <div>
                 <div className="d-flex justify-content-between bills_div">
                   <div className="d-flex">
-                    <ul className="nav nav-tabs" id="myTab" role="tablist">
+                    <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
                           className="nav-link active"
@@ -200,7 +202,8 @@ const SellBillBook = (props) => {
                       // href="/sellbillstep1"
                       onClick={handleStep1Header}
                     >
-                      {langFullData.singleBill}
+                      <img src={addbill_icon} alt="image" className="mr-2" />
+                      ADD BILL
                     </a>
                   </div>
                 </div>
@@ -371,7 +374,31 @@ const SellBillBook = (props) => {
                           </div>
                         </div>
                       ) : (
-                        <NoDataAvailable />
+                        <div className="row partner_no_data_widget_row">
+                              <div className="col-lg-5">
+                                <div className="partner_no_data_widget">
+                                  <div className="text-center">
+                                    <img
+                                      src={no_data_icon}
+                                      alt="icon"
+                                      className="d-flex mx-auto justify-content-center"
+                                    />
+                                    <p>
+                                    No bills available for today. <br></br>
+                                     Add to create a new bill
+                                    </p>
+                                    <button
+                                      className="primary_btn"
+                                      onClick={handleStep1Header}
+                                    >
+                                      Add Bill
+                                      
+                                    </button>
+                                 
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                       )}
                     </div>
                   </div>

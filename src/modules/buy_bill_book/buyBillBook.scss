@@ -2,9 +2,10 @@
 
 .bills_div {
   padding-bottom: 10px;
-  // border-bottom: 1px solid #e4e4e4;
+  border-bottom: 1px solid #e4e4e4;
   align-items: center;
   position: relative;
+  margin-bottom: 20px;
 }
 .color_blue{
   color: var(--ono-blue);
@@ -35,6 +36,11 @@
   padding: 0px 10px 10px;
   margin-right: 10px;
 }
+.bills_div_tabs .nav-link{
+  padding: 0px 10px 20px;
+  margin-bottom: -15px;
+}
+
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-link:hover {
   background-color: transparent;
@@ -283,6 +289,7 @@ option[value=""][disabled] {
   width: 40px;
   height: 40px;
   margin-right: 10px;
+  border-radius: 100%;
 }
 .css-9gakcf-option,
 .css-1n7v3ny-option {
@@ -508,13 +515,13 @@ input:focus-visible {
     }
   }
 }
-.close_icon {
-  position: absolute;
-  top: -52px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-}
+// .close_icon {
+//   position: absolute;
+//   top: -52px;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   width: 40px;
+// }
 .close_icon:hover {
   cursor: pointer;
 }
@@ -1200,4 +1207,7 @@ font-size: 12px;
     padding-left: 30px;
     width: 130px!important;
   }
+}
+.cropImage_icon{
+  width: 45px;
 }

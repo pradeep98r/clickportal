@@ -26,6 +26,7 @@ import { uploadProfilePic } from "../../actions/uploadProfile";
 import location_icon from "../../assets/images/location_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import no_data_icon from "../../assets/images/NodataAvailable.svg";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -204,15 +205,15 @@ const Partner = () => {
   const [updateProfilePic, setUpdateProfilePic] = useState("");
   const handleProfilePic = (e) => {
     if (isEdit) {
-      var output = document.getElementById('output');
+      var output = document.getElementById("output");
       output.src = URL.createObjectURL(e.target.files[0]);
-      output.onload = function() {
-        URL.revokeObjectURL(output.src)
-      }
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
       console.log("came to edit");
       setFile(e.target.files[0]);
       var req = {
-        file:e.target.files[0],
+        file: e.target.files[0],
         type: partyType,
       };
       uploadProfilePic(clickId, mobileNumber, req)
@@ -305,7 +306,6 @@ const Partner = () => {
       addEditPartnerApiCall();
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
-    
     } else if (aadharNumber.trim().length < 12) {
       setAadharError("Minimum Adhar number length should be 12");
     } else if (nameField.trim().length === 0) {
@@ -329,8 +329,8 @@ const Partner = () => {
             toast.success("Updated Successfully", {
               toastId: "success2",
             });
-           
-            handleRefreshClick(); 
+
+            handleRefreshClick();
           }
         },
         (error) => {
@@ -348,14 +348,14 @@ const Partner = () => {
             toast.success(response.data.status.message, {
               toastId: "success2",
             });
-            handleRefreshClick(); 
+            handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
-          handleRefreshClick(); 
+          handleRefreshClick();
         }
       );
     }
@@ -377,8 +377,8 @@ const Partner = () => {
     window.setTimeout(function () {
       window.location.reload();
     }, 2000);
-    console.log("hardrefresh")
-  }
+    console.log("hardrefresh");
+  };
   const tabEvent = (type) => {
     setPartyType(type);
     setAadharNumber("");
@@ -474,9 +474,9 @@ const Partner = () => {
   const setZip = (address) => {
     var pincodeValue;
     // let pincode = address.results[0].formatted_address;
-    for(var i=0; i<address.results[0].address_components.length; i++){
-      if(address.results[0].address_components[i].types[0] == 'postal_code'){
-        pincodeValue = address.results[0].address_components[i].long_name
+    for (var i = 0; i < address.results[0].address_components.length; i++) {
+      if (address.results[0].address_components[i].types[0] == "postal_code") {
+        pincodeValue = address.results[0].address_components[i].long_name;
       }
     }
     pincodeValue = pincodeValue.replace(/\D/g, "");
@@ -639,7 +639,7 @@ const Partner = () => {
     setPartnerData(result);
     setSearchValue(value);
   };
-  
+
   return (
     <div>
       <div className="main_div_padding">
@@ -671,18 +671,18 @@ const Partner = () => {
               role="tabpanel"
               aria-labelledby="home-tab"
             >
-              <div className="row">
-                <div className="col-lg-9 pl-0">
-                  <SearchField
-                    placeholder="Search by Name / Mobile / Short Code / Party id"
-                    val={searchValue}
-                    onChange={(event) => {
-                      handleSearch(event);
-                    }}
-                  />
+              {partnerData.length > 0 ? (
+                <div className="row">
+                  <div className="col-lg-9 pl-0">
+                    <SearchField
+                      placeholder="Search by Name / Mobile / Short Code / Party id"
+                      val={searchValue}
+                      onChange={(event) => {
+                        handleSearch(event);
+                      }}
+                    />
 
-                  <div>
-                    {partnerData.length > 0 ? (
+                    <div>
                       <div>
                         <div className="partner_div" id="scroll_style">
                           {partnerData.map((partner, index) => (
@@ -738,47 +738,81 @@ const Partner = () => {
                           ))}
                         </div>
                       </div>
-                    ) : (
-                      <NoDataAvailable />
-                    )}
-                  </div>
-                </div>
-                <div className="col-lg-3">
-                  <div className="card default_card add_partner">
-                    <div>
-                      <h6>
-                        {" "}
-                        Add{" "}
-                        {partyType.toLowerCase() == "farmer"
-                          ? "Seller"
-                          : getText(partyType)}
-                      </h6>
-                      <button
-                        className="outline_btn outline_btn_partner mr-2"
-                        onClick={() => MybtnModal(partyType)}
-                      >
-                        Add
-                        {partyType == langFullData.seller
-                          ? "seller"
-                          : " " + getText(partyType)}
-                      </button>
-                      {partyType.toLowerCase() == "farmer" ||
-                      partyType.toLowerCase() == "buyer" ? (
-                        <button
-                          className="outline_btn outline_btn_partner"
-                          onClick={() => MybtnModal("trader")}
-                        >
-                          Add Trader
-                        </button>
-                      ) : (
-                        ""
-                      )}
                     </div>
-                    {/* <OutlineButton text="Add Seller" /> */}
                   </div>
-           
+                  <div className="col-lg-3">
+                    <div className="card default_card add_partner">
+                      <div>
+                        <h6>
+                          {" "}
+                          Add{" "}
+                          {partyType.toLowerCase() == "farmer"
+                            ? "Seller"
+                            : getText(partyType)}
+                        </h6>
+                        <button
+                          className="outline_btn outline_btn_partner mr-2"
+                          onClick={() => MybtnModal(partyType)}
+                        >
+                          Add
+                          {partyType == langFullData.seller
+                            ? "seller"
+                            : " " + getText(partyType)}
+                        </button>
+                        {partyType.toLowerCase() == "farmer" ||
+                        partyType.toLowerCase() == "buyer" ? (
+                          <button
+                            className="outline_btn outline_btn_partner"
+                            onClick={() => MybtnModal("trader")}
+                          >
+                            Add Trader
+                          </button>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      {/* <OutlineButton text="Add Seller" /> */}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="row partner_no_data_widget_row">
+                  <div className="col-lg-5">
+                    <div className="partner_no_data_widget">
+                      <div className="text-center">
+                        <img
+                          src={no_data_icon}
+                          alt="icon"
+                          className="d-flex mx-auto justify-content-center"
+                        />
+                        <p className="mb-0">
+                          
+                        </p>
+                        <button
+                          className="primary_btn mr-2"
+                          onClick={() => MybtnModal(partyType)}
+                        >
+                          Add
+                          {partyType == langFullData.seller
+                            ? "seller"
+                            : " " + getText(partyType)}
+                        </button>
+                        {partyType.toLowerCase() == "farmer" ||
+                        partyType.toLowerCase() == "buyer" ? (
+                          <button
+                            className="primary_btn"
+                            onClick={() => MybtnModal("trader")}
+                          >
+                            Add Trader
+                          </button>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -787,278 +821,82 @@ const Partner = () => {
       <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {addeditText}{" "}
-                {partyType == langFullData.farmer.toUpperCase()
-                  ? langFullData.seller
-                  : getText(partyType)}
-              </h5>
-              <img
-                src={close}
-                alt="image"
-                className="close_icon"
-                onClick={closeAddModal}
-              />
-            </div>
-            <div className="modal-body partner_model_body" id="scroll_style">
+            <div className="modal-body partner_model_body pb-0">
               <form>
-                <div className="row">
-                  {partyType == langFullData.farmer.toUpperCase() ||
-                  partyType == langFullData.buyer.toUpperCase() ? (
-                    <div>
-                      <label className="input_field">
-                        Select Type <span className="star-color">*</span>
-                      </label>
-
-                      <div onChange={onChangeValue}>
-                        <input
-                          type="radio"
-                          //className="custom-control-input"
-                          value={partyType.toLowerCase()}
-                          name="radioValue"
-                          id={partyType.toLowerCase()}
-                          checked={
-                            radioValue.toLowerCase() === partyType.toLowerCase()
-                          }
-                          className="radioBtnsVal"
-                        />{" "}
-                        {getText(partyType)}
-                        <input
-                          type="radio"
-                          value="trader"
-                          id="trader"
-                          name="radioValue"
-                          checked={radioValue.toLowerCase() === "trader"}
-                          //className="custom-control-input"
-                          className="radioBtnVal"
-                        />{" "}
-                        {langFullData.trader}
-                      </div>
-                    </div>
-                  ) : (
-                    <div></div>
-                  )}
+                <div className="d-flex align-items-center justify-content-between modal_common_header">
+                  <h5
+                    className="modal-title header2_text"
+                    id="staticBackdropLabel"
+                  >
+                    {addeditText}{" "}
+                    {partyType == langFullData.farmer.toUpperCase()
+                      ? langFullData.seller
+                      : getText(partyType)}
+                  </h5>
+                  <img
+                    src={close}
+                    alt="image"
+                    className="close_icon"
+                    onClick={closeAddModal}
+                  />
                 </div>
-                {partyType == "COOLIE" ? (
-                  <div>
-                    <div className="row">
-                      <div className="col-lg-12 p-0">
-                        <InputField
-                          type="text"
-                          value={mobileNumber}
-                          label={langFullData.mobileNumber}
-                          name="mobileNumber"
-                          id="mobileNumber"
-                          onChange={(e) => {
-                            handleMobileNumber(e);
-                          }}
-                          starRequired={true}
-                        />
-                        <span className="text-danger">
-                          {requiredNumberField}
-                        </span>
-                        <InputField
-                          type="text"
-                          value={nameField}
-                          label={"Name"}
-                          name="name"
-                          id="inputName"
-                          onChange={(e) => {
-                            handleName(e);
-                          }}
-                          starRequired={true}
-                        />
-                        <span className="text-danger">{nameError}</span>
-                        <span className="text-danger">{requiredNameField}</span>
-                        <InputField
-                          type="text"
-                          value={aadharNumber}
-                          label={langFullData.aadhar}
-                          name="name"
-                          onChange={(e) => {
-                            handleNumber(e);
-                          }}
-                          starRequired={false}
-                        />
-                        <span className="text-danger">{aadharError}</span>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {" "}
-                        <label className="input_field address_text mt-0">
-                          {langFullData.address}
+                <div className="partner_model_scroll" id="scroll_style">
+                  <div className="row">
+                    {partyType == langFullData.farmer.toUpperCase() ||
+                    partyType == langFullData.buyer.toUpperCase() ? (
+                      <div>
+                        <label className="input_field">
+                          Select Type <span className="star-color">*</span>
                         </label>
-                      </div>
-                      <div className="col-lg-6">
-                        {" "}
-                        <div
-                          onClick={() => getPosition()}
-                          className="location mt-0"
-                        >
-                          <div className="d-flex align-items-center">
-                            <img src={location_icon} alt="" className="mr-2" />
-                            {langFullData.selectCurrentLocation}
-                          </div>
+
+                        <div onChange={onChangeValue}>
+                          <input
+                            type="radio"
+                            //className="custom-control-input"
+                            value={partyType.toLowerCase()}
+                            name="radioValue"
+                            id={partyType.toLowerCase()}
+                            checked={
+                              radioValue.toLowerCase() ===
+                              partyType.toLowerCase()
+                            }
+                            className="radioBtnsVal"
+                          />{" "}
+                          {getText(partyType)}
+                          <input
+                            type="radio"
+                            value="trader"
+                            id="trader"
+                            name="radioValue"
+                            checked={radioValue.toLowerCase() === "trader"}
+                            //className="custom-control-input"
+                            className="radioBtnVal"
+                          />{" "}
+                          {langFullData.trader}
                         </div>
                       </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {" "}
-                        <div>
-                          <label htmlFor="zip" className="input_field">
-                            {langFullData.pincode}
-                          </label>
-                          <div>
-                            <input
-                              id="zip"
-                              className="form-control"
-                              type="text"
-                              label="pincode"
-                              name="zip"
-                              onChange={(e) => {
-                                onZip(e);
-                              }}
-                              value={pincode}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div>
-                          <label htmlFor="state" className="input_field">
-                            {langFullData.state}
-                          </label>
-                          {isEdit ? (
-                            <input
-                              id="state"
-                              className="form-control"
-                              name="state"
-                              value={stateVal}
-                            />
-                          ) : (
-                            <input
-                              id="state"
-                              className="form-control"
-                              name="state"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {" "}
-                        <div>
-                          <label htmlFor="city" className="input_field">
-                            District
-                          </label>
-                          <div>
-                            {isEdit ? (
-                              <div>
-                                <InputField
-                                  type="text"
-                                  id="city"
-                                  name="city"
-                                  value={cityVal}
-                                />
-                              </div>
-                            ) : (
-                              <InputField
-                                type="text"
-                                id="city"
-                                name="city"
-                                value={cityVal}
-                              />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        {" "}
-                        <InputField
-                          type="text"
-                          value={streetVillage}
-                          label={langFullData.streetVillage}
-                          name="name"
-                          onChange={(e) => {
-                            handleStreetName(e);
-                          }}
-                          starRequired={false}
-                        />
-                      </div>
-                    </div>
+                    ) : (
+                      <div></div>
+                    )}
                   </div>
-                ) : (
-                  <div></div>
-                )}
-
-                {partyType == "FARMER" ||
-                partyType == "BUYER" ||
-                partyType == "TRANSPORTER" ? (
-                  <div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        <InputField
-                          type="text"
-                          value={mobileNumber}
-                          label={langFullData.mobileNumber}
-                          name="mobileNumber"
-                          id="mobileNumber"
-                          onChange={(e) => {
-                            handleMobileNumber(e);
-                          }}
-                          starRequired={true}
-                        />
-
-                        <span className="text-danger">
-                          {requiredNumberField}
-                        </span>
-                      </div>
-                      <div className="col-lg-6">
-                        {partyType != "TRANSPORTER" ? (
-                          partyType != "COOLIE" ? (
-                            <div>
-                              <InputField
-                                type="text"
-                                value={shortNameField}
-                                label={langFullData.initialsShortName}
-                                name="name"
-                                onChange={(e) => {
-                                  handleShortName(e);
-                                }}
-                                starRequired={true}
-                              />
-                              <span className="text-danger">
-                                {shortnameError}
-                              </span>
-                              <span className="text-danger">
-                                {requiredshortNameField}
-                              </span>
-                            </div>
-                          ) : (
-                            <div></div>
-                          )
-                        ) : (
-                          <div>
-                            <InputField
-                              type="text"
-                              value={vehicleNum}
-                              label={langFullData.vehicleNumber}
-                              name="name"
-                              onChange={(e) => {
-                                handlevehicleNum(e);
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        <div>
+                  {partyType == "COOLIE" ? (
+                    <div>
+                      <div className="row">
+                        <div className="col-lg-12 p-0">
+                          <InputField
+                            type="text"
+                            value={mobileNumber}
+                            label={langFullData.mobileNumber}
+                            name="mobileNumber"
+                            id="mobileNumber"
+                            onChange={(e) => {
+                              handleMobileNumber(e);
+                            }}
+                            starRequired={true}
+                          />
+                          <span className="text-danger">
+                            {requiredNumberField}
+                          </span>
                           <InputField
                             type="text"
                             value={nameField}
@@ -1087,258 +925,485 @@ const Partner = () => {
                           <span className="text-danger">{aadharError}</span>
                         </div>
                       </div>
-                      <div className="col-lg-6">
-                        {partyType != "TRANSPORTER" ? (
-                          partyType != "COOLIE" ? (
-                            <div>
-                              <label htmlFor="pic" className="input_field">
-                                {langFullData.profilePic}
-                              </label>
-                              <div className="file-input">
-                                <div className="d-flex align-items-center">
-                                  <div className="input_file">
-                                    {isEdit ? (
-                                      <img
-                                        src={
-                                          isEdit
-                                            ? updateProfilePic === ""
-                                              ? single_bill
-                                              : updateProfilePic
-                                            : single_bill
-                                        } 
-                                        id="output"
-                                        
-                                        // src={
-                                        //   file
-                                        //     ? URL.createObjectURL(file)
-                                        //     : single_bill
-                                        // }
-                                        alt=""
-                                      />
-                                    ) : (
-                                      <img
-                                        src={
-                                          profilePic ? profilePic : single_bill
-                                        }
-                                        // src={
-                                        //   file
-                                        //     ? URL.createObjectURL(file)
-                                        //     : single_bill
-                                        // }
-                                        alt=""
-                                      />
-                                    )}
-                                  </div>
-                                  <div>
-                                    <input
-                                      type="file"
-                                      id="file"
-                                      //onChange={(e) => setFile(e.target.files[0])}
-                                      onChange={(e) => {
-                                        handleProfilePic(e);
-                                      }}
-                                    />
-                                    <label htmlFor="file" className="file">
-                                      {langFullData.chooseFromLibrary}
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {" "}
+                          <label className="input_field address_text mt-0">
+                            {langFullData.address}
+                          </label>
+                        </div>
+                        <div className="col-lg-6">
+                          {" "}
+                          <div
+                            onClick={() => getPosition()}
+                            className="location mt-0"
+                          >
+                            <div className="d-flex align-items-center">
+                              <img
+                                src={location_icon}
+                                alt=""
+                                className="mr-2"
+                              />
+                              {langFullData.selectCurrentLocation}
                             </div>
-                          ) : (
-                            <div></div>
-                          )
-                        ) : (
-                          <div>
-                            <InputField
-                              type="text"
-                              value={vehicleType}
-                              label={langFullData.vehicleType}
-                              name="vehicleType"
-                              onChange={(e) => {
-                                handlevehicleType(e);
-                              }}
-                            />
                           </div>
-                        )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {partyType == "FARMER" ||
-                        partyType == "BUYER" ||
-                        partyType == "TRANSPORTER" ? (
-                          <InputField
-                            type="text"
-                            value={openingBalance}
-                            label={langFullData.openingBalance}
-                            name="name"
-                            onChange={(e) => {
-                              handleOpeninngBal(e);
-                            }}
-                            starRequired={false}
-                          />
-                        ) : (
-                          <div></div>
-                        )}
-                      </div>
-                      <div className="col-lg-6">
-                        {partyType == "FARMER" ||
-                        partyType == "BUYER" ||
-                        partyType == "TRANSPORTER" ? (
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {" "}
                           <div>
-                            <label htmlFor="pic" className="input_field">
-                              {langFullData.asOnDate}
+                            <label htmlFor="zip" className="input_field">
+                              {langFullData.pincode}
                             </label>
-                            <label
-                              className="d-flex align-items-baseline date_label"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <span className="date_icon m-0">
-                                <img src={date_icon} alt="icon" />
-                              </span>
-                              <div className="date_field partner_date">
-                                <DatePicker
-                                  dateFormat="dd-MMM-yyyy"
-                                  selected={startDate}
-                                  onChange={(date) => setStartDate(date)}
-                                  className="form-control"
-                                  placeholder="Date"
-                                  maxDate={new Date()}
-                                  onKeyDown={(e) => {
-                                    e.preventDefault();
-                                  }}
-                                />
-                              </div>
+                            <div>
+                              <input
+                                id="zip"
+                                className="form-control"
+                                type="text"
+                                label="pincode"
+                                name="zip"
+                                onChange={(e) => {
+                                  onZip(e);
+                                }}
+                                value={pincode}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <div>
+                            <label htmlFor="state" className="input_field">
+                              {langFullData.state}
                             </label>
-                          </div>
-                        ) : (
-                          <div></div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {" "}
-                        <label className="input_field address_text mt-0">
-                          {langFullData.address}
-                        </label>
-                      </div>
-                      <div className="col-lg-6">
-                        {" "}
-                        <div
-                          onClick={() => getPosition()}
-                          className="location mt-0"
-                        >
-                          <div className="d-flex align-items-center">
-                            <img src={location_icon} alt="" className="mr-2" />
-                            {langFullData.selectCurrentLocation}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {" "}
-                        <div>
-                          <label htmlFor="zip" className="input_field">
-                            {langFullData.pincode}
-                          </label>
-                          <div>
-                            <input
-                              id="zip"
-                              className="form-control"
-                              type="text"
-                              label="pincode"
-                              name="zip"
-                              onChange={(e) => {
-                                onZip(e);
-                              }}
-                              value={pincode}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6">
-                        <div>
-                          <label htmlFor="state" className="input_field">
-                            {langFullData.state}
-                          </label>
-                          {isEdit ? (
-                            <input
-                              id="state"
-                              className="form-control"
-                              name="state"
-                              value={stateVal}
-                            />
-                          ) : (
-                            <input
-                              id="state"
-                              className="form-control"
-                              name="state"
-                            />
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-lg-6 pl-0">
-                        {" "}
-                        <div>
-                          <label htmlFor="city" className="input_field">
-                            District
-                          </label>
-                          <div>
                             {isEdit ? (
-                              <div>
+                              <input
+                                id="state"
+                                className="form-control"
+                                name="state"
+                                value={stateVal}
+                              />
+                            ) : (
+                              <input
+                                id="state"
+                                className="form-control"
+                                name="state"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {" "}
+                          <div>
+                            <label htmlFor="city" className="input_field">
+                              District
+                            </label>
+                            <div>
+                              {isEdit ? (
+                                <div>
+                                  <InputField
+                                    type="text"
+                                    id="city"
+                                    name="city"
+                                    value={cityVal}
+                                  />
+                                </div>
+                              ) : (
                                 <InputField
                                   type="text"
                                   id="city"
                                   name="city"
                                   value={cityVal}
                                 />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          {" "}
+                          <InputField
+                            type="text"
+                            value={streetVillage}
+                            label={langFullData.streetVillage}
+                            name="name"
+                            onChange={(e) => {
+                              handleStreetName(e);
+                            }}
+                            starRequired={false}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+
+                  {partyType == "FARMER" ||
+                  partyType == "BUYER" ||
+                  partyType == "TRANSPORTER" ? (
+                    <div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          <InputField
+                            type="text"
+                            value={mobileNumber}
+                            label={langFullData.mobileNumber}
+                            name="mobileNumber"
+                            id="mobileNumber"
+                            onChange={(e) => {
+                              handleMobileNumber(e);
+                            }}
+                            starRequired={true}
+                          />
+
+                          <span className="text-danger">
+                            {requiredNumberField}
+                          </span>
+                        </div>
+                        <div className="col-lg-6">
+                          {partyType != "TRANSPORTER" ? (
+                            partyType != "COOLIE" ? (
+                              <div>
+                                <InputField
+                                  type="text"
+                                  value={shortNameField}
+                                  label={langFullData.initialsShortName}
+                                  name="name"
+                                  onChange={(e) => {
+                                    handleShortName(e);
+                                  }}
+                                  starRequired={true}
+                                />
+                                <span className="text-danger">
+                                  {shortnameError}
+                                </span>
+                                <span className="text-danger">
+                                  {requiredshortNameField}
+                                </span>
                               </div>
                             ) : (
+                              <div></div>
+                            )
+                          ) : (
+                            <div>
                               <InputField
                                 type="text"
-                                id="city"
-                                name="city"
-                                value={cityVal}
+                                value={vehicleNum}
+                                label={langFullData.vehicleNumber}
+                                name="name"
+                                onChange={(e) => {
+                                  handlevehicleNum(e);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          <div>
+                            <InputField
+                              type="text"
+                              value={nameField}
+                              label={"Name"}
+                              name="name"
+                              id="inputName"
+                              onChange={(e) => {
+                                handleName(e);
+                              }}
+                              starRequired={true}
+                            />
+                            <span className="text-danger">{nameError}</span>
+                            <span className="text-danger">
+                              {requiredNameField}
+                            </span>
+                            <InputField
+                              type="text"
+                              value={aadharNumber}
+                              label={langFullData.aadhar}
+                              name="name"
+                              onChange={(e) => {
+                                handleNumber(e);
+                              }}
+                              starRequired={false}
+                            />
+                            <span className="text-danger">{aadharError}</span>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          {partyType != "TRANSPORTER" ? (
+                            partyType != "COOLIE" ? (
+                              <div>
+                                <label htmlFor="pic" className="input_field">
+                                  {langFullData.profilePic}
+                                </label>
+                                <div className="file-input">
+                                  <div className="d-flex align-items-center">
+                                    <div className="input_file">
+                                      {isEdit ? (
+                                        <img
+                                          src={
+                                            isEdit
+                                              ? updateProfilePic === ""
+                                                ? single_bill
+                                                : updateProfilePic
+                                              : single_bill
+                                          }
+                                          id="output"
+                                          // src={
+                                          //   file
+                                          //     ? URL.createObjectURL(file)
+                                          //     : single_bill
+                                          // }
+                                          alt=""
+                                        />
+                                      ) : (
+                                        <img
+                                          src={
+                                            profilePic
+                                              ? profilePic
+                                              : single_bill
+                                          }
+                                          // src={
+                                          //   file
+                                          //     ? URL.createObjectURL(file)
+                                          //     : single_bill
+                                          // }
+                                          alt=""
+                                        />
+                                      )}
+                                    </div>
+                                    <div>
+                                      <input
+                                        type="file"
+                                        id="file"
+                                        //onChange={(e) => setFile(e.target.files[0])}
+                                        onChange={(e) => {
+                                          handleProfilePic(e);
+                                        }}
+                                      />
+                                      <label htmlFor="file" className="file">
+                                        {langFullData.chooseFromLibrary}
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div></div>
+                            )
+                          ) : (
+                            <div>
+                              <InputField
+                                type="text"
+                                value={vehicleType}
+                                label={langFullData.vehicleType}
+                                name="vehicleType"
+                                onChange={(e) => {
+                                  handlevehicleType(e);
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {partyType == "FARMER" ||
+                          partyType == "BUYER" ||
+                          partyType == "TRANSPORTER" ? (
+                            <InputField
+                              type="text"
+                              value={openingBalance}
+                              label={langFullData.openingBalance}
+                              name="name"
+                              onChange={(e) => {
+                                handleOpeninngBal(e);
+                              }}
+                              starRequired={false}
+                            />
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                        <div className="col-lg-6">
+                          {partyType == "FARMER" ||
+                          partyType == "BUYER" ||
+                          partyType == "TRANSPORTER" ? (
+                            <div>
+                              <label htmlFor="pic" className="input_field">
+                                {langFullData.asOnDate}
+                              </label>
+                              <label
+                                className="d-flex align-items-baseline date_label"
+                                onClick={(e) => e.preventDefault()}
+                              >
+                                <span className="date_icon m-0">
+                                  <img src={date_icon} alt="icon" />
+                                </span>
+                                <div className="date_field partner_date">
+                                  <DatePicker
+                                    dateFormat="dd-MMM-yyyy"
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    className="form-control"
+                                    placeholder="Date"
+                                    maxDate={new Date()}
+                                    onKeyDown={(e) => {
+                                      e.preventDefault();
+                                    }}
+                                  />
+                                </div>
+                              </label>
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {" "}
+                          <label className="input_field address_text mt-0">
+                            {langFullData.address}
+                          </label>
+                        </div>
+                        <div className="col-lg-6">
+                          {" "}
+                          <div
+                            onClick={() => getPosition()}
+                            className="location mt-0"
+                          >
+                            <div className="d-flex align-items-center">
+                              <img
+                                src={location_icon}
+                                alt=""
+                                className="mr-2"
+                              />
+                              {langFullData.selectCurrentLocation}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {" "}
+                          <div>
+                            <label htmlFor="zip" className="input_field">
+                              {langFullData.pincode}
+                            </label>
+                            <div>
+                              <input
+                                id="zip"
+                                className="form-control"
+                                type="text"
+                                label="pincode"
+                                name="zip"
+                                onChange={(e) => {
+                                  onZip(e);
+                                }}
+                                value={pincode}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          <div>
+                            <label htmlFor="state" className="input_field">
+                              {langFullData.state}
+                            </label>
+                            {isEdit ? (
+                              <input
+                                id="state"
+                                className="form-control"
+                                name="state"
+                                value={stateVal}
+                              />
+                            ) : (
+                              <input
+                                id="state"
+                                className="form-control"
+                                name="state"
                               />
                             )}
                           </div>
                         </div>
                       </div>
-                      <div className="col-lg-6">
-                        {" "}
-                        <InputField
-                          type="text"
-                          value={streetVillage}
-                          label={langFullData.streetVillage}
-                          name="name"
-                          onChange={(e) => {
-                            handleStreetName(e);
-                          }}
-                          starRequired={false}
-                        />
+                      <div className="row">
+                        <div className="col-lg-6 pl-0">
+                          {" "}
+                          <div>
+                            <label htmlFor="city" className="input_field">
+                              District
+                            </label>
+                            <div>
+                              {isEdit ? (
+                                <div>
+                                  <InputField
+                                    type="text"
+                                    id="city"
+                                    name="city"
+                                    value={cityVal}
+                                  />
+                                </div>
+                              ) : (
+                                <InputField
+                                  type="text"
+                                  id="city"
+                                  name="city"
+                                  value={cityVal}
+                                />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-lg-6">
+                          {" "}
+                          <InputField
+                            type="text"
+                            value={streetVillage}
+                            label={langFullData.streetVillage}
+                            name="name"
+                            onChange={(e) => {
+                              handleStreetName(e);
+                            }}
+                            starRequired={false}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div></div>
-                )}
+                  ) : (
+                    <div></div>
+                  )}
+                </div>
               </form>
             </div>
-            <div className="modal-footer p-0">
-              <button
-                type="button"
-                className="primary_btn"
-                onClick={() => onSubmit()}
-                // id="close_modal"
-                data-bs-dismiss="modal"
-              >
-                save
-              </button>
+            <div className="modal-footer modal_common_footer">
+              <div className="row">
+                <div className="col-lg-6 pl-0">
+                  <button
+                    type="button"
+                    className="secondary_btn"
+                    // id="close_modal"
+                    data-bs-dismiss="modal"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div className="col-lg-6">
+                  <button
+                    type="button"
+                    className="primary_btn"
+                    onClick={() => onSubmit()}
+                    // id="close_modal"
+                    data-bs-dismiss="modal"
+                  >
+                    save
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1363,21 +1428,27 @@ const Partner = () => {
         <Modal.Body className="partner_model_body">
           {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}
         </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            className="secondary_btn mr-2"
-            onClick={handleClose}
-          >
-            {langFullData.no}
-          </Button>
-          <Button
-            variant="primary"
-            className="primary_btn"
-            onClick={() => handleDelete(partyIdVal)}
-          >
-            {langFullData.yes}
-          </Button>
+        <Modal.Footer className="modal_comm_footer">
+          <div className="row">
+            <div className="col-lg-6 pl-0">
+              <button
+                type="button"
+                className="secondary_btn"
+                onClick={handleClose}
+              >
+                {langFullData.no}
+              </button>
+            </div>
+            <div className="col-lg-6">
+              <button
+                type="button"
+                className="primary_btn"
+                onClick={() => handleDelete(partyIdVal)}
+              >
+                {langFullData.yes}
+              </button>
+            </div>
+          </div>
         </Modal.Footer>
       </Modal>
       <ToastContainer />

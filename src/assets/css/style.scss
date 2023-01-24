@@ -87,10 +87,11 @@ ul {
 .outline_btn{
   color: var(--ono-white);
   background-color: var(--ono-primary);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 12px 40px;
   font-size: var(--btn-text);
   border: none;
+  text-transform: uppercase;
 }
 
 .btn_white,
@@ -105,12 +106,13 @@ ul {
 }
 .secondary_btn,
 .secondary_btn:hover {
-  color: var(--ono-subtext);
-  background-color: var(--ono-primary-background);
-  border-radius: 10px;
+  color: #16A02C;
+  background-color: #D7F3DD;
+  border-radius: 6px;
   padding: 12px 40px;
   font-size: var(--btn-text);
   border: none;
+  text-transform: uppercase;
 }
 
 .add_bills_btn, .add_bills_btn:hover {
@@ -216,6 +218,8 @@ ul {
   bottom: 0;
   width: 100%;
   border-radius: 0px 0px 8px 8px;
+  border-top: 1px solid #dee2e6;
+  justify-content: space-between;
   .primary_btn {
     margin-left: 20px;
   }
@@ -268,7 +272,7 @@ ul {
 .no_data_text{
   font-size: 13px;
   color: #121212!important;
-  margin-top: 5px;
+  margin-top: 15px;
 }
 // calender
 .samrtboard_calender {
@@ -293,6 +297,10 @@ ul {
 }
 .crop_footer{
   padding: 10px!important;
+  border-top: 1px solid #dee2e6!important;
+}
+.crop_modal_head{
+  border-bottom: 1px solid #dee2e6!important;
 }
 .crop_tick{
   position: absolute;

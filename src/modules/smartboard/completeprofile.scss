@@ -2,7 +2,6 @@
 .modal_popup{
     .modal-dialog {
         max-width: 750px;
-        margin-top: 70px;
     }
     .hidden_field{
         visibility: hidden;
@@ -34,7 +33,7 @@
 }
 .drop-down-image{
     position: absolute;
-    margin: 50px 180px;
+    margin: 50px 145px;
 }
 
 .searchicon{
@@ -132,11 +131,12 @@ input[type=radio]{
     
   }
 .profileModal{
+    padding: 20px 80px!important;
     .modal-body {
-        height: 670px;
+        height: 620px;
     }
     .others_name_modal{
-        height: 560px;
+        height: 530px;
     }
     .modal-footer{
         position: absolute;
@@ -160,7 +160,7 @@ cursor: pointer;}
         max-height: calc(100vh - 430px);
     }
    .profileModal .markets_name_modal{
-        height: 715px;
+        height: 745px;
     }
     .profileModal .others_name_modal{
         height: 620px;
@@ -171,9 +171,9 @@ cursor: pointer;}
         max-height: calc(100vh - 300px);
     }
    .profileModal .markets_name_modal{
-        height: 580px;
+        height: 715px;
     }
     .profileModal .others_name_modal{
-        height: 470px;
+        height: 630px;
     }
 }

@@ -18,6 +18,7 @@ import {
   tableEditStatus,
   fromBillbook,
 } from "../../reducers/billEditItemSlice";
+import { selectTrans } from "../../reducers/transSlice";
 var array = [];
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
@@ -53,6 +54,12 @@ const Step22 = (props) => {
       : new Date();
 
   var cropObjectArr = [];
+  // close popup
+  const cancelStep = () => {
+    dispatch(selectTrans(null)); 
+    dispatch(selectBuyer(null));
+    props.closem();
+  };
   // navigate to previous step
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
@@ -1149,13 +1156,18 @@ const Step22 = (props) => {
         )}
       </div>
       <div className="bottom_div">
-        <div className="d-flex align-items-center justify-content-end">
+        <div className="d-flex align-items-center justify-content-between">
+        <button className="secondary_btn" onClick={cancelStep}>
+                  cancel
+                </button>
+                <div className="d-flex align-items-center">
           <button className="secondary_btn" onClick={() => previousStep()}>
             Previous
           </button>
           <button className="primary_btn" onClick={() => step2Next()}>
             Next
           </button>
+          </div>
         </div>
       </div>
     </div>
