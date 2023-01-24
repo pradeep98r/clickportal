@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import {
     getCurrencyNumberWithOneDigit,
@@ -7,32 +7,37 @@ import {
 } from "../../components/getCurrencyNumber";
 import { qtyValues } from "../../components/qtyValues";
 const CropDetails = () => {
-    const  billData = useSelector((state)=> state.billViewInfo);
+    const  billViewData = useSelector((state)=> state.billViewInfo);
+    const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
     var cratesTotal = 0;
     var sacsTotal = 0;
     var bagsTotal = 0;
     var boxesTotal = 0;
     var kgsTotal = 0;
+    useEffect(()=>{
+        setBillViewData(JSON.parse(localStorage.getItem("billData")));
+      },[])
+    
     return (
         <div>
             <div className="row partner_info_padding">
                 <div className="col-lg-3 pl-0">
                     <div className="partner_info">
                         <p className="small_text">
-                            Bill To {billData.billViewInfo.partyType}:{" "}
+                            Bill To {billData?.partyType}:{" "}
                         </p>
                         <h6 className="small_text">
-                            {billData.billViewInfo.partyType==='FARMER'?
-                            billData.billViewInfo.farmerName:billData.billViewInfo.buyerName}
+                            {billData?.partyType==='FARMER'?
+                            billData.farmerName:billData?.buyerName}
                         </h6>
                     </div>
                 </div>
-                {billData.billViewInfo.partyType==='FARMER'&& billData.billViewInfo.farmerAddress != "" ? (
+                {billData?.partyType==='FARMER'&& billData?.farmerAddress != "" ? (
                     <div className="col-lg-3">
                         <div className="partner_info">
                             <p className="small_text">Address: </p>
                             <h6 className="small_text">
-                                {billData.billViewInfo.farmerAddress}
+                                {billData?.farmerAddress}
                             </h6>
                         </div>
                     </div>
@@ -41,18 +46,17 @@ const CropDetails = () => {
                         <div className="partner_info">
                             <p className="small_text">Address: </p>
                             <h6 className="small_text">
-                                {billData.billViewInfo.buyerAddress}
+                                {billData?.buyerAddress}
                             </h6>
                         </div>
                     </div>
                 )}
-
-                {billData.billViewInfo.transporterId != 0 ? (
+                {billData?.transporterId != 0 ? (
                     <div className="col-lg-3">
                         <div className="partner_info">
                             <p className="small_text">Transporter :</p>
                             <h6 className="small_text">
-                                {billData.billViewInfo.transporterName}
+                                {billData?.transporterName}
                             </h6>
                         </div>
                     </div>
@@ -72,7 +76,7 @@ const CropDetails = () => {
                         </tr>
                     </thead>
                     <tbody className="crop-tbl">
-                        {billData.billViewInfo.lineItems.map((item, key) => {
+                        {billData?.lineItems.map((item, key) => {
                             return (
                                 <tr key={item}>
                                     <td className="col-1">{key + 1}</td>
@@ -113,7 +117,7 @@ const CropDetails = () => {
                 <div className="row gross_profit">
                     <div className="col-lg-2"></div>
                     <div className="col-lg-4">
-                        {billData.billViewInfo.lineItems.map((item) => {
+                        {billData?.lineItems.map((item) => {
                             if (item.qtyUnit === "CRATES") {
                                 cratesTotal += item.qty;
                             } else if (item.qtyUnit === "SACS") {
@@ -142,7 +146,7 @@ const CropDetails = () => {
                             </div>
                             <div className="col-lg-3 p-0">
                                 <p className="total_value number_overflow">
-                                    {billData.billViewInfo.grossTotal.toLocaleString("en-IN", {
+                                    {billData?.grossTotal.toLocaleString("en-IN", {
                                         maximumFractionDigits: 2,
                                         style: "currency",
                                         currency: "INR",
@@ -156,5 +160,4 @@ const CropDetails = () => {
         </div>
     )
 }
-
 export default CropDetails

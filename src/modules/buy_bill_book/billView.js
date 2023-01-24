@@ -33,8 +33,9 @@ import { selectBill,editStatus, billDate, tableEditStatus,billViewStatus,selecte
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const  billData = useSelector((state)=> state.billViewInfo);
-
+  var  billViewData = useSelector((state)=> state.billViewInfo);
+  const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
+  //var billViews = billData;
   const [displayCancel, setDisplayCancel] = useState(false);
 
   const navigate = useNavigate();
@@ -44,8 +45,13 @@ const BillView = (props) => {
     dispatch(billViewStatus(true))
   }, [clickId]);
 
+  useEffect(()=>{
+    setBillViewData(JSON.parse(localStorage.getItem("billData")));
+  },[])
+
+  console.log(billData,"billData after refresh");
   const cancelBillStatus = () => {
-    if (billData.billViewInfo.billStatus === "CANCELLED") {
+    if (billData?.billStatus === "CANCELLED") {
       setDisplayCancel(true);
     } else {
       setDisplayCancel(displayCancel);
@@ -60,9 +66,9 @@ const BillView = (props) => {
   const dispatch = useDispatch();
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
+
   const editBill = (itemVal) => {
     var arr = [];
-    console.log(itemVal,billData?.billViewInfo.partyType,"check");
     arr.push(itemVal);
     setSlectedCropArray(arr);
     dispatch(selectSteps("step3"));
@@ -71,18 +77,9 @@ const BillView = (props) => {
     dispatch(selectBill(arr[0]))
     dispatch(editStatus(true))
     dispatch(tableEditStatus(false))
-    dispatch(billDate(new Date(billData.billViewInfo.billDate)));
-    dispatch(selectedParty(billData?.billViewInfo.partyType == 'FARMER' ? 'SELLER' : billData?.billViewInfo.partyType));
+    dispatch(billDate(new Date(billData.billDate)));
+    dispatch(selectedParty(billData?.partyType == 'FARMER' ? 'SELLER' : billData?.partyType));
     dispatch(cropEditStatus(false));
-    // props.parentcall(
-    //   false,
-    //   true,
-    //   new Date(singleBillData.billDate),
-    //   slectedCropArray,
-    // );
-    // props.parentcall(updatedItemList, props.billEditStatus);
-    // setShowStep3ModalStatus(true);
-    // setShowStep3Modal(true);
     setEditCancelStatus(true);
   };
   const cancelBill = (itemVal) => {
@@ -93,41 +90,42 @@ const BillView = (props) => {
   const editBillRequestObj = {
     action: "CANCEL",
     billAttributes: {
-      actualPayRecieevable: billData.billViewInfo.actualPaybles,
-      advance: billData.billViewInfo.advance,
-      billDate: billData.billViewInfo.billDate,
-      cashPaid: billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
-                billData.billViewInfo.cashPaid:0,
-      cashRcvd:billData.billViewInfo.partyType.toUpperCase()==='BUYER'?billData.billViewInfo.cashRcvd:0,
-      comm: billData.billViewInfo.comm,
-      commIncluded: billData.billViewInfo.commIncluded,
-      comments: billData.billViewInfo.comments,
-      govtLevies: billData.billViewInfo.govtLevies,
-      grossTotal: billData.billViewInfo.grossTotal,
-      labourCharges: billData.billViewInfo.labourCharges,
-      less: billData.billViewInfo.less,
-      mandiFee: billData.billViewInfo.mandiData,
-      misc:billData.billViewInfo.partyType.toUpperCase()==='FARMER'? billData.billViewInfo.otherFee:
-          billData.billViewInfo.misc,
-      otherFee:billData.billViewInfo.partyType.toUpperCase()==='FARMER'?
-         billData.billViewInfo.misc:billData.billViewInfo.otherFee,
+      actualPayRecieevable:billData?.partyType.toUpperCase()==='FARMER'?
+       billData?.actualPaybles:billData?.actualReceivable,
+      advance: billData?.advance,
+      billDate: billData?.billDate,
+      cashPaid: billData?.partyType.toUpperCase()==='FARMER'?
+                billData?.cashPaid:0,
+      cashRcvd:billData?.partyType.toUpperCase()==='BUYER'?billData?.cashRcvd:0,
+      comm: billData?.comm,
+      commIncluded: billData?.commIncluded,
+      comments: billData?.comments,
+      govtLevies: billData?.govtLevies,
+      grossTotal: billData?.grossTotal,
+      labourCharges: billData?.labourCharges,
+      less: billData?.less,
+      mandiFee: billData?.mandiData,
+      misc:billData?.partyType.toUpperCase()==='FARMER'? billData?.otherFee:
+          billData?.misc,
+      otherFee:billData?.partyType.toUpperCase()==='FARMER'?
+         billData?.misc:billData?.otherFee,
 
-      outStBal:billData.billViewInfo.outStBal,
+      outStBal:billData?.outStBal,
       paidTo: 0,
-      partyId:billData.billViewInfo.partyType.toUpperCase()==='FARMMER'?
-            billData.billViewInfo.buyerId:billData.billViewInfo.farmerId,
-      rent: billData.billViewInfo.rent,
-      rtComm: billData.billViewInfo.rtComm,
-      rtCommIncluded: billData.billViewInfo.rtCommIncluded,
-      totalPayRecieevable: billData.billViewInfo.totalPayables,
-      transportation: billData.billViewInfo.transportation,
-      transporterId: billData.billViewInfo.transporterId,
+      partyId:billData?.partyType.toUpperCase()==='FARMMER'?
+            billData?.buyerId:billData?.farmerId,
+      rent: billData?.rent,
+      rtComm: billData?.rtComm,
+      rtCommIncluded: billData?.rtCommIncluded,
+      totalPayRecieevable: billData?.totalPayables,
+      transportation: billData?.transportation,
+      transporterId: billData?.transporterId,
     },
-    billId: billData.billViewInfo.billId,
-    billType:billData.billViewInfo.partyType.toUpperCase()==='FARMER'? "BUY":'SELL',
-    caBSeq: billData.billViewInfo.caBSeq,
+    billId: billData?.billId,
+    billType:billData?.partyType.toUpperCase()==='FARMER'? "BUY":'SELL',
+    caBSeq: billData?.caBSeq,
     caId: clickId,
-    lineItems: billData.billViewInfo.lineItems,
+    lineItems: billData?.lineItems,
     updatedBy: 0,
     updatedOn: "",
     writerId: 0,
@@ -143,7 +141,7 @@ const BillView = (props) => {
           });
           console.log(response.data, "edit bill");
           localStorage.setItem("billViewStatus", false);
-          if(billData.billViewInfo.partyType.toUpperCase() ==='FARMER'){
+          if(billData?.partyType.toUpperCase() ==='FARMER'){
             navigate("/buy_bill_book");
           }else{
             navigate("/sellbillbook");
@@ -197,9 +195,9 @@ const BillView = (props) => {
                 <div className="col-lg-6">
                   <div className="d-flex">
                     <div className="buyer-image">
-                      {billData.billViewInfo.farmerProfilePic ? (
+                      {billData?.farmerProfilePic ? (
                         <img
-                          src={billData.billViewInfo?.farmerProfilePic}
+                          src={billData?.farmerProfilePic}
                           alt="buyerimage"
                           className="buyer_img"
                         />
@@ -213,8 +211,8 @@ const BillView = (props) => {
                     </div>
                     <div className="buy-details">
                       <p className="b-cr-by">Bill Created By</p>
-                      <p className="b-name">{billData.billViewInfo.partyType.toUpperCase() ==='FARMER'?
-                      billData.billViewInfo.farmerName:billData.billViewInfo.buyerName}</p>
+                      <p className="b-name">{billData?.partyType.toUpperCase() ==='FARMER'?
+                      billData.farmerName:billData?.buyerName}</p>
                     </div>
                   </div>
                 </div>
@@ -222,7 +220,7 @@ const BillView = (props) => {
                   {/* <div className="date-and-time"> */}
                   <p className="d-a-time">Date And Time</p>
                   <p className="d-a-value">
-                    {moment(billData.billViewInfo?.timeStamp).format(
+                    {moment(billData?.timeStamp).format(
                       "DD-MMM-YY | hh:mm:ss:A"
                     )}
                   </p>
@@ -234,7 +232,7 @@ const BillView = (props) => {
                 <p class-className="more-p-tag">Actions</p>
               </div>
               <div className="hr-line"></div>
-              {billData.billViewInfo.billStatus == "CANCELLED" ? (
+              {billData?.billStatus == "CANCELLED" ? (
                 ""
               ) : (
                 <div>
@@ -252,7 +250,7 @@ const BillView = (props) => {
                       <img
                         src={edit}
                         alt="img"
-                        onClick={() => editBill(billData.billViewInfo)}
+                        onClick={() => editBill(billData)}
                       />
                       <p>Edit</p>
                     </div>
@@ -262,7 +260,7 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
-        {billData.billViewInfo.partyType.toUpperCase() ==='FARMER'?
+        {billData?.partyType.toUpperCase() ==='FARMER'?
           showStep3ModalStatus ? (
           <Step3Modal
             showstep3={showStep3Modal}
@@ -271,7 +269,7 @@ const BillView = (props) => {
             billEditStatus={true}
             step2CropEditStatus={false}
             editCancelStatus={editCancelStatus}
-            dateSelected={new Date(billData.billViewInfo.billDate)}
+            dateSelected={new Date(billData.billDate)}
           />
         ) : (
           ""
@@ -283,7 +281,7 @@ const BillView = (props) => {
           slectedSellCropsArray={slectedCropArray}
           billEditStatus={true}
           step2CropEditStatus={false}
-          sellBilldateSelected = {new Date(billData.billViewInfo.billDate)}
+          sellBilldateSelected = {new Date(billData.billDate)}
           selectedBillData={slectedCropArray}
         />
           ):('')}
@@ -347,7 +345,7 @@ const BillView = (props) => {
                 <button
                   type="button"
                   className="primary_btn"
-                  onClick={() => cancelBill(billData.billViewInfo)}
+                  onClick={() => cancelBill(billData)}
                   data-bs-dismiss="modal"
                 >
                   YES

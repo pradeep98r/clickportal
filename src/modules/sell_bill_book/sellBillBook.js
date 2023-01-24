@@ -100,7 +100,7 @@ const SellBillBook = (props) => {
     navigate(generatePath(`/bill_view/${id}`, { id }))
     localStorage.setItem("billId", id);
     dispatch(billViewInfo(bill));
-    localStorage.setItem("selectedBillData", JSON.stringify(bill));
+    localStorage.setItem("billData", JSON.stringify(bill));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);

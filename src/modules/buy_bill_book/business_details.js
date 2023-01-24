@@ -7,11 +7,14 @@ export const BusinessDetails = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [mandiData, setMandiData] = useState({});
-  const  billData = useSelector((state)=> state.billViewInfo);
+  const  billViewData = useSelector((state)=> state.billViewInfo);
+  const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
   useEffect(()=>{
     getBusinessDetails();
   },[]);
-
+  useEffect(()=>{
+    setBillViewData(JSON.parse(localStorage.getItem("billData")));
+  },[])
   const getBusinessDetails = () => {
     getMandiDetails(clickId)
       .then((response) => {
@@ -50,7 +53,7 @@ export const BusinessDetails = () => {
           </div>
           <div className="billid_date_bg">
             <p className="small_text text-center">
-              Bill ID : {billData.billViewInfo.billId!==null?billData.billViewInfo.billId:''}
+              Bill ID : {billData?.billId!==null?billData?.billId:''}
             </p>
           </div>
         </div>
@@ -82,7 +85,7 @@ export const BusinessDetails = () => {
           </div>
           <div className="billid_date_bg">
             <p className="small_text text-center">
-              {moment(billData.billViewInfo.billDate).format("DD-MMM-YY")}
+              {moment(billData?.billDate).format("DD-MMM-YY")}
             </p>
           </div>
         </div>
