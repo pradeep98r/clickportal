@@ -14,7 +14,7 @@ const BillViewFooter = () => {
                     ONO-{moment(billData?.billDate).format("DDMMYYYY")}
                     -CLICK-
                     {billData?.partyType==='BUYER'?
-                    billData?.actualReceivable:billData?.actualPaybles}
+                    billData?.actualReceivable.toFixed(2):billData?.actualPaybles.toFixed(2)}
                 </p>
             </div>
         </div>

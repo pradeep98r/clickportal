@@ -49,7 +49,6 @@ const BillView = (props) => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   },[])
 
-  console.log(billData,"billData after refresh");
   const cancelBillStatus = () => {
     if (billData?.billStatus === "CANCELLED") {
       setDisplayCancel(true);
@@ -132,14 +131,12 @@ const BillView = (props) => {
   };
 
   const cancelbillApiCall = () => {
-    console.log(editBillRequestObj,"edit")
     editbuybillApi(editBillRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.message, {
             toastId: "success1",
           });
-          console.log(response.data, "edit bill");
           localStorage.setItem("billViewStatus", false);
           if(billData?.partyType.toUpperCase() ==='FARMER'){
             navigate("/buy_bill_book");
