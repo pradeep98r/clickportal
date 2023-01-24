@@ -171,7 +171,6 @@ const Step33 = (props) => {
           for (var i = 0; i < response.length; i++) {
             if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
               if (response[i].status === 1) {
-                console.log(response[i].name,i,"names");
                 Object.assign(response[i], {
                   settingName: response[i].name,
                   tableType: 0,
@@ -180,6 +179,7 @@ const Step33 = (props) => {
                   totalVal: 0,
                   cstmName: "",
                   value: 0,
+                  fieldType:null,
                 });
     
                 if (
@@ -189,7 +189,12 @@ const Step33 = (props) => {
                 ) {
                   console.log("");
                 } else {
-                  listSettings(response[i].name, response, i);
+                  var substring = "CUSTOM_FIELD";
+                  if (response[i]?.name.includes(substring)) {
+                    response[i].name="";
+                    substring = '';
+                  }
+                  listSettings(response[i]?.name, response, i);
                   allGroups.push(response[i]);
                 }
     
@@ -225,7 +230,6 @@ const Step33 = (props) => {
     }
   };
   const listSettings = (name, res, index) => {
-    console.log(res,"res")
     var totalQty = 0;
     var item = editStatus
       ? step2CropEditStatus
@@ -304,7 +308,6 @@ const Step33 = (props) => {
 
             break;
           case "TRANSPORTATION":
-            console.log(name,"namer")
             var trVa = editStatus
               ? tableChangeStatusval
                 ? res[j].value
@@ -1235,7 +1238,7 @@ const Step33 = (props) => {
                             <div className="row">
                               <div className="col-lg-3 title_bg">
                                 <h5 className="comm_card_title mb-0">
-                                  {getText(allGroups[index].settingName)}
+                                  {getText(allGroups[index]?.settingName)}
                                 </h5>
                               </div>
                               <div className="col-lg-9 col-sm-12 col_left_border">

@@ -136,6 +136,9 @@ const SellBillStep3 = (props) => {
               ) {
                 console.log("");
               } else {
+                if(response[i]?.settingName.includes('ADVANCES')){
+                  response[i].settingName = "";
+                }
                 listSettings(response[i].settingName, response, i);
                 allGroups.push(response[i]);
               }
@@ -165,6 +168,7 @@ const SellBillStep3 = (props) => {
                 totalVal: 0,
                 cstmName: "",
                 value : 0,
+                fieldType:null,
               });
 
               if (
@@ -174,6 +178,13 @@ const SellBillStep3 = (props) => {
               ) {
                 console.log("");
               } else {
+                var substring = "CUSTOM_FIELD";
+                  if (response[i]?.name.includes(substring)) {
+                    response[i].name="";
+                    substring = '';
+                  } else if(response[i]?.name.includes('ADVANCES')){
+                    response[i].name = "";
+                  }
                 listSettings(response[i].name, response, i);
                 allGroups.push(response[i]);
               }
