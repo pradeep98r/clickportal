@@ -306,18 +306,20 @@ const Partner = () => {
       addEditPartnerApiCall();
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
-    } else if (aadharNumber.trim().length < 12) {
-      setAadharError("Minimum Adhar number length should be 12");
-    } else if (nameField.trim().length === 0) {
-      setRequiredNameField(langFullData.pleaseEnterFullName);
-    } else if (mobileNumber.trim().length === 0) {
+    } 
+    else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
+    }  else if (nameField.trim().length === 0) {
+      setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (nameField.trim().length === 1) {
       setNameError("Name should be min 2 characters");
     } else if (shortNameField.trim().length === 1) {
       setShortNameError("Name should be min 2 characters");
+    }
+    else if (aadharNumber.trim().length < 12) {
+      setAadharError("Minimum Adhar number length should be 12");
     }
   };
   const addEditPartnerApiCall = () => {
@@ -1387,6 +1389,7 @@ const Partner = () => {
                     type="button"
                     className="secondary_btn"
                     // id="close_modal"
+                    onClick={closeAddModal}
                     data-bs-dismiss="modal"
                   >
                     Cancel
