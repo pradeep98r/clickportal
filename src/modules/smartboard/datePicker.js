@@ -124,6 +124,18 @@ function DatePickerModel(props) {
   //const [active, setActive] =useState(false);
   const [dateTabs, setDateTabs] = useState("Daily");
   const [selectedDate, setStartDate] = useState("");
+  const dateOnchangeEvent = (date,type) =>{
+    if(type == 'Daily'){
+      setStartDate(date);
+    }
+    else if(type == 'Monthly'){
+      setSelectedMonthDate(date);
+    }
+    else if(type == 'Yearly'){
+      setSelectedyearDate(date);
+    }
+    onclickContinue(date);
+  }
   const onclickContinue = async (dateValue) => {
     var lastDay = new Date(
       dateValue.getFullYear(),
@@ -291,7 +303,7 @@ function DatePickerModel(props) {
               <DatePicker
                 dateFormat="yyyy-MMM-dd"
                 selected={selectedDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={(date) => dateOnchangeEvent(date,dateTabs)}
                 className="form-control"
                 placeholder="Date"
                 maxDate={new Date()}
@@ -316,11 +328,11 @@ function DatePickerModel(props) {
                 showMonthYearPicker
                 showFullMonthYearPicker
                 selected={selectedMonthDate}
-                onChange={(date) => setSelectedMonthDate(date)}
+                onChange={(date) => dateOnchangeEvent(date,dateTabs)}
                 className="form-control"
                 placeholder="Date"
                 maxDate={new Date()}
-                showThreeColumnMonthYearPicker
+                showFourColumnMonthYearPicker
                 inline
                 disabledKeyboardNavigation
               />
@@ -332,7 +344,7 @@ function DatePickerModel(props) {
               <h2>
                 <DatePicker
                   selected={selectedYearDate}
-                  onChange={(date) => setSelectedyearDate(date)}
+                  onChange={(date) => dateOnchangeEvent(date,dateTabs)}
                   showYearPicker
                   dateFormat="yyyy"
                   className="form-control"
@@ -396,7 +408,8 @@ function DatePickerModel(props) {
             </article>
           </div>
         </div>
-        <button
+        {(dateTabs == 'Daily' || dateTabs == 'Monthly' || dateTabs == 'Yearly') ? '' :   
+         <button
           type="button"
           className="primary_btn cont_btn w-100 m-0"
           onClick={() => {
@@ -410,7 +423,8 @@ function DatePickerModel(props) {
           }}
         >
           Continue
-        </button>
+        </button>}
+     
       </div>
     </Modal>
   );

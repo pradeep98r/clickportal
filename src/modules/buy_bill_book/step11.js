@@ -110,7 +110,7 @@ const Step11 = (props) => {
               : true
             : true) ? (
             <div className="bottom_div">
-              <div className="d-flex align-items-center justify-content-end">
+              <div className="d-flex align-items-center justify-content-between">
                 <button className="secondary_btn" onClick={cancelStep}>
                   cancel
                 </button>

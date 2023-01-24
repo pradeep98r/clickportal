@@ -1126,7 +1126,12 @@ const Step33 = (props) => {
       e.target.value = "";
     }
   };
-
+ // close popup
+ const cancelStep = () => {
+  dispatch(selectTrans(null)); 
+  dispatch(selectBuyer(null));
+  props.closem();
+};
   const [selectedBilldate, setselectedbilldate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
@@ -1351,13 +1356,18 @@ const Step33 = (props) => {
         <ToastContainer />
       </div>
       <div className="bottom_div">
-        <div className="d-flex align-items-center justify-content-end">
+        <div className="d-flex align-items-center justify-content-between">
+        <button className="secondary_btn" onClick={cancelStep}>
+                  cancel
+                </button>
+                <div className="d-flex align-items-center">
           <button className="secondary_btn" onClick={() => previousStep()}>
             Previous
           </button>
           <button className="primary_btn" onClick={() => postbuybill()}>
             Submit
           </button>
+          </div>
         </div>
       </div>
     </div>

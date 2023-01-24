@@ -1102,6 +1102,11 @@ const SellBillStep3 = (props) => {
     dispatch(tableEditStatus(true));
     props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray,selectedCrops);
   };
+  const cancelStep = () => {
+    dispatch(selectTrans(null)); 
+    dispatch(selectBuyer(null));
+    props.closem();
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -1275,13 +1280,18 @@ const SellBillStep3 = (props) => {
         <ToastContainer />
       </div>
       <div className="bottom_div">
-        <div className="d-flex align-items-center justify-content-end">
+        <div className="d-flex align-items-center justify-content-between">
+        <button className="secondary_btn" onClick={cancelStep}>
+                  cancel
+                </button>
+                <div className="d-flex align-items-center">
           <button className="secondary_btn" onClick={() => previousStep()}>
             Previous
           </button>
           <button className="primary_btn" onClick={() => postsellbill()}>
             Next
           </button>
+          </div>
         </div>
       </div>
     </div>

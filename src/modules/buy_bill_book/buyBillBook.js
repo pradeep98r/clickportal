@@ -15,6 +15,7 @@ import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
 import NoDataAvailable from "../../components/noDataAvailable";
 import BillsSearchField from "../../components/billsSearchField";
+import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import { getText } from "../../components/getText";
 import Steps from "./steps";
 import {
@@ -22,11 +23,12 @@ import {
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
 import { useDispatch, useSelector } from "react-redux";
-import { selectSteps } from "../../reducers/stepsSlice"
-import { billViewInfo } from "../../reducers/billViewSlice"
-import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectSteps } from "../../reducers/stepsSlice";
+import { billViewInfo } from "../../reducers/billViewSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
 import { selectTrans } from "../../reducers/transSlice";
-import {fromBillbook} from "../../reducers/billEditItemSlice"
+import { fromBillbook } from "../../reducers/billEditItemSlice";
+import addbill_icon from "../../assets/images/addbill.svg";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -36,7 +38,7 @@ function BuyBillBook() {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
 
-  const  billData = useSelector((state)=> state.billViewInfo);
+  const billData = useSelector((state) => state.billViewInfo);
   const dispatch = useDispatch();
   console.log(billData);
   useEffect(() => {
@@ -116,9 +118,9 @@ function BuyBillBook() {
     localStorage.setItem("stepOne", stepOneHeader);
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-    dispatch(selectSteps('step1'))
+    dispatch(selectSteps("step1"));
     dispatch(selectBuyer(null));
-    dispatch(selectTrans(null))
+    dispatch(selectTrans(null));
     dispatch(fromBillbook(true));
   };
 
@@ -163,7 +165,7 @@ function BuyBillBook() {
                   <div>
                     <div className="d-flex justify-content-between bills_div">
                       <div className="d-flex">
-                        <ul className="nav nav-tabs" id="myTab" role="tablist">
+                        <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                           <li className="nav-item active">
                             <a
                               className="nav-link active"
@@ -196,7 +198,8 @@ function BuyBillBook() {
                           // href="/step1"
                           onClick={handleStep1Header}
                         >
-                          {langFullData.singleBill}
+                            <img src={addbill_icon} alt="image" className="mr-2" />
+                      ADD BILL
                         </a>
                       </div>
                     </div>
@@ -306,7 +309,10 @@ function BuyBillBook() {
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         {bill.lineItems.map((crop, index) => (
-                                          <div className="row crops_row_bills" key={index}>
+                                          <div
+                                            className="row crops_row_bills"
+                                            key={index}
+                                          >
                                             <div className="col-lg-4 col-sm-12 col">
                                               <p className="flex_class crop_name">
                                                 <img
@@ -371,7 +377,31 @@ function BuyBillBook() {
                               </div>
                             </div>
                           ) : (
-                            <NoDataAvailable />
+                            <div className="row partner_no_data_widget_row">
+                              <div className="col-lg-5">
+                                <div className="partner_no_data_widget">
+                                  <div className="text-center">
+                                    <img
+                                      src={no_data_icon}
+                                      alt="icon"
+                                      className="d-flex mx-auto justify-content-center"
+                                    />
+                                    <p>
+                                    No bills available for today. <br></br>
+                                     Add to create a new bill
+                                    </p>
+                                    <button
+                                      className="primary_btn"
+                                      onClick={handleStep1Header}
+                                    >
+                                      Add Bill
+                                      
+                                    </button>
+                                 
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -394,7 +424,10 @@ function BuyBillBook() {
         <p></p>
       )}
       {showStepsModalStatus ? (
-        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+        <Steps
+          showStepsModal={showStepsModal}
+          closeStepsModal={() => setShowStepsModal(false)}
+        />
       ) : (
         ""
       )}

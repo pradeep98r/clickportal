@@ -18,12 +18,16 @@ import "jquery-ui";
 import "jquery-ui/ui/widgets/datepicker";
 import NoDataText from "../../components/noDataText";
 import loading from "../../assets/images/loading.gif";
-import prev_icon from "../../assets/images/prev_icon.png";
-import next_icon from "../../assets/images/next_icon.png";
+import prev_icon from "../../assets/images/prev_icon.svg";
+import next_icon from "../../assets/images/next_icon.svg";
+import pending_rec from "../../assets/images/pending_rec_icon.svg";
+import pending_pay from "../../assets/images/pending_pay_icon.svg";
 import CompleteProfile from "./completeprofile";
 import Modal from "react-modal/lib/components/Modal";
 import { useNavigate } from "react-router-dom";
 import tickMark from "../../assets/images/tick_mark.svg";
+import no_data_icon from "../../assets/images/no_data_small.svg";
+import { DateUtils } from "rsuite/esm/utils";
 const SmartBoard = () => {
   const [tabType, setTabType] = useState("Daily");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -198,6 +202,18 @@ const SmartBoard = () => {
   const closePopup = () => {
     $("#datePopupmodalPopup").modal("hide");
   };
+  const dailyOnchange = (date,type) =>{
+    if(type == 'daily'){
+      setStartDate(date);
+    }
+    else if(type == 'monthly'){
+      setSelectedMonthDate(date)
+    }
+    else if(type == 'yearly'){
+      setSelectedyearDate(date)
+    }
+    getDateValue(date);
+  }
   const getDateValue = async (dateValue) => {
     var lastDay = new Date(
       dateValue.getFullYear(),
@@ -325,7 +341,7 @@ const SmartBoard = () => {
   };
   return (
     <div>
-      <div className="main_div_padding">
+      <div className="">
         <div className="container-fluid px-0">
           {(loginData.businessCreated === false ? (loginData.useStatus == "WRITER" ? true : false) : true) &&
           businessCreatedStatus == "" ? (
@@ -351,7 +367,7 @@ const SmartBoard = () => {
             </div>
           ) : (
             <div>
-              <ul className="nav nav-tabs" id="myTab" role="tablist">
+              <ul className="nav nav-tabs smartboard_tabs" id="myTab" role="tablist">
                 {links.map((link) => {
                   return (
                     <li key={link.id} className="nav-item ">
@@ -371,7 +387,7 @@ const SmartBoard = () => {
                   );
                 })}
               </ul>
-              <div className="tab-content ps-0 pt-3">
+              <div className="tab-content main_div_padding">
                 <div
                   className="tab-pane active"
                   id={tabType}
@@ -381,7 +397,7 @@ const SmartBoard = () => {
                   <div className="smartboard_date">
                     {tabType == langFullData.daily ? (
                       <span className="" onClick={onPrevDate}>
-                        <img src={prev_icon} alt="icon" className="mr-2" />
+                        <img src={prev_icon} alt="icon" className="mr-3" />
                       </span>
                     ) : (
                       ""
@@ -412,7 +428,7 @@ const SmartBoard = () => {
                     </div>
                     {tabType == "Daily" ? (
                       <span className="" onClick={onNextDate}>
-                        <img src={next_icon} alt="icon" className="ml-2" />
+                        <img src={next_icon} alt="icon" className="ml-3" />
                       </span>
                     ) : (
                       ""
@@ -438,7 +454,10 @@ const SmartBoard = () => {
                                 <div className="col-md-6 p-0">
                                   <div className="card pending_rec_card green_card empty_card">
                                     <div className="row">
-                                      <div className="col-lg-6 col_left_border">
+                                    <div className="col-lg-2">
+                                        <img src={pending_rec} className="mt-2" alt="image"/>
+                                      </div>
+                                      <div className="col-lg-5 col_left_border">
                                         <h5 className="color_head_subtext">
                                           Pending Receivables
                                         </h5>
@@ -476,7 +495,7 @@ const SmartBoard = () => {
                                           )}
                                         </p>
                                       </div>
-                                      <div className="col-lg-6 col2">
+                                      <div className="col-lg-5 col2">
                                         <h5 className="color_head_subtext">
                                           {/* {langData.sellBills}{" "} */}
                                           Sell Bills
@@ -506,7 +525,7 @@ const SmartBoard = () => {
                                               handleLinks("/sellbillbook");
                                             }}
                                           >
-                                            {langFullData.seeAll}
+                                            See All
                                           </a>
                                             }
                                         </p>
@@ -517,7 +536,10 @@ const SmartBoard = () => {
                                 <div className="col-md-6 pr-0">
                                   <div className="card pending_rec_card pending_pay_card warning_card empty_card">
                                     <div className="row">
-                                      <div className="col-lg-6 col_left_border">
+                                      <div className="col-lg-2">
+                                        <img src={pending_pay} className="mt-2" alt="image"/>
+                                      </div>
+                                      <div className="col-lg-5 col_left_border">
                                         <h5 className="">Pending Payables </h5>
                                         {outStandingBal.pendingPaybles == 0 ? (
                                           <p className="nodata color_black">
@@ -552,7 +574,7 @@ const SmartBoard = () => {
                                           )}
                                         </p>
                                       </div>
-                                      <div className="col-lg-6 col2">
+                                      <div className="col-lg-5 col2">
                                         <h5 className="">
                                           {langFullData.buyBills}{" "}
                                         </h5>
@@ -579,7 +601,7 @@ const SmartBoard = () => {
                                             onClick={() => {
                                               handleLinks("/buy_bill_book");
                                             }}
-                                          >{langFullData.seeAll} </a>}
+                                          >See All </a>}
                                         </p>
                                       </div>
                                     </div>
@@ -596,10 +618,10 @@ const SmartBoard = () => {
                                   <div className="card default_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
-                                        <h5 className="">
+                                        <h5 className="text-center">
                                           {langFullData.totalSales}{" "}
                                         </h5>
-                                        <h6 className="">
+                                        <h6 className="text-center">
                                           {salesReprtData.totalBusiness == 0
                                             ? ""
                                             : salesReprtData.totalBusiness.toLocaleString(
@@ -613,10 +635,10 @@ const SmartBoard = () => {
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
-                                        <h5 className="">
+                                        <h5 className="text-center">
                                           {langFullData.totalQuantity}{" "}
                                         </h5>
-                                        <h6 className="">
+                                        <h6 className="text-center">
                                           {salesReprtData.totalUnits == 0
                                             ? ""
                                             : salesReprtData.totalUnits.toLocaleString(
@@ -643,11 +665,12 @@ const SmartBoard = () => {
                                     {salesReprtData.totalBusiness == 0 ? (
                                       <NoDataText />
                                     ) : (
-                                      <div className="row top_border">
-                                        <p className="color_blue text-center">
-                                          {langFullData.seeAll}
-                                        </p>
-                                      </div>
+                                      ''
+                                      // <div className="row top_border">
+                                      //   <p className="color_blue text-center">
+                                      //   See All
+                                      //   </p>
+                                      // </div>
                                     )}
                                   </div>
                                 </div>
@@ -658,10 +681,10 @@ const SmartBoard = () => {
                                   <div className="card default_card empty_card">
                                     <div className="row">
                                       <div className="col-lg-6 col_left_border">
-                                        <h5 className="">
+                                        <h5 className="text-center">
                                           {langFullData.totalPurchases}
                                         </h5>
-                                        <h6 className="">
+                                        <h6 className="text-center">
                                           {purchaseReprtData.totalBusiness == 0
                                             ? ""
                                             : purchaseReprtData.totalBusiness.toLocaleString(
@@ -675,10 +698,10 @@ const SmartBoard = () => {
                                         </h6>
                                       </div>
                                       <div className="col-lg-6 col2">
-                                        <h5 className="">
+                                        <h5 className="text-center">
                                           {langFullData.totalQuantity}{" "}
                                         </h5>
-                                        <h6 className="">
+                                        <h6 className="text-center">
                                           {purchaseReprtData.totalUnits == 0
                                             ? ""
                                             : purchaseReprtData.totalUnits.toLocaleString(
@@ -705,11 +728,12 @@ const SmartBoard = () => {
                                     {purchaseReprtData.totalBusiness == 0 ? (
                                       <NoDataText />
                                     ) : (
-                                      <div className="row top_border">
-                                        <p className="color_blue text-center">
-                                          {langFullData.seeAll}
-                                        </p>
-                                      </div>
+                                      // <div className="row top_border">
+                                      //   <p className="color_blue text-center">
+                                      //   See All
+                                      //   </p>
+                                      // </div>
+                                      ''
                                     )}
                                   </div>
                                 </div>
@@ -764,11 +788,11 @@ const SmartBoard = () => {
                                           <div>
                                             <div className="row mt-3">
                                               <div className="col-lg-6 col_left_border">
-                                                <h5 className="">
+                                                <h5 className="text-center">
                                                   {" "}
                                                   {langFullData.totalSales}{" "}
                                                 </h5>
-                                                <h6 className="">
+                                                <h6 className="text-center">
                                                   {cropItem.totalBusiness.toLocaleString(
                                                     "en-IN",
                                                     {
@@ -780,10 +804,10 @@ const SmartBoard = () => {
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
-                                                <h5 className="">
+                                                <h5 className="text-center">
                                                   {langFullData.totalQuantity}{" "}
                                                 </h5>
-                                                <h6 className="">
+                                                <h6 className="text-center">
                                                   {cropItem.totalQty == 0
                                                     ? ""
                                                     : cropItem.totalQty.toLocaleString(
@@ -807,16 +831,19 @@ const SmartBoard = () => {
                                                 </h6>
                                               </div>
                                             </div>
-                                            <div className="row top_border">
+                                            {/* <div className="row top_border">
                                               <p className="color_blue text-center">
-                                                {langFullData.seeAll}
+                                              See All
                                               </p>
-                                            </div>
+                                            </div> */}
                                           </div>
                                         )}
                                       </div>
                                     ) : (
+                                      <div>
+                                        <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
                                       <NoDataText />
+                                      </div>
                                     )}
                                   </div>
                                 </div>
@@ -869,13 +896,13 @@ const SmartBoard = () => {
                                           <div>
                                             <div className="row mt-3">
                                               <div className="col-lg-6 col_left_border">
-                                                <h5 className="">
+                                                <h5 className="text-center">
                                                   {" "}
                                                   {
                                                     langFullData.totalPurchases
                                                   }{" "}
                                                 </h5>
-                                                <h6 className="">
+                                                <h6 className="text-center">
                                                   {buycropItem.totalBusiness.toLocaleString(
                                                     "en-IN",
                                                     {
@@ -887,10 +914,10 @@ const SmartBoard = () => {
                                                 </h6>
                                               </div>
                                               <div className="col-lg-6 col2">
-                                                <h5 className="">
+                                                <h5 className="text-center">
                                                   {langFullData.totalQuantity}{" "}
                                                 </h5>
-                                                <h6 className="">
+                                                <h6 className="text-center">
                                                   {buycropItem.totalQty == 0
                                                     ? ""
                                                     : buycropItem.totalQty.toLocaleString(
@@ -914,16 +941,19 @@ const SmartBoard = () => {
                                                 </h6>
                                               </div>
                                             </div>
-                                            <div className="row top_border">
+                                            {/* <div className="row top_border">
                                               <p className="color_blue text-center">
-                                                {langFullData.seeAll}
+                                              See All
                                               </p>
-                                            </div>
+                                            </div> */}
                                           </div>
                                         )}
                                       </div>
                                     ) : (
+                                      <div>
+                                        <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
                                       <NoDataText />
+                                      </div>
                                     )}
                                   </div>
                                 </div>
@@ -964,13 +994,13 @@ const SmartBoard = () => {
                                               <div>
                                                 <div className="row mt-3">
                                                   <div className="col-lg-6 col_left_border">
-                                                    <h5 className="">
+                                                    <h5 className="text-center">
                                                       {" "}
                                                       {
                                                         langFullData.totalSales
                                                       }{" "}
                                                     </h5>
-                                                    <h6 className="">
+                                                    <h6 className="text-center">
                                                       {buyerItem.totalBusiness.toLocaleString(
                                                         "en-IN",
                                                         {
@@ -982,12 +1012,12 @@ const SmartBoard = () => {
                                                     </h6>
                                                   </div>
                                                   <div className="col-lg-6 col2">
-                                                    <h5 className="">
+                                                    <h5 className="text-center">
                                                       {
                                                         langFullData.totalQuantity
                                                       }{" "}
                                                     </h5>
-                                                    <h6 className="">
+                                                    <h6 className="text-center">
                                                       {buyerItem.totalQty == 0
                                                         ? ""
                                                         : buyerItem.totalQty.toLocaleString(
@@ -1011,18 +1041,21 @@ const SmartBoard = () => {
                                                     </h6>
                                                   </div>
                                                 </div>
-                                                <div className="row top_border">
+                                                {/* <div className="row top_border">
                                                   <p className="color_blue text-center">
-                                                    {langFullData.seeAll}
+                                                  See All
                                                   </p>
-                                                </div>
+                                                </div> */}
                                               </div>
                                             </div>
                                           );
                                         })}
                                       </OwlCarousel>
                                     ) : (
-                                      <NoDataText />
+                                      <div>
+                                      <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
+                                    <NoDataText />
+                                    </div>
                                     )}
                                   </div>
                                 </div>
@@ -1062,13 +1095,13 @@ const SmartBoard = () => {
                                               </div>
                                               <div className="row mt-3">
                                                 <div className="col-lg-6 col_left_border">
-                                                  <h5 className="">
+                                                  <h5 className="text-center">
                                                     {" "}
                                                     {
                                                       langFullData.totalPurchases
                                                     }{" "}
                                                   </h5>
-                                                  <h6 className="">
+                                                  <h6 className="text-center">
                                                     {farmerItem.totalBusiness.toLocaleString(
                                                       "en-IN",
                                                       {
@@ -1080,10 +1113,10 @@ const SmartBoard = () => {
                                                   </h6>
                                                 </div>
                                                 <div className="col-lg-6 col2">
-                                                  <h5 className="">
+                                                  <h5 className="text-center">
                                                     {langFullData.totalQuantity}{" "}
                                                   </h5>
-                                                  <h6 className="">
+                                                  <h6 className="text-center">
                                                     {farmerItem.totalQty == 0
                                                       ? ""
                                                       : farmerItem.totalQty.toLocaleString(
@@ -1107,17 +1140,20 @@ const SmartBoard = () => {
                                                   </h6>
                                                 </div>
                                               </div>
-                                              <div className="row top_border">
+                                              {/* <div className="row top_border">
                                                 <p className="color_blue text-center">
-                                                  {langFullData.seeAll}
+                                                See All
                                                 </p>
-                                              </div>
+                                              </div> */}
                                             </div>
                                           );
                                         })}
                                       </OwlCarousel>
                                     ) : (
-                                      <NoDataText />
+                                      <div>
+                                      <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
+                                    <NoDataText />
+                                    </div>
                                     )}
                                   </div>
                                 </div>
@@ -1140,17 +1176,17 @@ const SmartBoard = () => {
                                         handleLinks("/sellerledger");
                                       }}
                                     >
-                                      {langFullData.seeAll}
+                                     See All
                                     </a>
                                       : ""}
                                   </p>
                                 </div>
                                 {buyRecentTxs.length != 0 ? (
-                                  <table className="table table-bordered trans_table">
+                                  <table className="table table-bordered trans_table bordered">
                                     <thead>
                                       <tr>
                                         <th className="col-3">
-                                          {langFullData.name}
+                                          Name
                                         </th>
                                         <th className="col-2">
                                           {langFullData.paid}(&#8377;)
@@ -1178,7 +1214,7 @@ const SmartBoard = () => {
                                                 <img
                                                   src={single_bill}
                                                   alt="image"
-                                                  className="userIcon"
+                                                  className="userIcon mr-2"
                                                 />
                                                 <div>
                                                   <h4>{item.farmerName}</h4>
@@ -1223,7 +1259,7 @@ const SmartBoard = () => {
                                         handleLinks("/buyerledger");
                                       }}
                                     >
-                                      {langFullData.seeAll}
+                                      See All
                                     </a>
                                       
                                       : ""}
@@ -1234,7 +1270,7 @@ const SmartBoard = () => {
                                     <thead>
                                       <tr>
                                         <th className="col-3">
-                                          {langFullData.name}
+                                          Name
                                         </th>
                                         <th className="col-2">
                                           {langFullData.received}(&#8377;)
@@ -1262,7 +1298,7 @@ const SmartBoard = () => {
                                                 <img
                                                   src={single_bill}
                                                   alt="image"
-                                                  className="userIcon"
+                                                  className="userIcon mr-2"
                                                 />
                                                 <div>
                                                   <h4>{item.buyerName}</h4>
@@ -1305,7 +1341,7 @@ const SmartBoard = () => {
                                 </h4>
                                 <div className="card default_card">
                                   <div className="row">
-                                    <div className="col-lg-6 col_left_border">
+                                    <div className="col-lg-6 pl-0 col_left_border">
                                       <h5 className="">
                                         {langFullData.commissionEarned}{" "}
                                       </h5>
@@ -1342,9 +1378,10 @@ const SmartBoard = () => {
                                     commissionEarns.netComm) == 0 ? (
                                     <NoDataText />
                                   ) : (
-                                    <p className="color_blue see_all">
-                                      {langFullData.seeAll}
-                                    </p>
+                                    ''
+                                    // <p className="color_blue see_all pl-0">
+                                    //  See All
+                                    // </p>
                                   )}
                                 </div>
                               </div>
@@ -1407,7 +1444,7 @@ const SmartBoard = () => {
                   ? "Week"
                   : tabType == "Monthly"
                   ? "Month"
-                  : tabType == "Year"}
+                  : tabType == "Yearly" ? "Year" : ''}
               </h5>
               <img
                 src={close}
@@ -1425,7 +1462,7 @@ const SmartBoard = () => {
                         <DatePicker
                           dateFormat="dd-MMM-yy"
                           selected={selectedDate}
-                          onChange={(date) => setStartDate(date)}
+                          onChange={(date) => dailyOnchange(date,"daily")}
                           className="form-control"
                           placeholder="Date"
                           maxDate={new Date()}
@@ -1448,7 +1485,7 @@ const SmartBoard = () => {
                           showMonthYearPicker
                           showFullMonthYearPicker
                           selected={selectedMonthDate}
-                          onChange={(date) => setSelectedMonthDate(date)}
+                          onChange={(date) => dailyOnchange(date,'monthly')}
                           className="form-control"
                           placeholder="Date"
                           maxDate={new Date()}
@@ -1463,7 +1500,7 @@ const SmartBoard = () => {
                       <div className="yearly">
                         <DatePicker
                           selected={selectedYearDate}
-                          onChange={(date) => setSelectedyearDate(date)}
+                          onChange={(date) => dailyOnchange(date,'yearly')}
                           showYearPicker
                           dateFormat="yyyy"
                           className="form-control"
@@ -1478,7 +1515,7 @@ const SmartBoard = () => {
                 })()}
               </div>
             </div>
-            <div className="modal-footer p-0">
+            {tabType == "Daily" || tabType == "Monthly" || tabType == 'Yearly' ? '' :<div className="modal-footer p-0">
               <button
                 type="button"
                 className="primary_btn cont_btn w-100 m-0"
@@ -1494,7 +1531,8 @@ const SmartBoard = () => {
               >
                 {langFullData.continue_}
               </button>
-            </div>
+            </div> }
+            
           </div>
         </div>
       </div>
