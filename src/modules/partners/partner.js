@@ -37,6 +37,7 @@ const Partner = () => {
   const [partyType, setPartyType] = useState(
     savetype !== null ? savetype : "FARMER"
   );
+  const [isOnline, setOnline] = useState(false);
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
@@ -410,6 +411,7 @@ const Partner = () => {
         setPartnerData(response.data.data);
       })
       .catch((error) => {
+        setOnline(true);
         console.log(error);
       });
   };
