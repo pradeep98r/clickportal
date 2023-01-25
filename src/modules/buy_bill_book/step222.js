@@ -91,7 +91,6 @@ const Step22 = (props) => {
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
-    console.log(updatedItemList,"croponclick")
     setUpdatedItemList([...updatedItemList, ...newArray]);
     // localStorage.setItem('lineItemsEdit',JSON.stringify(newArray));
     if (crop.cropId === id) {
@@ -154,14 +153,6 @@ const Step22 = (props) => {
         for (var d = 0; d < cropObjectArr.length; d++) {
           let object = { ...cropObjectArr[d] };
          
-          console.log(
-            cropObjectArr,
-            props.slectedCrops.length,
-            billEditItemInfo?.step2CropEditStatus,
-            // cropObjectArr[1].rateType,
-            "ifffffcond",
-            d
-          );
           if (
             cropObjectArr[d].rateType === "RATE_PER_KG" ||
             cropObjectArr[d].rateType === "kgs"
@@ -178,7 +169,6 @@ const Step22 = (props) => {
           }
           
         }
-        console.log(a, cropObjectArr);
         cropResponseData([...a]);
       } else {
         if (!billEditItemInfo?.fromBillBook) {
@@ -191,7 +181,6 @@ const Step22 = (props) => {
         }
       }
       var cropArr = billEditStatus ? cropObjectArr : lineIt;
-      console.log(cropArr)
       cropArr?.map((item, index) => {
         var k = preferedCropsData.findIndex(
           (obj) => obj.cropId === item.cropId
