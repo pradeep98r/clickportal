@@ -58,7 +58,7 @@ const Step33 = (props) => {
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
 
   const billEditItem = editStatus
-    ?  billEditItemInfo.selectedBillInfo
+    ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
@@ -84,7 +84,6 @@ const Step33 = (props) => {
           props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
-      console.log(cropArrays)
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -127,9 +126,10 @@ const Step33 = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response;
-      if(res.data.data.billSetting.length >0){
-         response = res.data.data.billSetting;
-         for (var i = 0; i < response.length; i++) {
+      if (res.data.data.billSetting.length > 0) {
+        response = res.data.data.billSetting;
+        console.log(response, "settings");
+        for (var i = 0; i < response.length; i++) {
           if (response[i].billType === "BUY") {
             if (response[i].formStatus === 1) {
               Object.assign(response[i], {
@@ -139,8 +139,9 @@ const Step33 = (props) => {
                 subText2: "",
                 totalVal: 0,
                 cstmName: "",
+                commentText:''
               });
-  
+
               if (
                 response[i].settingName === "DEFAULT_RATE_TYPE" ||
                 response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
@@ -151,25 +152,30 @@ const Step33 = (props) => {
                 listSettings(response[i].settingName, response, i);
                 allGroups.push(response[i]);
               }
-  
+
               if (response[i].settingName === "OUT_ST_BALANCE")
                 setOutBalformStatusvalue(true);
             }
-  
+
             if (response[i].settingName === "COMMISSION") {
               setIncludeComm(response[i].includeInLedger == 1 ? true : false);
               setisShown(response[i].isShown == 1 ? true : false);
             } else if (response[i].settingName === "RETURN_COMMISSION") {
               setAddRetComm(response[i].addToGt == 1 ? false : true);
-              setIncludeRetComm(response[i].includeInLedger == 1 ? true : false);
+              setIncludeRetComm(
+                response[i].includeInLedger == 1 ? true : false
+              );
             }
           }
         }
-      } else{
-        getDefaultSystemSettings().then((res)=>{
+      } else {
+        getDefaultSystemSettings().then((res) => {
           response = res.data.data;
           for (var i = 0; i < response.length; i++) {
-            if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
+            if (
+              response[i].type === "BILL" ||
+              response[i].type === "DAILY_CHART"
+            ) {
               if (response[i].status === 1) {
                 Object.assign(response[i], {
                   settingName: response[i].name,
@@ -179,9 +185,9 @@ const Step33 = (props) => {
                   totalVal: 0,
                   cstmName: "",
                   value: 0,
-                  fieldType:null,
+                  fieldType: null,
                 });
-    
+
                 if (
                   response[i].name === "DEFAULT_RATE_TYPE" ||
                   response[i].name === "SKIP_INDIVIDUAL_EXP" ||
@@ -191,17 +197,17 @@ const Step33 = (props) => {
                 } else {
                   var substring = "CUSTOM_FIELD";
                   if (response[i]?.name.includes(substring)) {
-                    response[i].name="";
-                    substring = '';
+                    response[i].name = "";
+                    substring = "";
                   }
                   listSettings(response[i]?.name, response, i);
                   allGroups.push(response[i]);
                 }
-    
+
                 if (response[i].name === "OUT_ST_BALANCE")
                   setOutBalformStatusvalue(true);
               }
-    
+
               if (response[i].name === "COMMISSION") {
                 setIncludeComm(true);
                 setisShown(true);
@@ -211,9 +217,8 @@ const Step33 = (props) => {
               }
             }
           }
-        })
+        });
       }
-      
     });
   }, []);
   var gTotal = 0;
@@ -332,7 +337,6 @@ const Step33 = (props) => {
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
             };
-            console.log(res[j].tableType,"tableTye");
             break;
           case "RENT":
             var trVa = editStatus
@@ -492,6 +496,8 @@ const Step33 = (props) => {
 
     // return type;
   };
+
+  const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -630,6 +636,7 @@ const Step33 = (props) => {
         }
       }
     }
+
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
@@ -683,7 +690,7 @@ const Step33 = (props) => {
     comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
     commShown: true,
-    comments: "hi",
+    comments: commentFieldText,
     createdBy: 0,
     farmerId: editStatus ? billEditItem.farmerId : partnerSelectedData.partyId, //partnerSelectedData.partyId,
     customFields: questionsTitle,
@@ -725,7 +732,7 @@ const Step33 = (props) => {
       cashRcvd: Number(cashpaidValue),
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
-      comments: "hi",
+      comments: commentFieldText,
       customFields: editStatus
         ? cstmval
           ? questionsTitle
@@ -782,7 +789,7 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-            
+
             window.setTimeout(function () {
               props.closem();
               navigate("/buy_bill_book");
@@ -804,7 +811,7 @@ const Step33 = (props) => {
             toast.success(response.data.status.description, {
               toastId: "success1",
             });
-            
+
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
@@ -1129,19 +1136,17 @@ const Step33 = (props) => {
       e.target.value = "";
     }
   };
- // close popup
- const cancelStep = () => {
-  dispatch(selectTrans(null)); 
-  dispatch(selectBuyer(null));
-  props.closem();
-};
+  // close popup
+  const cancelStep = () => {
+    dispatch(selectTrans(null));
+    dispatch(selectBuyer(null));
+    props.closem();
+  };
   const [selectedBilldate, setselectedbilldate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
   const [selectedPartyType, setselectedPartyType] = useState("");
-  const [selectedCrops, setselectedCrops] = useState(
-   []
-  );
+  const [selectedCrops, setselectedCrops] = useState([]);
   const callbackFunctionPartySelect = (
     partyselectedarray,
     trans,
@@ -1166,7 +1171,7 @@ const Step33 = (props) => {
     );
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
-    setselectedCrops(selectedCrops)
+    setselectedCrops(selectedCrops);
   };
   const dispatch = useDispatch();
   const previousStep = () => {
@@ -1180,9 +1185,53 @@ const Step33 = (props) => {
       )
     );
     dispatch(tableEditStatus(true));
-    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray,selectedCrops);
+    props.step3ParentCallback(
+      slectedCropstableArray,
+      slectedCropstableArray,
+      selectedCrops
+    );
     dispatch(fromBillbook(false));
   };
+  const [commentShownStatus, setCommentShownStatus] = useState(editStatus ? (billEditItemInfo?.selectedBillInfo?.comments != '' ? true : false) : false);
+  const addCommentClick = () => {
+    setCommentShownStatus(true);
+  };
+  const commentText = (e) =>{
+    var val = e.target.value;
+    console.log(val);
+    setCommentFieldText(val);
+  }
+  const cstmCommentText = (groupLiist, index) => (e) =>{
+    var val = e.target.value;
+    let updatedItems = groupLiist.map((item, i) => {
+      if (i == index) {
+        if (groupLiist[i].cstmName != "") {
+          let tab = [...questionsTitle];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee = groupLiist[i].value;
+          } else {
+            tab.push({
+              comments:val,
+              fee: groupLiist[i].value,
+              field: groupLiist[i].cstmName,
+              fieldName: groupLiist[i].settingName,
+              fieldType: groupLiist[i].fieldType,
+              index: index,
+              less: groupLiist[i].addToGt == 1 ? false : true,
+            });
+            console.log(tab)
+            setCstmval(true);
+            setQuestionsTitle(tab);
+          }
+        }
+        return { ...groupLiist[i], commentText: val };
+      } else {
+        return { ...groupLiist[i] };
+      }
+    });
+    setAllGroups([...updatedItems]);
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -1205,7 +1254,13 @@ const Step33 = (props) => {
                   ? billEditItemInfo.selectedBillInfo
                   : transpoSelectedData
               }
-              selectedCrop={editStatus ? step2CropEditStatus ? props.slectedCropsArray :  billEditItemInfo.selectedBillInfo: props.slectedCropsArray}
+              selectedCrop={
+                editStatus
+                  ? step2CropEditStatus
+                    ? props.slectedCropsArray
+                    : billEditItemInfo.selectedBillInfo
+                  : props.slectedCropsArray
+              }
             />
           </div>
           <div className="col-lg-6">
@@ -1271,28 +1326,81 @@ const Step33 = (props) => {
                       );
                     } else if (allGroups[index].tableType == 1) {
                       return (
-                        <div className="comm_cards">
-                          <div className="card input_card">
-                            <div className="row">
-                              <div className="col-lg-3 title_bg">
-                                <h5 className="comm_card_title mb-0">
-                                  {getText(allGroups[index].settingName)}
-                                </h5>
-                              </div>
-                              <div className="col-lg-9 col-sm-12 col_left_border">
-                                <input
-                                  type="text"
-                                  placeholder=""
-                                  onFocus={(e) => resetInput(e)}
-                                  value={allGroups[index].value}
-                                  onChange={advLevOnchangeEvent(
-                                    allGroups,
-                                    index
-                                  )}
-                                />
+                        <div>
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    {getText(allGroups[index].settingName)}
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    onFocus={(e) => resetInput(e)}
+                                    value={allGroups[index].value}
+                                    onChange={advLevOnchangeEvent(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
+                          {allGroups[index].comments == true ?  <div className="comm_cards">
+                              <div className="card input_card">
+                                <div className="row">
+                                  <div className="col-lg-3 title_bg">
+                                    <h5 className="comm_card_title mb-0">
+                                      Comments
+                                    </h5>
+                                  </div>
+                                  <div className="col-lg-9 col-sm-12 col_left_border">
+                                    <input
+                                      type="text"
+                                      placeholder=""
+                                      value={allGroups[index].commentText}
+                                      onChange={cstmCommentText(allGroups,index)}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div> : '' }
+                          {allGroups[index].settingName == "OTHER_FEE" ? (
+                            commentShownStatus ? (
+                            <div className="comm_cards">
+                              <div className="card input_card">
+                                <div className="row">
+                                  <div className="col-lg-3 title_bg">
+                                    <h5 className="comm_card_title mb-0">
+                                      Comments
+                                    </h5>
+                                  </div>
+                                  <div className="col-lg-9 col-sm-12 col_left_border">
+                                    <input
+                                      type="text"
+                                      placeholder=""
+                                      value={commentFieldText}
+                                      onChange={commentText}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            ) : (
+                              <p
+                                className="comment_text"
+                                onClick={() => addCommentClick()}
+                              >
+                                +Add Comment
+                              </p>
+                            )
+                          ) : (
+                            ""
+                          )}
                         </div>
                       );
                     }
@@ -1360,16 +1468,16 @@ const Step33 = (props) => {
       </div>
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
-        <button className="secondary_btn" onClick={cancelStep}>
-                  cancel
-                </button>
-                <div className="d-flex align-items-center">
-          <button className="secondary_btn" onClick={() => previousStep()}>
-            Previous
+          <button className="secondary_btn" onClick={cancelStep}>
+            cancel
           </button>
-          <button className="primary_btn" onClick={() => postbuybill()}>
-            Submit
-          </button>
+          <div className="d-flex align-items-center">
+            <button className="secondary_btn" onClick={() => previousStep()}>
+              Previous
+            </button>
+            <button className="primary_btn" onClick={() => postbuybill()}>
+              Submit
+            </button>
           </div>
         </div>
       </div>

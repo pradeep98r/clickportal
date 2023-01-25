@@ -221,6 +221,7 @@ const SelectBags = (props) => {
                         <tr>
                           <td className="col-1">{i + 1}</td>
                           <td className="col-3">
+                            {invArr[i].wastage}
                             <input
                               type="text"
                               className="form-control mb-0"

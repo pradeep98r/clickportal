@@ -164,10 +164,7 @@ const SelectPartner = (props) => {
       {getPartyName ? (
         <div className="partners_div" id="scroll_style">
           <div>
-           
-            {partnerData.length > 0 ? (
-              <div>
-                 <div className="d-flex searchparty pb-0" role="search">
+          <div className="d-flex searchparty pb-0" role="search">
               <SearchField
                 placeholder={langFullData.search}
                 onChange={(event) => {
@@ -175,6 +172,9 @@ const SelectPartner = (props) => {
                 }}
               />
             </div>
+            {partnerData.length > 0 ? (
+              <div>
+               
                 <ul>
                   {partnerData.map((item) => {
                     return (
