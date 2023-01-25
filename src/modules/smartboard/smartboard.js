@@ -49,10 +49,10 @@ const SmartBoard = () => {
   const langFullData = JSON.parse(langData);
 
   const [weekFirstDate, setWeekFirstDate] = useState(
-    moment(new Date()).format("YYYY-MMM-DD")
+    moment(new Date()).format("YYYY-MM-DD")
   );
   const [weekLastDate, setWeekLastDate] = useState(
-    moment(new Date()).format("YYYY-MMM-DD")
+    moment(new Date()).format("YYYY-MM-DD")
   );
   const [weekStartDate, setweekStartDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
@@ -148,8 +148,8 @@ const SmartBoard = () => {
   var fromDate = "";
   var toDate = "";
   const tabChange = async (type) => {
+    console.log(type,"startt")
     setTabType(type);
-
     if (type === "Daily") {
       fromDate = moment(selectedDate).format("YYYY-MM-DD");
       toDate = moment(selectedDate).format("YYYY-MM-DD");
@@ -161,20 +161,19 @@ const SmartBoard = () => {
       fromDate = moment(firstDay).format("YYYY-MM-DD");
       toDate = moment(lastDay).format("YYYY-MM-DD");
       getSmartBoardResponse(type, fromDate, toDate);
-    } else if (tabType == "Weekly") {
+    } else if (type == "Weekly") {
       fromDate = weekFirstDate;
       toDate = weekLastDate;
       getSmartBoardResponse(type, fromDate, toDate);
-    } else {
-      console.log(selectedMonthDate);
+    } else if (type == "Monthly") {
+      var firstDay = new Date(selectedMonthDate.getFullYear(), selectedMonthDate.getMonth(), 1);
       var lastDay = new Date(
         selectedMonthDate.getFullYear(),
         selectedMonthDate.getMonth() + 1,
         0
       );
-      var fromDate = moment(selectedMonthDate).format("YYYY-MM-DD");
+      var fromDate = moment(firstDay).format("YYYY-MM-DD");
       var toDate = moment(lastDay).format("YYYY-MM-DD");
-
       getSmartBoardResponse(type, fromDate, toDate);
     }
   };
@@ -215,6 +214,7 @@ const SmartBoard = () => {
     getDateValue(date);
   }
   const getDateValue = async (dateValue) => {
+    console.log(dateValue)
     var lastDay = new Date(
       dateValue.getFullYear(),
       dateValue.getMonth() + 1,
@@ -235,6 +235,7 @@ const SmartBoard = () => {
       lastDate = weekLastDate;
       console.log(firstDate,lastDate,'week')
     }
+    console.log(firstDate,lastDate,tabType)
     closePopup();
     getSmartboardData(clickId, tabType, firstDate, lastDate)
       .then((response) => {
@@ -1182,7 +1183,7 @@ const SmartBoard = () => {
                                   </p>
                                 </div>
                                 {buyRecentTxs.length != 0 ? (
-                                  <table className="table table-bordered trans_table bordered">
+                                  <table className="table table-bordered trans_table">
                                     <thead>
                                       <tr>
                                         <th className="col-3">

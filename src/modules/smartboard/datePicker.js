@@ -338,7 +338,7 @@ function DatePickerModel(props) {
               />
             </article>
             <article
-              className="yearly"
+              className="yearly year_comm"
               style={{ display: dateTabs === "Yearly" ? "block" : "none" }}
             >
               <h2>

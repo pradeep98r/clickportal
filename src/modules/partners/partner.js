@@ -306,18 +306,20 @@ const Partner = () => {
       addEditPartnerApiCall();
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
-    } else if (aadharNumber.trim().length < 12) {
-      setAadharError("Minimum Adhar number length should be 12");
-    } else if (nameField.trim().length === 0) {
-      setRequiredNameField(langFullData.pleaseEnterFullName);
-    } else if (mobileNumber.trim().length === 0) {
+    } 
+    else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
+    }  else if (nameField.trim().length === 0) {
+      setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (nameField.trim().length === 1) {
       setNameError("Name should be min 2 characters");
     } else if (shortNameField.trim().length === 1) {
       setShortNameError("Name should be min 2 characters");
+    }
+    else if (aadharNumber.trim().length < 12) {
+      setAadharError("Minimum Adhar number length should be 12");
     }
   };
   const addEditPartnerApiCall = () => {
@@ -671,18 +673,19 @@ const Partner = () => {
               role="tabpanel"
               aria-labelledby="home-tab"
             >
-              {partnerData.length > 0 ? (
+              
+              {allData.length > 0 ? (
                 <div className="row">
                   <div className="col-lg-9 pl-0">
-                    <SearchField
+                  <SearchField
                       placeholder="Search by Name / Mobile / Short Code / Party id"
                       val={searchValue}
                       onChange={(event) => {
                         handleSearch(event);
                       }}
                     />
-
-                    <div>
+                    {
+                      partnerData.length > 0 ? <div>
                       <div>
                         <div className="partner_div" id="scroll_style">
                           {partnerData.map((partner, index) => (
@@ -738,7 +741,12 @@ const Partner = () => {
                           ))}
                         </div>
                       </div>
+                    </div> : 
+                    <div className="partner_div" id="scroll_style">
+                      <NoDataAvailable/>
                     </div>
+                    
+                    }
                   </div>
                   <div className="col-lg-3">
                     <div className="card default_card add_partner">
@@ -1387,6 +1395,7 @@ const Partner = () => {
                     type="button"
                     className="secondary_btn"
                     // id="close_modal"
+                    onClick={closeAddModal}
                     data-bs-dismiss="modal"
                   >
                     Cancel

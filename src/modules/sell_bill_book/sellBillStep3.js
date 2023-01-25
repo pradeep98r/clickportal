@@ -77,6 +77,7 @@ const SellBillStep3 = (props) => {
   var tableChangeStatusval;
   const [isShown, setisShown] = useState(false);
   const [allGroups, setAllGroups] = useState([]);
+  const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
   useEffect(() => {
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -573,6 +574,7 @@ const SellBillStep3 = (props) => {
         }
       }
     }
+    console.log(addRetComm,includeRetComm)
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = finalVal - getTotalValue(retcommValue);
@@ -1114,6 +1116,15 @@ const SellBillStep3 = (props) => {
     dispatch(selectBuyer(null));
     props.closem();
   };
+  const [commentShownStatus, setCommentShownStatus] = useState(editStatus ? (billEditItemInfo?.selectedBillInfo?.comments != '' ? true : false) : false);
+  const addCommentClick = () => {
+    setCommentShownStatus(true);
+  };
+  const commentText = (e) =>{
+    var val = e.target.value;
+    console.log(val);
+    setCommentFieldText(val);
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -1198,6 +1209,7 @@ const SellBillStep3 = (props) => {
                       );
                     } else if (allGroups[index].tableType == 1) {
                       return (
+                        <div>
                         <div className="comm_cards">
                           <div className="card input_card">
                             <div className="row">
@@ -1220,6 +1232,39 @@ const SellBillStep3 = (props) => {
                               </div>
                             </div>
                           </div>
+                        </div>
+                        {allGroups[index].settingName == "OTHER_FEE" ? (
+                            commentShownStatus ? (
+                              <div className="comm_cards">
+                              <div className="card input_card">
+                                <div className="row">
+                                  <div className="col-lg-3 title_bg">
+                                    <h5 className="comm_card_title mb-0">
+                                      Comments
+                                    </h5>
+                                  </div>
+                                  <div className="col-lg-9 col-sm-12 col_left_border">
+                                    <input
+                                      type="text"
+                                      placeholder=""
+                                      value={commentFieldText}
+                                      onChange={commentText}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            ) : (
+                              <p
+                                className="comment_text"
+                                onClick={() => addCommentClick()}
+                              >
+                                +Add Comment
+                              </p>
+                            )
+                          ) : (
+                            ""
+                          )}
                         </div>
                       );
                     }

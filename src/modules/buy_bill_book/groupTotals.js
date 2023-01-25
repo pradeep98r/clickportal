@@ -53,11 +53,13 @@ const GroupTotals = () => {
   const getBuyBillsById = () => {
     var res;
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
+      console.log(res.data.data.billSetting,billData?.partyType.toUpperCase(),"settings")
       if(res.data.data.billSetting.length > 0){
         //res=response.data.data.billSetting;
         billSettingData(res.data.data.billSetting);
         for (var i = 0; i < res.data.data.billSetting.length; i++) {
-          if (billData?.partyType.toUpperCase() === 'FARMER' || 'SELLER') {
+          if (billData?.partyType.toUpperCase() === 'FARMER' || 
+          billData?.partyType.toUpperCase() === 'SELLER') {
             if (
               res.data.data.billSetting[i].groupId === 1 &&
               res.data.data.billSetting[i].billType === "BUY" &&
@@ -67,6 +69,10 @@ const GroupTotals = () => {
                 setIncludeComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
                 );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+                if (!(res.data.data.billSetting[i].isShown)) {
+                  setStatus(true);
+                }
               }
               if (res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE") {
                 setStatus(true);
@@ -74,7 +80,7 @@ const GroupTotals = () => {
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -94,11 +100,15 @@ const GroupTotals = () => {
                 setIncludeComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
                 );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+                if (!(res.data.data.billSetting[i].isShown)) {
+                  setStatus(true);
+                }
               } else if (
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -118,11 +128,15 @@ const GroupTotals = () => {
                 setIncludeComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
                 );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+                if (!(res.data.data.billSetting[i].isShown)) {
+                  setStatus(true);
+                }
               } else if (
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -142,11 +156,15 @@ const GroupTotals = () => {
                 setIncludeComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
                 );
+                setisShown(res.data.data.billSetting[i].isShown == 1 ? true : false)
+                if (!(res.data.data.billSetting[i].isShown)) {
+                  setStatus(true);
+                }
               } else if (
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -157,6 +175,7 @@ const GroupTotals = () => {
             }
           }
           else {
+            console.log('else settings')
             if (
               res.data.data.billSetting[i].groupId === 1 &&
               res.data.data.billSetting[i].billType === "SELL" &&
@@ -177,8 +196,9 @@ const GroupTotals = () => {
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
+                console.log(res.data.data.billSetting[i].addToGt,"ret")
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
                 );
@@ -202,7 +222,7 @@ const GroupTotals = () => {
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -227,7 +247,7 @@ const GroupTotals = () => {
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -252,7 +272,7 @@ const GroupTotals = () => {
                 res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
               ) {
                 setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? true : false
+                  res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1 ? true : false
@@ -334,7 +354,7 @@ const GroupTotals = () => {
           
         })
         groupone.map((item) => {
-          if (item.addToGt == 1) {
+          if (item.addToGt == 1 && item.settingName === "RETURN_COMMISSION") {
             value = billData?.rtComm;
             return value;
           } else if (
@@ -346,7 +366,7 @@ const GroupTotals = () => {
           }
         });
         groupTwo.map((item) => {
-          if (item.addToGt == 1) {
+          if (item.addToGt == 1 && item.settingName === "RETURN_COMMISSION") {
             value = billData?.rtComm;
             return value;
           } else if (
@@ -358,7 +378,7 @@ const GroupTotals = () => {
           }
         });
         groupThree.map((item) => {
-          if (item.addToGt == 1) {
+          if (item.addToGt == 1 && item.settingName === "RETURN_COMMISSION") {
             value = billData?.rtComm;
             return value;
           } else if (
@@ -370,7 +390,7 @@ const GroupTotals = () => {
           }
         });
         groupFour.map((item) => {
-          if (item.addToGt == 1) {
+          if (item.addToGt == 1 && item.settingName == 'RETURN_COMMISSION') {
             value = billData?.rtComm;
             return value;
           } else if (
@@ -441,8 +461,13 @@ const GroupTotals = () => {
         if (billData?.partyType.toUpperCase() === "FARMER") {
           billData?.customFields.map((item) => {
             if (item.fee != 0) {
+              console.log(item,name,"cstmfiields")
               if (item.field === name) {
-                value = -item.fee;
+                if (item.less) {
+                  value = -item.fee;
+                } else {
+                  value = item.fee;
+                }
                 return value;
               }
             }
@@ -563,27 +588,79 @@ const GroupTotals = () => {
     }
     if (billData?.partyType.toUpperCase() === 'FARMER' ||
     billData?.partyType.toUpperCase() === 'SELLER') {
+      
       var finalValue = billData.grossTotal - t;
     } else {
+      console.log(finalValue,"total")
       var finalValue = billData?.grossTotal + t;
     }
     var finalVal = finalValue;
-    if (includeComm && billData?.partyType.toUpperCase === 'FARMER' ||
-    billData?.partyType.toUpperCase() === 'SELLER'
-    ) {
-      finalVal = finalVal - billData.comm;
-    } else {
-      finalVal = finalVal + billData.comm;
-    }
+    // if (includeComm && billData?.partyType.toUpperCase === 'FARMER' ||
+    // billData?.partyType.toUpperCase() === 'SELLER'
+    // ) {
+    //   finalVal = finalVal - billData.comm;
+    // } else {
+    //   finalVal = finalVal + billData.comm;
+    // }
 
-    if (addRetComm && billData?.partyType?.toUpperCase() === 'FARMER' ||
-    billData?.partyType.toUpperCase() === 'SELLER') {
+    // if (addRetComm && billData?.partyType?.toUpperCase() === 'FARMER' ||
+    // billData?.partyType.toUpperCase() === 'SELLER') {
+    //   if (includeRetComm) {
+    //     finalVal = finalVal + billData?.rtComm;
+    //   }
+    // } else {
+    //   finalVal = finalVal - billData?.rtComm;
+    // }
+    if(billData?.partyType?.toUpperCase() === 'FARMER' ||
+    billData?.partyType.toUpperCase() === 'SELLER'){
+      
+    if (includeComm) {
+      if (isShown) {
+        finalVal = finalVal - billData.comm;
+      }
+    }
+  }
+  else{
+    if (includeComm) {
+      console.log(includeComm,isShown,finalVal,"comm")
+      if (isShown) {
+        finalVal = finalVal + billData.comm;
+        console.log(finalVal,"commif")
+      }
+    }
+  }
+
+    if(billData?.partyType?.toUpperCase() === 'FARMER' ||
+    billData?.partyType.toUpperCase() === 'SELLER'){
+    if (addRetComm) {
       if (includeRetComm) {
-        finalVal = finalVal + billData?.rtComm;
+        finalVal = (finalVal - billData?.rtComm);
+      }
+    } else {
+      if (includeRetComm) {
+        finalVal = (finalVal + billData?.rtComm);
+      }
+    }
+  }
+  else{
+    console.log('else buyer',addRetComm,includeRetComm,finalVal,billData?.rtComm)
+    if (addRetComm) {
+      if (includeRetComm) {
+        finalVal = finalVal - billData?.rtComm;
       }
     } else {
       finalVal = finalVal + billData?.rtComm;
     }
+  }
+  for (var i = 0; i < billData?.customFields.length; i++) {
+    if (billData?.customFields[i].field != "") {
+      if (billData?.customFields[i].less) {
+        finalVal = finalVal - billData?.customFields[i].fee;
+      } else {
+        finalVal = finalVal + billData?.customFields[i].fee;
+      }
+    }
+  }
     if (billData?.partyType.toUpperCase() === 'FARMER' ||
     billData?.partyType.toUpperCase() === 'SELLER') {
       return (

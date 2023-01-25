@@ -465,7 +465,7 @@
   width: 100%;
   .react-datepicker__input-container input {
     padding: 5px 30px;
-    width: 180px;
+    width: 190px;
     margin-left: 5px;
   }
   .date_flex {
@@ -477,6 +477,9 @@
     z-index: 1;
     top: 6px;
   }
+}
+.ui-state-default, .ui-widget-content .ui-state-default{
+  color: #000;
 }
 @media (max-width: 1300px) {
   .custom_picker {
@@ -500,3 +503,39 @@
   background: none!important;
   // color: black;
 }
+.nav .nav-item .nav-link.active:after
+ {
+  content: "";
+  position: relative;
+  bottom: -60px;
+  left: -10%;
+  // border: 15px solid transparent;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  // border-top-color: #e74c3c ;
+}
+
+
+// table{
+//   border-collapse: separate;
+//   border-spacing: 0;
+// }
+// .table-bordered{
+//   border: none;
+// }
+// .table-bordered td, .table-bordered th {
+//   border: 1px solid #dee2e6;
+//   border-style: none solid solid none;
+// }
+// tr:first-child th:first-child{
+//   border-top-left-radius: 10px;
+// }
+// tr:last-child td:first-child{
+//   border-bottom-left-radius: 10px;
+// }
+// tr:first-child th:last-child{
+//   border-top-right-radius: 10px;
+// }
+// tr:last-child td:last-child{
+//   border-bottom-right-radius: 10px;
+// }
