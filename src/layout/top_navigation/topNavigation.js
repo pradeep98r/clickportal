@@ -51,7 +51,7 @@ function TopNavigation() {
     localStorage.setItem("LinkId", "1");
     localStorage.removeItem("businessCreatedStatus");
   };
-  const singleBill = JSON.parse(localStorage.getItem("selectedBillData"));
+  const singleBill = JSON.parse(localStorage.getItem("billData"));
 
   var billStatus = JSON.parse(localStorage.getItem("billViewStatus"));
   var stepone = JSON.parse(localStorage.getItem("stepOne"));

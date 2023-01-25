@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { billDate } from "../../reducers/billEditItemSlice";
 import date_icon from "../../assets/images/date_icon.svg";
+import {editStatus} from "../../reducers/billEditItemSlice";
+
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const BillDateSelection = (props) => {
@@ -18,21 +20,32 @@ const BillDateSelection = (props) => {
     setStartDate(date);
     dispatch(billDate(date));
   };
-  useEffect(() => {
-    dispatch(billDate(selectedDate));
-  }, []);
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
+  const [checked, setChecked] = useState(localStorage.getItem("defaultDate")!==null?true:false);
   const handleCheckEvent = () => {
     if (!checked) {
       setChecked(!checked);
       localStorage.setItem("defaultDate", true);
       setStartDate(selectedDate);
+      localStorage.setItem('setDate',selectedDate);
     } else {
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
     }
   };
+  useEffect(() => {
+    if(billEditItemInfo.billEditStatus){
+      setStartDate(new Date(billDateselected));
+    }
+    else if(!checked){
+      setStartDate(new Date());
+    } else{
+      setStartDate(new Date(localStorage.getItem('setDate')));
+    }
+    dispatch(billDate(selectedDate));
+  }, []);
+  
+ 
   return (
     <div className="date_col d-flex align-items-center justify-content-between">
      <div className="d-flex align-items-center dateSelection">

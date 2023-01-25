@@ -51,9 +51,10 @@ const SelectBags = (props) => {
   const [invWastageVal, setinvWastageVal] = useState(0);
   const getInvWastageValue = (a, i) => (e) => {
     setinvWastageVal(e.target.value);
+    //setinvWeightVal(invWeightVal - e.target.value);
     let updatedItem = a.map((item, index) => {
       if (i == index) {
-        //a[index].weight = a[index].weight - e.target.value;
+        // a[index].weight = a[index].weight - e.target.value;
         return { ...a[index], wastage: e.target.value };
       } else {
         setInvArr([...a]);
@@ -224,7 +225,7 @@ const SelectBags = (props) => {
                               type="text"
                               className="form-control mb-0"
                               name="weight"
-                              value={invArr[i].weight - invArr[i].wastage}
+                              value={invArr[i].weight }
                               onChange={getInvWeightValue(invArr, i)}
                               onFocus={(e) => resetInput(e)}
                             />

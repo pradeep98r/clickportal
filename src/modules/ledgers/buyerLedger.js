@@ -35,8 +35,8 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const BuyerLedger = () => {
-  const showTabs=localStorage.getItem("openTabs");
-  const [openTabs, setOpenTabs] = useState(showTabs?true:false);
+  // const showTabs=localStorage.getItem("openTabs");
+  const [openTabs, setOpenTabs] = useState(true)//(showTabs?true:false);
   const [allData, setallData] = useState([]);
   const [ledger, setLedgeres] = useState(allData);
   const [data, setData] = useState({});
@@ -57,8 +57,8 @@ const BuyerLedger = () => {
 
   const [ledgerSummaryByDate, setSummaryByDate] = useState([]);
   const [detailsByDate, setDetailsByDate] = useState([]);
-  const active = localStorage.getItem('isActives');
-  const [isActive, setIsActive] = useState(active>=0?active:-1);
+  // const active = localStorage.getItem('isActives');
+  const [isActive, setIsActive] = useState(0)//(active>=0?active:-1);
  
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
@@ -77,9 +77,12 @@ const BuyerLedger = () => {
   };
 
   let partyId = 0;
-  //Fetch ledger by party Type
+  var date=moment(new Date()).format("YYYY-MM-DD")
   useEffect(() => {
     fetchBuyerLedger();
+    getBuyerLedgers(clickId).then((res)=>{
+      particularLedger(res.data.data.ledgers[0].partyId,0);
+    })
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
@@ -90,7 +93,7 @@ const BuyerLedger = () => {
         setData(response.data.data);
         setallData(response.data.data.ledgers);
         setLedgeres(response.data.data.ledgers);
-        // console.log(response.data.data.ledgers)
+        localStorage.setItem("partyId", JSON.stringify(response.data.data.ledgers[0].partyId));
         setallLedgersSummary(response.data.data.ledgers);
       })
       .catch((error) => {
@@ -116,8 +119,18 @@ const BuyerLedger = () => {
  
   //Get partner By partyId
   const particularLedger = (id, indexs) => {
-   
-    //getBuyerLedgerSummary(clickId, id);
+
+    getBuyerLedgerSummary(clickId, id);
+    fetchBuyerLedgerDetails(clickId, id);
+
+    clearLedgerSummary();
+    clearData();
+
+    if(toggleAC === 'custom' && toggleState === 'detailedledger'){
+      setToggleState("ledgersummary")
+    } else if(toggleAC === 'all' && toggleState === 'detailedledger'){
+      setToggleState("ledgersummary");
+    }
     setOpenTabs(true);
     setIsActive(indexs);
     localStorage.setItem('isActives',indexs);
@@ -130,8 +143,8 @@ const BuyerLedger = () => {
         getBuyerLedgerSummary(clickId, id);
         fetchBuyerLedgerDetails(clickId, id);
         getOutstandingPaybles(clickId, id);
+        callbackFunction(date,date,'Daily')
         return item.partyId;
-        //navigate("ledgerSummary");
       } else {
         return <p>Not Found</p>;
       }
@@ -220,11 +233,7 @@ const BuyerLedger = () => {
         toastId: "error3",
       });
     });
-    //setOpenTabs(true);
     
-    //setIsOpen(false);
-    //setIsOpen(true);
-    //localStorage.removeItem("partyId");
   };
   //Fetch Ledger Summary By Date
   const clearData = () => {
@@ -317,15 +326,15 @@ const BuyerLedger = () => {
       setRequiredCondition("");
     }
   }
-  useEffect(()=>{
-    if(active>=0){
-      var id = JSON.parse(
-      localStorage.getItem("partyId"));
-      // getBuyerLedgerSummary(clickId, id);
-      fetchBuyerLedgerDetails(clickId, id);
-      getOutstandingPaybles(clickId, id);
-    }
-  },[])
+  // useEffect(()=>{
+  //   if(active>=0){
+  //     var id = JSON.parse(
+  //     localStorage.getItem("partyId"));
+  //     getBuyerLedgerSummary(clickId, id);
+  //     fetchBuyerLedgerDetails(clickId, id);
+  //     getOutstandingPaybles(clickId, id);
+  //   }
+  // },[])
   const resetInput = (e) => {
     if(e.target.value == 0){
       e.target.value = "";
@@ -463,7 +472,7 @@ const BuyerLedger = () => {
                   id="tabsEvents"
                   style={{ display: openTabs ? "block" : "none" }}
                 >
-                  <div className="recordbtn-style">
+                  {/* <div className="recordbtn-style">
                     <button
                       className="add-record-btns"
                       onClick={() => {
@@ -480,7 +489,7 @@ const BuyerLedger = () => {
                     <div className="add-pays-btn">
                       <img src={add} id="addrecord-img" />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="blockers-tab">
                     <div className="d-flex">
                       <button
@@ -521,7 +530,7 @@ const BuyerLedger = () => {
                   <div className="card details-tag">
                     <div className="card-body" id="card-details">
                       <div className="row">
-                        {active >=0 && (
+                        {isActive >=0 && (
                           <div className="col-lg-3" id="verticalLines">
                             {ledger.map((item, index) => {
                               partyId = JSON.parse(
