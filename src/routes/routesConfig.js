@@ -24,7 +24,6 @@ import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import Step1 from "../modules/buy_bill_book/step1";
 import SellebillStep1 from "../modules/sell_bill_book/step1";
-import SellBillView from "../modules/sell_bill_book/sellBillView";
 import Step3Modal from "../modules/buy_bill_book/step3Model";
 const RoutesConfig = () => {
   const isLocalAuth = localStorage.getItem("isauth");
@@ -77,7 +76,6 @@ const RoutesConfig = () => {
                     <Route path="/buy_bill_book" element={<BuyBillBook />} />
                     <Route path="/bill_creation" element={<BillCreation />} />
                     <Route path="/bill_view/:billId" element={<BillView />} />
-                    <Route path="/sell_bill_view/:billId" element={<SellBillView />} />
                     <Route path="/calender" element={<Calender />} />
                     <Route path="/buyerledger" element={<BuyerLedger />}>
                     
@@ -133,7 +131,7 @@ const RoutesConfig = () => {
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
                 <Route path="/bill_creation" element={<BillCreation />} />
                 <Route path="/bill_view/:billId" element={<BillView />} />
-                <Route path="/sell_bill_view/:billId" element={<SellBillView />} />
+                {/* <Route path="/sell_bill_view/:billId" element={<SellBillView />} /> */}
                 <Route path="/calender" element={<Calender />} />
                 <Route path="buyerledger" element={<BuyerLedger />}>
                 </Route>

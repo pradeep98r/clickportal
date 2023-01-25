@@ -57,9 +57,9 @@ const Login = () => {
                   className="primary_btn buttons d-flex mx-auto"
                   onClick={(e) => localStorage.setItem("userType", "CA")}
                 >
-                  I’m{" "}
+                  I’M{" "}
                   {langFullData != null
-                    ? langFullData.commissionAgent
+                    ? "COMMISSION AGENT"
                     : ""}
                 </button>
               </Link>
@@ -86,7 +86,7 @@ const Login = () => {
                   className="primary_btn buttons d-flex mx-auto"
                   onClick={(e) => localStorage.setItem("userType", "WRITER")}
                 >
-                  I’m Writer
+                  I’M WRITER
                 </button>
               </Link>
               <h5>Only you can login once your CA added you the system.</h5>

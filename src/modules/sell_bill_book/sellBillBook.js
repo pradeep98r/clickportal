@@ -20,6 +20,14 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
+import { useDispatch, useSelector } from "react-redux";
+import { billViewInfo } from "../../reducers/billViewSlice"
+import { selectSteps } from "../../reducers/stepsSlice";
+import { selectBuyer } from "../../reducers/buyerSlice"
+import Steps from "../buy_bill_book/steps";
+import { fromBillbook } from "../../reducers/billEditItemSlice";
+import no_data_icon from "../../assets/images/NodataAvailable.svg";
+import addbill_icon from "../../assets/images/addbill.svg";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -31,22 +39,22 @@ const SellBillBook = (props) => {
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
+  
+  const  billData = useSelector((state)=> state.billViewInfo);
   // console.log(billViiewDate)
+  const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
   var [dateValue, setDateValue] = useState();
   window.addEventListener('load', function(event) {
-    console.log('hello world',typeof(props.selectedBillviewDate));
     // bDate = '';
   });
   const callbackFunction = (startDate, endDate, dateTab) => {
-    console.log(bDate, "selected data");
     var fromDate = moment(bDate ? bDate :startDate).format("YYYY-MM-DD");
     var toDate = moment(bDate ? bDate :endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
-    console.log(bDate,fromDate,toDate,startDate, "selected data");
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -90,9 +98,11 @@ const SellBillBook = (props) => {
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
-    navigate(generatePath(`/sell_bill_view/${id}`, { id }));
+    // navigate(generatePath(`/sell_bill_view/${id}`, { id }));
+    navigate(generatePath(`/bill_view/${id}`, { id }))
     localStorage.setItem("billId", id);
-    localStorage.setItem("selectedBillData", JSON.stringify(bill));
+    dispatch(billViewInfo(bill));
+    localStorage.setItem("billData", JSON.stringify(bill));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -100,10 +110,19 @@ const SellBillBook = (props) => {
     setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
   };
+
   var stepOneHeader = false;
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const handleStep1Header = () => {
     stepOneHeader = true;
-    localStorage.setItem("stepOneSingleBook", stepOneHeader);
+    localStorage.setItem("stepOne", stepOneHeader);
+    //stepOneSingleBook
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
+    dispatch(fromBillbook(true));
   };
   const getCropUnit = (unit) => {
     var unitType = "";
@@ -150,7 +169,7 @@ const SellBillBook = (props) => {
               <div>
                 <div className="d-flex justify-content-between bills_div">
                   <div className="d-flex">
-                    <ul className="nav nav-tabs" id="myTab" role="tablist">
+                    <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
                           className="nav-link active"
@@ -180,10 +199,11 @@ const SellBillBook = (props) => {
                     />
                     <a
                       className="primary_btn add_bills_btn"
-                      href="/sellbillstep1"
+                      // href="/sellbillstep1"
                       onClick={handleStep1Header}
                     >
-                      {langFullData.singleBill}
+                      <img src={addbill_icon} alt="image" className="mr-2" />
+                      ADD BILL
                     </a>
                   </div>
                 </div>
@@ -354,7 +374,31 @@ const SellBillBook = (props) => {
                           </div>
                         </div>
                       ) : (
-                        <NoDataAvailable />
+                        <div className="row partner_no_data_widget_row">
+                              <div className="col-lg-5">
+                                <div className="partner_no_data_widget">
+                                  <div className="text-center">
+                                    <img
+                                      src={no_data_icon}
+                                      alt="icon"
+                                      className="d-flex mx-auto justify-content-center"
+                                    />
+                                    <p>
+                                    No bills available for today. <br></br>
+                                     Add to create a new bill
+                                    </p>
+                                    <button
+                                      className="primary_btn"
+                                      onClick={handleStep1Header}
+                                    >
+                                      Add Bill
+                                      
+                                    </button>
+                                 
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                       )}
                     </div>
                   </div>
@@ -373,6 +417,11 @@ const SellBillBook = (props) => {
         />
       ) : (
         <p></p>
+      )}
+      {showStepsModalStatus ? (
+        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ) : (
+        ""
       )}
     </div>
   );
