@@ -536,7 +536,7 @@ const Ledgers = (props) => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="col-lg-3 align-items-center" id="verticalLines">
+                                                    <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                                                         <p className="card-text paid">
                                                             Total Business
                                                             <p className="coloring">
@@ -581,13 +581,13 @@ const Ledgers = (props) => {
 
                                                         </p>
                                                     </div>
-                                                    <div className="col-lg-3" id="verticalLines">
-                                                        {ledgerType == 'BUYER'?<p className="total-paid">
-                                                            Total Recieved</p>:
+                                                    <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
+                                                       <div>
+                                                       {ledgerType == 'BUYER'?<p className="total-paid">
+                                                            Total Recieved</p> :
                                                             <p className="total-paid">
                                                             Total Paid</p>
                                                             }
-                                                        
                                                             <p className="coloring">
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalRcvdPaid ?
                                                                     cardDetails.totalRcvdPaid ? getCurrencyNumberWithSymbol(
@@ -625,9 +625,11 @@ const Ledgers = (props) => {
                                                                 : 0}
                                                             </p>
                                                         
+                                                           </div>
                                                     </div>
-                                                    <div className="col-lg-3  align-items-center">
-                                                        {ledgerType == 'BUYER'?
+                                                    <div className="col-lg-3 d-flex align-items-center">
+                                                       <div>
+                                                       {ledgerType == 'BUYER'?
                                                             <p className="out-standing">
                                                             Outstanding Recievables</p>
                                                             :<p className="out-standing">Outstanding Payables</p>
@@ -651,6 +653,7 @@ const Ledgers = (props) => {
                                                                 : 0
                                                                 }
                                                             </p>
+                                                           </div>
 
                                                         {/* </p> */}
                                                     </div>
