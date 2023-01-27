@@ -22,6 +22,8 @@ import DatePickerModel from "../smartboard/datePicker";
 import LedgerSummary from './ledgerSummary';
 import DetailedLedger from './detailedLedger';
 import date_icon from "../../assets/images/date_icon.svg";
+import loading from "../../assets/images/loading.gif";
+import NoInternetConnection from "../../components/noInternetConnection";
 const Ledgers = (props) => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
@@ -40,6 +42,10 @@ const Ledgers = (props) => {
     const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
     const [cardDetails, setcardDetails] = useState([]);
     const [cardDetailed, setcardDetailed] = useState([]);
+
+    const [isLoading, setLoading] = useState(true);
+    const [isOnline, setOnline] = useState(false);
+
     var date = moment(new Date()).format("YYYY-MM-DD");
 
     const [dateDisplay, setDateDisplay] = useState(false);
@@ -111,9 +117,12 @@ const Ledgers = (props) => {
                 }
             } else {
                 setLedgers([]);
+
             }
+            setLoading(false);
         }).catch(error => {
             console.log(error);
+            setOnline(true);
         })
     }
 
@@ -293,8 +302,18 @@ const Ledgers = (props) => {
         }
     };
     return (
+
         <div className="main_div_padding">
-            {ledgers.length > 0 ? (
+            
+            {isOnline?<NoInternetConnection />:
+            <div>
+            {isLoading ? (
+                <div className="">
+                  <img src={loading} alt="my-gif" className="gif_img" />
+                </div>
+                ):(
+                <div>
+                {ledgers.length > 0 ? (
                 <div className="row">
                     <div className="col-lg-4 p-0">
                         <div id="search-field">
@@ -639,21 +658,22 @@ const Ledgers = (props) => {
                         </div>
                     </div>
                 </div>
-            ) : (
-                <div className="row partner_no_data_widget_rows">
-                    <div className="col-lg-5">
-                        <div className="partner_no_data_widget">
-                            <div className="text-center">
-                                <img
-                                    src={no_data_icon}
-                                    alt="icon"
-                                    className="d-flex mx-auto justify-content-center"
-                                />
+                ) : (
+                    <div className="row partner_no_data_widget_rows">
+                        <div className="col-lg-5">
+                            <div className="partner_no_data_widget">
+                                <div className="text-center">
+                                    <img
+                                        src={no_data_icon}
+                                        alt="icon"
+                                        className="d-flex mx-auto justify-content-center"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>)}
             {showDatepickerModal1 ? (
                 <DatePickerModel
                     show={showDatepickerModal}
@@ -663,6 +683,8 @@ const Ledgers = (props) => {
             ) : (
                 <p></p>
             )}
+            </div>
+        }
         </div>
     )
 }
