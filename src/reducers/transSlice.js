@@ -8,7 +8,6 @@ export const transSlice = createSlice({
     reducers: {
         selectTrans: (state, action) => {
             state.transInfo = action.payload;
-            // console.log(action.payload,"paylooad")
         },
     },
 });
