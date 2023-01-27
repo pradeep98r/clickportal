@@ -18,7 +18,7 @@ const DetailedLedger = (props) => {
     return (
         <div>
             {allCustom == 'all' && ledgerTabs == 'detailedledger' ? (
-                <div className="detailedLedger" id="scroll_style">
+                <div className={props.dateDisplay ? 'detailedLedger' : 'all_ledgerSummary' } id="scroll_style">
                     {details.length > 0 ? (
                         <table
                             className="table table-bordered"

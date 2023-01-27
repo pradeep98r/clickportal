@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
 import Navigation from "../../components/navigation";
-import Button from "../../components/button";
 import Logo from "../../components/logo";
 import "../login/login.scss";
 import ca_avatar from "../../assets/images/login/ca_image.svg";
