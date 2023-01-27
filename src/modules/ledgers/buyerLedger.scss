@@ -64,14 +64,21 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 323px);
+    height: calc(100vh - 320px);
+    overflow-y: auto;
+    background: #FFFFFF;
+    width: 100%;
+    border-radius: 10px 10px 10px 10px;
+}
+.all_ledgerSummary{
+    height: calc(100vh - 303px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 325px);
+    height: calc(100vh - 320px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -542,4 +549,14 @@ a:hover{
   }
   .nodataimage{
     //   height: 100%;
+  }
+
+  .table thead th{
+      border-bottom: 0px;
+  }
+  .table th{
+      border-top: 1px solid#E4E4E4;
+  }
+  .padding_all{
+      padding-top: 15px;
   }

@@ -478,6 +478,7 @@ const Ledgers = (props) => {
                                             </ul>
 
                                         </div>
+                                        <p className={dateDisplay ? '' : 'padding_all'}></p>
                                         <div className='my-2'>
                                             <div
                                                 style={{ display: dateDisplay ? "flex" : "none" }}
@@ -684,6 +685,7 @@ const Ledgers = (props) => {
                                                     allCustomTab={allCustom}
                                                     LedgerSummary={ledgerSummary}
                                                     partyType={props.type}
+                                                    dateDisplay={dateDisplay}
                                                 />
                                                 : ''
                                             }
@@ -693,6 +695,7 @@ const Ledgers = (props) => {
                                                     ledgerTab={ledgerTabs}
                                                     allCustomTab={allCustom}
                                                     partyType={props.type}
+                                                    dateDisplay={dateDisplay}
                                                 />
                                                 : ''
                                             }

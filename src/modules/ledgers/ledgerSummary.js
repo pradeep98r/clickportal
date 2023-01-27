@@ -20,7 +20,7 @@ const LedgerSummary = (props) => {
   return (
     <div>
       {allCustom == 'all' ? (
-        <div className="ledgerSummary" id="scroll_style">
+        <div className={props.dateDisplay ? 'ledgerSummary' : 'all_ledgerSummary' } id="scroll_style">
           {ledgerSummary.length > 0 ? (
             <table className="table table-bordered ledger-table">
               <thead className="thead-tag">
