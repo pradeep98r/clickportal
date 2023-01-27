@@ -137,11 +137,15 @@ const Ledgers = (props) => {
     const particularLedgerData = (ledgerId, item) => {
         setPartyId(ledgerId);
         setLedgerData(item);
-        console.log(item, item);
+        if(allCustom =='custom'){
+            setDateDisplay(false);
+        }
+        console.log(item, item,ledgerTabs,allCustom);
         var tabs = '';
-        if (ledgerTabs == 'detailedledger') {
-            tabs = 'ledgersummary';
+        if (ledgerTabs == 'detailedledger' || ledgerTabs == 'ledgersummary' && allCustom =='custom') {
             setLedgerTabs('ledgersummary');
+            setAllCustom('all')
+            tabs = 'ledgersummary';
         }
         if (allCustom == 'all' || allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
             summaryData(clickId, ledgerId);
@@ -200,6 +204,8 @@ const Ledgers = (props) => {
         }
         if(handleDate){
             setDateValue(defaultDate + ' to ' + defaultDate);
+            setStartDate(date);
+            setEndDate(date);
         }
         if (type == 'custom' && ledgerTabs == 'detailedledger') {
             setLedgerTabs('ledgersummary');
@@ -226,6 +232,7 @@ const Ledgers = (props) => {
         if (allCustom == 'custom' && ledgerTabType == 'ledgersummary') {
             setDateValue(defaultDate + ' to ' + defaultDate);
             ledgerSummaryByDate(clickId, partyId, date, date);
+            sethandleDate(true);
         }
         if (allCustom == 'custom' && ledgerTabType == 'detailedledger') {
             if (ledgerType == 'BUYER') {
