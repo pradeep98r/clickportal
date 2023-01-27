@@ -289,6 +289,7 @@ const SmartBoard = () => {
         setLoading(false);
       })
       .catch((error) => {
+        setOnline(true);
         console.log(error);
       });
   };
@@ -373,6 +374,8 @@ const SmartBoard = () => {
             </div>
           ) : (
             <div>
+            {isOnline?<NoInternetConnection />:
+            <div>
               <ul className="nav nav-tabs smartboard_tabs" id="myTab" role="tablist">
                 {links.map((link) => {
                   return (
@@ -440,8 +443,7 @@ const SmartBoard = () => {
                       ""
                     )}
                   </div>
-                  {isOnline?<NoInternetConnection />:
-                  <div>
+
                   {isLoading ? (
                     <div className="">
                       <img src={loading} alt="my-gif" className="gif_img" />
@@ -1435,9 +1437,9 @@ const SmartBoard = () => {
                     </div>
                   )}
                   </div>
-                  }
-                </div>
               </div>
+            </div>
+            }
             </div>
           )}
         </div>
