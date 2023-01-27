@@ -144,7 +144,6 @@ function DatePickerModel(props) {
     } else{
       setDateTabs('Daily');
     }
-
   }
   const onclickContinue = async (dateValue) => {
     var lastDay = new Date(
