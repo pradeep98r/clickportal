@@ -4,6 +4,7 @@ import {
     getBuyerDetailedLedger,
     getLedgers, getLedgerSummary,
     getLedgerSummaryByDate,
+    getOutstandingBal,
     getSellerDetailedLedger,
     getSellerDetailedLedgerByDate
 } from '../../actions/ledgersService';
@@ -24,6 +25,7 @@ import DetailedLedger from './detailedLedger';
 import date_icon from "../../assets/images/date_icon.svg";
 import loading from "../../assets/images/loading.gif";
 import NoInternetConnection from "../../components/noInternetConnection";
+import RecordPayment from './recordPayment';
 const Ledgers = (props) => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
@@ -54,6 +56,7 @@ const Ledgers = (props) => {
     const [dateDisplay, setDateDisplay] = useState(false);
     var [dateValue, setDateValue] = useState(defaultDate + ' to ' + defaultDate);
     const [handleDate, sethandleDate] = useState(false);
+    const [paidRcvd, setPaidRcvd] = useState(0);
     const tabs = [
         {
             id: 1,
@@ -116,6 +119,7 @@ const Ledgers = (props) => {
                 setOutStAmt(res.data.data);
                 setPartyId(res.data.data.ledgers[0].partyId);
                 summaryData(clickId, res.data.data.ledgers[0].partyId)
+                getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId)
                 setLedgerData(res.data.data.ledgers[0]);
                 if (ledgerType == 'BUYER') {
                     geyDetailedLedger(clickId, res.data.data.ledgers[0].partyId);
@@ -133,10 +137,17 @@ const Ledgers = (props) => {
         })
     }
 
+    //Get Outstanding balance
+    const getOutstandingPaybles = (clickId, partyId) => {
+        getOutstandingBal(clickId, partyId).then((response) => {
+          setPaidRcvd(response.data.data);
+        });
+      };
     //Get Particular ledger data
     const particularLedgerData = (ledgerId, item) => {
         setPartyId(ledgerId);
         setLedgerData(item);
+        getOutstandingPaybles(clickId,ledgerId);
         if(allCustom =='custom'){
             setDateDisplay(false);
         }
@@ -237,6 +248,7 @@ const Ledgers = (props) => {
         if (allCustom == 'custom' && ledgerTabType == 'detailedledger') {
             if (ledgerType == 'BUYER') {
                 setDateValue(defaultDate + ' to ' + defaultDate);
+                sethandleDate(true);
                 detailedLedgerByDate(clickId, partyId, date, date);
             } else {
                 setDateValue(defaultDate + ' to ' + defaultDate);
@@ -327,15 +339,14 @@ const Ledgers = (props) => {
             if (ledgerType == 'BUYER') {
                 setStartDate(date);
                 setEndDate(date)
-                
+                sethandleDate(true);
                 detailedLedgerByDate(clickId, partyId, fromDate, toDate);
-                sethandleDate(true); 
             } else {
                 setStartDate(date);
                 setEndDate(date)
-                
-                sellerDetailedByDate(clickId, partyId, fromDate, toDate)
                 sethandleDate(true);
+                sellerDetailedByDate(clickId, partyId, fromDate, toDate)
+ 
 
             }
 
@@ -481,6 +492,10 @@ const Ledgers = (props) => {
                                         )}
                                     </div>
                                     <div className="col-lg-8">
+                                    <RecordPayment 
+                                    LedgerData={ledgerData}
+                                    ledgerId ={partyId}
+                                    outStbal = {paidRcvd} />
                                         <div className='d-flex'>
                                             <ul className="nav nav-tabs partner_tabs ledger_all_custom mb-0" id="myTab" role="tablist">
                                                 {tabs.map((tab) => {
@@ -776,6 +791,7 @@ const Ledgers = (props) => {
                             show={showDatepickerModal}
                             close={() => setShowDatepickerModal(false)}
                             parentCallback={callbackFunction}
+                            ledgerTabs = {ledgerTabs}
                         />
                     ) : (
                         <p></p>
