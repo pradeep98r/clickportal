@@ -27,6 +27,8 @@ import location_icon from "../../assets/images/location_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
+import NoInternetConnection from "../../components/noInternetConnection";
+import loading from "../../assets/images/loading.gif";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -38,6 +40,7 @@ const Partner = () => {
     savetype !== null ? savetype : "FARMER"
   );
   const [isOnline, setOnline] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
@@ -409,6 +412,7 @@ const Partner = () => {
       .then((response) => {
         setAllData(response.data.data);
         setPartnerData(response.data.data);
+      setIsLoading(false)
       })
       .catch((error) => {
         setOnline(true);
@@ -647,6 +651,7 @@ const Partner = () => {
   return (
     <div>
       <div className="main_div_padding">
+        {isOnline?<NoInternetConnection />:
         <div className="container-fluid px-0">
           <ul className="nav nav-tabs partner_tabs" id="myTab" role="tablist">
             {links.map((link) => {
@@ -668,6 +673,11 @@ const Partner = () => {
               );
             })}
           </ul>
+          {isLoading?(
+            <div className="">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+          ):(
           <div className="tab-content">
             <div
               className="tab-pane active"
@@ -825,9 +835,11 @@ const Partner = () => {
               )}
             </div>
           </div>
+          )}
         </div>
+        }
       </div>
-
+            
       <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">

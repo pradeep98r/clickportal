@@ -47,9 +47,9 @@ const Ledgers = (props) => {
     const [isOnline, setOnline] = useState(false);
 
     var date = moment(new Date()).format("YYYY-MM-DD");
-
+    var defaultDate =moment(new Date()).format("DD-MMM-YYYY")
     const [dateDisplay, setDateDisplay] = useState(false);
-    var [dateValue, setDateValue] = useState();
+    var [dateValue, setDateValue] = useState(defaultDate + ' to ' + defaultDate);
 
     const tabs = [
         {
@@ -99,7 +99,8 @@ const Ledgers = (props) => {
     useEffect(() => {
         fetchLedgers();
         allCustomEvent('all');
-        setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
+        // moment(new Date()).format("DD-MMM-YYYY")//
+        setDateValue(defaultDate + ' to ' + defaultDate);
     }, [])
 
     //Fetch ledgers using clickId and type
@@ -140,7 +141,7 @@ const Ledgers = (props) => {
         if(allCustom == 'custom' && tabs == 'ledgersummary' || ledgerTabs =='ledgersummary'){
             ledgerSummaryByDate(clickId, ledgerId,date,date);
         }
-        setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
+        setDateValue(defaultDate+' to ' +defaultDate);
     }
 
     //Get Outstanding balances, Total Business
@@ -207,11 +208,16 @@ const Ledgers = (props) => {
             }
            
         }
+        if(allCustom == 'custom' && ledgerTabType == 'ledgersummary'){
+            setDateValue(dateValue);
+            ledgerSummaryByDate(clickId, partyId,date,date);
+        }
         if (allCustom == 'custom' && ledgerTabType == 'detailedledger') {
             if(ledgerType == 'BUYER'){
+                setDateValue(defaultDate+' to '+defaultDate);
                 detailedLedgerByDate(clickId, partyId,date,date);
             } else {
-                console.log("came to here");
+                setDateValue(defaultDate+' to '+defaultDate);
                 sellerDetailedByDate(clickId,partyId,date,date);
             }
             
@@ -531,49 +537,70 @@ const Ledgers = (props) => {
                                     <div className="col-lg-3" id="verticalLines">
                                         <p className="card-text paid">
                                             Total Business
-                                            {allCustom=='custom'?
-                                                <p className="coloring">
-                                                    {cardDetails.totalTobePaidRcvd?getCurrencyNumberWithSymbol(
-                                                        cardDetails.totalTobePaidRcvd
+                                            <p className="coloring">
+                                            {allCustom =='custom' && ledgerTabs == 'ledgersummary'?cardDetails.totalTobePaidRcvd?
+                                                cardDetails.totalTobePaidRcvd? getCurrencyNumberWithSymbol(
+                                                    cardDetails.totalTobePaidRcvd
+                                                )
+                                                : 0:0:
+                                                allCustom =='custom' && ledgerType =='BUYER' && ledgerTabs =='detailedledger'?
+                                                cardDetailed.totalToBeRecived?
+                                                cardDetailed.totalToBeRecived?getCurrencyNumberWithSymbol(
+                                                    cardDetailed.totalToBeRecived
                                                     )
-                                                    : 0}
-                                                </p>
-                                            :(<p className="coloring">
-                                                    {summary.totalTobePaidRcvd
+                                                    : 0:0:
+                                                    allCustom =='custom' && ledgerType =='SELLER' &&
+                                                     ledgerTabs =='detailedledger'?
+                                                     cardDetailed.totalToBePaid?
+                                                     cardDetailed.totalToBePaid?getCurrencyNumberWithSymbol(
+                                                        cardDetailed.totalToBePaid
+                                                    )
+                                                    : 0:0:
+                                                    summary.totalTobePaidRcvd
                                                     ? getCurrencyNumberWithSymbol(
                                                         summary.totalTobePaidRcvd
                                                     )
-                                                    : 0}
-                                            </p>)}
-
+                                                    : 0
+                                            
+                                            }
+                                            </p>
                                                 
                                         </p>
                                     </div>
                                     <div className="col-lg-3" id="verticalLines">
                                         <p className="total-paid">
                                             Total Recieved
-                                            {allCustom=='custom'?<p className="coloring">
-                                                {cardDetails.totalRcvdPaid? getCurrencyNumberWithSymbol(
-                                                        cardDetails.totalRcvdPaid
-                                                    )
-                                                    : 0}
-                                                </p>
-                                            :
-                                            <p className="coloring">
-                                                {summary.totalRcvdPaid
+                                        <p className="coloring">
+                                            {allCustom =='custom' && ledgerTabs == 'ledgersummary'?cardDetails.totalRcvdPaid?
+                                                cardDetails.totalRcvdPaid? getCurrencyNumberWithSymbol(
+                                                    cardDetails.totalRcvdPaid
+                                                )
+                                                : 0:0:
+                                                allCustom =='custom' && ledgerType =='BUYER' && ledgerTabs =='detailedledger'?
+                                                cardDetailed.totalRecieved?cardDetailed.totalRecieved?
+                                                 getCurrencyNumberWithSymbol(
+                                                    cardDetailed.totalRecieved
+                                                )
+                                                : 0:0:
+                                                allCustom =='custom' && ledgerType =='SELLER' && ledgerTabs =='detailedledger'?
+                                                cardDetailed.totalPaid?cardDetailed.totalPaid?
+                                                 getCurrencyNumberWithSymbol(
+                                                    cardDetailed.totalPaid
+                                                )
+                                                : 0:0:
+                                                summary.totalRcvdPaid
                                                     ? getCurrencyNumberWithSymbol(
                                                         summary.totalRcvdPaid
                                                     )
                                                     : 0}
                                             </p>
-                                            }
                                         </p>
                                     </div>
                                     <div className="col-lg-3 d-flex align-items-center">
                                         <p className="out-standing">
                                             Outstanding Recievables
                                             <p className="coloring">
-                                                {allCustom=='custom'?cardDetails.outStdRcvPayble?
+                                                {allCustom=='custom' && ledgerTabs == 'ledgersummary'?cardDetails.outStdRcvPayble?
                                                 cardDetails?.outStdRcvPayble? getCurrencyNumberWithSymbol(
                                                     cardDetails.outStdRcvPayble
                                                 )
