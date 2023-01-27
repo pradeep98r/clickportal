@@ -43,12 +43,12 @@ const Ledgers = (props) => {
     const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
     const [cardDetails, setcardDetails] = useState([]);
     const [cardDetailed, setcardDetailed] = useState([]);
-
+    const [ledgerData, setLedgerData] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [isOnline, setOnline] = useState(false);
-
+    const [detailedTotal, setTotalDetailed] = useState([]);
     var date = moment(new Date()).format("YYYY-MM-DD");
-    var defaultDate =moment(new Date()).format("DD-MMM-YYYY")
+    var defaultDate = moment(new Date()).format("DD-MMM-YYYY")
     const [dateDisplay, setDateDisplay] = useState(false);
     var [dateValue, setDateValue] = useState(defaultDate + ' to ' + defaultDate);
 
@@ -95,7 +95,7 @@ const Ledgers = (props) => {
             }
         });
         setLedgers(result);
-        console.log(ledgers,allData,partyId,"search")
+        console.log(ledgers, allData, partyId, "search")
     };
 
     useEffect(() => {
@@ -114,10 +114,11 @@ const Ledgers = (props) => {
                 setOutStAmt(res.data.data);
                 setPartyId(res.data.data.ledgers[0].partyId);
                 summaryData(clickId, res.data.data.ledgers[0].partyId)
-                if(ledgerType == 'BUYER'){
+                setLedgerData(res.data.data.ledgers[0]);
+                if (ledgerType == 'BUYER') {
                     geyDetailedLedger(clickId, res.data.data.ledgers[0].partyId);
-                }else{
-                    sellerDetailed(clickId,res.data.data.ledgers[0].partyId)
+                } else {
+                    sellerDetailed(clickId, res.data.data.ledgers[0].partyId)
                 }
             } else {
                 setLedgers([]);
@@ -131,20 +132,22 @@ const Ledgers = (props) => {
     }
 
     //Get Particular ledger data
-    const particularLedgerData = (ledgerId) => {
-        setPartyId(ledgerId)
-        var tabs='';
+    const particularLedgerData = (ledgerId, item) => {
+        setPartyId(ledgerId);
+        setLedgerData(item);
+        console.log(item, item);
+        var tabs = '';
         if (ledgerTabs == 'detailedledger') {
-            tabs='ledgersummary';
+            tabs = 'ledgersummary';
             setLedgerTabs('ledgersummary');
         }
-        if (allCustom == 'all' || allCustom == 'custom' && ledgerTabs =='ledgersummary') {
+        if (allCustom == 'all' || allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
             summaryData(clickId, ledgerId);
-        } 
-        if(allCustom == 'custom' && tabs == 'ledgersummary' || ledgerTabs =='ledgersummary'){
-            ledgerSummaryByDate(clickId, ledgerId,date,date);
         }
-        setDateValue(defaultDate+' to ' +defaultDate);
+        if (allCustom == 'custom' && tabs == 'ledgersummary' || ledgerTabs == 'ledgersummary') {
+            ledgerSummaryByDate(clickId, ledgerId, date, date);
+        }
+        setDateValue(defaultDate + ' to ' + defaultDate);
     }
 
     //Get Outstanding balances, Total Business
@@ -166,6 +169,7 @@ const Ledgers = (props) => {
             .then(res => {
                 if (res.data.status.type === "SUCCESS") {
                     setdetailedLedger(res.data.data.details);
+                    setTotalDetailed(res.data.data);
                 } else {
                     setdetailedLedger([])
                 }
@@ -173,10 +177,11 @@ const Ledgers = (props) => {
     }
 
     //Get Seller Detailed Ledger
-    const sellerDetailed = (clickId, partyId) =>{
+    const sellerDetailed = (clickId, partyId) => {
         getSellerDetailedLedger(clickId, partyId).then(res => {
             if (res.data.status.type === "SUCCESS") {
                 setdetailedLedger(res.data.data.details);
+                setTotalDetailed(res.data.data);
             } else {
                 setdetailedLedger([])
             }
@@ -196,40 +201,40 @@ const Ledgers = (props) => {
             setLedgerTabs('ledgersummary');
         }
         if (type == 'custom' && ledgerTabs == 'ledgersummary') {
-            ledgerSummaryByDate(clickId, partyId,date,date);
-        } 
+            ledgerSummaryByDate(clickId, partyId, date, date);
+        }
         setAllCustom(type);
     }
 
     //ledger and detailed ledger tabs
     const ledgerTabEvent = (ledgerTabType) => {
         if (allCustom == 'all' && ledgerTabType == 'detailedledger') {
-            if(ledgerType == 'BUYER'){
+            if (ledgerType == 'BUYER') {
                 geyDetailedLedger(clickId, partyId);
-            } else{
-                sellerDetailed(clickId,partyId)
+            } else {
+                sellerDetailed(clickId, partyId)
             }
-           
+
         }
-        if(allCustom == 'custom' && ledgerTabType == 'ledgersummary'){
-            setDateValue(dateValue);
-            ledgerSummaryByDate(clickId, partyId,date,date);
+        if (allCustom == 'custom' && ledgerTabType == 'ledgersummary') {
+            setDateValue(defaultDate + ' to ' + defaultDate);
+            ledgerSummaryByDate(clickId, partyId, date, date);
         }
         if (allCustom == 'custom' && ledgerTabType == 'detailedledger') {
-            if(ledgerType == 'BUYER'){
-                setDateValue(defaultDate+' to '+defaultDate);
-                detailedLedgerByDate(clickId, partyId,date,date);
+            if (ledgerType == 'BUYER') {
+                setDateValue(defaultDate + ' to ' + defaultDate);
+                detailedLedgerByDate(clickId, partyId, date, date);
             } else {
-                setDateValue(defaultDate+' to '+defaultDate);
-                sellerDetailedByDate(clickId,partyId,date,date);
+                setDateValue(defaultDate + ' to ' + defaultDate);
+                sellerDetailedByDate(clickId, partyId, date, date);
             }
-            
+
         }
         setLedgerTabs(ledgerTabType);
     }
 
     //ledger summary by date
-    const ledgerSummaryByDate = (clickId, partyId,fromDate,toDate) => {
+    const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
         getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
             .then((res) => {
                 if (res.data.data !== null) {
@@ -244,8 +249,8 @@ const Ledgers = (props) => {
     }
 
     //Buyer Detailed Ledger By Date
-    const detailedLedgerByDate = (clickId, partyId,fromDate,toDate) => {
-        getDetailedLedgerByDate(clickId, partyId,fromDate,toDate)
+    const detailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
+        getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
             .then((res) => {
                 if (res.data.data !== null) {
                     setdetailedLedgerByDate(res.data.data.details);
@@ -259,8 +264,8 @@ const Ledgers = (props) => {
     }
 
     //Seller Detailed ledger By Date
-    const sellerDetailedByDate = (clickId,partyId,fromDate,toDate) =>{
-        getSellerDetailedLedgerByDate(clickId, partyId,fromDate,toDate).then((res) => {
+    const sellerDetailedByDate = (clickId, partyId, fromDate, toDate) => {
+        getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate).then((res) => {
             if (res.data.data !== null) {
                 setdetailedLedgerByDate(res.data.data.details);
                 setcardDetailed(res.data.data);
@@ -295,144 +300,424 @@ const Ledgers = (props) => {
                 moment(toDate).format("DD-MMM-YYYY")
             );
         }
-        if(allCustom == 'custom' && ledgerTabs == 'ledgersummary'){
+        if (allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
             var fromDate = moment(startDate).format("YYYY-MM-DD");
             var toDate = moment(endDate).format("YYYY-MM-DD");
-            ledgerSummaryByDate(clickId,partyId,fromDate,toDate);
-        } else{
+            ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+        } else {
             var fromDate = moment(startDate).format("YYYY-MM-DD");
             var toDate = moment(endDate).format("YYYY-MM-DD");
-            if(ledgerType == 'BUYER'){
-                detailedLedgerByDate(clickId,partyId,fromDate,toDate);
-            } else{
-                sellerDetailedByDate(clickId,partyId,fromDate,toDate)
+            if (ledgerType == 'BUYER') {
+                detailedLedgerByDate(clickId, partyId, fromDate, toDate);
+            } else {
+                sellerDetailedByDate(clickId, partyId, fromDate, toDate)
             }
-           
+
         }
     };
     return (
 
         <div className="main_div_padding">
-            
-            {isOnline?<NoInternetConnection />:
-            <div>
-            {isLoading ? (
-                <div className="">
-                  <img src={loading} alt="my-gif" className="gif_img" />
-                </div>
-                ):(
+
+            {isOnline ? <NoInternetConnection /> :
                 <div>
-                {allData.length > 0 ? (
-                <div className="row">
-                    <div className="col-lg-4 p-0">
-                        <div id="search-field">
-                            <SearchField
-                                placeholder="Search by Name / Short Code"
-                                onChange={(event) => {
-                                    handleSearch(event);
-                                }}
-                            />
+                    {isLoading ? (
+                        <div className="">
+                            <img src={loading} alt="my-gif" className="gif_img" />
                         </div>
-                        {ledgers.length > 0 ? (
-                            <div>
-                                <div
-                                    className="table-scroll ledger-table"
-                                    id="scroll_style"
-                                >
-                                    <table className="table table-fixed">
-                                        <thead className="theadr-tag">
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Date</th>
-                                                {ledgerType == "BUYER" ? <th scope="col">Buyer Name</th> :
-                                                    <th scope="col">Seller Name</th>
-                                                }
-                                                {ledgerType == "BUYER" ? <th scope="col">To Be Recieved(&#8377;)</th> :
-                                                    <th scope="col">To Be Paid(&#8377;)</th>
-                                                }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {ledgers.map((item, index) => {
-                                                return (
-                                                    <Fragment>
-                                                        <tr onClick={() => particularLedgerData(item.partyId)}
-                                                            className={
-                                                                partyId == item.partyId
-                                                                    ? "tabRowSelected"
-                                                                    : "tr-tags"
-                                                            }>
-                                                            <td scope="row">{index + 1}</td>
-                                                            <td key={item.date}>
-                                                                {moment(item.date).format("DD-MMM-YY")}
-                                                            </td>
-                                                            <td key={item.partyName}>
-                                                                <div className="d-flex">
-                                                                    <div className="c-img">
-                                                                        {item.profilePic ? (
-                                                                            <img
-                                                                                className="profile-img"
-                                                                                src={item.profilePic}
-                                                                                alt="pref-img"
-                                                                            />
-                                                                        ) : (
-                                                                            <img
-                                                                                className="profile-img"
-                                                                                src={single_bill}
-                                                                                alt="img"
-                                                                            />
-                                                                        )}
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="namedtl-tag">
-                                                                            {item.partyName}
-                                                                        </p>
-                                                                        <p className="mobilee-tag">
-                                                                            {!item.trader ? ledgerType == "BUYER" ? "Buyer" : 'Seller'
-                                                                                : "Trader"} -{" "}
-                                                                            {item.partyId}&nbsp;
-                                                                        </p>
-                                                                        <p className="mobilee-tag">
-                                                                            {item.mobile}
-                                                                        </p>
-                                                                        <p className="address-tag">
-                                                                            {item.partyAddress
-                                                                                ? item.partyAddress
-                                                                                : ""}
-                                                                        </p>
-                                                                    </div>
+                    ) : (
+                        <div>
+                            {allData.length > 0 ? (
+                                <div className="row">
+                                    <div className="col-lg-4 p-0">
+                                        <div id="search-field">
+                                            <SearchField
+                                                placeholder="Search by Name / Short Code"
+                                                onChange={(event) => {
+                                                    handleSearch(event);
+                                                }}
+                                            />
+                                        </div>
+                                        {ledgers.length > 0 ? (
+                                            <div>
+                                                <div
+                                                    className="table-scroll ledger-table"
+                                                    id="scroll_style"
+                                                >
+                                                    <table className="table table-fixed">
+                                                        <thead className="theadr-tag">
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Date</th>
+                                                                {ledgerType == "BUYER" ? <th scope="col">Buyer Name</th> :
+                                                                    <th scope="col">Seller Name</th>
+                                                                }
+                                                                {ledgerType == "BUYER" ? <th scope="col">To Be Recieved(&#8377;)</th> :
+                                                                    <th scope="col">To Be Paid(&#8377;)</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {ledgers.map((item, index) => {
+                                                                return (
+                                                                    <Fragment>
+                                                                        <tr onClick={() => particularLedgerData(item.partyId, item)}
+                                                                            className={
+                                                                                partyId == item.partyId
+                                                                                    ? "tabRowSelected"
+                                                                                    : "tr-tags"
+                                                                            }>
+                                                                            <td scope="row">{index + 1}</td>
+                                                                            <td key={item.date}>
+                                                                                {moment(item.date).format("DD-MMM-YY")}
+                                                                            </td>
+                                                                            <td key={item.partyName}>
+                                                                                <div className="d-flex">
+                                                                                    <div className="c-img">
+                                                                                        {item.profilePic ? (
+                                                                                            <img
+                                                                                                className="profile-img"
+                                                                                                src={item.profilePic}
+                                                                                                alt="pref-img"
+                                                                                            />
+                                                                                        ) : (
+                                                                                            <img
+                                                                                                className="profile-img"
+                                                                                                src={single_bill}
+                                                                                                alt="img"
+                                                                                            />
+                                                                                        )}
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <p className="namedtl-tag">
+                                                                                            {item.partyName}
+                                                                                        </p>
+                                                                                        <p className="mobilee-tag">
+                                                                                            {!item.trader ? ledgerType == "BUYER" ? "Buyer" : 'Seller'
+                                                                                                : "Trader"} -{" "}
+                                                                                            {item.partyId}&nbsp;
+                                                                                        </p>
+                                                                                        <p className="mobilee-tag">
+                                                                                            {item.mobile}
+                                                                                        </p>
+                                                                                        <p className="address-tag">
+                                                                                            {item.partyAddress
+                                                                                                ? item.partyAddress
+                                                                                                : ""}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td key={item.tobePaidRcvd}>
+                                                                                <p className={ledgerType == "BUYER" ? "coloring" : 'paid-coloring'}>
+                                                                                    {item.tobePaidRcvd
+                                                                                        ? getCurrencyNumberWithOutSymbol(
+                                                                                            item.tobePaidRcvd
+                                                                                        )
+                                                                                        : 0}
+                                                                                </p>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </Fragment>
+                                                                );
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div className="outstanding-pay d-flex align-items-center justify-content-between">
+                                                    {ledgerType == "BUYER" ?
+                                                        <p className="pat-tag">Outstanding Recievables:</p>
+                                                        : <p className="pat-tag">Outstanding Paybles:</p>
+                                                    }
+                                                    <p className={ledgerType == "BUYER" ? "values-tag" : 'paid-coloring'}>
+                                                        {outStAmt?.totalOutStgAmt
+                                                            ? getCurrencyNumberWithSymbol(outStAmt?.totalOutStgAmt)
+                                                            : 0}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="table-scroll nodata_scroll">
+                                                <div className="row partner_no_data_widget_rows">
+                                                    <div className="col-lg-5">
+                                                        <div className="partner_no_data_widget">
+                                                            <div className="text-center">
+                                                                <img
+                                                                    src={no_data_icon}
+                                                                    alt="icon"
+                                                                    className="d-flex mx-auto justify-content-center"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="col-lg-8">
+                                        <div className='d-flex'>
+                                            <ul className="nav nav-tabs partner_tabs ledger_all_custom mb-0" id="myTab" role="tablist">
+                                                {tabs.map((tab) => {
+                                                    return (
+                                                        <li key={tab.id} className="nav-item ">
+                                                            <a
+                                                                className={
+                                                                    "nav-link" + (allCustom == tab.to ? " active" : "")
+                                                                }
+                                                                href={"#" + tab.name}
+                                                                role="tab"
+                                                                aria-controls="home"
+                                                                data-bs-toggle="tab"
+                                                                onClick={() => allCustomEvent(tab.to)}
+                                                            >
+                                                                {tab.name}
+                                                            </a>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+
+                                        </div>
+                                        <div className='my-2'>
+                                            <div
+                                                style={{ display: dateDisplay ? "flex" : "none" }}
+                                                className="dateRangePicker justify-content-center"
+                                            >
+                                                <div onClick={onclickDate} className="color_blue">
+                                                    <div className="date_icon m-0">
+                                                        <img
+                                                            src={date_icon}
+                                                            alt="icon"
+                                                            className="mr-2 date_icon_in_custom"
+                                                        />
+                                                        {dateValue}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="card details-tag">
+                                            <div className="card-body" id="card-details">
+                                                <div className="row">
+                                                    <div className="col-lg-3" id="verticalLines">
+                                                        <div
+                                                            className="profilers-details"
+                                                            key={ledgerData.partyId}
+                                                        >
+                                                            <div className="d-flex">
+                                                                <div>
+                                                                    {ledgerData.profilePic ? (
+                                                                        <img
+                                                                            id="singles-img"
+                                                                            src={ledgerData.profilePic}
+                                                                            alt="buy-img"
+                                                                        />
+                                                                    ) : (
+                                                                        <img
+                                                                            id="singles-img"
+                                                                            src={single_bill}
+                                                                            alt="img"
+                                                                        />
+                                                                    )}
                                                                 </div>
-                                                            </td>
-                                                            <td key={item.tobePaidRcvd}>
-                                                                <p className={ledgerType == "BUYER" ? "coloring" : 'paid-coloring'}>
-                                                                    {item.tobePaidRcvd
-                                                                        ? getCurrencyNumberWithOutSymbol(
-                                                                            item.tobePaidRcvd
-                                                                        )
-                                                                        : 0}
-                                                                </p>
-                                                            </td>
-                                                        </tr>
-                                                    </Fragment>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
+                                                                <div id="ptr-dtls">
+                                                                    <p className="namedtl-tag">
+                                                                        {ledgerData.partyName}
+                                                                    </p>
+                                                                    <p className="mobilee-tag">
+                                                                        {!ledgerData.trader ? props.type == "BUYER" ? "Buyer" : 'Sellre' : "Trader"}{" "}
+                                                                        - {ledgerData.partyId}&nbsp;
+                                                                    </p>
+                                                                    <p className="mobilee-tag">
+                                                                        {ledgerData.mobile}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-lg-3 align-items-center" id="verticalLines">
+                                                        <p className="card-text paid">
+                                                            Total Business
+                                                            <p className="coloring">
+                                                                {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalTobePaidRcvd ?
+                                                                    cardDetails.totalTobePaidRcvd ? getCurrencyNumberWithSymbol(
+                                                                        cardDetails.totalTobePaidRcvd
+                                                                    )
+                                                                        : 0 : 0 :
+                                                                allCustom == 'custom' && ledgerType == 'BUYER' && ledgerTabs == 'detailedledger' ?
+                                                                cardDetailed.totalToBeRecived ?
+                                                                    cardDetailed.totalToBeRecived ? getCurrencyNumberWithSymbol(
+                                                                        cardDetailed.totalToBeRecived
+                                                                )
+                                                                : 0 : 0 :
+                                                                allCustom == 'custom' && ledgerType == 'SELLER' &&
+                                                                ledgerTabs == 'detailedledger' ?
+                                                                cardDetailed.totalToBePaid ?
+                                                                    cardDetailed.totalToBePaid ? getCurrencyNumberWithSymbol(
+                                                                cardDetailed.totalToBePaid
+                                                                )
+                                                                : 0 : 0 :
+                                                                allCustom == 'all' && ledgerType == 'BUYER' && ledgerTabs =='detailedledger'?
+                                                                detailedTotal.totalToBeRecived ?
+                                                                detailedTotal.totalToBeRecived ? getCurrencyNumberWithSymbol(
+                                                                    detailedTotal.totalToBeRecived
+                                                                )
+                                                                : 0 : 0 :
+                                                                allCustom == 'all' && ledgerType == 'SELLER' && ledgerTabs =='detailedledger'?
+                                                                detailedTotal.totalToBePaid ?
+                                                                detailedTotal.totalToBePaid ? getCurrencyNumberWithSymbol(
+                                                                    detailedTotal.totalToBePaid
+                                                                )
+                                                                : 0 : 0 :
+                                                                summary.totalTobePaidRcvd
+                                                                    ? getCurrencyNumberWithSymbol(
+                                                                        summary.totalTobePaidRcvd
+                                                                )
+                                                                : 0
+
+                                                                }
+                                                            </p>
+
+                                                        </p>
+                                                    </div>
+                                                    <div className="col-lg-3" id="verticalLines">
+                                                        {ledgerType == 'BUYER'?<p className="total-paid">
+                                                            Total Recieved</p>:
+                                                            <p className="total-paid">
+                                                            Total Paid</p>
+                                                            }
+                                                        
+                                                            <p className="coloring">
+                                                                {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalRcvdPaid ?
+                                                                    cardDetails.totalRcvdPaid ? getCurrencyNumberWithSymbol(
+                                                                        cardDetails.totalRcvdPaid
+                                                                    )
+                                                                        : 0 : 0 :
+                                                                allCustom == 'custom' && ledgerType == 'BUYER' && ledgerTabs == 'detailedledger' ?
+                                                                cardDetailed.totalRecieved ? cardDetailed.totalRecieved ?
+                                                                    getCurrencyNumberWithSymbol(
+                                                                                cardDetailed.totalRecieved
+                                                                )
+                                                                : 0 : 0 :
+                                                                allCustom == 'custom' && ledgerType == 'SELLER' && ledgerTabs == 'detailedledger' ?
+                                                                cardDetailed.totalPaid ? cardDetailed.totalPaid ?
+                                                                getCurrencyNumberWithSymbol(
+                                                                   cardDetailed.totalPaid
+                                                                )
+                                                                : 0 : 0 :
+                                                                allCustom == 'all' && ledgerType == 'BUYER' && ledgerTabs =='detailedledger'?
+                                                                detailedTotal.totalRecieved?detailedTotal.totalRecieved?
+                                                                getCurrencyNumberWithSymbol(
+                                                                    detailedTotal.totalRecieved
+                                                                 )
+                                                                 : 0 : 0 :
+                                                                 allCustom == 'all' && ledgerType == 'SELLER' && ledgerTabs =='detailedledger'?
+                                                                detailedTotal.totalPaid?detailedTotal.totalPaid?
+                                                                getCurrencyNumberWithSymbol(
+                                                                    detailedTotal.totalPaid
+                                                                 )
+                                                                 : 0 : 0 :
+                                                                summary.totalRcvdPaid
+                                                                    ? getCurrencyNumberWithSymbol(
+                                                                            summary.totalRcvdPaid
+                                                                    )
+                                                                : 0}
+                                                            </p>
+                                                        
+                                                    </div>
+                                                    <div className="col-lg-3  align-items-center">
+                                                        {ledgerType == 'BUYER'?
+                                                            <p className="out-standing">
+                                                            Outstanding Recievables</p>
+                                                            :<p className="out-standing">Outstanding Payables</p>
+                                                            }
+                                                            <p className="coloring">
+                                                                {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.outStdRcvPayble ?
+                                                                    cardDetails?.outStdRcvPayble ? getCurrencyNumberWithSymbol(
+                                                                        cardDetails.outStdRcvPayble
+                                                                    )
+                                                                        : 0 : 0 :
+                                                                    allCustom == 'custom' && ledgerTabs == 'detailedledger' ?
+                                                                        cardDetailed.totalOutStandingBalance ? cardDetailed?.totalOutStandingBalance
+                                                                            ? getCurrencyNumberWithSymbol(
+                                                                                cardDetailed.totalOutStandingBalance
+                                                                            )
+                                                                            : 0 : 0
+                                                                : summary.outStdRcvPayble
+                                                                    ? getCurrencyNumberWithSymbol(
+                                                                    summary.outStdRcvPayble
+                                                                    )
+                                                                : 0
+                                                                }
+                                                            </p>
+
+                                                        {/* </p> */}
+                                                    </div>
+                                                </div>
+                                                <span id="horizontal-line"></span>
+                                                <ul className="nav nav-tabs ledger_tabs" id="myTab" role="tablist">
+                                                    {links.map((link) => {
+                                                        return (
+                                                            <li key={link.id} className="nav-item ">
+                                                                <a
+                                                                    className={
+                                                                        "nav-link" + (ledgerTabs == link.to ? " active" : "")
+                                                                    }
+                                                                    href={"#" + link.to}
+                                                                    role="tab"
+                                                                    aria-controls="home"
+                                                                    data-bs-toggle="tab"
+                                                                    onClick={() => ledgerTabEvent(link.to)}
+                                                                >
+                                                                    {link.name}
+                                                                </a>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {(allCustom == 'all' && ledgerTabs == 'ledgersummary') ?
+                                                <LedgerSummary
+                                                    ledgerTab={ledgerTabs}
+                                                    allCustomTab={allCustom}
+                                                    LedgerSummary={ledgerSummary}
+                                                    partyType={props.type}
+                                                />
+                                                : ''
+                                            }
+                                            {(allCustom == 'all' && ledgerTabs == 'detailedledger') ?
+                                                <DetailedLedger
+                                                    detailedLedger={detailedLedger}
+                                                    ledgerTab={ledgerTabs}
+                                                    allCustomTab={allCustom}
+                                                    partyType={props.type}
+                                                />
+                                                : ''
+                                            }
+                                            {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ?
+                                                <LedgerSummary
+                                                    LedgerSummaryByDate={summaryByDate}
+                                                    ledgerTab={ledgerTabs}
+                                                    allCustomTab={allCustom}
+                                                    partyType={props.type}
+                                                />
+                                                : ''
+                                            }
+                                            {(allCustom == 'custom' && ledgerTabs == 'detailedledger') ?
+                                                <DetailedLedger
+                                                    DetailedLedgerByDate={detailedByDate}
+                                                    ledgerTab={ledgerTabs}
+                                                    allCustomTab={allCustom}
+                                                    partyType={props.type}
+                                                />
+                                                : ''
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="outstanding-pay d-flex align-items-center justify-content-between">
-                                    {ledgerType == "BUYER" ?
-                                        <p className="pat-tag">Outstanding Recievables:</p>
-                                        : <p className="pat-tag">Outstanding Paybles:</p>
-                                    }
-                                    <p className={ledgerType == "BUYER" ? "values-tag" : 'paid-coloring'}>
-                                        {outStAmt?.totalOutStgAmt
-                                            ? getCurrencyNumberWithSymbol(outStAmt?.totalOutStgAmt)
-                                            : 0}
-                                    </p>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="table-scroll nodata_scroll">
+                            ) : (
                                 <div className="row partner_no_data_widget_rows">
                                     <div className="col-lg-5">
                                         <div className="partner_no_data_widget">
@@ -446,279 +731,19 @@ const Ledgers = (props) => {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                    <div className="col-lg-8">
-                        <div className='d-flex'>
-                            <ul className="nav nav-tabs partner_tabs ledger_all_custom mb-0" id="myTab" role="tablist">
-                                {tabs.map((tab) => {
-                                    return (
-                                        <li key={tab.id} className="nav-item ">
-                                            <a
-                                                className={
-                                                    "nav-link" + (allCustom == tab.to ? " active" : "")
-                                                }
-                                                href={"#" + tab.name}
-                                                role="tab"
-                                                aria-controls="home"
-                                                data-bs-toggle="tab"
-                                                onClick={() => allCustomEvent(tab.to)}
-                                            >
-                                                {tab.name}
-                                            </a>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                           
-                        </div>
-                        <div className='my-2'>
-                        <div
-                                
-                                style={{ display: dateDisplay ? "flex" : "none" }}
-                                className="dateRangePicker justify-content-center"
-                            >
-                                <div onClick={onclickDate} className="color_blue">
-                                    <div className="date_icon m-0">
-                                        <img
-                                            src={date_icon}
-                                            alt="icon"
-                                            className="mr-2 date_icon_in_custom"
-                                        />
-                                        {dateValue}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="card details-tag">
-                            <div className="card-body" id="card-details">
-                                <div className="row">
-                                    <div className="col-lg-3" id="verticalLines">
-                                        {ledgers.map((item, index) => {
-                                            if (item.partyId == partyId) {
-                                                return (
-                                                    <Fragment>
-                                                        <div
-                                                            className="profilers-details"
-                                                            key={index}
-                                                        >
-                                                            <div className="d-flex">
-                                                                <div>
-                                                                    {item.profilePic ? (
-                                                                        <img
-                                                                            id="singles-img"
-                                                                            src={item.profilePic}
-                                                                            alt="buy-img"
-                                                                        />
-                                                                    ) : (
-                                                                        <img
-                                                                            id="singles-img"
-                                                                            src={single_bill}
-                                                                            alt="img"
-                                                                        />
-                                                                    )}
-                                                                </div>
-                                                                <div id="ptr-dtls">
-                                                                    <p className="namedtl-tag">
-                                                                        {item.partyName}
-                                                                    </p>
-                                                                    <p className="mobilee-tag">
-                                                                        {!item.trader ? props.type == "BUYER" ? "Buyer" : 'Sellre' : "Trader"}{" "}
-                                                                        - {item.partyId}&nbsp;
-                                                                    </p>
-                                                                    <p className="mobilee-tag">
-                                                                        {item.mobile}
-                                                                    </p>
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </Fragment>
-                                                );
-                                            } else {
-                                             <p>No Data Found</p>;
-                                            }
-                                        })}
-                                    </div>
-                                    <div className="col-lg-3" id="verticalLines">
-                                        <p className="card-text paid">
-                                            Total Business
-                                            <p className="coloring">
-                                            {allCustom =='custom' && ledgerTabs == 'ledgersummary'?cardDetails.totalTobePaidRcvd?
-                                                cardDetails.totalTobePaidRcvd? getCurrencyNumberWithSymbol(
-                                                    cardDetails.totalTobePaidRcvd
-                                                )
-                                                : 0:0:
-                                                allCustom =='custom' && ledgerType =='BUYER' && ledgerTabs =='detailedledger'?
-                                                cardDetailed.totalToBeRecived?
-                                                cardDetailed.totalToBeRecived?getCurrencyNumberWithSymbol(
-                                                    cardDetailed.totalToBeRecived
-                                                    )
-                                                    : 0:0:
-                                                    allCustom =='custom' && ledgerType =='SELLER' &&
-                                                     ledgerTabs =='detailedledger'?
-                                                     cardDetailed.totalToBePaid?
-                                                     cardDetailed.totalToBePaid?getCurrencyNumberWithSymbol(
-                                                        cardDetailed.totalToBePaid
-                                                    )
-                                                    : 0:0:
-                                                    summary.totalTobePaidRcvd
-                                                    ? getCurrencyNumberWithSymbol(
-                                                        summary.totalTobePaidRcvd
-                                                    )
-                                                    : 0
-                                            
-                                            }
-                                            </p>
-                                                
-                                        </p>
-                                    </div>
-                                    <div className="col-lg-3" id="verticalLines">
-                                        <p className="total-paid">
-                                            Total Recieved
-                                        <p className="coloring">
-                                            {allCustom =='custom' && ledgerTabs == 'ledgersummary'?cardDetails.totalRcvdPaid?
-                                                cardDetails.totalRcvdPaid? getCurrencyNumberWithSymbol(
-                                                    cardDetails.totalRcvdPaid
-                                                )
-                                                : 0:0:
-                                                allCustom =='custom' && ledgerType =='BUYER' && ledgerTabs =='detailedledger'?
-                                                cardDetailed.totalRecieved?cardDetailed.totalRecieved?
-                                                 getCurrencyNumberWithSymbol(
-                                                    cardDetailed.totalRecieved
-                                                )
-                                                : 0:0:
-                                                allCustom =='custom' && ledgerType =='SELLER' && ledgerTabs =='detailedledger'?
-                                                cardDetailed.totalPaid?cardDetailed.totalPaid?
-                                                 getCurrencyNumberWithSymbol(
-                                                    cardDetailed.totalPaid
-                                                )
-                                                : 0:0:
-                                                summary.totalRcvdPaid
-                                                    ? getCurrencyNumberWithSymbol(
-                                                        summary.totalRcvdPaid
-                                                    )
-                                                    : 0}
-                                            </p>
-                                        </p>
-                                    </div>
-                                    <div className="col-lg-3 d-flex align-items-center">
-                                        <p className="out-standing">
-                                            Outstanding Recievables
-                                            <p className="coloring">
-                                                {allCustom=='custom' && ledgerTabs == 'ledgersummary'?cardDetails.outStdRcvPayble?
-                                                cardDetails?.outStdRcvPayble? getCurrencyNumberWithSymbol(
-                                                    cardDetails.outStdRcvPayble
-                                                )
-                                                : 0:0:
-                                                 allCustom == 'custom' && ledgerTabs =='detailedledger'?
-                                                 cardDetailed.totalOutStandingBalance?cardDetailed?.totalOutStandingBalance
-                                                 ? getCurrencyNumberWithSymbol(
-                                                    cardDetailed.totalOutStandingBalance
-                                                )
-                                                : 0:0
-                                                 :summary.outStdRcvPayble
-                                                     ? getCurrencyNumberWithSymbol(
-                                                         summary.outStdRcvPayble
-                                                     )
-                                                     : 0
-                                                 }
-                                             </p>
-                                            
-                                        </p>
-                                    </div>
-                                </div>
-                                <span id="horizontal-line"></span>
-                                <ul className="nav nav-tabs ledger_tabs" id="myTab" role="tablist">
-                                    {links.map((link) => {
-                                        return (
-                                            <li key={link.id} className="nav-item ">
-                                                <a
-                                                    className={
-                                                        "nav-link" + (ledgerTabs == link.to ? " active" : "")
-                                                    }
-                                                    href={"#" + link.to}
-                                                    role="tab"
-                                                    aria-controls="home"
-                                                    data-bs-toggle="tab"
-                                                    onClick={() => ledgerTabEvent(link.to)}
-                                                >
-                                                    {link.name}
-                                                </a>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </div>
-                        </div>
-                        <div>
-                        {(allCustom == 'all' && ledgerTabs == 'ledgersummary') ?
-                            <LedgerSummary
-                                ledgerTab={ledgerTabs}
-                                allCustomTab={allCustom}
-                                LedgerSummary={ledgerSummary}
-                                partyType ={props.type}
-                            />
-                            : ''
-                        }
-                        {(allCustom == 'all' && ledgerTabs == 'detailedledger') ?
-                            <DetailedLedger
-                                detailedLedger={detailedLedger}
-                                ledgerTab={ledgerTabs}
-                                allCustomTab={allCustom}
-                                partyType ={props.type}
-                            />
-                            : ''
-                        }
-                        {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ?
-                            <LedgerSummary
-                                LedgerSummaryByDate={summaryByDate}
-                                ledgerTab={ledgerTabs}
-                                allCustomTab={allCustom}
-                                partyType ={props.type}
-                            />
-                            : ''
-                        }
-                        {(allCustom == 'custom' && ledgerTabs == 'detailedledger') ?
-                            <DetailedLedger
-                                DetailedLedgerByDate={detailedByDate}
-                                ledgerTab={ledgerTabs}
-                                allCustomTab={allCustom}
-                                partyType ={props.type}
-                            />
-                            : ''
-                        }
-                        </div>
-                    </div>
+                            )}
+                        </div>)}
+                    {showDatepickerModal1 ? (
+                        <DatePickerModel
+                            show={showDatepickerModal}
+                            close={() => setShowDatepickerModal(false)}
+                            parentCallback={callbackFunction}
+                        />
+                    ) : (
+                        <p></p>
+                    )}
                 </div>
-                ) : (
-                    <div className="row partner_no_data_widget_rows">
-                        <div className="col-lg-5">
-                            <div className="partner_no_data_widget">
-                                <div className="text-center">
-                                    <img
-                                        src={no_data_icon}
-                                        alt="icon"
-                                        className="d-flex mx-auto justify-content-center"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>)}
-            {showDatepickerModal1 ? (
-                <DatePickerModel
-                    show={showDatepickerModal}
-                    close={() => setShowDatepickerModal(false)}
-                    parentCallback={callbackFunction}
-                />
-            ) : (
-                <p></p>
-            )}
-            </div>
-        }
+            }
         </div>
     )
 }

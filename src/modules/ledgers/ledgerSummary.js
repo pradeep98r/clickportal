@@ -17,7 +17,6 @@ const LedgerSummary = (props) => {
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
   const ledgerType = props.partyType;
-  console.log(ledgerType, "get the data yeah")
   return (
     <div>
       {allCustom == 'all' ? (
