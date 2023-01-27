@@ -48,10 +48,12 @@ const Ledgers = (props) => {
     const [isOnline, setOnline] = useState(false);
     const [detailedTotal, setTotalDetailed] = useState([]);
     var date = moment(new Date()).format("YYYY-MM-DD");
+    const [startDate, setStartDate] = useState(date);
+    const [endDate,setEndDate] = useState(date);
     var defaultDate = moment(new Date()).format("DD-MMM-YYYY")
     const [dateDisplay, setDateDisplay] = useState(false);
     var [dateValue, setDateValue] = useState(defaultDate + ' to ' + defaultDate);
-
+    const [handleDate, sethandleDate] = useState(false);
     const tabs = [
         {
             id: 1,
@@ -190,10 +192,14 @@ const Ledgers = (props) => {
 
     //All and Custom Tabs
     const allCustomEvent = (type) => {
+        console.log(startDate,endDate,"Dates")
         if (type == 'custom') {
             setDateDisplay(true);
         } else {
             setDateDisplay(false);
+        }
+        if(handleDate){
+            setDateValue(defaultDate + ' to ' + defaultDate);
         }
         if (type == 'custom' && ledgerTabs == 'detailedledger') {
             setLedgerTabs('ledgersummary');
@@ -201,7 +207,8 @@ const Ledgers = (props) => {
             setLedgerTabs('ledgersummary');
         }
         if (type == 'custom' && ledgerTabs == 'ledgersummary') {
-            ledgerSummaryByDate(clickId, partyId, date, date);
+            console.log(startDate,endDate);
+            ledgerSummaryByDate(clickId, partyId, startDate, endDate);
         }
         setAllCustom(type);
     }
@@ -303,14 +310,26 @@ const Ledgers = (props) => {
         if (allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
             var fromDate = moment(startDate).format("YYYY-MM-DD");
             var toDate = moment(endDate).format("YYYY-MM-DD");
+            date=fromDate
+            setStartDate(fromDate);
+            setEndDate(toDate)
             ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
         } else {
             var fromDate = moment(startDate).format("YYYY-MM-DD");
             var toDate = moment(endDate).format("YYYY-MM-DD");
             if (ledgerType == 'BUYER') {
+                setStartDate(date);
+                setEndDate(date)
+                
                 detailedLedgerByDate(clickId, partyId, fromDate, toDate);
+                sethandleDate(true); 
             } else {
+                setStartDate(date);
+                setEndDate(date)
+                
                 sellerDetailedByDate(clickId, partyId, fromDate, toDate)
+                sethandleDate(true);
+
             }
 
         }
@@ -645,7 +664,13 @@ const Ledgers = (props) => {
                                                                             ? getCurrencyNumberWithSymbol(
                                                                                 cardDetailed.totalOutStandingBalance
                                                                             )
-                                                                            : 0 : 0
+                                                                            : 0 : 0:
+                                                                    allCustom == 'all' && ledgerTabs == 'detailedledger' ?
+                                                                    detailedTotal.totalOutStandingBalance ? detailedTotal?.totalOutStandingBalance
+                                                                        ? getCurrencyNumberWithSymbol(
+                                                                            detailedTotal.totalOutStandingBalance
+                                                                        )
+                                                                    : 0 : 0
                                                                 : summary.outStdRcvPayble
                                                                     ? getCurrencyNumberWithSymbol(
                                                                     summary.outStdRcvPayble
