@@ -38,9 +38,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const SellerLedger = () => {
   const [search, setSearch] = useState("");
-  const showTabs=localStorage.getItem("openTabs");
-  const [openTabs, setOpenTabs] = useState(showTabs?true:false);
-  const [allData, setallData] = useState([]);
+  //const showTabs=localStorage.getItem("openTabs");
+  const [openTabs, setOpenTabs] = useState(true)//(showTabs?true:false);
+  const [allData, setallData] = useState([]); 
   const [ledger, setLedgeres] = useState(allData);
   // const [ledger, setLedgeres] = useState([{}]);
   const [data, setData] = useState({}, ledger);
@@ -64,8 +64,8 @@ const SellerLedger = () => {
   //const [summaryDataByDate, setSummaryDataByDate] = useState({}, ledgerSummary);
 
   const [sellerDetailed, setSellerDetailed] = useState([]);
-  const active = localStorage.getItem('isActive');
-  const [isActive, setIsActive] = useState(active>=0?active:-1);
+  //const active = localStorage.getItem('isActive');
+  const [isActive, setIsActive] = useState(0)//(active>=0?active:-1);
 
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -73,30 +73,37 @@ const SellerLedger = () => {
   const navigate = useNavigate();
   const [toggleState, setToggleState] = useState("ledgersummary");
 
-  const toggleTab = (type) => {
-    setToggleState(type);
-  };
-
   const [toggleAC, setToggleAC] = useState("all");
   const toggleAllCustom = (type) => {
+    console.log(type,"type");
     setToggleAC(type);
+    console.log(toggleState,"toggleSt")
     if (type === "custom") {
       setDateDisplay(true);
       setToggleState("ledgersummary");
+      // callbackFunction(date,date,'Daily')
     } else if (type === "all") {
       setDateDisplay(false);
     }
   };
+  
+  const toggleTab = (type) => {
+    setToggleState(type);
+  };
 
+  var date = moment(new Date()).format("YYYY-MM-DD")
   let partyId = 0;
-  //Fetch ledger by party Type
+  var [dateValue, setDateValue] = useState()
   useEffect(() => {
-    fetchSellerLedger();
-    callbackFunction();
+    fetchSellerLedger()
+    getSelleLedgers(clickId).then((res)=>{
+      particularLedger(res.data.data.ledgers[0].partyId,0);
+    })
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   },[]);
 
-  var [dateValue, setDateValue] = useState();
+
+  ;
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -120,7 +127,7 @@ const SellerLedger = () => {
         setData(response.data.data);
         setallData(response.data.data.ledgers);
         setLedgeres(response.data.data.ledgers);
-        console.log(response.data.data.ledgers)
+        localStorage.setItem("sellPartyId", JSON.stringify(response.data.data.ledgers[0].partyId));
         setallLedgersSummary(response.data.data.ledgers);
       })
       .catch((error) => {
@@ -129,10 +136,19 @@ const SellerLedger = () => {
   };
   //Get partner By partyId
   const particularLedger = (id, indexs) => {
-    //getBuyerLedgerSummary(clickId, id);
+ 
+    getSellerLedgerSummary(clickId, id);
+    fetchSellerLedgerDetails(clickId, id);
+
+    clearLedgerSummary();
+    clearData();
+    if(toggleAC === 'custom' && toggleState === 'detailedledger'){
+      setToggleState("ledgersummary") 
+    } else if(toggleAC === 'all' && toggleState === 'detailedledger'){
+      setToggleState("ledgersummary");
+    }
     setOpenTabs(true);
     setIsActive(indexs);
-    localStorage.setItem('isActive',indexs);
     ledger.filter((item) => {
       if (item.partyId === id) {
         partyId = id;
@@ -140,14 +156,13 @@ const SellerLedger = () => {
         getSellerLedgerSummary(clickId, id);
         fetchSellerLedgerDetails(clickId, id);
         getOutstandingPaybles(clickId, id);
+        callbackFunction(date,date,'Daily')
         return item.partyId;
-        //navigate("ledgerSummary");
       } else {
         return <p>Not Found</p>;
       }
     });
   };
-
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
       setPaidRcvd(response.data.data);
@@ -158,7 +173,6 @@ const SellerLedger = () => {
     getLedgerSummary(clickId, partyId)
       .then((response) => {
         setSummaryData(response.data.data);
-        console.log(ledgerSummary,"ledgers")
         setSummary(response.data.data.ledgerSummary);
       })
       .catch((error) => {
@@ -266,10 +280,11 @@ const SellerLedger = () => {
       );
     }
     if (toggleState === "ledgersummary" && toggleAC === "custom") {
-      clearLedgerSummary();
+      
       var fromDate = moment(startDate).format("YYYY-MM-DD");
       var toDate = moment(endDate).format("YYYY-MM-DD");
-      getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+      clearLedgerSummary();
+      getLedgerSummaryByDate(clickId, localStorage.getItem('sellPartyId'), fromDate, toDate)
         .then((response) => {
           console.log(response, "res");
           setSummaryByDate(response.data.data.ledgerSummary);
@@ -360,16 +375,16 @@ const SellerLedger = () => {
     setLedgeres(result);
   };
 
- useEffect(()=>{
-  if(active>=0){
-    console.log("came");
-    var id = JSON.parse(
-    localStorage.getItem("sellPartyId"));
-    // getSellerLedgerSummary(clickId, id);
-    fetchSellerLedgerDetails(clickId, id);
-    getOutstandingPaybles(clickId, id);
-  }
-},[])
+//  useEffect(()=>{
+//   if(isActive>=0){
+//     console.log("came");
+//     var id = JSON.parse(
+//     localStorage.getItem("sellPartyId"));
+//     getSellerLedgerSummary(clickId, id);
+//     fetchSellerLedgerDetails(clickId, id);
+//     getOutstandingPaybles(clickId, id);
+//   }
+// },[])
 const resetInput = (e) => {
   if(e.target.value == 0){
     e.target.value = "";
@@ -417,7 +432,7 @@ const resetInput = (e) => {
                                     particularLedger(item.partyId, index);
                                   }}
                                   className={
-                                    partyId == item.partyId
+                                    localStorage.getItem("sellPartyId") == item.partyId
                                       ? "tabRowSelected"
                                       : "tr-tags"
                                   }
@@ -510,7 +525,7 @@ const resetInput = (e) => {
                   style={{ display: openTabs ? "block" : "none" }}
                 >
                   <div>
-                  <div className="recordbtn-style">
+                  {/* <div className="recordbtn-style">
                     <button
                       className="add-record-btns"
                       onClick={() => {
@@ -526,7 +541,7 @@ const resetInput = (e) => {
                     <div className="add-pays-btn">
                       <img src={add} id="addrecord-img" />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="blockers-tab">
                     <div className="d-flex">
                       <button
@@ -567,7 +582,7 @@ const resetInput = (e) => {
                   <div className="card details-tag">
                     <div className="card-body" id="card-details">
                       <div className="row">
-                        {active >=0 && (
+                        {isActive >=0 && (
                           <div className="col-lg-3" id="verticalLines">
                             {ledger.map((item, index) => {
                               partyId = JSON.parse(

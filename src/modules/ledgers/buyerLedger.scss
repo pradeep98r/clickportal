@@ -10,6 +10,21 @@
     vertical-align: middle;
 }
 
+.partner_no_data_widget{
+    p{
+      font-size: 13px;
+      font-weight: 500;
+      color: #161616;
+      margin: 20px 0px;
+    }
+  }
+  .partner_no_data_widget_rows{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 120px;
+  }
+
 .ledger-table{
     // height: calc(100vh - 606px);
     overflow-y: auto;
@@ -265,6 +280,11 @@ input[type=radio]:checked+label {
     color: #121212;
     color: #16A12C;
 }
+.ledger_tabs {
+    background-color: #fff;
+    border-bottom: 1px solid #E4E4E4;
+    padding-bottom: 0px;
+}
 input[type="text"]::placeholder {  
     padding-left: 35px; 
     font-weight: 500;
@@ -390,7 +410,7 @@ a:hover{
     font-size: 15px;
     color: #16A02C;
     margin: auto;
-    //padding-left: 100px;
+    // padding-left: 100px;
 }
 .profile-details{
     padding-left: 10px;

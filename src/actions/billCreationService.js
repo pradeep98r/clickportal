@@ -28,6 +28,7 @@ export function getBuyerLedgers(clickId) {
   return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/BUYER`);
 }
 
+
 export function getLedgerSummary(clickId, partyId, clientId, clientSecret) {
   return axiosCommon.get(
     `/reports/ledger/summary/caId/${clickId}/partyId/${partyId}`

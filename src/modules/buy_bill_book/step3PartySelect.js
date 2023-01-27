@@ -236,7 +236,7 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-
+  console.log(partySelecteData,billEditItemInfo, partnerDataStatus,"console");
   return (
     <div className="">
       <h5 className="head_modal">Bill Information </h5>

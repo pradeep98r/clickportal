@@ -20,11 +20,13 @@ import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import $ from 'jquery';
+import NoInternetConnection from "../../components/noInternetConnection";
 const MyProfile = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [isOnline, setOnline] = useState(false);
   const selectedLangId = localStorage.getItem("selectedLangId");
   const langData = localStorage.getItem("languageData");
   const [langResponse, setLanguage] = useState([]);
@@ -50,6 +52,7 @@ const MyProfile = () => {
         setLoading(false);
       })
       .catch((error) => {
+        setOnline(true);
         console.log(error);
       });
   };
@@ -145,6 +148,7 @@ const MyProfile = () => {
           </div>
         ) : (
           <div>
+            {isOnline?<NoInternetConnection />:
             <div className="myprofile_screen" id="scroll_style">
               {isLoading ? (
                 <div className="">
@@ -469,6 +473,7 @@ const MyProfile = () => {
                 </div>
               )}
             </div>
+            }
           </div>
         )}
       </div>

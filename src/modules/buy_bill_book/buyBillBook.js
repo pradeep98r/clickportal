@@ -29,12 +29,14 @@ import { selectBuyer } from "../../reducers/buyerSlice";
 import { selectTrans } from "../../reducers/transSlice";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import addbill_icon from "../../assets/images/addbill.svg";
+import NoInternetConnection from "../../components/noInternetConnection";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const [buyBillData, setBuyBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
+  const [isOnline, setOnline] = useState(false);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
 
@@ -89,6 +91,8 @@ function BuyBillBook() {
         setLoading(false);
       })
       .catch((error) => {
+        console.log(error,"error msg")
+        setOnline(true);
         console.log(error.message);
         console.log(error);
       });
@@ -156,11 +160,13 @@ function BuyBillBook() {
             </div>
           ) : (
             <div>
+              {isOnline?<NoInternetConnection />:
+            <div>
               {isLoading ? (
                 <div className="">
                   <img src={loading} alt="my-gif" className="gif_img" />
                 </div>
-              ) : (
+                ):(
                 <div>
                   <div>
                     <div className="d-flex justify-content-between bills_div">
@@ -409,6 +415,8 @@ function BuyBillBook() {
                   </div>
                 </div>
               )}
+            </div>
+            }
             </div>
           )}
         </div>

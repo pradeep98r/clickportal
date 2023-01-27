@@ -28,12 +28,14 @@ import Steps from "../buy_bill_book/steps";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import addbill_icon from "../../assets/images/addbill.svg";
+import NoInternetConnection from "../../components/noInternetConnection";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const [sellBillData, setSellBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
+  const [isOnline, setOnline] = useState(false);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
@@ -87,6 +89,7 @@ const SellBillBook = (props) => {
         setLoading(false);
       })
       .catch((error) => {
+        setOnline(true);
         console.log(error);
       });
   };
@@ -160,6 +163,8 @@ const SellBillBook = (props) => {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
+        {isOnline?<NoInternetConnection />:
+          <div>
           {isLoading ? (
             <div className="">
               <img src={loading} alt="my-gif" className="gif_img" />
@@ -406,6 +411,8 @@ const SellBillBook = (props) => {
               </div>
             </div>
           )}
+          </div>
+          }
         </div>
       </div>
       {showDatepickerModal1 ? (
