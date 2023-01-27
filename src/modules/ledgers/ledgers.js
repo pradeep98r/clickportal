@@ -27,7 +27,8 @@ import NoInternetConnection from "../../components/noInternetConnection";
 const Ledgers = (props) => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
-    const [ledgers, setLedgers] = useState([]);
+    const [allData, setAllData] = useState([]);
+    const [ledgers, setLedgers] = useState(allData);
     const [outStAmt, setOutStAmt] = useState([]);
     const [partyId, setPartyId] = useState(0);
     const [summary, setSummary] = useState([]);
@@ -84,7 +85,7 @@ const Ledgers = (props) => {
     const handleSearch = (event) => {
         let value = event.target.value.toLowerCase();
         let result = [];
-        result = ledgers.filter((data) => {
+        result = allData.filter((data) => {
             if (data.mobile.includes(value)) {
                 return data.mobile.search(value) != -1;
             } else if (data.partyName.toLowerCase().includes(value)) {
@@ -94,6 +95,7 @@ const Ledgers = (props) => {
             }
         });
         setLedgers(result);
+        console.log(ledgers,allData,partyId,"search")
     };
 
     useEffect(() => {
@@ -107,6 +109,7 @@ const Ledgers = (props) => {
         getLedgers(clickId, ledgerType).then((res) => {
             if (res.data.status.type === "SUCCESS") {
                 setLedgers(res.data.data.ledgers);
+                setAllData(res.data.data.ledgers);
                 setOutStAmt(res.data.data);
                 setPartyId(res.data.data.ledgers[0].partyId);
                 summaryData(clickId, res.data.data.ledgers[0].partyId)
@@ -313,7 +316,7 @@ const Ledgers = (props) => {
                 </div>
                 ):(
                 <div>
-                {ledgers.length > 0 ? (
+                {allData.length > 0 ? (
                 <div className="row">
                     <div className="col-lg-4 p-0">
                         <div id="search-field">
@@ -442,7 +445,7 @@ const Ledgers = (props) => {
                     </div>
                     <div className="col-lg-8">
                         <div className='d-flex'>
-                            <ul className="nav nav-tabs partner_tabs" id="myTab" role="tablist">
+                            <ul className="nav nav-tabs partner_tabs ledger_all_custom mb-0" id="myTab" role="tablist">
                                 {tabs.map((tab) => {
                                     return (
                                         <li key={tab.id} className="nav-item ">
@@ -462,9 +465,13 @@ const Ledgers = (props) => {
                                     );
                                 })}
                             </ul>
-                            <div
-                                className="dateRangePicker"
+                           
+                        </div>
+                        <div className='my-2'>
+                        <div
+                                
                                 style={{ display: dateDisplay ? "flex" : "none" }}
+                                className="dateRangePicker justify-content-center"
                             >
                                 <div onClick={onclickDate} className="color_blue">
                                     <div className="date_icon m-0">
@@ -524,7 +531,7 @@ const Ledgers = (props) => {
                                                     </Fragment>
                                                 );
                                             } else {
-                                                <p>No Data Found</p>;
+                                             <p>No Data Found</p>;
                                             }
                                         })}
                                     </div>
