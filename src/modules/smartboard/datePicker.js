@@ -1,5 +1,4 @@
 import React, { Component, useEffect, useState } from "react";
-// import "../buy_bill_book/buyBillBook.scss";
 import close from "../../assets/images/close.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,7 +7,8 @@ import "../../assets/css/calender.scss";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-
+import {dateCustomStatus} from "../../reducers/billEditItemSlice";
+import { useDispatch,useSelector } from 'react-redux';
 function DatePickerModel(props) {
   $("[name=tab]").each(function (i, d) {
     var p = $(this).prop("checked");
@@ -18,24 +18,44 @@ function DatePickerModel(props) {
   });
   $("[name=tab]").on("change", function () {
     var p = $(this).prop("checked");
-
-    // $(type).index(this) == nth-of-type
     var i = $("[name=tab]").index(this);
 
     $("article").removeClass("on");
     $("article").eq(i).addClass("on");
   });
-  const [isLoading, setLoading] = useState(true);
+  var datev = '';
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const [dateCustom, setDateCustom] = useState(billEditItemInfo?.dateCustom);
+  const dispatch = useDispatch();
   useEffect(() => {
     localStorage.setItem("billViiewSttatus", false);
-    setLoading(false);
-    setDateTabs(
-      link == "/buyerledger" ||
-        link == "/sellerledger" ||
-        props.ledgerTabs == "detailedledger"
-        ? "Custom"
-        : "Daily"
-    );
+    // setDateCustom(props.dateCustom)
+    console.log(billEditItemInfo?.dateCustom,dateCustom);
+    if(link == "/buyerledger" ||
+    link == "/sellerledger" ||
+    props.ledgerTabs == "detailedledger"){
+       if(billEditItemInfo?.dateCustom){
+        datev = 'Custom'
+       }
+       else{
+         if(props.ledgerTabs == "ledgersummary"){
+          if(billEditItemInfo?.dateCustom){
+            datev = 'Custom'
+           }
+           else{
+            datev = dateTabs
+           }
+         }
+         else{
+          datev = dateTabs
+         }
+       }
+    }
+    else{
+      datev = "Daily"
+    }
+    console.log(dateTabs,datev);
+    setDateTabs(datev);
   }, [props.show]);
 
   const [startDate, setStartsDate] = useState(new Date());
@@ -60,12 +80,6 @@ function DatePickerModel(props) {
   const [weekEndDate, setweekEndDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
   );
-  // Getter
-  var hideIfNoPrevNext = $(".week-picker").datepicker(
-    "option",
-    "hideIfNoPrevNext"
-  );
-
   // Setter
   $(".week-picker").datepicker("option", "hideIfNoPrevNext", true);
   $(function () {
@@ -83,8 +97,6 @@ function DatePickerModel(props) {
       showOtherMonths: false,
       selectOtherMonths: false,
       maxDate: new Date(),
-      // showOtherMonths: true,
-      // selectOtherMonths: true,
       dateFormat: "dd-MM-yy",
       onSelect: function (dateText, inst) {
         var date = $(this).datepicker("getDate");
@@ -104,7 +116,6 @@ function DatePickerModel(props) {
         var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
-        // moment(startWeekDate, "MM-DD-YYYY");
         setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
         setweekEndDate(moment(endWeekDate).format("DD-MMM-YYYY"));
         $("#endWeekDate").text(
@@ -170,12 +181,16 @@ function DatePickerModel(props) {
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Daily");
+      setDateCustom(false);
+      dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Weekly");
+      setDateCustom(false);
+      dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Yearly") {
       const currentYear = dateValue.getFullYear();
       const firstDay = new Date(currentYear, 0, 1);
@@ -185,6 +200,8 @@ function DatePickerModel(props) {
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Yearly");
+      setDateCustom(false);
+      dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Monthly") {
       const currentYear = dateValue.getFullYear();
       const firstDay = new Date(currentYear, dateValue.getMonth(), 1);
@@ -194,6 +211,8 @@ function DatePickerModel(props) {
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Monthly");
+      setDateCustom(false);
+      dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Custom") {
       firstDate = moment(startDate).format("YYYY-MM-DD");
       lastDate = moment(endDate).format("YYYY-MM-DD");
@@ -202,16 +221,6 @@ function DatePickerModel(props) {
       setDateTabs("Custom");
     }
   };
-
-  // const onclickContinue = (date) =>{
-  //   setLoading(false);
-  //   console.log(date)
-  //   //setSelectedDate(moment(date).format("YYYY-MM-DD"));
-  //   var d = moment(date).format("YYYY-MM-DD") == '' ? moment(new Date()).format("YYYY-MM-DD") :moment(date).format("YYYY-MM-DD")
-  //   props.parentCallback(d);
-  //   props.close();
-  //  window.location.reload();
-  // }
 
   return (
     <Modal

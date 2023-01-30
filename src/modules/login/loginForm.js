@@ -244,7 +244,7 @@ const LoginForm = () => {
                       <div className="timer">
                         <OtpTimer
                           minutes={0}
-                          seconds={20}
+                          seconds={60}
                           text="Time:"
                           resend={() => handleClick}
                           ButtonText="Resend OTP"

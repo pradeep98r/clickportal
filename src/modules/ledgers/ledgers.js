@@ -26,8 +26,11 @@ import date_icon from "../../assets/images/date_icon.svg";
 import loading from "../../assets/images/loading.gif";
 import NoInternetConnection from "../../components/noInternetConnection";
 import RecordPayment from './recordPayment';
+import { useDispatch } from 'react-redux';
+import {dateCustomStatus} from "../../reducers/billEditItemSlice"
 const Ledgers = (props) => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+    const dispatch = useDispatch();
     const clickId = loginData.caId;
     const [allData, setAllData] = useState([]);
     const [ledgers, setLedgers] = useState(allData);
@@ -229,7 +232,7 @@ const Ledgers = (props) => {
         }
         setAllCustom(type);
     }
-
+    const [dateCustom, setdateCustom] = useState(false);
     //ledger and detailed ledger tabs
     const ledgerTabEvent = (ledgerTabType) => {
         if (allCustom == 'all' && ledgerTabType == 'detailedledger') {
@@ -244,15 +247,20 @@ const Ledgers = (props) => {
             setDateValue(defaultDate + ' to ' + defaultDate);
             ledgerSummaryByDate(clickId, partyId, date, date);
             sethandleDate(true);
+            dispatch(dateCustomStatus(true));
         }
         if (allCustom == 'custom' && ledgerTabType == 'detailedledger') {
             if (ledgerType == 'BUYER') {
                 setDateValue(defaultDate + ' to ' + defaultDate);
                 sethandleDate(true);
                 detailedLedgerByDate(clickId, partyId, date, date);
+                dispatch(dateCustomStatus(true));
+                setdateCustom(true);
             } else {
                 setDateValue(defaultDate + ' to ' + defaultDate);
                 sellerDetailedByDate(clickId, partyId, date, date);
+                setdateCustom(true);
+                dispatch(dateCustomStatus(true));
             }
 
         }
@@ -792,6 +800,7 @@ const Ledgers = (props) => {
                             close={() => setShowDatepickerModal(false)}
                             parentCallback={callbackFunction}
                             ledgerTabs = {ledgerTabs}
+                            dateCustom={dateCustom}
                         />
                     ) : (
                         <p></p>
