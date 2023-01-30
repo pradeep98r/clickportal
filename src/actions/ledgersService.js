@@ -39,11 +39,24 @@ export function getSellerDetailedLedgerByDate(clickId,partyId,fromDate,toDate){
     `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
   );
 }
+export function postRecordPayment(addRecordPaymentReq) {
+  return axiosCommon.post(
+    `/click/ledgers/payment/record`,
+    addRecordPaymentReq
+  );
+}
+export function getOutstandingBal(clickId,partyId,){
+  return axiosCommon.get(
+    `/click/ledgers/balance/caId/${clickId}/partyId/${partyId}`
+  );
+}
 export default{
     getLedgers,
     getLedgerSummary,
     getBuyerDetailedLedger,
     getDetailedLedgerByDate,
     getSellerDetailedLedger,
-    getSellerDetailedLedgerByDate
+    getSellerDetailedLedgerByDate,
+    postRecordPayment,
+    getOutstandingBal
 }

@@ -205,8 +205,8 @@ const Partner = () => {
     $("#Mymodal").modal("show");
   };
 
-  const [profilePic, setProfilePic] = useState("");
-  const [updateProfilePic, setUpdateProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState(null);
+  const [updateProfilePic, setUpdateProfilePic] = useState(null)
   const handleProfilePic = (e) => {
     if (isEdit) {
       var output = document.getElementById("output");
@@ -229,6 +229,11 @@ const Partner = () => {
         });
       console.log(updateProfilePic);
     } else {
+      var output = document.getElementById("output");
+      output.src = URL.createObjectURL(e.target.files[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],
@@ -275,6 +280,7 @@ const Partner = () => {
       vehicleType: vehicleType,
     },
   };
+
 
   //   file ? URL.createObjectURL(file) :
   var exitStatus = false;
@@ -331,6 +337,7 @@ const Partner = () => {
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
+            console.log(obj,"obj")
             tabEvent(partyType);
             toast.success("Updated Successfully", {
               toastId: "success2",
@@ -1004,6 +1011,7 @@ const Partner = () => {
                                 className="form-control"
                                 name="state"
                                 value={stateVal}
+                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             ) : (
                               <input
@@ -1030,6 +1038,7 @@ const Partner = () => {
                                     id="city"
                                     name="city"
                                     value={cityVal}
+                                    onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                   />
                                 </div>
                               ) : (
@@ -1038,6 +1047,7 @@ const Partner = () => {
                                   id="city"
                                   name="city"
                                   value={cityVal}
+                                  onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                 />
                               )}
                             </div>
@@ -1188,6 +1198,7 @@ const Partner = () => {
                                               ? profilePic
                                               : single_bill
                                           }
+                                          id="output"
                                           // src={
                                           //   file
                                           //     ? URL.createObjectURL(file)
@@ -1342,6 +1353,7 @@ const Partner = () => {
                                 className="form-control"
                                 name="state"
                                 value={stateVal}
+                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             ) : (
                               <input
@@ -1368,6 +1380,7 @@ const Partner = () => {
                                     id="city"
                                     name="city"
                                     value={cityVal}
+                                    onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                   />
                                 </div>
                               ) : (
@@ -1376,6 +1389,7 @@ const Partner = () => {
                                   id="city"
                                   name="city"
                                   value={cityVal}
+                                  onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                 />
                               )}
                             </div>

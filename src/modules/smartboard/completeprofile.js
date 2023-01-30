@@ -473,6 +473,7 @@ const CompleteProfile = (props) => {
     $("#marketNamePopUpModal").modal("show");
   };
   const closePopup = () => {
+    setSearchValue('')
     $("#marketNamePopUpModal").modal("hide");
   };
 
@@ -722,6 +723,7 @@ const CompleteProfile = (props) => {
                     className="form-control"
                     name="state"
                     value={stateVal}
+                    onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                   />
                 ) : (
                   <input id="state" className="form-control" name="state" />
@@ -746,6 +748,7 @@ const CompleteProfile = (props) => {
                         name="city"
                         value={cityVal}
                         starRequired={true}
+                        onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                       />
                     </div>
                   ) : (
@@ -788,6 +791,7 @@ const CompleteProfile = (props) => {
                     className="secondary_btn"
                     // id="close_modal"
                     data-bs-dismiss="modal"
+                    onClick={props.close}
                   >
                     Cancel
                   </button>

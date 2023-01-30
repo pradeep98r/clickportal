@@ -117,15 +117,18 @@ function DatePickerModel(props) {
       onChangeMonthYear: function (year, month, inst) {
         selectCurrentWeek();
       },
+      
     });
-  
   });
 
   //const [active, setActive] =useState(false);
   const link = localStorage.getItem('LinkPath');
   const [dateTabs, setDateTabs] = useState(link =='/buyerledger' || 
-                                          link =='/sellerledger'?'Custom':"Daily");
+                                          link =='/sellerledger' ||
+                                          props.ledgerTabs== 'detailedledger'?'Custom':"Daily");
+  console.log(dateTabs,"dateTabs")
   const [selectedDate, setStartDate] = useState("");
+
   const dateOnchangeEvent = (date,type) =>{
     if(type == 'Daily'){
       setStartDate(date);
@@ -140,11 +143,16 @@ function DatePickerModel(props) {
   }
   const setToDefaultDate = () =>{
     if(link == '/buyerledger' || link == '/sellerledger'){
-      setDateTabs('Custom');
+      if(props.ledgerTabs == 'detailedledger'){
+        setDateTabs('Custom');
+      }
+      setDateTabs(dateTabs);
     } else{
       setDateTabs('Daily');
     }
+
   }
+
   const onclickContinue = async (dateValue) => {
     var lastDay = new Date(
       dateValue.getFullYear(),
