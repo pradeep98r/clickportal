@@ -492,10 +492,10 @@ const Ledgers = (props) => {
                                         )}
                                     </div>
                                     <div className="col-lg-8">
-                                    <RecordPayment 
+                                    {/* <RecordPayment 
                                     LedgerData={ledgerData}
                                     ledgerId ={partyId}
-                                    outStbal = {paidRcvd} />
+                                    outStbal = {paidRcvd} /> */}
                                         <div className='d-flex'>
                                             <ul className="nav nav-tabs partner_tabs ledger_all_custom mb-0" id="myTab" role="tablist">
                                                 {tabs.map((tab) => {
