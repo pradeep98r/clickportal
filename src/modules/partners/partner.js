@@ -161,7 +161,7 @@ const Partner = () => {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  const [pincode, setPincode] = useState("");
+  const [pincode, setPincode] = useState(0);
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
   const [radioValue, setradioValue] = useState("FARMER");
@@ -185,6 +185,7 @@ const Partner = () => {
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
         setUpdateProfilePic(partner.profilePic);
+        console.log(partner)
         setPincode(partner.address.pincode);
         setOpeningBalance(partner.openingBal);
         if (
@@ -249,7 +250,7 @@ const Partner = () => {
       addressLine: streetVillage,
       city: cityVal,
       dist: cityVal,
-      pincode: pincode,
+      pincode: pincode == 0 ? 0 : pincode,
       state: stateVal,
       type: "PERSONAL",
     },
@@ -328,6 +329,7 @@ const Partner = () => {
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
+      console.log(pincode,obj)
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -336,14 +338,14 @@ const Partner = () => {
               toastId: "success2",
             });
 
-            handleRefreshClick();
+            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     } else {
@@ -404,7 +406,7 @@ const Partner = () => {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
-    setPincode("");
+    setPincode(0);
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -597,7 +599,7 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    setPincode("");
+    setPincode(0);
     setAadharError("");
     setNameError("");
     setStateVal("");
