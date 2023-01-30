@@ -162,7 +162,7 @@ const Partner = () => {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  const [pincode, setPincode] = useState("");
+  const [pincode, setPincode] = useState(0);
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
   const [radioValue, setradioValue] = useState("FARMER");
@@ -186,6 +186,7 @@ const Partner = () => {
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
         setUpdateProfilePic(partner.profilePic);
+        console.log(partner)
         setPincode(partner.address.pincode);
         setVehicleNum(partner.vehicleInfo?.vehicleNum);
         setVehicleType(partner.vehicleInfo?.vehicleType)
@@ -257,7 +258,7 @@ const Partner = () => {
       addressLine: streetVillage,
       city: cityVal,
       dist: cityVal,
-      pincode: pincode,
+      pincode: pincode == 0 ? 0 : pincode,
       state: stateVal,
       type: "PERSONAL",
     },
@@ -336,6 +337,7 @@ const Partner = () => {
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
+      console.log(pincode,obj)
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -345,14 +347,14 @@ const Partner = () => {
               toastId: "success2",
             });
 
-            handleRefreshClick();
+            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     } else {
@@ -413,7 +415,7 @@ const Partner = () => {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
-    setPincode("");
+    setPincode(0);
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -511,7 +513,7 @@ const Partner = () => {
     setPincode(zip);
     setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
-    if (zip.length) {
+    if (zip.length >= 6) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
       $.get(
         "https://maps.googleapis.com/maps/api/geocode/json?address=" +
@@ -524,11 +526,16 @@ const Partner = () => {
         fillCityAndStateFields(possibleLocalities);
       });
     }
+    else{
+      $("#city").val('');
+      $("#state").val('');
+      setCityVal('');
+      setStateVal('');
+    }
   };
 
   function fillCityAndStateFields(localities) {
-    var locality = localities[0]; //use the first city/state object
-
+    var locality = localities[0]; 
     $("#city").val(locality.city);
     $("#state").val(locality.state);
   }
@@ -569,6 +576,7 @@ const Partner = () => {
   }
   function fillCityAndStateFields(localities) {
     var locality = localities[0];
+    console.log(locality,localities,"locality")
     $("#city").val(locality.city);
     $("#state").val(locality.state);
     var city = localities[0].city;
@@ -606,7 +614,7 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    setPincode("");
+    setPincode(0);
     setAadharError("");
     setNameError("");
     setStateVal("");
