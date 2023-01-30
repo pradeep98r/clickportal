@@ -221,7 +221,6 @@ const CompleteProfile = (props) => {
       stateVal.trim().length !== 0 &&
       streetVillage.trim().length !== 0
     ) {
-      console.log("edit api");
       addEditMandiSetupApiCall();
       
     } else if (mandiNameField.trim().length === 0) {
@@ -271,7 +270,6 @@ const CompleteProfile = (props) => {
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            console.log(response, "update partner");
             toast.success("Mandi Details Updated Successfully", {
               toastId: "success",
             });
@@ -290,7 +288,6 @@ const CompleteProfile = (props) => {
       completeMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            console.log(response, "add partner");
             setMandiNameField(mandiNameField);
             localStorage.setItem(
               "businessCreatedStatus",
@@ -362,7 +359,6 @@ const CompleteProfile = (props) => {
     pincodeValue = pincodeValue.replace(/\D/g, "");
     let city = address.results[5].address_components[2].short_name;
     let state = address.results[5].address_components[3].short_name;
-    console.log(pincodeValue,address.results[0]);
     $("#city").val(city);
     $("#state").val(state);
     $("#zip").val(pincodeValue);
@@ -384,7 +380,7 @@ const CompleteProfile = (props) => {
     setPincode(zip);
     setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
-    if (zip.length) {
+    if (zip.length >= 6) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
       $.get(
         "https://maps.googleapis.com/maps/api/geocode/json?address=" +
@@ -396,6 +392,11 @@ const CompleteProfile = (props) => {
         var possibleLocalities = geocodeResponseToCityState(response);
         fillCityAndStateFields(possibleLocalities);
       });
+    }  else{
+      $("#city").val('');
+      $("#state").val('');
+      setCityVal('');
+      setStateVal('');
     }
     setPincodeError("");
     setCityValError("");

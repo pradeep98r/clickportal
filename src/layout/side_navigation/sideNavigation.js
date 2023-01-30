@@ -22,7 +22,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import logout from "../../assets/images/logout.svg";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
-
+const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+console.log(loginData)
 function SideNavigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
