@@ -152,6 +152,7 @@ const Partner = () => {
   };
   const [vehicleNum, setVehicleNum] = useState("");
   const handlevehicleNum = (e) => {
+    console.log(e.target.value);
     setVehicleNum(e.target.value);
   };
   const [streetVillage, setStreetVillage] = useState("");
@@ -187,6 +188,8 @@ const Partner = () => {
         setUpdateProfilePic(partner.profilePic);
         console.log(partner)
         setPincode(partner.address.pincode);
+        setVehicleNum(partner.vehicleInfo?.vehicleNum);
+        setVehicleType(partner.vehicleInfo?.vehicleType)
         setOpeningBalance(partner.openingBal);
         if (
           partner.partyType.toLowerCase() == "farmer" ||
@@ -277,11 +280,10 @@ const Partner = () => {
           : true
         : false,
     vehicleInfo: {
-      vehicleNum: "string",
+      vehicleNum: vehicleNum,
       vehicleType: vehicleType,
     },
   };
-
 
   //   file ? URL.createObjectURL(file) :
   var exitStatus = false;
@@ -623,6 +625,8 @@ const Partner = () => {
     console.log("hiding");
     $("#state").val("");
     $("#city").val("");
+    setVehicleNum('');
+    setVehicleType('');
   };
   const getPartnerType = (item, trader) => {
     var party = item;
