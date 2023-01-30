@@ -511,7 +511,7 @@ const Partner = () => {
     setPincode(zip);
     setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
-    if (zip.length) {
+    if (zip.length >= 6) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
       $.get(
         "https://maps.googleapis.com/maps/api/geocode/json?address=" +
@@ -524,11 +524,16 @@ const Partner = () => {
         fillCityAndStateFields(possibleLocalities);
       });
     }
+    else{
+      $("#city").val('');
+      $("#state").val('');
+      setCityVal('');
+      setStateVal('');
+    }
   };
 
   function fillCityAndStateFields(localities) {
-    var locality = localities[0]; //use the first city/state object
-
+    var locality = localities[0]; 
     $("#city").val(locality.city);
     $("#state").val(locality.state);
   }
@@ -569,6 +574,7 @@ const Partner = () => {
   }
   function fillCityAndStateFields(localities) {
     var locality = localities[0];
+    console.log(locality,localities,"locality")
     $("#city").val(locality.city);
     $("#state").val(locality.state);
     var city = localities[0].city;
