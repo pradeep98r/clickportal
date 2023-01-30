@@ -10,6 +10,21 @@
     vertical-align: middle;
 }
 
+.partner_no_data_widget{
+    p{
+      font-size: 13px;
+      font-weight: 500;
+      color: #161616;
+      margin: 20px 0px;
+    }
+  }
+  .partner_no_data_widget_rows{
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 120px;
+  }
+
 .ledger-table{
     // height: calc(100vh - 606px);
     overflow-y: auto;
@@ -49,14 +64,21 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 308px);
+    height: calc(100vh - 320px);
+    overflow-y: auto;
+    background: #FFFFFF;
+    width: 100%;
+    border-radius: 10px 10px 10px 10px;
+}
+.all_ledgerSummary{
+    height: calc(100vh - 303px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 325px);
+    height: calc(100vh - 320px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -265,6 +287,11 @@ input[type=radio]:checked+label {
     color: #121212;
     color: #16A12C;
 }
+.ledger_tabs {
+    background-color: #fff;
+    border-bottom: 1px solid #E4E4E4;
+    padding-bottom: 0px;
+}
 input[type="text"]::placeholder {  
     padding-left: 35px; 
     font-weight: 500;
@@ -390,7 +417,7 @@ a:hover{
     font-size: 15px;
     color: #16A02C;
     margin: auto;
-    //padding-left: 100px;
+    // padding-left: 100px;
 }
 .profile-details{
     padding-left: 10px;
@@ -522,4 +549,14 @@ a:hover{
   }
   .nodataimage{
     //   height: 100%;
+  }
+
+  .table thead th{
+      border-bottom: 0px;
+  }
+  .table th{
+      border-top: 1px solid#E4E4E4;
+  }
+  .padding_all{
+      padding-top: 15px;
   }

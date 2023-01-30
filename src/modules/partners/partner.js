@@ -27,6 +27,8 @@ import location_icon from "../../assets/images/location_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
+import NoInternetConnection from "../../components/noInternetConnection";
+import loading from "../../assets/images/loading.gif";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -37,6 +39,8 @@ const Partner = () => {
   const [partyType, setPartyType] = useState(
     savetype !== null ? savetype : "FARMER"
   );
+  const [isOnline, setOnline] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState("");
   const [nameError, setNameError] = useState("");
   const [shortnameError, setShortNameError] = useState("");
@@ -148,6 +152,7 @@ const Partner = () => {
   };
   const [vehicleNum, setVehicleNum] = useState("");
   const handlevehicleNum = (e) => {
+    console.log(e.target.value);
     setVehicleNum(e.target.value);
   };
   const [streetVillage, setStreetVillage] = useState("");
@@ -157,7 +162,7 @@ const Partner = () => {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  const [pincode, setPincode] = useState("");
+  const [pincode, setPincode] = useState(0);
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
   const [radioValue, setradioValue] = useState("FARMER");
@@ -181,7 +186,10 @@ const Partner = () => {
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
         setUpdateProfilePic(partner.profilePic);
+        console.log(partner)
         setPincode(partner.address.pincode);
+        setVehicleNum(partner.vehicleInfo?.vehicleNum);
+        setVehicleType(partner.vehicleInfo?.vehicleType)
         setOpeningBalance(partner.openingBal);
         if (
           partner.partyType.toLowerCase() == "farmer" ||
@@ -201,8 +209,8 @@ const Partner = () => {
     $("#Mymodal").modal("show");
   };
 
-  const [profilePic, setProfilePic] = useState("");
-  const [updateProfilePic, setUpdateProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState(null);
+  const [updateProfilePic, setUpdateProfilePic] = useState(null)
   const handleProfilePic = (e) => {
     if (isEdit) {
       var output = document.getElementById("output");
@@ -225,6 +233,11 @@ const Partner = () => {
         });
       console.log(updateProfilePic);
     } else {
+      var output = document.getElementById("output");
+      output.src = URL.createObjectURL(e.target.files[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],
@@ -245,7 +258,7 @@ const Partner = () => {
       addressLine: streetVillage,
       city: cityVal,
       dist: cityVal,
-      pincode: pincode,
+      pincode: pincode == 0 ? 0 : pincode,
       state: stateVal,
       type: "PERSONAL",
     },
@@ -267,7 +280,7 @@ const Partner = () => {
           : true
         : false,
     vehicleInfo: {
-      vehicleNum: "string",
+      vehicleNum: vehicleNum,
       vehicleType: vehicleType,
     },
   };
@@ -324,22 +337,24 @@ const Partner = () => {
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
+      console.log(pincode,obj)
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
+            console.log(obj,"obj")
             tabEvent(partyType);
             toast.success("Updated Successfully", {
               toastId: "success2",
             });
 
-            handleRefreshClick();
+            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     } else {
@@ -400,7 +415,7 @@ const Partner = () => {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
-    setPincode("");
+    setPincode(0);
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -408,8 +423,10 @@ const Partner = () => {
       .then((response) => {
         setAllData(response.data.data);
         setPartnerData(response.data.data);
+      setIsLoading(false)
       })
       .catch((error) => {
+        setOnline(true);
         console.log(error);
       });
   };
@@ -496,7 +513,7 @@ const Partner = () => {
     setPincode(zip);
     setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
-    if (zip.length) {
+    if (zip.length >= 6) {
       //make a request to the google geocode api with the zipcode as the address parameter and your api key
       $.get(
         "https://maps.googleapis.com/maps/api/geocode/json?address=" +
@@ -509,11 +526,16 @@ const Partner = () => {
         fillCityAndStateFields(possibleLocalities);
       });
     }
+    else{
+      $("#city").val('');
+      $("#state").val('');
+      setCityVal('');
+      setStateVal('');
+    }
   };
 
   function fillCityAndStateFields(localities) {
-    var locality = localities[0]; //use the first city/state object
-
+    var locality = localities[0]; 
     $("#city").val(locality.city);
     $("#state").val(locality.state);
   }
@@ -554,6 +576,7 @@ const Partner = () => {
   }
   function fillCityAndStateFields(localities) {
     var locality = localities[0];
+    console.log(locality,localities,"locality")
     $("#city").val(locality.city);
     $("#state").val(locality.state);
     var city = localities[0].city;
@@ -591,7 +614,7 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    setPincode("");
+    setPincode(0);
     setAadharError("");
     setNameError("");
     setStateVal("");
@@ -602,6 +625,8 @@ const Partner = () => {
     console.log("hiding");
     $("#state").val("");
     $("#city").val("");
+    setVehicleNum('');
+    setVehicleType('');
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -645,6 +670,7 @@ const Partner = () => {
   return (
     <div>
       <div className="main_div_padding">
+        {isOnline?<NoInternetConnection />:
         <div className="container-fluid px-0">
           <ul className="nav nav-tabs partner_tabs" id="myTab" role="tablist">
             {links.map((link) => {
@@ -666,6 +692,11 @@ const Partner = () => {
               );
             })}
           </ul>
+          {isLoading?(
+            <div className="">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+          ):(
           <div className="tab-content">
             <div
               className="tab-pane active"
@@ -823,9 +854,11 @@ const Partner = () => {
               )}
             </div>
           </div>
+          )}
         </div>
+        }
       </div>
-
+            
       <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
@@ -990,6 +1023,7 @@ const Partner = () => {
                                 className="form-control"
                                 name="state"
                                 value={stateVal}
+                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             ) : (
                               <input
@@ -1016,6 +1050,7 @@ const Partner = () => {
                                     id="city"
                                     name="city"
                                     value={cityVal}
+                                    onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                   />
                                 </div>
                               ) : (
@@ -1024,6 +1059,7 @@ const Partner = () => {
                                   id="city"
                                   name="city"
                                   value={cityVal}
+                                  onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                 />
                               )}
                             </div>
@@ -1174,6 +1210,7 @@ const Partner = () => {
                                               ? profilePic
                                               : single_bill
                                           }
+                                          id="output"
                                           // src={
                                           //   file
                                           //     ? URL.createObjectURL(file)
@@ -1328,6 +1365,7 @@ const Partner = () => {
                                 className="form-control"
                                 name="state"
                                 value={stateVal}
+                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             ) : (
                               <input
@@ -1354,6 +1392,7 @@ const Partner = () => {
                                     id="city"
                                     name="city"
                                     value={cityVal}
+                                    onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                   />
                                 </div>
                               ) : (
@@ -1362,6 +1401,7 @@ const Partner = () => {
                                   id="city"
                                   name="city"
                                   value={cityVal}
+                                  onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                                 />
                               )}
                             </div>

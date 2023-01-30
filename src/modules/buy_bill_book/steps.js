@@ -48,6 +48,8 @@ const Steps = (props) => {
   };
   const dispatch = useDispatch();
   const clearData=(e)=>{
+    localStorage.removeItem("defaultDate")
+    localStorage.removeItem('setDate')
     dispatch(selectTrans(null)); 
     setcropEditObject([]);
     setslectedCropstableArray([]);

@@ -14,7 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import $ from "jquery";
 import close from "../../assets/images/close.svg";
 import "react-toastify/dist/ReactToastify.css";
-import Illustration from "../../assets/images/Illustration.svg"
+import Illustration from "../../assets/images/Illustration.svg";
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
@@ -27,7 +27,7 @@ const LoginForm = () => {
     let number = onlyNumbers.slice(0, 10);
     setmobileNumber(number);
     setInvalidError(false);
-    setotpErrorStatus(false)
+    setotpErrorStatus(false);
   };
   navigator.geolocation.getCurrentPosition(function (position) {
     setLatValue(position.coords.latitude);
@@ -65,7 +65,7 @@ const LoginForm = () => {
   };
   const handleClick = () => {
     setotpErrorStatus(false);
-    setOtpValue('');
+    setOtpValue("");
     console.log(obj);
     doLogin(obj).then(
       (response) => {
@@ -73,8 +73,7 @@ const LoginForm = () => {
           setViewOtpForm(true);
           setOtpId(response.data.data.otpReqId);
         } else if (response.data.status === "FAILURE") {
-        } else {
-        }
+        } 
       },
       (error) => {
         setInvalidError(true);
@@ -157,7 +156,7 @@ const LoginForm = () => {
         }
       },
       (error) => {
-        setotpErrorStatus(true)
+        setotpErrorStatus(true);
         setotpError("The entered OTP is incorrect");
       }
     );
@@ -165,6 +164,8 @@ const LoginForm = () => {
   const backToLogin = (event) => {
     event.preventDefault();
     setViewOtpForm(false);
+    setotpErrorStatus(false);
+    setOtpValue("");
   };
 
   const conditionsPopUp = () => {
@@ -179,6 +180,12 @@ const LoginForm = () => {
 
   const closePrivatePolicy = () => {
     $("#privatePolicy").modal("hide");
+  };
+  const onkeyDownevent = (e) => {
+    if (e.key === "Enter") {
+      e.stopPropagation();
+      e.preventDefault();
+    }
   };
 
   return (
@@ -237,10 +244,10 @@ const LoginForm = () => {
                       <div className="timer">
                         <OtpTimer
                           minutes={0}
-                          seconds={60}
+                          seconds={20}
                           text="Time:"
-                          // ButtonText="Resend"
-                          resend={handleClick}
+                          resend={() => handleClick}
+                          ButtonText="Resend OTP"
                         />
                       </div>
                     </div>
@@ -249,10 +256,13 @@ const LoginForm = () => {
                       name="phone"
                       autoComplete="false"
                       className="form-control"
-                      style={{color: otpErrorStatus == false ? "#495057" : "#FD0D1B"}}
+                      style={{
+                        color: otpErrorStatus == false ? "#495057" : "#FD0D1B",
+                      }}
                       id="phone"
                       value={otpValue}
                       onChange={(event) => handleOtpChange(event)}
+                      onKeyDown={(e) => onkeyDownevent(e)}
                     />
                     <span className="text-danger">{otpError}</span>
                   </div>

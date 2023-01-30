@@ -28,9 +28,15 @@ function DatePickerModel(props) {
   const [isLoading, setLoading] = useState(true);
   useEffect(() => {
     localStorage.setItem("billViiewSttatus", false);
-    console.log(props.billViiewDate);
     setLoading(false);
-  }, []);
+    setDateTabs(
+      link == "/buyerledger" ||
+        link == "/sellerledger" ||
+        props.ledgerTabs == "detailedledger"
+        ? "Custom"
+        : "Daily"
+    );
+  }, [props.show]);
 
   const [startDate, setStartsDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -96,7 +102,6 @@ function DatePickerModel(props) {
           inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
         var weekFdate = moment(startWeekDate, "DD-MMM-YYYY");
         var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
-        console.log(weekFdate, weekLdate, "Dates");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
         // moment(startWeekDate, "MM-DD-YYYY");
@@ -118,24 +123,40 @@ function DatePickerModel(props) {
         selectCurrentWeek();
       },
     });
-  
   });
 
   //const [active, setActive] =useState(false);
-  const [dateTabs, setDateTabs] = useState("Daily");
+  const link = localStorage.getItem("LinkPath");
+  const [dateTabs, setDateTabs] = useState(
+    link == "/buyerledger" ||
+      link == "/sellerledger" ||
+      props.ledgerTabs == "detailedledger"
+      ? "Custom"
+      : "Daily"
+  );
   const [selectedDate, setStartDate] = useState("");
-  const dateOnchangeEvent = (date,type) =>{
-    if(type == 'Daily'){
+
+  const dateOnchangeEvent = (date, type) => {
+    if (type == "Daily") {
       setStartDate(date);
-    }
-    else if(type == 'Monthly'){
+    } else if (type == "Monthly") {
       setSelectedMonthDate(date);
-    }
-    else if(type == 'Yearly'){
+    } else if (type == "Yearly") {
       setSelectedyearDate(date);
     }
     onclickContinue(date);
-  }
+  };
+  const setToDefaultDate = () => {
+    if (link == "/buyerledger" || link == "/sellerledger") {
+      if (props.ledgerTabs == "detailedledger") {
+        setDateTabs("Custom");
+      }
+      setDateTabs(dateTabs);
+    } else {
+      setDateTabs("Daily");
+    }
+  };
+
   const onclickContinue = async (dateValue) => {
     var lastDay = new Date(
       dateValue.getFullYear(),
@@ -148,37 +169,37 @@ function DatePickerModel(props) {
       lastDate = firstDate;
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
-      console.log(firstDate, lastDate);
+      setDateTabs("Daily");
     } else if (dateTabs == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
-      console.log(firstDate, lastDate,"week");
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
+      setDateTabs("Weekly");
     } else if (dateTabs == "Yearly") {
       const currentYear = dateValue.getFullYear();
       const firstDay = new Date(currentYear, 0, 1);
       lastDay = new Date(currentYear, 11, 31);
       firstDate = moment(firstDay).format("YYYY-MM-DD");
       lastDate = moment(lastDay).format("YYYY-MM-DD");
-      console.log(firstDate, lastDate);
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
+      setDateTabs("Yearly");
     } else if (dateTabs == "Monthly") {
       const currentYear = dateValue.getFullYear();
       const firstDay = new Date(currentYear, dateValue.getMonth(), 1);
       lastDay = new Date(currentYear, dateValue.getMonth() + 1, 0);
       firstDate = moment(firstDay).format("YYYY-MM-DD");
       lastDate = moment(lastDay).format("YYYY-MM-DD");
-      console.log(firstDate, lastDate, dateTabs);
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
+      setDateTabs("Monthly");
     } else if (dateTabs == "Custom") {
       firstDate = moment(startDate).format("YYYY-MM-DD");
       lastDate = moment(endDate).format("YYYY-MM-DD");
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
-      console.log(firstDate, lastDate);
+      setDateTabs("Custom");
     }
   };
 
@@ -191,10 +212,14 @@ function DatePickerModel(props) {
   //   props.close();
   //  window.location.reload();
   // }
+
   return (
     <Modal
       show={props.show}
-      close={props.close}
+      close={() => {
+        setToDefaultDate();
+        props.close();
+      }}
       id="datePopupmodal"
       aria-labelledby="contained-modal-title-vcenter"
       centered
@@ -215,7 +240,10 @@ function DatePickerModel(props) {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={props.close}
+          onClick={() => {
+            setToDefaultDate();
+            props.close();
+          }}
           data-bs-dismiss="modal"
         />
       </div>
@@ -303,7 +331,7 @@ function DatePickerModel(props) {
               <DatePicker
                 dateFormat="yyyy-MMM-dd"
                 selected={selectedDate}
-                onChange={(date) => dateOnchangeEvent(date,dateTabs)}
+                onChange={(date) => dateOnchangeEvent(date, dateTabs)}
                 className="form-control"
                 placeholder="Date"
                 maxDate={new Date()}
@@ -328,7 +356,7 @@ function DatePickerModel(props) {
                 showMonthYearPicker
                 showFullMonthYearPicker
                 selected={selectedMonthDate}
-                onChange={(date) => dateOnchangeEvent(date,dateTabs)}
+                onChange={(date) => dateOnchangeEvent(date, dateTabs)}
                 className="form-control"
                 placeholder="Date"
                 maxDate={new Date()}
@@ -344,7 +372,7 @@ function DatePickerModel(props) {
               <h2>
                 <DatePicker
                   selected={selectedYearDate}
-                  onChange={(date) => dateOnchangeEvent(date,dateTabs)}
+                  onChange={(date) => dateOnchangeEvent(date, dateTabs)}
                   showYearPicker
                   dateFormat="yyyy"
                   className="form-control"
@@ -408,23 +436,27 @@ function DatePickerModel(props) {
             </article>
           </div>
         </div>
-        {(dateTabs == 'Daily' || dateTabs == 'Monthly' || dateTabs == 'Yearly') ? '' :   
-         <button
-          type="button"
-          className="primary_btn cont_btn w-100 m-0"
-          onClick={() => {
-            onclickContinue(
-              dateTabs == "Daily"
-                ? selectedDate
-                : dateTabs == "Yearly"
-                ? selectedYearDate
-                : selectedMonthDate
-            );
-          }}
-        >
-          Continue
-        </button>}
-     
+        {dateTabs == "Daily" ||
+        dateTabs == "Monthly" ||
+        dateTabs == "Yearly" ? (
+          ""
+        ) : (
+          <button
+            type="button"
+            className="primary_btn cont_btn w-100 m-0"
+            onClick={() => {
+              onclickContinue(
+                dateTabs == "Daily"
+                  ? selectedDate
+                  : dateTabs == "Yearly"
+                  ? selectedYearDate
+                  : selectedMonthDate
+              );
+            }}
+          >
+            Continue
+          </button>
+        )}
       </div>
     </Modal>
   );

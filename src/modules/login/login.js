@@ -1,6 +1,5 @@
 import React, { Component, useEffect, useState } from "react";
 import Navigation from "../../components/navigation";
-import Button from "../../components/button";
 import Logo from "../../components/logo";
 import "../login/login.scss";
 import ca_avatar from "../../assets/images/login/ca_image.svg";
@@ -46,9 +45,9 @@ const Login = () => {
               <img
                 src={ca_avatar}
                 alt="commission_agent"
-                className="d-flex mx-auto"
+                className="d-flex mx-auto writer"
               />
-              <p className="para_margin text-center">
+              <p className="text-center para_margin">
                 I'm a Mandi Business owner and manage all my partners (farmers,
                 traders, buyers, transporters) and transactions.
               </p>
@@ -95,6 +94,7 @@ const Login = () => {
         </div>
         <Logo />
       </div>
+      
     </div>
   );
 };

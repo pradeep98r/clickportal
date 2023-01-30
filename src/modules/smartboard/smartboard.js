@@ -28,6 +28,8 @@ import { useNavigate } from "react-router-dom";
 import tickMark from "../../assets/images/tick_mark.svg";
 import no_data_icon from "../../assets/images/no_data_small.svg";
 import { DateUtils } from "rsuite/esm/utils";
+import NoInternetConnection from "../../components/noInternetConnection";
+
 const SmartBoard = () => {
   const [tabType, setTabType] = useState("Daily");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -44,6 +46,7 @@ const SmartBoard = () => {
   const [cropPurchaseData, setcropPurchaseData] = useState([]);
   const [commissionEarns, setcommissionEarns] = useState({});
   const [isLoading, setLoading] = useState(true);
+  const [isOnline, setOnline] = useState(false);
   const navigate = useNavigate();
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -258,6 +261,8 @@ const SmartBoard = () => {
         setLoading(false);
       })
       .catch((error) => {
+        console.log("came to error",error)
+        setOnline(true);
         console.log(error);
       });
   };
@@ -284,6 +289,7 @@ const SmartBoard = () => {
         setLoading(false);
       })
       .catch((error) => {
+        setOnline(true);
         console.log(error);
       });
   };
@@ -368,6 +374,8 @@ const SmartBoard = () => {
             </div>
           ) : (
             <div>
+            {isOnline?<NoInternetConnection />:
+            <div>
               <ul className="nav nav-tabs smartboard_tabs" id="myTab" role="tablist">
                 {links.map((link) => {
                   return (
@@ -435,6 +443,7 @@ const SmartBoard = () => {
                       ""
                     )}
                   </div>
+
                   {isLoading ? (
                     <div className="">
                       <img src={loading} alt="my-gif" className="gif_img" />
@@ -1427,8 +1436,10 @@ const SmartBoard = () => {
                       )}
                     </div>
                   )}
-                </div>
+                  </div>
               </div>
+            </div>
+            }
             </div>
           )}
         </div>
