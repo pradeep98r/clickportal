@@ -246,7 +246,7 @@ const LoginForm = () => {
                           minutes={0}
                           seconds={60}
                           text="Time:"
-                          resend={() => handleClick}
+                          resend={() => handleClick()}
                           ButtonText="Resend OTP"
                         />
                       </div>

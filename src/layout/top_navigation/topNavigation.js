@@ -168,7 +168,7 @@ function TopNavigation() {
                   className="nav-link"
                   type="button"
                 >
-                  <div className="d-flex align-items-center" onClick={()=>profileClick()}>
+                  <div className="d-flex align-items-center" onClick={()=> profileClick()}>
                     <img src = {caImage} className="mr-2" alt="image"/>
                     <div>
                     <h5>{profileData != null
