@@ -36,7 +36,6 @@ function DatePickerModel(props) {
       if(props.ledgerTabs == "detailedledger"){
         if(billEditItemInfo?.dateCustom){
           datev = 'Custom'
-          setStartDate(new Date())
          }
       }
       
@@ -44,8 +43,6 @@ function DatePickerModel(props) {
          if(props.ledgerTabs == "ledgersummary"){
           if(billEditItemInfo?.dateCustom){
             datev = 'Custom'
-            setStartDate(new Date())
-            setEndDate(new Date())
             console.log('heyyy')
            }
            else{
