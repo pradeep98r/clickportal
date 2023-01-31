@@ -624,6 +624,7 @@ input:focus-visible {
 .react-datepicker__day--in-range {
   background-color: var(--ono-primary) !important;
   border-radius: 100% !important;
+  color: #fff!important;
 }
 .react-datepicker__day:hover {
   border-radius: 100% !important;

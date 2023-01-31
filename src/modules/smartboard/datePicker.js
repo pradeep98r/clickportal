@@ -30,17 +30,23 @@ function DatePickerModel(props) {
   useEffect(() => {
     localStorage.setItem("billViiewSttatus", false);
     // setDateCustom(props.dateCustom)
-    console.log(billEditItemInfo?.dateCustom,dateCustom);
+    console.log(billEditItemInfo?.dateCustom,link,props.ledgerTabs)
     if(link == "/buyerledger" ||
-    link == "/sellerledger" ||
-    props.ledgerTabs == "detailedledger"){
-       if(billEditItemInfo?.dateCustom){
-        datev = 'Custom'
-       }
+    link == "/sellerledger"){
+      if(props.ledgerTabs == "detailedledger"){
+        if(billEditItemInfo?.dateCustom){
+          datev = 'Custom'
+          setStartDate(new Date())
+         }
+      }
+      
        else{
          if(props.ledgerTabs == "ledgersummary"){
           if(billEditItemInfo?.dateCustom){
             datev = 'Custom'
+            setStartDate(new Date())
+            setEndDate(new Date())
+            console.log('heyyy')
            }
            else{
             datev = dateTabs
@@ -54,16 +60,26 @@ function DatePickerModel(props) {
     else{
       datev = "Daily"
     }
-    console.log(dateTabs,datev);
     setDateTabs(datev);
   }, [props.show]);
 
   const [startDate, setStartsDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [sDate, setSDate] = useState(false);
+  const [defaultDate, setDefaultDate] = useState(moment(new Date()).format("DD-MMM-YYYY"));
   const onChangeDate = (dates) => {
     const [start, end] = dates;
+    console.log(start,end,dates)
     setStartsDate(start);
     setEndDate(end);
+    if(end == null){
+      setSDate(true);
+      setDefaultDate(defaultDate)
+      // setEndDate(new Date());
+    }
+    else{
+      setSDate(false);
+    }
   };
   const [selectedMonthDate, setSelectedMonthDate] = useState(new Date());
   const [selectedYearDate, setSelectedyearDate] = useState(new Date());
@@ -159,8 +175,11 @@ function DatePickerModel(props) {
   };
   const setToDefaultDate = () => {
     if (link == "/buyerledger" || link == "/sellerledger") {
-      if (props.ledgerTabs == "detailedledger") {
+      if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
+        console.log("customled")
         setDateTabs("Custom");
+        setStartsDate(new Date());
+        setEndDate(new Date());
       }
       setDateTabs(dateTabs);
     } else {
@@ -174,6 +193,7 @@ function DatePickerModel(props) {
       dateValue.getMonth() + 1,
       0
     );
+    
     var firstDate = moment(dateValue).format("YYYY-MM-DD");
     var lastDate = moment(lastDay).format("YYYY-MM-DD");
     if (dateTabs == "Daily") {
@@ -214,8 +234,18 @@ function DatePickerModel(props) {
       setDateCustom(false);
       dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Custom") {
+      console.log(dateTabs,endDate)
+      if(endDate != null){
+        lastDate = moment(endDate).format("YYYY-MM-DD");
+      }
+      else{
+        lastDate = moment(new Date()).format("YYYY-MM-DD");
+        setEndDate(new Date());
+        console.log(lastDate,"else")
+      }
       firstDate = moment(startDate).format("YYYY-MM-DD");
-      lastDate = moment(endDate).format("YYYY-MM-DD");
+      dispatch(dateCustomStatus(true));
+      console.log(firstDate,lastDate)
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Custom");
@@ -411,6 +441,9 @@ function DatePickerModel(props) {
                       onKeyDown={(e) => {
                         e.preventDefault();
                       }}
+                      id="startDate"
+                      name="startDateTime"
+                      value={startDate}
                     />
                   </div>
                 </div>
@@ -418,8 +451,10 @@ function DatePickerModel(props) {
                   <p>To</p>
                   <div className="d-flex date_flex">
                     <img src={date_icon} className="d_icon" />
+                    
                     <DatePicker
                       selected={endDate}
+                      name="endDateTime"
                       onChange={(date) => setEndDate(date)}
                       popperClassName="d-none"
                       dateFormat="dd-MMM-yyyy"
@@ -427,6 +462,8 @@ function DatePickerModel(props) {
                       onKeyDown={(e) => {
                         e.preventDefault();
                       }}
+                      id="endDate"
+                      value={sDate ? defaultDate : endDate}
                       // className="date_in_custom"
                     />
                   </div>

@@ -262,7 +262,7 @@ const LoginForm = () => {
                       id="phone"
                       value={otpValue}
                       onChange={(event) => handleOtpChange(event)}
-                      onKeyDown={(e) => onkeyDownevent(e)}
+                      // onKeyDown={(e) => onkeyDownevent(e)}
                     />
                     <span className="text-danger">{otpError}</span>
                   </div>

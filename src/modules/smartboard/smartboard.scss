@@ -540,3 +540,14 @@
 // tr:last-child td:last-child{
 //   border-bottom-right-radius: 10px;
 // }
+.react-datepicker__input-container{
+  input {
+    color: transparent;
+    caret-color: transparent;
+  }
+  input:focus {
+    outline: none;
+    caret-color: transparent;
+    border: 1px solid ;
+  }
+}
