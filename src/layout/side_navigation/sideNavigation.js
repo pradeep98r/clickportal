@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import click_logo from "../../assets/images/click_logo_green.svg";
 import smartboard_icon from "../../assets/images/sidebar/smartboard.svg";
 import smartchart from "../../assets/images/sidebar/smartchart.svg";
@@ -16,42 +16,18 @@ import transporto from "../../assets/images/sidebar/transporto.svg";
 import menu from "../../assets/images/sidebar/menu.svg";
 import "./sideNavigation.scss";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import logout from "../../assets/images/logout.svg";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-console.log(loginData)
+console.log(loginData);
 function SideNavigation() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isActive, setisActive] = useState(false);
-  const handleToggle = () => {
-    setisActive(!isActive);
-    localStorage.setItem("isActiveMenu", !isActive);
-  };
-  const logOutFunction = () => {
-    caches.keys().then((names) => {
-      names.forEach((name) => {
-        caches.delete(name);
-        alert("hii");
-      });
-    });
-    localStorage.setItem("isauth", false);
-    dispatch(authActions.logout(false));
-    navigate("/login");
-    window.location.reload();
-    localStorage.removeItem("loginResponse");
-    localStorage.removeItem("userType");
-    localStorage.removeItem("LinkPath");
-    localStorage.removeItem("languageData");
-    localStorage.setItem("LinkPath", "/smartboard");
-    localStorage.setItem("statusPlan", "FAILURE");
-    localStorage.setItem("LinkId", "1");
-    localStorage.removeItem("businessCreatedStatus");
-  };
   const links = [
     {
       id: 1,
@@ -145,6 +121,59 @@ function SideNavigation() {
     //   img: advnces,
     // },
   ];
+  const [linksData, setLinksData] = useState([]);
+  const handleToggle = () => {
+    setisActive(!isActive);
+    localStorage.setItem("isActiveMenu", !isActive);
+  };
+  useEffect(() => {
+    if (loginData.useStatus == "WRITER") {
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].name == langFullData.myProfile) {
+          links.splice(i, 1);
+          setLinksData(links);
+        }
+      }
+    } else {
+      setLinksData(links);
+    }
+  }, []);
+  // window.addEventListener('load', function(event) {
+  //   if (loginData.useStatus == "WRITER") {
+  //     console.log('elseifff')
+  //     for (var i = 0; i < links.length; i++) {
+  //       if (links[i].name == langFullData.myProfile) {
+  //         console.log(links[i].name,"name")
+  //         links.splice(i, 1);
+  //         setLinksData(links);
+  //       }
+  //     }
+  //   } else {
+  //     console.log('else')
+  //     setLinksData(links);
+  //   }
+  // });
+  const logOutFunction = () => {
+    caches.keys().then((names) => {
+      names.forEach((name) => {
+        caches.delete(name);
+        alert("hii");
+      });
+    });
+    localStorage.setItem("isauth", false);
+    dispatch(authActions.logout(false));
+    navigate("/login");
+    window.location.reload();
+    localStorage.removeItem("loginResponse");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("LinkPath");
+    localStorage.removeItem("languageData");
+    localStorage.setItem("LinkPath", "/smartboard");
+    localStorage.setItem("statusPlan", "FAILURE");
+    localStorage.setItem("LinkId", "1");
+    localStorage.removeItem("businessCreatedStatus");
+  };
+
   // activeLink: null,
 
   const [activeLink, setactiveLink] = useState(0);
@@ -221,7 +250,7 @@ function SideNavigation() {
       <div id="wrapper" className={isActive ? "toggled-2" : null}>
         <div id="sidebar-wrapper">
           <ul className="sidebar-nav nav-pills nav-stacked" id="menu">
-            {links.map((link) => {
+            {linksData.map((link, i) => {
               return (
                 <li key={link.id}>
                   <Link
@@ -237,6 +266,7 @@ function SideNavigation() {
                     to={link.to}
                   >
                     {/* {link.to.replace('/', '')} */}
+
                     <div className="flex_class">
                       <div className="icons">
                         <img src={link.img} className="flex_class mx-auto" />
