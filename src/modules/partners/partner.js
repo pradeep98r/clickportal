@@ -895,7 +895,7 @@ const Partner = () => {
                             type="radio"
                             //className="custom-control-input"
                             value={partyType.toLowerCase()}
-                            name="radioValue"
+                            name="radioValue1"
                             id={partyType.toLowerCase()}
                             checked={
                               radioValue.toLowerCase() ===
@@ -908,7 +908,7 @@ const Partner = () => {
                             type="radio"
                             value="trader"
                             id="trader"
-                            name="radioValue"
+                            name="radioValue2"
                             checked={radioValue.toLowerCase() === "trader"}
                             //className="custom-control-input"
                             className="radioBtnVal"
@@ -1226,6 +1226,7 @@ const Partner = () => {
                                       <input
                                         type="file"
                                         id="file"
+                                        name='file'
                                         //onChange={(e) => setFile(e.target.files[0])}
                                         onChange={(e) => {
                                           handleProfilePic(e);

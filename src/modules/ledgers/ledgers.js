@@ -153,6 +153,7 @@ const Ledgers = (props) => {
         getOutstandingPaybles(clickId,ledgerId);
         if(allCustom =='custom'){
             setDateDisplay(false);
+            dispatch(dateCustomStatus(true));
         }
         console.log(item, item,ledgerTabs,allCustom);
         var tabs = '';
@@ -160,6 +161,7 @@ const Ledgers = (props) => {
             setLedgerTabs('ledgersummary');
             setAllCustom('all')
             tabs = 'ledgersummary';
+           
         }
         if (allCustom == 'all' || allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
             summaryData(clickId, ledgerId);

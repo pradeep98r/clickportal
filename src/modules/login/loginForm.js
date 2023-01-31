@@ -226,7 +226,7 @@ const LoginForm = () => {
       return;
     }
   }
-  
+
   const handleResendTime =() =>{
     setResendValid(false);
     handleTimeInterval(60);
