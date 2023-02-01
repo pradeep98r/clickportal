@@ -22,7 +22,7 @@ const Login = () => {
           langData.forEach(({ key, value }) =>
             Object.assign(res, { [key]: value })
           );
-          localStorage.removeItem("languageData");
+          //localStorage.removeItem("languageData");
           localStorage.setItem("languageData", JSON.stringify(res));
           localStorage.setItem("selectedLangId", langId);
           const lData = localStorage.getItem("languageData");
