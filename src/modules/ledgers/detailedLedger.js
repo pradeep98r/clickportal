@@ -101,7 +101,8 @@ const DetailedLedger = (props) => {
                                                 </p>
                                             </td>
                                             <td className="col-2">
-                                                <p className="coloring" id="p-common">
+                                                <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'} 
+                                                id="p-common">
                                                     {item.balance
                                                         ? getCurrencyNumberWithOutSymbol(
                                                             item.balance
@@ -185,7 +186,8 @@ const DetailedLedger = (props) => {
                                                 </p>
                                             </td>
                                             <td className="col-3">
-                                                <p className="coloring" id="p-common">
+                                                <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}
+                                                 id="p-common">
                                                     {item.balance
                                                         ? item.balance.toFixed(2)
                                                         : ""}
