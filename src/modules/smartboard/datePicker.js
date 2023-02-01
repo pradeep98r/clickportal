@@ -67,8 +67,8 @@ function DatePickerModel(props) {
   const onChangeDate = (dates) => {
     const [start, end] = dates;
     console.log(start,end,dates)
-    setStartsDate(start);
-    setEndDate(end);
+    // setStartsDate(start);
+    // setEndDate(end);
     if(end == null){
       setSDate(true);
       setDefaultDate(defaultDate)

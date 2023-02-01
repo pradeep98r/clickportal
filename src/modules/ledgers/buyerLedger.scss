@@ -152,11 +152,15 @@ input[type=radio]:checked+label {
     text-align: center;
     float: left;
     cursor: pointer;
-    border: 1px solid #16A02C;
+    border: 1px solid hsl(130, 76%, 36%);
     border-radius: 100%;   
 }
-.coloring,.paid-coloring{
+.coloring{
     color:  #16A12C;;
+}
+.paid-coloring{
+    font-weight: 600;
+    font-size: 13px;
 }
 #verticalLines{
     border-right:1px solid #E4E4E4;

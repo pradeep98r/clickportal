@@ -590,7 +590,7 @@ const Ledgers = (props) => {
                                                     <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                                                         <p className="card-text paid">
                                                             Total Business
-                                                            <p className="coloring">
+                                                            <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}>
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalTobePaidRcvd ?
                                                                     cardDetails.totalTobePaidRcvd ? getCurrencyNumberWithSymbol(
                                                                         cardDetails.totalTobePaidRcvd
@@ -639,7 +639,7 @@ const Ledgers = (props) => {
                                                             <p className="total-paid">
                                                             Total Paid</p>
                                                             }
-                                                            <p className="coloring">
+                                                            <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}>
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalRcvdPaid ?
                                                                     cardDetails.totalRcvdPaid ? getCurrencyNumberWithSymbol(
                                                                         cardDetails.totalRcvdPaid
@@ -685,7 +685,7 @@ const Ledgers = (props) => {
                                                             Outstanding Recievables</p>
                                                             :<p className="out-standing">Outstanding Payables</p>
                                                             }
-                                                            <p className="coloring">
+                                                            <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}>
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.outStdRcvPayble ?
                                                                     cardDetails?.outStdRcvPayble ? getCurrencyNumberWithSymbol(
                                                                         cardDetails.outStdRcvPayble
