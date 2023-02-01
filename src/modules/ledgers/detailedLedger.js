@@ -75,7 +75,7 @@ const DetailedLedger = (props) => {
                                                     {item.kg
                                                         ? getCurrencyNumberWithOneDigit(
                                                             item.kg
-                                                        ) + " | "
+                                                        ) + " KG | "
                                                         : ""}{" "}
                                                     {item.rate
                                                         ? getCurrencyNumberWithOutSymbol(
@@ -167,7 +167,7 @@ const DetailedLedger = (props) => {
                                                             .charAt(item)
                                                             .toUpperCase() + " | "
                                                         : ""}
-                                                    {item.kg ? item.kg + " | " : ""}
+                                                    {item.kg ? item.kg + " KG | " : ""}
                                                     {item.rate ? item.rate : ""}
                                                 </span>
                                             </td>

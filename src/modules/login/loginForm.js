@@ -16,6 +16,7 @@ import close from "../../assets/images/close.svg";
 import "react-toastify/dist/ReactToastify.css";
 import Illustration from "../../assets/images/Illustration.svg";
 import { useEffect } from "react";
+import NoInternetConnection from "../../components/noInternetConnection";
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
@@ -23,6 +24,7 @@ const LoginForm = () => {
   const [otpId, setOtpId] = useState("");
   const [invalidNumber, setInvalidError] = useState(false);
   const [resendValid, setResendValid] = useState(false);
+  const [isOnline, setOnline] = useState(false);
   const handleChange = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 10);
@@ -78,10 +80,15 @@ const LoginForm = () => {
           } 
         },
         (error) => {
+          if(error.message.toUpperCase() == 'NETWORK ERROR'){
+            setOnline(true);
+          }
+          setOnline(true);
           setInvalidError(true);
           toast.error(error.response.data.status.description, {
             toastId: "errorr1",
           });
+          
         }
       );
     
@@ -108,10 +115,15 @@ const LoginForm = () => {
         }
       },
       (error) => {
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
+        setOnline(true);
         setInvalidError(true);
         toast.error(error.response.data.status.description, {
           toastId: "error2",
         });
+        
       }
     );
   };
@@ -161,6 +173,10 @@ const LoginForm = () => {
       (error) => {
         setotpErrorStatus(true);
         setotpError("The entered OTP is incorrect");
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
+        setOnline(true);
       }
     );
   };
@@ -237,7 +253,9 @@ const LoginForm = () => {
   // };
   return (
     <div className="loginform">
+
       <Navigation login_type="login_form" />
+      {isOnline?<NoInternetConnection />:
       <div className="container login_container">
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 wrapper p-0">
@@ -350,6 +368,7 @@ const LoginForm = () => {
         <Logo />
         <ToastContainer />
       </div>
+      }
       <div className="modal fade" id="termsAndConditions">
         <div className="modal-dialog terms_modal_popup">
           <div className="modal-content">
