@@ -1,7 +1,7 @@
 
 .modal_popup{
     .modal-dialog {
-        max-width: 750px;
+        max-width: 600px;
     }
     .hidden_field{
         visibility: hidden;
@@ -33,7 +33,7 @@
 }
 .drop-down-image{
     position: absolute;
-    margin: 50px 145px;
+    margin: 50px 120px;
 }
 
 .searchicon{
@@ -131,7 +131,7 @@ input[type=radio]{
     
   }
 .profileModal{
-    padding: 20px 80px!important;
+    padding: 20px 30px!important;
     .modal-body {
         height: 620px;
     }

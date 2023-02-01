@@ -222,6 +222,7 @@ const MyProfile = () => {
                                         className="edit_text"
                                       >
                                         <img src={edit} alt="edit-img" />
+                                        <span className="edit_text">EDIT</span>
                                         {/* Edit */}
                                       </p>
                                       {isMandiEdit ? (
@@ -362,7 +363,10 @@ const MyProfile = () => {
                                         {isEdit ? (
                                           "Save"
                                         ) : (
-                                          <img src={edit} alt="edit-img" />
+                                          <div className="d-flex align-items-center">
+                                            <img src={edit} alt="edit-img" />
+                                          <span className="edit_text">EDIT</span>
+                                          </div>
                                         )}
                                       </p>
                                       {/* <p onClick={onSave}>save</p> */}
