@@ -258,6 +258,15 @@ function DatePickerModel(props) {
     }
   };
 
+  const handleDateTabs = (e) =>{
+    console.log(e.target.value);
+    setDateTabs(e.target.value);
+    setStartsDate(new Date());
+    setEndDate(new Date());
+    setSelectedMonthDate(new Date());
+    setSelectedyearDate(new Date());
+
+  }
   return (
     <Modal
       show={props.show}
@@ -302,9 +311,7 @@ function DatePickerModel(props) {
                   id="tab1"
                   name="tab"
                   value="Daily"
-                  onChange={(e) => {
-                    setDateTabs(e.target.value);
-                  }}
+                  onChange={(e) => {handleDateTabs(e)}}
                   checked={dateTabs === "Daily"}
                   className="radioBtnVal m-0 mr-1"
                 />
@@ -317,9 +324,7 @@ function DatePickerModel(props) {
                   id="tab4"
                   name="tab"
                   value={"Weekly"}
-                  onChange={(e) => {
-                    setDateTabs(e.target.value);
-                  }}
+                  onChange={(e) => {handleDateTabs(e)}}
                   checked={dateTabs === "Weekly"}
                 />
                 <label htmlFor="tab4">Weekly</label>
@@ -330,9 +335,7 @@ function DatePickerModel(props) {
                   id="tab2"
                   name="tab"
                   value={"Monthly"}
-                  onChange={(e) => {
-                    setDateTabs(e.target.value);
-                  }}
+                  onChange={(e) => {handleDateTabs(e)}}
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Monthly"}
                 />
@@ -345,9 +348,7 @@ function DatePickerModel(props) {
                   id="tab3"
                   name="tab"
                   value={"Yearly"}
-                  onChange={(e) => {
-                    setDateTabs(e.target.value);
-                  }}
+                  onChange={(e) => {handleDateTabs(e)}}
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Yearly"}
                 />
@@ -360,9 +361,7 @@ function DatePickerModel(props) {
                   id="tab5"
                   name="tab"
                   value={"Custom"}
-                  onChange={(e) => {
-                    setDateTabs(e.target.value);
-                  }}
+                  onChange={(e) => {handleDateTabs(e)}}
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Custom"}
                 />
@@ -393,7 +392,7 @@ function DatePickerModel(props) {
               </div>
             </article>
             <article
-              className="month_picker"
+              className="month_picker"  
               style={{ display: dateTabs === "Monthly" ? "block" : "none" }}
             >
               <DatePicker

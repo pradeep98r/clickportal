@@ -69,7 +69,7 @@ const CompleteProfile = (props) => {
     shortCodeValidation(e);
   };
   const shortCodeValidation = (e) => {
-    if (e.target.value.length >= 4) {
+    if (e.target.value.length > 4) {
       setMandiShortCodeError(
         "Mandi short code can not be more than 4 characters"
       );

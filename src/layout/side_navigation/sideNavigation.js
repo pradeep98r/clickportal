@@ -167,7 +167,7 @@ function SideNavigation() {
     localStorage.removeItem("loginResponse");
     localStorage.removeItem("userType");
     localStorage.removeItem("LinkPath");
-    localStorage.removeItem("languageData");
+    // localStorage.removeItem("languageData");
     localStorage.setItem("LinkPath", "/smartboard");
     localStorage.setItem("statusPlan", "FAILURE");
     localStorage.setItem("LinkId", "1");
