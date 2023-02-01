@@ -1026,10 +1026,12 @@ const Partner = () => {
                                 onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             ) : (
-                              <input
+                              <InputField
                                 id="state"
                                 className="form-control"
                                 name="state"
+                                value={stateVal}
+                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             )}
                           </div>
@@ -1369,10 +1371,12 @@ const Partner = () => {
                                 onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             ) : (
-                              <input
+                              <InputField
                                 id="state"
                                 className="form-control"
                                 name="state"
+                                value={stateVal}
+                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
                               />
                             )}
                           </div>
