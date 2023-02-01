@@ -700,8 +700,11 @@ input:focus-visible {
 }
 article {
   display: none;
-  height: 350px;
+  height: 495px;
   width: 100%;
+}
+.custom_picker, .week_picker{
+  height: 450px;
 }
 article.on {
   display: block;
@@ -1095,6 +1098,7 @@ word-wrap: normal;
 }
 .react-datepicker__year .react-datepicker__year-text{
   margin: 15px 23px;
+  font-weight: normal;
 }
 }
 .calender_popup .react-datepicker {

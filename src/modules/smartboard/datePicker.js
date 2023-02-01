@@ -182,12 +182,16 @@ function DatePickerModel(props) {
   const setToDefaultDate = () => {
     if (link == "/buyerledger" || link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
-        console.log("customled")
+        if(billEditItemInfo?.dateCustom){
+          console.log("customled")
         setDateTabs("Custom");
+        }
+        else{
+          setDateTabs(dateTabs);
+        }
         // setStartsDate(new Date());
         // setEndDate(new Date());
       }
-      setDateTabs(dateTabs);
     } else {
       setDateTabs("Daily");
     }
@@ -288,7 +292,8 @@ function DatePickerModel(props) {
             ? "Week"
             : dateTabs == "Monthly"
             ? "Month"
-            : dateTabs == "Year"}
+            : dateTabs == "Yearly"
+            ? "Year" : "Date"}
         </h5>
         <img
           src={close}
