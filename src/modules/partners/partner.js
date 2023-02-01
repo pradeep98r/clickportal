@@ -508,9 +508,11 @@ const Partner = () => {
     setCityVal(city);
     setStateVal(state);
   };
+  const[pincodeLength, setPincodeLength] = useState(false);
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
-    setPincode(zip);
+    let number = zip.slice(0, 6);
+    setPincode(number);
     setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length >= 6) {
@@ -525,11 +527,14 @@ const Partner = () => {
         var possibleLocalities = geocodeResponseToCityState(response);
         fillCityAndStateFields(possibleLocalities);
       });
+      setPincodeLength(false);
     } else {
+      console.log('error',zip.length)
       $("#city").val("");
       $("#state").val("");
       setCityVal("");
       setStateVal("");
+      setPincodeLength(true)
     }
   };
 
@@ -626,6 +631,7 @@ const Partner = () => {
     $("#city").val("");
     setVehicleNum("");
     setVehicleType("");
+    setPincodeLength("");
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -1028,6 +1034,11 @@ const Partner = () => {
                                 }}
                                 value={pincode}
                               />
+                              {
+                                pincodeLength ? <span className="text-danger">
+                                Minimum pincode length should be 6
+                              </span>  : ''
+                              }
                             </div>
                           </div>
                         </div>
@@ -1397,6 +1408,11 @@ const Partner = () => {
                                 }}
                                 value={pincode}
                               />
+                              {
+                                pincodeLength ? <span className="text-danger">
+                                Minimum pincode length should be 6
+                              </span>  : ''
+                              }
                             </div>
                           </div>
                         </div>
