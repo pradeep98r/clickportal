@@ -680,6 +680,7 @@ const Partner = () => {
 // const monthChange = () =>{
 //   console.log('month change')
 // }
+
   return (
     <div>
       <div className="main_div_padding">
@@ -1339,13 +1340,11 @@ const Partner = () => {
                                     className="form-control"
                                     placeholder="Date"
                                     maxDate={new Date()}
-                                    // onMonthChange={()=>monthChange()}
                                     name="date"
                                     enableTabLoop={false}
                                     onKeyDown={(e) => {
                                       keydownEvent(e);
                                     }}
-                                    // open={openDatePicker}
                                   />
                                 </div>
                               </label>
@@ -1549,20 +1548,19 @@ const Partner = () => {
           />
         </Modal.Header>
         <Modal.Body className="partner_model_body">
-          {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}
+         <p className="px-5 text-center"> {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}</p>
         </Modal.Body>
         <Modal.Footer className="modal_comm_footer">
           <div className="row">
-            <div className="col-lg-6 pl-0">
-              <button
+            <div className="col-lg-12 pl-0">
+             <div className="d-flex align-items-center justify-content-center">
+             <button
                 type="button"
-                className="secondary_btn"
+                className="no_delete_btn mr-4"
                 onClick={handleClose}
               >
                 {langFullData.no}
               </button>
-            </div>
-            <div className="col-lg-6">
               <button
                 type="button"
                 className="primary_btn"
@@ -1570,7 +1568,9 @@ const Partner = () => {
               >
                 {langFullData.yes}
               </button>
+             </div>
             </div>
+            
           </div>
         </Modal.Footer>
       </Modal>
