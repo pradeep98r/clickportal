@@ -344,14 +344,14 @@ const Partner = () => {
               toastId: "success2",
             });
 
-            // handleRefreshClick();
+            handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          // handleRefreshClick();
+          handleRefreshClick();
         }
       );
     } else {
@@ -423,6 +423,9 @@ const Partner = () => {
         setIsLoading(false);
       })
       .catch((error) => {
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
         setOnline(true);
         console.log(error.message);
       });

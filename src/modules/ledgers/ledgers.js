@@ -103,7 +103,6 @@ const Ledgers = (props) => {
             }
         });
         setLedgers(result);
-        console.log(ledgers, allData, partyId, "search")
     };
 
     useEffect(() => {
@@ -135,7 +134,9 @@ const Ledgers = (props) => {
             }
             setLoading(false);
         }).catch(error => {
-            console.log(error);
+            if(error.message.toUpperCase() == 'NETWORK ERROR'){
+                setOnline(true);
+            }
             setOnline(true);
         })
     }
@@ -155,7 +156,6 @@ const Ledgers = (props) => {
             setDateDisplay(false);
             dispatch(dateCustomStatus(true));
         }
-        console.log(item, item,ledgerTabs,allCustom);
         var tabs = '';
         if (ledgerTabs == 'detailedledger' || ledgerTabs == 'ledgersummary' && allCustom =='custom') {
             setLedgerTabs('ledgersummary');
@@ -212,7 +212,6 @@ const Ledgers = (props) => {
 
     //All and Custom Tabs
     const allCustomEvent = (type) => {
-        console.log(startDate,endDate,"Dates")
         if (type == 'custom') {
             setDateDisplay(true);
         } else {
@@ -229,7 +228,6 @@ const Ledgers = (props) => {
             setLedgerTabs('ledgersummary');
         }
         if (type == 'custom' && ledgerTabs == 'ledgersummary') {
-            console.log(startDate,endDate);
             ledgerSummaryByDate(clickId, partyId, startDate, endDate);
         }
         setAllCustom(type);
@@ -394,7 +392,7 @@ const Ledgers = (props) => {
                                                     <table className="table table-fixed">
                                                         <thead className="theadr-tag">
                                                             <tr>
-                                                                <th scope="col">#</th>
+                                                                <th scope="col-4">#</th>
                                                                 <th scope="col">Date</th>
                                                                 {ledgerType == "BUYER" ? <th scope="col">Buyer Name</th> :
                                                                     <th scope="col">Seller Name</th>
@@ -437,7 +435,7 @@ const Ledgers = (props) => {
                                                                                     </div>
                                                                                     <div>
                                                                                         <p className="namedtl-tag">
-                                                                                            {item.partyName}
+                                                                                            {item.partyName} - {item.shortName}
                                                                                         </p>
                                                                                         <p className="mobilee-tag">
                                                                                             {!item.trader ? ledgerType == "BUYER" ? "Buyer" : 'Seller'

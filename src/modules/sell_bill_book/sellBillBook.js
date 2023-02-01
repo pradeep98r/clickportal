@@ -89,6 +89,9 @@ const SellBillBook = (props) => {
         setLoading(false);
       })
       .catch((error) => {
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
         setOnline(true);
         console.log(error);
       });
