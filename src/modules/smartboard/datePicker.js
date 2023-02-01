@@ -39,6 +39,7 @@ function DatePickerModel(props) {
           console.log(endDate,startDate)
           setStartsDate(new Date());
           setEndDate(new Date());
+          console.log('detailded')
          }
          else{
           datev = dateTabs
@@ -50,7 +51,8 @@ function DatePickerModel(props) {
           if(billEditItemInfo?.dateCustom){
             datev = 'Custom'
             setStartsDate(new Date());
-          setEndDate(new Date());
+            setEndDate(new Date());
+            console.log('summary')
            }
            else{
             datev = dateTabs
@@ -74,8 +76,8 @@ function DatePickerModel(props) {
   const onChangeDate = (dates) => {
     const [start, end] = dates;
     console.log(start,end,dates)
-    // setStartsDate(start);
-    // setEndDate(end);
+    setStartsDate(start);
+    setEndDate(end);
     if(end == null){
       setSDate(true);
       setDefaultDate(defaultDate)
@@ -182,8 +184,8 @@ function DatePickerModel(props) {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
         console.log("customled")
         setDateTabs("Custom");
-        setStartsDate(new Date());
-        setEndDate(new Date());
+        // setStartsDate(new Date());
+        // setEndDate(new Date());
       }
       setDateTabs(dateTabs);
     } else {
@@ -248,7 +250,7 @@ function DatePickerModel(props) {
         console.log(lastDate,"else")
       }
       firstDate = moment(startDate).format("YYYY-MM-DD");
-      // dispatch(dateCustomStatus(false));
+      dispatch(dateCustomStatus(false));
       console.log(firstDate,lastDate)
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
