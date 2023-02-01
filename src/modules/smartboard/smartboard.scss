@@ -330,9 +330,10 @@
     justify-content: center;
     // padding: 7px 10px;
     margin: 3px auto;
-    width: 25px;
-    height: 25px;
+    width: 33px;
+    height: 33px;
   }
+ 
   .ui-state-default,
   .ui-widget-content .ui-state-default {
     border: none;
@@ -464,8 +465,8 @@
 .custom_picker {
   width: 100%;
   .react-datepicker__input-container input {
-    padding: 5px 30px;
-    width: 190px;
+    padding: 5px 8px 5px 35px;
+    width: 135px;
     margin-left: 5px;
   }
   .date_flex {
@@ -473,7 +474,7 @@
   }
   .d_icon {
     position: absolute;
-    left: 10px;
+    left: 15px;
     z-index: 1;
     top: 6px;
   }
@@ -515,28 +516,25 @@
   border-bottom-right-radius: 20px;
   // border-top-color: #e74c3c ;
 }
-
-
-// table{
-//   border-collapse: separate;
-//   border-spacing: 0;
-// }
-// .table-bordered{
-//   border: none;
-// }
-// .table-bordered td, .table-bordered th {
-//   border: 1px solid #dee2e6;
-//   border-style: none solid solid none;
-// }
-// tr:first-child th:first-child{
-//   border-top-left-radius: 10px;
-// }
-// tr:last-child td:first-child{
-//   border-bottom-left-radius: 10px;
-// }
-// tr:first-child th:last-child{
-//   border-top-right-radius: 10px;
-// }
-// tr:last-child td:last-child{
-//   border-bottom-right-radius: 10px;
-// }
+.react-datepicker__input-container{
+  input {
+    color: transparent;
+    caret-color: transparent;
+  }
+  input:focus {
+    outline: none;
+    caret-color: transparent;
+    border: 1px solid ;
+  }
+}
+.calender_popup .react-datepicker__day{
+  margin:5px 5px!important;
+  width: 33px!important;
+  line-height: 33px!important;
+}
+.week_cal, .week_cal .ui-datepicker-inline, .week-picker{
+  height: 100%;
+}
+.week_picker table {
+  height: 80%!important;
+}

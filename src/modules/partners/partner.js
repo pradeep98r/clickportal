@@ -14,12 +14,11 @@ import delete_icon from "../../assets/images/delete.svg";
 import close from "../../assets/images/close.svg";
 import NoDataAvailable from "../../components/noDataAvailable";
 import InputField from "../../components/inputField";
-import toastr from "toastr";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import { Modal, Button, Image } from "react-bootstrap";
+import { Modal, Image } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
@@ -186,10 +185,10 @@ const Partner = () => {
         setCityVal(partner.address.dist);
         setStateVal(partner.address.state);
         setUpdateProfilePic(partner.profilePic);
-        console.log(partner)
+        console.log(partner);
         setPincode(partner.address.pincode);
         setVehicleNum(partner.vehicleInfo?.vehicleNum);
-        setVehicleType(partner.vehicleInfo?.vehicleType)
+        setVehicleType(partner.vehicleInfo?.vehicleType);
         setOpeningBalance(partner.openingBal);
         if (
           partner.partyType.toLowerCase() == "farmer" ||
@@ -210,7 +209,7 @@ const Partner = () => {
   };
 
   const [profilePic, setProfilePic] = useState(null);
-  const [updateProfilePic, setUpdateProfilePic] = useState(null)
+  const [updateProfilePic, setUpdateProfilePic] = useState(null);
   const handleProfilePic = (e) => {
     if (isEdit) {
       var output = document.getElementById("output");
@@ -319,42 +318,40 @@ const Partner = () => {
       addEditPartnerApiCall();
       setSaveType(partyType);
       localStorage.setItem("partyType", partyType);
-    } 
-    else if (mobileNumber.trim().length === 0) {
+    } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
-    }  else if (nameField.trim().length === 0) {
+    } else if (nameField.trim().length === 0) {
       setRequiredNameField(langFullData.pleaseEnterFullName);
     } else if (nameField.trim().length === 1) {
       setNameError("Name should be min 2 characters");
     } else if (shortNameField.trim().length === 1) {
       setShortNameError("Name should be min 2 characters");
-    }
-    else if (aadharNumber.trim().length < 12) {
+    } else if (aadharNumber.trim().length < 12) {
       setAadharError("Minimum Adhar number length should be 12");
     }
   };
   const addEditPartnerApiCall = () => {
     if (isEdit) {
-      console.log(pincode,obj)
+      console.log(pincode, obj);
       editPartnerItem(obj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            console.log(obj,"obj")
+            console.log(obj, "obj");
             tabEvent(partyType);
             toast.success("Updated Successfully", {
               toastId: "success2",
             });
 
-            // handleRefreshClick();
+            handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          // handleRefreshClick();
+          handleRefreshClick();
         }
       );
     } else {
@@ -423,11 +420,14 @@ const Partner = () => {
       .then((response) => {
         setAllData(response.data.data);
         setPartnerData(response.data.data);
-      setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
         setOnline(true);
-        console.log(error);
+        console.log(error.message);
       });
   };
   const links = [
@@ -525,17 +525,16 @@ const Partner = () => {
         var possibleLocalities = geocodeResponseToCityState(response);
         fillCityAndStateFields(possibleLocalities);
       });
-    }
-    else{
-      $("#city").val('');
-      $("#state").val('');
-      setCityVal('');
-      setStateVal('');
+    } else {
+      $("#city").val("");
+      $("#state").val("");
+      setCityVal("");
+      setStateVal("");
     }
   };
 
   function fillCityAndStateFields(localities) {
-    var locality = localities[0]; 
+    var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
   }
@@ -576,7 +575,7 @@ const Partner = () => {
   }
   function fillCityAndStateFields(localities) {
     var locality = localities[0];
-    console.log(locality,localities,"locality")
+    console.log(locality, localities, "locality");
     $("#city").val(locality.city);
     $("#state").val(locality.state);
     var city = localities[0].city;
@@ -625,8 +624,8 @@ const Partner = () => {
     console.log("hiding");
     $("#state").val("");
     $("#city").val("");
-    setVehicleNum('');
-    setVehicleType('');
+    setVehicleNum("");
+    setVehicleType("");
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -666,203 +665,223 @@ const Partner = () => {
     setPartnerData(result);
     setSearchValue(value);
   };
+  // const [openDatePicker, setopenDatePicker] = useState(false);
+  const keydownEvent = (e) => {
+    if (e.keyCode == 9) {
+      // e.onKeyDown(e);
+      // setopenDatePicker(false);
+    } else {
+      e.preventDefault();
+    }
+  };
+// const handleJustOpenDatePicker = () =>{
+//   setopenDatePicker(!openDatePicker);
+// }
+// const monthChange = () =>{
+//   console.log('month change')
+// }
 
   return (
     <div>
       <div className="main_div_padding">
-        {isOnline?<NoInternetConnection />:
-        <div className="container-fluid px-0">
-          <ul className="nav nav-tabs partner_tabs" id="myTab" role="tablist">
-            {links.map((link) => {
-              return (
-                <li key={link.id} className="nav-item ">
-                  <a
-                    className={
-                      "nav-link" + (partyType == link.to ? " active" : "")
-                    }
-                    href={"#" + partyType}
-                    role="tab"
-                    aria-controls="home"
-                    data-bs-toggle="tab"
-                    onClick={() => tabEvent(link.to)}
-                  >
-                    {link.name}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          {isLoading?(
-            <div className="">
-            <img src={loading} alt="my-gif" className="gif_img" />
-          </div>
-          ):(
-          <div className="tab-content">
-            <div
-              className="tab-pane active"
-              id={partyType}
-              role="tabpanel"
-              aria-labelledby="home-tab"
-            >
-              
-              {allData.length > 0 ? (
-                <div className="row">
-                  <div className="col-lg-9 pl-0">
-                  <SearchField
-                      placeholder="Search by Name / Mobile / Short Code / Party id"
-                      val={searchValue}
-                      onChange={(event) => {
-                        handleSearch(event);
-                      }}
-                    />
-                    {
-                      partnerData.length > 0 ? <div>
-                      <div>
-                        <div className="partner_div" id="scroll_style">
-                          {partnerData.map((partner, index) => (
-                            <div className="card partner_card" key={index}>
-                              <div className="d-flex partner_card_flex justify-content-between align-items-center">
-                                <div className="d-flex align-items-center">
-                                  {/* {partner.profilePic} */}
-                                  {partner.profilePic ? (
-                                    // <Image  source={{uri: partner.profilePic}}/>
-                                    <Image
-                                      src={partner.profilePic}
-                                      alt="profile_img"
-                                      className="user_img"
-                                    />
-                                  ) : (
-                                    <img
-                                      src={single_bill}
-                                      alt="img"
-                                      className="user_img"
-                                    />
-                                  )}
-                                  <div>
-                                    <h5>
-                                      {partner.partyName +
-                                        " " +
-                                        partner.shortName}
-                                    </h5>
-                                    <h6>
-                                      {getPartnerType(
-                                        partner.partyType,
-                                        partner.trader
-                                      )}{" "}
-                                      - {partner.partyId} | {partner.mobile}
-                                    </h6>
-                                    <p>{partner.address.addressLine}</p>
+        {isOnline ? (
+          <NoInternetConnection />
+        ) : (
+          <div className="container-fluid px-0">
+            <ul className="nav nav-tabs partner_tabs" id="myTab" role="tablist">
+              {links.map((link) => {
+                return (
+                  <li key={link.id} className="nav-item ">
+                    <a
+                      className={
+                        "nav-link" + (partyType == link.to ? " active" : "")
+                      }
+                      href={"#" + partyType}
+                      role="tab"
+                      aria-controls="home"
+                      data-bs-toggle="tab"
+                      onClick={() => tabEvent(link.to)}
+                    >
+                      {link.name}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+            {isLoading ? (
+              <div className="">
+                <img src={loading} alt="my-gif" className="gif_img" />
+              </div>
+            ) : (
+              <div className="tab-content">
+                <div
+                  className="tab-pane active"
+                  id={partyType}
+                  role="tabpanel"
+                  aria-labelledby="home-tab"
+                >
+                  {allData.length > 0 ? (
+                    <div className="row">
+                      <div className="col-lg-9 pl-0">
+                        <SearchField
+                          placeholder="Search by Name / Mobile / Short Code / Party id"
+                          val={searchValue}
+                          onChange={(event) => {
+                            handleSearch(event);
+                          }}
+                        />
+                        {partnerData.length > 0 ? (
+                          <div>
+                            <div>
+                              <div className="partner_div" id="scroll_style">
+                                {partnerData.map((partner, index) => (
+                                  <div
+                                    className="card partner_card"
+                                    key={index}
+                                  >
+                                    <div className="d-flex partner_card_flex justify-content-between align-items-center">
+                                      <div className="d-flex align-items-center">
+                                        {/* {partner.profilePic} */}
+                                        {partner.profilePic ? (
+                                          // <Image  source={{uri: partner.profilePic}}/>
+                                          <Image
+                                            src={partner.profilePic}
+                                            alt="profile_img"
+                                            className="user_img"
+                                          />
+                                        ) : (
+                                          <img
+                                            src={single_bill}
+                                            alt="img"
+                                            className="user_img"
+                                          />
+                                        )}
+                                        <div>
+                                          <h5>
+                                            {partner.partyName +
+                                              " " +
+                                              partner.shortName}
+                                          </h5>
+                                          <h6>
+                                            {getPartnerType(
+                                              partner.partyType,
+                                              partner.trader
+                                            )}{" "}
+                                            - {partner.partyId} |{" "}
+                                            {partner.mobile}
+                                          </h6>
+                                          <p>{partner.address.addressLine}</p>
+                                        </div>
+                                      </div>
+                                      <div className="d-flex edit_delete_icons">
+                                        <img
+                                          src={edit}
+                                          alt="img"
+                                          className=""
+                                          onClick={() => editPartner(partner)}
+                                        />
+                                        <img
+                                          src={delete_icon}
+                                          alt="img"
+                                          onClick={() =>
+                                            handleShow(partner.partyId)
+                                          }
+                                        />
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="d-flex edit_delete_icons">
-                                  <img
-                                    src={edit}
-                                    alt="img"
-                                    className=""
-                                    onClick={() => editPartner(partner)}
-                                  />
-                                  <img
-                                    src={delete_icon}
-                                    alt="img"
-                                    onClick={() => handleShow(partner.partyId)}
-                                  />
-                                </div>
+                                ))}
                               </div>
                             </div>
-                          ))}
+                          </div>
+                        ) : (
+                          <div className="partner_div" id="scroll_style">
+                            <NoDataAvailable />
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-lg-3">
+                        <div className="card default_card add_partner">
+                          <div>
+                            <h6>
+                              {" "}
+                              Add{" "}
+                              {partyType.toLowerCase() == "farmer"
+                                ? "Seller"
+                                : getText(partyType)}
+                            </h6>
+                            <button
+                              className="primary_btn mr-2"
+                              onClick={() => MybtnModal(partyType)}
+                            >
+                              Add
+                              {partyType == langFullData.seller
+                                ? "seller"
+                                : " " + getText(partyType)}
+                            </button>
+                            {partyType.toLowerCase() == "farmer" ||
+                            partyType.toLowerCase() == "buyer" ? (
+                              <button
+                                className="primary_btn"
+                                onClick={() => MybtnModal("trader")}
+                              >
+                                Add Trader
+                              </button>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                          {/* <OutlineButton text="Add Seller" /> */}
                         </div>
                       </div>
-                    </div> : 
-                    <div className="partner_div" id="scroll_style">
-                      <NoDataAvailable/>
                     </div>
-                    
-                    }
-                  </div>
-                  <div className="col-lg-3">
-                    <div className="card default_card add_partner">
-                      <div>
-                        <h6>
-                          {" "}
-                          Add{" "}
-                          {partyType.toLowerCase() == "farmer"
-                            ? "Seller"
-                            : getText(partyType)}
-                        </h6>
-                        <button
-                          className="outline_btn outline_btn_partner mr-2"
-                          onClick={() => MybtnModal(partyType)}
-                        >
-                          Add
-                          {partyType == langFullData.seller
-                            ? "seller"
-                            : " " + getText(partyType)}
-                        </button>
-                        {partyType.toLowerCase() == "farmer" ||
-                        partyType.toLowerCase() == "buyer" ? (
-                          <button
-                            className="outline_btn outline_btn_partner"
-                            onClick={() => MybtnModal("trader")}
-                          >
-                            Add Trader
-                          </button>
-                        ) : (
-                          ""
-                        )}
-                      </div>
-                      {/* <OutlineButton text="Add Seller" /> */}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="row partner_no_data_widget_row">
-                  <div className="col-lg-5">
-                    <div className="partner_no_data_widget">
-                      <div className="text-center">
-                        <img
-                          src={no_data_icon}
-                          alt="icon"
-                          className="d-flex mx-auto justify-content-center"
-                        />
-                        <p className="mb-0">
-                          
-                        </p>
-                        <button
-                          className="primary_btn mr-2"
-                          onClick={() => MybtnModal(partyType)}
-                        >
-                          Add
-                          {partyType == langFullData.seller
-                            ? "seller"
-                            : " " + getText(partyType)}
-                        </button>
-                        {partyType.toLowerCase() == "farmer" ||
-                        partyType.toLowerCase() == "buyer" ? (
-                          <button
-                            className="primary_btn"
-                            onClick={() => MybtnModal("trader")}
-                          >
-                            Add Trader
-                          </button>
-                        ) : (
-                          ""
-                        )}
+                  ) : (
+                    <div className="row partner_no_data_widget_row">
+                      <div className="col-lg-5">
+                        <div className="partner_no_data_widget">
+                          <div className="text-center">
+                            <img
+                              src={no_data_icon}
+                              alt="icon"
+                              className="d-flex mx-auto justify-content-center"
+                            />
+                            <p className="mb-0"></p>
+                            <button
+                              className="primary_btn mr-2"
+                              onClick={() => MybtnModal(partyType)}
+                            >
+                              Add
+                              {partyType == langFullData.seller
+                                ? "seller"
+                                : " " + getText(partyType)}
+                            </button>
+                            {partyType.toLowerCase() == "farmer" ||
+                            partyType.toLowerCase() == "buyer" ? (
+                              <button
+                                className="primary_btn"
+                                onClick={() => MybtnModal("trader")}
+                              >
+                                Add Trader
+                              </button>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-          )}
-        </div>
-        }
+        )}
       </div>
-            
+
       <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-body partner_model_body pb-0">
+            <div className="modal-body partner_model_body">
               <form>
                 <div className="d-flex align-items-center justify-content-between modal_common_header">
                   <h5
@@ -871,7 +890,7 @@ const Partner = () => {
                   >
                     {addeditText}{" "}
                     {partyType == langFullData.farmer.toUpperCase()
-                      ? langFullData.seller
+                      ? 'Seller'
                       : getText(partyType)}
                   </h5>
                   <img
@@ -895,7 +914,7 @@ const Partner = () => {
                             type="radio"
                             //className="custom-control-input"
                             value={partyType.toLowerCase()}
-                            name="radioValue"
+                            name="radioValue1"
                             id={partyType.toLowerCase()}
                             checked={
                               radioValue.toLowerCase() ===
@@ -908,7 +927,7 @@ const Partner = () => {
                             type="radio"
                             value="trader"
                             id="trader"
-                            name="radioValue"
+                            name="radioValue2"
                             checked={radioValue.toLowerCase() === "trader"}
                             //className="custom-control-input"
                             className="radioBtnVal"
@@ -1023,13 +1042,23 @@ const Partner = () => {
                                 className="form-control"
                                 name="state"
                                 value={stateVal}
-                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
+                                onChange={(e) =>
+                                  setStateVal(
+                                    e.target.value.replace(/[^A-Za-z0-9]/g, " ")
+                                  )
+                                }
                               />
                             ) : (
-                              <input
+                              <InputField
                                 id="state"
                                 className="form-control"
                                 name="state"
+                                value={stateVal}
+                                onChange={(e) =>
+                                  setStateVal(
+                                    e.target.value.replace(/[^A-Za-z0-9]/g, " ")
+                                  )
+                                }
                               />
                             )}
                           </div>
@@ -1050,7 +1079,14 @@ const Partner = () => {
                                     id="city"
                                     name="city"
                                     value={cityVal}
-                                    onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
+                                    onChange={(e) => {
+                                      setCityVal(
+                                        e.target.value.replace(
+                                          /[^A-Za-z0-9]/g,
+                                          " "
+                                        )
+                                      );
+                                    }}
                                   />
                                 </div>
                               ) : (
@@ -1059,7 +1095,14 @@ const Partner = () => {
                                   id="city"
                                   name="city"
                                   value={cityVal}
-                                  onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
+                                  onChange={(e) => {
+                                    setCityVal(
+                                      e.target.value.replace(
+                                        /[^A-Za-z0-9]/g,
+                                        " "
+                                      )
+                                    );
+                                  }}
                                 />
                               )}
                             </div>
@@ -1224,6 +1267,7 @@ const Partner = () => {
                                       <input
                                         type="file"
                                         id="file"
+                                        name="file"
                                         //onChange={(e) => setFile(e.target.files[0])}
                                         onChange={(e) => {
                                           handleProfilePic(e);
@@ -1296,8 +1340,10 @@ const Partner = () => {
                                     className="form-control"
                                     placeholder="Date"
                                     maxDate={new Date()}
+                                    name="date"
+                                    enableTabLoop={false}
                                     onKeyDown={(e) => {
-                                      e.preventDefault();
+                                      keydownEvent(e);
                                     }}
                                   />
                                 </div>
@@ -1365,13 +1411,23 @@ const Partner = () => {
                                 className="form-control"
                                 name="state"
                                 value={stateVal}
-                                onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
+                                onChange={(e) =>
+                                  setStateVal(
+                                    e.target.value.replace(/[^A-Za-z0-9]/g, " ")
+                                  )
+                                }
                               />
                             ) : (
-                              <input
+                              <InputField
                                 id="state"
                                 className="form-control"
                                 name="state"
+                                value={stateVal}
+                                onChange={(e) =>
+                                  setStateVal(
+                                    e.target.value.replace(/[^A-Za-z0-9]/g, " ")
+                                  )
+                                }
                               />
                             )}
                           </div>
@@ -1392,7 +1448,14 @@ const Partner = () => {
                                     id="city"
                                     name="city"
                                     value={cityVal}
-                                    onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
+                                    onChange={(e) => {
+                                      setCityVal(
+                                        e.target.value.replace(
+                                          /[^A-Za-z0-9]/g,
+                                          " "
+                                        )
+                                      );
+                                    }}
                                   />
                                 </div>
                               ) : (
@@ -1401,7 +1464,14 @@ const Partner = () => {
                                   id="city"
                                   name="city"
                                   value={cityVal}
-                                  onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
+                                  onChange={(e) => {
+                                    setCityVal(
+                                      e.target.value.replace(
+                                        /[^A-Za-z0-9]/g,
+                                        " "
+                                      )
+                                    );
+                                  }}
                                 />
                               )}
                             </div>
@@ -1431,17 +1501,19 @@ const Partner = () => {
             <div className="modal-footer modal_common_footer">
               <div className="row">
                 <div className="col-lg-6 pl-0">
-                  <button
+                 
+                </div>
+                <div className="col-lg-6">
+               <div className="d-flex justify-content-end">
+               <button
                     type="button"
-                    className="secondary_btn"
+                    className="secondary_btn mr-2"
                     // id="close_modal"
                     onClick={closeAddModal}
                     data-bs-dismiss="modal"
                   >
                     Cancel
                   </button>
-                </div>
-                <div className="col-lg-6">
                   <button
                     type="button"
                     className="primary_btn"
@@ -1451,6 +1523,7 @@ const Partner = () => {
                   >
                     save
                   </button>
+               </div>
                 </div>
               </div>
             </div>
@@ -1475,20 +1548,19 @@ const Partner = () => {
           />
         </Modal.Header>
         <Modal.Body className="partner_model_body">
-          {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}
+         <p className="px-5 text-center"> {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}</p>
         </Modal.Body>
         <Modal.Footer className="modal_comm_footer">
           <div className="row">
-            <div className="col-lg-6 pl-0">
-              <button
+            <div className="col-lg-12 pl-0">
+             <div className="d-flex align-items-center justify-content-center">
+             <button
                 type="button"
-                className="secondary_btn"
+                className="no_delete_btn mr-4"
                 onClick={handleClose}
               >
                 {langFullData.no}
               </button>
-            </div>
-            <div className="col-lg-6">
               <button
                 type="button"
                 className="primary_btn"
@@ -1496,7 +1568,9 @@ const Partner = () => {
               >
                 {langFullData.yes}
               </button>
+             </div>
             </div>
+            
           </div>
         </Modal.Footer>
       </Modal>

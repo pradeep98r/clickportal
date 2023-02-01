@@ -75,7 +75,7 @@ const DetailedLedger = (props) => {
                                                     {item.kg
                                                         ? getCurrencyNumberWithOneDigit(
                                                             item.kg
-                                                        ) + " | "
+                                                        ) + " KG | "
                                                         : ""}{" "}
                                                     {item.rate
                                                         ? getCurrencyNumberWithOutSymbol(
@@ -101,7 +101,8 @@ const DetailedLedger = (props) => {
                                                 </p>
                                             </td>
                                             <td className="col-2">
-                                                <p className="coloring" id="p-common">
+                                                <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'} 
+                                                id="p-common">
                                                     {item.balance
                                                         ? getCurrencyNumberWithOutSymbol(
                                                             item.balance
@@ -166,7 +167,7 @@ const DetailedLedger = (props) => {
                                                             .charAt(item)
                                                             .toUpperCase() + " | "
                                                         : ""}
-                                                    {item.kg ? item.kg + " | " : ""}
+                                                    {item.kg ? item.kg + " KG | " : ""}
                                                     {item.rate ? item.rate : ""}
                                                 </span>
                                             </td>
@@ -185,7 +186,8 @@ const DetailedLedger = (props) => {
                                                 </p>
                                             </td>
                                             <td className="col-3">
-                                                <p className="coloring" id="p-common">
+                                                <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}
+                                                 id="p-common">
                                                     {item.balance
                                                         ? item.balance.toFixed(2)
                                                         : ""}

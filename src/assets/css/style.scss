@@ -87,12 +87,12 @@ ul {
 }
 .primary_btn,
 .btn_white,
-.outline_btn{
+.outline_btn, .no_delete_btn{
   color: var(--ono-white);
   background-color: var(--ono-primary);
   border-radius: 6px;
-  padding: 12px 40px;
-  font-size: var(--btn-text);
+  padding: 12px 30px;
+  font-size: 14px;
   border: none;
   text-transform: uppercase;
 }
@@ -110,14 +110,18 @@ ul {
 .secondary_btn,
 .secondary_btn:hover {
   color: #16A02C;
-  background-color: #D7F3DD;
+  background-color: transparent;
   border-radius: 6px;
-  padding: 12px 40px;
-  font-size: var(--btn-text);
+  padding: 12px 30px;
+  font-size: 14px;
   border: none;
   text-transform: uppercase;
 }
-
+.no_delete_btn{
+  background-color: #D7F3DD;
+  color: #16A02C;
+  // width: 100%;
+}
 .add_bills_btn, .add_bills_btn:hover {
   padding: 8px 25px;
   color: #fff;

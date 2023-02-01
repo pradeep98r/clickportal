@@ -15,13 +15,16 @@ import $ from "jquery";
 import close from "../../assets/images/close.svg";
 import "react-toastify/dist/ReactToastify.css";
 import Illustration from "../../assets/images/Illustration.svg";
+import { useEffect } from "react";
+import NoInternetConnection from "../../components/noInternetConnection";
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
   const [mobileNumber, setmobileNumber] = useState("");
   const [otpId, setOtpId] = useState("");
   const [invalidNumber, setInvalidError] = useState(false);
-
+  const [resendValid, setResendValid] = useState(false);
+  const [isOnline, setOnline] = useState(false);
   const handleChange = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 10);
@@ -64,24 +67,31 @@ const LoginForm = () => {
     userType: localStorage.getItem("userType"),
   };
   const handleClick = () => {
+    handleResendTime();
     setotpErrorStatus(false);
     setOtpValue("");
     console.log(obj);
-    doLogin(obj).then(
-      (response) => {
-        if (response.data.status.type === "SUCCESS") {
-          setViewOtpForm(true);
-          setOtpId(response.data.data.otpReqId);
-        } else if (response.data.status === "FAILURE") {
-        } 
-      },
-      (error) => {
-        setInvalidError(true);
-        toast.error(error.response.data.status.description, {
-          toastId: "errorr1",
-        });
-      }
-    );
+      doLogin(obj).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            setViewOtpForm(true);
+            setOtpId(response.data.data.otpReqId);
+          } else if (response.data.status === "FAILURE") {
+          } 
+        },
+        (error) => {
+          if(error.message.toUpperCase() == 'NETWORK ERROR'){
+            setOnline(true);
+          }
+          setOnline(true);
+          setInvalidError(true);
+          toast.error(error.response.data.status.description, {
+            toastId: "errorr1",
+          });
+          
+        }
+      );
+    
   };
   const handleSUbmit = (e) => {
     e.preventDefault();
@@ -105,10 +115,15 @@ const LoginForm = () => {
         }
       },
       (error) => {
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
+        setOnline(true);
         setInvalidError(true);
         toast.error(error.response.data.status.description, {
           toastId: "error2",
         });
+        
       }
     );
   };
@@ -158,6 +173,10 @@ const LoginForm = () => {
       (error) => {
         setotpErrorStatus(true);
         setotpError("The entered OTP is incorrect");
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
+        setOnline(true);
       }
     );
   };
@@ -181,16 +200,62 @@ const LoginForm = () => {
   const closePrivatePolicy = () => {
     $("#privatePolicy").modal("hide");
   };
-  const onkeyDownevent = (e) => {
-    if (e.key === "Enter") {
-      e.stopPropagation();
-      e.preventDefault();
+  // const onkeyDownevent = (e) => {
+  //   if (e.key === "Enter") {
+  //     setResendValid(true);
+  //     if(otpValue.length > 0){
+  //       setResendValid(true);
+  //     } 
+  //     // e.stopPropagation();
+  //     //e.preventDefault();
+  //   }
+  // };
+  let timerOn = true;
+  const [min, setMin] = useState();
+  const [sec, setSec] = useState();
+  function handleTimeInterval (remaining){
+    var m = Math.floor(remaining / 60);
+    var s = remaining % 60;
+    
+    m = m < 10 ? '0' + m : m;
+    s = s < 10 ? '0' + s : s;
+    setMin(m);
+    setSec(s)
+    //document.getElementById('timer').innerHTML = m + ':' + s;
+    remaining -= 1;
+    
+    if(remaining >= 0 && timerOn) {
+      setTimeout(function() {
+        handleTimeInterval(remaining);
+      }, 1000);
+      return;
     }
-  };
+    if(s !==0){
+      setResendValid(false);
+    }
+    if(s == 0){
+      setResendValid(true);
+    }
+  
+    if(!timerOn) {
+      // Do validate stuff here
+      return;
+    }
+  }
 
+  const handleResendTime =() =>{
+    setResendValid(false);
+    handleTimeInterval(60);
+    setotpError('')
+  }
+  // const resendOTP = () => {
+  //   setResendValid(false);
+  // };
   return (
     <div className="loginform">
+
       <Navigation login_type="login_form" />
+      {isOnline?<NoInternetConnection />:
       <div className="container login_container">
         <div className="row d-flex justify-content-center">
           <div className="col-lg-6 wrapper p-0">
@@ -218,6 +283,7 @@ const LoginForm = () => {
                     className="primary_btn"
                     type="submit"
                     id="sign-in-button"
+                    onClick={()=>{handleTimeInterval(60)}}
                   >
                     Login
                   </button>
@@ -242,13 +308,27 @@ const LoginForm = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <label className="form-label mb-0">Enter OTP</label>
                       <div className="timer">
+                      {!resendValid?
+                        <p>Time left:<span id="timer">{min}:{sec}</span></p>
+                        :
+                        <p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>}
+
+                      {/* {!resendValid?
                         <OtpTimer
                           minutes={0}
-                          seconds={60}
+                          seconds={10}
                           text="Time:"
-                          resend={() => handleClick()}
+                          resend={handleClick}
                           ButtonText="Resend OTP"
                         />
+                          :
+                          <p onClick={handleClick}>Resend OTP</p>
+                          // <OtpTimer 
+                          // seconds={0}
+                          // resend={() => handleClick}
+                          // ButtonText="Resend OTP"
+                        // />
+                        }  */}
                       </div>
                     </div>
                     <input
@@ -262,7 +342,8 @@ const LoginForm = () => {
                       id="phone"
                       value={otpValue}
                       onChange={(event) => handleOtpChange(event)}
-                      onKeyDown={(e) => onkeyDownevent(e)}
+                      // onKeyDown={(e) => onkeyDownevent(e)}
+                      
                     />
                     <span className="text-danger">{otpError}</span>
                   </div>
@@ -287,6 +368,7 @@ const LoginForm = () => {
         <Logo />
         <ToastContainer />
       </div>
+      }
       <div className="modal fade" id="termsAndConditions">
         <div className="modal-dialog terms_modal_popup">
           <div className="modal-content">

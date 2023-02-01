@@ -103,7 +103,6 @@ const Ledgers = (props) => {
             }
         });
         setLedgers(result);
-        console.log(ledgers, allData, partyId, "search")
     };
 
     useEffect(() => {
@@ -135,7 +134,9 @@ const Ledgers = (props) => {
             }
             setLoading(false);
         }).catch(error => {
-            console.log(error);
+            if(error.message.toUpperCase() == 'NETWORK ERROR'){
+                setOnline(true);
+            }
             setOnline(true);
         })
     }
@@ -153,13 +154,14 @@ const Ledgers = (props) => {
         getOutstandingPaybles(clickId,ledgerId);
         if(allCustom =='custom'){
             setDateDisplay(false);
+            dispatch(dateCustomStatus(true));
         }
-        console.log(item, item,ledgerTabs,allCustom);
         var tabs = '';
         if (ledgerTabs == 'detailedledger' || ledgerTabs == 'ledgersummary' && allCustom =='custom') {
             setLedgerTabs('ledgersummary');
             setAllCustom('all')
             tabs = 'ledgersummary';
+           
         }
         if (allCustom == 'all' || allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
             summaryData(clickId, ledgerId);
@@ -210,7 +212,6 @@ const Ledgers = (props) => {
 
     //All and Custom Tabs
     const allCustomEvent = (type) => {
-        console.log(startDate,endDate,"Dates")
         if (type == 'custom') {
             setDateDisplay(true);
         } else {
@@ -227,7 +228,6 @@ const Ledgers = (props) => {
             setLedgerTabs('ledgersummary');
         }
         if (type == 'custom' && ledgerTabs == 'ledgersummary') {
-            console.log(startDate,endDate);
             ledgerSummaryByDate(clickId, partyId, startDate, endDate);
         }
         setAllCustom(type);
@@ -392,7 +392,7 @@ const Ledgers = (props) => {
                                                     <table className="table table-fixed">
                                                         <thead className="theadr-tag">
                                                             <tr>
-                                                                <th scope="col">#</th>
+                                                                <th scope="col-4">#</th>
                                                                 <th scope="col">Date</th>
                                                                 {ledgerType == "BUYER" ? <th scope="col">Buyer Name</th> :
                                                                     <th scope="col">Seller Name</th>
@@ -435,7 +435,7 @@ const Ledgers = (props) => {
                                                                                     </div>
                                                                                     <div>
                                                                                         <p className="namedtl-tag">
-                                                                                            {item.partyName}
+                                                                                            {item.partyName} - {item.shortName}
                                                                                         </p>
                                                                                         <p className="mobilee-tag">
                                                                                             {!item.trader ? ledgerType == "BUYER" ? "Buyer" : 'Seller'
@@ -588,7 +588,7 @@ const Ledgers = (props) => {
                                                     <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                                                         <p className="card-text paid">
                                                             Total Business
-                                                            <p className="coloring">
+                                                            <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}>
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalTobePaidRcvd ?
                                                                     cardDetails.totalTobePaidRcvd ? getCurrencyNumberWithSymbol(
                                                                         cardDetails.totalTobePaidRcvd
@@ -637,7 +637,7 @@ const Ledgers = (props) => {
                                                             <p className="total-paid">
                                                             Total Paid</p>
                                                             }
-                                                            <p className="coloring">
+                                                            <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}>
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.totalRcvdPaid ?
                                                                     cardDetails.totalRcvdPaid ? getCurrencyNumberWithSymbol(
                                                                         cardDetails.totalRcvdPaid
@@ -683,7 +683,7 @@ const Ledgers = (props) => {
                                                             Outstanding Recievables</p>
                                                             :<p className="out-standing">Outstanding Payables</p>
                                                             }
-                                                            <p className="coloring">
+                                                            <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}>
                                                                 {allCustom == 'custom' && ledgerTabs == 'ledgersummary' ? cardDetails.outStdRcvPayble ?
                                                                     cardDetails?.outStdRcvPayble ? getCurrencyNumberWithSymbol(
                                                                         cardDetails.outStdRcvPayble

@@ -69,7 +69,7 @@ const CompleteProfile = (props) => {
     shortCodeValidation(e);
   };
   const shortCodeValidation = (e) => {
-    if (e.target.value.length >= 4) {
+    if (e.target.value.length > 4) {
       setMandiShortCodeError(
         "Mandi short code can not be more than 4 characters"
       );
@@ -787,25 +787,26 @@ const CompleteProfile = (props) => {
       <div className="modal-footer modal_common_footer">
               <div className="row">
                 <div className="col-lg-6 pl-0">
-                  <button
+                 
+                </div>
+                <div className="col-lg-6">
+                 <div className="d-flex justify-content-end">
+                 <button
                     type="button"
                     className="secondary_btn"
-                    // id="close_modal"
                     data-bs-dismiss="modal"
                     onClick={props.close}
                   >
                     Cancel
                   </button>
-                </div>
-                <div className="col-lg-6">
                 <button
           type="button"
           className="primary_btn"
-          // onClick={props.close onSubmit()}
           onClick={() => onSubmit()}
         >
           UPDATE
         </button>
+                 </div>
                 </div>
               </div>
             </div>

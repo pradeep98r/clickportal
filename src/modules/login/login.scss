@@ -13,9 +13,12 @@
     }
   }
 }
-.timer span{
+.timer span, .timer p{
   color: var(--ono-blue) !important;
   font-family: "Manrope", sans-serif;
+}
+.resend_text:hover{
+ cursor: pointer;
 }
 .ca_writer_card {
   text-align: center;
