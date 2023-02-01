@@ -91,10 +91,11 @@ function BuyBillBook() {
         setLoading(false);
       })
       .catch((error) => {
-        console.log(error,"error msg")
+        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+          setOnline(true);
+        }
         setOnline(true);
         console.log(error.message);
-        console.log(error);
       });
   };
   const navigate = useNavigate();

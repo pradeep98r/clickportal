@@ -98,7 +98,7 @@ function DatePickerModel(props) {
   );
   const [weekStartDate, setweekStartDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
-  );
+  ); 
   const [weekEndDate, setweekEndDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
   );
@@ -134,7 +134,8 @@ function DatePickerModel(props) {
         );
         var dateFormat =
           inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-        var weekFdate = moment(startWeekDate, "DD-MMM-YYYY");
+        var weekFdate = moment(startWeekDate).format("YYYY-MMM-DD");
+        //moment(startWeekDate, "DD-MMM-YYYY");
         var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
@@ -367,6 +368,7 @@ function DatePickerModel(props) {
                   name="tab"
                   value={"Custom"}
                   onChange={(e) => {handleDateTabs(e)}}
+                  
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Custom"}
                 />
@@ -397,7 +399,7 @@ function DatePickerModel(props) {
               </div>
             </article>
             <article
-              className="month_picker"  
+              className="month_picker"
               style={{ display: dateTabs === "Monthly" ? "block" : "none" }}
             >
               <DatePicker
