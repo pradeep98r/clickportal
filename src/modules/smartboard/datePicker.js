@@ -35,7 +35,13 @@ function DatePickerModel(props) {
     link == "/sellerledger"){
       if(props.ledgerTabs == "detailedledger"){
         if(billEditItemInfo?.dateCustom){
-          datev = 'Custom'
+          datev = 'Custom';
+          console.log(endDate,startDate)
+          setStartsDate(new Date());
+          setEndDate(new Date());
+         }
+         else{
+          datev = dateTabs
          }
       }
       
@@ -43,7 +49,8 @@ function DatePickerModel(props) {
          if(props.ledgerTabs == "ledgersummary"){
           if(billEditItemInfo?.dateCustom){
             datev = 'Custom'
-            console.log('heyyy')
+            setStartsDate(new Date());
+          setEndDate(new Date());
            }
            else{
             datev = dateTabs
@@ -241,7 +248,7 @@ function DatePickerModel(props) {
         console.log(lastDate,"else")
       }
       firstDate = moment(startDate).format("YYYY-MM-DD");
-      dispatch(dateCustomStatus(true));
+      // dispatch(dateCustomStatus(false));
       console.log(firstDate,lastDate)
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
