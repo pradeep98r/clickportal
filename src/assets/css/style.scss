@@ -87,7 +87,7 @@ ul {
 }
 .primary_btn,
 .btn_white,
-.outline_btn{
+.outline_btn, .no_delete_btn{
   color: var(--ono-white);
   background-color: var(--ono-primary);
   border-radius: 6px;
@@ -117,7 +117,11 @@ ul {
   border: none;
   text-transform: uppercase;
 }
-
+.no_delete_btn{
+  background-color: #D7F3DD;
+  color: #16A02C;
+  // width: 100%;
+}
 .add_bills_btn, .add_bills_btn:hover {
   padding: 8px 25px;
   color: #fff;
