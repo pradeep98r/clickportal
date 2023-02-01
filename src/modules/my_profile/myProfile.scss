@@ -51,11 +51,16 @@ margin-bottom: 30px;
 }
 .modal-footer{
     padding: 0px;
-    border-top: none;
+    border-top: 1px solid #E4E4E4;
     border-bottom-right-radius: 0px;
     border-bottom-left-radius:0px
 }
 .modal-content{
     border: 0px solid rgba(0, 0, 0, 0.2);
     border-radius:10px;
+}
+.edit_text{
+    color: #16A02C;
+    margin-left: 5px; 
+    font-size: 15px;
 }

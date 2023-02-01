@@ -42,13 +42,16 @@
   }
 }
 .partner_modal_dialog {
-  max-width: 750px;
+  max-width: 600px;
   form {
-    padding: 0px 50px;
+    padding: 0px 0px;
   }
 }
 .partner_model_body {
   padding: 20px 30px;
+  .col-lg-6{
+    padding-left: 0px;
+  }
 }
 .partner_model_scroll {
   max-height: calc(100vh - 240px);
@@ -106,7 +109,7 @@
   .date_icon img {
     position: absolute;
     top: 12px;
-    left: 60px;
+    left: 50px;
     z-index: 99;
     width: 15px;
   }
@@ -180,12 +183,13 @@
   border: none;
   border-radius: 0px;
   padding: 0px;
+  width: 100%;
 }
 .partner_modal_dialog {
   border-radius: 0px;
   .primary_btn {
     text-transform: uppercase;
-    width: 100%;
+    // width: 100%;
   }
 }
 .partner_tabs {
@@ -244,12 +248,12 @@ input:-webkit-autofill:active {
   padding-bottom: 20px;
 }
 .modal_common_footer {
-  padding: 20px 80px 20px !important;
+  padding: 20px 30px 20px !important;
 }
 .modal_common_footer,
 .modal_comm_footer {
   button {
-    width: 100%;
+    // width: 100%;
     text-transform: uppercase;
   }
   .row {

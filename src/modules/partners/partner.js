@@ -14,12 +14,11 @@ import delete_icon from "../../assets/images/delete.svg";
 import close from "../../assets/images/close.svg";
 import NoDataAvailable from "../../components/noDataAvailable";
 import InputField from "../../components/inputField";
-import toastr from "toastr";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import { Modal, Button, Image } from "react-bootstrap";
+import { Modal, Image } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
@@ -29,7 +28,7 @@ import "react-toastify/dist/ReactToastify.css";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
 import loading from "../../assets/images/loading.gif";
-const Partner = (props) => {
+const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
@@ -808,7 +807,7 @@ const Partner = (props) => {
                                 : getText(partyType)}
                             </h6>
                             <button
-                              className="outline_btn outline_btn_partner mr-2"
+                              className="primary_btn mr-2"
                               onClick={() => MybtnModal(partyType)}
                             >
                               Add
@@ -819,7 +818,7 @@ const Partner = (props) => {
                             {partyType.toLowerCase() == "farmer" ||
                             partyType.toLowerCase() == "buyer" ? (
                               <button
-                                className="outline_btn outline_btn_partner"
+                                className="primary_btn"
                                 onClick={() => MybtnModal("trader")}
                               >
                                 Add Trader
@@ -878,7 +877,7 @@ const Partner = (props) => {
       <div className="modal fade" id="Mymodal">
         <div className="modal-dialog partner_modal_dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-body partner_model_body pb-0">
+            <div className="modal-body partner_model_body">
               <form>
                 <div className="d-flex align-items-center justify-content-between modal_common_header">
                   <h5
@@ -887,7 +886,7 @@ const Partner = (props) => {
                   >
                     {addeditText}{" "}
                     {partyType == langFullData.farmer.toUpperCase()
-                      ? langFullData.seller
+                      ? 'Seller'
                       : getText(partyType)}
                   </h5>
                   <img
@@ -1500,17 +1499,19 @@ const Partner = (props) => {
             <div className="modal-footer modal_common_footer">
               <div className="row">
                 <div className="col-lg-6 pl-0">
-                  <button
+                 
+                </div>
+                <div className="col-lg-6">
+               <div className="d-flex justify-content-end">
+               <button
                     type="button"
-                    className="secondary_btn"
+                    className="secondary_btn mr-2"
                     // id="close_modal"
                     onClick={closeAddModal}
                     data-bs-dismiss="modal"
                   >
                     Cancel
                   </button>
-                </div>
-                <div className="col-lg-6">
                   <button
                     type="button"
                     className="primary_btn"
@@ -1520,6 +1521,7 @@ const Partner = (props) => {
                   >
                     save
                   </button>
+               </div>
                 </div>
               </div>
             </div>
