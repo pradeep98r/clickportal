@@ -230,7 +230,7 @@ const LoginForm = () => {
   const handleResendTime =() =>{
     setResendValid(false);
     handleTimeInterval(60);
-    
+    setotpError('')
   }
   // const resendOTP = () => {
   //   setResendValid(false);
@@ -293,7 +293,7 @@ const LoginForm = () => {
                       {!resendValid?
                         <p>Time left:<span id="timer">{min}:{sec}</span></p>
                         :
-                        <p onClick={()=>{handleClick()}}>Resend OTP</p>}
+                        <p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>}
 
                       {/* {!resendValid?
                         <OtpTimer
