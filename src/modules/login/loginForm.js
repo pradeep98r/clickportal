@@ -115,10 +115,10 @@ const LoginForm = () => {
         }
       },
       (error) => {
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
-          setOnline(true);
-        }
-        setOnline(true);
+        // if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        //   setOnline(true);
+        // }
+        // setOnline(true);
         setInvalidError(true);
         toast.error(error.response.data.status.description, {
           toastId: "error2",
@@ -173,10 +173,10 @@ const LoginForm = () => {
       (error) => {
         setotpErrorStatus(true);
         setotpError("The entered OTP is incorrect");
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
-          setOnline(true);
-        }
-        setOnline(true);
+        // if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        //   setOnline(true);
+        // }
+        // setOnline(true);
       }
     );
   };
