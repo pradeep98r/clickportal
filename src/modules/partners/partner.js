@@ -212,11 +212,11 @@ const Partner = () => {
   const [updateProfilePic, setUpdateProfilePic] = useState(null);
   const handleProfilePic = (e) => {
     if (isEdit) {
-      // var output = document.getElementById("output");
-      // output.src = URL.createObjectURL(e.target.files[0]);
-      // output.onload = function () {
-      //   URL.revokeObjectURL(output.src);
-      // };
+      var output = document.getElementById("output");
+      output.src = URL.createObjectURL(e.target.files[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
       console.log("came to edit");
       setFile(e.target.files[0]);
       var req = {
