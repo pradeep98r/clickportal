@@ -122,7 +122,6 @@ const CompleteProfile = (props) => {
     useState("");
   const handleAlternateMobileNumber = (e) => {
     mobileNumberValidation(e, "alternateMobile");
-    //console.log(e.ta)
   };
   const [pincode, setPincode] = useState(
     mandiEditStatus == "true" ? mandiData.businessAddress.pincode : ""
@@ -475,6 +474,7 @@ const CompleteProfile = (props) => {
   };
   const closePopup = () => {
     setSearchValue('')
+    setAllMarketsData(allData);
     $("#marketNamePopUpModal").modal("hide");
   };
 
@@ -830,7 +830,8 @@ const CompleteProfile = (props) => {
               />
                </div>
                 <SearchField
-                    placeholder={langFullData.searchByNameShortCode}
+                    placeholder="Search By Name"
+                    // {langFullData.searchByNameShortCode}
                     val={search}
                     onChange={(event) => {
                       handleSearch(event);
@@ -840,6 +841,8 @@ const CompleteProfile = (props) => {
                   {allMarketsData.map((item, index) => {
                     if (index === allMarketsData.length - 1)
                       return (
+                        <div>
+                        {search.length == 0 || search.toUpperCase =='OTHER'? 
                         <div
                           id="mk-other-name"
                           onClick={(e) => {
@@ -851,30 +854,33 @@ const CompleteProfile = (props) => {
                             <p id="mk-other-Name">{item.marketName}</p>
                           </div>
                         </div>
+                        :''}
+                        </div>
                       );
                   })}
-                  {search.length > 1 && marketName.length > 0
-                    ? marketName.map((item) => {
+                  {
+                  // search.length > 1 && marketName.length > 0
+                  //   ? marketName.map((item) => {
+                  //       return (
+                  //         <div
+                  //           id="mk-name"
+                  //           onClick={(name) => {
+                  //             handleMarketSelection(item.marketName);
+                  //           }}
+                  //         >
+                  //           <div className="d-flex">
+                  //             <img src={markets} alt="markets" />
+                  //             <p key={item.id} id="mk-Name">
+                  //               {item.marketName}
+                  //             </p>
+                  //           </div>
+                  //           <span id="hr-lines"></span>
+                  //         </div>
+                  //       );
+                  //     })
+                  //   : 
+                    allMarketsData.map((item) => {
                         return (
-                          <div
-                            id="mk-name"
-                            onClick={(name) => {
-                              handleMarketSelection(item.marketName);
-                            }}
-                          >
-                            <div className="d-flex">
-                              <img src={markets} alt="markets" />
-                              <p key={item.id} id="mk-Name">
-                                {item.marketName}
-                              </p>
-                            </div>
-                            <span id="hr-lines"></span>
-                          </div>
-                        );
-                      })
-                    : allMarketsData.map((item) => {
-                        return (
-                          <Fragment>
                             <div
                               id="mk-name"
                               onClick={(name) => {
@@ -890,7 +896,6 @@ const CompleteProfile = (props) => {
 
                               <span id="hr-lines"></span>
                             </div>
-                          </Fragment>
                         );
                       })}
                 </div>: <NoDataAvailable />}
