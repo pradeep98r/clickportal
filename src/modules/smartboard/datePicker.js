@@ -169,8 +169,10 @@ function DatePickerModel(props) {
       : "Daily"
   );
   const [selectedDate, setStartDate] = useState("");
-
+  const [handleTab, setHandleTabs] = useState(false);
   const dateOnchangeEvent = (date, type) => {
+    console.log("came to here");
+    setHandleTabs(true);
     if (type == "Daily") {
       setStartDate(date);
     } else if (type == "Monthly") {
@@ -183,19 +185,41 @@ function DatePickerModel(props) {
   const setToDefaultDate = () => {
     if (link == "/buyerledger" || link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
-        if(billEditItemInfo?.dateCustom){
-          console.log("customled")
-        setDateTabs("Custom");
+        console.log(startDate,endDate,dateTabs,"dateTabs");
+        if(dateTabs == 'Daily' && handleTab){
+          setDateTabs("Daily");
+        } else if(dateTabs == 'Weekly' && handleTab){
+          setDateTabs('Weekly')
+        }else if(dateTabs == 'Monthly' && handleTab){
+          setDateTabs('Monthly')
+        }else if(dateTabs == 'Yearly' && handleTab){
+          setDateTabs('Yearly')
+        }else{
+          setDateTabs("Custom");
         }
-        else{
-          setDateTabs(dateTabs);
-        }
+        // if(startDate!==null){
+        //   setDateTabs("Custom");
+        //   console.log("customle")
+        // }
+        
+        
+        // if(billEditItemInfo?.dateCustom){
+        //   console.log("customled")
+        // setDateTabs("Custom");
+        // }
+        // else{
+        //   console.log(dateTabs,"datetabs")
+        //   setDateTabs(dateTabs);
+        // }
         // setStartsDate(new Date());
         // setEndDate(new Date());
       }
-    } else {
-      setDateTabs("Daily");
     }
+    // } else {
+    //   console.log("came here");
+    //   setDateTabs(dateTabs);
+    //   // setDateTabs("Daily");
+    // }
   };
 
   const onclickContinue = async (dateValue) => {
@@ -264,6 +288,7 @@ function DatePickerModel(props) {
   };
 
   const handleDateTabs = (e) =>{
+    setHandleTabs(false);
     console.log(e.target.value);
     setDateTabs(e.target.value);
     setStartsDate(new Date());
