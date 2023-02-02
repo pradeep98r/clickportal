@@ -212,11 +212,11 @@ const Partner = () => {
   const [updateProfilePic, setUpdateProfilePic] = useState(null);
   const handleProfilePic = (e) => {
     if (isEdit) {
-      var output = document.getElementById("output");
-      output.src = URL.createObjectURL(e.target.files[0]);
-      output.onload = function () {
-        URL.revokeObjectURL(output.src);
-      };
+      // var output = document.getElementById("output");
+      // output.src = URL.createObjectURL(e.target.files[0]);
+      // output.onload = function () {
+      //   URL.revokeObjectURL(output.src);
+      // };
       console.log("came to edit");
       setFile(e.target.files[0]);
       var req = {
@@ -232,11 +232,11 @@ const Partner = () => {
         });
       console.log(updateProfilePic);
     } else {
-      var output = document.getElementById("output");
-      output.src = URL.createObjectURL(e.target.files[0]);
-      output.onload = function () {
-        URL.revokeObjectURL(output.src);
-      };
+      // var output = document.getElementById("output");
+      // output.src = URL.createObjectURL(e.target.files[0]);
+      // output.onload = function () {
+      //   URL.revokeObjectURL(output.src);
+      // };
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],
@@ -404,6 +404,7 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
+    setProfilePic('');
     if (type.toUpperCase() === "FARMER") {
       setradioValue("FARMER");
     } else if (type.toUpperCase() === "BUYER") {
@@ -632,6 +633,7 @@ const Partner = () => {
     setVehicleNum("");
     setVehicleType("");
     setPincodeLength("");
+    setProfilePic('')
   };
   const getPartnerType = (item, trader) => {
     var party = item;
