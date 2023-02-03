@@ -122,7 +122,6 @@ const CompleteProfile = (props) => {
     useState("");
   const handleAlternateMobileNumber = (e) => {
     mobileNumberValidation(e, "alternateMobile");
-    //console.log(e.ta)
   };
   const [pincode, setPincode] = useState(
     mandiEditStatus == "true" ? mandiData.businessAddress.pincode : ""
@@ -475,6 +474,7 @@ const CompleteProfile = (props) => {
   };
   const closePopup = () => {
     setSearchValue('')
+    setAllMarketsData(allData);
     $("#marketNamePopUpModal").modal("hide");
   };
 
@@ -534,12 +534,25 @@ const CompleteProfile = (props) => {
     closeOtheModalPopUp();
     closePopup();
   };
+  const editClosePopUp = () =>{
+    setShopNumberField(mandiEditStatus == "true" ? mandiData.shopNum : "");
+    setMandiShortCode(mandiEditStatus == "true" ? mandiData.shortCode : "");
+    setMandiNameField(mandiEditStatus === "true" ? mandiData.businessName : "");
+    setPincode(mandiEditStatus == "true" ? mandiData.businessAddress.pincode : "");
+    setCityVal(mandiEditStatus == "true" ? mandiData.businessAddress.dist : "");
+    setStateVal(mandiEditStatus == "true" ? mandiData.businessAddress.state : "");
+    setStreetVillage(mandiEditStatus == "true" ? mandiData.businessAddress.addressLine : "");
+    setMandiTypeField(mandiEditStatus == "true" ? mandiData.businessType : "");
+    setmobileNumber(mandiEditStatus == "true" ? mandiData.mobile : "");
+    setAlternateMobileNumber(mandiEditStatus == "true" ? mandiData.altMobile : "");
+    setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
+  }
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       
       <div className="modal-body partner_model_body profileModal" id="">
         <form>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-between all_popup_header">
           <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.businessDetails}
         </h5>
@@ -547,7 +560,7 @@ const CompleteProfile = (props) => {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={props.close}
+          onClick={()=>{editClosePopUp();props.close()}}
         />
           </div>
           <div className="partner_model_scroll" id="scroll_style">
@@ -830,7 +843,8 @@ const CompleteProfile = (props) => {
               />
                </div>
                 <SearchField
-                    placeholder={langFullData.searchByNameShortCode}
+                    placeholder="Search By Name"
+                    // {langFullData.searchByNameShortCode}
                     val={search}
                     onChange={(event) => {
                       handleSearch(event);
@@ -840,6 +854,8 @@ const CompleteProfile = (props) => {
                   {allMarketsData.map((item, index) => {
                     if (index === allMarketsData.length - 1)
                       return (
+                        <div>
+                        {search.length == 0 || search.toUpperCase =='OTHER'? 
                         <div
                           id="mk-other-name"
                           onClick={(e) => {
@@ -851,30 +867,33 @@ const CompleteProfile = (props) => {
                             <p id="mk-other-Name">{item.marketName}</p>
                           </div>
                         </div>
+                        :''}
+                        </div>
                       );
                   })}
-                  {search.length > 1 && marketName.length > 0
-                    ? marketName.map((item) => {
+                  {
+                  // search.length > 1 && marketName.length > 0
+                  //   ? marketName.map((item) => {
+                  //       return (
+                  //         <div
+                  //           id="mk-name"
+                  //           onClick={(name) => {
+                  //             handleMarketSelection(item.marketName);
+                  //           }}
+                  //         >
+                  //           <div className="d-flex">
+                  //             <img src={markets} alt="markets" />
+                  //             <p key={item.id} id="mk-Name">
+                  //               {item.marketName}
+                  //             </p>
+                  //           </div>
+                  //           <span id="hr-lines"></span>
+                  //         </div>
+                  //       );
+                  //     })
+                  //   : 
+                    allMarketsData.map((item) => {
                         return (
-                          <div
-                            id="mk-name"
-                            onClick={(name) => {
-                              handleMarketSelection(item.marketName);
-                            }}
-                          >
-                            <div className="d-flex">
-                              <img src={markets} alt="markets" />
-                              <p key={item.id} id="mk-Name">
-                                {item.marketName}
-                              </p>
-                            </div>
-                            <span id="hr-lines"></span>
-                          </div>
-                        );
-                      })
-                    : allMarketsData.map((item) => {
-                        return (
-                          <Fragment>
                             <div
                               id="mk-name"
                               onClick={(name) => {
@@ -890,13 +909,13 @@ const CompleteProfile = (props) => {
 
                               <span id="hr-lines"></span>
                             </div>
-                          </Fragment>
                         );
                       })}
                 </div>: <NoDataAvailable />}
                 
               </div>
             </div>
+           
             </div>
           </div>
         </div>
@@ -905,15 +924,7 @@ const CompleteProfile = (props) => {
       <div className="modal fade profileModal" id="otherModalPopUp">
         <div className="modal-dialog  market_name_popup">
           <div className="modal-content" id="other-modal-content">
-            <div className="modal-header date_modal_header market_modal_header px-0">
-            <div className="container">
-           <div className="row">
-           <div className="col-lg-12 p-0">
-           
-           </div>
-           </div>
-            </div>
-            </div>
+            
             <div className="modal-body market_name_modal_mody px-0 profileModal others_name_modal" id="scroll_style">
            <div className="container">
              <div className="d-flex justify-content-between align-items-center mb-2">

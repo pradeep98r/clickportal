@@ -177,7 +177,7 @@ const SellBillBook = (props) => {
               <div>
                 <div className="d-flex justify-content-between bills_div">
                   <div className="d-flex">
-                    <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
+                    {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
                           className="nav-link active"
@@ -189,7 +189,7 @@ const SellBillBook = (props) => {
                           {langFullData.all}
                         </a>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
 
                   <div onClick={onclickDate} className="color_blue">
@@ -199,12 +199,12 @@ const SellBillBook = (props) => {
                     {dateValue}
                   </div>
                   <div className="d-flex">
-                    <BillsSearchField
+                    {/* <BillsSearchField
                       placeholder={langFullData.search}
                       onChange={(event) => {
                         handleSearch(event);
                       }}
-                    />
+                    /> */}
                     <a
                       className="primary_btn add_bills_btn"
                       // href="/sellbillstep1"

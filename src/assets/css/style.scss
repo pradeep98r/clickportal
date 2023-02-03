@@ -107,6 +107,9 @@ ul {
   border: 1px solid var(--ono-primary);
   color: var(--ono-primary);
 }
+.partner_btn{
+  padding: 12px 20px;
+}
 .secondary_btn,
 .secondary_btn:hover {
   color: #16A02C;
@@ -170,7 +173,7 @@ ul {
   padding: 20px 30px;
 }
 .green_card {
-  background-color: var(--ono-primary);
+  background-color: #D7F3DD;
   border-radius: 10px;
 }
 .warning_card {

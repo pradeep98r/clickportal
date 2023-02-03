@@ -208,6 +208,7 @@
   border: 1px solid #16a02c;
   padding: 5px 10px;
   border-radius: 3px;
+  margin: 0px 30px;
 }
 .cropSec{
   position: relative;
@@ -537,4 +538,17 @@
 }
 .week_picker table {
   height: 80%!important;
+}
+.smartboard_div{
+  .color_pending{
+    color: #16A02C;
+  }
+  .color_pending_border{
+    border-right: 1px solid #16A02C;
+  }
+}
+.owl-item.active > .item_div:after {
+  content: 'active';
+  border-color: #d43939;
+  border-width: 2px;
 }

@@ -71,6 +71,8 @@ function DatePickerModel(props) {
 
   const [startDate, setStartsDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [custStDate, setCustStDate] = useState(new Date());
+  const [custEndDate, setCustEndDate] = useState(new Date());
   const [sDate, setSDate] = useState(false);
   const [defaultDate, setDefaultDate] = useState(moment(new Date()).format("DD-MMM-YYYY"));
   const onChangeDate = (dates) => {
@@ -78,6 +80,8 @@ function DatePickerModel(props) {
     console.log(start,end,dates)
     setStartsDate(start);
     setEndDate(end);
+    setCustStDate(start);
+    setCustEndDate(end);
     if(end == null){
       setSDate(true);
       setDefaultDate(defaultDate)
@@ -89,7 +93,8 @@ function DatePickerModel(props) {
   };
   const [selectedMonthDate, setSelectedMonthDate] = useState(new Date());
   const [selectedYearDate, setSelectedyearDate] = useState(new Date());
-
+  const [weekDate, setWeekDate] = useState(new Date());
+  const [week1Date, setWeek1Date] = useState(new Date());
   const [weekFirstDate, setWeekFirstDate] = useState(
     moment(new Date()).format("YYYY-MMM-DD")
   );
@@ -139,6 +144,8 @@ function DatePickerModel(props) {
         var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
         setWeekFirstDate(weekFdate);
         setWeekLastDate(weekLdate);
+        setWeekDate(weekFdate);
+        setWeek1Date(weekLdate);
         setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
         setweekEndDate(moment(endWeekDate).format("DD-MMM-YYYY"));
         $("#endWeekDate").text(
@@ -168,34 +175,76 @@ function DatePickerModel(props) {
       ? "Custom"
       : "Daily"
   );
-  const [selectedDate, setStartDate] = useState("");
-
+  const [selectedDate, setStartDate] = useState();
+  const [handleTab, setHandleTabs] = useState(false);
+  const [dates, setDates] = useState('Custom');
+  const [dialyDate, setDailyDate] = useState()
+  const [monthDate, setMonthDate] = useState(new Date());
+  const [yearDate, setyearDate] = useState(new Date());
   const dateOnchangeEvent = (date, type) => {
+    console.log("came to here");
+    setHandleTabs(true);
+    setDates(type);
     if (type == "Daily") {
       setStartDate(date);
+      setDailyDate(date);
     } else if (type == "Monthly") {
       setSelectedMonthDate(date);
+      setMonthDate(date);
     } else if (type == "Yearly") {
       setSelectedyearDate(date);
+      setyearDate(date);
     }
     onclickContinue(date);
   };
+
   const setToDefaultDate = () => {
     if (link == "/buyerledger" || link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
-        if(billEditItemInfo?.dateCustom){
-          console.log("customled")
-        setDateTabs("Custom");
+        console.log(dates,dateTabs,handleTab,weekDate,week1Date,"dateTabs");
+        if(dates == 'Daily' && handleTab){
+          setDateTabs("Daily");
+          setStartDate(dialyDate)
+        } else if(dates == 'Weekly' && handleTab){
+          setDateTabs('Weekly')
+          setweekStartDate(weekDate);
+          setweekEndDate(week1Date);
+        }else if(dates == 'Monthly' && handleTab){
+          setDateTabs('Monthly')
+          setSelectedMonthDate(monthDate)
+        }else if(dates == 'Yearly' && handleTab){
+          setDateTabs('Yearly')
+          setSelectedyearDate(yearDate)
+        } else if(dates == 'Custom' && handleTab){
+          setDateTabs('Custom');
+          setStartsDate(custStDate);
+          setEndDate(custEndDate);
         }
-        else{
-          setDateTabs(dateTabs);
-        }
+        
+        //setDates(dateTabs);
+        // if(startDate!==null){
+        //   setDateTabs("Custom");
+        //   console.log("customle")
+        // }
+        
+        
+        // if(billEditItemInfo?.dateCustom){
+        //   console.log("customled")
+        // setDateTabs("Custom");
+        // }
+        // else{
+        //   console.log(dateTabs,"datetabs")
+        //   setDateTabs(dateTabs);
+        // }
         // setStartsDate(new Date());
         // setEndDate(new Date());
       }
-    } else {
-      setDateTabs("Daily");
     }
+    // } else {
+    //   console.log("came here");
+    //   setDateTabs(dateTabs);
+    //   // setDateTabs("Daily");
+    // }
   };
 
   const onclickContinue = async (dateValue) => {
@@ -264,9 +313,20 @@ function DatePickerModel(props) {
   };
 
   const handleDateTabs = (e) =>{
-    console.log(e.target.value);
     setDateTabs(e.target.value);
-    setStartsDate(new Date());
+    console.log(dateTabs,"datetb")
+    if(dateTabs == e.target.value){
+      console.log("came to here");
+      setHandleTabs(false);
+      setDateTabs(e.target.value);
+    }else{
+      console.log("came to handle",dates);
+      setDateTabs(e.target.value);
+      setDates(dates);
+      setHandleTabs(true);
+    }
+    setStartDate(new Date());
+    setStartsDate(new Date())
     setEndDate(new Date());
     setSelectedMonthDate(new Date());
     setSelectedyearDate(new Date());

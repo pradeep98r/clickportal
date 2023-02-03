@@ -161,7 +161,7 @@ const Partner = () => {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  const [pincode, setPincode] = useState(0);
+  const [pincode, setPincode] = useState('');
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
   const [radioValue, setradioValue] = useState("FARMER");
@@ -232,11 +232,11 @@ const Partner = () => {
         });
       console.log(updateProfilePic);
     } else {
-      var output = document.getElementById("output");
-      output.src = URL.createObjectURL(e.target.files[0]);
-      output.onload = function () {
-        URL.revokeObjectURL(output.src);
-      };
+      // var output = document.getElementById("output");
+      // output.src = URL.createObjectURL(e.target.files[0]);
+      // output.onload = function () {
+      //   URL.revokeObjectURL(output.src);
+      // };
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],
@@ -404,6 +404,7 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
+    setProfilePic('');
     if (type.toUpperCase() === "FARMER") {
       setradioValue("FARMER");
     } else if (type.toUpperCase() === "BUYER") {
@@ -412,7 +413,7 @@ const Partner = () => {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
-    setPincode(0);
+    setPincode('');
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -618,7 +619,7 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    setPincode(0);
+    setPincode('');
     setAadharError("");
     setNameError("");
     setStateVal("");
@@ -632,6 +633,7 @@ const Partner = () => {
     setVehicleNum("");
     setVehicleType("");
     setPincodeLength("");
+    setProfilePic('')
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -765,7 +767,7 @@ const Partner = () => {
                                         <div>
                                           <h5>
                                             {partner.partyName +
-                                              " " +
+                                              " - " +
                                               partner.shortName}
                                           </h5>
                                           <h6>
@@ -817,7 +819,7 @@ const Partner = () => {
                                 : getText(partyType)}
                             </h6>
                             <button
-                              className="primary_btn mr-2"
+                              className="primary_btn partner_btn mr-2"
                               onClick={() => MybtnModal(partyType)}
                             >
                               Add
@@ -828,7 +830,7 @@ const Partner = () => {
                             {partyType.toLowerCase() == "farmer" ||
                             partyType.toLowerCase() == "buyer" ? (
                               <button
-                                className="primary_btn"
+                                className="primary_btn partner_btn"
                                 onClick={() => MybtnModal("trader")}
                               >
                                 Add Trader

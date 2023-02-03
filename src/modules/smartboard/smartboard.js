@@ -75,9 +75,9 @@ const SmartBoard = () => {
     };
     var currentTime = new Date();
     $(".week-picker").datepicker({
-      // minDate: new Date(currentTime.getFullYear(), currentTime.getMonth(), 1),
-      // maxDate: new Date(currentTime.getFullYear(), currentTime.getMonth() + 1, 0),
-     
+      showOtherMonths: false,
+      selectOtherMonths: false,
+      // maxDate: new Date(),
       dateFormat: "dd-MM-yy",
       onSelect: function (dateText, inst) {
         var date = $(this).datepicker("getDate");
@@ -151,7 +151,7 @@ const SmartBoard = () => {
   var fromDate = "";
   var toDate = "";
   const tabChange = async (type) => {
-    console.log(type,"startt")
+    console.log(type, "startt");
     setTabType(type);
     if (type === "Daily") {
       fromDate = moment(selectedDate).format("YYYY-MM-DD");
@@ -169,7 +169,11 @@ const SmartBoard = () => {
       toDate = weekLastDate;
       getSmartBoardResponse(type, fromDate, toDate);
     } else if (type == "Monthly") {
-      var firstDay = new Date(selectedMonthDate.getFullYear(), selectedMonthDate.getMonth(), 1);
+      var firstDay = new Date(
+        selectedMonthDate.getFullYear(),
+        selectedMonthDate.getMonth(),
+        1
+      );
       var lastDay = new Date(
         selectedMonthDate.getFullYear(),
         selectedMonthDate.getMonth() + 1,
@@ -204,20 +208,18 @@ const SmartBoard = () => {
   const closePopup = () => {
     $("#datePopupmodalPopup").modal("hide");
   };
-  const dailyOnchange = (date,type) =>{
-    if(type == 'daily'){
+  const dailyOnchange = (date, type) => {
+    if (type == "daily") {
       setStartDate(date);
-    }
-    else if(type == 'monthly'){
-      setSelectedMonthDate(date)
-    }
-    else if(type == 'yearly'){
-      setSelectedyearDate(date)
+    } else if (type == "monthly") {
+      setSelectedMonthDate(date);
+    } else if (type == "yearly") {
+      setSelectedyearDate(date);
     }
     getDateValue(date);
-  }
+  };
   const getDateValue = async (dateValue) => {
-    console.log(dateValue)
+    console.log(dateValue);
     var lastDay = new Date(
       dateValue.getFullYear(),
       dateValue.getMonth() + 1,
@@ -236,9 +238,9 @@ const SmartBoard = () => {
     } else if (tabType == "Weekly") {
       firstDate = weekFirstDate;
       lastDate = weekLastDate;
-      console.log(firstDate,lastDate,'week')
+      console.log(firstDate, lastDate, "week");
     }
-    console.log(firstDate,lastDate,tabType)
+    console.log(firstDate, lastDate, tabType);
     closePopup();
     getSmartboardData(clickId, tabType, firstDate, lastDate)
       .then((response) => {
@@ -261,7 +263,7 @@ const SmartBoard = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log("came to error",error)
+        console.log("came to error", error);
         setOnline(true);
         console.log(error);
       });
@@ -289,7 +291,7 @@ const SmartBoard = () => {
         setLoading(false);
       })
       .catch((error) => {
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        if (error.message.toUpperCase() == "NETWORK ERROR") {
           setOnline(true);
         }
         setOnline(true);
@@ -319,7 +321,9 @@ const SmartBoard = () => {
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
-      : loginData.useStatus == 'WRITER' ? "writer": 'ca';
+      : loginData.useStatus == "WRITER"
+      ? "writer"
+      : "ca";
   const [showModalStatus, setShowModalStatus] = useState(false);
   const onClickProfiles = () => {
     setShowModal(true);
@@ -353,8 +357,11 @@ const SmartBoard = () => {
     <div>
       <div className="">
         <div className="container-fluid px-0">
-          {(loginData.businessCreated === false ? (loginData.useStatus == "WRITER" ? true : false) : true) &&
-          businessCreatedStatus == "" ? (
+          {(loginData.businessCreated === false
+            ? loginData.useStatus == "WRITER"
+              ? true
+              : false
+            : true) && businessCreatedStatus == "" ? (
             <div className="row">
               <div className="col-lg-9 smartboard_div p-0">
                 <div className="complete_profile d-flex justify-content-between align-items-center">
@@ -377,436 +384,317 @@ const SmartBoard = () => {
             </div>
           ) : (
             <div>
-            {isOnline?<NoInternetConnection />:
-            <div>
-              <ul className="nav nav-tabs smartboard_tabs" id="myTab" role="tablist">
-                {links.map((link) => {
-                  return (
-                    <li key={link.id} className="nav-item ">
-                      <a
-                        className={
-                          "nav-link" + (tabType == link.to ? " active" : "")
-                        }
-                        href={"#" + tabType}
-                        role="tab"
-                        aria-controls="home"
-                        data-bs-toggle="tab"
-                        onClick={() => tabChange(link.to)}
-                      >
-                        {link.name}
-                      </a>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="tab-content main_div_padding">
-                <div
-                  className="tab-pane active"
-                  id={tabType}
-                  role="tabpanel"
-                  aria-labelledby="home-tab"
-                >
-                  <div className="smartboard_date">
-                    {tabType == langFullData.daily ? (
-                      <span className="" onClick={onPrevDate}>
-                        <img src={prev_icon} alt="icon" className="mr-3" />
-                      </span>
-                    ) : (
-                      ""
-                    )}
+              {isOnline ? (
+                <NoInternetConnection />
+              ) : (
+                <div>
+                  <ul
+                    className="nav nav-tabs smartboard_tabs"
+                    id="myTab"
+                    role="tablist"
+                  >
+                    {links.map((link) => {
+                      return (
+                        <li key={link.id} className="nav-item ">
+                          <a
+                            className={
+                              "nav-link" + (tabType == link.to ? " active" : "")
+                            }
+                            href={"#" + tabType}
+                            role="tab"
+                            aria-controls="home"
+                            data-bs-toggle="tab"
+                            onClick={() => tabChange(link.to)}
+                          >
+                            {link.name}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div className="tab-content main_div_padding">
+                    <div
+                      className="tab-pane active"
+                      id={tabType}
+                      role="tabpanel"
+                      aria-labelledby="home-tab"
+                    >
+                      <div className="smartboard_date">
+                        {tabType == langFullData.daily ? (
+                          <span className="" onClick={onPrevDate}>
+                            <img src={prev_icon} alt="icon" className="mr-3" />
+                          </span>
+                        ) : (
+                          ""
+                        )}
 
-                    <div onClick={DateModalPopup} className="selected_date m-0">
-                      <div className="d-flex align-items-center">
-                        <span className="date_icon m-0">
-                          <img src={date_icon} alt="icon" className="mr-2" />
-                        </span>
-                        {(() => {
-                          if (tabType == "Daily") {
-                            return <p>{partnerSelectDate}</p>;
-                          } else if (tabType == "Weekly") {
-                            return (
-                              <p>
-                                <span id="startWeekDate">{weekStartDate}</span>{" "}
-                                to <span id="endWeekDate">{weekEndDate}</span>
-                              </p>
-                            );
-                          } else if (tabType == "Monthly") {
-                            return <p>{monthSelectDate}</p>;
-                          } else if (tabType == "Yearly") {
-                            return <p>{yearSelectDate}</p>;
-                          }
-                        })()}
+                        <div
+                          onClick={DateModalPopup}
+                          className="selected_date m-0"
+                        >
+                          <div className="d-flex align-items-center">
+                            <span className="date_icon m-0">
+                              <img
+                                src={date_icon}
+                                alt="icon"
+                                className="mr-2"
+                              />
+                            </span>
+                            {(() => {
+                              if (tabType == "Daily") {
+                                return <p>{partnerSelectDate}</p>;
+                              } else if (tabType == "Weekly") {
+                                return (
+                                  <p>
+                                    <span id="startWeekDate">
+                                      {weekStartDate}
+                                    </span>{" "}
+                                    to{" "}
+                                    <span id="endWeekDate">{weekEndDate}</span>
+                                  </p>
+                                );
+                              } else if (tabType == "Monthly") {
+                                return <p>{monthSelectDate}</p>;
+                              } else if (tabType == "Yearly") {
+                                return <p>{yearSelectDate}</p>;
+                              }
+                            })()}
+                          </div>
+                        </div>
+                        {tabType == "Daily" ? (
+                          <span className="" onClick={onNextDate}>
+                            <img src={next_icon} alt="icon" className="ml-3" />
+                          </span>
+                        ) : (
+                          ""
+                        )}
                       </div>
-                    </div>
-                    {tabType == "Daily" ? (
-                      <span className="" onClick={onNextDate}>
-                        <img src={next_icon} alt="icon" className="ml-3" />
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
 
-                  {isLoading ? (
-                    <div className="">
-                      <img src={loading} alt="my-gif" className="gif_img" />
-                    </div>
-                  ) : (
-                    <div>
-                      {smartboardData != null ? (
-                        // {tabType}
+                      {isLoading ? (
+                        <div className="">
+                          <img src={loading} alt="my-gif" className="gif_img" />
+                        </div>
+                      ) : (
+                        <div>
+                          {smartboardData != null ? (
+                            // {tabType}
 
-                        <div className="row smartboard_row" id="scroll_style">
-                          {/* left side */}
-                          <div className="col-sm-9 smartboard_div smartboard_div1 p-0">
-                            <div className="outstanding_balance margin_bottom">
-                              <h4 className="smartboard_main_header">
-                                {langFullData.outstandingBalances}
-                              </h4>
-                              <div className="row">
-                                <div className="col-md-6 p-0">
-                                  <div className="card pending_rec_card green_card empty_card">
-                                    <div className="row">
-                                    <div className="col-lg-2">
-                                        <img src={pending_rec} className="mt-2" alt="image"/>
-                                      </div>
-                                      <div className="col-lg-5 col_left_border">
-                                        <h5 className="color_head_subtext">
-                                          Pending Receivables
-                                        </h5>
-                                        {outStandingBal.pendingRecievables ==
-                                        0 ? (
-                                          <p className="nodata">
-                                            {langFullData.noDataAvailable}
-                                          </p>
-                                        ) : (
-                                          <h6 className="color_head_subtext">
-                                            {outStandingBal.pendingRecievables.toLocaleString(
-                                              "en-IN",
-                                              {
-                                                maximumFractionDigits: 2,
-                                                style: "currency",
-                                                currency: "INR",
-                                              }
-                                            )}
-                                          </h6>
-                                        )}
-                                        <p>
-                                          {outStandingBal.pendingRecievables ==
-                                          0 ? (
-                                            ""
-                                          ) : (
-                                            <a
-                                              id="buyer-link"
-                                              href="/buyerledger"
-                                              onClick={() => {
-                                                handleLinks("/buyerledger");
-                                              }}
-                                            >
-                                              {langFullData.seeBuyerLedger}
-                                            </a>
-                                          )}
-                                        </p>
-                                      </div>
-                                      <div className="col-lg-5 col2">
-                                        <h5 className="color_head_subtext">
-                                          {/* {langData.sellBills}{" "} */}
-                                          Sell Bills
-                                        </h5>
-                                        {outStandingBal.totalSellBills == 0 ? (
-                                          <p className="nodata">
-                                            {langFullData.noDataAvailable}
-                                          </p>
-                                        ) : (
-                                          <h6 className="color_head_subtext">
-                                            {outStandingBal.totalSellBills.toLocaleString(
-                                              "en-IN",
-                                              {
-                                                currency: "INR",
-                                              }
-                                            )}
-                                          </h6>
-                                        )}
-
-                                        <p>
-                                          {outStandingBal.totalSellBills == 0
-                                            ? ""
-                                            :    <a
-                                            id="buyer-link"
-                                            href="/sellbillbook"
-                                            onClick={() => {
-                                              handleLinks("/sellbillbook");
-                                            }}
-                                          >
-                                            See All
-                                          </a>
-                                            }
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="col-md-6 pr-0">
-                                  <div className="card pending_rec_card pending_pay_card warning_card empty_card">
-                                    <div className="row">
-                                      <div className="col-lg-2">
-                                        <img src={pending_pay} className="mt-2" alt="image"/>
-                                      </div>
-                                      <div className="col-lg-5 col_left_border">
-                                        <h5 className="">Pending Payables </h5>
-                                        {outStandingBal.pendingPaybles == 0 ? (
-                                          <p className="nodata color_black">
-                                            {langFullData.noDataAvailable}
-                                          </p>
-                                        ) : (
-                                          <h6 className="color_red">
-                                            {outStandingBal.pendingPaybles.toLocaleString(
-                                              "en-IN",
-                                              {
-                                                maximumFractionDigits: 2,
-                                                style: "currency",
-                                                currency: "INR",
-                                              }
-                                            )}
-                                          </h6>
-                                        )}
-
-                                        <p className="color_blue">
-                                          {outStandingBal.pendingPaybles ==
-                                          0 ? (
-                                            ""
-                                          ) : (
-                                            <a
-                                              href="/sellerledger"
-                                              onClick={() => {
-                                                handleLinks("/sellerledger");
-                                              }}
-                                            >
-                                              {langFullData.seeSellerLedger}
-                                            </a>
-                                          )}
-                                        </p>
-                                      </div>
-                                      <div className="col-lg-5 col2">
-                                        <h5 className="">
-                                          {langFullData.buyBills}{" "}
-                                        </h5>
-                                        {outStandingBal.totalBuyBills == 0 ? (
-                                          <p className="nodata color_black">
-                                            {langFullData.noDataAvailable}
-                                          </p>
-                                        ) : (
-                                          <h6 className="color_red">
-                                            {outStandingBal.totalBuyBills.toLocaleString(
-                                              "en-IN",
-                                              {
-                                                currency: "INR",
-                                              }
-                                            )}
-                                          </h6>
-                                        )}
-
-                                        <p className="color_blue">
-                                          {outStandingBal.totalBuyBills == 0
-                                            ? ""
-                                            : <a
-                                            href="/buy_bill_book"
-                                            onClick={() => {
-                                              handleLinks("/buy_bill_book");
-                                            }}
-                                          >See All </a>}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="reports_cards margin_bottom">
-                              <div className="row margin_bottom">
-                                <div className="col-md-6 col_left pr-0">
+                            <div
+                              className="row smartboard_row"
+                              id="scroll_style"
+                            >
+                              {/* left side */}
+                              <div className="col-sm-9 smartboard_div smartboard_div1 p-0">
+                                <div className="outstanding_balance margin_bottom">
                                   <h4 className="smartboard_main_header">
-                                    {langFullData.salesReportText}
+                                    {langFullData.outstandingBalances}
                                   </h4>
-                                  <div className="card default_card empty_card">
-                                    <div className="row">
-                                      <div className="col-lg-6 col_left_border">
-                                        <h5 className="text-center">
-                                          {langFullData.totalSales}{" "}
-                                        </h5>
-                                        <h6 className="text-center">
-                                          {salesReprtData.totalBusiness == 0
-                                            ? ""
-                                            : salesReprtData.totalBusiness.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                  maximumFractionDigits: 2,
-                                                  style: "currency",
-                                                  currency: "INR",
-                                                }
+                                  <div className="row">
+                                    <div className="col-md-6 p-0">
+                                      <div className="card pending_rec_card green_card empty_card">
+                                        <div className="row">
+                                          <div className="col-lg-2">
+                                            <img
+                                              src={pending_rec}
+                                              className="mt-2"
+                                              alt="image"
+                                            />
+                                          </div>
+                                          <div className="col-lg-5 col_left_border color_pending_border">
+                                            <h5 className="color_head_subtext color_pending">
+                                              Pending Receivables
+                                            </h5>
+                                            {outStandingBal.pendingRecievables ==
+                                            0 ? (
+                                              <p className="nodata color_pending">
+                                                {langFullData.noDataAvailable}
+                                              </p>
+                                            ) : (
+                                              <h6 className="color_head_subtext color_pending">
+                                                {outStandingBal.pendingRecievables.toLocaleString(
+                                                  "en-IN",
+                                                  {
+                                                    maximumFractionDigits: 2,
+                                                    style: "currency",
+                                                    currency: "INR",
+                                                  }
+                                                )}
+                                              </h6>
+                                            )}
+                                            <p>
+                                              {outStandingBal.pendingRecievables ==
+                                              0 ? (
+                                                ""
+                                              ) : (
+                                                <a
+                                                  id=""
+                                                  href="/buyerledger"
+                                                  onClick={() => {
+                                                    handleLinks("/buyerledger");
+                                                  }}
+                                                >
+                                                  {langFullData.seeBuyerLedger}
+                                                </a>
                                               )}
-                                        </h6>
-                                      </div>
-                                      <div className="col-lg-6 col2">
-                                        <h5 className="text-center">
-                                          {langFullData.totalQuantity}{" "}
-                                        </h5>
-                                        <h6 className="text-center">
-                                          {salesReprtData.totalUnits == 0
-                                            ? ""
-                                            : salesReprtData.totalUnits.toLocaleString(
-                                                undefined,
-                                                {
-                                                  minimumFractionDigits: 1,
-                                                  maximumFractionDigits: 2,
-                                                }
-                                              ) +
-                                              (salesReprtData.totalWeight
-                                                ? " | " +
-                                                  salesReprtData.totalWeight.toLocaleString(
-                                                    undefined,
-                                                    {
-                                                      minimumFractionDigits: 1,
-                                                      maximumFractionDigits: 2,
-                                                    }
-                                                  ) +
-                                                  langFullData.kgs
-                                                : "")}
-                                        </h6>
-                                      </div>
-                                    </div>
-                                    {salesReprtData.totalBusiness == 0 ? (
-                                      <NoDataText />
-                                    ) : (
-                                      ''
-                                      // <div className="row top_border">
-                                      //   <p className="color_blue text-center">
-                                      //   See All
-                                      //   </p>
-                                      // </div>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="col-md-6 col_right">
-                                  <h4 className="smartboard_main_header">
-                                    {langFullData.purchaseReports}
-                                  </h4>
-                                  <div className="card default_card empty_card">
-                                    <div className="row">
-                                      <div className="col-lg-6 col_left_border">
-                                        <h5 className="text-center">
-                                          {langFullData.totalPurchases}
-                                        </h5>
-                                        <h6 className="text-center">
-                                          {purchaseReprtData.totalBusiness == 0
-                                            ? ""
-                                            : purchaseReprtData.totalBusiness.toLocaleString(
-                                                "en-IN",
-                                                {
-                                                  maximumFractionDigits: 2,
-                                                  style: "currency",
-                                                  currency: "INR",
-                                                }
+                                            </p>
+                                          </div>
+                                          <div className="col-lg-5 col2">
+                                            <h5 className="color_head_subtext color_pending">
+                                              {/* {langData.sellBills}{" "} */}
+                                              Sell Bills
+                                            </h5>
+                                            {outStandingBal.totalSellBills ==
+                                            0 ? (
+                                              <p className="nodata color_pending">
+                                                {langFullData.noDataAvailable}
+                                              </p>
+                                            ) : (
+                                              <h6 className="color_head_subtext color_pending">
+                                                {outStandingBal.totalSellBills.toLocaleString(
+                                                  "en-IN",
+                                                  {
+                                                    currency: "INR",
+                                                  }
+                                                )}
+                                              </h6>
+                                            )}
+
+                                            <p className="color_blue">
+                                              {outStandingBal.totalSellBills ==
+                                              0 ? (
+                                                ""
+                                              ) : (
+                                                <a
+                                                  id=""
+                                                  href="/sellbillbook"
+                                                  onClick={() => {
+                                                    handleLinks(
+                                                      "/sellbillbook"
+                                                    );
+                                                  }}
+                                                >
+                                                  See All
+                                                </a>
                                               )}
-                                        </h6>
-                                      </div>
-                                      <div className="col-lg-6 col2">
-                                        <h5 className="text-center">
-                                          {langFullData.totalQuantity}{" "}
-                                        </h5>
-                                        <h6 className="text-center">
-                                          {purchaseReprtData.totalUnits == 0
-                                            ? ""
-                                            : purchaseReprtData.totalUnits.toLocaleString(
-                                                undefined,
-                                                {
-                                                  minimumFractionDigits: 1,
-                                                  maximumFractionDigits: 2,
-                                                }
-                                              ) +
-                                              (purchaseReprtData.totalWeight
-                                                ? " | " +
-                                                  purchaseReprtData.totalWeight.toLocaleString(
-                                                    undefined,
-                                                    {
-                                                      minimumFractionDigits: 1,
-                                                      maximumFractionDigits: 2,
-                                                    }
-                                                  ) +
-                                                  langFullData.kgs
-                                                : "")}
-                                        </h6>
-                                      </div>
-                                    </div>
-                                    {purchaseReprtData.totalBusiness == 0 ? (
-                                      <NoDataText />
-                                    ) : (
-                                      // <div className="row top_border">
-                                      //   <p className="color_blue text-center">
-                                      //   See All
-                                      //   </p>
-                                      // </div>
-                                      ''
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="row margin_bottom">
-                                <div className="col-md-6 col_left pr-0">
-                                  <div className="card default_card empty_card1">
-                                    <h5 className="text-center mb-2">
-                                      {langFullData.salesByCrop}
-                                    </h5>
-                                    {cropSalesData.length != 0 ? (
-                                      <div>
-                                        <div className="d-flex crop_data">
-                                          {cropSalesData.map(
-                                            (sellCrop, index) => {
-                                              return (
-                                                <div className="" key={index}>
-                                                  <div
-                                                    className={
-                                                      "crop_div cropSec" +
-                                                      (cropItem == sellCrop
-                                                        ? " active"
-                                                        : "")
-                                                    }
-                                                    onClick={() =>
-                                                      cropOnclick(sellCrop)
-                                                    }
-                                                  >
-                                                    {cropItem == sellCrop ? (
-                                                      <img
-                                                        src={tickMark}
-                                                        alt="image"
-                                                        className="crop_tick"
-                                                      />
-                                                    ) : (
-                                                      ""
-                                                    )}
-                                                    <img
-                                                      src={sellCrop.imageUrl}
-                                                      className="cropimage"
-                                                    />
-                                                    <p className="crop_text">
-                                                      {sellCrop.cropName}
-                                                    </p>
-                                                  </div>
-                                                </div>
-                                              );
-                                            }
-                                          )}
+                                            </p>
+                                          </div>
                                         </div>
-                                        {cropItem != null && (
-                                          <div>
-                                            <div className="row mt-3">
-                                              <div className="col-lg-6 col_left_border">
-                                                <h5 className="text-center">
-                                                  {" "}
-                                                  {langFullData.totalSales}{" "}
-                                                </h5>
-                                                <h6 className="text-center">
-                                                  {cropItem.totalBusiness.toLocaleString(
+                                      </div>
+                                    </div>
+                                    <div className="col-md-6 pr-0">
+                                      <div className="card pending_rec_card pending_pay_card warning_card empty_card">
+                                        <div className="row">
+                                          <div className="col-lg-2">
+                                            <img
+                                              src={pending_pay}
+                                              className="mt-2"
+                                              alt="image"
+                                            />
+                                          </div>
+                                          <div className="col-lg-5 col_left_border">
+                                            <h5 className="">
+                                              Pending Payables{" "}
+                                            </h5>
+                                            {outStandingBal.pendingPaybles ==
+                                            0 ? (
+                                              <p className="nodata color_black">
+                                                {langFullData.noDataAvailable}
+                                              </p>
+                                            ) : (
+                                              <h6 className="color_red">
+                                                {outStandingBal.pendingPaybles.toLocaleString(
+                                                  "en-IN",
+                                                  {
+                                                    maximumFractionDigits: 2,
+                                                    style: "currency",
+                                                    currency: "INR",
+                                                  }
+                                                )}
+                                              </h6>
+                                            )}
+
+                                            <p className="color_blue">
+                                              {outStandingBal.pendingPaybles ==
+                                              0 ? (
+                                                ""
+                                              ) : (
+                                                <a
+                                                  href="/sellerledger"
+                                                  onClick={() => {
+                                                    handleLinks(
+                                                      "/sellerledger"
+                                                    );
+                                                  }}
+                                                >
+                                                  {langFullData.seeSellerLedger}
+                                                </a>
+                                              )}
+                                            </p>
+                                          </div>
+                                          <div className="col-lg-5 col2">
+                                            <h5 className="">
+                                              {langFullData.buyBills}{" "}
+                                            </h5>
+                                            {outStandingBal.totalBuyBills ==
+                                            0 ? (
+                                              <p className="nodata color_black">
+                                                {langFullData.noDataAvailable}
+                                              </p>
+                                            ) : (
+                                              <h6 className="color_red">
+                                                {outStandingBal.totalBuyBills.toLocaleString(
+                                                  "en-IN",
+                                                  {
+                                                    currency: "INR",
+                                                  }
+                                                )}
+                                              </h6>
+                                            )}
+
+                                            <p className="color_blue">
+                                              {outStandingBal.totalBuyBills ==
+                                              0 ? (
+                                                ""
+                                              ) : (
+                                                <a
+                                                  href="/buy_bill_book"
+                                                  onClick={() => {
+                                                    handleLinks(
+                                                      "/buy_bill_book"
+                                                    );
+                                                  }}
+                                                >
+                                                  See All{" "}
+                                                </a>
+                                              )}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="comission margin_bottom">
+                                  <h4 className="smartboard_main_header">
+                                    {langFullData.myCommissions}
+                                  </h4>
+                                  {/* <div className="card default_card"> */}
+                                  <div className="row">
+                                    <div className="col-lg-6 pl-0 col_left_border">
+                                      <div className="card default_card">
+                                        <div className="d-flex align-items-center justify-content-between">
+                                          <h5 className="">
+                                            {langFullData.commissionEarned}{" "}
+                                          </h5>
+                                          {commissionEarns.totalComm == 0 ? (
+                                             <p className="nodata color_black mt-0">
+                                             {langFullData.noDataAvailable}
+                                           </p>
+                                          ) : (
+                                            <h6 className="m-0">
+                                              {commissionEarns.totalComm == 0
+                                                ? ""
+                                                : commissionEarns.totalComm.toLocaleString(
                                                     "en-IN",
                                                     {
                                                       maximumFractionDigits: 2,
@@ -814,109 +702,120 @@ const SmartBoard = () => {
                                                       currency: "INR",
                                                     }
                                                   )}
-                                                </h6>
-                                              </div>
-                                              <div className="col-lg-6 col2">
-                                                <h5 className="text-center">
-                                                  {langFullData.totalQuantity}{" "}
-                                                </h5>
-                                                <h6 className="text-center">
-                                                  {cropItem.totalQty == 0
-                                                    ? ""
-                                                    : cropItem.totalQty.toLocaleString(
+                                            </h6>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="col-lg-6 pr-0">
+                                      <div className="card default_card">
+                                        <div className="d-flex align-items-center justify-content-between">
+                                          <h5 className="">Net Commission </h5>
+                                          {commissionEarns.netComm == 0 ? (
+                                             <p className="nodata color_black mt-0">
+                                             {langFullData.noDataAvailable}
+                                           </p>
+                                          ) : (
+                                            <h6 className="m-0">
+                                              {commissionEarns.netComm == 0
+                                                ? ""
+                                                : commissionEarns.netComm.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      style: "currency",
+                                                      currency: "INR",
+                                                    }
+                                                  )}
+                                            </h6>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* </div> */}
+                                </div>
+                                <div className="reports_cards margin_bottom">
+                                  <div className="row margin_bottom">
+                                    <div className="col-md-6 col_left pr-0">
+                                      <h4 className="smartboard_main_header">
+                                        {langFullData.salesReportText}
+                                      </h4>
+                                      <div className="card default_card empty_card">
+                                        <div className="row">
+                                          <div className="col-lg-6 col_left_border">
+                                            <h5 className="text-center">
+                                              {langFullData.totalSales}{" "}
+                                            </h5>
+                                            <h6 className="text-center">
+                                              {salesReprtData.totalBusiness == 0
+                                                ? ""
+                                                : salesReprtData.totalBusiness.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      style: "currency",
+                                                      currency: "INR",
+                                                    }
+                                                  )}
+                                            </h6>
+                                          </div>
+                                          <div className="col-lg-6 col2">
+                                            <h5 className="text-center">
+                                              {langFullData.totalQuantity}{" "}
+                                            </h5>
+                                            <h6 className="text-center">
+                                              {salesReprtData.totalUnits == 0
+                                                ? ""
+                                                : salesReprtData.totalUnits.toLocaleString(
+                                                    undefined,
+                                                    {
+                                                      minimumFractionDigits: 1,
+                                                      maximumFractionDigits: 2,
+                                                    }
+                                                  ) +
+                                                  (salesReprtData.totalWeight
+                                                    ? " | " +
+                                                      salesReprtData.totalWeight.toLocaleString(
                                                         undefined,
                                                         {
                                                           minimumFractionDigits: 1,
                                                           maximumFractionDigits: 2,
                                                         }
                                                       ) +
-                                                      (cropItem.totalWeight
-                                                        ? " | " +
-                                                          cropItem.totalWeight.toLocaleString(
-                                                            undefined,
-                                                            {
-                                                              minimumFractionDigits: 1,
-                                                              maximumFractionDigits: 2,
-                                                            }
-                                                          ) +
-                                                          langFullData.kgs
-                                                        : "")}
-                                                </h6>
-                                              </div>
-                                            </div>
-                                            {/* <div className="row top_border">
-                                              <p className="color_blue text-center">
-                                              See All
-                                              </p>
-                                            </div> */}
+                                                      langFullData.kgs
+                                                    : "")}
+                                            </h6>
                                           </div>
+                                        </div>
+                                        {salesReprtData.totalBusiness == 0 ? (
+                                          <NoDataText />
+                                        ) : (
+                                          ""
+                                          // <div className="row top_border">
+                                          //   <p className="color_blue text-center">
+                                          //   See All
+                                          //   </p>
+                                          // </div>
                                         )}
                                       </div>
-                                    ) : (
-                                      <div>
-                                        <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
-                                      <NoDataText />
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="col-md-6 col_right">
-                                  <div className="card default_card empty_card1">
-                                    <h5 className="text-center mb-2">
-                                      {langFullData.purchaseByCrop}
-                                    </h5>
-                                    {cropPurchaseData.length != 0 ? (
-                                      <div>
-                                        <div className="d-flex crop_data">
-                                          {cropPurchaseData.map(
-                                            (buyCrop, index) => {
-                                              return (
-                                                <div className="" key={index}>
-                                                  <div
-                                                    className={
-                                                      "crop_div cropSec" +
-                                                      (buycropItem == buyCrop
-                                                        ? " active"
-                                                        : "")
-                                                    }
-                                                    onClick={() =>
-                                                      buyCropOnclick(buyCrop)
-                                                    }
-                                                  >
-                                                    {buycropItem == buyCrop ? (
-                                                      <img
-                                                        src={tickMark}
-                                                        alt="image"
-                                                        className="crop_tick"
-                                                      />
-                                                    ) : (
-                                                      ""
-                                                    )}
-                                                    <img
-                                                      src={buyCrop.imageUrl}
-                                                      className="cropimage"
-                                                    />
-                                                    <p className="crop_text">
-                                                      {buyCrop.cropName}
-                                                    </p>
-                                                  </div>
-                                                </div>
-                                              );
-                                            }
-                                          )}
-                                        </div>
-                                        {buycropItem != null && (
-                                          <div>
-                                            <div className="row mt-3">
-                                              <div className="col-lg-6 col_left_border">
-                                                <h5 className="text-center">
-                                                  {" "}
-                                                  {
-                                                    langFullData.totalPurchases
-                                                  }{" "}
-                                                </h5>
-                                                <h6 className="text-center">
-                                                  {buycropItem.totalBusiness.toLocaleString(
+                                    </div>
+                                    <div className="col-md-6 col_right">
+                                      <h4 className="smartboard_main_header">
+                                        {langFullData.purchaseReports}
+                                      </h4>
+                                      <div className="card default_card empty_card">
+                                        <div className="row">
+                                          <div className="col-lg-6 col_left_border">
+                                            <h5 className="text-center">
+                                              {langFullData.totalPurchases}
+                                            </h5>
+                                            <h6 className="text-center">
+                                              {purchaseReprtData.totalBusiness ==
+                                              0
+                                                ? ""
+                                                : purchaseReprtData.totalBusiness.toLocaleString(
                                                     "en-IN",
                                                     {
                                                       maximumFractionDigits: 2,
@@ -924,86 +823,103 @@ const SmartBoard = () => {
                                                       currency: "INR",
                                                     }
                                                   )}
-                                                </h6>
-                                              </div>
-                                              <div className="col-lg-6 col2">
-                                                <h5 className="text-center">
-                                                  {langFullData.totalQuantity}{" "}
-                                                </h5>
-                                                <h6 className="text-center">
-                                                  {buycropItem.totalQty == 0
-                                                    ? ""
-                                                    : buycropItem.totalQty.toLocaleString(
-                                                        "en-IN",
+                                            </h6>
+                                          </div>
+                                          <div className="col-lg-6 col2">
+                                            <h5 className="text-center">
+                                              {langFullData.totalQuantity}{" "}
+                                            </h5>
+                                            <h6 className="text-center">
+                                              {purchaseReprtData.totalUnits == 0
+                                                ? ""
+                                                : purchaseReprtData.totalUnits.toLocaleString(
+                                                    undefined,
+                                                    {
+                                                      minimumFractionDigits: 1,
+                                                      maximumFractionDigits: 2,
+                                                    }
+                                                  ) +
+                                                  (purchaseReprtData.totalWeight
+                                                    ? " | " +
+                                                      purchaseReprtData.totalWeight.toLocaleString(
+                                                        undefined,
                                                         {
+                                                          minimumFractionDigits: 1,
                                                           maximumFractionDigits: 2,
-                                                          currency: "INR",
                                                         }
                                                       ) +
-                                                      (buycropItem.totalWeight
-                                                        ? " | " +
-                                                          buycropItem.totalWeight.toLocaleString(
-                                                            "en-IN",
-                                                            {
-                                                              maximumFractionDigits: 2,
-                                                              currency: "INR",
-                                                            }
-                                                          ) +
-                                                          " KGS"
-                                                        : "")}
-                                                </h6>
-                                              </div>
-                                            </div>
-                                            {/* <div className="row top_border">
-                                              <p className="color_blue text-center">
-                                              See All
-                                              </p>
-                                            </div> */}
+                                                      langFullData.kgs
+                                                    : "")}
+                                            </h6>
                                           </div>
+                                        </div>
+                                        {purchaseReprtData.totalBusiness ==
+                                        0 ? (
+                                          <NoDataText />
+                                        ) : (
+                                          // <div className="row top_border">
+                                          //   <p className="color_blue text-center">
+                                          //   See All
+                                          //   </p>
+                                          // </div>
+                                          ""
                                         )}
                                       </div>
-                                    ) : (
-                                      <div>
-                                        <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
-                                      <NoDataText />
-                                      </div>
-                                    )}
+                                    </div>
                                   </div>
-                                </div>
-                              </div>
-                              <div className="row margin_bottom">
-                                <div className="col-md-6 col_left pr-0">
-                                  <div className="card default_card empty_card2">
-                                    <h5 className="text-center mb-2">
-                                      {langFullData.salesByBuyer}{" "}
-                                    </h5>
-                                    {buyerData.length != 0 ? (
-                                      <OwlCarousel
-                                        className="owl-theme owl_car"
-                                        items={1}
-                                        stagePadding={30}
-                                        margin={20}
-                                        responsive={car.responsive}
-                                      >
-                                        {buyerData.map((buyerItem, index) => {
-                                          return (
-                                            <div key={index}>
-                                              <div className="d-flex item_div align-items-center">
-                                                <img
-                                                  src={single_bill}
-                                                  alt="image"
-                                                  className="userIcon"
-                                                />
-                                                <div>
-                                                  <h4>{buyerItem.partyName}</h4>
-                                                  <h5>{buyerItem.mobile}</h5>
-                                                  <h3>
-                                                    {buyerItem.trader
-                                                      ? langFullData.trader
-                                                      : langFullData.buyer}
-                                                  </h3>
-                                                </div>
-                                              </div>
+                                  <div className="row margin_bottom">
+                                    <div className="col-md-6 col_left pr-0">
+                                      <div className="card default_card empty_card1">
+                                        <h5 className="text-center mb-2">
+                                          {langFullData.salesByCrop}
+                                        </h5>
+                                        {cropSalesData.length != 0 ? (
+                                          <div>
+                                            <div className="d-flex crop_data">
+                                              {cropSalesData.map(
+                                                (sellCrop, index) => {
+                                                  return (
+                                                    <div
+                                                      className=""
+                                                      key={index}
+                                                    >
+                                                      <div
+                                                        className={
+                                                          "crop_div cropSec" +
+                                                          (cropItem == sellCrop
+                                                            ? " active"
+                                                            : "")
+                                                        }
+                                                        onClick={() =>
+                                                          cropOnclick(sellCrop)
+                                                        }
+                                                      >
+                                                        {cropItem ==
+                                                        sellCrop ? (
+                                                          <img
+                                                            src={tickMark}
+                                                            alt="image"
+                                                            className="crop_tick"
+                                                          />
+                                                        ) : (
+                                                          ""
+                                                        )}
+                                                        <img
+                                                          src={
+                                                            sellCrop.imageUrl
+                                                          }
+                                                          className="cropimage"
+                                                        />
+                                                        <p className="crop_text">
+                                                          {sellCrop.cropName}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  );
+                                                }
+                                              )}
+                                            </div>
+                                            {cropItem != null && (
                                               <div>
                                                 <div className="row mt-3">
                                                   <div className="col-lg-6 col_left_border">
@@ -1014,7 +930,7 @@ const SmartBoard = () => {
                                                       }{" "}
                                                     </h5>
                                                     <h6 className="text-center">
-                                                      {buyerItem.totalBusiness.toLocaleString(
+                                                      {cropItem.totalBusiness.toLocaleString(
                                                         "en-IN",
                                                         {
                                                           maximumFractionDigits: 2,
@@ -1031,18 +947,18 @@ const SmartBoard = () => {
                                                       }{" "}
                                                     </h5>
                                                     <h6 className="text-center">
-                                                      {buyerItem.totalQty == 0
+                                                      {cropItem.totalQty == 0
                                                         ? ""
-                                                        : buyerItem.totalQty.toLocaleString(
+                                                        : cropItem.totalQty.toLocaleString(
                                                             undefined,
                                                             {
                                                               minimumFractionDigits: 1,
                                                               maximumFractionDigits: 2,
                                                             }
                                                           ) +
-                                                          (buyerItem.totalWeight
+                                                          (cropItem.totalWeight
                                                             ? " | " +
-                                                              buyerItem.totalWeight.toLocaleString(
+                                                              cropItem.totalWeight.toLocaleString(
                                                                 undefined,
                                                                 {
                                                                   minimumFractionDigits: 1,
@@ -1055,394 +971,596 @@ const SmartBoard = () => {
                                                   </div>
                                                 </div>
                                                 {/* <div className="row top_border">
+                                              <p className="color_blue text-center">
+                                              See All
+                                              </p>
+                                            </div> */}
+                                              </div>
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <img
+                                              src={no_data_icon}
+                                              alt="image"
+                                              className="d-flex aligin-items-center mx-auto my-4"
+                                            />
+                                            <NoDataText />
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="col-md-6 col_right">
+                                      <div className="card default_card empty_card1">
+                                        <h5 className="text-center mb-2">
+                                          {langFullData.purchaseByCrop}
+                                        </h5>
+                                        {cropPurchaseData.length != 0 ? (
+                                          <div>
+                                            <div className="d-flex crop_data">
+                                              {cropPurchaseData.map(
+                                                (buyCrop, index) => {
+                                                  return (
+                                                    <div
+                                                      className=""
+                                                      key={index}
+                                                    >
+                                                      <div
+                                                        className={
+                                                          "crop_div cropSec" +
+                                                          (buycropItem ==
+                                                          buyCrop
+                                                            ? " active"
+                                                            : "")
+                                                        }
+                                                        onClick={() =>
+                                                          buyCropOnclick(
+                                                            buyCrop
+                                                          )
+                                                        }
+                                                      >
+                                                        {buycropItem ==
+                                                        buyCrop ? (
+                                                          <img
+                                                            src={tickMark}
+                                                            alt="image"
+                                                            className="crop_tick"
+                                                          />
+                                                        ) : (
+                                                          ""
+                                                        )}
+                                                        <img
+                                                          src={buyCrop.imageUrl}
+                                                          className="cropimage"
+                                                        />
+                                                        <p className="crop_text">
+                                                          {buyCrop.cropName}
+                                                        </p>
+                                                      </div>
+                                                    </div>
+                                                  );
+                                                }
+                                              )}
+                                            </div>
+                                            {buycropItem != null && (
+                                              <div>
+                                                <div className="row mt-3">
+                                                  <div className="col-lg-6 col_left_border">
+                                                    <h5 className="text-center">
+                                                      {" "}
+                                                      {
+                                                        langFullData.totalPurchases
+                                                      }{" "}
+                                                    </h5>
+                                                    <h6 className="text-center">
+                                                      {buycropItem.totalBusiness.toLocaleString(
+                                                        "en-IN",
+                                                        {
+                                                          maximumFractionDigits: 2,
+                                                          style: "currency",
+                                                          currency: "INR",
+                                                        }
+                                                      )}
+                                                    </h6>
+                                                  </div>
+                                                  <div className="col-lg-6 col2">
+                                                    <h5 className="text-center">
+                                                      {
+                                                        langFullData.totalQuantity
+                                                      }{" "}
+                                                    </h5>
+                                                    <h6 className="text-center">
+                                                      {buycropItem.totalQty == 0
+                                                        ? ""
+                                                        : buycropItem.totalQty.toLocaleString(
+                                                            "en-IN",
+                                                            {
+                                                              maximumFractionDigits: 2,
+                                                              currency: "INR",
+                                                            }
+                                                          ) +
+                                                          (buycropItem.totalWeight
+                                                            ? " | " +
+                                                              buycropItem.totalWeight.toLocaleString(
+                                                                "en-IN",
+                                                                {
+                                                                  maximumFractionDigits: 2,
+                                                                  currency:
+                                                                    "INR",
+                                                                }
+                                                              ) +
+                                                              " KGS"
+                                                            : "")}
+                                                    </h6>
+                                                  </div>
+                                                </div>
+                                                {/* <div className="row top_border">
+                                              <p className="color_blue text-center">
+                                              See All
+                                              </p>
+                                            </div> */}
+                                              </div>
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <img
+                                              src={no_data_icon}
+                                              alt="image"
+                                              className="d-flex aligin-items-center mx-auto my-4"
+                                            />
+                                            <NoDataText />
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="row margin_bottom">
+                                    <div className="col-md-6 col_left pr-0">
+                                      <div className="card default_card empty_card2">
+                                        <h5 className="text-center mb-2">
+                                          {langFullData.salesByBuyer}{" "}
+                                        </h5>
+                                        {buyerData.length != 0 ? (
+                                          <OwlCarousel
+                                            className="owl-theme owl_car"
+                                            items={1}
+                                            stagePadding={20}
+                                            margin={20}
+                                            responsive={car.responsive}
+                                          >
+                                            {buyerData.map(
+                                              (buyerItem, index) => {
+                                                return (
+                                                  <div key={index}>
+                                                    <div className="d-flex item_div align-items-center">
+                                                      <img
+                                                        src={single_bill}
+                                                        alt="image"
+                                                        className="userIcon"
+                                                      />
+                                                      <div>
+                                                        <h4>
+                                                          {buyerItem.partyName}
+                                                        </h4>
+                                                        <h5>
+                                                          {buyerItem.mobile}
+                                                        </h5>
+                                                        <h3>
+                                                          {buyerItem.trader
+                                                            ? langFullData.trader
+                                                            : langFullData.buyer}
+                                                        </h3>
+                                                      </div>
+                                                    </div>
+                                                    <div>
+                                                      <div className="row mt-3">
+                                                        <div className="col-lg-6 col_left_border">
+                                                          <h5 className="text-center">
+                                                            {" "}
+                                                            {
+                                                              langFullData.totalSales
+                                                            }{" "}
+                                                          </h5>
+                                                          <h6 className="text-center">
+                                                            {buyerItem.totalBusiness.toLocaleString(
+                                                              "en-IN",
+                                                              {
+                                                                maximumFractionDigits: 2,
+                                                                style:
+                                                                  "currency",
+                                                                currency: "INR",
+                                                              }
+                                                            )}
+                                                          </h6>
+                                                        </div>
+                                                        <div className="col-lg-6 col2">
+                                                          <h5 className="text-center">
+                                                            {
+                                                              langFullData.totalQuantity
+                                                            }{" "}
+                                                          </h5>
+                                                          <h6 className="text-center">
+                                                            {buyerItem.totalQty ==
+                                                            0
+                                                              ? ""
+                                                              : buyerItem.totalQty.toLocaleString(
+                                                                  undefined,
+                                                                  {
+                                                                    minimumFractionDigits: 1,
+                                                                    maximumFractionDigits: 2,
+                                                                  }
+                                                                ) +
+                                                                (buyerItem.totalWeight
+                                                                  ? " | " +
+                                                                    buyerItem.totalWeight.toLocaleString(
+                                                                      undefined,
+                                                                      {
+                                                                        minimumFractionDigits: 1,
+                                                                        maximumFractionDigits: 2,
+                                                                      }
+                                                                    ) +
+                                                                    langFullData.kgs
+                                                                  : "")}
+                                                          </h6>
+                                                        </div>
+                                                      </div>
+                                                      {/* <div className="row top_border">
                                                   <p className="color_blue text-center">
                                                   See All
                                                   </p>
                                                 </div> */}
-                                              </div>
-                                            </div>
-                                          );
-                                        })}
-                                      </OwlCarousel>
-                                    ) : (
-                                      <div>
-                                      <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
-                                    <NoDataText />
+                                                    </div>
+                                                  </div>
+                                                );
+                                              }
+                                            )}
+                                          </OwlCarousel>
+                                        ) : (
+                                          <div>
+                                            <img
+                                              src={no_data_icon}
+                                              alt="image"
+                                              className="d-flex aligin-items-center mx-auto my-4"
+                                            />
+                                            <NoDataText />
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="col-md-6 col_right">
-                                  <div className="card default_card empty_card2">
-                                    <h5 className="text-center mb-2">
-                                      {langFullData.purchaseBySeller}{" "}
-                                    </h5>
-                                    {farmerData.length != 0 ? (
-                                      <OwlCarousel
-                                        className="owl-theme owl_car"
-                                        items={1}
-                                        stagePadding={30}
-                                        margin={20}
-                                        responsive={car.responsive}
-                                      >
-                                        {farmerData.map((farmerItem, index) => {
-                                          return (
-                                            <div key={index}>
-                                              <div className="d-flex item_div align-items-center">
-                                                <img
-                                                  src={single_bill}
-                                                  alt="image"
-                                                  className="userIcon"
-                                                />
-                                                <div>
-                                                  <h4>
-                                                    {farmerItem.partyName}
-                                                  </h4>
-                                                  <h5>{farmerItem.mobile}</h5>
-                                                  <h3>
-                                                    {farmerItem.trader
-                                                      ? langFullData.trader
-                                                      : langFullData.seller}
-                                                  </h3>
-                                                </div>
-                                              </div>
-                                              <div className="row mt-3">
-                                                <div className="col-lg-6 col_left_border">
-                                                  <h5 className="text-center">
-                                                    {" "}
-                                                    {
-                                                      langFullData.totalPurchases
-                                                    }{" "}
-                                                  </h5>
-                                                  <h6 className="text-center">
-                                                    {farmerItem.totalBusiness.toLocaleString(
-                                                      "en-IN",
-                                                      {
-                                                        maximumFractionDigits: 2,
-                                                        style: "currency",
-                                                        currency: "INR",
-                                                      }
-                                                    )}
-                                                  </h6>
-                                                </div>
-                                                <div className="col-lg-6 col2">
-                                                  <h5 className="text-center">
-                                                    {langFullData.totalQuantity}{" "}
-                                                  </h5>
-                                                  <h6 className="text-center">
-                                                    {farmerItem.totalQty == 0
-                                                      ? ""
-                                                      : farmerItem.totalQty.toLocaleString(
-                                                          undefined,
+                                    <div className="col-md-6 col_right">
+                                      <div className="card default_card empty_card2">
+                                        <h5 className="text-center mb-2">
+                                          {langFullData.purchaseBySeller}{" "}
+                                        </h5>
+                                        {farmerData.length != 0 ? (
+                                          <OwlCarousel
+                                            className="owl-theme owl_car"
+                                            items={1}
+                                            stagePadding={20}
+                                            margin={20}
+                                            responsive={car.responsive}
+                                          >
+                                            {farmerData.map(
+                                              (farmerItem, index) => {
+                                                return (
+                                                  <div key={index}>
+                                                    <div className="d-flex item_div align-items-center">
+                                                      <img
+                                                        src={single_bill}
+                                                        alt="image"
+                                                        className="userIcon"
+                                                      />
+                                                      <div>
+                                                        <h4>
+                                                          {farmerItem.partyName}
+                                                        </h4>
+                                                        <h5>
+                                                          {farmerItem.mobile}
+                                                        </h5>
+                                                        <h3>
+                                                          {farmerItem.trader
+                                                            ? langFullData.trader
+                                                            : langFullData.seller}
+                                                        </h3>
+                                                      </div>
+                                                    </div>
+                                                    <div className="row mt-3">
+                                                      <div className="col-lg-6 col_left_border">
+                                                        <h5 className="text-center">
+                                                          {" "}
                                                           {
-                                                            minimumFractionDigits: 1,
-                                                            maximumFractionDigits: 2,
-                                                          }
-                                                        ) +
-                                                        (farmerItem.totalWeight
-                                                          ? " | " +
-                                                            farmerItem.totalWeight.toLocaleString(
-                                                              undefined,
-                                                              {
-                                                                minimumFractionDigits: 1,
-                                                                maximumFractionDigits: 2,
-                                                              }
-                                                            ) +
-                                                            langFullData.kgs
-                                                          : "")}
-                                                  </h6>
-                                                </div>
-                                              </div>
-                                              {/* <div className="row top_border">
+                                                            langFullData.totalPurchases
+                                                          }{" "}
+                                                        </h5>
+                                                        <h6 className="text-center">
+                                                          {farmerItem.totalBusiness.toLocaleString(
+                                                            "en-IN",
+                                                            {
+                                                              maximumFractionDigits: 2,
+                                                              style: "currency",
+                                                              currency: "INR",
+                                                            }
+                                                          )}
+                                                        </h6>
+                                                      </div>
+                                                      <div className="col-lg-6 col2">
+                                                        <h5 className="text-center">
+                                                          {
+                                                            langFullData.totalQuantity
+                                                          }{" "}
+                                                        </h5>
+                                                        <h6 className="text-center">
+                                                          {farmerItem.totalQty ==
+                                                          0
+                                                            ? ""
+                                                            : farmerItem.totalQty.toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                  minimumFractionDigits: 1,
+                                                                  maximumFractionDigits: 2,
+                                                                }
+                                                              ) +
+                                                              (farmerItem.totalWeight
+                                                                ? " | " +
+                                                                  farmerItem.totalWeight.toLocaleString(
+                                                                    undefined,
+                                                                    {
+                                                                      minimumFractionDigits: 1,
+                                                                      maximumFractionDigits: 2,
+                                                                    }
+                                                                  ) +
+                                                                  langFullData.kgs
+                                                                : "")}
+                                                        </h6>
+                                                      </div>
+                                                    </div>
+                                                    {/* <div className="row top_border">
                                                 <p className="color_blue text-center">
                                                 See All
                                                 </p>
                                               </div> */}
-                                            </div>
-                                          );
-                                        })}
-                                      </OwlCarousel>
-                                    ) : (
-                                      <div>
-                                      <img src={no_data_icon} alt="image" className="d-flex aligin-items-center mx-auto my-4" />
-                                    <NoDataText />
+                                                  </div>
+                                                );
+                                              }
+                                            )}
+                                          </OwlCarousel>
+                                        ) : (
+                                          <div>
+                                            <img
+                                              src={no_data_icon}
+                                              alt="image"
+                                              className="d-flex aligin-items-center mx-auto my-4"
+                                            />
+                                            <NoDataText />
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
+                                  </div>
+                                </div>
+                                <div className="reports_cards margin_bottom">
+                                  <h4 className="smartboard_main_header">
+                                    {langFullData.recentTransactions}
+                                  </h4>
+                                  <div className="row margin_bottom">
+                                    <div className="d-flex align-items-center justify-content-between w-100">
+                                      <h4 className="trans_title">
+                                        {langFullData.buyTransactions}
+                                      </h4>
+                                      <p className="trans_title color_blue">
+                                        {buyRecentTxs.length != 0 ? (
+                                          <a
+                                            href="/sellerledger"
+                                            onClick={() => {
+                                              handleLinks("/sellerledger");
+                                            }}
+                                          >
+                                            See All
+                                          </a>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </p>
+                                    </div>
+                                    {buyRecentTxs.length != 0 ? (
+                                      <table className="table table-bordered trans_table">
+                                        <thead>
+                                          <tr>
+                                            <th className="col-3">Name</th>
+                                            <th className="col-2">
+                                              {langFullData.paid}(&#8377;)
+                                            </th>
+                                            <th className="col-2">
+                                              {langFullData.toBePaid}(&#8377;)
+                                            </th>
+                                            <th className="col-2">
+                                              {langFullData.pastBalance}
+                                              (&#8377;)
+                                            </th>
+                                            <th className="col-3">
+                                              {
+                                                langFullData.totalOutstandingPayables
+                                              }
+                                              (&#8377;)
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {buyRecentTxs.map((item, index) => {
+                                            return (
+                                              <tr key={index}>
+                                                <td className="name_data">
+                                                  <div className="d-flex">
+                                                    <img
+                                                      src={single_bill}
+                                                      alt="image"
+                                                      className="userIcon mr-2"
+                                                    />
+                                                    <div>
+                                                      <h4>{item.farmerName}</h4>
+                                                      <h4>
+                                                        {langFullData.billNo}:
+                                                        <span
+                                                          style={{
+                                                            color: "#0066FF",
+                                                          }}
+                                                        >
+                                                          {item.billId}
+                                                        </span>
+                                                      </h4>
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>0</td>
+                                                <td>{item.totalPayble}</td>
+                                                <td>{item.pastBal}</td>
+                                                <td>{item.totalOutstdPay}</td>
+                                              </tr>
+                                            );
+                                          })}
+                                        </tbody>
+                                      </table>
+                                    ) : (
+                                      <div className="default_card w-100">
+                                        <NoDataText />
+                                      </div>
+                                    )}
+                                    <div className="d-flex align-items-center justify-content-between w-100 mt-4">
+                                      <h4 className="trans_title">
+                                        {langFullData.sellTransactions}
+                                      </h4>
+                                      <p className="trans_title color_blue">
+                                        {sellRecentTxs.length != 0 ? (
+                                          <a
+                                            // id="buyer-link"
+                                            href="/buyerledger"
+                                            onClick={() => {
+                                              handleLinks("/buyerledger");
+                                            }}
+                                          >
+                                            See All
+                                          </a>
+                                        ) : (
+                                          ""
+                                        )}
+                                      </p>
+                                    </div>
+                                    {sellRecentTxs.length != 0 ? (
+                                      <table className="table table-bordered trans_table">
+                                        <thead>
+                                          <tr>
+                                            <th className="col-3">Name</th>
+                                            <th className="col-2">
+                                              {langFullData.received}(&#8377;)
+                                            </th>
+                                            <th className="col-2">
+                                              {langFullData.toBeReceived}
+                                              (&#8377;)
+                                            </th>
+                                            <th className="col-2">
+                                              {langFullData.pastBalance}
+                                              (&#8377;)
+                                            </th>
+                                            <th className="col-3">
+                                              {
+                                                langFullData.totalOutstandingReceivables
+                                              }
+                                              (&#8377;)
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {sellRecentTxs.map((item, index) => {
+                                            return (
+                                              <tr key={index}>
+                                                <td className="name_data">
+                                                  <div className="d-flex ">
+                                                    <img
+                                                      src={single_bill}
+                                                      alt="image"
+                                                      className="userIcon mr-2"
+                                                    />
+                                                    <div>
+                                                      <h4>{item.buyerName}</h4>
+                                                      <h4>
+                                                        {langFullData.billNo}:
+                                                        <span
+                                                          style={{
+                                                            color: "#0066FF",
+                                                          }}
+                                                        >
+                                                          {item.billId}
+                                                        </span>
+                                                      </h4>
+                                                    </div>
+                                                  </div>
+                                                </td>
+                                                <td>0</td>
+                                                <td>{item.totalReceivable}</td>
+                                                <td>{item.pastBal}</td>
+                                                <td>{item.totalOutstdRcv}</td>
+                                              </tr>
+                                            );
+                                          })}
+                                        </tbody>
+                                      </table>
+                                    ) : (
+                                      <div className="default_card w-100">
+                                        <NoDataText />
+                                      </div>
                                     )}
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="reports_cards margin_bottom">
-                              <h4 className="smartboard_main_header">
-                                {langFullData.recentTransactions}
-                              </h4>
-                              <div className="row margin_bottom">
-                                <div className="d-flex align-items-center justify-content-between w-100">
-                                  <h4 className="trans_title">
-                                    {langFullData.buyTransactions}
-                                  </h4>
-                                  <p className="trans_title color_blue">
-                                    {buyRecentTxs.length != 0
-                                      ? <a
-                                      href="/sellerledger"
-                                      onClick={() => {
-                                        handleLinks("/sellerledger");
-                                      }}
-                                    >
-                                     See All
-                                    </a>
-                                      : ""}
-                                  </p>
-                                </div>
-                                {buyRecentTxs.length != 0 ? (
-                                  <table className="table table-bordered trans_table">
-                                    <thead>
-                                      <tr>
-                                        <th className="col-3">
-                                          Name
-                                        </th>
-                                        <th className="col-2">
-                                          {langFullData.paid}(&#8377;)
-                                        </th>
-                                        <th className="col-2">
-                                          {langFullData.toBePaid}(&#8377;)
-                                        </th>
-                                        <th className="col-2">
-                                          {langFullData.pastBalance}(&#8377;)
-                                        </th>
-                                        <th className="col-3">
-                                          {
-                                            langFullData.totalOutstandingPayables
-                                          }
-                                          (&#8377;)
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {buyRecentTxs.map((item, index) => {
-                                        return (
-                                          <tr key={index}>
-                                            <td className="name_data">
-                                              <div className="d-flex">
-                                                <img
-                                                  src={single_bill}
-                                                  alt="image"
-                                                  className="userIcon mr-2"
-                                                />
-                                                <div>
-                                                  <h4>{item.farmerName}</h4>
-                                                  <h4>
-                                                    {langFullData.billNo}:
-                                                    <span
-                                                      style={{
-                                                        color: "#0066FF",
-                                                      }}
-                                                    >
-                                                      {item.billId}
-                                                    </span>
-                                                  </h4>
-                                                </div>
-                                              </div>
-                                            </td>
-                                            <td>0</td>
-                                            <td>{item.totalPayble}</td>
-                                            <td>{item.pastBal}</td>
-                                            <td>{item.totalOutstdPay}</td>
-                                          </tr>
-                                        );
-                                      })}
-                                    </tbody>
-                                  </table>
-                                ) : (
-                                  <div className="default_card w-100">
-                                    <NoDataText />
-                                  </div>
-                                )}
-                                <div className="d-flex align-items-center justify-content-between w-100 mt-4">
-                                  <h4 className="trans_title">
-                                    {langFullData.sellTransactions}
-                                  </h4>
-                                  <p className="trans_title color_blue">
-                                    {sellRecentTxs.length != 0
-                                      ? 
-                                      <a
-                                      // id="buyer-link"
-                                      href="/buyerledger"
-                                      onClick={() => {
-                                        handleLinks("/buyerledger");
-                                      }}
-                                    >
-                                      See All
-                                    </a>
-                                      
-                                      : ""}
-                                  </p>
-                                </div>
-                                {sellRecentTxs.length != 0 ? (
-                                  <table className="table table-bordered trans_table">
-                                    <thead>
-                                      <tr>
-                                        <th className="col-3">
-                                          Name
-                                        </th>
-                                        <th className="col-2">
-                                          {langFullData.received}(&#8377;)
-                                        </th>
-                                        <th className="col-2">
-                                          {langFullData.toBeReceived}(&#8377;)
-                                        </th>
-                                        <th className="col-2">
-                                          {langFullData.pastBalance}(&#8377;)
-                                        </th>
-                                        <th className="col-3">
-                                          {
-                                            langFullData.totalOutstandingReceivables
-                                          }
-                                          (&#8377;)
-                                        </th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      {sellRecentTxs.map((item, index) => {
-                                        return (
-                                          <tr key={index}>
-                                            <td className="name_data">
-                                              <div className="d-flex ">
-                                                <img
-                                                  src={single_bill}
-                                                  alt="image"
-                                                  className="userIcon mr-2"
-                                                />
-                                                <div>
-                                                  <h4>{item.buyerName}</h4>
-                                                  <h4>
-                                                    {langFullData.billNo}:
-                                                    <span
-                                                      style={{
-                                                        color: "#0066FF",
-                                                      }}
-                                                    >
-                                                      {item.billId}
-                                                    </span>
-                                                  </h4>
-                                                </div>
-                                              </div>
-                                            </td>
-                                            <td>0</td>
-                                            <td>{item.totalReceivable}</td>
-                                            <td>{item.pastBal}</td>
-                                            <td>{item.totalOutstdRcv}</td>
-                                          </tr>
-                                        );
-                                      })}
-                                    </tbody>
-                                  </table>
-                                ) : (
-                                  <div className="default_card w-100">
-                                    <NoDataText />
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          {/* right side */}
-                          <div className="col-lg-3 smartboard_div">
-                            <div className="smartboard_right_cards">
-                              <div className="comission margin_bottom">
-                                <h4 className="smartboard_main_header">
-                                  {langFullData.myCommissions}
-                                </h4>
-                                <div className="card default_card">
-                                  <div className="row">
-                                    <div className="col-lg-6 pl-0 col_left_border">
-                                      <h5 className="">
-                                        {langFullData.commissionEarned}{" "}
-                                      </h5>
-                                      <h6 className="">
-                                        {commissionEarns.totalComm == 0
-                                          ? ""
-                                          : commissionEarns.totalComm.toLocaleString(
-                                              "en-IN",
-                                              {
-                                                maximumFractionDigits: 2,
-                                                style: "currency",
-                                                currency: "INR",
-                                              }
-                                            )}
-                                      </h6>
+                              {/* right side */}
+                              <div className="col-lg-3 smartboard_div">
+                                <div className="smartboard_right_cards">
+                                  <div className="margin_bottom">
+                                    <h4 className="smartboard_main_header">
+                                      Quick Actions
+                                    </h4>
+                                    <div className="card default_card">
+                                      <h4 className="smartboard_main_header">
+                                        {langFullData.salesBillBook}
+                                      </h4>
+                                      <div
+                                        onClick={() => {
+                                          handleLinks("/sellbillbook");
+                                        }}
+                                      >
+                                        <button className="primary_btn">
+                                          {langFullData.addSalesBill}
+                                        </button>
+                                      </div>
                                     </div>
-                                    <div className="col-lg-6 pr-0">
-                                      <h5 className="">Net Commission </h5>
-                                      <h6 className="">
-                                        {commissionEarns.netComm == 0
-                                          ? ""
-                                          : commissionEarns.netComm.toLocaleString(
-                                              "en-IN",
-                                              {
-                                                maximumFractionDigits: 2,
-                                                style: "currency",
-                                                currency: "INR",
-                                              }
-                                            )}
-                                      </h6>
+                                    <div className="card default_card mt-3">
+                                      <h4 className="smartboard_main_header">
+                                        {langFullData.buyBillBook}
+                                      </h4>
+                                      <div
+                                        onClick={() => {
+                                          handleLinks("/buy_bill_book");
+                                        }}
+                                      >
+                                        <button className="primary_btn">
+                                          {langFullData.addPurchaseBill}
+                                        </button>
+                                      </div>
                                     </div>
                                   </div>
-                                  {(commissionEarns.totalComm &&
-                                    commissionEarns.netComm) == 0 ? (
-                                    <NoDataText />
-                                  ) : (
-                                    ''
-                                    // <p className="color_blue see_all pl-0">
-                                    //  See All
-                                    // </p>
-                                  )}
-                                </div>
-                              </div>
-                              <div className="margin_bottom">
-                                <h4 className="smartboard_main_header">
-                                  Quick Actions
-                                </h4>
-                                <div className="card default_card">
-                                  <h4 className="smartboard_main_header">
-                                    {langFullData.salesBillBook}
-                                  </h4>
-                                  <div
-                                    onClick={() => {
-                                      handleLinks("/sellbillbook");
-                                    }}
-                                  >
-                                    <OutlineButton
-                                      text={langFullData.addSalesBill}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="card default_card mt-3">
-                                  <h4 className="smartboard_main_header">
-                                    {langFullData.buyBillBook}
-                                  </h4>
-                                  <div
-                                    onClick={() => {
-                                      handleLinks("/buy_bill_book");
-                                    }}
-                                  >
-                                    <OutlineButton
-                                      text={langFullData.addPurchaseBill}
-                                    />
-                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          ) : (
+                            <NoDataAvailable />
+                          )}
                         </div>
-                      ) : (
-                        <NoDataAvailable />
                       )}
                     </div>
-                  )}
                   </div>
-              </div>
-            </div>
-            }
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -1459,7 +1577,9 @@ const SmartBoard = () => {
                   ? "Week"
                   : tabType == "Monthly"
                   ? "Month"
-                  : tabType == "Yearly" ? "Year" : ''}
+                  : tabType == "Yearly"
+                  ? "Year"
+                  : ""}
               </h5>
               <img
                 src={close}
@@ -1477,7 +1597,7 @@ const SmartBoard = () => {
                         <DatePicker
                           dateFormat="dd-MMM-yy"
                           selected={selectedDate}
-                          onChange={(date) => dailyOnchange(date,"daily")}
+                          onChange={(date) => dailyOnchange(date, "daily")}
                           className="form-control"
                           placeholder="Date"
                           maxDate={new Date()}
@@ -1500,7 +1620,7 @@ const SmartBoard = () => {
                           showMonthYearPicker
                           showFullMonthYearPicker
                           selected={selectedMonthDate}
-                          onChange={(date) => dailyOnchange(date,'monthly')}
+                          onChange={(date) => dailyOnchange(date, "monthly")}
                           className="form-control"
                           placeholder="Date"
                           maxDate={new Date()}
@@ -1515,7 +1635,7 @@ const SmartBoard = () => {
                       <div className="yearly">
                         <DatePicker
                           selected={selectedYearDate}
-                          onChange={(date) => dailyOnchange(date,'yearly')}
+                          onChange={(date) => dailyOnchange(date, "yearly")}
                           showYearPicker
                           dateFormat="yyyy"
                           className="form-control"
@@ -1530,24 +1650,29 @@ const SmartBoard = () => {
                 })()}
               </div>
             </div>
-            {tabType == "Daily" || tabType == "Monthly" || tabType == 'Yearly' ? '' :<div className="modal-footer p-0">
-              <button
-                type="button"
-                className="primary_btn cont_btn w-100 m-0"
-                onClick={() =>
-                  getDateValue(
-                    tabType == "Daily"
-                      ? selectedDate
-                      : tabType == "Yearly"
-                      ? selectedYearDate
-                      : selectedMonthDate
-                  )
-                }
-              >
-                {langFullData.continue_}
-              </button>
-            </div> }
-            
+            {tabType == "Daily" ||
+            tabType == "Monthly" ||
+            tabType == "Yearly" ? (
+              ""
+            ) : (
+              <div className="modal-footer p-0">
+                <button
+                  type="button"
+                  className="primary_btn cont_btn w-100 m-0"
+                  onClick={() =>
+                    getDateValue(
+                      tabType == "Daily"
+                        ? selectedDate
+                        : tabType == "Yearly"
+                        ? selectedYearDate
+                        : selectedMonthDate
+                    )
+                  }
+                >
+                  {langFullData.continue_}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -267,9 +267,9 @@ function SideNavigation() {
                   >
                     {/* {link.to.replace('/', '')} */}
 
-                    <div className="flex_class">
+                    <div className="flex_class mr-0">
                       <div className="icons">
-                        <img src={link.img} className="flex_class mx-auto" />
+                        <img src={link.img} className="flex_class mx-auto mr-0" />
                       </div>
                       <span>{link.name} </span>
                     </div>

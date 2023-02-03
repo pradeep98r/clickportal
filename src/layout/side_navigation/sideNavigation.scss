@@ -23,17 +23,17 @@
 }
 
 #wrapper.toggled {
-  padding-left: 200px;
+  padding-left: 210px;
   overflow: scroll;
 }
 
 #sidebar-wrapper {
   z-index: 1000;
   position: absolute;
-  left: 200px;
+  left: 210px;
   width: 0;
   height: 100%;
-  margin-left: -200px;
+  margin-left: -210px;
   overflow-y: auto;
   background: var(--ono-white);
   -webkit-transition: all 0.5s ease;
@@ -45,7 +45,7 @@
 }
 
 #wrapper.toggled #sidebar-wrapper {
-  width: 200px;
+  width: 210px;
 }
 
 #wrapper.toggled #page-content-wrapper {
@@ -59,7 +59,7 @@
   padding: 0;
   list-style: none;
   margin-top: 2px;
-  width: 250px;
+  width: 210px;
 }
 .sidebar-nav li a {
   display: block;
@@ -81,7 +81,8 @@
   }
 }
 
-.sidebar-nav li .side_nav_item:hover, .sidebar-nav li .side_nav_item.active_item {
+.sidebar-nav li .side_nav_item:hover,
+.sidebar-nav li .side_nav_item.active_item {
   text-decoration: none;
   color: var(--ono-yellow);
   background: var(--ono-primary);
@@ -96,14 +97,16 @@
 .sidebar-nav li .side_nav_item:focus {
   text-decoration: none;
 }
-
+.sidebar-nav li{
+  padding-left: 10px;
+}
 .no-margin {
   margin: 0;
 }
 
 @media (min-width: 768px) {
   #wrapper {
-    padding-left: 200px;
+    padding-left: 210px;
   }
   .fixed-brand {
     border-bottom: 1px solid #e4e4e4;
@@ -117,7 +120,7 @@
     padding-left: 0;
   }
   #wrapper.toggled #sidebar-wrapper {
-    width: 200px;
+    width: 210px;
   }
   #wrapper.toggled-2 #sidebar-wrapper {
     width: 60px;
@@ -126,7 +129,7 @@
     }
   }
   #wrapper.toggled-2 #sidebar-wrapper:hover {
-    width: 200px;
+    width: 210px;
   }
 
   #page-content-wrapper {
@@ -141,12 +144,12 @@
   #wrapper.toggled #page-content-wrapper {
     position: relative;
     margin-right: 0;
-    padding-left: 200px;
+    padding-left: 210px;
   }
   #wrapper.toggled-2 #page-content-wrapper {
     position: relative;
     margin-right: 0;
-    margin-left: -200px;
+    margin-left: -210px;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -154,7 +157,7 @@
     width: auto;
   }
 }
-.logout_btn{
+.logout_btn {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -162,18 +165,18 @@
   // left: 35%;
   // transform: translateX(-24%);
   padding: 10px;
-  border-top: 1px solid #E4E4E4;
-  button{
-    background-color: #FFE7E7;
-    color: #4D4D4D;
+  border-top: 1px solid #e4e4e4;
+  button {
+    background-color: #ffe7e7;
+    color: #4d4d4d;
     border-radius: 10px;
     font-size: var(--header3-text);
     padding: 10px 20px;
     border: none;
   }
 }
-@media(max-width:1320px){
-  .logout_btn{
-     bottom: -300px;
+@media (max-width: 1320px) {
+  .logout_btn {
+    bottom: -300px;
   }
 }
