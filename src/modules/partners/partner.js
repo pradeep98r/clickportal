@@ -161,7 +161,7 @@ const Partner = () => {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  const [pincode, setPincode] = useState(0);
+  const [pincode, setPincode] = useState('');
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
   const [radioValue, setradioValue] = useState("FARMER");
@@ -413,7 +413,7 @@ const Partner = () => {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
-    setPincode(0);
+    setPincode('');
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -619,7 +619,7 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    setPincode(0);
+    setPincode('');
     setAadharError("");
     setNameError("");
     setStateVal("");
