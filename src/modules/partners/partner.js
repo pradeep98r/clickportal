@@ -632,7 +632,7 @@ const Partner = () => {
     $("#city").val("");
     setVehicleNum("");
     setVehicleType("");
-    setPincodeLength("");
+    setPincodeLength(false);
     setProfilePic('')
   };
   const getPartnerType = (item, trader) => {

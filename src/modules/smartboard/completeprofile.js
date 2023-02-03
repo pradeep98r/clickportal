@@ -206,14 +206,14 @@ const CompleteProfile = (props) => {
     if (
       mandiNameField.trim().length !== 0 &&
       mobileNumber.trim().length !== 0 &&
-      !(mobileNumber.trim().length<10) &&
+      !(mobileNumber.trim().length < 10) &&
       mandiShortCode.trim().length !== 0 &&
       mandiShortCode.trim().length <= 4 &&
       shopNumberField.trim().length !== 0 &&
       contactName.trim().length !== 0 &&
-      !(contactName.trim().length<2) &&
-      !(mandiTypeField.trim().length<2) &&
-      !(mandiNameField.trim().length<2) &&
+      !(contactName.trim().length < 2) &&
+      !(mandiTypeField.trim().length < 2) &&
+      !(mandiNameField.trim().length < 2) &&
       marketname.trim().length !== 0 &&
       pincode.toString().trim().length !== 0 &&
       cityVal.trim().length !== 0 &&
@@ -221,7 +221,6 @@ const CompleteProfile = (props) => {
       streetVillage.trim().length !== 0
     ) {
       addEditMandiSetupApiCall();
-      
     } else if (mandiNameField.trim().length === 0) {
       setMandiNameError("Please Enter Name");
     } else if (mandiShortCode.trim().length === 0) {
@@ -346,9 +345,9 @@ const CompleteProfile = (props) => {
   const setZip = (address) => {
     var pincodeValue;
     // let pincode = address.results[0].formatted_address;
-    for(var i=0; i<address.results[0].address_components.length; i++){
-      if(address.results[0].address_components[i].types[0] == 'postal_code'){
-        pincodeValue = address.results[0].address_components[i].long_name
+    for (var i = 0; i < address.results[0].address_components.length; i++) {
+      if (address.results[0].address_components[i].types[0] == "postal_code") {
+        pincodeValue = address.results[0].address_components[i].long_name;
       }
     }
     // var pincodeValue = pincode.replace(
@@ -374,9 +373,11 @@ const CompleteProfile = (props) => {
     $input = $text;
     $("#city-input-wrapper").html($input);
   };
+  const [pincodeLength, setPincodeLength] = useState(false);
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
-    setPincode(zip);
+    let number = zip.slice(0, 6);
+    setPincode(number);
     setStreetVillage("");
     var api_key = "AIzaSyBw-hcIThiKSrWzF5Y9EzUSkfyD8T1DT4A";
     if (zip.length >= 6) {
@@ -391,15 +392,18 @@ const CompleteProfile = (props) => {
         var possibleLocalities = geocodeResponseToCityState(response);
         fillCityAndStateFields(possibleLocalities);
       });
-    }  else{
-      $("#city").val('');
-      $("#state").val('');
-      setCityVal('');
-      setStateVal('');
+      console.log("ll");
+      setPincodeLength(false);
+    } else {
+      $("#city").val("");
+      $("#state").val("");
+      setCityVal("");
+      setStateVal("");
     }
     setPincodeError("");
     setCityValError("");
     setStateValError("");
+    setPincodeLength(true);
   };
 
   function fillCityAndStateFields(localities) {
@@ -473,7 +477,7 @@ const CompleteProfile = (props) => {
     $("#marketNamePopUpModal").modal("show");
   };
   const closePopup = () => {
-    setSearchValue('')
+    setSearchValue("");
     setAllMarketsData(allData);
     $("#marketNamePopUpModal").modal("hide");
   };
@@ -483,6 +487,8 @@ const CompleteProfile = (props) => {
   };
   const closeOtheModalPopUp = () => {
     $("#otherModalPopUp").modal("hide");
+    setMarketName("");
+    console.log(marketName)
   };
   const handleMarketName = () => {
     openMarketNamePopUpModal();
@@ -509,10 +515,10 @@ const CompleteProfile = (props) => {
     result = allData.filter((data) => {
       if (data.marketName.toLowerCase().includes(value)) {
         return data.marketName.toLowerCase().search(value) != -1;
-      } 
+      }
     });
     setAllMarketsData(result);
-    setSearchValue(value)
+    setSearchValue(value);
   };
 
   const handleOtherName = () => {
@@ -534,315 +540,355 @@ const CompleteProfile = (props) => {
     closeOtheModalPopUp();
     closePopup();
   };
-  const editClosePopUp = () =>{
+  const editClosePopUp = () => {
     setShopNumberField(mandiEditStatus == "true" ? mandiData.shopNum : "");
     setMandiShortCode(mandiEditStatus == "true" ? mandiData.shortCode : "");
     setMandiNameField(mandiEditStatus === "true" ? mandiData.businessName : "");
-    setPincode(mandiEditStatus == "true" ? mandiData.businessAddress.pincode : "");
+    setPincode(
+      mandiEditStatus == "true" ? mandiData.businessAddress.pincode : ""
+    );
     setCityVal(mandiEditStatus == "true" ? mandiData.businessAddress.dist : "");
-    setStateVal(mandiEditStatus == "true" ? mandiData.businessAddress.state : "");
-    setStreetVillage(mandiEditStatus == "true" ? mandiData.businessAddress.addressLine : "");
+    setStateVal(
+      mandiEditStatus == "true" ? mandiData.businessAddress.state : ""
+    );
+    setStreetVillage(
+      mandiEditStatus == "true" ? mandiData.businessAddress.addressLine : ""
+    );
     setMandiTypeField(mandiEditStatus == "true" ? mandiData.businessType : "");
     setmobileNumber(mandiEditStatus == "true" ? mandiData.mobile : "");
-    setAlternateMobileNumber(mandiEditStatus == "true" ? mandiData.altMobile : "");
+    setAlternateMobileNumber(
+      mandiEditStatus == "true" ? mandiData.altMobile : ""
+    );
     setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
-  }
+    setPincodeLength(false);
+  };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
-      
       <div className="modal-body partner_model_body profileModal" id="">
         <form>
           <div className="d-flex justify-content-between all_popup_header">
-          <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          {langFullData.businessDetails}
-        </h5>
-        <img
-          src={close}
-          alt="image"
-          className="close_icon"
-          onClick={()=>{editClosePopUp();props.close()}}
-        />
+            <h5 className="modal-title header2_text" id="staticBackdropLabel">
+              {langFullData.businessDetails}
+            </h5>
+            <img
+              src={close}
+              alt="image"
+              className="close_icon"
+              onClick={() => {
+                editClosePopUp();
+                props.close();
+              }}
+            />
           </div>
           <div className="partner_model_scroll" id="scroll_style">
-          <div className="row">
-            <div className="col-lg-6 pl-0">
-              <label htmlFor="zip" className="input_field">
-                {langFullData.marketName}
-                <span className="star-color">*</span>
-                <img
-                  src={drop_down_btn}
-                  alt="dropdown"
-                  className="drop-down-image"
-                />
-              </label>
-              <input
-                className="form-control marketfrom"
-                value={marketname ? marketname : langFullData.selectMarketName}
-                onClick={handleMarketName}
-              />
-            </div>
-            <div className="col-lg-6">
-              <InputField
-                type="text"
-                value={mandiNameField}
-                label={langFullData.businessName}
-                name="mandiName"
-                id="mandiName"
-                onChange={(e) => {
-                  handleMandiName(e);
-                }}
-                starRequired={true}
-              />
-              <span className="text-danger">{mandiNameError}</span>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6 pl-0">
-              <InputField
-                type="text"
-                value={mandiTypeField}
-                label={langFullData.businessType}
-                name="mandiType"
-                id="mandiType"
-                onChange={(e) => {
-                  handleMandiType(e);
-                }}
-                starRequired={false}
-              />
-              <span className="text-danger">{mandiTypeError}</span>
-            </div>
-            <div className="col-lg-6">
-              <InputField
-                type="text"
-                value={mandiShortCode}
-                label="Mandi Short Code"
-                name="mandiShortCode"
-                id="mandiShortCode"
-                onChange={(e) => {
-                  handleMandiShortCode(e);
-                }}
-                starRequired={true}
-              />
-              <span className="text-danger">{mandiShortCodeError}</span>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6 pl-0">
-              <InputField
-                type="text"
-                value={shopNumberField}
-                label={langFullData.shopNumber}
-                name="shopNumber"
-                id="shopNumber"
-                onChange={(e) => {
-                  handleShopNumber(e);
-                }}
-                starRequired={true}
-              />
-              <span className="text-danger">{shopNumberError}</span>
-            </div>
-            <div className="col-lg-6">
-              <InputField
-                type="text"
-                value={contactName}
-                label={langFullData.contactName}
-                name="contactName"
-                id="contactName"
-                onChange={(e) => {
-                  handleContactName(e);
-                }}
-                starRequired={true}
-              />
-              <span className="text-danger">{contactNameError}</span>
-            </div>
-          </div>
-          <div className="row">
-          <div className="col-lg-6 pl-0">
-              <InputField
-                type="text"
-                value={mobileNumber}
-                label={langFullData.mobileNumber}
-                name="mobileNumber"
-                id="mobileNumber"
-                onChange={(e) => {
-                  handleMobileNumber(e);
-                }}
-                starRequired={true}
-              />
-              <div>
-                <span className="text-danger">{requiredNumberField}</span>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <InputField
-                type="text"
-                value={alternateMobileNumber}
-                label={langFullData.alternativeMobile}
-                name="alternativeMobile"
-                id="alternativeMobile"
-                onChange={(e) => {
-                  handleAlternateMobileNumber(e);
-                }}
-                starRequired={false}
-              />
-              <span className="text-danger">{alternateMobileNumberError}</span>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6 pl-0">
-              {" "}
-              <label className="input_field address_text mt-0">
-                {langFullData.address}
-              </label>
-            </div>
-            <div className="col-lg-6">
-              {" "}
-              <div onClick={() => getPosition()} className="d-flex location mt-0">
-              <img src={location_icon} alt="" className="mr-2" />
-                {langFullData.selectCurrentLocation}
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6 pl-0">
-              <div>
+            <div className="row">
+              <div className="col-lg-6 pl-0">
                 <label htmlFor="zip" className="input_field">
-                  {langFullData.pincode}<span className="star-color">*</span>
+                  {langFullData.marketName}
+                  <span className="star-color">*</span>
+                  <img
+                    src={drop_down_btn}
+                    alt="dropdown"
+                    className="drop-down-image"
+                  />
                 </label>
+                <input
+                  className="form-control marketfrom"
+                  value={
+                    marketname ? marketname : langFullData.selectMarketName
+                  }
+                  onClick={handleMarketName}
+                />
+              </div>
+              <div className="col-lg-6">
+                <InputField
+                  type="text"
+                  value={mandiNameField}
+                  label={langFullData.businessName}
+                  name="mandiName"
+                  id="mandiName"
+                  onChange={(e) => {
+                    handleMandiName(e);
+                  }}
+                  starRequired={true}
+                />
+                <span className="text-danger">{mandiNameError}</span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 pl-0">
+                <InputField
+                  type="text"
+                  value={mandiTypeField}
+                  label={langFullData.businessType}
+                  name="mandiType"
+                  id="mandiType"
+                  onChange={(e) => {
+                    handleMandiType(e);
+                  }}
+                  starRequired={false}
+                />
+                <span className="text-danger">{mandiTypeError}</span>
+              </div>
+              <div className="col-lg-6">
+                <InputField
+                  type="text"
+                  value={mandiShortCode}
+                  label="Mandi Short Code"
+                  name="mandiShortCode"
+                  id="mandiShortCode"
+                  onChange={(e) => {
+                    handleMandiShortCode(e);
+                  }}
+                  starRequired={true}
+                />
+                <span className="text-danger">{mandiShortCodeError}</span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 pl-0">
+                <InputField
+                  type="text"
+                  value={shopNumberField}
+                  label={langFullData.shopNumber}
+                  name="shopNumber"
+                  id="shopNumber"
+                  onChange={(e) => {
+                    handleShopNumber(e);
+                  }}
+                  starRequired={true}
+                />
+                <span className="text-danger">{shopNumberError}</span>
+              </div>
+              <div className="col-lg-6">
+                <InputField
+                  type="text"
+                  value={contactName}
+                  label={langFullData.contactName}
+                  name="contactName"
+                  id="contactName"
+                  onChange={(e) => {
+                    handleContactName(e);
+                  }}
+                  starRequired={true}
+                />
+                <span className="text-danger">{contactNameError}</span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 pl-0">
+                <InputField
+                  type="text"
+                  value={mobileNumber}
+                  label={langFullData.mobileNumber}
+                  name="mobileNumber"
+                  id="mobileNumber"
+                  onChange={(e) => {
+                    handleMobileNumber(e);
+                  }}
+                  starRequired={true}
+                />
                 <div>
-                  <input
-                    id="zip"
-                    className="form-control"
-                    type="text"
-                    label="pincode"
-                    name="zip"
-                    onChange={(e) => {
-                      onZip(e);
-                    }}
-                    value={pincode}
-                  />
+                  <span className="text-danger">{requiredNumberField}</span>
                 </div>
-              </div>{" "}
-              <span className="text-danger">{pincodeError}</span>
+              </div>
+              <div className="col-lg-6">
+                <InputField
+                  type="text"
+                  value={alternateMobileNumber}
+                  label={langFullData.alternativeMobile}
+                  name="alternativeMobile"
+                  id="alternativeMobile"
+                  onChange={(e) => {
+                    handleAlternateMobileNumber(e);
+                  }}
+                  starRequired={false}
+                />
+                <span className="text-danger">
+                  {alternateMobileNumberError}
+                </span>
+              </div>
             </div>
-            <div className="col-lg-6">
-              {" "}
-              <div>
-                <label htmlFor="state" className="input_field">
-                  {langFullData.state}<span className="star-color">*</span>
+            <div className="row">
+              <div className="col-lg-6 pl-0">
+                {" "}
+                <label className="input_field address_text mt-0">
+                  {langFullData.address}
                 </label>
-                {mandiEditStatus == "true" ? (
-                  <input
-                    id="state"
-                    className="form-control"
-                    name="state"
-                    value={stateVal}
-                    onChange = {(e)=>setStateVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}
-                  />
-                ) : (
-                  <input id="state" className="form-control" name="state" />
-                )}
-              </div>{" "}
-              <span className="text-danger">{stateValError}</span>
+              </div>
+              <div className="col-lg-6">
+                {" "}
+                <div
+                  onClick={() => getPosition()}
+                  className="d-flex location mt-0"
+                >
+                  <img src={location_icon} alt="" className="mr-2" />
+                  {langFullData.selectCurrentLocation}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6 pl-0">
-              {" "}
-              <div>
-                <label htmlFor="city" className="input_field">
-                  District<span className="star-color">*</span>
-                </label>
-                <div id="city-input-wrapper">
+            <div className="row">
+              <div className="col-lg-6 pl-0">
+                <div>
+                  <label htmlFor="zip" className="input_field">
+                    {langFullData.pincode}
+                    <span className="star-color">*</span>
+                  </label>
+                  <div>
+                    <input
+                      id="zip"
+                      className="form-control"
+                      type="text"
+                      label="pincode"
+                      name="zip"
+                      onChange={(e) => {
+                        onZip(e);
+                      }}
+                      value={pincode}
+                    />
+                  </div>
+                  {pincodeLength ? (
+                    <span className="text-danger">
+                      Minimum pincode length should be 6
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>{" "}
+                <span className="text-danger">{pincodeError}</span>
+              </div>
+              <div className="col-lg-6">
+                {" "}
+                <div>
+                  <label htmlFor="state" className="input_field">
+                    {langFullData.state}
+                    <span className="star-color">*</span>
+                  </label>
                   {mandiEditStatus == "true" ? (
-                    <div>
+                    <input
+                      id="state"
+                      className="form-control"
+                      name="state"
+                      value={stateVal}
+                      onChange={(e) =>
+                        setStateVal(
+                          e.target.value.replace(/[^A-Za-z0-9]/g, " ")
+                        )
+                      }
+                    />
+                  ) : (
+                    <input id="state" className="form-control" name="state" />
+                  )}
+                </div>{" "}
+                <span className="text-danger">{stateValError}</span>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-6 pl-0">
+                {" "}
+                <div>
+                  <label htmlFor="city" className="input_field">
+                    District<span className="star-color">*</span>
+                  </label>
+                  <div id="city-input-wrapper">
+                    {mandiEditStatus == "true" ? (
+                      <div>
+                        <InputField
+                          type="text"
+                          id="city"
+                          name="city"
+                          value={cityVal}
+                          starRequired={true}
+                          onChange={(e) => {
+                            setCityVal(
+                              e.target.value.replace(/[^A-Za-z0-9]/g, " ")
+                            );
+                          }}
+                        />
+                      </div>
+                    ) : (
                       <InputField
                         type="text"
                         id="city"
                         name="city"
-                        value={cityVal}
                         starRequired={true}
-                        onChange ={(e) =>{setCityVal(e.target.value.replace(/[^A-Za-z0-9]/g, " "))}}
                       />
-                    </div>
-                  ) : (
-                    <InputField type="text" id="city" name="city"  starRequired={true}/>
-                  )}
+                    )}
+                  </div>
                 </div>
+                <span className="text-danger">{cityValError}</span>{" "}
               </div>
-              <span className="text-danger">{cityValError}</span>{" "}
+              <div className="col-lg-6">
+                <InputField
+                  type="text"
+                  value={streetVillage}
+                  label={langFullData.streetVillage}
+                  name="name"
+                  onChange={(e) => {
+                    handleStreetName(e);
+                  }}
+                  starRequired={true}
+                />
+                <span className="text-danger">{streetvillageError}</span>
+              </div>
             </div>
-            <div className="col-lg-6">
-              <InputField
-                type="text"
-                value={streetVillage}
-                label={langFullData.streetVillage}
-                name="name"
-                onChange={(e) => {
-                  handleStreetName(e);
-                }}
-                starRequired={true}
-              />
-              <span className="text-danger">{streetvillageError}</span>
-            </div>
-          </div>
 
-          <div className="row">
-            <span className="pl-3 note_text">
-              {
-                langFullData.pleaseKeepCorrectBusinessAddressAsThisAddressIsDisplayed
-              }
-            </span>
-          </div>
+            <div className="row">
+              <span className="pl-3 note_text">
+                {
+                  langFullData.pleaseKeepCorrectBusinessAddressAsThisAddressIsDisplayed
+                }
+              </span>
+            </div>
           </div>
         </form>
       </div>
       <div className="modal-footer modal_common_footer">
-              <div className="row">
-                <div className="col-lg-6 pl-0">
-                 
-                </div>
-                <div className="col-lg-6">
-                 <div className="d-flex justify-content-end">
-                 <button
-                    type="button"
-                    className="secondary_btn"
-                    data-bs-dismiss="modal"
-                    onClick={props.close}
-                  >
-                    Cancel
-                  </button>
-                <button
-          type="button"
-          className="primary_btn"
-          onClick={() => onSubmit()}
-        >
-          UPDATE
-        </button>
-                 </div>
-                </div>
-              </div>
+        <div className="row">
+          <div className="col-lg-6 pl-0"></div>
+          <div className="col-lg-6">
+            <div className="d-flex justify-content-end">
+              <button
+                type="button"
+                className="secondary_btn"
+                data-bs-dismiss="modal"
+                onClick={props.close}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="primary_btn"
+                onClick={() => onSubmit()}
+              >
+                UPDATE
+              </button>
             </div>
-      
+          </div>
+        </div>
+      </div>
+
       <div className="modal fade profileModal" id="marketNamePopUpModal">
         <div className="modal-dialog  markets_name_popup">
           <div className="modal-content" id="market-modal-content">
-            
             <div className="row">
-            <div className="modal-body markets_name_modal_mody profileModal markets_name_modal" id="scroll_style">
-              <div className="col-lg-8" id="market-div">
-               <div className="d-flex align-items-center justify-content-between">
-               <h5 className="modal-title header2_text" id="mk-header">
-                    Select Market
-                </h5>
-                <img
-                src={close}
-                alt="image"
-                className="close_icon"
-                onClick={closePopup}
-              />
-               </div>
-                <SearchField
+              <div
+                className="modal-body markets_name_modal_mody profileModal markets_name_modal"
+                id="scroll_style"
+              >
+                <div className="col-lg-8" id="market-div">
+                  <div className="d-flex align-items-center justify-content-between">
+                    <h5 className="modal-title header2_text" id="mk-header">
+                      Select Market
+                    </h5>
+                    <img
+                      src={close}
+                      alt="image"
+                      className="close_icon"
+                      onClick={closePopup}
+                    />
+                  </div>
+                  <SearchField
                     placeholder="Search By Name"
                     // {langFullData.searchByNameShortCode}
                     val={search}
@@ -850,50 +896,54 @@ const CompleteProfile = (props) => {
                       handleSearch(event);
                     }}
                   />
-                  {allMarketsData.length > 0 ? <div className="market-names" id="scroll_style">
-                  {allMarketsData.map((item, index) => {
-                    if (index === allMarketsData.length - 1)
-                      return (
-                        <div>
-                        {search.length == 0 || search.toUpperCase =='OTHER'? 
-                        <div
-                          id="mk-other-name"
-                          onClick={(e) => {
-                            handleOtherName(e);
-                          }}
-                        >
-                          <div className="d-flex" id="ot-m-img">
-                            <img src={markets} alt="markets" />
-                            <p id="mk-other-Name">{item.marketName}</p>
-                          </div>
-                        </div>
-                        :''}
-                        </div>
-                      );
-                  })}
-                  {
-                  // search.length > 1 && marketName.length > 0
-                  //   ? marketName.map((item) => {
-                  //       return (
-                  //         <div
-                  //           id="mk-name"
-                  //           onClick={(name) => {
-                  //             handleMarketSelection(item.marketName);
-                  //           }}
-                  //         >
-                  //           <div className="d-flex">
-                  //             <img src={markets} alt="markets" />
-                  //             <p key={item.id} id="mk-Name">
-                  //               {item.marketName}
-                  //             </p>
-                  //           </div>
-                  //           <span id="hr-lines"></span>
-                  //         </div>
-                  //       );
-                  //     })
-                  //   : 
-                    allMarketsData.map((item) => {
-                        return (
+                  {allMarketsData.length > 0 ? (
+                    <div className="market-names" id="scroll_style">
+                      {allMarketsData.map((item, index) => {
+                        if (index === allMarketsData.length - 1)
+                          return (
+                            <div>
+                              {search.length == 0 ||
+                              search.toUpperCase == "OTHER" ? (
+                                <div
+                                  id="mk-other-name"
+                                  onClick={(e) => {
+                                    handleOtherName(e);
+                                  }}
+                                >
+                                  <div className="d-flex" id="ot-m-img">
+                                    <img src={markets} alt="markets" />
+                                    <p id="mk-other-Name">{item.marketName}</p>
+                                  </div>
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          );
+                      })}
+                      {
+                        // search.length > 1 && marketName.length > 0
+                        //   ? marketName.map((item) => {
+                        //       return (
+                        //         <div
+                        //           id="mk-name"
+                        //           onClick={(name) => {
+                        //             handleMarketSelection(item.marketName);
+                        //           }}
+                        //         >
+                        //           <div className="d-flex">
+                        //             <img src={markets} alt="markets" />
+                        //             <p key={item.id} id="mk-Name">
+                        //               {item.marketName}
+                        //             </p>
+                        //           </div>
+                        //           <span id="hr-lines"></span>
+                        //         </div>
+                        //       );
+                        //     })
+                        //   :
+                        allMarketsData.map((item) => {
+                          return (
                             <div
                               id="mk-name"
                               onClick={(name) => {
@@ -909,13 +959,15 @@ const CompleteProfile = (props) => {
 
                               <span id="hr-lines"></span>
                             </div>
-                        );
-                      })}
-                </div>: <NoDataAvailable />}
-                
+                          );
+                        })
+                      }
+                    </div>
+                  ) : (
+                    <NoDataAvailable />
+                  )}
+                </div>
               </div>
-            </div>
-           
             </div>
           </div>
         </div>
@@ -924,53 +976,55 @@ const CompleteProfile = (props) => {
       <div className="modal fade profileModal" id="otherModalPopUp">
         <div className="modal-dialog  market_name_popup">
           <div className="modal-content" id="other-modal-content">
-            
-            <div className="modal-body market_name_modal_mody px-0 profileModal others_name_modal" id="scroll_style">
-           <div className="container">
-             <div className="d-flex justify-content-between align-items-center mb-2">
-             <h5 className="modal-title header2_text pl-0" id="mk-header">
-                Select Market
-              </h5>
-              <img
-                src={close}
-                alt="image"
-                className="close_icon othermarkerClose"
-                onClick={closeOtheModalPopUp}
-              />
-             </div>
-           <div className="row">
-              <div className="col-lg-12 p-0" id="market-div">
-               <div>
-               <div id="search-mk-field">
-                  <form className="d-flex">
-                    <input
-                      className="form-control me-2 searchbar-input"
-                      id="searchbar-mk"
-                      type="text"
-                      value={"OTHER"}
-                      onChange={(e) => {
-                        searchMarketName(e.target.value);
-                      }}
-                    />
-                  </form>
-                </div>
-                <div id="search-mk-field">
-                  <InputField
-                    type="text"
-                    //value={mandiTypeField}
-                    label={langFullData.marketName}
-                    name="marketName"
-                    id="marketName"
-                    onChange={(e) => {
-                      setMarketName(e.target.value);
-                    }}
-                    starRequired={true}
+            <div
+              className="modal-body market_name_modal_mody px-0 profileModal others_name_modal"
+              id="scroll_style"
+            >
+              <div className="container">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <h5 className="modal-title header2_text pl-0" id="mk-header">
+                    Select Market
+                  </h5>
+                  <img
+                    src={close}
+                    alt="image"
+                    className="close_icon othermarkerClose"
+                    onClick={closeOtheModalPopUp}
                   />
                 </div>
+                <div className="row">
+                  <div className="col-lg-12 p-0" id="market-div">
+                    <div>
+                      <div id="search-mk-field">
+                        <form className="d-flex">
+                          <input
+                            className="form-control me-2 searchbar-input"
+                            id="searchbar-mk"
+                            type="text"
+                            value={"OTHER"}
+                            onChange={(e) => {
+                              searchMarketName(e.target.value);
+                            }}
+                          />
+                        </form>
+                      </div>
+                      <div id="search-mk-field">
+                        <InputField
+                          type="text"
+                          //value={mandiTypeField}
+                          label={langFullData.marketName}
+                          name="marketName"
+                          id="marketName"
+                          onChange={(e) => {
+                            setMarketName(e.target.value);
+                          }}
+                          starRequired={true}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-               </div>
-              </div>
-           </div>
             </div>
             <div className="modal-footer p-0">
               <button

@@ -158,7 +158,10 @@ cursor: pointer;}
 
 @media(min-width:1600px){
    .modal_popup .modal-content{
-        height: 750px;
+        height: 770px;
+    }
+    .market-names{
+        max-height: calc(100vh - 340px);
     }
     .market-names{
         // max-height: calc(100vh - 430px);
@@ -177,7 +180,7 @@ cursor: pointer;}
         height: 100vh;
         overflow: hidden;
     }
-    .modal-content{
+    .modal_popup .modal-content{
         height: 665px;
         overflow: hidden!important;
     }
@@ -205,4 +208,11 @@ cursor: pointer;}
 .all_popup_modal_footer{
     padding: 10px;
     border-top: 0px!important;
+}
+@media(max-width:1300px){
+    .modal_popup .modal-content{
+        height: 580px;
+        overflow: hidden!important;
+    }
+   
 }
