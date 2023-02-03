@@ -6,6 +6,7 @@
     .hidden_field{
         visibility: hidden;
     }
+   
 }
 
 // #market-modal-content{
@@ -21,15 +22,15 @@
 // }
 .market_name_popup{
     max-width: 650px;
-    margin-top: 60px;
+    // margin-top: 0px;
     iframe{
         border: none;
     }
 }
 .market_name_modal_mody{
     // max-width: 650px;
-    max-height: calc(100vh - 0px);
-    margin-top: 60px;
+    // max-height: calc(100vh - 0px);
+    // margin-top: 60px;
 }
 .drop-down-image{
     position: absolute;
@@ -133,10 +134,10 @@ input[type=radio]{
 .profileModal{
     padding: 20px 30px!important;
     .modal-body {
-        height: 620px;
+        // height: 620px;
     }
     .others_name_modal{
-        height: 530px;
+        // height: 530px;
     }
     .modal-footer{
         position: absolute;
@@ -156,24 +157,52 @@ input[type=radio]{
 cursor: pointer;}
 
 @media(min-width:1600px){
-    .market-names{
-        max-height: calc(100vh - 430px);
+   .modal_popup .modal-content{
+        height: 750px;
     }
+    .market-names{
+        // max-height: calc(100vh - 430px);
+    }
+    
    .profileModal .markets_name_modal{
-        height: 745px;
+       
+        // height: 745px;
     }
     .profileModal .others_name_modal{
-        height: 640px;
+        // height: 640px;
     }
 }
 @media(max-width:1400px){
+    body{
+        height: 100vh;
+        overflow: hidden;
+    }
+    .modal-content{
+        height: 665px;
+        overflow: hidden!important;
+    }
     .market-names{
-        max-height: calc(100vh - 300px);
+        // max-height: calc(100vh - 300px);
     }
-   .profileModal .markets_name_modal{
-        height: 715px;
-    }
-    .profileModal .others_name_modal{
+   #marketNamePopUpModal{
+    .modal-content{
         height: 630px;
     }
+    }
+    #otherModalPopUp{
+        .modal-content{
+            height: 650px;
+            // background-color: yellow;
+        } 
+    }
+    .profileModal .others_name_modal{
+        // height: 630px;
+    }
+}
+.all_popup_header{
+    padding-bottom: 30px;
+}
+.all_popup_modal_footer{
+    padding: 10px;
+    border-top: 0px!important;
 }

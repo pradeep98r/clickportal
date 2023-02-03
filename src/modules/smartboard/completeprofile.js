@@ -552,7 +552,7 @@ const CompleteProfile = (props) => {
       
       <div className="modal-body partner_model_body profileModal" id="">
         <form>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-between all_popup_header">
           <h5 className="modal-title header2_text" id="staticBackdropLabel">
           {langFullData.businessDetails}
         </h5>
@@ -915,6 +915,7 @@ const CompleteProfile = (props) => {
                 
               </div>
             </div>
+           
             </div>
           </div>
         </div>
@@ -923,15 +924,7 @@ const CompleteProfile = (props) => {
       <div className="modal fade profileModal" id="otherModalPopUp">
         <div className="modal-dialog  market_name_popup">
           <div className="modal-content" id="other-modal-content">
-            <div className="modal-header date_modal_header market_modal_header px-0">
-            <div className="container">
-           <div className="row">
-           <div className="col-lg-12 p-0">
-           
-           </div>
-           </div>
-            </div>
-            </div>
+            
             <div className="modal-body market_name_modal_mody px-0 profileModal others_name_modal" id="scroll_style">
            <div className="container">
              <div className="d-flex justify-content-between align-items-center mb-2">

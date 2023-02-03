@@ -28,7 +28,7 @@
   }
 }
 .crop_table {
-  height: calc(100vh - 280px);
+  height: calc(100vh - 320px);
   overflow-y: auto;
 }
 .allCrops_modal {
@@ -132,4 +132,10 @@
   -webkit-appearance: none;
   appearance: none;
   &::-ms-expand { display: none };
+}
+.crop_table_header_row{
+  p{
+    font-size: 13px;
+    font-weight: 500;
+  }
 }
