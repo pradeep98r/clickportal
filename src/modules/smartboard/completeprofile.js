@@ -534,6 +534,19 @@ const CompleteProfile = (props) => {
     closeOtheModalPopUp();
     closePopup();
   };
+  const editClosePopUp = () =>{
+    setShopNumberField(mandiEditStatus == "true" ? mandiData.shopNum : "");
+    setMandiShortCode(mandiEditStatus == "true" ? mandiData.shortCode : "");
+    setMandiNameField(mandiEditStatus === "true" ? mandiData.businessName : "");
+    setPincode(mandiEditStatus == "true" ? mandiData.businessAddress.pincode : "");
+    setCityVal(mandiEditStatus == "true" ? mandiData.businessAddress.dist : "");
+    setStateVal(mandiEditStatus == "true" ? mandiData.businessAddress.state : "");
+    setStreetVillage(mandiEditStatus == "true" ? mandiData.businessAddress.addressLine : "");
+    setMandiTypeField(mandiEditStatus == "true" ? mandiData.businessType : "");
+    setmobileNumber(mandiEditStatus == "true" ? mandiData.mobile : "");
+    setAlternateMobileNumber(mandiEditStatus == "true" ? mandiData.altMobile : "");
+    setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
+  }
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
       
@@ -547,7 +560,7 @@ const CompleteProfile = (props) => {
           src={close}
           alt="image"
           className="close_icon"
-          onClick={props.close}
+          onClick={()=>{editClosePopUp();props.close()}}
         />
           </div>
           <div className="partner_model_scroll" id="scroll_style">
