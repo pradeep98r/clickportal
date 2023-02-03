@@ -18,44 +18,32 @@ const Steps = (props) => {
   const callbackfunction = (chaild, editStatus) => {
     setSelctedCrops(chaild);
   };
-  
 
-  const partyType = useSelector((state)=> state.billEditItemInfo?.selectedPartyType);
+  const partyType = useSelector(
+    (state) => state.billEditItemInfo?.selectedPartyType
+  );
 
-  const billeditCallback = (
-      crops
-    // billEditStatus,
-    // selectedBilldate,
-    // cropTableEditStatus
-  ) => {
+  const billeditCallback = (crops) => {
     setcropEditObject(crops);
-    // setBillstatus(billEditStatus);
-    // setselectedDate(selectedBilldate);
   };
   const step3ChildCallback = (
-    // cropTableEditStatus,
     cropEditObject,
-    // billEditStatus,
     slectedCropstableArray,
     selectedCrops
-    // selectedPartyType,
-    // selectedBilldate,
-    // selectedBuyerSellerData
   ) => {
-     setslectedCrops(selectedCrops);
+    setslectedCrops(selectedCrops);
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
   const dispatch = useDispatch();
-  const clearData=(e)=>{
-    localStorage.removeItem("defaultDate")
-    localStorage.removeItem('setDate')
-    dispatch(selectTrans(null)); 
+  const clearData = (e) => {
+    localStorage.removeItem("defaultDate");
+    localStorage.removeItem("setDate");
+    dispatch(selectTrans(null));
     setcropEditObject([]);
     setslectedCropstableArray([]);
-    // props.billEditStatuscallback(h);
-  }
-  
+  };
+
   return (
     <Modal
       show={props.showStepsModal}
@@ -75,31 +63,50 @@ const Steps = (props) => {
             }
           })()}
         </h5>
-        <img alt="image" src={clo} className="cloose" onClick={e=>{clearData(e);props.closeStepsModal();}} />
+        <img
+          alt="image"
+          src={clo}
+          className="cloose"
+          onClick={(e) => {
+            clearData(e);
+            props.closeStepsModal();
+          }}
+        />
       </div>
       <div className="modal-body p-0">
+        <div className="d-flex steps_flex align-items-center justify-content-center">
+          <button className={selectedStep.stepsInfo == 'step1' ? 'steps_btn steps_btn_active' : 'steps_btn'}>
+             Step1
+          </button>
+          <div className="steps_btn_border"></div>
+          <button className={selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : 'steps_btn'} >
+             Step2
+          </button>
+          <div className="steps_btn_border"></div>
+          <button className={selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn'}>
+             Step3
+          </button>
+        </div>
         {(() => {
           switch (selectedStep.stepsInfo) {
             case "step1":
-              return <Step11 
-              billEditStatuscallback={billeditCallback}
-              closem={props.closeStepsModal} />;
+              return (
+                <Step11
+                  billEditStatuscallback={billeditCallback}
+                  closem={props.closeStepsModal}
+                />
+              );
             case "step2":
               return (
                 <Step22
                   parentcall={callbackfunction}
-                //   billEditStatus={billStatus}
-                //   selectdDate={selectedDate}
-                //   cropTableEditStatus={cropTableEditStatus}
                   cropEditObject={cropEditObject}
                   slectedCropstableArray={slectedCropstableArray}
                   closem={props.closeStepsModal}
                   slectedCrops={slectedCrops}
-                //   selectedPartyType={selectedPartyType}
-                //   selectedBilldate={selectedDate}
                 />
               );
-            case partyType.toUpperCase() ==='SELLER' && "step3" :
+            case partyType.toUpperCase() === "SELLER" && "step3":
               return (
                 <Step33
                   slectedCropsArray={selctedCrops}
@@ -107,20 +114,18 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
-                  
-                  // selectedBuyerSellerData={props.selectedBuyerSellerData}
                 />
               );
-            case partyType.toUpperCase() ==='BUYER' && "step3":
-              return(
-                <SellBillStep3 
+            case partyType.toUpperCase() === "BUYER" && "step3":
+              return (
+                <SellBillStep3
                   slectedSellCropsArray={selctedCrops}
                   step3ParentCallback={step3ChildCallback}
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
                 />
-              )
+              );
           }
         })()}
       </div>

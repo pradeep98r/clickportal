@@ -115,3 +115,26 @@
     }
 }
 
+.steps_btn{
+    color: #171717;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: #D1D1D1;
+    width: 80px;
+    border: none;
+    letter-spacing: 1px;
+    font-weight: 500;
+    padding: 4px 15px;
+}
+.steps_btn_border{
+    border-bottom: 1px solid #D1D1D1;
+    height: 1px;
+    width: 20px;
+}
+.steps_flex{
+    margin: 20px 0px 0px;
+}
+.steps_btn_active{
+    background-color: #16A12C;
+    color: #fff;
+}

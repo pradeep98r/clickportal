@@ -767,7 +767,7 @@ const Partner = () => {
                                         <div>
                                           <h5>
                                             {partner.partyName +
-                                              " " +
+                                              " - " +
                                               partner.shortName}
                                           </h5>
                                           <h6>
@@ -819,7 +819,7 @@ const Partner = () => {
                                 : getText(partyType)}
                             </h6>
                             <button
-                              className="primary_btn mr-2"
+                              className="primary_btn partner_btn mr-2"
                               onClick={() => MybtnModal(partyType)}
                             >
                               Add
@@ -830,7 +830,7 @@ const Partner = () => {
                             {partyType.toLowerCase() == "farmer" ||
                             partyType.toLowerCase() == "buyer" ? (
                               <button
-                                className="primary_btn"
+                                className="primary_btn partner_btn"
                                 onClick={() => MybtnModal("trader")}
                               >
                                 Add Trader
