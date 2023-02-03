@@ -161,7 +161,7 @@ const Partner = () => {
   };
   const [startDate, setStartDate] = useState(new Date());
   const partnerSelectDate = moment(startDate).format("YYYY-MM-DD");
-  const [pincode, setPincode] = useState('');
+  const [pincode, setPincode] = useState("");
   const [cityVal, setCityVal] = useState("");
   const [stateVal, setStateVal] = useState("");
   const [radioValue, setradioValue] = useState("FARMER");
@@ -404,7 +404,7 @@ const Partner = () => {
     setProfilePic("");
     setShortNameField("");
     setStreetVillage("");
-    setProfilePic('');
+    setProfilePic("");
     if (type.toUpperCase() === "FARMER") {
       setradioValue("FARMER");
     } else if (type.toUpperCase() === "BUYER") {
@@ -413,7 +413,7 @@ const Partner = () => {
       setradioValue(langFullData.trader);
     }
     setIsEdit(false);
-    setPincode('');
+    setPincode("");
     setCityVal("");
     setStateVal("");
     setSearchValue("");
@@ -424,7 +424,7 @@ const Partner = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        if (error.message.toUpperCase() == "NETWORK ERROR") {
           setOnline(true);
         }
         setOnline(true);
@@ -509,7 +509,7 @@ const Partner = () => {
     setCityVal(city);
     setStateVal(state);
   };
-  const[pincodeLength, setPincodeLength] = useState(false);
+  const [pincodeLength, setPincodeLength] = useState(false);
   const onZip = (event) => {
     var zip = $("#zip").val().replace(/[^\d]/g, "");
     let number = zip.slice(0, 6);
@@ -530,12 +530,12 @@ const Partner = () => {
       });
       setPincodeLength(false);
     } else {
-      console.log('error',zip.length)
+      console.log("error", zip.length);
       $("#city").val("");
       $("#state").val("");
       setCityVal("");
       setStateVal("");
-      setPincodeLength(true)
+      setPincodeLength(true);
     }
   };
 
@@ -619,7 +619,7 @@ const Partner = () => {
   };
   var $input;
   const closeAddModal = () => {
-    setPincode('');
+    setPincode("");
     setAadharError("");
     setNameError("");
     setStateVal("");
@@ -633,7 +633,7 @@ const Partner = () => {
     setVehicleNum("");
     setVehicleType("");
     setPincodeLength(false);
-    setProfilePic('')
+    setProfilePic("");
   };
   const getPartnerType = (item, trader) => {
     var party = item;
@@ -682,12 +682,12 @@ const Partner = () => {
       e.preventDefault();
     }
   };
-// const handleJustOpenDatePicker = () =>{
-//   setopenDatePicker(!openDatePicker);
-// }
-// const monthChange = () =>{
-//   console.log('month change')
-// }
+  // const handleJustOpenDatePicker = () =>{
+  //   setopenDatePicker(!openDatePicker);
+  // }
+  // const monthChange = () =>{
+  //   console.log('month change')
+  // }
 
   return (
     <div>
@@ -767,7 +767,11 @@ const Partner = () => {
                                         <div>
                                           <h5>
                                             {partner.partyName +
-                                              " - " +
+                                              (partner.partyType ==
+                                                "TRANSPORTER" ||
+                                              partner.partyType == "COOLIE"
+                                                ? ""
+                                                : " - ") +
                                               partner.shortName}
                                           </h5>
                                           <h6>
@@ -898,7 +902,7 @@ const Partner = () => {
                   >
                     {addeditText}{" "}
                     {partyType == langFullData.farmer.toUpperCase()
-                      ? 'Seller'
+                      ? "Seller"
                       : getText(partyType)}
                   </h5>
                   <img
@@ -1036,11 +1040,13 @@ const Partner = () => {
                                 }}
                                 value={pincode}
                               />
-                              {
-                                pincodeLength ? <span className="text-danger">
-                                Minimum pincode length should be 6
-                              </span>  : ''
-                              }
+                              {pincodeLength ? (
+                                <span className="text-danger">
+                                  Minimum pincode length should be 6
+                                </span>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1410,11 +1416,13 @@ const Partner = () => {
                                 }}
                                 value={pincode}
                               />
-                              {
-                                pincodeLength ? <span className="text-danger">
-                                Minimum pincode length should be 6
-                              </span>  : ''
-                              }
+                              {pincodeLength ? (
+                                <span className="text-danger">
+                                  Minimum pincode length should be 6
+                                </span>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1518,30 +1526,28 @@ const Partner = () => {
             </div>
             <div className="modal-footer modal_common_footer">
               <div className="row">
-                <div className="col-lg-6 pl-0">
-                 
-                </div>
+                <div className="col-lg-6 pl-0"></div>
                 <div className="col-lg-6">
-               <div className="d-flex justify-content-end">
-               <button
-                    type="button"
-                    className="secondary_btn mr-2"
-                    // id="close_modal"
-                    onClick={closeAddModal}
-                    data-bs-dismiss="modal"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="primary_btn"
-                    onClick={() => onSubmit()}
-                    // id="close_modal"
-                    data-bs-dismiss="modal"
-                  >
-                    save
-                  </button>
-               </div>
+                  <div className="d-flex justify-content-end">
+                    <button
+                      type="button"
+                      className="secondary_btn mr-2"
+                      // id="close_modal"
+                      onClick={closeAddModal}
+                      data-bs-dismiss="modal"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="primary_btn"
+                      onClick={() => onSubmit()}
+                      // id="close_modal"
+                      data-bs-dismiss="modal"
+                    >
+                      save
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1566,29 +1572,31 @@ const Partner = () => {
           />
         </Modal.Header>
         <Modal.Body className="partner_model_body">
-         <p className="px-5 text-center"> {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}</p>
+          <p className="px-5 text-center">
+            {" "}
+            {langFullData.areYouSureYouWantToDeleteThisPartnerPermanently}
+          </p>
         </Modal.Body>
         <Modal.Footer className="modal_comm_footer">
           <div className="row">
             <div className="col-lg-12 pl-0">
-             <div className="d-flex align-items-center justify-content-center">
-             <button
-                type="button"
-                className="no_delete_btn mr-4"
-                onClick={handleClose}
-              >
-                {langFullData.no}
-              </button>
-              <button
-                type="button"
-                className="primary_btn"
-                onClick={() => handleDelete(partyIdVal)}
-              >
-                {langFullData.yes}
-              </button>
-             </div>
+              <div className="d-flex align-items-center justify-content-center">
+                <button
+                  type="button"
+                  className="no_delete_btn mr-4"
+                  onClick={handleClose}
+                >
+                  {langFullData.no}
+                </button>
+                <button
+                  type="button"
+                  className="primary_btn"
+                  onClick={() => handleDelete(partyIdVal)}
+                >
+                  {langFullData.yes}
+                </button>
+              </div>
             </div>
-            
           </div>
         </Modal.Footer>
       </Modal>
