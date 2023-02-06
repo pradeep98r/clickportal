@@ -276,7 +276,7 @@ const Partner = () => {
       radioValue.trim().length !== 0
         ? radioValue == "FARMER" || radioValue == "BUYER"
           ? false
-          : true
+          :(partyType == 'COOLIE' || partyType == 'TRANSPORTER') ? false : true
         : false,
     vehicleInfo: {
       vehicleNum: vehicleNum,
