@@ -232,11 +232,11 @@ const Partner = () => {
         });
       console.log(updateProfilePic);
     } else {
-      // var output = document.getElementById("output");
-      // output.src = URL.createObjectURL(e.target.files[0]);
-      // output.onload = function () {
-      //   URL.revokeObjectURL(output.src);
-      // };
+      var output = document.getElementById("output");
+      output.src = URL.createObjectURL(e.target.files[0]);
+      output.onload = function () {
+        URL.revokeObjectURL(output.src);
+      };
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],

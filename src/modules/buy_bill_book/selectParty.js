@@ -51,20 +51,29 @@ const SelectPartner = (props) => {
         console.log(error);
       });
   };
-  var bodyClickCount = 0;
+
   const [getPartyName, setGetPartyName] = useState(false);
   const [count, setCount] = useState(0);
   const [activeInput, setActiveInput] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState(null);
+
   const selectParty = () => {
     setActiveInput(true);
     setGetPartyName(true);
     setGetPartyItem(null);
-  
     if (searchValue != "") {
       fetchPertnerData();
     }
   };
+
+
+//   $('container').mouseup(function (e) {
+//     if ($(e.target).closest(".container").length === 0) { 
+//       console.log("came to her")
+//       setGetPartyItem(selectedPartner);
+//       setActiveInput(false);
+//   }
+// });
 
   const partySelect = (item) => {
     Object.assign(item, { itemtype: "" }, { date: "" });
@@ -98,13 +107,6 @@ const SelectPartner = (props) => {
     }
   };
 
-  // $('body').click(function(event){
-  //   if (!$(event.target).closest('#excludeDiv').length) {
-  //     $('#scroll_style').hide();
-  //     setActiveInput(false);
-  //     setGetPartyItem(selectedPartner);
-  //   }
-  // });
   useEffect(() => {
     fetchPertnerData();
   }, [users.buyerInfo]);
@@ -130,7 +132,7 @@ const SelectPartner = (props) => {
   };
   return (
     <div>
-      <div onClick={selectParty}>
+      <div onClick={()=>{selectParty()}}>
         {getPartyItem == null ? (
           <div>
           {activeInput?
@@ -238,6 +240,7 @@ const SelectPartner = (props) => {
       ) : (
         <p></p>
       )}
+      <div className="container"></div>
     </div>
   );
 };
