@@ -876,7 +876,7 @@ const CompleteProfile = (props) => {
                 className="modal-body markets_name_modal_mody profileModal markets_name_modal"
                 id="scroll_style"
               >
-                <div className="col-lg-8" id="market-div">
+                <div className="col-lg-12 p-0" id="market-div">
                   <div className="d-flex align-items-center justify-content-between">
                     <h5 className="modal-title header2_text" id="mk-header">
                       Select Market
@@ -980,7 +980,7 @@ const CompleteProfile = (props) => {
               className="modal-body market_name_modal_mody px-0 profileModal others_name_modal"
               id="scroll_style"
             >
-              <div className="container">
+              <div className="container p-0">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <h5 className="modal-title header2_text pl-0" id="mk-header">
                     Select Market
