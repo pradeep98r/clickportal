@@ -98,13 +98,13 @@ const SelectPartner = (props) => {
     }
   };
 
-  $('body').click(function(event){
-    if (!$(event.target).closest('#excludeDiv').length) {
-      $('#scroll_style').hide();
-      setActiveInput(false);
-      // setGetPartyItem(selectedPartner);
-    }
-  });
+  // $('body').click(function(event){
+  //   if (!$(event.target).closest('#excludeDiv').length) {
+  //     $('#scroll_style').hide();
+  //     setActiveInput(false);
+  //     // setGetPartyItem(selectedPartner);
+  //   }
+  // });
   useEffect(() => {
     fetchPertnerData();
   }, [users.buyerInfo]);
