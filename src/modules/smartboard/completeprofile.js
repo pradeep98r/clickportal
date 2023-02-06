@@ -111,7 +111,7 @@ const CompleteProfile = (props) => {
   const [marketname, setMarketName] = useState(
     mandiEditStatus === "true" ? mandiData.marketName : ""
   );
-  const [otherMarketName, setOtherMarketName] = useState('');
+  const [otherMarketName, setOtherMarketName] = useState("");
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
@@ -199,7 +199,6 @@ const CompleteProfile = (props) => {
       }
     }
   };
-  const [submitStatus, setSubmitStatus] = useState(false);
   const [pincodeError, setPincodeError] = useState("");
   const [cityValError, setCityValError] = useState("");
   const [stateValError, setStateValError] = useState("");
@@ -364,15 +363,6 @@ const CompleteProfile = (props) => {
     setPincode(pincodeValue);
     setCityVal(city);
     setStateVal(state);
-    localStorage.setItem("cityValue", city);
-    var $input;
-    var $text = $(document.createElement("input"));
-    $text.attr("value", city);
-    $text.attr("type", "text");
-    $text.attr("type", "text");
-    $text.attr("class", "form-control");
-    $input = $text;
-    $("#city-input-wrapper").html($input);
   };
   const [pincodeLength, setPincodeLength] = useState(false);
   const onZip = (event) => {
@@ -399,11 +389,12 @@ const CompleteProfile = (props) => {
       $("#state").val("");
       setCityVal("");
       setStateVal("");
+      setPincodeError("");
+      setCityValError("");
+      setStateValError("");
+      setPincodeLength(true);
     }
-    setPincodeError("");
-    setCityValError("");
-    setStateValError("");
-    setPincodeLength(true);
+    
   };
 
   function fillCityAndStateFields(localities) {
@@ -451,17 +442,10 @@ const CompleteProfile = (props) => {
     var locality = localities[0];
     $("#city").val(locality.city);
     $("#state").val(locality.state);
-    var $input;
+    // var $input;
     var city = localities[0].city;
     setCityVal(city);
     setStateVal(locality.state);
-    var $text = $(document.createElement("input"));
-    $text.attr("value", city);
-    $text.attr("type", "text");
-    $text.attr("type", "text");
-    $text.attr("class", "form-control");
-    $input = $text;
-    $("#city-input-wrapper").html($input);
   }
   const [selectMarket, setSelectedOption] = useState("marke name");
   const [selectMarketId, setSelectedMarketId] = useState(0);
@@ -488,7 +472,7 @@ const CompleteProfile = (props) => {
   };
   const closeOtheModalPopUp = () => {
     $("#otherModalPopUp").modal("hide");
-    setOtherMarketName('');
+    setOtherMarketName("");
   };
   const handleMarketName = () => {
     openMarketNamePopUpModal();
@@ -524,9 +508,9 @@ const CompleteProfile = (props) => {
     closeOtheModalPopUp();
     closePopup();
   };
-  const addOthermarketName =(e)=>{
+  const addOthermarketName = (e) => {
     setOtherMarketName(e.target.value);
-  }
+  };
   const editClosePopUp = () => {
     setShopNumberField(mandiEditStatus == "true" ? mandiData.shopNum : "");
     setMandiShortCode(mandiEditStatus == "true" ? mandiData.shortCode : "");
@@ -548,7 +532,17 @@ const CompleteProfile = (props) => {
     );
     setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
     setPincodeLength(false);
-    setMarketName(mandiEditStatus === "true" ? mandiData.marketName : "")
+    setMarketName(mandiEditStatus === "true" ? mandiData.marketName : "");
+    setMandiShortCodeError('');
+    setShopNumberError('');
+    setRequiredNumberField('');
+    setRequiredNumberField();
+    setContactNameError('');
+    setStreetvillageError('');
+    setPincodeError('');
+    setStateValError('');
+    setCityValError('');
+    setMandiNameError('');
   };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
@@ -778,7 +772,7 @@ const CompleteProfile = (props) => {
                   <label htmlFor="city" className="input_field">
                     District<span className="star-color">*</span>
                   </label>
-                  <div id="city-input-wrapper">
+                  <div>
                     {mandiEditStatus == "true" ? (
                       <div>
                         <InputField
@@ -840,7 +834,10 @@ const CompleteProfile = (props) => {
                 type="button"
                 className="secondary_btn"
                 data-bs-dismiss="modal"
-                onClick={props.close}
+                onClick={() => {
+                  editClosePopUp();
+                  props.close();
+                }}
               >
                 Cancel
               </button>
@@ -909,28 +906,25 @@ const CompleteProfile = (props) => {
                             </div>
                           );
                       })}
-                      {
-                       
-                        allMarketsData.map((item) => {
-                          return (
-                            <div
-                              id="mk-name"
-                              onClick={(name) => {
-                                handleMarketSelection(item.marketName);
-                              }}
-                            >
-                              <div className="d-flex">
-                                <img src={markets} alt="markets" />
-                                <p key={item.id} id="mk-Name">
-                                  {item.marketName}
-                                </p>
-                              </div>
-
-                              <span id="hr-lines"></span>
+                      {allMarketsData.map((item) => {
+                        return (
+                          <div
+                            id="mk-name"
+                            onClick={(name) => {
+                              handleMarketSelection(item.marketName);
+                            }}
+                          >
+                            <div className="d-flex">
+                              <img src={markets} alt="markets" />
+                              <p key={item.id} id="mk-Name">
+                                {item.marketName}
+                              </p>
                             </div>
-                          );
-                        })
-                      }
+
+                            <span id="hr-lines"></span>
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <NoDataAvailable />
@@ -981,9 +975,9 @@ const CompleteProfile = (props) => {
                           label={langFullData.marketName}
                           name="marketName"
                           id="marketName"
-                          value ={otherMarketName}
+                          value={otherMarketName}
                           onChange={(e) => {
-                            addOthermarketName(e)
+                            addOthermarketName(e);
                           }}
                           starRequired={true}
                         />
