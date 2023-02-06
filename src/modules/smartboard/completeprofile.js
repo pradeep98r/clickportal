@@ -865,7 +865,7 @@ const CompleteProfile = (props) => {
                 id="scroll_style"
               >
                 <div className="col-lg-12 p-0" id="market-div">
-                  <div className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center justify-content-between mk-header_main">
                     <h5 className="modal-title header2_text" id="mk-header">
                       Select Market
                     </h5>
@@ -950,7 +950,7 @@ const CompleteProfile = (props) => {
               id="scroll_style"
             >
               <div className="container p-0">
-                <div className="d-flex justify-content-between align-items-center mb-2">
+                <div className="d-flex justify-content-between align-items-center mk-header_main">
                   <h5 className="modal-title header2_text pl-0" id="mk-header">
                     Select Market
                   </h5>

@@ -156,7 +156,12 @@ input[type=radio]{
 }
 #mk-name:hover, .marketfrom:hover{
 cursor: pointer;}
-
+.markets_name_modal, .others_name_modal{
+    padding-top: 0px!important;
+}
+.mk-header_main{
+    padding-bottom: 20px;
+}
 @media(min-width:1600px){
    .modal_popup .modal-content{
         height: 770px;
@@ -202,6 +207,8 @@ cursor: pointer;}
     .profileModal .others_name_modal{
         // height: 630px;
     }
+    .market-names {
+        max-height: calc(100vh - 265px);}
 }
 .all_popup_header{
     padding-bottom: 30px;
