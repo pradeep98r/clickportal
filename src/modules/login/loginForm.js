@@ -100,6 +100,7 @@ const LoginForm = () => {
       );
     
   };
+  const [isWriter, setIsWriter] = useState(false);
   const handleSUbmit = (e) => {
     e.preventDefault();
     dispatch(
@@ -113,6 +114,14 @@ const LoginForm = () => {
         if (response.data.status.type === "SUCCESS") {
           setViewOtpForm(true);
           setOtpId(response.data.data.otpReqId);
+          //setInvalidError(invalidNumber);
+          console.log(response.data.data)
+          if(response.data.data.writer){
+            setIsWriter(true)
+          }
+          else{
+            setIsWriter(false) 
+          }
           toast.success(response.data.status.description, {
             toastId: "success1",
           });
@@ -145,7 +154,7 @@ const LoginForm = () => {
       mobile: mobileNumber,
       otp: otpValue,
       otpReqId: otpId,
-      userType: localStorage.getItem("userType"),
+      userType: isWriter ? 'WRITER' : localStorage.getItem("userType"),
       browser: true,
     };
 
@@ -157,6 +166,10 @@ const LoginForm = () => {
           dispatch(userInfoActions.loginSuccess(resp.data.data));
           localStorage.setItem("clientId", resp.data.data.authKeys.clientId);
           const clientId = localStorage.getItem("clientId");
+          const uType = localStorage.getItem("userType");
+          const wType = isWriter ? 'WRITER' : 'CA';
+          console.log(isWriter,wType)
+          if(wType == uType){
           if (resp.data.data.authKeys.clientId == clientId) {
             localStorage.setItem(
               "loginResponse",
@@ -177,6 +190,12 @@ const LoginForm = () => {
           toast.success(resp.data.status.description, {
             toastId: "success2",
           });
+        }
+        else{
+          toast.error('You have not registered as commission agent please try again', {
+            toastId: "error3",
+          });
+        }
         } else {
           setotpErrorStatus(true);
           setotpError("The entered OTP is incorrect");
