@@ -102,7 +102,7 @@ const SelectPartner = (props) => {
   //   if (!$(event.target).closest('#excludeDiv').length) {
   //     $('#scroll_style').hide();
   //     setActiveInput(false);
-  //     // setGetPartyItem(selectedPartner);
+  //     setGetPartyItem(selectedPartner);
   //   }
   // });
   useEffect(() => {

@@ -236,7 +236,7 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-  console.log(partySelecteData,billEditItemInfo, partnerDataStatus,"console");
+  console.log(billEditItemInfo,billEditItem,"console");
   return (
     <div className="">
       <h5 className="head_modal">Bill Information </h5>
@@ -473,18 +473,41 @@ const Step3PartySelect = (props) => {
                 </p>
               </div>
             ) : (
-              <div className="d-flex">
-                <img
-                  src={billEditItem[0].imageUrl}
-                  className="edit_crop_item"
-                />
-                <p className="edit_crop_item_len d-flex align-items-center">
-                  <p>{props.billEditItemval.length}</p>
-                  <span className="ml-3">Crops</span>
-                </p>
+              <div id="scroll_style">
+                {
+                  billEditItem.length>0?
+                  billEditItem.map(item=>{
+                    return(
+                      <div>
+                        <div className="d-flex">
+                          <div>
+                          <img
+                            src={item.imageUrl}
+                            className="edit_crop_item"
+                          />
+                          </div>
+                          <div>
+                          <p className="crops-color">Crops</p>
+                          <p className="crops-color">{item.qtyUnit.toUpperCase() + " | "} {item.qty?item.qty:''}
+                          <spn className = 'wastage-color'> - {item.wastage?item.wastage:''}</spn></p>
+                          </div>
+                          <div>
+                          <p className="crops-color">GrossTotal</p>
+                          <p className="crops-color">0</p>
+                          </div>
+                      {/* <p className="edit_crop_item_len d-flex align-items-center"> */}
+                        {/* <p>{billEditItem.length}</p>
+                        <span className="ml-3">Crops</span> */}
+                      {/* </p> */}
+                  </div>
+                  </div>)
+                  })
+                :''}
+                
               </div>
             )}
           </p>
+        
           <p onClick={() => editCropTable(billEditItem)}>Edit</p>
         </div>
       </div>

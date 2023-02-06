@@ -344,14 +344,14 @@ const Partner = () => {
               toastId: "success2",
             });
 
-            handleRefreshClick();
+            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     } else {
