@@ -389,11 +389,12 @@ const CompleteProfile = (props) => {
       $("#state").val("");
       setCityVal("");
       setStateVal("");
+      setPincodeError("");
+      setCityValError("");
+      setStateValError("");
+      setPincodeLength(true);
     }
-    setPincodeError("");
-    setCityValError("");
-    setStateValError("");
-    setPincodeLength(true);
+    
   };
 
   function fillCityAndStateFields(localities) {
@@ -823,7 +824,10 @@ const CompleteProfile = (props) => {
                 type="button"
                 className="secondary_btn"
                 data-bs-dismiss="modal"
-                onClick={props.close}
+                onClick={() => {
+                  editClosePopUp();
+                  props.close();
+                }}
               >
                 Cancel
               </button>
