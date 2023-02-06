@@ -508,7 +508,7 @@ const Step3PartySelect = (props) => {
             )}
           </p>
         
-          <p onClick={() => editCropTable(billEditItem)}>Edit</p>
+          {/* <p onClick={() => editCropTable(billEditItem)}>Edit</p> */}
         </div>
       </div>
 
