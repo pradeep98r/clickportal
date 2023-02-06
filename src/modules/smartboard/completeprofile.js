@@ -111,6 +111,7 @@ const CompleteProfile = (props) => {
   const [marketname, setMarketName] = useState(
     mandiEditStatus === "true" ? mandiData.marketName : ""
   );
+  const [otherMarketName, setOtherMarketName] = useState('');
   const [requiredNumberField, setRequiredNumberField] = useState("");
   const handleMobileNumber = (e) => {
     mobileNumberValidation(e, "mobile");
@@ -392,7 +393,6 @@ const CompleteProfile = (props) => {
         var possibleLocalities = geocodeResponseToCityState(response);
         fillCityAndStateFields(possibleLocalities);
       });
-      console.log("ll");
       setPincodeLength(false);
     } else {
       $("#city").val("");
@@ -465,6 +465,7 @@ const CompleteProfile = (props) => {
   }
   const [selectMarket, setSelectedOption] = useState("marke name");
   const [selectMarketId, setSelectedMarketId] = useState(0);
+
   const selectedValue = (e) => {
     setSelectedOption(e.target.value);
     allMarketsData.map((item) => {
@@ -487,27 +488,12 @@ const CompleteProfile = (props) => {
   };
   const closeOtheModalPopUp = () => {
     $("#otherModalPopUp").modal("hide");
-    setMarketName("");
-    console.log(marketName)
+    setOtherMarketName('');
   };
   const handleMarketName = () => {
     openMarketNamePopUpModal();
   };
-  // const [search, setSearch] = useState("");
-  const [marketName, setMarketname] = useState([]);
-  const searchMarketName = (searchValue) => {
-    // setSearch(searchValue);
-    if (search !== "") {
-      const filteredNames = allMarketsData.filter((item) => {
-        if (item.marketName.toLowerCase().includes(search.toLowerCase())) {
-          return item.marketName.toLowerCase().includes(search.toLowerCase());
-        }
-      });
-      setMarketname(filteredNames);
-    } else {
-      setMarketname(allMarketsData);
-    }
-  };
+
   const [search, setSearchValue] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
@@ -527,8 +513,6 @@ const CompleteProfile = (props) => {
   };
   const handleMarketSelection = (name) => {
     if (name.toLowerCase().includes("other")) {
-      //openOtheModalPopUp();
-      //setMarketName(marketname)
       handleOtherName();
     } else {
       setMarketName(name);
@@ -536,10 +520,13 @@ const CompleteProfile = (props) => {
     }
   };
   const handleOtherMarketName = (e) => {
-    setMarketname(e.target.value);
+    setMarketName(otherMarketName);
     closeOtheModalPopUp();
     closePopup();
   };
+  const addOthermarketName =(e)=>{
+    setOtherMarketName(e.target.value);
+  }
   const editClosePopUp = () => {
     setShopNumberField(mandiEditStatus == "true" ? mandiData.shopNum : "");
     setMandiShortCode(mandiEditStatus == "true" ? mandiData.shortCode : "");
@@ -561,6 +548,7 @@ const CompleteProfile = (props) => {
     );
     setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
     setPincodeLength(false);
+    setMarketName(mandiEditStatus === "true" ? mandiData.marketName : "")
   };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
@@ -922,26 +910,7 @@ const CompleteProfile = (props) => {
                           );
                       })}
                       {
-                        // search.length > 1 && marketName.length > 0
-                        //   ? marketName.map((item) => {
-                        //       return (
-                        //         <div
-                        //           id="mk-name"
-                        //           onClick={(name) => {
-                        //             handleMarketSelection(item.marketName);
-                        //           }}
-                        //         >
-                        //           <div className="d-flex">
-                        //             <img src={markets} alt="markets" />
-                        //             <p key={item.id} id="mk-Name">
-                        //               {item.marketName}
-                        //             </p>
-                        //           </div>
-                        //           <span id="hr-lines"></span>
-                        //         </div>
-                        //       );
-                        //     })
-                        //   :
+                       
                         allMarketsData.map((item) => {
                           return (
                             <div
@@ -1002,9 +971,6 @@ const CompleteProfile = (props) => {
                             id="searchbar-mk"
                             type="text"
                             value={"OTHER"}
-                            onChange={(e) => {
-                              searchMarketName(e.target.value);
-                            }}
                           />
                         </form>
                       </div>
@@ -1015,8 +981,9 @@ const CompleteProfile = (props) => {
                           label={langFullData.marketName}
                           name="marketName"
                           id="marketName"
+                          value ={otherMarketName}
                           onChange={(e) => {
-                            setMarketName(e.target.value);
+                            addOthermarketName(e)
                           }}
                           starRequired={true}
                         />
