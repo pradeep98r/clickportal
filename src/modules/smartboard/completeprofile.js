@@ -533,6 +533,16 @@ const CompleteProfile = (props) => {
     setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
     setPincodeLength(false);
     setMarketName(mandiEditStatus === "true" ? mandiData.marketName : "");
+    setMandiShortCodeError('');
+    setShopNumberError('');
+    setRequiredNumberField('');
+    setRequiredNumberField();
+    setContactNameError('');
+    setStreetvillageError('');
+    setPincodeError('');
+    setStateValError('');
+    setCityValError('');
+    setMandiNameError('');
   };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
