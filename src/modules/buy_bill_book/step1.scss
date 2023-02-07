@@ -138,3 +138,57 @@
     background-color: #16A12C;
     color: #fff;
 }
+
+
+
+.billView_modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	width: 750px;
+	height: 100%;
+	-webkit-transform: translate3d(0%, 0, 0);
+	-ms-transform: translate3d(0%, 0, 0);
+	-o-transform: translate3d(0%, 0, 0);
+	transform: translate3d(0%, 0, 0);
+}
+
+.billView_modal.right .modal-content {
+	height: 100%;
+	overflow-y: auto;
+}
+.cancelModal .modal-content{
+    height: auto!important;
+}
+/*Right*/
+.billView_modal.right.fade .modal-dialog {
+	right: -750px;
+    // right: 0;
+	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	-moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+	-o-transition: opacity 0.3s linear, right 0.3s ease-out;
+	transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+.billView_modal.right.fade.show .modal-dialog {
+	right: 0;
+}
+.billView_modal.right .modal-content{
+    border-radius: 0px;
+}
+.cancelModal .modal-dialog{
+    position: initial!important;
+    width: 500px!important;
+    height: auto!important;
+    transform: none!important;
+    right: initial!important;
+    margin: 0;
+}
+.bill_col{
+    padding: 15px 15px 15px 0px;
+}
+.bill_col_border{
+    border-right: 1px solid #E4E4E4;
+}
+.bill_footer{
+    padding: 10px!important;
+}
+

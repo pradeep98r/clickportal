@@ -1,7 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import "../buy_bill_book/buyBillBook.scss";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
 import { getSellBills } from "../../actions/billCreationService";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,8 +11,6 @@ import $ from "jquery";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
-import NoDataAvailable from "../../components/noDataAvailable";
-import BillsSearchField from "../../components/billsSearchField";
 import { getText } from "../../components/getText";
 import { qtyValues } from "../../components/qtyValues";
 import {
@@ -29,6 +26,7 @@ import { fromBillbook } from "../../reducers/billEditItemSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
+import BillView from "../buy_bill_book/billView";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -100,12 +98,15 @@ const SellBillBook = (props) => {
   const [billItem, setSelectBill] = useState("");
   const navigate = useNavigate();
   var billViewStatus = false;
-
+  const [showBillModalStatus, setShowBillModalStatus] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
     // navigate(generatePath(`/sell_bill_view/${id}`, { id }));
-    navigate(generatePath(`/bill_view/${id}`, { id }))
+    // navigate(generatePath(`/bill_view/${id}`, { id }))
+    setShowBillModalStatus(true);
+    setShowBillModal(true);
     localStorage.setItem("billId", id);
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
@@ -430,6 +431,14 @@ const SellBillBook = (props) => {
       )}
       {showStepsModalStatus ? (
         <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+      ) : (
+        ""
+      )}
+       {showBillModalStatus ? (
+        <BillView
+        showBillViewModal={showBillModal}
+        closeBillViewModal={() => setShowBillModal(false)}
+        />
       ) : (
         ""
       )}

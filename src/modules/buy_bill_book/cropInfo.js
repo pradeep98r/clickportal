@@ -26,7 +26,6 @@ const CropInfo = (props) => {
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
   const [cropClear, setCropClear] = useState(false);
-  console.log(props.selectedBilldate,"date")
   const [cropItemVal, setCropItemVal] = useState({});
   const cropOnclick = (crop, id, index2, preferedCrops) => {
     console.log(crop)

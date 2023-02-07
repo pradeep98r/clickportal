@@ -55,11 +55,6 @@ const GroupTotals = () => {
   const getBuyBillsById = () => {
     var res;
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      console.log(
-        res.data.data.billSetting,
-        billData?.partyType.toUpperCase(),
-        "settings"
-      );
       if (res.data.data.billSetting.length > 0) {
         //res=response.data.data.billSetting;
         billSettingData(res.data.data.billSetting);
@@ -214,7 +209,6 @@ const GroupTotals = () => {
               setGroupFour([groupFour, ...groupfour]);
             }
           } else {
-            console.log("else settings");
             if (
               res.data.data.billSetting[i].groupId === 1 &&
               res.data.data.billSetting[i].billType === "SELL" &&
@@ -243,7 +237,6 @@ const GroupTotals = () => {
                 setAddRetComm(
                   res.data.data.billSetting[i].addToGt == 1 ? false : true
                 );
-                console.log(res.data.data.billSetting[i].addToGt, "ret");
                 setIncludeRetComm(
                   res.data.data.billSetting[i].includeInLedger == 1
                     ? true
@@ -540,7 +533,6 @@ const GroupTotals = () => {
         if (billData?.partyType.toUpperCase() === "FARMER") {
           billData?.customFields.map((item) => {
             if (item.fee != 0) {
-              console.log(item, name, "cstmfiields");
               if (item.field === name) {
                 if (item.less) {
                   value = -item.fee;
@@ -672,7 +664,6 @@ const GroupTotals = () => {
     ) {
       var finalValue = billData.grossTotal - t;
     } else {
-      console.log(finalValue, "total");
       var finalValue = billData?.grossTotal + t;
     }
     var finalVal = finalValue;
@@ -703,10 +694,8 @@ const GroupTotals = () => {
       }
     } else {
       if (includeComm) {
-        console.log(includeComm, isShown, finalVal, "comm");
         if (isShown) {
           finalVal = finalVal + billData.comm;
-          console.log(finalVal, "commif");
         }
       }
     }
@@ -725,13 +714,6 @@ const GroupTotals = () => {
         }
       }
     } else {
-      console.log(
-        "else buyer",
-        addRetComm,
-        includeRetComm,
-        finalVal,
-        billData?.rtComm
-      );
       if (addRetComm) {
         if (includeRetComm) {
           finalVal = finalVal - billData?.rtComm;

@@ -116,7 +116,8 @@ function TopNavigation() {
                   />
                   <p id="bill_id">Bill ID : {singleBill.billId}</p>
                 </div>
-              ) : stepone === true ? (
+              ) :
+               stepone === true ? (
                 <div className="d-flex">
                   <img
                     src={leftClick}
@@ -128,7 +129,8 @@ function TopNavigation() {
                 </div>
               ) : (
                 langFullData.buyBillBook
-              ))}
+              ))
+              }
             {linkValue == 5 && "Buyer Ledger"}
             {linkValue == 6 && langFullData.sellerLedger}
             {linkPath == "/partner" && langFullData.partners}
