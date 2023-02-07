@@ -18,6 +18,7 @@ import Illustration from "../../assets/images/Illustration.svg";
 import { useEffect } from "react";
 import NoInternetConnection from "../../components/noInternetConnection";
 import { invalid } from "moment";
+import Timer from "./timer";
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
   const [lang, setLangValue] = useState("");
@@ -45,8 +46,8 @@ const LoginForm = () => {
   const [viewOtpForm, setViewOtpForm] = useState(false);
   const [otpError, setotpError] = useState("");
   const [otpErrorStatus, setotpErrorStatus] = useState(false);
-  const [editStatus,setEditStatus] = useState(false);
-  const [editResend, setEditResend] = useState(false);
+  const [handleResend, setHandleResend] = useState(false);
+  const [editStatus, setEditStatus] = useState(false);
   const handleOtpChange = (e) => {
     let onlyNumbers = e.target.value.replace(/[^\d]/g, "");
     let number = onlyNumbers.slice(0, 6);
@@ -75,6 +76,7 @@ const LoginForm = () => {
   };
   const handleClick = () => {
     handleResendTime();
+    setResendValid(false);
     setotpErrorStatus(false);
     setOtpValue("");
     console.log(obj);
@@ -126,12 +128,13 @@ const LoginForm = () => {
             toastId: "success1",
           });
           console.log(response.data.status.type,response.data.status.description)
-          if(editStatus){
-            handleTimeIntervals(59);
-          } else{
-            console.log("come to else")
-            handleTimeInterval(59);
-          }
+          // if(editStatus){
+          //   handleTimeIntervals(59);
+          // } else{
+          //   console.log("come to else")
+          //   handleTimer()
+          //   // handleTimeInterval(59);
+          // }
 
         } else if (response.data.status === "FAILURE") {
         } else {
@@ -139,8 +142,8 @@ const LoginForm = () => {
       },
       (error) => {
         setInvalidError(true);
-        handleTimeInterval(0);
-        setResendValid(false);
+        // handleTimeInterval(0);
+        // setResendValid(false);
         toast.error(error.response.data.status.description, {
           toastId: "error2",
         });
@@ -217,6 +220,7 @@ const LoginForm = () => {
     setotpErrorStatus(false);
     setOtpValue("");
     setEditStatus(true)
+    setHandleResend(false);
     setResendValid(false);
 
   };
@@ -235,40 +239,40 @@ const LoginForm = () => {
     $("#privatePolicy").modal("hide");
   };
 
-  const [minTime, setMinTime] = useState();
-  const[secTime, setSecTime] = useState();
-  function handleTimeIntervals (remaining){
-    var m = Math.floor(remaining / 60);
-    var s = remaining % 60;
+  // const [minTime, setMinTime] = useState();
+  // const[secTime, setSecTime] = useState();
+  // function handleTimeIntervals (remaining){
+  //   var m = Math.floor(remaining / 60);
+  //   var s = remaining % 60;
     
-    m = m < 10 ? '0' + m : m;
-    s = s < 10 ? '0' + s : s;
-    setMinTime(m)
-    setSecTime(s)
+  //   m = m < 10 ? '0' + m : m;
+  //   s = s < 10 ? '0' + s : s;
+  //   setMinTime(m)
+  //   setSecTime(s)
    
-    //document.getElementById('timer').innerHTML = m + ':' + s;
-    remaining -= 1;
+  //   //document.getElementById('timer').innerHTML = m + ':' + s;
+  //   remaining -= 1;
     
-    if(remaining >= 0 && timerOn) {
-      setTimeout(function() {
-        handleTimeIntervals(remaining);
-      }, 1000);
-      return;
-    }
-    if(s !==0){
-      setResendValid(false);
-    }
-    if(s == 0){
-      setResendValid(true);
-      setEditResend(true);
-      setEditStatus(false);
-    }
+  //   if(remaining >= 0 && timerOn) {
+  //     setTimeout(function() {
+  //       handleTimeIntervals(remaining);
+  //     }, 1000);
+  //     return;
+  //   }
+  //   if(s !==0){
+  //     setResendValid(false);
+  //   }
+  //   if(s == 0){
+  //     setResendValid(true);
+  //     setEditResend(true);
+  //     setEditStatus(false);
+  //   }
   
-    if(!timerOn) {
-      // Do validate stuff here
-      return;
-    }
-}
+  //   if(!timerOn) {
+  //     // Do validate stuff here
+  //     return;
+  //   }
+  // }
   let timerOn = true;
   function handleTimeInterval (remaining){
       var m = Math.floor(remaining / 60);
@@ -290,11 +294,14 @@ const LoginForm = () => {
       }
       if(s !==0){
         setResendValid(false);
-        setEditStatus(false);
+        setHandleResend(false);
+        // setEditStatus(false);
       }
       if(s == 0){
           setResendValid(true);
-          setEditStatus(false);
+          return;
+          // setHandleResend(false);
+          // setEditStatus(false);
       }
     
       if(!timerOn) {
@@ -303,10 +310,16 @@ const LoginForm = () => {
       }
   }
 
+
   const handleResendTime =() =>{
-    setResendValid(false);
+    setHandleResend(true);
+    // setResendValid(true);
     handleTimeInterval(59);
     setotpError('')
+  }
+
+  const handleResends =()=>{
+      setResendValid(true);    
   }
  
   return (
@@ -342,7 +355,6 @@ const LoginForm = () => {
                     type="submit"
                     id="sign-in-button"
                     onClick={handleSUbmit}
-                    // onKeyDown={(e) => onkeyDownevent(e)}
                   >
                     Login
                   </button>
@@ -367,13 +379,18 @@ const LoginForm = () => {
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <label className="form-label mb-0">Enter OTP</label>
                       <div className="timer">
-
-                      {editStatus?
+                      {!handleResend && !resendValid?
+                      <Timer resend={handleResends}
+                      />:''}
+                      {resendValid ?
+                      <p onClick={handleClick}>Resend</p>:''}
+                      {handleResend?<p>Time left:<span id="timer">{min}:{sec}</span></p>:''}
+                      {/* {editStatus?
                         <p>Time left:<span id="timer">{minTime}:{secTime}</span></p>:
                         !resendValid?<p>Time left:<span id="timer">{min}:{sec}</span></p>:''
                       }
                       {editStatus && editResend?<p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>:
-                        resendValid?<p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>:''}
+                        resendValid?<p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>:''} */}
 
                       {/* {!resendValid?
                         <OtpTimer
