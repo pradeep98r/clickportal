@@ -149,3 +149,17 @@
     padding: 15px!important;
   }
 }
+.add-cropsdiv{
+  width: 330PX;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E4;
+  height: calc(100vh - 450px);
+  overflow-y: auto;
+  border-radius: 10px;
+  left: 250px;
+  // height: 300px;
+  position: absolute;
+}
+#crops-space{
+  padding: 10px 20px;
+}

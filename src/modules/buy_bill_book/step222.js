@@ -4,7 +4,7 @@ import { selectSteps } from "../../reducers/stepsSlice";
 import "../../modules/buy_bill_book/step2.scss";
 import other_crop from "../../assets/images/other_crop.svg";
 import { useState, useEffect } from "react";
-import { getPreferredCrops } from "../../actions/billCreationService";
+import { getAllCrops, getPreferredCrops } from "../../actions/billCreationService";
 import SelectCrop from "./selectCrop";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
@@ -48,6 +48,44 @@ const Step22 = (props) => {
   const [rateDefaultValue, setrateValue] = useState();
   const [weightDefaultValue, setweightValue] = useState();
 
+  const [addCropStatus, setAddCropStatus] = useState(false);
+  const [allData, setAllData] = useState([]);
+  const [cropsData, setCropsData] = useState(allData);
+  const [activeSearch, setActiveSearch] = useState(false);
+
+  const activeSearchCrop = (c,i) => {
+    console.log("came to here")
+    for(var k = 0; k<c.length;k++){
+      if(k==i){
+        console.log(i,k,"indexes")
+        c[k].activeSearch=true;
+        c[k].displayStat=false;
+        c[k].cropName=c.cropName;
+        c[k].imageUrl=c.imageUrl;
+        console.log(c[k],"k")
+        cropResponseData([...cropData])
+      } else{
+        cropResponseData([...cropData])
+      }
+    }
+    // setActiveSearch(true);
+    // setDisplayStat(false);
+  }
+  const fetchCropData = () => {
+    getAllCrops().then((response) => {
+      response.data.data.map((item) => {
+        Object.assign(item, { cropSelect: "" });
+      });
+      setCropsData(response.data.data);
+      setAllData(response.data.data)
+    });
+  };
+  const [displayStat, setDisplayStat] = useState(false);
+  const handleAddCropStatus = () => {
+    setAddCropStatus(true);
+    fetchCropData();
+  }
+
   const date =
     billEditItemInfo.selectedBillDate !== null
       ? billEditItemInfo.selectedBillDate
@@ -87,7 +125,9 @@ const Step22 = (props) => {
       { total: 0 },
       { bags: [] },
       { status: 1 },
-      { qtyUnit: "Crates" }
+      { qtyUnit: "Crates" },
+      {activeSearch:false},
+      {displayStat:false}
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
@@ -98,6 +138,7 @@ const Step22 = (props) => {
       crop.cropActive = true;
     }
   };
+
   //   getting all crops popup when click on other crop
   const allCropData = () => {
     setCropInfoModalStatus(true);
@@ -358,6 +399,7 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
+    console.log(cropData,"data")
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         // Object.assign(cropData[index], { status: 1 });
@@ -686,28 +728,63 @@ const Step22 = (props) => {
     if (e.target.value == 0) {
       e.target.value = "";
     }
-    console.log('hey new',cropData)
+    console.log('hey new', cropData)
   };
   var cropArraynew = [];
-  const addCropRow = () =>{
+  const [addCrop, setAddCrop] = useState(false);
+  const [getCropItem, setCropItem] = useState(null);
+  const addCropRow = () => {
+    setAddCrop(true);
+
+    setDisplayStat(false);
+    setActiveSearch(true);
     var crpObject = {
-      // cropActive: true ,
-      //  cropSelect: "active" ,
-      //  wastage: 0 ,
-      //  qty: 0 ,
-      //  rateType: "kgs" ,
-      //  weight: 0 ,
-      // rate: 0 ,
-      //  total: 0 ,
-      //  qtyUnit: "crates" ,
-      //  checked: false ,
-      //  bags: [] ,
-      //  status: 1 
+      cropActive: true ,
+       cropSelect: "active" ,
+       wastage: 0 ,
+       qty: 0 ,
+       rateType: "kgs" ,
+       weight: 0 ,
+        rate: 0 ,
+       total: 0 ,
+       qtyUnit: "crates" ,
+       checked: false ,
+       bags: [] ,
+       status: 1 ,
+       activeSearch:true,
+      displayStat:false
     };
     cropArraynew.push(crpObject);
     cropResponseData([...cropData, ...cropArraynew])
-   
+
   }
+  const [searchValue, setSearchValue] = useState("");
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.cropName.toLowerCase().includes(value)) {
+        return data.cropName.toLowerCase().search(value) != -1;
+      }
+    });
+    setCropsData(result);
+    setSearchValue(value);
+  };
+  const addCropToEmptyRow = (crop,c,i) => {
+    console.log(crop);
+    setCropItem(crop);
+    c[i].cropName=crop.cropName;
+    c[i].imageUrl=crop.imageUrl;
+    c[i].displayStat=true;
+    console.log(c[i],i,"data");
+    setAddCropStatus(false);
+    // setDisplayStat(true);
+    // cropResponseData([...cropData])
+    // cropArraynew.push(crpObject);
+    cropResponseData([...cropData, ...c[i]])
+
+  }
+
   return (
     <div>
       <div className="main_div_padding">
@@ -797,105 +874,114 @@ const Step22 = (props) => {
                       className="crop_div crop_table_div table_crop_div m-0"
                       key={index}
                     >
+                      <div>
+                        {addCropStatus ?
+                          <div className="add-cropsdiv" id="scroll_style">
+                            {cropsData.map((item) => {
+                              return (
+                                <div>
+                                  <div className="flex_class mr-0" id="crops-space"
+                                    onClick={() => {addCropToEmptyRow(item,cropData,index) }}>
+                                    <img src={item.imageUrl} className="flex_class mr-2" />
+                                    <p className="m-0">{item.cropName}</p>
+                                  </div>
+                                  <hr style={{ border: '1 px dashed' }} />
+                                </div>
+                              )
+                            })}
+                          </div>
+                          : ''}
+                      </div>
                       <div className="d-flex crop_table_delete_div">
                         <div className="crop_table_view">
                           <table className="table table-bordered table_div">
-                          {Object.keys(cropData[index]).length != 0 ?
-                            <tr className="">
-                              <td className="col-2">
-                                <div className="flex_class mr-0">
-                                  <img
-                                    src={cropData[index].imageUrl}
-                                    className="flex_class mr-2"
-                                  />
-                                  <p className="m-0">
-                                    {cropData[index].cropName}
-                                  </p>
-                                </div>
-                              </td>
-                              <td className="col-1">
-                                <select
-                                  className="form-control qty_dropdown dropdown"
-                                  value={cropData[index].qtyUnit}
-                                  onChange={getQuantity(cropData, index, crop)}
-                                >
-                                  <option value="Crates">Crates</option>
-                                  <option value="Bags">Bags</option>
-                                  <option value="Sacs">Sacs </option>
-                                  <option value="Boxes">Boxes </option>
-                                  <option value="kgs">Kgs </option>
-                                  <option value="loads">Loads </option>
-                                  <option value="pieces">Pieces </option>
-                                </select>
-                              </td>
-                              {!setQuantityBasedtable(
-                                cropData[index].qtyUnit
-                              ) ? (
+                            {Object.keys(cropData[index]).length != 0 ?
+                              <tr className="">
+                                <td className="col-2">
+                                  {
+                                  (!cropData[index].activeSearch) || (cropData[index].displayStat)?
+                                  // !activeSearch || displayStat?
+                                    <div className="flex_class mr-0"
+                                      onClick={()=>{activeSearchCrop(cropData,index)}}>
+                                      <img
+                                        src={cropData[index].imageUrl}
+                                        className="flex_class mr-2"
+                                      />
+                                      <p className="m-0">
+                                        {cropData[index].cropName}
+                                      </p>
+                                    </div>
+                                    :cropData[index].activeSearch || addCrop?
+                                    <input 
+                                      // value={}
+                                      onClick={handleAddCropStatus}
+                                      onChange={(event) => {
+                                        handleSearch(event);
+                                      }} /> :''
+                                  }
+                                </td>
                                 <td className="col-1">
                                   <select
                                     className="form-control qty_dropdown dropdown"
-                                    value={cropData[index].rateType}
-                                    onChange={getRateType(cropData, index)}
+                                    value={cropData[index].qtyUnit}
+                                    onChange={getQuantity(cropData, index, crop)}
                                   >
-                                    <option
-                                      value={cropData[
-                                        index
-                                      ].qtyUnit?.toLowerCase()}
-                                    >
-                                      {cropData[index].qtyUnit}{" "}
-                                    </option>
+                                    <option value="Crates">Crates</option>
+                                    <option value="Bags">Bags</option>
+                                    <option value="Sacs">Sacs </option>
+                                    <option value="Boxes">Boxes </option>
                                     <option value="kgs">Kgs </option>
+                                    <option value="loads">Loads </option>
+                                    <option value="pieces">Pieces </option>
                                   </select>
                                 </td>
-                              ) : (
-                                <td className="col-1 fadeOut_col">-</td>
-                              )}
-                              {!setQuantityBasedtable(
-                                cropData[index].qtyUnit
-                              ) ? (
-                                <td className="col-1">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="quantity"
-                                    onFocus={(e) => resetInput(e)}
-                                    value={cropData[index].qty}
-                                    onChange={getQuantityValue(
-                                      cropData[index].cropId,
-                                      index,
-                                      cropData
-                                    )}
-                                  />
-                                </td>
-                              ) : (
-                                <td className="col-1 fadeOut_col">-</td>
-                              )}
-
-                              {cropData[index].qtyUnit?.toLowerCase() !=
-                              (cropData[index].rateType == "RATE_PER_UNIT"
-                                ? cropData[index].qtyUnit?.toLowerCase()
-                                : cropData[index].rateType) ? (
-                                <td className="col-1">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="weight"
-                                    onFocus={(e) => resetInput(e)}
-                                    value={cropData[index].weight}
-                                    onChange={getWeightValue(
-                                      cropData[index].cropId,
-                                      index,
-                                      cropData
-                                    )}
-                                  />
-                                </td>
-                              ) : setQuantityBasedtable(
+                                {!setQuantityBasedtable(
                                   cropData[index].qtyUnit
                                 ) ? (
-                                cropData[index].qtyUnit?.toLowerCase() ==
-                                "loads" ? (
-                                  <td className="col-1 fadeOut_col">-</td>
+                                  <td className="col-1">
+                                    <select
+                                      className="form-control qty_dropdown dropdown"
+                                      value={cropData[index].rateType}
+                                      onChange={getRateType(cropData, index)}
+                                    >
+                                      <option
+                                        value={cropData[
+                                          index
+                                        ].qtyUnit?.toLowerCase()}
+                                      >
+                                        {cropData[index].qtyUnit}{" "}
+                                      </option>
+                                      <option value="kgs">Kgs </option>
+                                    </select>
+                                  </td>
                                 ) : (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                )}
+                                {!setQuantityBasedtable(
+                                  cropData[index].qtyUnit
+                                ) ? (
+                                  <td className="col-1">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="quantity"
+                                      onFocus={(e) => resetInput(e)}
+                                      value={cropData[index].qty}
+                                      onChange={getQuantityValue(
+                                        cropData[index].cropId,
+                                        index,
+                                        cropData
+                                      )}
+                                    />
+                                  </td>
+                                ) : (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                )}
+
+                                {cropData[index].qtyUnit?.toLowerCase() !=
+                                  (cropData[index].rateType == "RATE_PER_UNIT"
+                                    ? cropData[index].qtyUnit?.toLowerCase()
+                                    : cropData[index].rateType) ? (
                                   <td className="col-1">
                                     <input
                                       type="text"
@@ -910,146 +996,180 @@ const Step22 = (props) => {
                                       )}
                                     />
                                   </td>
-                                )
-                              ) : (
-                                <td className="col-1 fadeOut_col">-</td>
-                              )}
-                              {cropData[index].qtyUnit?.toLowerCase() ===
-                                "bags" ||
-                              cropData[index].qtyUnit?.toLowerCase() ===
-                                "sacs" ? (
-                                cropData[index].qtyUnit?.toLowerCase() !=
-                                cropData[index].rateType ? (
-                                  <td className="col-1">
-                                    <div className="d-flex">
-                                      <p className="unit-type mt-0">
-                                        {cropData[index].bags !== null &&
-                                        cropData[index].bags.length > 0
-                                          ? "Edit"
-                                          : "Add"}{" "}
-                                        {cropData[index].qtyUnit}
-                                      </p>
+                                ) : setQuantityBasedtable(
+                                  cropData[index].qtyUnit
+                                ) ? (
+                                  cropData[index].qtyUnit?.toLowerCase() ==
+                                    "loads" ? (
+                                    <td className="col-1 fadeOut_col">-</td>
+                                  ) : (
+                                    <td className="col-1">
                                       <input
-                                        type="checkbox"
-                                        checked={
-                                          billEditStatus
-                                            ? billEditItemInfo.selectedBillInfo
-                                                .lineItems[0].bags.length > 0
-                                              ? true
-                                              : false
-                                            : cropData[index].checked
-                                        }
-                                        id="modal_checkbox"
-                                        value="my-value"
-                                        className="checkbox_t"
-                                        onChange={() => {
-                                          handleCheckEvent(
-                                            cropData,
-                                            index,
-                                            crop
-                                          );
-                                        }}
+                                        type="text"
+                                        className="form-control"
+                                        name="weight"
+                                        onFocus={(e) => resetInput(e)}
+                                        value={cropData[index].weight}
+                                        onChange={getWeightValue(
+                                          cropData[index].cropId,
+                                          index,
+                                          cropData
+                                        )}
                                       />
-                                    </div>
-                                  </td>
+                                    </td>
+                                  )
                                 ) : (
                                   <td className="col-1 fadeOut_col">-</td>
-                                )
-                              ) : (
-                                <td className="col-1 fadeOut_col">-</td>
-                              )}
-                              {cropData[index].qtyUnit?.toLowerCase() ==
-                              "loads" ? (
-                                <td className="col-1 fadeOut_col">-</td>
-                              ) : (
+                                )}
+                                {cropData[index].qtyUnit?.toLowerCase() ===
+                                  "bags" ||
+                                  cropData[index].qtyUnit?.toLowerCase() ===
+                                  "sacs" ? (
+                                  cropData[index].qtyUnit?.toLowerCase() !=
+                                    cropData[index].rateType ? (
+                                    <td className="col-1">
+                                      <div className="d-flex">
+                                        <p className="unit-type mt-0">
+                                          {cropData[index].bags !== null &&
+                                            cropData[index].bags.length > 0
+                                            ? "Edit"
+                                            : "Add"}{" "}
+                                          {cropData[index].qtyUnit}
+                                        </p>
+                                        <input
+                                          type="checkbox"
+                                          checked={
+                                            billEditStatus
+                                              ? billEditItemInfo.selectedBillInfo
+                                                .lineItems[0].bags.length > 0
+                                                ? true
+                                                : false
+                                              : cropData[index].checked
+                                          }
+                                          id="modal_checkbox"
+                                          value="my-value"
+                                          className="checkbox_t"
+                                          onChange={() => {
+                                            handleCheckEvent(
+                                              cropData,
+                                              index,
+                                              crop
+                                            );
+                                          }}
+                                        />
+                                      </div>
+                                    </td>
+                                  ) : (
+                                    <td className="col-1 fadeOut_col">-</td>
+                                  )
+                                ) : (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                )}
+                                {cropData[index].qtyUnit?.toLowerCase() ==
+                                  "loads" ? (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                ) : (
+                                  <td className="col-1">
+                                    <input
+                                      type="text"
+                                      name="wastage"
+                                      onFocus={(e) => resetInput(e)}
+                                      className="form-control wastage_val"
+                                      value={cropData[index].wastage}
+                                      onChange={getWastageValue(
+                                        cropData[index].cropId,
+                                        index,
+                                        cropData
+                                      )}
+                                    />
+                                  </td>
+                                )}
                                 <td className="col-1">
                                   <input
                                     type="text"
-                                    name="wastage"
+                                    name="rate"
+                                    className="form-control"
                                     onFocus={(e) => resetInput(e)}
-                                    className="form-control wastage_val"
-                                    value={cropData[index].wastage}
-                                    onChange={getWastageValue(
+                                    value={cropData[index].rate}
+                                    onChange={getRateValue(
                                       cropData[index].cropId,
                                       index,
                                       cropData
                                     )}
                                   />
                                 </td>
-                              )}
-                              <td className="col-1">
-                                <input
-                                  type="text"
-                                  name="rate"
-                                  className="form-control"
-                                  onFocus={(e) => resetInput(e)}
-                                  value={cropData[index].rate}
-                                  onChange={getRateValue(
-                                    cropData[index].cropId,
-                                    index,
-                                    cropData
-                                  )}
-                                />
-                              </td>
-                              <td className="col-3">
-                                <div className="d-flex align-items-center justify-content-between">
-                                  <p className="totals">
-                                    {cropData[index].rateType == "kgs"
-                                      ? (cropData[index].weight -
+                                <td className="col-3">
+                                  <div className="d-flex align-items-center justify-content-between">
+                                    <p className="totals">
+                                      {cropData[index].rateType == "kgs"
+                                        ? (cropData[index].weight -
                                           cropData[index].wastage) *
                                         cropData[index].rate
-                                      : (cropData[index].qty -
+                                        : (cropData[index].qty -
                                           cropData[index].wastage) *
                                         cropData[index].rate}
-                                  </p>
-                                  <div className="delete_copy_div d-flex">
-                                    <div
-                                      className="flex_class mr-0 sub_icons_div"
-                                      onClick={cloneCrop.bind(this, crop)}
-                                    >
-                                      <img
-                                        src={copy_icon}
-                                        className="sub_icons"
-                                        alt="image"
-                                      />
-                                    </div>
-                                    <div
-                                      className="flex_class mr-0 sub_icons_div"
-                                      onClick={deleteCrop.bind(
-                                        this,
-                                        crop,
-                                        cropData
-                                      )}
-                                    >
-                                      <img
-                                        src={delete_icon}
-                                        className="sub_icons"
-                                        alt="image"
-                                      />
+                                    </p>
+                                    <div className="delete_copy_div d-flex">
+                                      <div
+                                        className="flex_class mr-0 sub_icons_div"
+                                        onClick={cloneCrop.bind(this, crop)}
+                                      >
+                                        <img
+                                          src={copy_icon}
+                                          className="sub_icons"
+                                          alt="image"
+                                        />
+                                      </div>
+                                      <div
+                                        className="flex_class mr-0 sub_icons_div"
+                                        onClick={deleteCrop.bind(
+                                          this,
+                                          crop,
+                                          cropData
+                                        )}
+                                      >
+                                        <img
+                                          src={delete_icon}
+                                          className="sub_icons"
+                                          alt="image"
+                                        />
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </td>
-                            </tr>
-                            : <tr className="empty_row">
-                               <td className="col-2">
-                                 <input />
-                               </td>
-                               <td className="col-1"></td>
-                               <td className="col-1"></td>
-                               <td className="col-1"></td>
-                               <td className="col-1"></td>
-                               <td className="col-1"></td>
-                               <td className="col-1"></td>
-                               <td className="col-1"></td>
-                               <td className="col-3"></td>
-                            </tr> }
+                                </td>
+                              </tr>
+                              : <tr className="empty_row">
+                                <td className="col-2">
+                                  {/* <div role="search"
+                                onClick={handleAddCropStatus}
+                                >
+                                
+                                </div> */}
+                                  <input id="searchInput"
+                                    value={searchValue}
+                                    onClick={handleAddCropStatus}
+                                    onChange={(event) => {
+                                      handleSearch(event);
+                                    }}
+                                  // value={searchTerm}
+                                  // onChange={handleChange}
+                                  />
+                                </td>
+                                <td className="col-1"></td>
+                                <td className="col-1"></td>
+                                <td className="col-1"></td>
+                                <td className="col-1"></td>
+                                <td className="col-1"></td>
+                                <td className="col-1"></td>
+                                <td className="col-1"></td>
+                                <td className="col-3"></td>
+                              </tr>}
                           </table>
                         </div>
                       </div>
                     </div>
                   ))}
-                  <p onClick={()=> addCropRow()}>Add</p>
+                  <p onClick={() => addCropRow()}>Add</p>
                 </div>
               </div>
             )}
