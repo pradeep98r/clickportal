@@ -401,8 +401,9 @@ option[value=""][disabled] {
 .crop_table_view {
   table {
     border-radius: 10px;
-    margin-top: 10px;
+    // margin-top: 10px;
     margin-bottom: 0px;
+    width: 100%;
   }
   th {
     color: var(--ono-primary-text);
@@ -1230,4 +1231,26 @@ font-size: 12px;
 .comment_text{
   color: var(--ono-blue);
   font-size: 13px;
+}
+
+// table new css
+.crop_table_header_row{
+  .col-lg-2, .col-lg-1, .col-lg-3{
+    padding:10px;
+    border-right: 1px solid #dee2e6;
+  }
+  .last_col{
+    border-right: 0px;
+  }
+}
+.crop_table_view table {
+  .col-2, .col-1, .col-3{
+    padding: 5px 10px;
+  }
+  
+}
+.table_div {
+  td{
+    border-top: 0px!important;
+  }
 }
