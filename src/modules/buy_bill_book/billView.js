@@ -64,6 +64,7 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
+    // props.closeBillViewModal();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -78,6 +79,7 @@ const BillView = (props) => {
     );
     dispatch(cropEditStatus(false));
     setEditCancelStatus(true);
+    
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
