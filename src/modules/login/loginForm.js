@@ -9,15 +9,12 @@ import { doLogin, validateOTP } from "../../actions/loginService";
 import { deviceType, osName, osVersion } from "react-device-detect";
 import { authActions } from "../../reducers/authSlice";
 import { userInfoActions } from "../../reducers/userInfoSlice";
-import OtpTimer from "otp-timer";
 import { ToastContainer, toast } from "react-toastify";
 import $ from "jquery";
 import close from "../../assets/images/close.svg";
 import "react-toastify/dist/ReactToastify.css";
 import Illustration from "../../assets/images/Illustration.svg";
-import { useEffect } from "react";
 import NoInternetConnection from "../../components/noInternetConnection";
-import { invalid } from "moment";
 import Timer from "./timer";
 const LoginForm = () => {
   const [lat, setLatValue] = useState("");
@@ -127,23 +124,12 @@ const LoginForm = () => {
           toast.success(response.data.status.description, {
             toastId: "success1",
           });
-          console.log(response.data.status.type,response.data.status.description)
-          // if(editStatus){
-          //   handleTimeIntervals(59);
-          // } else{
-          //   console.log("come to else")
-          //   handleTimer()
-          //   // handleTimeInterval(59);
-          // }
-
         } else if (response.data.status === "FAILURE") {
         } else {
         }
       },
       (error) => {
         setInvalidError(true);
-        // handleTimeInterval(0);
-        // setResendValid(false);
         toast.error(error.response.data.status.description, {
           toastId: "error2",
         });
@@ -239,40 +225,6 @@ const LoginForm = () => {
     $("#privatePolicy").modal("hide");
   };
 
-  // const [minTime, setMinTime] = useState();
-  // const[secTime, setSecTime] = useState();
-  // function handleTimeIntervals (remaining){
-  //   var m = Math.floor(remaining / 60);
-  //   var s = remaining % 60;
-    
-  //   m = m < 10 ? '0' + m : m;
-  //   s = s < 10 ? '0' + s : s;
-  //   setMinTime(m)
-  //   setSecTime(s)
-   
-  //   //document.getElementById('timer').innerHTML = m + ':' + s;
-  //   remaining -= 1;
-    
-  //   if(remaining >= 0 && timerOn) {
-  //     setTimeout(function() {
-  //       handleTimeIntervals(remaining);
-  //     }, 1000);
-  //     return;
-  //   }
-  //   if(s !==0){
-  //     setResendValid(false);
-  //   }
-  //   if(s == 0){
-  //     setResendValid(true);
-  //     setEditResend(true);
-  //     setEditStatus(false);
-  //   }
-  
-  //   if(!timerOn) {
-  //     // Do validate stuff here
-  //     return;
-  //   }
-  // }
   let timerOn = true;
   function handleTimeInterval (remaining){
       var m = Math.floor(remaining / 60);
@@ -283,7 +235,6 @@ const LoginForm = () => {
       setMin(m);
       setSec(s)
      
-      //document.getElementById('timer').innerHTML = m + ':' + s;
       remaining -= 1;
       
       if(remaining >= 0 && timerOn) {
@@ -300,8 +251,6 @@ const LoginForm = () => {
       if(s == 0){
           setResendValid(true);
           return;
-          // setHandleResend(false);
-          // setEditStatus(false);
       }
     
       if(!timerOn) {
@@ -383,31 +332,9 @@ const LoginForm = () => {
                       <Timer resend={handleResends}
                       />:''}
                       {resendValid ?
-                      <p onClick={handleClick}>Resend</p>:''}
+                      <p onClick={handleClick} className="resend_text">Resend</p>:''}
                       {handleResend?<p>Time left:<span id="timer">{min}:{sec}</span></p>:''}
-                      {/* {editStatus?
-                        <p>Time left:<span id="timer">{minTime}:{secTime}</span></p>:
-                        !resendValid?<p>Time left:<span id="timer">{min}:{sec}</span></p>:''
-                      }
-                      {editStatus && editResend?<p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>:
-                        resendValid?<p onClick={()=>{handleClick()}} className="resend_text">Resend OTP</p>:''} */}
-
-                      {/* {!resendValid?
-                        <OtpTimer
-                          minutes={0}
-                          seconds={10}
-                          text="Time:"
-                          resend={handleClick}
-                          ButtonText="Resend OTP"
-                        />
-                          :
-                          <p onClick={handleClick}>Resend OTP</p>
-                          // <OtpTimer 
-                          // seconds={0}
-                          // resend={() => handleClick}
-                          // ButtonText="Resend OTP"
-                        // />
-                        }  */}
+                      
                       </div>
                     </div>
                     <input
@@ -421,7 +348,6 @@ const LoginForm = () => {
                       id="phone"
                       value={otpValue}
                       onChange={(event) => handleOtpChange(event)}
-                      // onKeyDown={(e) => onkeyDownevent(e)}
                       
                     />
                     <span className="text-danger">{otpError}</span>
