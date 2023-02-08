@@ -12,7 +12,7 @@ import {
 } from "../../actions/billCreationService";
 import { useSelector } from "react-redux";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
-const GroupTotals = () => {
+const GroupTotals = (props) => {
   var groupOneTotal = 0;
   var groupTwoTotal = 0;
   var groupThreeTotal = 0;
@@ -32,9 +32,7 @@ const GroupTotals = () => {
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
-  useEffect(() => {
-    getBuyBillsById();
-  }, []);
+ 
   const [groupone, setGroupOne] = useState([]);
   const [groupTwo, setGroupTwo] = useState([]);
   const [groupThree, setGroupThree] = useState([]);
@@ -49,8 +47,9 @@ const GroupTotals = () => {
   const [isShown, setisShown] = useState(false);
 
   useEffect(() => {
+    getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
-  }, []);
+  }, [props]);
 
   const getBuyBillsById = () => {
     var res;

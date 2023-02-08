@@ -6,7 +6,7 @@ import {
     getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
 import { qtyValues } from "../../components/qtyValues";
-const CropDetails = () => {
+const CropDetails = (props) => {
     const  billViewData = useSelector((state)=> state.billViewInfo);
     const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
     var cratesTotal = 0;
@@ -16,7 +16,7 @@ const CropDetails = () => {
     var kgsTotal = 0;
     useEffect(()=>{
         setBillViewData(JSON.parse(localStorage.getItem("billData")));
-      },[])
+      },[props])
     
     return (
         <div>

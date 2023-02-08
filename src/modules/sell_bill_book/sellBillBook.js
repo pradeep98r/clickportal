@@ -438,6 +438,7 @@ const SellBillBook = (props) => {
         <BillView
         showBillViewModal={showBillModal}
         closeBillViewModal={() => setShowBillModal(false)}
+        allBillsData ={sellBillData}
         />
       ) : (
         ""

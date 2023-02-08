@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import single_bill from "../../assets/images/bills/single_bill.svg";
-import moment from "moment/moment";
 import edit from "../../assets/images/edit_round.svg";
 import { useNavigate } from "react-router-dom";
 import { editbuybillApi } from "../../actions/billCreationService";
@@ -10,7 +8,8 @@ import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
-
+import prev_icon from "../../assets/images/prev_icon.svg";
+import next_icon from "../../assets/images/next_icon.svg";
 import BusinessDetails from "./business_details";
 import CropDetails from "./crop_details";
 import BillViewFooter from "./billViewFooter";
@@ -29,32 +28,29 @@ import {
   selectedParty,
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
-
+import { billViewInfo } from "../../reducers/billViewSlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  console.log(billData)
   const [displayCancel, setDisplayCancel] = useState(false);
-
+  var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
 
   useEffect(() => {
     cancelBillStatus();
     dispatch(billViewStatus(true));
-  }, [clickId]);
-
-  useEffect(() => {
     // setBillViewData(JSON.parse(localStorage.getItem("billData")));
-    setBillViewData(billViewData.billViewInfo)
+    setBillViewData(billViewData.billViewInfo);
+    console.log("useffect");
   }, [props.showBillViewModal]);
 
   const cancelBillStatus = () => {
     if (billData?.billStatus === "CANCELLED") {
       setDisplayCancel(true);
     } else {
-      setDisplayCancel(displayCancel);
+      setDisplayCancel(false);
     }
   };
 
@@ -85,7 +81,6 @@ const BillView = (props) => {
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
-    setDisplayCancel(!displayCancel);
     cancelbillApiCall();
   };
   const editBillRequestObj = {
@@ -149,10 +144,20 @@ const BillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
+          setDisplayCancel(true);
           if (billData?.partyType.toUpperCase() === "FARMER") {
-            navigate("/buy_bill_book");
+            window.setTimeout(function () {
+              props.closeBillViewModal();
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 2000);
           } else {
-            navigate("/sellbillbook");
+            window.setTimeout(function () {
+              props.closeBillViewModal();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
+           
           }
         }
       },
@@ -165,11 +170,42 @@ const BillView = (props) => {
   };
 
   const handleCheckEvent = () => {
-    console.log(editBillRequestObj)
+    console.log(editBillRequestObj);
     $("#cancelBill").modal("show");
   };
   const closePopup = () => {
     $("#cancelBill").modal("hide");
+  };
+  const[prevNextStatus, setPrevNextStatus] = useState(false);
+  const[prevNextDisable, setPrevNextDisable] = useState(false);
+  const previousBill = (id) => {
+    var index1 = allBillsArray.findIndex((obj) => obj.billId == id);
+    if (index1 != -1) {
+      dispatch(billViewInfo(allBillsArray[index1]));
+      localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
+      setBillViewData(allBillsArray[index1]);
+      setPrevNextStatus(true);
+      setPrevNextDisable(false);
+      setNextDisable(false);
+    }
+    else{
+      setPrevNextDisable(true);
+    }
+  };
+  const[nextDisable, setNextDisable] = useState(false);
+  const nextBill = (id) => {
+    var index1 = allBillsArray.findIndex((obj) => obj.billId == id);
+    if (index1 != -1) {
+      dispatch(billViewInfo(allBillsArray[index1]));
+      localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
+      setBillViewData(allBillsArray[index1]);
+      setPrevNextStatus(true);
+      setNextDisable(false);
+      setPrevNextDisable(false);
+    }
+    else{
+      setNextDisable(true);
+    }
   };
   return (
     <Modal
@@ -178,13 +214,15 @@ const BillView = (props) => {
       className="cropmodal_poopup steps_modal billView_modal right"
     >
       <div className="modal-header date_modal_header smartboard_modal_header">
-        <h5 className="modal-title d-flex align-items-center header2_text" id="staticBackdropLabel">
+        <h5
+          className="modal-title d-flex align-items-center header2_text"
+          id="staticBackdropLabel"
+        >
           <p className="b-name">
             {billData?.partyType.toUpperCase() === "FARMER"
               ? billData.farmerName
               : billData?.buyerName}
-              -
-             
+            -
           </p>
           <p className="b-name">{billData?.billId}</p>
         </h5>
@@ -201,31 +239,32 @@ const BillView = (props) => {
         <div className="row">
           <div className="col-lg-10 col_left bill_col bill_col_border">
             <div className="bill_view_card buy_bills_view" id="scroll_style">
-              <BusinessDetails />
+              {
+                prevNextStatus ? <BusinessDetails prevNextStatus1={prevNextStatus} /> : <BusinessDetails />
+              }
+              
               <div className="bill_crop_details">
-                <CropDetails />
+                {prevNextStatus ? <CropDetails prevNextStatus1={prevNextStatus} /> : <CropDetails />}
                 <div className="row">
                   <div className="col-lg-8"></div>
                   <div className="col-lg-4 stamp_img">
-                    {billData?.billStatus == "CANCELLED" && (
+                    {(billData?.billStatus == "CANCELLED" || displayCancel) && (
                       <img src={cancel_bill_stamp} alt="stammp_img" />
                     )}
                   </div>
                 </div>
-                <GroupTotals />
-                <BillViewFooter />
+                {prevNextStatus ? <GroupTotals prevNextStatus1={prevNextStatus} /> : <GroupTotals />}
+                {prevNextStatus ? <BillViewFooter prevNextStatus1={prevNextStatus} /> : <BillViewFooter />}
               </div>
             </div>
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-             
-
-              {billData?.billStatus == "CANCELLED" ? (
+              {(billData?.billStatus == "CANCELLED" || displayCancel) ? (
                 ""
               ) : (
                 <div>
-                   <p className="more-p-tag">Actions</p>
+                  <p className="more-p-tag">Actions</p>
                   <div className="action_icons">
                     <div className="items_div">
                       <img
@@ -251,10 +290,22 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      <div className="modal-footer bill_footer text-center">
-      {/* <p onClick={previoous}>add {billData?.billId - 1}</p> */}
-      <p className="b-name">{billData?.billId}</p>
-     
+      <div className="modal-footer bill_footer d-flex justify-content-center">
+        <button
+          onClick={() => {
+            previousBill(billData?.billId - 1);
+          }}
+        >
+          <img src={prev_icon} className={prevNextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image"  />
+        </button>
+        <p className="b-name">{billData?.billId}</p>
+        <button
+          onClick={() => {
+            nextBill(billData?.billId + 1);
+          }}
+        >
+          <img src={next_icon} className={nextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image" />
+        </button>
       </div>
       {showStepsModalStatus ? (
         <Steps
@@ -265,7 +316,7 @@ const BillView = (props) => {
         ""
       )}
       <div className="modal cancelModal fade" id="cancelBill">
-        <div className="modal-dialog cancelBill_modal_popup">
+        <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header date_modal_header smartboard_modal_header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
@@ -278,10 +329,9 @@ const BillView = (props) => {
                 onClick={closePopup}
               />
             </div>
-            <div className="modal-body">
-              <div className=" row terms_popup ">
-                <div className="col-lg-3"></div>
-                <div className="col-lg-7">
+            <div className="modal-body text-center">
+              <div className="row terms_popup ">
+                <div className="col-lg-12">
                   <div className="cancel_img">
                     <img src={cancel} alt="img" className="" />
                   </div>
@@ -294,8 +344,7 @@ const BillView = (props) => {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-1"></div>
-                <div className="col-lg-10">
+                <div className="col-lg-12">
                   <p className="desc-tag">
                     Please note that cancellation of bill result in ledger
                     adjustments (rol back) and you will see an adjustment record
@@ -305,7 +354,7 @@ const BillView = (props) => {
                 <div className="col-lg-1"></div>
               </div>
             </div>
-            <div className="modal-footer p-2">
+            <div className="modal-footer p-3">
               <div className="d-flex">
                 <button
                   type="button"

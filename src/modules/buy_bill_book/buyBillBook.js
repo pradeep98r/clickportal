@@ -446,6 +446,7 @@ function BuyBillBook() {
         <BillView
         showBillViewModal={showBillModal}
         closeBillViewModal={() => setShowBillModal(false)}
+        allBillsData ={buyBillData}
         />
       ) : (
         ""
