@@ -8,7 +8,6 @@ export const billViewSlice = createSlice({
     reducers: {
         billViewInfo: (state, action) => {
             state.billViewInfo = action.payload;
-            console.log(action.payload,"payload")
         },
     },
 });

@@ -723,6 +723,11 @@ article.on {
     padding-right: 5px;
   }
 }
+#slect_input{
+  border: none;
+  width: 100%;
+  background-color: #fff;
+}
 .bills_rows {
   .bill_user_details {
     .userName {
@@ -896,6 +901,8 @@ border-radius: 10px;
   font-weight: 600;
 font-size: 15px;
 color: #1C1C1C;
+margin-bottom: 20px;
+text-align: center;
 }
 .buyer_img{
   width: 40px;
@@ -910,7 +917,7 @@ color: #1C1C1C;
 }
 .b-name{
   font-weight: 600;
-font-size: 13px;
+font-size: 18px;
 color: #121212;
 }
 .d-a-value{
@@ -1193,12 +1200,15 @@ font-size: 12px;
   }
   .items_div{
     text-align: center;
-    margin-right: 20px;
+    margin-bottom: 20px;
     img{
       display: flex;
       margin: 0 auto;
       margin-bottom: 5px;
     }
+  }
+  .items_div:hover{
+    cursor: pointer;
   }
 }
 .onoFooter_row{

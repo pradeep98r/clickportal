@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import moment from "moment/moment";
 import { useSelector } from 'react-redux';
-const BillViewFooter = () => {
+const BillViewFooter = (props) => {
     var  billViewData = useSelector((state)=> state.billViewInfo);
     const [billData, setBillViewData] = useState(billViewData.billViewInfo);
     useEffect(()=>{
         setBillViewData(JSON.parse(localStorage.getItem("billData")));
-      },[])
+      },[props])
     return (
         <div className="row">
             <div className="col-lg-6">

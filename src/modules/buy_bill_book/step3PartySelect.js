@@ -6,6 +6,7 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
 import Step2Modal from "./step2Modal";
 import { useDispatch, useSelector } from "react-redux";
+import edit from "../../assets/images/edit_round.svg";
 import {
   getPartnerData,
   getOutstandingBal,
@@ -24,6 +25,7 @@ import {
 import { selectBuyer } from "../../reducers/buyerSlice";
 import SearchField from "../../components/searchField";
 import { selectTrans } from "../../reducers/transSlice";
+import { qtyValues } from "../../components/qtyValues";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -53,7 +55,7 @@ const Step3PartySelect = (props) => {
   const [outBal, setOutsBal] = useState(0);
   const linkPath = localStorage.getItem('LinkPath');
   useEffect(() => {
-    
+
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
       setTranspoSelectedData(props.transpoSelectedData);
@@ -118,7 +120,7 @@ const Step3PartySelect = (props) => {
         h,
         partnerSelectDate,
         // partnerSelectedData,
-  
+
         outBal
       );
       getOutstandingBal(clickId, item.partyId).then((res) => {
@@ -132,7 +134,7 @@ const Step3PartySelect = (props) => {
       dispatch(selectBuyer(item));
       setPartnerDataStatus(false);
       setPartySelectStatus(true);
-      
+
     } else if (type == "Seller" || type === "FARMER" && linkPath === '/buy_bill_book') {
       setPartySelectedData(item);
       dispatch(selectBuyer(partySelecteData));
@@ -171,7 +173,7 @@ const Step3PartySelect = (props) => {
       //setTranspoDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
-    } 
+    }
     // else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
     //   if (count % 2 == 0) {
     //     setPartnerDataStatus(true);
@@ -202,10 +204,10 @@ const Step3PartySelect = (props) => {
     dispatch(tableEditStatus(true));
     dispatch(fromBillbook(false));
     dispatch(
-        selectTrans(
-           transpoSelectedData
-        )
-      );
+      selectTrans(
+        transpoSelectedData
+      )
+    );
     props.parentSelectedParty(
       //   partnerSelectDate,
       partnerSelectedData,
@@ -231,120 +233,150 @@ const Step3PartySelect = (props) => {
     });
     if (value != "") {
       setpartnerData(result);
-    } else if(value === ""){
+    } else if (value === "") {
       setpartnerData(allData);
     }
     setsearchValue(value);
   };
-  console.log(partySelecteData,billEditItemInfo, partnerDataStatus,"console");
+  console.log(billEditItemInfo, billEditItem, "console");
+  const getQuantityType = (unit) =>{
+    var string = "";
+    switch(unit.toUpperCase()){
+      case 'CRATES':
+      string = 'C';
+      break;
+      case 'BAGS':
+      string = 'Bg';
+      break;
+      case 'BOXES':
+      string = 'BX';
+      break;
+      case 'SACS':
+      string = 'S';
+      break;
+      case 'LOADS':
+      string = 'LDS';
+      break;
+      case 'KGS':
+      string = 'KGS';
+      break;
+      case 'PIECES':
+      string = 'P';
+      break;
+      default:
+        string="";
+    }
+    console.log(string)
+    return string;
+  }
   return (
     <div className="">
       <h5 className="head_modal">Bill Information </h5>
-      {partySelecteData !== null?(
-      <div className="party_div">
-        <div
-          className="selectparty_field d-flex align-items-center justify-content-between"
-          onClick={() => partnerClick(partySelecteData.partyType)}//"Buyer")}
-        >
-          <div className="partner_card">
-            <div className="d-flex align-items-center">
-              <img src={single_bill} className="icon_user" />
-              <div>
-                <h5>
-                  {billeditStatus
-                    ? partySelectStatus
-                      ? partySelecteData.partyName
-                      : billEditItem.partyType == "FARMER"
-                      ? billEditItem.farmerName
-                      : billEditItem.buyerName
-                    : partySelecteData.partyName}
-                </h5>
-                <h6>
-                  {billeditStatus
-                    ? partySelectStatus
-                      ? partySelecteData.partyType
-                      : billEditItem.partyType
-                    : partySelecteData.partyType}{" "}
-                  -{" "}
-                  {billeditStatus
-                    ? partySelectStatus
-                      ? partySelecteData.partyId
-                      : billEditItem.partyType == "FARMER"
-                      ? billEditItem.farmerId
-                      : billEditItem.buyerId
-                    : partySelecteData.partyId}{" "}
-                  |{" "}
-                  {billeditStatus
-                    ? partySelectStatus
-                      ? partySelecteData.mobile
-                      : billEditItem.partyType == "FARMER"
-                      ? billEditItem.farmerMobile
-                      : billEditItem.mobile
-                    : partySelecteData.mobile}
-                </h6>
-                <p>{partnerData.buyerAddress}</p>
+      {partySelecteData !== null ? (
+        <div className="party_div">
+          <div
+            className="selectparty_field d-flex align-items-center justify-content-between"
+            onClick={() => partnerClick(partySelecteData.partyType)}//"Buyer")}
+          >
+            <div className="partner_card">
+              <div className="d-flex align-items-center">
+                <img src={single_bill} className="icon_user" />
+                <div>
+                  <h5>
+                    {billeditStatus
+                      ? partySelectStatus
+                        ? partySelecteData.partyName
+                        : billEditItem.partyType == "FARMER"
+                          ? billEditItem.farmerName
+                          : billEditItem.buyerName
+                      : partySelecteData.partyName}
+                  </h5>
+                  <h6>
+                    {billeditStatus
+                      ? partySelectStatus
+                        ? partySelecteData.partyType
+                        : billEditItem.partyType
+                      : partySelecteData.partyType}{" "}
+                    -{" "}
+                    {billeditStatus
+                      ? partySelectStatus
+                        ? partySelecteData.partyId
+                        : billEditItem.partyType == "FARMER"
+                          ? billEditItem.farmerId
+                          : billEditItem.buyerId
+                      : partySelecteData.partyId}{" "}
+                    |{" "}
+                    {billeditStatus
+                      ? partySelectStatus
+                        ? partySelecteData.mobile
+                        : billEditItem.partyType == "FARMER"
+                          ? billEditItem.farmerMobile
+                          : billEditItem.mobile
+                      : partySelecteData.mobile}
+                  </h6>
+                  <p>{partnerData.buyerAddress}</p>
+                </div>
               </div>
             </div>
+            <img src={d_arrow} />
           </div>
-          <img src={d_arrow} />
         </div>
-      </div>
-      ):('')}
-      {partnerDataStatus?(
-      <div className="partners_div" id="scroll_style">
-        <div className="d-flex searchparty" role="search">
+      ) : ('')}
+      {partnerDataStatus ? (
+        <div className="partners_div" id="scroll_style">
+          <div className="d-flex searchparty" role="search">
             <SearchField
-                placeholder={langFullData.search}
-                onChange={(event) => {
-                  handleSearch(event);
-                }}
-              />
-          {/* <input
+              placeholder={langFullData.search}
+              onChange={(event) => {
+                handleSearch(event);
+              }}
+            />
+            {/* <input
             className="form-control mb-0"
             type="search"
             placeholder="Search"
             aria-label="Search"
             onChange={(event) => setSearchPartyItem(event.target.value)}
           /> */}
-        </div>
-        <div>
-          {partnerData.length > 0 ? (
-            <div>
-              <ul>
-                {partnerData.map((item) => {
-                  return (
-                    <li
-                      key={item.partyId}
-                      onClick={() => partySelect(item, partySelecteData.partyType)}
-                      className={
-                        "nav-item " +
-                        (item.partyId == getPartyItem?.partyId ? "active_class" : "")
-                      }
-                    >
-                      <div className="partner_card">
-                        <div className="d-flex align-items-center">
-                          <img src={single_bill} className="icon_user" />
-                          <div>
-                            <h5>{item.partyName}</h5>
-                            <h6>
-                              {item.trader ? "TRADER" : item.partyType} -{" "}
-                              {item.partyId} | {item.mobile}
-                            </h6>
-                            <p>{item.address.addressLine}</p>
+          </div>
+          <div>
+            {partnerData.length > 0 ? (
+              <div>
+                <ul>
+                  {partnerData.map((item) => {
+                    return (
+                      <li
+                        key={item.partyId}
+                        onClick={() => partySelect(item, partySelecteData.partyType)}
+                        className={
+                          "nav-item " +
+                          (item.partyId == getPartyItem?.partyId ? "active_class" : "")
+                        }
+                      >
+                        <div className="partner_card">
+                          <div className="d-flex align-items-center">
+                            <img src={single_bill} className="icon_user" />
+                            <div>
+                              <h5>{item.partyName}</h5>
+                              <h6>
+                                {item.trader ? "TRADER" : item.partyType} -{" "}
+                                {item.partyId} | {item.mobile}
+                              </h6>
+                              <p>{item.address.addressLine}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ) : (
-            <p></p>
-          )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ) : (
+              <p></p>
+            )}
+          </div>
         </div>
-      </div>
-      ):('')}
+      ) : ('')}
       <div className="date_sec date_step3">
         <BillDateSelection
           parentCallbackDate={callbackFunctionDate}
@@ -374,16 +406,16 @@ const Step3PartySelect = (props) => {
                     {billeditStatus
                       ? transportoSelectStatus
                         ? transpoSelectedData.partyType +
-                          "-" +
-                          transpoSelectedData.partyId +
-                          " | " +
-                          transpoSelectedData.mobile
-                        : "TRANSPORTER" + "-" + billEditItem.transporterId
-                      : transpoSelectedData.partyType +
                         "-" +
                         transpoSelectedData.partyId +
                         " | " +
-                        transpoSelectedData.mobile}
+                        transpoSelectedData.mobile
+                        : "TRANSPORTER" + "-" + billEditItem.transporterId
+                      : transpoSelectedData.partyType +
+                      "-" +
+                      transpoSelectedData.partyId +
+                      " | " +
+                      transpoSelectedData.mobile}
                   </h6>
                   <p>
                     {billeditStatus
@@ -410,11 +442,11 @@ const Step3PartySelect = (props) => {
         <div className="partners_div" id="scroll_style">
           <div className="d-flex searchparty" role="search">
             <SearchField
-                placeholder={langFullData.search}
-                onChange={(event) => {
-                  handleSearch(event);
-                }}
-              />
+              placeholder={langFullData.search}
+              onChange={(event) => {
+                handleSearch(event);
+              }}
+            />
           </div>
 
           <div>
@@ -457,37 +489,118 @@ const Step3PartySelect = (props) => {
       ) : (
         ""
       )}
-      <h5 className="date_sec head_modal pb-0">Crop Information </h5>
-      <div className="selectparty_field edit_crop_item_div">
-        <div className="d-flex align-items-center justify-content-between">
-          <p className="d-flex align-items-center">
-            {billeditStatus ? (
-              <div className="d-flex">
-                <img
-                  src={billEditItem.lineItems[0].imageUrl}
-                  className="edit_crop_item"
-                />
-                <p className="edit_crop_item_len d-flex align-items-center">
-                  <p>{billEditItem.lineItems.length}</p>
-                  <span className="ml-3">Crops</span>
-                </p>
-              </div>
-            ) : (
-              <div className="d-flex">
-                <img
-                  src={billEditItem[0].imageUrl}
-                  className="edit_crop_item"
-                />
-                <p className="edit_crop_item_len d-flex align-items-center">
-                  <p>{props.billEditItemval.length}</p>
-                  <span className="ml-3">Crops</span>
-                </p>
-              </div>
-            )}
-          </p>
-          <p onClick={() => editCropTable(billEditItem)}>Edit</p>
-        </div>
+      <div className="d-flex align-items-center justify-content-between">
+        <h5 className="date_sec head_modal p-0">Crop Information </h5>
+        <img
+          src={edit}
+          alt="img"
+          className="head_modal"
+          onClick={() => editCropTable(billEditItem)}
+          />
       </div>
+
+      <div className="cropstable" id="scroll_style">
+        {/* <p className="d-flex align-items-center"> */}
+        {billeditStatus ? (
+          <div>
+            {
+              billEditItem.lineItems.length > 0 ?
+                billEditItem.lineItems.map(item => {
+                  return (
+                    <div className="crops_info">
+                      <div className="selectparty_field edit_crop_item_div" id="scroll_style">
+                        <div className="d-flex align-items-center justify-content-between">
+                          <div className="d-flex">
+                            <div>
+                              <img
+                                src={item.imageUrl}
+                                className="edit_crop_item"
+                              />
+                            </div>
+                            <div>
+                              <p className="crops-color">Crops</p>
+                              <p className="crops-color">{item.qty ? item.qty : ''}{" "}
+                              {getQuantityType(item.qtyUnit) + " | "}
+                                {/* {item.qty ? item.qtyUnit.charAt(item).toUpperCase() + " | " : ''} */}
+                                {item.weight ? item.weight + ' KGS ' : ''}
+                                <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span></p>
+                            </div>
+                            </div>
+                            <div className="totals">
+                              <p className="crops-color">Total</p>
+                              <p className="crops-color">{item.total ? item.total.toFixed(2) : 0}</p>
+                            </div>
+                            {/* <p className="edit_crop_item_len d-flex align-items-center"> */}
+                            {/* <p>{billEditItem.length}</p>
+                        <span className="ml-3">Crops</span> */}
+                            {/* </p> */}
+                          
+                        </div>
+                      </div>
+                    </div>)
+                })
+                : ''}
+
+          </div>
+          // <div className="d-flex">
+          //   <img
+          //     src={billEditItem.lineItems[0].imageUrl}
+          //     className="edit_crop_item"
+          //   />
+          //   <p className="edit_crop_item_len d-flex align-items-center">
+          //     <p>{billEditItem.lineItems.length}</p>
+          //     <span className="ml-3">Crops</span>
+          //   </p>
+          // </div>
+        ) : (
+          <div className="cropstable" id="scroll_style">
+            {
+              billEditItem.length > 0 ?
+                billEditItem.map(item => {
+                  return (
+                    <div className="crops_info">
+                      <div className="selectparty_field edit_crop_item_div" id="scroll_style">
+                        <div className="d-flex align-items-center justify-content-between">
+                          {/* <p className="d-flex align-items-center"></p> */}
+                          <div className="d-flex">
+                            <div>
+                              <img
+                                src={item.imageUrl}
+                                className="edit_crop_item"
+                              />
+                            </div>
+                            <div>
+                              <p className="crops-color">Crops</p>
+                              <p className="crops-color">{item.qty ? item.qty : ''}{" "}
+                                {getQuantityType(item.qtyUnit) + " | "}
+                                {/* {item.qty ? item.qtyUnit.charAt(item).toUpperCase() + " | " : ''} */}
+                                {item.weight ? item.weight + ' KGS ' : ''}
+                                <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span></p>
+                            </div>
+                            </div>
+                            <div>
+                              <p className="crops-color">Total</p>
+                              <p className="crops-color">{item.total ? item.total.toFixed(2)  : 0}</p>
+                            </div>
+                            {/* <p className="edit_crop_item_len d-flex align-items-center"> */}
+                            {/* <p>{billEditItem.length}</p>
+                        <span className="ml-3">Crops</span> */}
+                            {/* </p> */}
+                          
+                        </div>
+                      </div></div>
+                  )
+                })
+                : ''}
+
+          </div>
+        )}
+        {/* </p> */}
+
+        {/* <p onClick={() => editCropTable(billEditItem)}>Edit</p> */}
+
+      </div>
+
 
       {/* {showCropModalStatus ? (
         <Step2Modal

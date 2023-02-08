@@ -1,65 +1,59 @@
 import React, { useEffect, useState } from "react";
-
-import ono_connect_click from "../../assets/images/ono-click-connect.svg";
-import single_bill from "../../assets/images/bills/single_bill.svg";
-import moment from "moment/moment";
+import { Modal } from "react-bootstrap";
 import edit from "../../assets/images/edit_round.svg";
 import { useNavigate } from "react-router-dom";
-import Step3Modal from "./step3Model";
 import { editbuybillApi } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
 import cancel from "../../assets/images/cancel.svg";
 import close from "../../assets/images/close.svg";
 import $ from "jquery";
 import cancel_bill_stamp from "../../assets/images/cancel_stamp.svg";
-
+import prev_icon from "../../assets/images/prev_icon.svg";
+import next_icon from "../../assets/images/next_icon.svg";
 import BusinessDetails from "./business_details";
 import CropDetails from "./crop_details";
 import BillViewFooter from "./billViewFooter";
 import GroupTotals from "./groupTotals";
 import { useSelector } from "react-redux";
-import SellbillStep3Modal from "../sell_bill_book/step3";
-import { qtyValues } from "../../components/qtyValues";
-import {
-  getCurrencyNumberWithOneDigit,
-  getCurrencyNumberWithOutSymbol,
-  getCurrencyNumberWithSymbol,
-} from "../../components/getCurrencyNumber";
+import clo from "../../assets/images/close.svg";
 import { selectSteps } from "../../reducers/stepsSlice";
 import { useDispatch } from "react-redux";
 import Steps from "./steps";
-import { selectBill,editStatus, billDate, tableEditStatus,billViewStatus,selectedParty,cropEditStatus } from "../../reducers/billEditItemSlice";
-
+import {
+  selectBill,
+  editStatus,
+  billDate,
+  tableEditStatus,
+  billViewStatus,
+  selectedParty,
+  cropEditStatus,
+} from "../../reducers/billEditItemSlice";
+import { billViewInfo } from "../../reducers/billViewSlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  var  billViewData = useSelector((state)=> state.billViewInfo);
-  const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
-  //var billViews = billData;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const [displayCancel, setDisplayCancel] = useState(false);
-
+  var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
 
   useEffect(() => {
     cancelBillStatus();
-    dispatch(billViewStatus(true))
-  }, [clickId]);
-
-  useEffect(()=>{
-    setBillViewData(JSON.parse(localStorage.getItem("billData")));
-  },[])
+    dispatch(billViewStatus(true));
+    // setBillViewData(JSON.parse(localStorage.getItem("billData")));
+    setBillViewData(billViewData.billViewInfo);
+    console.log("useffect");
+  }, [props.showBillViewModal]);
 
   const cancelBillStatus = () => {
     if (billData?.billStatus === "CANCELLED") {
       setDisplayCancel(true);
     } else {
-      setDisplayCancel(displayCancel);
+      setDisplayCancel(false);
     }
   };
- 
 
-  const [showStep3Modal, setShowStep3Modal] = useState(false);
-  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
   const [slectedCropArray, setSlectedCropArray] = useState([]);
   const [editCancelStatus, setEditCancelStatus] = useState(false);
   const dispatch = useDispatch();
@@ -70,32 +64,40 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
+    // props.closeBillViewModal();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-    dispatch(selectBill(arr[0]))
-    dispatch(editStatus(true))
-    dispatch(tableEditStatus(false))
+    dispatch(selectBill(arr[0]));
+    dispatch(editStatus(true));
+    dispatch(tableEditStatus(false));
     dispatch(billDate(new Date(billData.billDate)));
-    dispatch(selectedParty(billData?.partyType == 'FARMER' ? 'SELLER' : billData?.partyType));
+    dispatch(
+      selectedParty(
+        billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
+      )
+    );
     dispatch(cropEditStatus(false));
     setEditCancelStatus(true);
+    
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
-    setDisplayCancel(!displayCancel);
     cancelbillApiCall();
   };
   const editBillRequestObj = {
     action: "CANCEL",
     billAttributes: {
-      actualPayRecieevable:billData?.partyType.toUpperCase()==='FARMER'?
-       billData?.actualPaybles:billData?.actualReceivable,
+      actualPayRecieevable:
+        billData?.partyType.toUpperCase() === "FARMER"
+          ? billData?.actualPaybles
+          : billData?.actualReceivable,
       advance: billData?.advance,
       billDate: billData?.billDate,
-      cashPaid: billData?.partyType.toUpperCase()==='FARMER'?
-                billData?.cashPaid:0,
-      cashRcvd:billData?.partyType.toUpperCase()==='BUYER'?billData?.cashRcvd:0,
+      cashPaid:
+        billData?.partyType.toUpperCase() === "FARMER" ? billData?.cashPaid : 0,
+      cashRcvd:
+        billData?.partyType.toUpperCase() === "BUYER" ? billData?.cashRcvd : 0,
       comm: billData?.comm,
       commIncluded: billData?.commIncluded,
       comments: billData?.comments,
@@ -104,15 +106,21 @@ const BillView = (props) => {
       labourCharges: billData?.labourCharges,
       less: billData?.less,
       mandiFee: billData?.mandiData,
-      misc:billData?.partyType.toUpperCase()==='FARMER'? billData?.otherFee:
-          billData?.misc,
-      otherFee:billData?.partyType.toUpperCase()==='FARMER'?
-         billData?.misc:billData?.otherFee,
+      misc:
+        billData?.partyType.toUpperCase() === "FARMER"
+          ? billData?.otherFee
+          : billData?.misc,
+      otherFee:
+        billData?.partyType.toUpperCase() === "FARMER"
+          ? billData?.misc
+          : billData?.otherFee,
 
-      outStBal:billData?.outStBal,
+      outStBal: billData?.outStBal,
       paidTo: 0,
-      partyId:billData?.partyType.toUpperCase()==='FARMMER'?
-            billData?.buyerId:billData?.farmerId,
+      partyId:
+        billData?.partyType.toUpperCase() === "FARMMER"
+          ? billData?.buyerId
+          : billData?.farmerId,
       rent: billData?.rent,
       rtComm: billData?.rtComm,
       rtCommIncluded: billData?.rtCommIncluded,
@@ -121,7 +129,7 @@ const BillView = (props) => {
       transporterId: billData?.transporterId,
     },
     billId: billData?.billId,
-    billType:billData?.partyType.toUpperCase()==='FARMER'? "BUY":'SELL',
+    billType: billData?.partyType.toUpperCase() === "FARMER" ? "BUY" : "SELL",
     caBSeq: billData?.caBSeq,
     caId: clickId,
     lineItems: billData?.lineItems,
@@ -138,10 +146,20 @@ const BillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
-          if(billData?.partyType.toUpperCase() ==='FARMER'){
-            navigate("/buy_bill_book");
-          }else{
-            navigate("/sellbillbook");
+          setDisplayCancel(true);
+          if (billData?.partyType.toUpperCase() === "FARMER") {
+            window.setTimeout(function () {
+              props.closeBillViewModal();
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 2000);
+          } else {
+            window.setTimeout(function () {
+              props.closeBillViewModal();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
+           
           }
         }
       },
@@ -154,92 +172,108 @@ const BillView = (props) => {
   };
 
   const handleCheckEvent = () => {
+    console.log(editBillRequestObj);
     $("#cancelBill").modal("show");
   };
   const closePopup = () => {
     $("#cancelBill").modal("hide");
   };
+  const[prevNextStatus, setPrevNextStatus] = useState(false);
+  const[prevNextDisable, setPrevNextDisable] = useState(false);
+  const previousBill = (id) => {
+    var index1 = allBillsArray.findIndex((obj) => obj.billId == id);
+    if (index1 != -1) {
+      dispatch(billViewInfo(allBillsArray[index1]));
+      localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
+      setBillViewData(allBillsArray[index1]);
+      setPrevNextStatus(true);
+      setPrevNextDisable(false);
+      setNextDisable(false);
+    }
+    else{
+      setPrevNextDisable(true);
+    }
+  };
+  const[nextDisable, setNextDisable] = useState(false);
+  const nextBill = (id) => {
+    var index1 = allBillsArray.findIndex((obj) => obj.billId == id);
+    if (index1 != -1) {
+      dispatch(billViewInfo(allBillsArray[index1]));
+      localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
+      setBillViewData(allBillsArray[index1]);
+      setPrevNextStatus(true);
+      setNextDisable(false);
+      setPrevNextDisable(false);
+    }
+    else{
+      setNextDisable(true);
+    }
+  };
   return (
-    <div className="main_div_padding">
-      <div className="container-fluid px-0">
+    <Modal
+      show={props.showBillViewModal}
+      close={props.closeBillViewModal}
+      className="cropmodal_poopup steps_modal billView_modal right"
+    >
+      <div className="modal-header date_modal_header smartboard_modal_header">
+        <h5
+          className="modal-title d-flex align-items-center header2_text"
+          id="staticBackdropLabel"
+        >
+          <p className="b-name">
+            {billData?.partyType.toUpperCase() === "FARMER"
+              ? billData.farmerName
+              : billData?.buyerName}
+            -
+          </p>
+          <p className="b-name">{billData?.billId}</p>
+        </h5>
+        <img
+          alt="image"
+          src={clo}
+          className="cloose"
+          onClick={(e) => {
+            props.closeBillViewModal();
+          }}
+        />
+      </div>
+      <div className="modal-body py-0">
         <div className="row">
-          <div className="col-lg-7 col_left">
+          <div className="col-lg-10 col_left bill_col bill_col_border">
             <div className="bill_view_card buy_bills_view" id="scroll_style">
-              <BusinessDetails />
+              {
+                prevNextStatus ? <BusinessDetails prevNextStatus1={prevNextStatus} /> : <BusinessDetails />
+              }
+              
               <div className="bill_crop_details">
-                <CropDetails />
+                {prevNextStatus ? <CropDetails prevNextStatus1={prevNextStatus} /> : <CropDetails />}
                 <div className="row">
                   <div className="col-lg-8"></div>
                   <div className="col-lg-4 stamp_img">
-                    {displayCancel && (
+                    {(billData?.billStatus == "CANCELLED" || displayCancel) && (
                       <img src={cancel_bill_stamp} alt="stammp_img" />
                     )}
                   </div>
                 </div>
-                <GroupTotals />
-                <BillViewFooter />
-
+                {prevNextStatus ? <GroupTotals prevNextStatus1={prevNextStatus} /> : <GroupTotals />}
+                {prevNextStatus ? <BillViewFooter prevNextStatus1={prevNextStatus} /> : <BillViewFooter />}
               </div>
             </div>
           </div>
-          <div className="col-lg-5">
-            <div className="row more-inf-tag">
-              <div className="more-info">
-                <p class-className="more-p-tag">More Info</p>
-              </div>
-              <div className="hr-line"></div>
-              <div className="d-flex buy-dtl">
-                <div className="col-lg-6">
-                  <div className="d-flex">
-                    <div className="buyer-image">
-                      {billData?.farmerProfilePic ? (
-                        <img
-                          src={billData?.farmerProfilePic}
-                          alt="buyerimage"
-                          className="buyer_img"
-                        />
-                      ) : (
-                        <img
-                          src={single_bill}
-                          alt="buyerimage"
-                          className="buyer_img"
-                        />
-                      )}
-                    </div>
-                    <div className="buy-details">
-                      <p className="b-cr-by">Bill Created By</p>
-                      <p className="b-name">{billData?.partyType.toUpperCase() ==='FARMER'?
-                      billData.farmerName:billData?.buyerName}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-6">
-                  {/* <div className="date-and-time"> */}
-                  <p className="d-a-time">Date And Time</p>
-                  <p className="d-a-value">
-                    {moment(billData?.timeStamp).format(
-                      "DD-MMM-YY | hh:mm:ss:A"
-                    )}
-                  </p>
-                  {/* </div> */}
-                </div>
-              </div>
-              <div className="hr-line"></div>
-              <div className="more-info">
-                <p class-className="more-p-tag">Actions</p>
-              </div>
-              <div className="hr-line"></div>
-              {billData?.billStatus == "CANCELLED" ? (
+          <div className="col-lg-2 p-0 ">
+            <div className="bill_col pr-0">
+              {(billData?.billStatus == "CANCELLED" || displayCancel) ? (
                 ""
               ) : (
                 <div>
-                  <div className="d-flex more-info action_icons">
+                  <p className="more-p-tag">Actions</p>
+                  <div className="action_icons">
                     <div className="items_div">
                       <img
                         src={cancel}
                         alt="img"
                         className=""
-                        onClick={()=>handleCheckEvent}
+                        onClick={() => handleCheckEvent()}
                       />
                       <p>Cancel</p>
                     </div>
@@ -257,39 +291,34 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
-        {billData?.partyType.toUpperCase() ==='FARMER'?
-          showStep3ModalStatus ? (
-          <Step3Modal
-            showstep3={showStep3Modal}
-            closeStep3Modal={() => setShowStep3Modal(false)}
-            slectedCropsArray={slectedCropArray}
-            billEditStatus={true}
-            step2CropEditStatus={false}
-            editCancelStatus={editCancelStatus}
-            dateSelected={new Date(billData.billDate)}
-          />
-        ) : (
-          ""
-        ):
-        showStep3ModalStatus ? (
-          <SellbillStep3Modal
-          show={showStep3Modal}
-          closeStep3Modal={() => setShowStep3Modal(false)}
-          slectedSellCropsArray={slectedCropArray}
-          billEditStatus={true}
-          step2CropEditStatus={false}
-          sellBilldateSelected = {new Date(billData.billDate)}
-          selectedBillData={slectedCropArray}
-        />
-          ):('')}
+      </div>
+      <div className="modal-footer bill_footer d-flex justify-content-center">
+        <button
+          onClick={() => {
+            previousBill(billData?.billId - 1);
+          }}
+        >
+          <img src={prev_icon} className={prevNextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image"  />
+        </button>
+        <p className="b-name">{billData?.billId}</p>
+        <button
+          onClick={() => {
+            nextBill(billData?.billId + 1);
+          }}
+        >
+          <img src={next_icon} className={nextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image" />
+        </button>
       </div>
       {showStepsModalStatus ? (
-        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+        <Steps
+          showStepsModal={showStepsModal}
+          closeStepsModal={() => setShowStepsModal(false)}
+        />
       ) : (
         ""
       )}
-      <div className="modal fade" id="cancelBill">
-        <div className="modal-dialog cancelBill_modal_popup">
+      <div className="modal cancelModal fade" id="cancelBill">
+        <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header date_modal_header smartboard_modal_header">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
@@ -302,10 +331,9 @@ const BillView = (props) => {
                 onClick={closePopup}
               />
             </div>
-            <div className="modal-body">
-              <div className=" row terms_popup ">
-                <div className="col-lg-3"></div>
-                <div className="col-lg-7">
+            <div className="modal-body text-center">
+              <div className="row terms_popup ">
+                <div className="col-lg-12">
                   <div className="cancel_img">
                     <img src={cancel} alt="img" className="" />
                   </div>
@@ -318,8 +346,7 @@ const BillView = (props) => {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-1"></div>
-                <div className="col-lg-10">
+                <div className="col-lg-12">
                   <p className="desc-tag">
                     Please note that cancellation of bill result in ledger
                     adjustments (rol back) and you will see an adjustment record
@@ -329,7 +356,7 @@ const BillView = (props) => {
                 <div className="col-lg-1"></div>
               </div>
             </div>
-            <div className="modal-footer p-2">
+            <div className="modal-footer p-3">
               <div className="d-flex">
                 <button
                   type="button"
@@ -352,7 +379,7 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 export default BillView;

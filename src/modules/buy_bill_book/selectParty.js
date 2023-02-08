@@ -51,23 +51,35 @@ const SelectPartner = (props) => {
         console.log(error);
       });
   };
-  var bodyClickCount = 0;
+
   const [getPartyName, setGetPartyName] = useState(false);
   const [count, setCount] = useState(0);
+  const [activeInput, setActiveInput] = useState(false);
+  const [selectedPartner, setSelectedPartner] = useState(null);
+
   const selectParty = () => {
-    setCount(count + 1);
-    if (count % 2 == 0 || bodyClickCount % 2 != 0) {
-      setGetPartyName(true);
-    } else {
-      setGetPartyName(false);
-    }
+    setActiveInput(true);
+    setGetPartyName(true);
+    setGetPartyItem(null);
     if (searchValue != "") {
       fetchPertnerData();
     }
   };
+
+
+//   $('container').mouseup(function (e) {
+//     if ($(e.target).closest(".container").length === 0) { 
+//       console.log("came to her")
+//       setGetPartyItem(selectedPartner);
+//       setActiveInput(false);
+//   }
+// });
+
   const partySelect = (item) => {
     Object.assign(item, { itemtype: "" }, { date: "" });
     setGetPartyItem(item);
+    setSelectedPartner(item);
+    setCount(item.partyId);
     // localStorage.setItem("selectedSearchItem", JSON.stringify(item));
     setGetPartyName(false);
     var itemtype;
@@ -97,17 +109,6 @@ const SelectPartner = (props) => {
 
   useEffect(() => {
     fetchPertnerData();
-    $(document).mouseup(function (e) {
-      var container = $(".partners_div");
-      if (!container.is(e.target) && container.has(e.target).length === 0) {
-        container.hide();
-        bodyClickCount++;
-      }
-    });
-
-    if (props.onClickPage) {
-      setGetPartyName(false);
-    }
   }, [users.buyerInfo]);
   const [searchValue, setsearchValue] = useState("");
   const handleSearch = (event) => {
@@ -131,11 +132,26 @@ const SelectPartner = (props) => {
   };
   return (
     <div>
-      <div onClick={selectParty}>
+      <div onClick={()=>{selectParty()}}>
         {getPartyItem == null ? (
-          <div className="selectparty_field d-flex align-items-center justify-content-between">
-            <p>Select {props.partyType}</p>
-            <img src={d_arrow} />
+          <div>
+          {activeInput?
+            <div className="selectparty_field d-flex align-items-center justify-content-between" id="excludeDiv">
+              <div className="d-flex searchparty pb-0" role="search">
+                <SearchField
+                  placeholder={langFullData.search}
+                  onChange={(event) => {
+                    handleSearch(event);
+                  }}
+                />
+              </div>
+            </div>
+            :
+            <div className="selectparty_field d-flex align-items-center justify-content-between">
+              <p>Select {props.partyType}</p>
+              <img src={d_arrow} />
+          </div>
+          }
           </div>
         ) : (
           <div className="selectparty_field d-flex align-items-center justify-content-between">
@@ -162,16 +178,8 @@ const SelectPartner = (props) => {
       </div>
 
       {getPartyName ? (
-        <div className="partners_div" id="scroll_style">
-          <div>
-          <div className="d-flex searchparty pb-0" role="search">
-              <SearchField
-                placeholder={langFullData.search}
-                onChange={(event) => {
-                  handleSearch(event);
-                }}
-              />
-            </div>
+        <div className="partners_div" id="scroll_style" >
+          <div id="partners">
             {partnerData.length > 0 ? (
               <div>
                
@@ -183,7 +191,7 @@ const SelectPartner = (props) => {
                         onClick={() => partySelect(item)}
                         className={
                           "nav-item " +
-                          (item.partyId == getPartyItem?.partyId
+                          (item.partyId == count
                             ? "active_class"
                             : "")
                         }
@@ -208,7 +216,7 @@ const SelectPartner = (props) => {
                                 <p>{item.address?.addressLine}</p>
                               </div>
                             </div>
-                            {item.partyId == getPartyItem?.partyId ? (
+                            {item.partyId == count ? (
                               <img
                                 src={tickMark}
                                 alt="image"
@@ -232,6 +240,7 @@ const SelectPartner = (props) => {
       ) : (
         <p></p>
       )}
+      <div className="container"></div>
     </div>
   );
 };
