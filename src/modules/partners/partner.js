@@ -232,11 +232,14 @@ const Partner = () => {
         });
       console.log(updateProfilePic);
     } else {
-      // var output = document.getElementById("output");
-      // output.src = URL.createObjectURL(e.target.files[0]);
-      // output.onload = function () {
-      //   URL.revokeObjectURL(output.src);
-      // };
+      if(mobileNumber.length!==0){
+        var output = document.getElementById("output");
+        output.src = URL.createObjectURL(e.target.files[0]);
+        output.onload = function () {
+          URL.revokeObjectURL(output.src);
+        };
+      }
+      
       setFile(e.target.files[0]);
       let req = {
         file: e.target.files[0],
@@ -344,14 +347,14 @@ const Partner = () => {
               toastId: "success2",
             });
 
-            handleRefreshClick();
+            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     } else {

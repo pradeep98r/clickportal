@@ -10,6 +10,23 @@
 .date_sec{
     padding: 20px 0px;
 }
+.crops_info{
+    padding-bottom: 5px;
+}
+.cropstable{
+    height: calc(100vh - 640px);
+}
+.crops-color{
+    color: #1C1C1C;
+    padding: 0px 10px;
+    font-weight: 600;
+    font-size: 13px;
+}
+.wastage-color{
+    color: #D43939;
+    font-weight: 600;
+    font-size: 13px;
+}
 .totals_value{
     padding: 10px;
     border-bottom: 1px solid #EFF3EF;
