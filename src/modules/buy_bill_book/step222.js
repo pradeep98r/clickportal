@@ -53,21 +53,35 @@ const Step22 = (props) => {
   const [cropsData, setCropsData] = useState(allData);
   const [activeSearch, setActiveSearch] = useState(false);
 
-  const activeSearchCrop = (c,i) => {
-    console.log("came to here")
-    for(var k = 0; k<c.length;k++){
-      if(k==i){
-        console.log(i,k,"indexes")
-        c[k].activeSearch=true;
-        c[k].displayStat=false;
-        c[k].cropName=c.cropName;
-        c[k].imageUrl=c.imageUrl;
-        console.log(c[k],"k")
-        cropResponseData([...cropData])
-      } else{
-        cropResponseData([...cropData])
+  const activeSearchCrop = (c, i) => {
+    console.log(i,"i")
+    let updatedarr = cropData.map((item, index) => {
+      if (item.cropId == c[i].cropId) {
+        console.log(item.cropId, c[i].cropId,"ids");
+        item.activeSearch = true;
+        item.displayStat = false;
+        // item.cropName = c.cropName;
+        // item.imageUrl = c.imageUrl;
+        return item;
       }
-    }
+      return item;
+    })
+    // console.log(updatedarr, "came to here")
+    cropResponseData(updatedarr);
+
+    // for(var k = 0; k<c.length;k++){
+    //   if(k==i){
+    //     console.log(i,k,"indexes")
+    //     c[k].activeSearch=true;
+    //     c[k].displayStat=false;
+    //     c[k].cropName=c.cropName;
+    //     c[k].imageUrl=c.imageUrl;
+    //     console.log(c[k],"k")
+    //     cropResponseData([...cropData,c[k]])
+    //   } else{
+    //     cropResponseData([...cropData])
+    //   }
+    // }
     // setActiveSearch(true);
     // setDisplayStat(false);
   }
@@ -76,6 +90,7 @@ const Step22 = (props) => {
       response.data.data.map((item) => {
         Object.assign(item, { cropSelect: "" });
       });
+      console.log(response.data.data)
       setCropsData(response.data.data);
       setAllData(response.data.data)
     });
@@ -126,8 +141,8 @@ const Step22 = (props) => {
       { bags: [] },
       { status: 1 },
       { qtyUnit: "Crates" },
-      {activeSearch:false},
-      {displayStat:false}
+      { activeSearch: false },
+      { displayStat: false }
     );
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
@@ -399,7 +414,7 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
-    console.log(cropData,"data")
+    console.log(cropData, "data")
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         // Object.assign(cropData[index], { status: 1 });
@@ -739,20 +754,20 @@ const Step22 = (props) => {
     setDisplayStat(false);
     setActiveSearch(true);
     var crpObject = {
-      cropActive: true ,
-       cropSelect: "active" ,
-       wastage: 0 ,
-       qty: 0 ,
-       rateType: "kgs" ,
-       weight: 0 ,
-        rate: 0 ,
-       total: 0 ,
-       qtyUnit: "crates" ,
-       checked: false ,
-       bags: [] ,
-       status: 1 ,
-       activeSearch:true,
-      displayStat:false
+      // cropActive: true ,
+      //  cropSelect: "active" ,
+      //  wastage: 0 ,
+      //  qty: 0 ,
+      //  rateType: "kgs" ,
+      //  weight: 0 ,
+      //   rate: 0 ,
+      //  total: 0 ,
+      //  qtyUnit: "crates" ,
+      //  checked: false ,
+      //  bags: [] ,
+      //  status: 1 ,
+      //  activeSearch:true,
+      // displayStat:false
     };
     cropArraynew.push(crpObject);
     cropResponseData([...cropData, ...cropArraynew])
@@ -770,18 +785,81 @@ const Step22 = (props) => {
     setCropsData(result);
     setSearchValue(value);
   };
-  const addCropToEmptyRow = (crop,c,i) => {
-    console.log(crop);
-    setCropItem(crop);
-    c[i].cropName=crop.cropName;
-    c[i].imageUrl=crop.imageUrl;
-    c[i].displayStat=true;
-    console.log(c[i],i,"data");
+  const addCropToEmptyRow = (crop, c, i) => {
+    console.log(cropData,crop, c,i, "data");
+    setCropItem(crop);   
+    let index = cropData.findIndex(obj => obj.cropId == c[i].cropId);
+    if(index !== -1){
+        c[index].cropName = crop.cropName;
+        c[index].imageUrl = crop.imageUrl;
+        c[index].displayStat = true;
+        c[index].cropSelect = 'active';
+        c[index].wastage = 0;
+        c[index].qty = 0;
+        c[index].weight = 0;
+        c[index].rateType = "kgs"
+        c[index].rate = 0;
+        c[index].total = 0;
+        c[index].qtyUnit = "crates"
+        c[index].checked = false;
+        c[index].bags = [];
+        c[index].status = 1;
+        c[index].activeSearch = true;
+    } else{
+      // cropResponseData(cropData)
+    }
     setAddCropStatus(false);
+    cropResponseData(c[index]);
+    // let updatedCropData = cropData.map((item,index) => {
+    //   if (item.cropId == c[i].cropId) {
+    //     console.log(item.cropId,c[i].cropId,"ids")
+    //     item.cropName = crop.cropName;
+    //     item.imageUrl = crop.imageUrl;
+    //     item.displayStat = true;
+    //     item.cropSelect = 'active';
+    //     item.wastage = 0;
+    //     item.qty = 0;
+    //     item.weight = 0;
+    //     item.rateType = "kgs"
+    //     item.rate = 0;
+    //     item.total = 0;
+    //     item.qtyUnit = "crates"
+    //     item.checked = false;
+    //     item.bags = [];
+    //     item.status = 1;
+    //     item.activeSearch = true;
+    //     console.group(item,"itemif")
+    //     return item
+    //   } else {
+    //     console.group(item,"itemelse")
+    //     return item;
+    //   }
+    // })
+
+    // var crpObject = {
+    //   cropActive: true ,
+    //   // cropName:crop.cropName,
+    //   // imageUrl:crop.imageUrl,
+    //   // displayStat:true,
+    //    cropSelect: "active" ,
+    //    wastage: 0 ,
+    //    qty: 0 ,
+    //    rateType: "kgs" ,
+    //    weight: 0 ,
+    //     rate: 0 ,
+    //    total: 0 ,
+    //    qtyUnit: "crates" ,
+    //    checked: false ,
+    //    bags: [] ,
+    //    status: 1 ,
+    //    activeSearch:true,
+    //   // displayStat:false
+    // };
+    // console.log(c[i], i, updatedCropData, "data");
     // setDisplayStat(true);
-    // cropResponseData([...cropData])
-    // cropArraynew.push(crpObject);
-    cropResponseData([...cropData, ...c[i]])
+    
+
+    // cropResponseData([...cropData, c[i]])
 
   }
 
@@ -881,7 +959,7 @@ const Step22 = (props) => {
                               return (
                                 <div>
                                   <div className="flex_class mr-0" id="crops-space"
-                                    onClick={() => {addCropToEmptyRow(item,cropData,index) }}>
+                                    onClick={() => { addCropToEmptyRow(item, cropData, index) }}>
                                     <img src={item.imageUrl} className="flex_class mr-2" />
                                     <p className="m-0">{item.cropName}</p>
                                   </div>
@@ -899,25 +977,25 @@ const Step22 = (props) => {
                               <tr className="">
                                 <td className="col-2">
                                   {
-                                  (!cropData[index].activeSearch) || (cropData[index].displayStat)?
-                                  // !activeSearch || displayStat?
-                                    <div className="flex_class mr-0"
-                                      onClick={()=>{activeSearchCrop(cropData,index)}}>
-                                      <img
-                                        src={cropData[index].imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">
-                                        {cropData[index].cropName}
-                                      </p>
-                                    </div>
-                                    :cropData[index].activeSearch || addCrop?
-                                    <input 
-                                      // value={}
-                                      onClick={handleAddCropStatus}
-                                      onChange={(event) => {
-                                        handleSearch(event);
-                                      }} /> :''
+                                    (!cropData[index].activeSearch) || (cropData[index].displayStat) ?
+                                      // !activeSearch || displayStat?
+                                      <div className="flex_class mr-0"
+                                        onClick={() => { activeSearchCrop(cropData, index) }}>
+                                        <img
+                                          src={cropData[index].imageUrl}
+                                          className="flex_class mr-2"
+                                        />
+                                        <p className="m-0">
+                                          {cropData[index].cropName}
+                                        </p>
+                                      </div>
+                                      : cropData[index].activeSearch || addCrop ?
+                                        <input
+                                          // value={}
+                                          onClick={handleAddCropStatus}
+                                          onChange={(event) => {
+                                            handleSearch(event);
+                                          }} /> : ''
                                   }
                                 </td>
                                 <td className="col-1">
