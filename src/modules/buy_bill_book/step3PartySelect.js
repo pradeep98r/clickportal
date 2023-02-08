@@ -238,7 +238,6 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-  console.log(billEditItemInfo, billEditItem, "console");
   const getQuantityType = (unit) =>{
     var string = "";
     switch(unit.toUpperCase()){
