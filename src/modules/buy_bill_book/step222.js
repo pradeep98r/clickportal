@@ -788,28 +788,37 @@ const Step22 = (props) => {
   const addCropToEmptyRow = (crop, c, i) => {
     console.log(cropData,crop, c,i, "data");
     setCropItem(crop);   
-    let index = cropData.findIndex(obj => obj.cropId == c[i].cropId);
-    if(index !== -1){
-        c[index].cropName = crop.cropName;
-        c[index].imageUrl = crop.imageUrl;
-        c[index].displayStat = true;
-        c[index].cropSelect = 'active';
-        c[index].wastage = 0;
-        c[index].qty = 0;
-        c[index].weight = 0;
-        c[index].rateType = "kgs"
-        c[index].rate = 0;
-        c[index].total = 0;
-        c[index].qtyUnit = "crates"
-        c[index].checked = false;
-        c[index].bags = [];
-        c[index].status = 1;
-        c[index].activeSearch = true;
-    } else{
-      // cropResponseData(cropData)
-    }
+    let updatedarr = cropData.map((item, index)=>{
+      if(item.cropId == c[i].cropId){
+        item.cropName = crop.cropName;
+        item.imageUrl = crop.imageUrl;
+        item.displayStat = true;
+        item.cropSelect = 'active';
+        item.wastage = 0;
+        item.qty = 0;
+        item.weight = 0;
+        item.rateType = "kgs"
+        item.rate = 0;
+        item.total = 0;
+        item.qtyUnit = "crates"
+        item.checked = false;
+        item.bags = [];
+        item.status = 1;
+        item.activeSearch = true;
+        return item;
+      }
+      else{
+        return item;
+      }
+    })
+    // let index = cropData.findIndex(obj => obj.cropId == c[i].cropId);
+    // if(index !== -1){
+        
+    // } else{
+    //   // cropResponseData(cropData)
+    // }
     setAddCropStatus(false);
-    cropResponseData(c[index]);
+    cropResponseData(updatedarr);
     // let updatedCropData = cropData.map((item,index) => {
     //   if (item.cropId == c[i].cropId) {
     //     console.log(item.cropId,c[i].cropId,"ids")
