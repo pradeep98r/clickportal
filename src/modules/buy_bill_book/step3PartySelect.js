@@ -47,6 +47,9 @@ const Step3PartySelect = (props) => {
   const [getPartyItem, setGetPartyItem] = useState(null);
   const billeditStatus = billEditItemInfo?.billEditStatus;
   const billEditItem = props.billEditItemval;
+  var billEditItemCrops = billeditStatus ? 
+  (step2CropEditStatus ? props.selectedCrop : props.billEditItemval.lineItems) : 
+  props.billEditItemval;
   var step2CropEditStatus = step2CropEditStatus;
   const [allData, setAllData] = useState([]);
   let [partnerData, setpartnerData] = useState(allData);
@@ -55,7 +58,7 @@ const Step3PartySelect = (props) => {
   const [outBal, setOutsBal] = useState(0);
   const linkPath = localStorage.getItem('LinkPath');
   useEffect(() => {
-
+   console.log(billEditItem,billEditItemCrops,"cropsitems")
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
       setTranspoSelectedData(props.transpoSelectedData);
@@ -238,7 +241,6 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-  console.log(billEditItemInfo, billEditItem, "console");
   const getQuantityType = (unit) =>{
     var string = "";
     switch(unit.toUpperCase()){
@@ -266,7 +268,6 @@ const Step3PartySelect = (props) => {
       default:
         string="";
     }
-    console.log(string)
     return string;
   }
   return (
@@ -499,65 +500,15 @@ const Step3PartySelect = (props) => {
           />
       </div>
 
-      <div className="cropstable" id="scroll_style">
+      <div>
         {/* <p className="d-flex align-items-center"> */}
-        {billeditStatus ? (
-          <div>
-            {
-              billEditItem.lineItems.length > 0 ?
-                billEditItem.lineItems.map(item => {
-                  return (
-                    <div className="crops_info">
-                      <div className="selectparty_field edit_crop_item_div" id="scroll_style">
-                        <div className="d-flex align-items-center justify-content-between">
-                          <div className="d-flex">
-                            <div>
-                              <img
-                                src={item.imageUrl}
-                                className="edit_crop_item"
-                              />
-                            </div>
-                            <div>
-                              <p className="crops-color">Crops</p>
-                              <p className="crops-color">{item.qty ? item.qty : ''}{" "}
-                              {getQuantityType(item.qtyUnit) + " | "}
-                                {/* {item.qty ? item.qtyUnit.charAt(item).toUpperCase() + " | " : ''} */}
-                                {item.weight ? item.weight + ' KGS ' : ''}
-                                <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span></p>
-                            </div>
-                            </div>
-                            <div className="totals">
-                              <p className="crops-color">Total</p>
-                              <p className="crops-color">{item.total ? item.total.toFixed(2) : 0}</p>
-                            </div>
-                            {/* <p className="edit_crop_item_len d-flex align-items-center"> */}
-                            {/* <p>{billEditItem.length}</p>
-                        <span className="ml-3">Crops</span> */}
-                            {/* </p> */}
-                          
-                        </div>
-                      </div>
-                    </div>)
-                })
-                : ''}
-
-          </div>
-          // <div className="d-flex">
-          //   <img
-          //     src={billEditItem.lineItems[0].imageUrl}
-          //     className="edit_crop_item"
-          //   />
-          //   <p className="edit_crop_item_len d-flex align-items-center">
-          //     <p>{billEditItem.lineItems.length}</p>
-          //     <span className="ml-3">Crops</span>
-          //   </p>
-          // </div>
-        ) : (
+   
           <div className="cropstable" id="scroll_style">
             {
-              billEditItem.length > 0 ?
-                billEditItem.map(item => {
+              billEditItemCrops.length > 0 ?
+              billEditItemCrops.map((item,i) => {
                   return (
+                    (billEditItemCrops[i].total != 0) ? 
                     <div className="crops_info">
                       <div className="selectparty_field edit_crop_item_div" id="scroll_style">
                         <div className="d-flex align-items-center justify-content-between">
@@ -589,12 +540,14 @@ const Step3PartySelect = (props) => {
                           
                         </div>
                       </div></div>
+                    : ('')
                   )
                 })
                 : ''}
 
           </div>
-        )}
+        
+        
         {/* </p> */}
 
         {/* <p onClick={() => editCropTable(billEditItem)}>Edit</p> */}

@@ -203,3 +203,19 @@
 .prev_next_icon{
     padding: 0px 15px;
 }
+.search_control{
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+   
+}
+.search_control_div{
+    ::placeholder{
+        text-align: left!important;
+        padding-left: 0!important;
+    }
+}
+.search_control:focus{
+    border: 0px;
+}
