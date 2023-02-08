@@ -56,7 +56,7 @@ const Step22 = (props) => {
   var cropObjectArr = [];
   // close popup
   const cancelStep = () => {
-    dispatch(selectTrans(null)); 
+    dispatch(selectTrans(null));
     dispatch(selectBuyer(null));
     props.closem();
   };
@@ -152,7 +152,7 @@ const Step22 = (props) => {
       if (billEditStatus) {
         for (var d = 0; d < cropObjectArr.length; d++) {
           let object = { ...cropObjectArr[d] };
-         
+
           if (
             cropObjectArr[d].rateType === "RATE_PER_KG" ||
             cropObjectArr[d].rateType === "kgs"
@@ -161,13 +161,12 @@ const Step22 = (props) => {
             a.push(object);
             if (cropObjectArr[d].qtyUnit == "") {
               cropObjectArr.splice(d, 1);
-              a.splice(d,1)
+              a.splice(d, 1);
             }
           } else {
             object = { ...object, qtyUnit: cropObjectArr[d].qtyUnit };
             a.push(object);
           }
-          
         }
         cropResponseData([...a]);
       } else {
@@ -276,7 +275,6 @@ const Step22 = (props) => {
     }
   };
 
-  
   // function to nevigate to step3 page
   var dArray = [];
   const addStep3Modal = () => {
@@ -294,7 +292,7 @@ const Step22 = (props) => {
     cropData.map((item, index) => {
       if (cropData[index].rate != 0) {
         // setUpdatedItemList(cropData);
-        console.log(updatedItemList,"deleted")
+        console.log(updatedItemList, "deleted");
         if (users.buyerInfo?.itemtype.toLowerCase() == "seller") {
           setShowStep3ModalStatus(true);
           setShowStep3Modal(true);
@@ -342,7 +340,7 @@ const Step22 = (props) => {
     });
     // var selectedArray = props.billEditStatus ? ;
     if (billEditStatus) {
-      console.log("innerarray", updatedItemList,cropData);
+      console.log("innerarray", updatedItemList, cropData);
       dArray = updatedItemList.length != 0 ? updatedItemList : cropData;
       // props.slectedCropstableArray.lineItems =
       //   updatedItemList.length != 0 ? updatedItemList : cropData;
@@ -364,8 +362,8 @@ const Step22 = (props) => {
       for (var index = 0; index < cropData.length; index++) {
         // Object.assign(cropData[index], { status: 1 });
         if (
-          cropData[index].qtyUnit.toLowerCase() === "loads" ||
-          cropData[index].qtyUnit.toLowerCase() === "pieces"
+          cropData[index].qtyUnit?.toLowerCase() === "loads" ||
+          cropData[index].qtyUnit?.toLowerCase() === "pieces"
         ) {
           if (cropData[index].weight == 0) {
             toast.error("Please enter weight", {
@@ -378,7 +376,7 @@ const Step22 = (props) => {
             });
             return null;
           }
-        } else if (cropData[index].qtyUnit.toLowerCase() === "kgs") {
+        } else if (cropData[index].qtyUnit?.toLowerCase() === "kgs") {
           if (cropData[index].weight == 0) {
             toast.error("Please enter weight", {
               toastId: "error2",
@@ -391,8 +389,8 @@ const Step22 = (props) => {
             return null;
           }
         } else if (
-          cropData[index].qtyUnit.toLowerCase() ===
-          cropData[index].rateType.toLowerCase()
+          cropData[index].qtyUnit?.toLowerCase() ===
+          cropData[index].rateType?.toLowerCase()
         ) {
           if (cropData[index].qty == 0) {
             toast.error("Please enter Quantity", {
@@ -459,8 +457,8 @@ const Step22 = (props) => {
   const setQuantityBasedtable = (unitType) => {
     var t = false;
     if (
-      unitType.toLowerCase() == "kgs" ||
-      unitType.toLowerCase() == "loads" ||
+      unitType?.toLowerCase() == "kgs" ||
+      unitType?.toLowerCase() == "loads" ||
       unitType == "pieces"
     ) {
       t = true;
@@ -499,18 +497,18 @@ const Step22 = (props) => {
         return { ...cropitem[i] };
       }
     });
-    
+
     cropResponseData([...updatedItem]);
     setunitValue(val);
-    if(updatedItemList.length > 0){
-      for(var j= 0; j<updatedItemList.length; j++){
-        if(updatedItemList[j].status == 0){
-          console.log(updatedItemList[j],updatedItem,"status0");
+    if (updatedItemList.length > 0) {
+      for (var j = 0; j < updatedItemList.length; j++) {
+        if (updatedItemList[j].status == 0) {
+          console.log(updatedItemList[j], updatedItem, "status0");
           updatedItem.push(updatedItemList[j]);
         }
       }
     }
-    console.log(updatedItem)
+    console.log(updatedItem);
     setUpdatedItemList([...updatedItem]);
     setCropId(id);
   };
@@ -557,7 +555,7 @@ const Step22 = (props) => {
     cropResponseData([...updatedItem3]);
     setrateValue(val);
     setCropId(id);
-    console.log(updatedItemList,updatedItem3,"listttt")
+    console.log(updatedItemList, updatedItem3, "listttt");
     setUpdatedItemList([...updatedItem3]);
     if (billEditStatus) {
       // props.slectedCropstableArray.lineItems = updatedItem3;
@@ -635,7 +633,7 @@ const Step22 = (props) => {
         }
       }
     }
-    console.log(cropArray,cropDeletedList,"deleted list")
+    console.log(cropArray, cropDeletedList, "deleted list");
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
   };
@@ -688,7 +686,28 @@ const Step22 = (props) => {
     if (e.target.value == 0) {
       e.target.value = "";
     }
+    console.log('hey new',cropData)
   };
+  var cropArraynew = [];
+  const addCropRow = () =>{
+    var crpObject = {
+      // cropActive: true ,
+      //  cropSelect: "active" ,
+      //  wastage: 0 ,
+      //  qty: 0 ,
+      //  rateType: "kgs" ,
+      //  weight: 0 ,
+      // rate: 0 ,
+      //  total: 0 ,
+      //  qtyUnit: "crates" ,
+      //  checked: false ,
+      //  bags: [] ,
+      //  status: 1 
+    };
+    cropArraynew.push(crpObject);
+    cropResponseData([...cropData, ...cropArraynew])
+   
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -744,289 +763,140 @@ const Step22 = (props) => {
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
                 <div className="table_row" id="scroll_style">
+                  <div className="row header_row p-0 crop_table_header_row">
+                    <div className="col-lg-2">
+                      <p>Crop</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Unit type</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Rate type</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Number of Units</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Total Weight</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Individual weights</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Wastage</p>
+                    </div>
+                    <div className="col-lg-1">
+                      <p>Rate (₹)</p>
+                    </div>
+                    <div className="col-lg-3 last_col">
+                      <p>Total (₹)</p>
+                    </div>
+                  </div>
                   {cropData.map((crop, index) => (
                     <div
-                      className="crop_div crop_table_div table_crop_div"
+                      className="crop_div crop_table_div table_crop_div m-0"
                       key={index}
                     >
                       <div className="d-flex crop_table_delete_div">
                         <div className="crop_table_view">
-                          {!setQuantityBasedtable(cropData[index].qtyUnit) ? (
-                            <table className="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>Crop</th>
-                                  <th>Unit Type</th>
-                                  <th>Rate Type</th>
-                                  <th>
-                                    No of Units({cropData[index].qtyUnit})
-                                  </th>
-                                  {cropData[index].qtyUnit.toLowerCase() !=
-                                  (cropData[index].rateType == "RATE_PER_UNIT"
-                                    ? cropData[index].qtyUnit.toLowerCase()
-                                    : cropData[index].rateType) ? (
-                                    <th>
-                                      Total Weight(
-                                      {cropData[index].qtyUnit.toLowerCase() !=
-                                      cropData[index].rateType
-                                        ? "kgs"
-                                        : cropData[index].qtyUnit}
-                                      )
-                                    </th>
-                                  ) : (
-                                    ""
-                                  )}
-                                  {cropData[index].qtyUnit.toLowerCase() ===
-                                    "bags" ||
-                                  cropData[index].qtyUnit.toLowerCase() ===
-                                    "sacs" ? (
-                                    cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
-                                      <th className="col-2">
-                                        Invidual Weights
-                                      </th>
-                                    ) : (
-                                      ""
-                                    )
-                                  ) : (
-                                    ""
-                                  )}
-                                  <th>
-                                    Wastage(
-                                    {cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType
-                                      ? "kgs"
-                                      : cropData[index].qtyUnit}
-                                    )
-                                  </th>
+                          <table className="table table-bordered table_div">
+                          {Object.keys(cropData[index]).length != 0 ?
+                            <tr className="">
+                              <td className="col-2">
+                                <div className="flex_class mr-0">
+                                  <img
+                                    src={cropData[index].imageUrl}
+                                    className="flex_class mr-2"
+                                  />
+                                  <p className="m-0">
+                                    {cropData[index].cropName}
+                                  </p>
+                                </div>
+                              </td>
+                              <td className="col-1">
+                                <select
+                                  className="form-control qty_dropdown dropdown"
+                                  value={cropData[index].qtyUnit}
+                                  onChange={getQuantity(cropData, index, crop)}
+                                >
+                                  <option value="Crates">Crates</option>
+                                  <option value="Bags">Bags</option>
+                                  <option value="Sacs">Sacs </option>
+                                  <option value="Boxes">Boxes </option>
+                                  <option value="kgs">Kgs </option>
+                                  <option value="loads">Loads </option>
+                                  <option value="pieces">Pieces </option>
+                                </select>
+                              </td>
+                              {!setQuantityBasedtable(
+                                cropData[index].qtyUnit
+                              ) ? (
+                                <td className="col-1">
+                                  <select
+                                    className="form-control qty_dropdown dropdown"
+                                    value={cropData[index].rateType}
+                                    onChange={getRateType(cropData, index)}
+                                  >
+                                    <option
+                                      value={cropData[
+                                        index
+                                      ].qtyUnit?.toLowerCase()}
+                                    >
+                                      {cropData[index].qtyUnit}{" "}
+                                    </option>
+                                    <option value="kgs">Kgs </option>
+                                  </select>
+                                </td>
+                              ) : (
+                                <td className="col-1 fadeOut_col">-</td>
+                              )}
+                              {!setQuantityBasedtable(
+                                cropData[index].qtyUnit
+                              ) ? (
+                                <td className="col-1">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    name="quantity"
+                                    onFocus={(e) => resetInput(e)}
+                                    value={cropData[index].qty}
+                                    onChange={getQuantityValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                              ) : (
+                                <td className="col-1 fadeOut_col">-</td>
+                              )}
 
-                                  <th>Rate(₹)</th>
-                                  <th>Total(₹)</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td className="col-2">
-                                    {" "}
-                                    <div className="flex_class mr-0">
-                                      <img
-                                        src={cropData[index].imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">
-                                        {cropData[index].cropName}
-                                      </p>
-                                    </div>
-                                  </td>
+                              {cropData[index].qtyUnit?.toLowerCase() !=
+                              (cropData[index].rateType == "RATE_PER_UNIT"
+                                ? cropData[index].qtyUnit?.toLowerCase()
+                                : cropData[index].rateType) ? (
+                                <td className="col-1">
+                                  <input
+                                    type="text"
+                                    className="form-control"
+                                    name="weight"
+                                    onFocus={(e) => resetInput(e)}
+                                    value={cropData[index].weight}
+                                    onChange={getWeightValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                              ) : setQuantityBasedtable(
+                                  cropData[index].qtyUnit
+                                ) ? (
+                                cropData[index].qtyUnit?.toLowerCase() ==
+                                "loads" ? (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                ) : (
                                   <td className="col-1">
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={cropData[index].qtyUnit}
-                                      onChange={getQuantity(
-                                        cropData,
-                                        index,
-                                        crop
-                                      )}
-                                    >
-                                      <option value="Crates">Crates</option>
-                                      <option value="Bags">Bags</option>
-                                      <option value="Sacs">Sacs </option>
-                                      <option value="Boxes">Boxes </option>
-                                      <option value="kgs">Kgs </option>
-                                      <option value="loads">Loads </option>
-                                      <option value="pieces">Pieces </option>
-                                    </select>
-                                  </td>
-                                  <td className="col-1">
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={cropData[index].rateType}
-                                      onChange={getRateType(cropData, index)}
-                                    >
-                                      <option
-                                        value={cropData[
-                                          index
-                                        ].qtyUnit.toLowerCase()}
-                                      >
-                                        {cropData[index].qtyUnit}{" "}
-                                      </option>
-                                      <option value="kgs">Kgs </option>
-                                    </select>
-                                  </td>
-                                  <td className="col-2">
-                                    {" "}
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="quantity"
-                                      onFocus={(e) => resetInput(e)}
-                                      value={cropData[index].qty}
-                                      onChange={getQuantityValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  {cropData[index].qtyUnit.toLowerCase() !=
-                                  (cropData[index].rateType == "RATE_PER_UNIT"
-                                    ? cropData[index].qtyUnit.toLowerCase()
-                                    : cropData[index].rateType) ? (
-                                    <td className="col-2">
-                                      <input
-                                        type="text"
-                                        className="form-control"
-                                        name="weight"
-                                        onFocus={(e) => resetInput(e)}
-                                        value={cropData[index].weight}
-                                        onChange={getWeightValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                  ) : (
-                                    ""
-                                  )}
-                                  {cropData[index].qtyUnit.toLowerCase() ===
-                                    "bags" ||
-                                  cropData[index].qtyUnit.toLowerCase() ===
-                                    "sacs" ? (
-                                    cropData[index].qtyUnit.toLowerCase() !=
-                                    cropData[index].rateType ? (
-                                      <td className="col-2">
-                                        <div className="d-flex">
-                                          <p className="unit-type mt-0">
-                                            {cropData[index].bags !== null &&
-                                            cropData[index].bags.length > 0
-                                              ? "Edit"
-                                              : "Add"}{" "}
-                                            {cropData[index].qtyUnit}
-                                          </p>
-                                          <input
-                                            type="checkbox"
-                                            checked={billEditStatus?
-                                              billEditItemInfo.selectedBillInfo.lineItems[0].bags.length>0?true:
-                                                false:cropData[index].checked}
-                                            id="modal_checkbox"
-                                            value="my-value"
-                                            className="checkbox_t"
-                                            onChange={() => {
-                                              handleCheckEvent(
-                                                cropData,
-                                                index,
-                                                crop
-                                              );
-                                            }}
-                                          />
-                                        </div>
-                                      </td>
-                                    ) : (
-                                      ""
-                                    )
-                                  ) : (
-                                    ""
-                                  )}
-                                  <td className="col-1">
-                                    {" "}
-                                    <input
-                                      type="text"
-                                      name="wastage"
-                                      className="form-control wastage_val"
-                                      onFocus={(e) => resetInput(e)}
-                                      value={cropData[index].wastage}
-                                      onChange={getWastageValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    {" "}
-                                    <input
-                                      type="text"
-                                      name="rate"
-                                      className="form-control"
-                                      onFocus={(e) => resetInput(e)}
-                                      value={cropData[index].rate}
-                                      onChange={getRateValue(
-                                        cropData[index].cropId,
-                                        index,
-                                        cropData
-                                      )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    <p className="totals">
-                                      {cropData[index].rateType == "kgs"
-                                        ? (cropData[index].weight -
-                                            cropData[index].wastage) *
-                                          cropData[index].rate
-                                        : (cropData[index].qty -
-                                            cropData[index].wastage) *
-                                          cropData[index].rate}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          ) : (
-                            <table className="table table-bordered">
-                              <thead>
-                                <tr>
-                                  <th>Crop</th>
-                                  <th>Unit Type</th>
-                                  <th>
-                                    Total Weight({cropData[index].qtyUnit})
-                                  </th>
-                                  {cropData[index].qtyUnit?.toLowerCase() ==
-                                  "loads" ? (
-                                    ""
-                                  ) : (
-                                    <th>Wastage({cropData[index].qtyUnit})</th>
-                                  )}
-
-                                  <th>Rate</th>
-                                  <th>Total</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td className="col-2">
-                                    {" "}
-                                    <div className="flex_class mr-0">
-                                      <img
-                                        src={cropData[index].imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">
-                                        {cropData[index].cropName}
-                                      </p>
-                                    </div>
-                                  </td>
-                                  <td>
-                                    <select
-                                      className="form-control qty_dropdown dropdown"
-                                      value={cropData[index].qtyUnit}
-                                      onChange={getQuantity(
-                                        cropData,
-                                        index,
-                                        crop
-                                      )}
-                                    >
-                                      <option value="Crates">Crates</option>
-                                      <option value="Bags">Bags</option>
-                                      <option value="Sacs">Sacs </option>
-                                      <option value="Boxes">Boxes </option>
-                                      <option value="kgs">Kgs </option>
-                                      <option value="loads">Loads </option>
-                                      <option value="pieces">Pieces </option>
-                                    </select>
-                                  </td>
-                                  <td className="col-2">
-                                    {" "}
                                     <input
                                       type="text"
                                       className="form-control"
@@ -1040,82 +910,146 @@ const Step22 = (props) => {
                                       )}
                                     />
                                   </td>
-                                  {cropData[index].qtyUnit?.toLowerCase() ==
-                                  "loads" ? (
-                                    ""
-                                  ) : (
-                                    <td className="col-2">
-                                      {" "}
+                                )
+                              ) : (
+                                <td className="col-1 fadeOut_col">-</td>
+                              )}
+                              {cropData[index].qtyUnit?.toLowerCase() ===
+                                "bags" ||
+                              cropData[index].qtyUnit?.toLowerCase() ===
+                                "sacs" ? (
+                                cropData[index].qtyUnit?.toLowerCase() !=
+                                cropData[index].rateType ? (
+                                  <td className="col-1">
+                                    <div className="d-flex">
+                                      <p className="unit-type mt-0">
+                                        {cropData[index].bags !== null &&
+                                        cropData[index].bags.length > 0
+                                          ? "Edit"
+                                          : "Add"}{" "}
+                                        {cropData[index].qtyUnit}
+                                      </p>
                                       <input
-                                        type="text"
-                                        name="wastage"
-                                        onFocus={(e) => resetInput(e)}
-                                        className="form-control wastage_val"
-                                        value={cropData[index].wastage}
-                                        onChange={getWastageValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
+                                        type="checkbox"
+                                        checked={
+                                          billEditStatus
+                                            ? billEditItemInfo.selectedBillInfo
+                                                .lineItems[0].bags.length > 0
+                                              ? true
+                                              : false
+                                            : cropData[index].checked
+                                        }
+                                        id="modal_checkbox"
+                                        value="my-value"
+                                        className="checkbox_t"
+                                        onChange={() => {
+                                          handleCheckEvent(
+                                            cropData,
+                                            index,
+                                            crop
+                                          );
+                                        }}
                                       />
-                                    </td>
+                                    </div>
+                                  </td>
+                                ) : (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                )
+                              ) : (
+                                <td className="col-1 fadeOut_col">-</td>
+                              )}
+                              {cropData[index].qtyUnit?.toLowerCase() ==
+                              "loads" ? (
+                                <td className="col-1 fadeOut_col">-</td>
+                              ) : (
+                                <td className="col-1">
+                                  <input
+                                    type="text"
+                                    name="wastage"
+                                    onFocus={(e) => resetInput(e)}
+                                    className="form-control wastage_val"
+                                    value={cropData[index].wastage}
+                                    onChange={getWastageValue(
+                                      cropData[index].cropId,
+                                      index,
+                                      cropData
+                                    )}
+                                  />
+                                </td>
+                              )}
+                              <td className="col-1">
+                                <input
+                                  type="text"
+                                  name="rate"
+                                  className="form-control"
+                                  onFocus={(e) => resetInput(e)}
+                                  value={cropData[index].rate}
+                                  onChange={getRateValue(
+                                    cropData[index].cropId,
+                                    index,
+                                    cropData
                                   )}
-                                  <td className="col-2">
-                                    {" "}
-                                    <input
-                                      type="text"
-                                      name="rate"
-                                      className="form-control"
-                                      onFocus={(e) => resetInput(e)}
-                                      value={cropData[index].rate}
-                                      onChange={getRateValue(
-                                        cropData[index].cropId,
-                                        index,
+                                />
+                              </td>
+                              <td className="col-3">
+                                <div className="d-flex align-items-center justify-content-between">
+                                  <p className="totals">
+                                    {cropData[index].rateType == "kgs"
+                                      ? (cropData[index].weight -
+                                          cropData[index].wastage) *
+                                        cropData[index].rate
+                                      : (cropData[index].qty -
+                                          cropData[index].wastage) *
+                                        cropData[index].rate}
+                                  </p>
+                                  <div className="delete_copy_div d-flex">
+                                    <div
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={cloneCrop.bind(this, crop)}
+                                    >
+                                      <img
+                                        src={copy_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </div>
+                                    <div
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={deleteCrop.bind(
+                                        this,
+                                        crop,
                                         cropData
                                       )}
-                                    />
-                                  </td>
-                                  <td className="col-2">
-                                    <p className="totals">
-                                      {cropData[index].qtyUnit?.toLowerCase() ==
-                                      "loads"
-                                        ? cropData[index].weight *
-                                          cropData[index].rate
-                                        : (cropData[index].weight -
-                                            cropData[index].wastage) *
-                                          cropData[index].rate}
-                                    </p>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
-                        </div>
-                        <div className="delete_copy_div d-flex">
-                          <div
-                            className="flex_class mr-0 sub_icons_div"
-                            onClick={cloneCrop.bind(this, crop)}
-                          >
-                            <img
-                              src={copy_icon}
-                              className="sub_icons"
-                              alt="image"
-                            />
-                          </div>
-                          <div
-                            className="flex_class mr-0 sub_icons_div"
-                            onClick={deleteCrop.bind(this, crop, cropData)}
-                          >
-                            <img
-                              src={delete_icon}
-                              className="sub_icons"
-                              alt="image"
-                            />
-                          </div>
+                                    >
+                                      <img
+                                        src={delete_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            : <tr className="empty_row">
+                               <td className="col-2">
+                                 <input />
+                               </td>
+                               <td className="col-1"></td>
+                               <td className="col-1"></td>
+                               <td className="col-1"></td>
+                               <td className="col-1"></td>
+                               <td className="col-1"></td>
+                               <td className="col-1"></td>
+                               <td className="col-1"></td>
+                               <td className="col-3"></td>
+                            </tr> }
+                          </table>
                         </div>
                       </div>
                     </div>
                   ))}
+                  <p onClick={()=> addCropRow()}>Add</p>
                 </div>
               </div>
             )}
@@ -1146,16 +1080,16 @@ const Step22 = (props) => {
       </div>
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
-        <button className="secondary_btn" onClick={cancelStep}>
-                  cancel
-                </button>
-                <div className="d-flex align-items-center">
-          <button className="secondary_btn" onClick={() => previousStep()}>
-            Previous
+          <button className="secondary_btn" onClick={cancelStep}>
+            cancel
           </button>
-          <button className="primary_btn" onClick={() => step2Next()}>
-            Next
-          </button>
+          <div className="d-flex align-items-center">
+            <button className="secondary_btn" onClick={() => previousStep()}>
+              Previous
+            </button>
+            <button className="primary_btn" onClick={() => step2Next()}>
+              Next
+            </button>
           </div>
         </div>
       </div>

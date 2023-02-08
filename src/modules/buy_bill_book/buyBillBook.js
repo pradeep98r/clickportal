@@ -2,7 +2,6 @@ import React, { Component, useEffect, useState } from "react";
 import "../buy_bill_book/buyBillBook.scss";
 import { qtyValues } from "../../components/qtyValues";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
 import { getBuyBills } from "../../actions/billCreationService";
 import "react-datepicker/dist/react-datepicker.css";
@@ -30,6 +29,7 @@ import { selectTrans } from "../../reducers/transSlice";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
+import BillView from "./billView";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -42,7 +42,6 @@ function BuyBillBook() {
 
   const billData = useSelector((state) => state.billViewInfo);
   const dispatch = useDispatch();
-  console.log(billData);
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
@@ -98,12 +97,15 @@ function BuyBillBook() {
         console.log(error.message);
       });
   };
-  const navigate = useNavigate();
   var billViewStatus = false;
+  const [showBillModalStatus, setShowBillModalStatus] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
-    navigate(generatePath(`/bill_view/${id}`, { id }));
+    setShowBillModalStatus(true);
+    setShowBillModal(true);
+    // navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
@@ -436,6 +438,15 @@ function BuyBillBook() {
         <Steps
           showStepsModal={showStepsModal}
           closeStepsModal={() => setShowStepsModal(false)}
+        />
+      ) : (
+        ""
+      )}
+      {showBillModalStatus ? (
+        <BillView
+        showBillViewModal={showBillModal}
+        closeBillViewModal={() => setShowBillModal(false)}
+        allBillsData ={buyBillData}
         />
       ) : (
         ""

@@ -6,8 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import caImage from "../../assets/images/ca_img.svg"
-import { getProfile } from "../../actions/profileService"
+import caImage from "../../assets/images/ca_img.svg";
+import { getProfile } from "../../actions/profileService";
 
 function TopNavigation() {
   const langData = localStorage.getItem("languageData");
@@ -20,7 +20,7 @@ function TopNavigation() {
   const loginUserDetails = JSON.parse(localStorage.getItem("loginResponse"));
   const [profileData, setProfileData] = useState(null);
   // const getProfileDetails = () => {
-   
+
   // };
   useEffect(() => {
     getProfile(loginUserDetails.caId)
@@ -66,12 +66,12 @@ function TopNavigation() {
     localStorage.setItem("stepOneSingleBook", false);
     navigate("/sellbillbook");
   };
-  const profileClick = () =>{
-    localStorage.setItem("LinkPath","/myprofile");
-    localStorage.setItem("LinkId",8)
+  const profileClick = () => {
+    localStorage.setItem("LinkPath", "/myprofile");
+    localStorage.setItem("LinkId", 8);
     navigate("/myprofile");
     window.location.reload();
-  }
+  };
   return (
     <nav className="navbar navbar-expand-lg bg_white main_nav">
       <div className="container-fluid">
@@ -80,55 +80,8 @@ function TopNavigation() {
             {/* {(linkValue == 1 || linkPath == "/smartboard") && "Smartboard"} */}
             {linkValue == 1 && langFullData.smartBoard}
             {linkValue == 2 && "Smartchart"}
-            {linkValue == 3 &&
-              "Sell Bill Book" &&
-              (billStatus === true ? (
-                <div className="d-flex">
-                  <img
-                    src={leftClick}
-                    alt="left_click_img"
-                    onClick={backToSellBillBook}
-                    id="left_click_img"
-                  />
-                  <p id="bill_id">Bill ID : {singleBill.billId}</p>
-                </div>
-              ) : stepOneSingleBill === true ? (
-                <div className="d-flex">
-                  <img
-                    src={leftClick}
-                    alt="left_click_img"
-                    onClick={backToSellBillBook}
-                    id="left_click_img"
-                  />
-                  <p id="bill_id">Add Sell Bill</p>
-                </div>
-              ) : (
-                langFullData.salesBillBook
-              ))}
-            {linkPath == "/buy_bill_book" &&
-              (billStatus === true ? (
-                <div className="d-flex">
-                  <img
-                    src={leftClick}
-                    alt="left_click_img"
-                    onClick={backToBuyBillBook}
-                    id="left_click_img"
-                  />
-                  <p id="bill_id">Bill ID : {singleBill.billId}</p>
-                </div>
-              ) : stepone === true ? (
-                <div className="d-flex">
-                  <img
-                    src={leftClick}
-                    alt="left_click_img"
-                    onClick={backToBuyBillBook}
-                    id="left_click_img"
-                  />
-                  <p id="bill_id">Add Purchase Bill</p>
-                </div>
-              ) : (
-                langFullData.buyBillBook
-              ))}
+            {linkValue == 3 && "Sell Bill Book"}
+            {linkPath == "/buy_bill_book" && langFullData.buyBillBook}
             {linkValue == 5 && "Buyer Ledger"}
             {linkValue == 6 && langFullData.sellerLedger}
             {linkPath == "/partner" && langFullData.partners}
@@ -164,43 +117,46 @@ function TopNavigation() {
             </li> */}
             <li className="nav-item">
               <div className="caDetails">
-                <div
-                  className="nav-link"
-                  type="button"
-                >
-                  {loginUserDetails.useStatus == "WRITER" ?  <div className="d-flex align-items-center">
-                    <img src = {caImage} className="mr-2" alt="image"/>
-                    <div>
-                    <h5>{profileData != null
-                    ? profileData.personalDtls.ownerName
-                    : ""}
-                    </h5>
-                     <p>
-                      Click ID:
-                      {loginUserDetails != null
-                        ? loginUserDetails.clickId
-                        : loginUserDetails.clickId}
-                    </p>
+                <div className="nav-link" type="button">
+                  {loginUserDetails.useStatus == "WRITER" ? (
+                    <div className="d-flex align-items-center">
+                      <img src={caImage} className="mr-2" alt="image" />
+                      <div>
+                        <h5>
+                          {profileData != null
+                            ? profileData.personalDtls.ownerName
+                            : ""}
+                        </h5>
+                        <p>
+                          Click ID:
+                          {loginUserDetails != null
+                            ? loginUserDetails.clickId
+                            : loginUserDetails.clickId}
+                        </p>
+                      </div>
                     </div>
-                  </div> :  <div className="d-flex align-items-center" onClick={()=>profileClick()}>
-                    <img src = {caImage} className="mr-2" alt="image"/>
-                    <div>
-                    <h5>{profileData != null
-                    ? profileData.personalDtls.ownerName
-                    : ""}
-                    </h5>
-                     <p>
-                      Click ID:
-                      {loginUserDetails != null
-                        ? loginUserDetails.clickId
-                        : loginUserDetails.clickId}
-                    </p>
+                  ) : (
+                    <div
+                      className="d-flex align-items-center"
+                      onClick={() => profileClick()}
+                    >
+                      <img src={caImage} className="mr-2" alt="image" />
+                      <div>
+                        <h5>
+                          {profileData != null
+                            ? profileData.personalDtls.ownerName
+                            : ""}
+                        </h5>
+                        <p>
+                          Click ID:
+                          {loginUserDetails != null
+                            ? loginUserDetails.clickId
+                            : loginUserDetails.clickId}
+                        </p>
+                      </div>
                     </div>
-                  </div>}
-                 
-                 
+                  )}
                 </div>
-              
               </div>
               {/* <a
                 className="nav-link dropdown-toggle"

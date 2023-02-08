@@ -490,11 +490,11 @@ const Step3PartySelect = (props) => {
         ""
       )}
       <div className="d-flex align-items-center justify-content-between">
-        <h5 className="date_sec head_modal pb-0">Crop Information </h5>
+        <h5 className="date_sec head_modal p-0">Crop Information </h5>
         <img
           src={edit}
           alt="img"
-          className=""
+          className="head_modal"
           onClick={() => editCropTable(billEditItem)}
           />
       </div>
