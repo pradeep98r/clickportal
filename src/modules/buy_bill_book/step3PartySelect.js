@@ -519,7 +519,7 @@ const Step3PartySelect = (props) => {
                             <div>
                               <p className="crops-color">Crops</p>
                               <p className="crops-color">{item.qty ? item.qty : ''}{" "}
-                              {getQuantityType(item.qtyUnit) + " | "}
+                              {item.qty ?getQuantityType(item.qtyUnit) + " | ":''}
                                 {/* {item.qty ? item.qtyUnit.charAt(item).toUpperCase() + " | " : ''} */}
                                 {item.weight ? item.weight + ' KGS ' : ''}
                                 <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span></p>
@@ -571,7 +571,7 @@ const Step3PartySelect = (props) => {
                             <div>
                               <p className="crops-color">Crops</p>
                               <p className="crops-color">{item.qty ? item.qty : ''}{" "}
-                                {getQuantityType(item.qtyUnit) + " | "}
+                                {item.qty ?getQuantityType(item.qtyUnit) + " | ":''}
                                 {/* {item.qty ? item.qtyUnit.charAt(item).toUpperCase() + " | " : ''} */}
                                 {item.weight ? item.weight + ' KGS ' : ''}
                                 <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span></p>

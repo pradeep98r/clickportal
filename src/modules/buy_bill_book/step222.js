@@ -732,11 +732,12 @@ const Step22 = (props) => {
   };
   var cropArraynew = [];
   const [addCrop, setAddCrop] = useState(false);
-  const [getCropItem, setCropItem] = useState(null);
+  const [getCropItem, setCropItem] = useState(false);
   const addCropRow = () => {
     setAddCrop(true);
+    setCropItem(true);
     console.log(addCropsIndex,"cropIndex")
-    setAddCropsIndex(addCropsIndex+1);
+    // setAddCropsIndex(addCropsIndex+1);
     setDisplayStat(false);
     setActiveSearch(true);
     var crpObject = {
@@ -771,9 +772,32 @@ const Step22 = (props) => {
     setCropsData(result);
     setSearchValue(value);
   };
+
   const addCropToEmptyRow = (crop, c, i) => {
     console.log(cropData,crop, c,i, "data");
-    setCropItem(crop);   
+    console.log(getCropItem); 
+    if(getCropItem){
+      console.log("came to here");
+      c[i].cropName=crop.cropName;
+      c[i].imageUrl=crop.imageUrl;
+      c[i].cropId=crop.cropId;
+      c[i].displayStat=true;
+      c[i].cropSelect = 'active';
+      c[i].wastage = 0;
+      c[i].qty = 0;
+      c[i].weight = 0;
+      c[i].rateType = "kgs"
+      c[i].rate = 0;
+      c[i].total = 0;
+      c[i].qtyUnit = "crates"
+      c[i].checked = false;
+      c[i].bags = [];
+      c[i].count=1;
+      c[i].status = 1;
+      c[i].activeSearch = true;
+    setAddCropStatus(false);
+    cropResponseData(c);
+    } else{
       c[addCropsIndex].cropName=crop.cropName;
       c[addCropsIndex].imageUrl=crop.imageUrl;
       c[addCropsIndex].cropId=crop.cropId;
@@ -790,6 +814,12 @@ const Step22 = (props) => {
       c[addCropsIndex].bags = [];
       c[addCropsIndex].status = 1;
       c[addCropsIndex].activeSearch = true;
+      setAddCropStatus(false);
+      cropResponseData(c);
+    }
+    setCropItem(false);
+    console.log(addCropsIndex,"cropIndex")
+      
     // let index = cropData.findIndex(obj => obj.cropId == c[addCropsIndex].cropId)
 
     // if(index !== -1){
@@ -815,8 +845,8 @@ const Step22 = (props) => {
     // }
     console.log(c[i],i,"data");
     // c.slice(addCropsIndex, 1, c[addCropsIndex]);
-    setAddCropStatus(false);
-    cropResponseData(c);
+    // setAddCropStatus(false);
+    // cropResponseData(c);
 
   }
 
