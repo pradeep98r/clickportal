@@ -778,8 +778,6 @@ const Step22 = (props) => {
 
   const addCropToEmptyRow = (crop, c, i) => {
     console.log(cropData,crop, c,i, "data");
-    console.log(getCropItem); 
-    // if(getCropItem){
       console.log("came to here");
       c[i].cropName=crop.cropName;
       c[i].imageUrl=crop.imageUrl;
@@ -801,27 +799,6 @@ const Step22 = (props) => {
     setAddCropStatus(false);
     cropResponseData(c);
     setUpdatedItemList(c);
-    // } 
-    // else{
-    //   c[addCropsIndex].cropName=crop.cropName;
-    //   c[addCropsIndex].imageUrl=crop.imageUrl;
-    //   c[addCropsIndex].cropId=crop.cropId;
-    //   c[addCropsIndex].displayStat=true;
-    //   c[addCropsIndex].cropSelect = 'active';
-    //   c[addCropsIndex].wastage = 0;
-    //   c[addCropsIndex].qty = 0;
-    //   c[addCropsIndex].weight = 0;
-    //   c[addCropsIndex].rateType = "kgs"
-    //   c[addCropsIndex].rate = 0;
-    //   c[addCropsIndex].total = 0;
-    //   c[addCropsIndex].qtyUnit = "crates"
-    //   c[addCropsIndex].checked = false;
-    //   c[addCropsIndex].bags = [];
-    //   c[addCropsIndex].status = 1;
-    //   c[addCropsIndex].activeSearch = true;
-    //   setAddCropStatus(false);
-    //   cropResponseData(c);
-    // }
     setCropItem(false);
     console.log(addCropsIndex,"cropIndex")
 
@@ -926,7 +903,7 @@ const Step22 = (props) => {
                                   <div className="flex_class mr-0" id="crops-space"
                                     onClick={() => { addCropToEmptyRow(item, cropData, index) }}>
                                     <img src={item.imageUrl} className="flex_class mr-2" />
-                                    <p className="m-0">{item.cropName}{index}</p>
+                                    <p className="m-0">{item.cropName}</p>
                                   </div>
                                   <hr style={{ border: '1 px dashed' }} />
                                 </div>
