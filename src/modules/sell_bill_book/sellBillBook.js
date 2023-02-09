@@ -264,7 +264,7 @@ const SellBillBook = (props) => {
                           <div className="buy_bills" id="scroll_style">
                             {sellBillData.map((bill, index) => (
                               <div
-                                onClick={() => billOnClick(bill.billId, bill)}
+                                onClick={() => billOnClick(bill.caBSeq, bill)}
                                 key={index}
                                 className="billsDiv"
                               >
@@ -297,7 +297,7 @@ const SellBillBook = (props) => {
                                       </div>
                                       <div className="col-lg-5 col-sm-12 billid_div">
                                         <p className="biilid">
-                                          {langFullData.billNo} : {bill.billId}{" "}
+                                          {langFullData.billNo} : {bill.caBSeq}{" "}
                                         </p>
                                         <p>
                                           {moment(bill.billDate).format(
