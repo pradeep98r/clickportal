@@ -166,19 +166,25 @@ const Step3PartySelect = (props) => {
     setCount(count + 1);
     if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
       setActiveInput(true);
+      setActiveTrans(false);
       setPartnerDataStatus(true);
+      setTranspoDataStatus(false)
       setPartnerType("Buyer");
       fetchPertnerData("Buyer");
     } else 
     if (type == "Transporter") {
       setActiveTrans(true);
+      setActiveInput(false);
       setTranspoDataStatus(true);
+      setPartnerDataStatus(false);
       setPartnerType(type);
       fetchPertnerData(type);
     }
     else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
       setActiveInput(true);
+      setActiveTrans(false);
       setPartnerDataStatus(true);
+      setTranspoDataStatus(false)
       setPartnerType(type);
       fetchPertnerData("Seller");
     }
@@ -412,7 +418,7 @@ const Step3PartySelect = (props) => {
                   <input
                     type="text"
                     className="form-control search_control"
-                    placeholder={'Type ' + partySelecteData.partyType + ' Name Here'}
+                    placeholder={'Type ' + 'Transporter' + ' Name Here'}
                     onChange={(event) => {
                       handleSearch(event);
                     }}
@@ -465,13 +471,13 @@ const Step3PartySelect = (props) => {
       ) : (
         activeTrans ? (
           <div
-            className="party_div"
+            className="party_div selectparty_field d-flex align-items-center justify-content-between"
           >
             <div className="party_div" role="search">
               <input
                 type="text"
                 className="form-control search_control"
-                placeholder={'Type ' + partySelecteData.partyType + ' Name Here'}
+                placeholder={'Type ' + 'Transporter' + ' Name Here'}
                 onChange={(event) => {
                   handleSearch(event);
                 }}
