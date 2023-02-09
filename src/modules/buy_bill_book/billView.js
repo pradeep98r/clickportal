@@ -64,7 +64,10 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    // props.closeBillViewModal();
+    dispatch(billViewStatus(false));
+    localStorage.removeItem('billViewStatus');
+    $('.billView_modal').hide();
+    $('.modal-backdrop').remove();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -77,6 +80,7 @@ const BillView = (props) => {
         billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
       )
     );
+
     dispatch(cropEditStatus(false));
     setEditCancelStatus(true);
     
