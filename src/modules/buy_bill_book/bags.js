@@ -225,7 +225,7 @@ const SelectBags = (props) => {
                               type="text"
                               className="form-control mb-0"
                               name="weight"
-                              value={invArr[i].weight }
+                              value={invArr[i].weight - invArr[i].wastage}
                               onChange={getInvWeightValue(invArr, i)}
                               onFocus={(e) => resetInput(e)}
                             />
@@ -253,10 +253,14 @@ const SelectBags = (props) => {
           </div>
         </div>
       </div>
-      <div className="modal-footer modal_comm_footer">
+      <div className="modal-footer modal_common_footer">
         <div className="row">
           <div className="col-lg-6 pl-0">
-            <button
+           
+          </div>
+          <div className="col-lg-6 p-0">
+      <div className="d-flex justify-content-end">
+      <button
               type="button"
               className="secondary_btn"
               onClick={(e) => {
@@ -266,8 +270,6 @@ const SelectBags = (props) => {
             >
               CANCEL
             </button>
-          </div>
-          <div className="col-lg-6">
             <button
               type="button"
               className="primary_btn"
@@ -277,6 +279,7 @@ const SelectBags = (props) => {
             >
               UPDATE
             </button>
+      </div>
           </div>
         </div>
       </div>
