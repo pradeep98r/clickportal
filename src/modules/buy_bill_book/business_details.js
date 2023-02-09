@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { getMandiDetails } from '../../actions/billCreationService';
 import moment from "moment/moment";
 import { useSelector } from 'react-redux';
-export const BusinessDetails = () => {
+export const BusinessDetails = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [mandiData, setMandiData] = useState({});
@@ -11,10 +11,8 @@ export const BusinessDetails = () => {
   const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
   useEffect(()=>{
     getBusinessDetails();
-  },[]);
-  useEffect(()=>{
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
-  },[])
+  },[props])
   const getBusinessDetails = () => {
     getMandiDetails(clickId)
       .then((response) => {
@@ -53,7 +51,7 @@ export const BusinessDetails = () => {
           </div>
           <div className="billid_date_bg">
             <p className="small_text text-center">
-              Bill ID : {billData?.billId!==null?billData?.billId:''}
+              Bill ID : {billData?.caBSeq!==null?billData?.caBSeq:''}
             </p>
           </div>
         </div>

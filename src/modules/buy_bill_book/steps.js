@@ -35,15 +35,21 @@ const Steps = (props) => {
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billViewEditStatus = billEditItemInfo?.billEditStatus;
   const dispatch = useDispatch();
   const clearData = (e) => {
+    console.log(billViewEditStatus,"stat")
     localStorage.removeItem("defaultDate");
     localStorage.removeItem("setDate");
     dispatch(selectTrans(null));
     setcropEditObject([]);
     setslectedCropstableArray([]);
+    if(billViewEditStatus){
+      window.location.reload();
+    }
   };
-
+  console.log()
   return (
     <Modal
       show={props.showStepsModal}
@@ -75,15 +81,16 @@ const Steps = (props) => {
       </div>
       <div className="modal-body p-0">
         <div className="d-flex steps_flex align-items-center justify-content-center">
-          <button className={selectedStep.stepsInfo == 'step1' ? 'steps_btn steps_btn_active' : 'steps_btn'}>
+          <button className={selectedStep.stepsInfo == 'step1' ? 'steps_btn steps_btn_active' : selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')}>
              Step1
           </button>
           <div className="steps_btn_border"></div>
-          <button className={selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : 'steps_btn'} >
+          <button className={selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')} >
              Step2
           </button>
           <div className="steps_btn_border"></div>
-          <button className={selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn'}>
+          <button className={selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 
+          'steps_btn'}>
              Step3
           </button>
         </div>

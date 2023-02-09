@@ -401,8 +401,9 @@ option[value=""][disabled] {
 .crop_table_view {
   table {
     border-radius: 10px;
-    margin-top: 10px;
+    // margin-top: 10px;
     margin-bottom: 0px;
+    width: 100%;
   }
   th {
     color: var(--ono-primary-text);
@@ -470,7 +471,6 @@ option[value=""][disabled] {
   border-radius: 10px;
   margin-top: 5px;
   .col-lg-6,
-  .col-lg-4,
   .col-lg-12 {
     padding: 5px 10px;
   }
@@ -489,7 +489,7 @@ input:focus-visible {
 .comm_total_card {
   padding: 15px;
   overflow-y: auto;
-  height: calc(100vh - 250px);
+  height: calc(100vh - 300px);
 }
 .total_bal{
   height: auto;
@@ -722,6 +722,15 @@ article.on {
     padding-right: 5px;
   }
 }
+.complete-dot{
+  width: 5px;
+  height: 5px;
+  background: #16A02C;
+  border-radius: 100%;
+}
+.bill-name{
+  padding: 0px 5px;
+}
 #slect_input{
   border: none;
   width: 100%;
@@ -900,6 +909,8 @@ border-radius: 10px;
   font-weight: 600;
 font-size: 15px;
 color: #1C1C1C;
+margin-bottom: 20px;
+text-align: center;
 }
 .buyer_img{
   width: 40px;
@@ -914,7 +925,7 @@ color: #1C1C1C;
 }
 .b-name{
   font-weight: 600;
-font-size: 13px;
+font-size: 18px;
 color: #121212;
 }
 .d-a-value{
@@ -1197,12 +1208,15 @@ font-size: 12px;
   }
   .items_div{
     text-align: center;
-    margin-right: 20px;
+    margin-bottom: 20px;
     img{
       display: flex;
       margin: 0 auto;
       margin-bottom: 5px;
     }
+  }
+  .items_div:hover{
+    cursor: pointer;
   }
 }
 .onoFooter_row{
@@ -1235,4 +1249,26 @@ font-size: 12px;
 .comment_text{
   color: var(--ono-blue);
   font-size: 13px;
+}
+
+// table new css
+.crop_table_header_row{
+  .col-lg-2, .col-lg-1, .col-lg-3{
+    padding:10px;
+    border-right: 1px solid #dee2e6;
+  }
+  .last_col{
+    border-right: 0px;
+  }
+}
+.crop_table_view table {
+  .col-2, .col-1, .col-3{
+    padding: 5px 10px;
+  }
+  
+}
+.table_div {
+  td{
+    border-top: 0px!important;
+  }
 }

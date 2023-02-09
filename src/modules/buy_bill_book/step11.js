@@ -65,8 +65,8 @@ const Step11 = (props) => {
       dispatch(selectedParty("seller"));
     }
     if(!(billEditItemInfo?.fromBillBook)){
-        console.log(billEditItemInfo?.fromBillBook,!billEditItemInfo?.fromBillBook)
         var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
+        console.log(h,"step1crops")
         props.billEditStatuscallback(h);
     }
   };

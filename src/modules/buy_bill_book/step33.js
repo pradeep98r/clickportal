@@ -43,6 +43,7 @@ const Step33 = (props) => {
   const navigate = useNavigate();
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
   var buyerInfo = users.buyerInfo;
+  console.log(buyerInfo,"info")
   const editStatus = billEditItemInfo?.billEditStatus;
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     //users.buyerInfo
@@ -78,6 +79,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
+    console.log('came to step3 useeffect')
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -128,7 +130,6 @@ const Step33 = (props) => {
       var response;
       if (res.data.data.billSetting.length > 0) {
         response = res.data.data.billSetting;
-        console.log(response, "settings");
         for (var i = 0; i < response.length; i++) {
           if (response[i].billType === "BUY") {
             if (response[i].formStatus === 1) {
@@ -660,6 +661,7 @@ const Step33 = (props) => {
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
   // : props.slectedCropsArray;
+  // console.log(cropArray,props.slectedCropsArray,"which one");
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -679,7 +681,6 @@ const Step33 = (props) => {
     });
   }
   // }
-
   const billRequestObj = {
     actualPayble: Number(getActualPayble()),
     advance: Number(advancesValue),
@@ -699,6 +700,8 @@ const Step33 = (props) => {
     labourCharges:
       labourTotalValue != 0
         ? Number(labourTotalValue)
+        : tableChangeStatus
+        ? Number(laborChargeValue)
         : Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
@@ -709,14 +712,17 @@ const Step33 = (props) => {
     rent:
       rentTotalValue != 0
         ? Number(rentTotalValue)
-        : Number(getTotalUnits(rentValue).toFixed(2)),
+        : tableChangeStatus
+        ? Number(rentValue) : Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalPayble: getTotalPayble(),
     transportation:
       transTotalValue != 0
         ? Number(transTotalValue)
-        : Number(getTotalUnits(transportationValue).toFixed(2)),
+        : tableChangeStatus
+        ? Number(transportationValue) :
+         Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -743,6 +749,8 @@ const Step33 = (props) => {
       labourCharges:
         labourTotalValue != 0
           ? Number(labourTotalValue)
+          : tableChangeStatus
+          ? Number(laborChargeValue)
           : Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
@@ -754,14 +762,17 @@ const Step33 = (props) => {
       rent:
         rentTotalValue != 0
           ? Number(rentTotalValue)
-          : Number(getTotalUnits(rentValue).toFixed(2)),
+          : tableChangeStatus
+          ? Number(rentValue) : Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: getTotalPayble(),
       transportation:
         transTotalValue != 0
           ? Number(transTotalValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2)),
+          : tableChangeStatus
+          ? Number(transportationValue) : 
+          Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
         transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
@@ -804,9 +815,9 @@ const Step33 = (props) => {
         }
       );
     } else {
+      console.log(billRequestObj)
       postbuybillApi(billRequestObj).then(
         (response) => {
-          console.log(response);
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.description, {
               toastId: "success1",
@@ -1198,7 +1209,6 @@ const Step33 = (props) => {
   };
   const commentText = (e) =>{
     var val = e.target.value;
-    console.log(val);
     setCommentFieldText(val);
   }
   const cstmCommentText = (groupLiist, index) => (e) =>{
@@ -1220,7 +1230,6 @@ const Step33 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
-            console.log(tab)
             setCstmval(true);
             setQuestionsTitle(tab);
           }
@@ -1468,7 +1477,7 @@ const Step33 = (props) => {
       </div>
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
-          <button className="secondary_btn" onClick={cancelStep}>
+          <button className="secondary_btn" onClick={()=>cancelStep()}>
             cancel
           </button>
           <div className="d-flex align-items-center">

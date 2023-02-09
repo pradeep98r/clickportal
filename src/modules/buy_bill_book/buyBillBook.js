@@ -2,9 +2,9 @@ import React, { Component, useEffect, useState } from "react";
 import "../buy_bill_book/buyBillBook.scss";
 import { qtyValues } from "../../components/qtyValues";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import multi_bills from "../../assets/images/bills/multi_bills.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
 import { getBuyBills } from "../../actions/billCreationService";
+import cancel from "../../assets/images/cancel.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
@@ -30,6 +30,7 @@ import { selectTrans } from "../../reducers/transSlice";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
+import BillView from "./billView";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -42,7 +43,6 @@ function BuyBillBook() {
 
   const billData = useSelector((state) => state.billViewInfo);
   const dispatch = useDispatch();
-  console.log(billData);
   useEffect(() => {
     callbackFunction();
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
@@ -98,12 +98,15 @@ function BuyBillBook() {
         console.log(error.message);
       });
   };
-  const navigate = useNavigate();
   var billViewStatus = false;
+  const [showBillModalStatus, setShowBillModalStatus] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
   const billOnClick = (id, bill) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
-    navigate(generatePath(`/bill_view/${id}`, { id }));
+    setShowBillModalStatus(true);
+    setShowBillModal(true);
+    // navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
@@ -259,7 +262,7 @@ function BuyBillBook() {
                                 {buyBillData.map((bill, index) => (
                                   <div
                                     onClick={() =>
-                                      billOnClick(bill.billId, bill)
+                                      billOnClick(bill.caBSeq, bill)
                                     }
                                     key={index}
                                     className="billsDiv"
@@ -294,7 +297,7 @@ function BuyBillBook() {
                                           <div className="col-lg-5 col-sm-12 billid_div">
                                             <p className="biilid">
                                               {langFullData.billNo}:{" "}
-                                              {bill.billId}{" "}
+                                              {bill.caBSeq}{" "}
                                             </p>
                                             <p>
                                               {moment(bill.billDate).format(
@@ -306,10 +309,16 @@ function BuyBillBook() {
                                                 color:
                                                   bill.billStatus == "CANCELLED"
                                                     ? "#d43939"
-                                                    : "#16a02c",
+                                                    : "#1C1C1C",
                                               }}
                                             >
-                                              {getText(bill.billStatus)}
+                                              <div className="flex_class">
+                                              {bill.billStatus == "CANCELLED"?
+                                              <img src={cancel} width="10px" height="10px" />:
+                                                <div className="complete-dot"></div>
+                                                }
+                                                <div className="bill-name">{getText(bill.billStatus)}</div>
+                                              </div>
                                             </p>
                                           </div>
                                         </div>
@@ -436,6 +445,15 @@ function BuyBillBook() {
         <Steps
           showStepsModal={showStepsModal}
           closeStepsModal={() => setShowStepsModal(false)}
+        />
+      ) : (
+        ""
+      )}
+      {showBillModalStatus ? (
+        <BillView
+        showBillViewModal={showBillModal}
+        closeBillViewModal={() => setShowBillModal(false)}
+        allBillsData ={buyBillData}
         />
       ) : (
         ""
