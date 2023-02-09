@@ -107,12 +107,15 @@ const Step3PartySelect = (props) => {
   const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
   const users = useSelector((state) => state.buyerInfo);
   const partySelect = (item, type) => {
+    console.log(item,type,"type")
+    setActiveInput(false);
     if (searchValue != "") {
       // setAllData([])
       fetchPertnerData();
     }
     setGetPartyItem(item);
     if (type == "Transporter") {
+      setActiveTrans(false);
       setTranspoDataStatus(false);
       setTransportoSelectStatus(true);
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
@@ -140,7 +143,8 @@ const Step3PartySelect = (props) => {
 
     } else if (type == "Seller" || type === "FARMER" && linkPath === '/buy_bill_book') {
       setPartySelectedData(item);
-      dispatch(selectBuyer(partySelecteData));
+      dispatch(selectBuyer(item));
+      // dispatch(selectBuyer(partySelecteData));
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
       getOutstandingBal(clickId, item.partyId).then((res) => {
@@ -155,38 +159,29 @@ const Step3PartySelect = (props) => {
   const [transpoDataStatus, setTranspoDataStatus] = useState(false);
   const [count, setCount] = useState(0);
 
+  const [activeInput, setActiveInput] = useState(false);
+  const [activeTrans, setActiveTrans] = useState(false);
   const partnerClick = (type) => {
+    console.log("came to here",type)
     setCount(count + 1);
-    // if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
-    //   if (count % 2 == 0) {
-    //     setPartnerDataStatus(true);
-    //   } else {
-    //     setPartnerDataStatus(false);
-    //   }
-    //   //setPartnerDataStatus(true);
-    //   setPartnerType("Buyer");
-    //   fetchPertnerData("Buyer");
-    // } else 
+    if (type == "Buyer" || type.toUpperCase() === 'BUYER') {
+      setActiveInput(true);
+      setPartnerDataStatus(true);
+      setPartnerType("Buyer");
+      fetchPertnerData("Buyer");
+    } else 
     if (type == "Transporter") {
-      if (count % 2 == 0) {
-        setTranspoDataStatus(true);
-      } else {
-        setTranspoDataStatus(false);
-      }
-      //setTranspoDataStatus(true);
+      setActiveTrans(true);
+      setTranspoDataStatus(true);
       setPartnerType(type);
       fetchPertnerData(type);
     }
-    // else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
-    //   if (count % 2 == 0) {
-    //     setPartnerDataStatus(true);
-    //   } else {
-    //     setPartnerDataStatus(false);
-    //   }
-    //   //setPartnerDataStatus(true);
-    //   setPartnerType(type);
-    //   fetchPertnerData("Seller");
-    // }
+    else if (type == "Seller" || type.toUpperCase() === 'FARMER') {
+      setActiveInput(true);
+      setPartnerDataStatus(true);
+      setPartnerType(type);
+      fetchPertnerData("Seller");
+    }
   };
   const [showCropModal, setShowCropModal] = useState(false);
   const [showCropModalStatus, setShowCropModalStatus] = useState(false);
@@ -279,6 +274,22 @@ const Step3PartySelect = (props) => {
             className="selectparty_field d-flex align-items-center justify-content-between"
             onClick={() => partnerClick(partySelecteData.partyType)}//"Buyer")}
           >
+            {activeInput ? (
+              <div
+                className="party_div"
+              >
+                <div className="party_div" role="search">
+                  <input
+                    type="text"
+                    className="form-control search_control"
+                    placeholder={'Type ' + partySelecteData.partyType + ' Name Here'}
+                    onChange={(event) => {
+                      handleSearch(event);
+                    }}
+                  />
+                </div>
+              </div>
+            ):(
             <div className="partner_card">
               <div className="d-flex align-items-center">
                 <img src={single_bill} className="icon_user" />
@@ -319,24 +330,27 @@ const Step3PartySelect = (props) => {
                 </div>
               </div>
             </div>
+            )}
+            {billeditStatus?'':
             <img src={d_arrow} />
+            }
           </div>
         </div>
       ) : ('')}
       {partnerDataStatus ? (
         <div className="partners_div" id="scroll_style">
           <div className="d-flex searchparty" role="search">
-            <SearchField
+            {/* <SearchField
               placeholder={langFullData.search}
               onChange={(event) => {
                 handleSearch(event);
               }}
-            />
+            /> */}
             {/* <input
             className="form-control mb-0"
             type="search"
             placeholder="Search"
-            aria-label="Search"
+            aria-label="Search"S
             onChange={(event) => setSearchPartyItem(event.target.value)}
           /> */}
           </div>
@@ -390,6 +404,22 @@ const Step3PartySelect = (props) => {
             className="selectparty_field d-flex align-items-center justify-content-between"
             onClick={() => partnerClick("Transporter")}
           >
+            {activeTrans ? (
+              <div
+                className="party_div"
+              >
+                <div className="party_div" role="search">
+                  <input
+                    type="text"
+                    className="form-control search_control"
+                    placeholder={'Type ' + partySelecteData.partyType + ' Name Here'}
+                    onChange={(event) => {
+                      handleSearch(event);
+                    }}
+                  />
+                </div>
+              </div>
+            ):(
             <div className="partner_card">
               <div className="d-flex align-items-center">
                 <img src={single_bill} className="icon_user" />
@@ -428,10 +458,27 @@ const Step3PartySelect = (props) => {
                 </div>
               </div>
             </div>
+            )}
             <img src={d_arrow} />
           </div>
         </div>
       ) : (
+        activeTrans ? (
+          <div
+            className="party_div"
+          >
+            <div className="party_div" role="search">
+              <input
+                type="text"
+                className="form-control search_control"
+                placeholder={'Type ' + partySelecteData.partyType + ' Name Here'}
+                onChange={(event) => {
+                  handleSearch(event);
+                }}
+              />
+            </div>
+          </div>
+        ):
         <p
           onClick={() => partnerClick("Transporter")}
           className="select_transporter"
@@ -442,12 +489,12 @@ const Step3PartySelect = (props) => {
       {transpoDataStatus ? (
         <div className="partners_div" id="scroll_style">
           <div className="d-flex searchparty" role="search">
-            <SearchField
+            {/* <SearchField
               placeholder={langFullData.search}
               onChange={(event) => {
                 handleSearch(event);
               }}
-            />
+            /> */}
           </div>
 
           <div>
@@ -512,7 +559,6 @@ const Step3PartySelect = (props) => {
                     <div className="crops_info">
                       <div className="selectparty_field edit_crop_item_div" id="scroll_style">
                         <div className="d-flex align-items-center justify-content-between">
-                          {/* <p className="d-flex align-items-center"></p> */}
                           <div className="d-flex">
                             <div>
                               <img
@@ -524,7 +570,6 @@ const Step3PartySelect = (props) => {
                               <p className="crops-color">{item.cropName}</p>
                               <p className="crops-color">{item.qty ? item.qty : ''}{" "}
                                 {item.qty ?getQuantityType(item.qtyUnit) + " | ":''}
-                                {/* {item.qty ? item.qtyUnit.charAt(item).toUpperCase() + " | " : ''} */}
                                 {item.weight ? item.weight + ' KGS ' : ''}
                                 <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span></p>
                             </div>
@@ -533,11 +578,7 @@ const Step3PartySelect = (props) => {
                               <p className="crops-color">Total</p>
                               <p className="crops-color">{item.total ? item.total.toFixed(2)  : 0}</p>
                             </div>
-                            {/* <p className="edit_crop_item_len d-flex align-items-center"> */}
-                            {/* <p>{billEditItem.length}</p>
-                        <span className="ml-3">Crops</span> */}
-                            {/* </p> */}
-                          
+                            
                         </div>
                       </div></div>
                     : ('')
