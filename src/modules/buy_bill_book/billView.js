@@ -43,7 +43,6 @@ const BillView = (props) => {
     dispatch(billViewStatus(true));
     // setBillViewData(JSON.parse(localStorage.getItem("billData")));
     setBillViewData(billViewData.billViewInfo);
-    console.log("useffect");
   }, [props.showBillViewModal]);
 
   const cancelBillStatus = () => {
@@ -64,7 +63,8 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    // props.closeBillViewModal();
+    $('.billView_modal').hide();
+    $('.modal-backdrop').remove();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -77,6 +77,7 @@ const BillView = (props) => {
         billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
       )
     );
+
     dispatch(cropEditStatus(false));
     setEditCancelStatus(true);
     
@@ -172,7 +173,6 @@ const BillView = (props) => {
   };
 
   const handleCheckEvent = () => {
-    console.log(editBillRequestObj);
     $("#cancelBill").modal("show");
   };
   const closePopup = () => {
@@ -181,7 +181,7 @@ const BillView = (props) => {
   const[prevNextStatus, setPrevNextStatus] = useState(false);
   const[prevNextDisable, setPrevNextDisable] = useState(false);
   const previousBill = (id) => {
-    var index1 = allBillsArray.findIndex((obj) => obj.billId == id);
+    var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
     if (index1 != -1) {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
@@ -196,7 +196,7 @@ const BillView = (props) => {
   };
   const[nextDisable, setNextDisable] = useState(false);
   const nextBill = (id) => {
-    var index1 = allBillsArray.findIndex((obj) => obj.billId == id);
+    var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
     if (index1 != -1) {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
@@ -226,7 +226,7 @@ const BillView = (props) => {
               : billData?.buyerName}
             -
           </p>
-          <p className="b-name">{billData?.billId}</p>
+          <p className="b-name">{billData?.caBSeq}</p>
         </h5>
         <img
           alt="image"
@@ -295,15 +295,15 @@ const BillView = (props) => {
       <div className="modal-footer bill_footer d-flex justify-content-center">
         <button
           onClick={() => {
-            previousBill(billData?.billId - 1);
+            previousBill(billData?.caBSeq - 1);
           }}
         >
           <img src={prev_icon} className={prevNextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image"  />
         </button>
-        <p className="b-name">{billData?.billId}</p>
+        <p className="b-name">{billData?.caBSeq}</p>
         <button
           onClick={() => {
-            nextBill(billData?.billId + 1);
+            nextBill(billData?.caBSeq + 1);
           }}
         >
           <img src={next_icon} className={nextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image" />

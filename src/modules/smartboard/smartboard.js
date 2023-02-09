@@ -29,8 +29,15 @@ import tickMark from "../../assets/images/tick_mark.svg";
 import no_data_icon from "../../assets/images/no_data_small.svg";
 import { DateUtils } from "rsuite/esm/utils";
 import NoInternetConnection from "../../components/noInternetConnection";
-
+import { selectSteps } from "../../reducers/stepsSlice";
+import { billViewInfo } from "../../reducers/billViewSlice";
+import { selectBuyer } from "../../reducers/buyerSlice";
+import { selectTrans } from "../../reducers/transSlice";
+import { fromBillbook } from "../../reducers/billEditItemSlice";
+import { useDispatch } from "react-redux";
+import Steps from "../buy_bill_book/steps";
 const SmartBoard = () => {
+  const dispatch = useDispatch();
   const [tabType, setTabType] = useState("Daily");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -63,6 +70,7 @@ const SmartBoard = () => {
   const [weekEndDate, setweekEndDate] = useState(
     moment(new Date()).format("DD-MMM-YYYY")
   );
+
   $(function () {
     var startWeekDate = moment(new Date()).format("YYYY-MMM-DD");
     var endWeekDate = new Date();
@@ -331,20 +339,33 @@ const SmartBoard = () => {
     localStorage.removeItem("mandiEditStatus");
     localStorage.setItem("mandiEditStatus", false);
   };
-
+  const [showStepsModal, setShowStepsModal] = useState(false);
+  const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
   const handleLinks = (path) => {
     console.log(path);
     if (path === "/sellbillbook") {
       localStorage.setItem("LinkId", 3);
       localStorage.setItem("LinkPath", "/sellbillbook");
-      navigate("/sellbillbook");
-      console.log("sell");
-      window.location.reload();
+      // navigate("/sellbillbook");
+      setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectSteps('step1'))
+    dispatch(selectBuyer(null));
+    dispatch(fromBillbook(true));
+      // window.location.reload();
     } else if (path === "/buy_bill_book") {
       localStorage.setItem("LinkId", 4);
       localStorage.setItem("LinkPath", "/buy_bill_book");
-      navigate("/buy_bill_book");
-      window.location.reload();
+      // navigate("/buy_bill_book");
+      // window.location.reload();
+      // stepOneHeader = true;
+      // localStorage.setItem("stepOne", stepOneHeader);
+      setShowStepsModalStatus(true);
+      setShowStepsModal(true);
+      dispatch(selectSteps("step1"));
+      dispatch(selectBuyer(null));
+      dispatch(selectTrans(null));
+      dispatch(fromBillbook(true));
     } else if (path === "/buyerledger") {
       localStorage.setItem("LinkId", 5);
       localStorage.setItem("LinkPath", "/buyerledger");
@@ -1676,6 +1697,14 @@ const SmartBoard = () => {
           </div>
         </div>
       </div>
+      {showStepsModalStatus ? (
+        <Steps
+          showStepsModal={showStepsModal}
+          closeStepsModal={() => setShowStepsModal(false)}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

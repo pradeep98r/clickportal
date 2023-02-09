@@ -51,7 +51,7 @@ export const BusinessDetails = (props) => {
           </div>
           <div className="billid_date_bg">
             <p className="small_text text-center">
-              Bill ID : {billData?.billId!==null?billData?.billId:''}
+              Bill ID : {billData?.caBSeq!==null?billData?.caBSeq:''}
             </p>
           </div>
         </div>

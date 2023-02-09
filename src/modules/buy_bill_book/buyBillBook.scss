@@ -471,7 +471,6 @@ option[value=""][disabled] {
   border-radius: 10px;
   margin-top: 5px;
   .col-lg-6,
-  .col-lg-4,
   .col-lg-12 {
     padding: 5px 10px;
   }
@@ -490,7 +489,7 @@ input:focus-visible {
 .comm_total_card {
   padding: 15px;
   overflow-y: auto;
-  height: calc(100vh - 250px);
+  height: calc(100vh - 300px);
 }
 .total_bal{
   height: auto;
@@ -722,6 +721,15 @@ article.on {
     padding-left: 10px;
     padding-right: 5px;
   }
+}
+.complete-dot{
+  width: 5px;
+  height: 5px;
+  background: #16A02C;
+  border-radius: 100%;
+}
+.bill-name{
+  padding: 0px 5px;
 }
 #slect_input{
   border: none;

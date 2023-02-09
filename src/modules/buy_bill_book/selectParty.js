@@ -45,7 +45,6 @@ const SelectPartner = (props) => {
       .then((response) => {
         setAllData(response.data.data);
         setpartnerData(response.data.data);
-        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -66,14 +65,13 @@ const SelectPartner = (props) => {
     }
   };
 
-
-//   $('container').mouseup(function (e) {
-//     if ($(e.target).closest(".container").length === 0) { 
-//       console.log("came to her")
-//       setGetPartyItem(selectedPartner);
-//       setActiveInput(false);
-//   }
-// });
+  //   $('container').mouseup(function (e) {
+  //     if ($(e.target).closest(".container").length === 0) {
+  //       console.log("came to her")
+  //       setGetPartyItem(selectedPartner);
+  //       setActiveInput(false);
+  //   }
+  // });
 
   const partySelect = (item) => {
     Object.assign(item, { itemtype: "" }, { date: "" });
@@ -132,26 +130,42 @@ const SelectPartner = (props) => {
   };
   return (
     <div>
-      <div onClick={()=>{selectParty()}}>
+      <div
+        onClick={() => {
+          selectParty();
+        }}
+      >
         {getPartyItem == null ? (
           <div>
-          {activeInput?
-            <div className="selectparty_field d-flex align-items-center justify-content-between" id="excludeDiv">
-              <div className="d-flex searchparty pb-0" role="search">
-                <SearchField
+            {activeInput ? (
+              <div
+                className="selectparty_field d-flex align-items-center justify-content-between"
+                id="excludeDiv"
+              >
+                <div className="d-flex searchparty search_control_div pb-0" role="search">
+                  {/* <SearchField
                   placeholder={langFullData.search}
                   onChange={(event) => {
                     handleSearch(event);
                   }}
-                />
+                  
+                /> */}
+                  <input
+                    type="text"
+                    className="form-control search_control"
+                    placeholder={'Type ' + props.partyType + ' Name Here'}
+                    onChange={(event) => {
+                      handleSearch(event);
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            :
-            <div className="selectparty_field d-flex align-items-center justify-content-between">
-              <p>Select {props.partyType}</p>
-              <img src={d_arrow} />
-          </div>
-          }
+            ) : (
+              <div className="selectparty_field d-flex align-items-center justify-content-between">
+                <p>Select {props.partyType}</p>
+                <img src={d_arrow} />
+              </div>
+            )}
           </div>
         ) : (
           <div className="selectparty_field d-flex align-items-center justify-content-between">
@@ -178,11 +192,10 @@ const SelectPartner = (props) => {
       </div>
 
       {getPartyName ? (
-        <div className="partners_div" id="scroll_style" >
+        <div className="partners_div" id="scroll_style">
           <div id="partners">
             {partnerData.length > 0 ? (
               <div>
-               
                 <ul>
                   {partnerData.map((item) => {
                     return (
@@ -191,9 +204,7 @@ const SelectPartner = (props) => {
                         onClick={() => partySelect(item)}
                         className={
                           "nav-item " +
-                          (item.partyId == count
-                            ? "active_class"
-                            : "")
+                          (item.partyId == count ? "active_class" : "")
                         }
                       >
                         <div className="partner_card">

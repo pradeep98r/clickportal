@@ -35,15 +35,21 @@ const Steps = (props) => {
     setcropEditObject(cropEditObject);
     setslectedCropstableArray(slectedCropstableArray);
   };
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billViewEditStatus = billEditItemInfo?.billEditStatus;
   const dispatch = useDispatch();
   const clearData = (e) => {
+    console.log(billViewEditStatus,"stat")
     localStorage.removeItem("defaultDate");
     localStorage.removeItem("setDate");
     dispatch(selectTrans(null));
     setcropEditObject([]);
     setslectedCropstableArray([]);
+    if(billViewEditStatus){
+      window.location.reload();
+    }
   };
-
+  console.log()
   return (
     <Modal
       show={props.showStepsModal}
