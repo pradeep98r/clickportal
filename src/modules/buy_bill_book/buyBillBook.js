@@ -261,7 +261,7 @@ function BuyBillBook() {
                                 {buyBillData.map((bill, index) => (
                                   <div
                                     onClick={() =>
-                                      billOnClick(bill.billId, bill)
+                                      billOnClick(bill.caBSeq, bill)
                                     }
                                     key={index}
                                     className="billsDiv"
@@ -296,7 +296,7 @@ function BuyBillBook() {
                                           <div className="col-lg-5 col-sm-12 billid_div">
                                             <p className="biilid">
                                               {langFullData.billNo}:{" "}
-                                              {bill.billId}{" "}
+                                              {bill.caBSeq}{" "}
                                             </p>
                                             <p>
                                               {moment(bill.billDate).format(

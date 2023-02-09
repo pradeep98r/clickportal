@@ -52,36 +52,22 @@ const Step22 = (props) => {
   const [cropsData, setCropsData] = useState(allData);
   const [activeSearch, setActiveSearch] = useState(false);
 
+  const [addCropsIndex, setAddCropsIndex] = useState(0);
   const activeSearchCrop = (c, i) => {
-    let updatedarr = cropData.map((item, index) => {
-      if (item.cropId == c[i].cropId) {
-        item.activeSearch = true;
-        item.displayStat = false;
-        // item.cropName = c.cropName;
-        // item.imageUrl = c.imageUrl;
-        return item;
-      }
-      return item;
-    })
-    // console.log(updatedarr, "came to here")
-    cropResponseData(updatedarr);
-
-    // for(var k = 0; k<c.length;k++){
-    //   if(k==i){
-    //     console.log(i,k,"indexes")
-    //     c[k].activeSearch=true;
-    //     c[k].displayStat=false;
-    //     c[k].cropName=c.cropName;
-    //     c[k].imageUrl=c.imageUrl;
-    //     console.log(c[k],"k")
-    //     cropResponseData([...cropData,c[k]])
-    //   } else{
-    //     cropResponseData([...cropData])
-    //   }
-    // }
-    // setActiveSearch(true);
-    // setDisplayStat(false);
-  }
+    console.log(c,cropData,i,"i");
+    setAddCropStatus(true);
+    fetchCropData();
+    setAddCropsIndex(i);
+    let index = cropData.findIndex(obj => obj.cropId == c[i].cropId)
+    console.log(index,"inde")
+    if(index !==-1){
+      console.log("came to here",index)
+      c[index].activeSearch=true;
+      c[index].displayStat=false;
+    }
+    c.slice(index, 1, c[index]);
+    cropResponseData([...c]);
+   }
   const fetchCropData = () => {
     getAllCrops().then((response) => {
       response.data.data.map((item) => {
@@ -92,7 +78,8 @@ const Step22 = (props) => {
     });
   };
   const [displayStat, setDisplayStat] = useState(false);
-  const handleAddCropStatus = () => {
+  const handleAddCropStatus = (index) => {
+    console.log(index,"index")
     setAddCropStatus(true);
     fetchCropData();
   }
@@ -748,10 +735,12 @@ const Step22 = (props) => {
   };
   var cropArraynew = [];
   const [addCrop, setAddCrop] = useState(false);
-  const [getCropItem, setCropItem] = useState(null);
+  const [getCropItem, setCropItem] = useState(false);
   const addCropRow = () => {
     setAddCrop(true);
-
+    setCropItem(true);
+    console.log(addCropsIndex,"cropIndex")
+    // setAddCropsIndex(addCropsIndex+1);
     setDisplayStat(false);
     setActiveSearch(true);
     var crpObject = {
@@ -786,89 +775,81 @@ const Step22 = (props) => {
     setCropsData(result);
     setSearchValue(value);
   };
+
   const addCropToEmptyRow = (crop, c, i) => {
-    setCropItem(crop);   
-    let updatedarr = cropData.map((item, index)=>{
-      if(item.cropId == c[i].cropId){
-        item.cropName = crop.cropName;
-        item.imageUrl = crop.imageUrl;
-        item.displayStat = true;
-        item.cropSelect = 'active';
-        item.wastage = 0;
-        item.qty = 0;
-        item.weight = 0;
-        item.rateType = "kgs"
-        item.rate = 0;
-        item.total = 0;
-        item.qtyUnit = "crates"
-        item.checked = false;
-        item.bags = [];
-        item.status = 1;
-        item.activeSearch = true;
-        return item;
-      }
-      else{
-        return item;
-      }
-    })
-    // let index = cropData.findIndex(obj => obj.cropId == c[i].cropId);
-    // if(index !== -1){
-        
-    // } else{
-    //   // cropResponseData(cropData)
-    // }
+    console.log(cropData,crop, c,i, "data");
+    console.log(getCropItem); 
+    if(getCropItem){
+      console.log("came to here");
+      c[i].cropName=crop.cropName;
+      c[i].imageUrl=crop.imageUrl;
+      c[i].cropId=crop.cropId;
+      c[i].displayStat=true;
+      c[i].cropSelect = 'active';
+      c[i].wastage = 0;
+      c[i].qty = 0;
+      c[i].weight = 0;
+      c[i].rateType = "kgs"
+      c[i].rate = 0;
+      c[i].total = 0;
+      c[i].qtyUnit = "crates"
+      c[i].checked = false;
+      c[i].bags = [];
+      c[i].count=1;
+      c[i].status = 1;
+      c[i].activeSearch = true;
     setAddCropStatus(false);
-    cropResponseData(updatedarr);
-    // let updatedCropData = cropData.map((item,index) => {
-    //   if (item.cropId == c[i].cropId) {
-    //     console.log(item.cropId,c[i].cropId,"ids")
-    //     item.cropName = crop.cropName;
-    //     item.imageUrl = crop.imageUrl;
-    //     item.displayStat = true;
-    //     item.cropSelect = 'active';
-    //     item.wastage = 0;
-    //     item.qty = 0;
-    //     item.weight = 0;
-    //     item.rateType = "kgs"
-    //     item.rate = 0;
-    //     item.total = 0;
-    //     item.qtyUnit = "crates"
-    //     item.checked = false;
-    //     item.bags = [];
-    //     item.status = 1;
-    //     item.activeSearch = true;
-    //     console.group(item,"itemif")
-    //     return item
-    //   } else {
-    //     console.group(item,"itemelse")
-    //     return item;
-    //   }
-    // })
+    cropResponseData(c);
+    } else{
+      c[addCropsIndex].cropName=crop.cropName;
+      c[addCropsIndex].imageUrl=crop.imageUrl;
+      c[addCropsIndex].cropId=crop.cropId;
+      c[addCropsIndex].displayStat=true;
+      c[addCropsIndex].cropSelect = 'active';
+      c[addCropsIndex].wastage = 0;
+      c[addCropsIndex].qty = 0;
+      c[addCropsIndex].weight = 0;
+      c[addCropsIndex].rateType = "kgs"
+      c[addCropsIndex].rate = 0;
+      c[addCropsIndex].total = 0;
+      c[addCropsIndex].qtyUnit = "crates"
+      c[addCropsIndex].checked = false;
+      c[addCropsIndex].bags = [];
+      c[addCropsIndex].status = 1;
+      c[addCropsIndex].activeSearch = true;
+      setAddCropStatus(false);
+      cropResponseData(c);
+    }
+    setCropItem(false);
+    console.log(addCropsIndex,"cropIndex")
+      
+    // let index = cropData.findIndex(obj => obj.cropId == c[addCropsIndex].cropId)
 
-    // var crpObject = {
-    //   cropActive: true ,
-    //   // cropName:crop.cropName,
-    //   // imageUrl:crop.imageUrl,
-    //   // displayStat:true,
-    //    cropSelect: "active" ,
-    //    wastage: 0 ,
-    //    qty: 0 ,
-    //    rateType: "kgs" ,
-    //    weight: 0 ,
-    //     rate: 0 ,
-    //    total: 0 ,
-    //    qtyUnit: "crates" ,
-    //    checked: false ,
-    //    bags: [] ,
-    //    status: 1 ,
-    //    activeSearch:true,
-    //   // displayStat:false
-    // };
-    // console.log(c[i], i, updatedCropData, "data");
-    // setDisplayStat(true);
-    
-
-    // cropResponseData([...cropData, c[i]])
+    // if(index !== -1){
+    //   c[index].cropName=crop.cropName;
+    //   c[index].imageUrl=crop.imageUrl;
+    //   c[index].displayStat=true;
+    //   c[index].cropSelect = 'active';
+    //   c[index].wastage = 0;
+    //   c[index].qty = 0;
+    //   c[index].weight = 0;
+    //   c[index].rateType = "kgs"
+    //   c[index].rate = 0;
+    //   c[index].total = 0;
+    //   c[index].qtyUnit = "crates"
+    //   c[index].checked = false;
+    //   c[index].bags = [];
+    //   c[index].status = 1;
+    //   c[index].activeSearch = true;
+    //   c.slice(index, 1, c[index]);
+    //   cropResponseData(c);
+    // } else{
+    //   cropResponseData(c)
+    // }
+    console.log(c[i],i,"data");
+    // c.slice(addCropsIndex, 1, c[addCropsIndex]);
+    // setAddCropStatus(false);
+    // cropResponseData(c);
 
   }
 
@@ -1001,7 +982,7 @@ const Step22 = (props) => {
                                       : cropData[index].activeSearch || addCrop ?
                                         <input
                                           // value={}
-                                          onClick={handleAddCropStatus}
+                                          onClick={() => {handleAddCropStatus(index)}}
                                           onChange={(event) => {
                                             handleSearch(event);
                                           }} /> : ''
