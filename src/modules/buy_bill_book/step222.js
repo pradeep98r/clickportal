@@ -1224,9 +1224,11 @@ const Step22 = (props) => {
             cancel
           </button>
           <div className="d-flex align-items-center">
+            {billEditStatus?'':
             <button className="secondary_btn" onClick={() => previousStep()}>
               Previous
             </button>
+            }
             <button className="primary_btn" onClick={() => step2Next()}>
               Next
             </button>
