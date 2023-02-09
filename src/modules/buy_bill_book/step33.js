@@ -78,6 +78,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
+    console.log('came to step3 useeffect')
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -813,6 +814,7 @@ const Step33 = (props) => {
         }
       );
     } else {
+      console.log(billRequestObj)
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -1474,7 +1476,7 @@ const Step33 = (props) => {
       </div>
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
-          <button className="secondary_btn" onClick={cancelStep}>
+          <button className="secondary_btn" onClick={()=>cancelStep()}>
             cancel
           </button>
           <div className="d-flex align-items-center">

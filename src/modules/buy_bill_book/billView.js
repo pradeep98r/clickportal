@@ -43,7 +43,6 @@ const BillView = (props) => {
     dispatch(billViewStatus(true));
     // setBillViewData(JSON.parse(localStorage.getItem("billData")));
     setBillViewData(billViewData.billViewInfo);
-    console.log("useffect");
   }, [props.showBillViewModal]);
 
   const cancelBillStatus = () => {
@@ -64,7 +63,7 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    // props.closeBillViewModal();
+    props.closeBillViewModal();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -172,7 +171,6 @@ const BillView = (props) => {
   };
 
   const handleCheckEvent = () => {
-    console.log(editBillRequestObj);
     $("#cancelBill").modal("show");
   };
   const closePopup = () => {
@@ -182,7 +180,6 @@ const BillView = (props) => {
   const[prevNextDisable, setPrevNextDisable] = useState(false);
   const previousBill = (id) => {
     var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
-    console.log(id,allBillsArray)
     if (index1 != -1) {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
@@ -190,11 +187,9 @@ const BillView = (props) => {
       setPrevNextStatus(true);
       setPrevNextDisable(false);
       setNextDisable(false);
-      console.log(id,'if')
     }
     else{
       setPrevNextDisable(true);
-      console.log(id,'else')
     }
   };
   const[nextDisable, setNextDisable] = useState(false);
