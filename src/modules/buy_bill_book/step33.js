@@ -660,7 +660,7 @@ const Step33 = (props) => {
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
   // : props.slectedCropsArray;
-  console.log(cropArray,"which one");
+  // console.log(cropArray,props.slectedCropsArray,"which one");
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -680,7 +680,6 @@ const Step33 = (props) => {
     });
   }
   // }
-console.log(lineItemsArray,"line Items")
   const billRequestObj = {
     actualPayble: Number(getActualPayble()),
     advance: Number(advancesValue),

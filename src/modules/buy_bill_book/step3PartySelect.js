@@ -555,7 +555,7 @@ const Step3PartySelect = (props) => {
               billEditItemCrops.length > 0 ?
               billEditItemCrops.map((item,i) => {
                   return (
-                    (billEditItemCrops[i].total != 0) ? 
+                    (!(billEditItemCrops[i].cropDelete)) ? 
                     <div className="crops_info">
                       <div className="selectparty_field edit_crop_item_div" id="scroll_style">
                         <div className="d-flex align-items-center justify-content-between">
@@ -567,7 +567,7 @@ const Step3PartySelect = (props) => {
                               />
                             </div>
                             <div>
-                              <p className="crops-color">Crops</p>
+                              <p className="crops-color">{item.cropName}</p>
                               <p className="crops-color">{item.qty ? item.qty : ''}{" "}
                                 {item.qty ?getQuantityType(item.qtyUnit) + " | ":''}
                                 {item.weight ? item.weight + ' KGS ' : ''}
