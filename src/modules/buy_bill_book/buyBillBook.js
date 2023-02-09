@@ -4,6 +4,7 @@ import { qtyValues } from "../../components/qtyValues";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
 import { getBuyBills } from "../../actions/billCreationService";
+import cancel from "../../assets/images/cancel.svg";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import $ from "jquery";
@@ -308,10 +309,16 @@ function BuyBillBook() {
                                                 color:
                                                   bill.billStatus == "CANCELLED"
                                                     ? "#d43939"
-                                                    : "#16a02c",
+                                                    : "#1C1C1C",
                                               }}
                                             >
-                                              {getText(bill.billStatus)}
+                                              <div className="flex_class">
+                                              {bill.billStatus == "CANCELLED"?
+                                              <img src={cancel} width="10px" height="10px" />:
+                                                <div className="complete-dot"></div>
+                                                }
+                                                <div className="bill-name">{getText(bill.billStatus)}</div>
+                                              </div>
                                             </p>
                                           </div>
                                         </div>

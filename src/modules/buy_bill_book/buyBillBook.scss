@@ -722,6 +722,15 @@ article.on {
     padding-right: 5px;
   }
 }
+.complete-dot{
+  width: 5px;
+  height: 5px;
+  background: #16A02C;
+  border-radius: 100%;
+}
+.bill-name{
+  padding: 0px 5px;
+}
 #slect_input{
   border: none;
   width: 100%;
