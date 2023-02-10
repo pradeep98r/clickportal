@@ -91,7 +91,8 @@ function BuyBillBook() {
         setLoading(false);
       })
       .catch((error) => {
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        if(error.code == '"ERR_NETWORK"'){
+          console.log("came to error code")
           setOnline(true);
         }
         setOnline(true);

@@ -76,8 +76,7 @@
 .header_row {
   padding: 7px 10px;
   background-color: var(--ono-select-background);
-  border: 1px solid #e4e4e4;
-  border-bottom: 0px;
+  border: 1px solid #666666;
   border-radius: 10px 10px 0px 0px;
 }
 .crop_table_header_row{
@@ -378,6 +377,8 @@ option[value=""][disabled] {
   margin-bottom: 0px;
   color: var(--ono-blue) !important;
   font-size: var(--body-small-text);
+  border: 0px!important;
+  text-transform: uppercase;
 }
 .dropdown {
   /*container for custom dropdown arrow*/
@@ -1254,12 +1255,18 @@ font-size: 12px;
   color: var(--ono-blue);
   font-size: 13px;
 }
+.crop_table_view{
+.table-bordered, .table-bordered td {
+  border: 1px solid #666666;
+  border-top: 0px!important;
+}
 
+}
 // table new css
 .crop_table_header_row{
   .col-lg-2, .col-lg-1, .col-lg-3{
     padding:10px;
-    border-right: 1px solid #dee2e6;
+    border-right: 1px solid #666666;
   }
   .last_col{
     border-right: 0px;
