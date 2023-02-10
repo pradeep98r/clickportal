@@ -346,19 +346,6 @@ const Step3PartySelect = (props) => {
       {partnerDataStatus ? (
         <div className="partners_div" id="scroll_style">
           <div className="d-flex searchparty" role="search">
-            {/* <SearchField
-              placeholder={langFullData.search}
-              onChange={(event) => {
-                handleSearch(event);
-              }}
-            /> */}
-            {/* <input
-            className="form-control mb-0"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"S
-            onChange={(event) => setSearchPartyItem(event.target.value)}
-          /> */}
           </div>
           <div>
             {partnerData.length > 0 ? (
