@@ -18,16 +18,19 @@ const BillDateSelection = (props) => {
   const dispatch = useDispatch();
   const onclickDate = (date) => {
     setStartDate(date);
+    localStorage.setItem('setDate',date);
     dispatch(billDate(date));
   };
   const [checked, setChecked] = useState(localStorage.getItem("defaultDate")!==null?true:false);
   const handleCheckEvent = () => {
     if (!checked) {
       setChecked(!checked);
+      console.log("checked")
       localStorage.setItem("defaultDate", true);
       setStartDate(selectedDate);
       localStorage.setItem('setDate',selectedDate);
     } else {
+      console.log("not checked else")
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
@@ -38,7 +41,8 @@ const BillDateSelection = (props) => {
       setStartDate(new Date(billDateselected));
     }
     else if(!checked){
-      setStartDate(new Date());
+      console.log("not checked");
+        setStartDate(selectedDate);
     } else{
       setStartDate(new Date(localStorage.getItem('setDate')));
     }
