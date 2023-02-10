@@ -408,7 +408,7 @@ const SellBillStep3 = (props) => {
             );
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
               // var trVa = res[j].value != 0 ? getSingleValues(newitem) : 0;
-              var trVa = getSingleValues(newitem);
+              var trVa = newitem != 0 ? getSingleValues(newitem) : 0;
               
               res[j] = {
                 ...res[j],
