@@ -7,6 +7,7 @@ import { useState } from "react";
 import SellBillStep3 from "../sell_bill_book/sellBillStep3";
 import { selectTrans } from "../../reducers/transSlice";
 import clo from "../../assets/images/close.svg";
+import { billDate } from "../../reducers/billEditItemSlice";
 const Steps = (props) => {
   const selectedStep = useSelector((state) => state.stepsInfo);
   const [selctedCrops, setSelctedCrops] = useState([]);
@@ -40,6 +41,7 @@ const Steps = (props) => {
   const dispatch = useDispatch();
   const clearData = (e) => {
     console.log(billViewEditStatus,"stat")
+    dispatch(billDate(new Date()));
     localStorage.removeItem("defaultDate");
     localStorage.removeItem("setDate");
     dispatch(selectTrans(null));
