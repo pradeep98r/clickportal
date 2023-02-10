@@ -143,6 +143,7 @@
 
 .fadeOut_col{
   background-color: #F3F3F3;
+  text-align: center;
 }
 .empty_row{
   td{
@@ -162,6 +163,21 @@
   z-index: 99;
   box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
 }
+.add-cropsdiv::before{
+  content: '';
+  position: absolute;
+  top: 6px; left: -10px;
+  visibility: visible;
+  width: 0; 
+  height: 0;
+  transition: .4s ease-in-out;
+  
+  /* Arrow is Pure CSS meaning it is sizable and you can change its colour! */
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid red;
+  z-index: 99;
+}
 #crops-space{
   padding: 10px 20px;
   border-bottom: 1px solid #E4E4E4;
@@ -177,4 +193,8 @@
   letter-spacing: -0.3px;
   float: right;
   padding:10px 0px;
+}
+.unit-type{
+  color: #0066FF!important;
+  padding-left: 5px;
 }

@@ -126,6 +126,9 @@ const SelectPartner = (props) => {
     } else if (value === "") {
       setpartnerData(allData);
     }
+    else{
+      setpartnerData([])
+    }
     setsearchValue(value);
   };
   return (
