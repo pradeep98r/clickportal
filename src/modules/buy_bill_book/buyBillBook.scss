@@ -76,8 +76,13 @@
 .header_row {
   padding: 7px 10px;
   background-color: var(--ono-select-background);
-  border: 1px solid #666666;
+  border: 1px solid #e4e4e4;
   border-radius: 10px 10px 0px 0px;
+  border-bottom: 0px;
+}
+.crop_table_header_row{
+  border: 1px solid #666666;
+  border-bottom: 1px solid #666666;
 }
 .bottom_space {
   margin-bottom: 5px;

@@ -370,7 +370,6 @@ const Step22 = (props) => {
             (obj) => obj.cropId == cropData[index].cropId
           );
           if (index1 == index) {
-            console.log("if");
             if (!lineitem[index1].cropDelete) {
             } else {
               cropData[index].status = 0;
@@ -407,7 +406,6 @@ const Step22 = (props) => {
               cropData.splice(l,1);
             }
           }
-          console.log(dArray, cropData);
         }
       }
     });
@@ -522,7 +520,6 @@ const Step22 = (props) => {
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
         );
-        console.log(dArray, cropData,"afterrr");
       }
     }
   };
