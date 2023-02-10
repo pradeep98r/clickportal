@@ -68,7 +68,6 @@ const Step22 = (props) => {
       c[index].cropActive = false;
     }
     c.slice(index, 1, c[index]);
-    console.log(c, c[i]);
     cropResponseData([...c]);
   };
   const fetchCropData = () => {
@@ -204,7 +203,6 @@ const Step22 = (props) => {
       : props.cropEditObject;
     dispatch(billViewStatus(billEditStatus));
     fetchData();
-    console.log(cropObjectArr, "useeffect");
     var lineIt = [];
     var a = [];
     if (cropTableEditStatus) {
@@ -236,7 +234,6 @@ const Step22 = (props) => {
           cropResponseData([...lineIt]);
           setUpdatedItemList(lineIt);
           setPreferedCropsData([...lineIt]);
-          console.log("prefffff");
         }
       }
       var cropArr = billEditStatus ? cropObjectArr : lineIt;
@@ -261,7 +258,6 @@ const Step22 = (props) => {
           cropResponseData([...props.slectedCropstableArray]);
           setUpdatedItemList(props.slectedCropstableArray);
           setPreferedCropsData([...props.slectedCropstableArray]);
-          console.log("elseiffff");
         }
       }
     }
@@ -294,7 +290,6 @@ const Step22 = (props) => {
           var existedItem = list[index];
           existedItem.count += 1;
           list[index] = existedItem;
-          console.log("cropdatapref");
           setPreferedCropsData([...list, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
@@ -327,7 +322,6 @@ const Step22 = (props) => {
             { cropDelete: false }
           );
           arr.push(i);
-          console.log("cropdataprefelseee");
           setPreferedCropsData([...preferedCropsData, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
@@ -337,7 +331,6 @@ const Step22 = (props) => {
       let deSelectedCrop = preferedCropsData.filter(
         (item) => item.cropId !== childData.cropId
       );
-      console.log("cropdataprefelse222");
       setPreferedCropsData(deSelectedCrop);
     }
   };
@@ -370,7 +363,6 @@ const Step22 = (props) => {
             (obj) => obj.cropId == cropData[index].cropId
           );
           if (index1 == index) {
-            console.log("if");
             if (!lineitem[index1].cropDelete) {
             } else {
               cropData[index].status = 0;
@@ -407,7 +399,6 @@ const Step22 = (props) => {
               cropData.splice(l,1);
             }
           }
-          console.log(dArray, cropData);
         }
       }
     });
@@ -522,7 +513,6 @@ const Step22 = (props) => {
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
         );
-        console.log(dArray, cropData,"afterrr");
       }
     }
   };
@@ -785,9 +775,9 @@ const Step22 = (props) => {
     setCropsData(result);
     setSearchValue(value);
   };
-
+  var arrayAdded = {};
   const addCropToEmptyRow = (crop, c, i) => {
-    console.log(crop, c, "data");
+    console.log(crop,c)
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
         return {
@@ -815,17 +805,36 @@ const Step22 = (props) => {
         return { ...c[j] };
       }
     });
+    
     let updatedItem4 = preferedCropsData.map((item, j) => {
       if (item.cropId == crop.cropId) {
         var countadded = preferedCropsData[j].count + 1;
-        console.log(j, i, preferedCropsData[j], countadded);
         return { ...preferedCropsData[j], count: countadded, cropActive: true };
       } else {
+        // arrayAdded.push(crop);
+        // arrayAdded = preferedCropsData[j];
         setPreferedCropsData([...preferedCropsData]);
         return { ...preferedCropsData[j] };
       }
     });
-
+    var index1 = updatedItem4.findIndex((obj) => obj.cropId == crop.cropId);
+      if (index1 != -1) {
+      }
+      else{
+        // var c = crop.count + 1;
+        Object.assign(crop,{count:1})
+        const new_obj = { ...crop, cropActive:true }
+        console.log(new_obj)
+        updatedItem4.push(new_obj);
+      }
+      var index2 = updatedItem4.findIndex((obj) => obj.cropId == c.cropId);
+      if (index2 != -1) {
+       console.log('same')
+      }
+      else{
+        console.log('different')
+      }
+    console.log(updatedItem4);
     setAddCropStatus(false);
     cropResponseData([...updatedItem3]);
     setUpdatedItemList([...updatedItem3]);

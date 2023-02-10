@@ -554,7 +554,9 @@ const Step33 = (props) => {
     );
     let totalValue = grossTotal - t;
     for (var i = 0; i < questionsTitle.length; i++) {
+      console.log(questionsTitle)
       if (questionsTitle[i].field != "") {
+        console.log(questionsTitle[i].field,questionsTitle[i].less)
         if (questionsTitle[i].less) {
           var t = 0;
           totalValue = totalValue - Number(questionsTitle[i].fee);
@@ -916,7 +918,7 @@ const Step33 = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
-    if (list.fieldType == "SIMPLE") {
+    if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
       return (list.fee = Number(getTotalUnits(val).toFixed(2)));

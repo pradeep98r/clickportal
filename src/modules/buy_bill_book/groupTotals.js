@@ -638,7 +638,7 @@ const GroupTotals = (props) => {
   };
   const getFinalLedgerbalance = () => {
     if (billData?.partyType.toUpperCase() === "FARMER") {
-      var t = parseInt(
+      var t = Number(
         billData?.transportation +
           billData?.labourCharges +
           billData?.rent +
@@ -648,7 +648,7 @@ const GroupTotals = (props) => {
           billData?.advance
       );
     } else {
-      var t = parseInt(
+      var t = Number(
         billData?.transportation +
           billData?.labourCharges +
           billData?.rent +

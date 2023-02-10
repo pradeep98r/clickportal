@@ -992,7 +992,7 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const getTargetValue = (val, list, index) => {
-    if (list.fieldType == "SIMPlE") {
+    if (list.fieldType == "SIMPlE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
       return (list.fee = Number(getTotalUnits(val).toFixed(2)));
