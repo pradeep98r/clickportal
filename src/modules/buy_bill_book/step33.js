@@ -43,7 +43,6 @@ const Step33 = (props) => {
   const navigate = useNavigate();
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
   var buyerInfo = users.buyerInfo;
-  console.log(buyerInfo,"info")
   const editStatus = billEditItemInfo?.billEditStatus;
   const [partnerSelectedData, setpartnerSelectedData] = useState(
     //users.buyerInfo
@@ -437,7 +436,7 @@ const Step33 = (props) => {
                 : []
             );
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
-              var trVa = getSingleValues(newitem);
+              var trVa = newitem != 0 ? getSingleValues(newitem) : 0;
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,

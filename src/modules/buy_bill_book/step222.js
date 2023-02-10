@@ -545,8 +545,8 @@ const Step22 = (props) => {
     var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
-        arr1.push({ ...cropData[i], qtyUnit: e.target.value });
-        return { ...cropData[i], qtyUnit: e.target.value };
+        arr1.push({ ...cropData[i], qtyUnit: e.target.value,qty:0 });
+        return { ...cropData[i], qtyUnit: e.target.value,qty:0 };
       } else {
         cropResponseData([...cropData]);
         return { ...cropData[i] };
@@ -1101,15 +1101,9 @@ const Step22 = (props) => {
                                     cropData[index].qtyUnit?.toLowerCase() !=
                                     cropData[index].rateType ? (
                                       <td className="col-1">
-                                        <div className="d-flex">
-                                          <p className="unit-type mt-0">
-                                            {cropData[index].bags !== null &&
-                                            cropData[index].bags.length > 0
-                                              ? "Edit"
-                                              : "Add"}{" "}
-                                            {cropData[index].qtyUnit}
-                                          </p>
-
+                                        <div className="d-flex justify-content-center">
+                                          
+                                          
                                           <input
                                             type="checkbox"
                                             checked={
@@ -1133,6 +1127,12 @@ const Step22 = (props) => {
                                               );
                                             }}
                                           />
+                                          {cropData[index].bags !== null &&
+                                            cropData[index].bags.length > 0
+                                              ? <p className="unit-type mt-0">
+                                            Edit
+                                              </p>
+                                              : ""}{" "}
                                         </div>
                                       </td>
                                     ) : (

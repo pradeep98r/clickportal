@@ -17,6 +17,7 @@
 .selectparty_field:hover{
     cursor: pointer;
 }
+
 .partners_div {
     background-color: #fff;
     position: absolute;
@@ -66,6 +67,8 @@
       width: auto;
   }
   label{
+    display: flex;
+    align-items: center;
       color: var(--ono-blue);
       font-size: 14px;
       :hover{
@@ -218,4 +221,7 @@
 }
 .search_control:focus{
     border: 0px;
+}
+.step3_partners_div{
+    height: calc(100vh - 520px);
 }
