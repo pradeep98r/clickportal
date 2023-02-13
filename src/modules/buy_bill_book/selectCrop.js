@@ -147,7 +147,9 @@ const SelectCrop = (props) => {
         </div>
       </div>
       <div className="modal-footer crop_footer">
-        <button type="button" className="secondary_btn" onClick={props.close}>
+        <button type="button" className="secondary_btn" onClick={() => {
+            closeCropModalPopup();
+          }}>
           Cancel
         </button>
         <button

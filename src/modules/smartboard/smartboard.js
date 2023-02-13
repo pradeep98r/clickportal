@@ -513,6 +513,7 @@ const SmartBoard = () => {
                                   <div className="row">
                                     <div className="col-md-6 p-0">
                                       <div className="card pending_rec_card green_card empty_card">
+                                      <div class="card-body d-flex align-items-center justify-content-center">
                                         <div className="row">
                                           <div className="col-lg-2">
                                             <img
@@ -600,10 +601,12 @@ const SmartBoard = () => {
                                             </p>
                                           </div>
                                         </div>
+                                        </div>
                                       </div>
                                     </div>
                                     <div className="col-md-6 pr-0">
                                       <div className="card pending_rec_card pending_pay_card warning_card empty_card">
+                                      <div class="card-body d-flex align-items-center justify-content-center">
                                         <div className="row">
                                           <div className="col-lg-2">
                                             <img
@@ -690,6 +693,7 @@ const SmartBoard = () => {
                                               )}
                                             </p>
                                           </div>
+                                        </div>
                                         </div>
                                       </div>
                                     </div>

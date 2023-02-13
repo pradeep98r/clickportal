@@ -32,7 +32,7 @@ const GroupTotals = (props) => {
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
- 
+
   const [groupone, setGroupOne] = useState([]);
   const [groupTwo, setGroupTwo] = useState([]);
   const [groupThree, setGroupThree] = useState([]);
@@ -507,7 +507,7 @@ const GroupTotals = (props) => {
           if (allGroups.length > 0) {
             value = billData?.otherFee;
           } else {
-            value = -billData?.otherFee;
+            value = billData?.otherFee;
           }
         }
         break;
@@ -638,7 +638,7 @@ const GroupTotals = (props) => {
   };
   const getFinalLedgerbalance = () => {
     if (billData?.partyType.toUpperCase() === "FARMER") {
-      var t = parseInt(
+      var t = Number(
         billData?.transportation +
           billData?.labourCharges +
           billData?.rent +
@@ -648,7 +648,7 @@ const GroupTotals = (props) => {
           billData?.advance
       );
     } else {
-      var t = parseInt(
+      var t = Number(
         billData?.transportation +
           billData?.labourCharges +
           billData?.rent +
@@ -1425,11 +1425,7 @@ const GroupTotals = (props) => {
                   display: status || allGroups.length > 0 ? "block" : "none",
                 }}
               >
-                {getFinalLedgerbalance().toLocaleString("en-IN", {
-                  maximumFractionDigits: 2,
-                  style: "currency",
-                  currency: "INR",
-                })}
+                {"₹" + getCurrencyNumberWithSymbol(getFinalLedgerbalance())}
               </span>
             </div>
           </div>

@@ -1,6 +1,6 @@
 .cropmodal_poopup {
   .modal-dialog {
-    max-width: 1300px;
+    max-width: 1330px;
   }
 }
 .crop_table_view {
@@ -28,7 +28,7 @@
   }
 }
 .crop_table {
-  height: calc(100vh - 320px);
+  height: calc(100vh - 385px);
   overflow-y: auto;
 }
 .allCrops_modal {
@@ -55,7 +55,7 @@
 }
 .wastage_val,
 .wastage_val:focus {
-  color: var(--ono-red);
+  color: var(--ono-red)!important;
 }
 .delete_copy_div {
   margin-left: 10px;
@@ -197,4 +197,7 @@
 .unit-type{
   color: #0066FF!important;
   padding-left: 5px;
+}
+.per_text{
+  text-transform: capitalize!important;
 }

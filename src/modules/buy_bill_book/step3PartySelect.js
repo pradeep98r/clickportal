@@ -62,12 +62,14 @@ const Step3PartySelect = (props) => {
   const partnerSelectDate = selectedDate;
   const [outBal, setOutsBal] = useState(0);
   const linkPath = localStorage.getItem("LinkPath");
+  
   useEffect(() => {
     console.log(billEditItem, billEditItemCrops, "cropsitems");
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
-      setTranspoSelectedData(props.transpoSelectedData);
+      dispatch(selectTrans(props.transpoSelectedData));
     } else {
+      console.log('hii');
       setTranspoSelectedData(null);
     }
     if (partnerSelectedData != null) {
@@ -83,7 +85,8 @@ const Step3PartySelect = (props) => {
       //   true,
       cropEditvalArray,
       props.billEditItemval,
-      props.selectedCrop
+      props.selectedCrop,
+      transpoStatus
     );
   }, []);
   const fetchPertnerData = (type) => {
@@ -110,7 +113,7 @@ const Step3PartySelect = (props) => {
   };
   const [partySelectStatus, setPartySelectStatus] = useState(false);
   const [transportoSelectStatus, setTransportoSelectStatus] = useState(false);
-  const users = useSelector((state) => state.buyerInfo);
+  const [transpoStatus, setTranspoStatus] = useState(false);
   const partySelect = (item, type) => {
     console.log(item, type, "type");
     setActiveInput(false);
@@ -126,17 +129,20 @@ const Step3PartySelect = (props) => {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedTransporter"));
       setTranspoSelectedData(h);
+      
       props.parentSelectedParty(
         partySelecteData,
         h,
         partnerSelectDate,
         // partnerSelectedData,
 
-        outBal
+        outBal,
+        transpoStatus
       );
       getOutstandingBal(clickId, item.partyId).then((res) => {
         setOutsBal(res.data.data);
       });
+      setTranspoStatus(true)
     } else if (
       type == "Buyer" ||
       (type === "BUYER" && linkPath === "/sellbillbook")
@@ -223,7 +229,9 @@ const Step3PartySelect = (props) => {
       //   true,
       cropEditArray,
       props.billEditItemval,
-      props.selectedCrop
+      props.selectedCrop,
+      transpoStatus
+      
     );
   };
   const [searchValue, setsearchValue] = useState("");

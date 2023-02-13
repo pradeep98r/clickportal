@@ -93,6 +93,7 @@ const SelectPartner = (props) => {
       // localStorage.setItem("selectedPartner", JSON.stringify(item));
     } else if (props.partyType == "Transporter") {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
+      Object.assign(item,{transporterId:item.partyId})
       dispatch(selectTrans(item));
     } else if (props.partyType == "Buyer") {
       localStorage.setItem("selectBuyertype", "buyer");
