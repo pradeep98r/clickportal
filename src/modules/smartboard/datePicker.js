@@ -64,7 +64,7 @@ function DatePickerModel(props) {
        }
     }
     else{
-      datev = "Daily"
+      datev = dateTabs
     }
     setDateTabs(datev);
   }, [props.show]);
@@ -177,7 +177,7 @@ function DatePickerModel(props) {
   );
   const [selectedDate, setStartDate] = useState();
   const [handleTab, setHandleTabs] = useState(false);
-  const [dates, setDates] = useState('Custom');
+  const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger")?'Custom' : 'Daily');
   const [dialyDate, setDailyDate] = useState()
   const [monthDate, setMonthDate] = useState(new Date());
   const [yearDate, setyearDate] = useState(new Date());
@@ -216,6 +216,7 @@ function DatePickerModel(props) {
           setDateTabs('Yearly')
           setSelectedyearDate(yearDate)
         } else if(dates == 'Custom' && handleTab){
+         
           setDateTabs('Custom');
           setStartsDate(custStDate);
           setEndDate(custEndDate);
@@ -240,13 +241,33 @@ function DatePickerModel(props) {
         // setEndDate(new Date());
       }
     }
-    // } else {
-    //   console.log("came here");
-    //   setDateTabs(dateTabs);
-    //   // setDateTabs("Daily");
-    // }
+    else {
+      console.log("came here");
+      commonDateFunction()
+      // setDateTabs("Daily");
+    }
   };
-
+  const commonDateFunction = () =>{
+    console.log('custommmm',dates,handleTab)
+    if(dates == 'Daily' && handleTab){
+      setDateTabs("Daily");
+      setStartDate(dialyDate)
+    } else if(dates == 'Weekly' && handleTab){
+      setDateTabs('Weekly')
+      setweekStartDate(weekDate);
+      setweekEndDate(week1Date);
+    }else if(dates == 'Monthly' && handleTab){
+      setDateTabs('Monthly')
+      setSelectedMonthDate(monthDate)
+    }else if(dates == 'Yearly' && handleTab){
+      setDateTabs('Yearly')
+      setSelectedyearDate(yearDate)
+    } else if(dates == 'Custom' && handleTab){
+      setDateTabs('Custom');
+      setStartsDate(custStDate);
+      setEndDate(custEndDate);
+    }
+  }
   const onclickContinue = async (dateValue) => {
     var lastDay = new Date(
       dateValue.getFullYear(),

@@ -70,7 +70,7 @@ const LoginForm = () => {
     mobile: mobileNumber,
     newMobileNum: false,
     userType: localStorage.getItem("userType"),
-    // browser: true,
+    browser: true,
   };
   const [mobileNumErrorMessage, setMobileNumErrorMessage] = useState(false);
   const handleClick = () => {

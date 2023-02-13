@@ -319,7 +319,7 @@ const SellBillBook = (props) => {
                                   </div>
                                   <div className="col-lg-6 p-0">
                                     {bill.lineItems.map((crop, index) => (
-                                      <div className="row" key={index}>
+                                      <div className="row crops_row_bills" key={index}>
                                         <div className="col-lg-4 col-sm-12 col">
                                           <p className="flex_class crop_name">
                                             <img

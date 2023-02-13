@@ -83,18 +83,18 @@ const Steps = (props) => {
       </div>
       <div className="modal-body p-0">
         <div className="d-flex steps_flex align-items-center justify-content-center">
-          <button className={selectedStep.stepsInfo == 'step1' ? 'steps_btn steps_btn_active' : selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')}>
+          <div className={selectedStep.stepsInfo == 'step1' ? 'steps_btn steps_btn_active' : selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')}>
              Step1
-          </button>
+          </div>
           <div className="steps_btn_border"></div>
-          <button className={selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')} >
+          <div className={selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')} >
              Step2
-          </button>
+          </div>
           <div className="steps_btn_border"></div>
-          <button className={selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 
+          <div className={selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 
           'steps_btn'}>
              Step3
-          </button>
+          </div>
         </div>
         {(() => {
           switch (selectedStep.stepsInfo) {

@@ -96,6 +96,9 @@ const Step22 = (props) => {
     dispatch(selectTrans(null));
     dispatch(selectBuyer(null));
     props.closem();
+    if (billEditStatus) {
+      window.location.reload();
+    }
   };
   // navigate to previous step
   const previousStep = () => {
@@ -391,12 +394,10 @@ const Step22 = (props) => {
             }
             // cropData[index].status = 1;
           }
-        }
-        else{
-          
-          for(var l=0; l<cropData.length; l++){
-            if(cropData[l].status == 0 || cropData[l].cropDelete) {
-              cropData.splice(l,1);
+        } else {
+          for (var l = 0; l < cropData.length; l++) {
+            if (cropData[l].status == 0 || cropData[l].cropDelete) {
+              cropData.splice(l, 1);
             }
           }
         }
@@ -406,7 +407,7 @@ const Step22 = (props) => {
     if (billEditStatus) {
       dArray = updatedItemList.length != 0 ? updatedItemList : cropData;
     }
-    
+
     if (h.length > 0) {
       var h1 = h.map((item, index) => {
         if (h[index] != null) {
@@ -504,8 +505,16 @@ const Step22 = (props) => {
         }
       }
       for (var k = 0; k < cropData.length; k++) {
+        // if (!cropData[k].cropDelete){
         arrays.push(cropData[k]);
+        // }
+        // else{
+        //   toast.error("Please add Crop", {
+        //     toastId: "error2",
+        //   });
+        // }
       }
+
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
@@ -535,8 +544,8 @@ const Step22 = (props) => {
     var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
-        arr1.push({ ...cropData[i], qtyUnit: e.target.value,qty:0 });
-        return { ...cropData[i], qtyUnit: e.target.value,qty:0 };
+        arr1.push({ ...cropData[i], qtyUnit: e.target.value, qty: 0 });
+        return { ...cropData[i], qtyUnit: e.target.value, qty: 0 };
       } else {
         cropResponseData([...cropData]);
         return { ...cropData[i] };
@@ -777,7 +786,7 @@ const Step22 = (props) => {
   };
   var arrayAdded = {};
   const addCropToEmptyRow = (crop, c, i) => {
-    console.log(crop,c)
+    console.log(crop, c);
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
         return {
@@ -805,7 +814,7 @@ const Step22 = (props) => {
         return { ...c[j] };
       }
     });
-    
+
     let updatedItem4 = preferedCropsData.map((item, j) => {
       if (item.cropId == crop.cropId) {
         var countadded = preferedCropsData[j].count + 1;
@@ -818,22 +827,20 @@ const Step22 = (props) => {
       }
     });
     var index1 = updatedItem4.findIndex((obj) => obj.cropId == crop.cropId);
-      if (index1 != -1) {
-      }
-      else{
-        // var c = crop.count + 1;
-        Object.assign(crop,{count:1})
-        const new_obj = { ...crop, cropActive:true }
-        console.log(new_obj)
-        updatedItem4.push(new_obj);
-      }
-      var index2 = updatedItem4.findIndex((obj) => obj.cropId == c.cropId);
-      if (index2 != -1) {
-       console.log('same')
-      }
-      else{
-        console.log('different')
-      }
+    if (index1 != -1) {
+    } else {
+      // var c = crop.count + 1;
+      Object.assign(crop, { count: 1 });
+      const new_obj = { ...crop, cropActive: true };
+      console.log(new_obj);
+      updatedItem4.push(new_obj);
+    }
+    var index2 = updatedItem4.findIndex((obj) => obj.cropId == c.cropId);
+    if (index2 != -1) {
+      console.log("same");
+    } else {
+      console.log("different");
+    }
     console.log(updatedItem4);
     setAddCropStatus(false);
     cropResponseData([...updatedItem3]);
@@ -892,11 +899,11 @@ const Step22 = (props) => {
           </div>
         </div>
         <div className="crop_table" id="scroll_style">
-          <div className="row p-0">
+          <div className="row p-0 mt-2">
             {cropData.length > 0 && (
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
-                <div className="table_row" id="scroll_style">
+                <div className="" id="">
                   <div className="row header_row p-0 crop_table_header_row">
                     <div className="col-lg-2">
                       <p>Crop</p>
@@ -1022,7 +1029,7 @@ const Step22 = (props) => {
                                   ) ? (
                                     <td className="col-1">
                                       <select
-                                        className="form-control qty_dropdown dropdown"
+                                        className="form-control qty_dropdown dropdown pl-0 m-0"
                                         value={cropData[index].rateType}
                                         onChange={getRateType(cropData, index)}
                                       >
@@ -1033,7 +1040,7 @@ const Step22 = (props) => {
                                         >
                                           {cropData[index].qtyUnit}{" "}
                                         </option>
-                                        <option value="kgs">Kgs </option>
+                                        <option value="kgs"> Kg </option>
                                       </select>
                                     </td>
                                   ) : (
@@ -1111,8 +1118,6 @@ const Step22 = (props) => {
                                     cropData[index].rateType ? (
                                       <td className="col-1">
                                         <div className="d-flex justify-content-center">
-                                          
-                                          
                                           <input
                                             type="checkbox"
                                             checked={
@@ -1137,11 +1142,13 @@ const Step22 = (props) => {
                                             }}
                                           />
                                           {cropData[index].bags !== null &&
-                                            cropData[index].bags.length > 0
-                                              ? <p className="unit-type mt-0">
-                                            Edit
-                                              </p>
-                                              : ""}{" "}
+                                          cropData[index].bags.length > 0 ? (
+                                            <p className="unit-type mt-0">
+                                              Edit
+                                            </p>
+                                          ) : (
+                                            ""
+                                          )}{" "}
                                         </div>
                                       </td>
                                     ) : (
@@ -1155,6 +1162,7 @@ const Step22 = (props) => {
                                     <td className="col-1 fadeOut_col">-</td>
                                   ) : (
                                     <td className="col-1">
+                                      <p>hi</p>
                                       <input
                                         type="text"
                                         name="wastage"
@@ -1300,11 +1308,16 @@ const Step22 = (props) => {
             cancel
           </button>
           <div className="d-flex align-items-center">
-            {billEditStatus?'':
-            <button className="secondary_btn" onClick={() => previousStep()}>
-              Previous
-            </button>
-            }
+            {billEditStatus ? (
+              ""
+            ) : (
+              <button
+                className="secondary_btn no_delete_btn"
+                onClick={() => previousStep()}
+              >
+                Previous
+              </button>
+            )}
             <button className="primary_btn" onClick={() => step2Next()}>
               Next
             </button>

@@ -79,9 +79,10 @@ const SellBillStep3 = (props) => {
   const [allGroups, setAllGroups] = useState([]);
   const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
   useEffect(() => {
-    var cropArrays = editStatus
+      var cropArrays = editStatus
       ? step2CropEditStatus
-        ? billEditItemInfo.selectedBillInfo.lineItems
+        ? // ? billEditItemInfo.selectedBillInfo.lineItems
+          props.slectedSellCropsArray
         : billEditItem.lineItems
       : props.slectedSellCropsArray;
     var h = [];
@@ -117,7 +118,6 @@ const SellBillStep3 = (props) => {
       var response;
       if(res.data.data.billSetting.length >0){
         response = res.data.data.billSetting;
-        console.log(response,"settings")
         for (var i = 0; i < response.length; i++) {
           if (response[i].billType === "SELL") {
             if (response[i].formStatus === 1) {
@@ -306,10 +306,15 @@ const SellBillStep3 = (props) => {
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
-              ? step2CropEditStatus
-                ? totalQty * trVa
-                : billEditItem.transportation
-              : res[j].value * totalQty;
+            ? step2CropEditStatus
+              ? tableChangeStatusval
+                ? trVa
+                : totalQty * trVa
+              : billEditItem.transportation
+            : tableChangeStatusval
+            ? res[j].value
+            : res[j].value * totalQty;
+              
             getTransportationValue(trVa);
             res[j] = {
               ...res[j],
@@ -327,10 +332,14 @@ const SellBillStep3 = (props) => {
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
-              ? step2CropEditStatus
-                ? totalQty * trVa
-                : billEditItem.rent
-              : res[j].value * totalQty;
+            ? step2CropEditStatus
+              ? tableChangeStatusval
+                ? trVa
+                : totalQty * trVa
+              : billEditItem.rent
+            : tableChangeStatusval
+            ? res[j].value
+            : res[j].value * totalQty;
             getRentValue(trVa);
             res[j] = {
               ...res[j],
@@ -347,11 +356,15 @@ const SellBillStep3 = (props) => {
                 ? res[j].value
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
-            var totalV = editStatus
-              ? step2CropEditStatus
-                ? totalQty * trVa
-                : billEditItem.labourCharges
-              : res[j].value * totalQty;
+            var totalV =editStatus
+            ? step2CropEditStatus
+              ? tableChangeStatusval
+                ? trVa
+                : totalQty * trVa
+              : billEditItem.labourCharges
+            : tableChangeStatusval
+            ? res[j].value
+            : res[j].value * totalQty;
             getLaborChargeValue(trVa);
             res[j] = {
               ...res[j],
@@ -418,7 +431,6 @@ const SellBillStep3 = (props) => {
                 value: trVa,
                 fieldType:'SIMPlE'
               };
-              console.log(trVa,res[j],"null valye")
             }
             if (res[j].fieldType == "COMPLEX_RS") {
               // var trVa = getSingleValues(newitem);
@@ -574,7 +586,6 @@ const SellBillStep3 = (props) => {
         }
       }
     }
-    console.log(addRetComm,includeRetComm)
     if (addRetComm) {
       if (includeRetComm) {
         finalVal = finalVal - getTotalValue(retcommValue);
@@ -647,7 +658,7 @@ const SellBillStep3 = (props) => {
     comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
     commShown: isShown,
-    comments: "hi",
+    comments: commentFieldText,
     createdBy: 0,
     buyerId: editStatus ? billEditItem.buyerId : buyerInfo.partyId, //partnerSelectedData.partyId,
     govtLevies: Number(levisValue),
@@ -689,7 +700,7 @@ const SellBillStep3 = (props) => {
       cashRcvd: Number(cashRcvdValue),
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
-      comments: "hi",
+      comments: commentFieldText,
       customFields: questionsTitle,
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
@@ -716,7 +727,7 @@ const SellBillStep3 = (props) => {
           ? Number(transTotalValue)
           : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
-        transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+        transpoSelectedData != null ? editStatus ? transpoSelectedData.transporterId : transpoSelectedData.partyId : 0,
     },
     billId: billEditItem.billId,
     billType: "SELL",
@@ -729,6 +740,7 @@ const SellBillStep3 = (props) => {
   };
 
   const postsellbill = () => {
+    console.log(editBillRequestObj)
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -753,6 +765,7 @@ const SellBillStep3 = (props) => {
         }
       );
     } else {
+      console.log(sellBillRequestObj)
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
@@ -824,7 +837,6 @@ const SellBillStep3 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
-            console.log(tab,groupLiist[i],e.target.value,"nulltype")
           }
           setQuestionsTitle(tab);
         }
@@ -1083,6 +1095,7 @@ const SellBillStep3 = (props) => {
   ) => {
     setpartnerSelectedData(partyselectedarray);
     setTranspoSelectedData(trans);
+    console.log(trans)
     props.step3ParentCallback(
       //   cropTableEditStatus,
       cropEditObject,
@@ -1115,6 +1128,9 @@ const SellBillStep3 = (props) => {
     dispatch(selectTrans(null)); 
     dispatch(selectBuyer(null));
     props.closem();
+    if (editStatus) {
+      window.location.reload();
+    }
   };
   const [commentShownStatus, setCommentShownStatus] = useState(editStatus ? (billEditItemInfo?.selectedBillInfo?.comments != '' ? true : false) : false);
   const addCommentClick = () => {
@@ -1122,7 +1138,6 @@ const SellBillStep3 = (props) => {
   };
   const commentText = (e) =>{
     var val = e.target.value;
-    console.log(val);
     setCommentFieldText(val);
   }
   return (
@@ -1337,11 +1352,11 @@ const SellBillStep3 = (props) => {
                   cancel
                 </button>
                 <div className="d-flex align-items-center">
-          <button className="secondary_btn" onClick={() => previousStep()}>
+          <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
             Previous
           </button>
           <button className="primary_btn" onClick={() => postsellbill()}>
-            Next
+            Submit
           </button>
           </div>
         </div>
