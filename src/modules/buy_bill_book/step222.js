@@ -976,12 +976,14 @@ const Step22 = (props) => {
                                     {!cropData[index].activeSearch ||
                                     cropData[index].displayStat ? (
                                       // !activeSearch || displayStat?
+                                      
                                       <div
+                                        contenteditable="true"
                                         className="flex_class mr-0"
                                         onClick={() => {
                                           activeSearchCrop(cropData, index);
                                         }}
-                                      >
+                                        >
                                         <img
                                           src={cropData[index].imageUrl}
                                           className="flex_class mr-2"
@@ -994,6 +996,8 @@ const Step22 = (props) => {
                                       addCrop ? (
                                       <input
                                         // value={}
+                                        placeholder="Crop Name Here"
+                                        contenteditable="true"
                                         onClick={() => {
                                           handleAddCropStatus(index);
                                         }}
@@ -1005,7 +1009,7 @@ const Step22 = (props) => {
                                       ""
                                     )}
                                   </td>
-                                  <td className="col-1">
+                                  <td className="col-1" contenteditable="true">  
                                     <select
                                       className="form-control qty_dropdown dropdown"
                                       value={cropData[index].qtyUnit}
@@ -1027,7 +1031,7 @@ const Step22 = (props) => {
                                   {!setQuantityBasedtable(
                                     cropData[index].qtyUnit
                                   ) ? (
-                                    <td className="col-1">
+                                    <td className="col-1" contenteditable="true">
                                       <select
                                         className="form-control qty_dropdown dropdown pl-0 m-0"
                                         value={cropData[index].rateType}

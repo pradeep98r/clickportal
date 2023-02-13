@@ -51,7 +51,6 @@ const Step33 = (props) => {
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
-  
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
@@ -61,6 +60,7 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
+    console.log(transpoSelectedData,"data")
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -782,7 +782,7 @@ const Step33 = (props) => {
           ? Number(transportationValue)
           : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
-        transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+      transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
     billId: billEditItem?.billId,
     billType: "BUY",
@@ -810,11 +810,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {

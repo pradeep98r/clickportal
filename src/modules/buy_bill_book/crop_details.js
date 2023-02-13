@@ -17,7 +17,7 @@ const CropDetails = (props) => {
     useEffect(()=>{
         setBillViewData(JSON.parse(localStorage.getItem("billData")));
       },[props])
-    
+    console.log(billData,"data");
     return (
         <div>
             <div className="row partner_info_padding">
