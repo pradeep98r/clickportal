@@ -139,20 +139,21 @@ const CropDetails = (props) => {
                         </p> */}
                     </div>
                     <div className="col-lg-6 p-0 ">
-                        <div className="row">
-                            <div className="col-lg-4"></div>
-                            <div className="col-lg-5">
+                        <div className="row justify-content-center">
+                            {/* <div className="col-lg-4"></div> */}
+                            {/* <div className="col-lg-5"> */}
                                 <p className="total_value">Gross Total : </p>
-                            </div>
-                            <div className="col-lg-3 p-0">
+                            {/* </div> */}
+                            {/* <div className="col-lg-3 p-0"> */}
                                 <p className="total_value number_overflow">
-                                    {billData?.grossTotal.toLocaleString("en-IN", {
+                                &nbsp;&nbsp;
+                                    { billData?.grossTotal.toLocaleString("en-IN", {
                                         maximumFractionDigits: 2,
                                         style: "currency",
                                         currency: "INR",
                                     })}
                                 </p>
-                            </div>
+                            {/* </div> */}
                         </div>
                     </div>
                 </div>

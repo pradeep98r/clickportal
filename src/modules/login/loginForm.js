@@ -70,7 +70,9 @@ const LoginForm = () => {
     mobile: mobileNumber,
     newMobileNum: false,
     userType: localStorage.getItem("userType"),
+    browser: true,
   };
+  const [mobileNumErrorMessage, setMobileNumErrorMessage] = useState(false);
   const handleClick = () => {
     handleResendTime();
     setResendValid(false);
@@ -91,6 +93,7 @@ const LoginForm = () => {
           }
           setOnline(true);
           setInvalidError(true);
+         
           toast.error(error.response.data.status.description, {
             toastId: "errorr1",
           });
@@ -130,6 +133,7 @@ const LoginForm = () => {
       },
       (error) => {
         setInvalidError(true);
+        setMobileNumErrorMessage(error.response.data.status.description)
         toast.error(error.response.data.status.description, {
           toastId: "error2",
         });
@@ -294,8 +298,7 @@ const LoginForm = () => {
                   />
                   {invalidNumber && (
                     <p className="text-danger">
-                      Given Mobile is not valid. Please try with valid mobile
-                      Number
+                      {mobileNumErrorMessage}
                     </p>
                   )}
 

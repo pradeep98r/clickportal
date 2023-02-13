@@ -51,7 +51,6 @@ const Step33 = (props) => {
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
-
   const [includeComm, setIncludeComm] = useState("");
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
@@ -80,7 +79,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
-    console.log('came to step3 useeffect')
+    console.log("came to step3 useeffect");
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -141,7 +140,7 @@ const Step33 = (props) => {
                 subText2: "",
                 totalVal: 0,
                 cstmName: "",
-                commentText:''
+                commentText: "",
               });
 
               if (
@@ -499,7 +498,11 @@ const Step33 = (props) => {
     // return type;
   };
 
-  const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
+  const [commentFieldText, setCommentFieldText] = useState(
+    billEditItemInfo?.selectedBillInfo?.comments != ""
+      ? billEditItemInfo?.selectedBillInfo?.comments
+      : ""
+  );
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -556,7 +559,9 @@ const Step33 = (props) => {
     );
     let totalValue = grossTotal - t;
     for (var i = 0; i < questionsTitle.length; i++) {
+      console.log(questionsTitle);
       if (questionsTitle[i].field != "") {
+        console.log(questionsTitle[i].field, questionsTitle[i].less);
         if (questionsTitle[i].less) {
           var t = 0;
           totalValue = totalValue - Number(questionsTitle[i].fee);
@@ -714,7 +719,8 @@ const Step33 = (props) => {
       rentTotalValue != 0
         ? Number(rentTotalValue)
         : tableChangeStatus
-        ? Number(rentValue) : Number(getTotalUnits(rentValue).toFixed(2)),
+        ? Number(rentValue)
+        : Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalPayble: getTotalPayble(),
@@ -722,8 +728,8 @@ const Step33 = (props) => {
       transTotalValue != 0
         ? Number(transTotalValue)
         : tableChangeStatus
-        ? Number(transportationValue) :
-         Number(getTotalUnits(transportationValue).toFixed(2)),
+        ? Number(transportationValue)
+        : Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -764,7 +770,8 @@ const Step33 = (props) => {
         rentTotalValue != 0
           ? Number(rentTotalValue)
           : tableChangeStatus
-          ? Number(rentValue) : Number(getTotalUnits(rentValue).toFixed(2)),
+          ? Number(rentValue)
+          : Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: getTotalPayble(),
@@ -772,8 +779,8 @@ const Step33 = (props) => {
         transTotalValue != 0
           ? Number(transTotalValue)
           : tableChangeStatus
-          ? Number(transportationValue) : 
-          Number(getTotalUnits(transportationValue).toFixed(2)),
+          ? Number(transportationValue)
+          : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
@@ -788,6 +795,7 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
+    console.log(editBillRequestObj)
     if (editStatus) {
       console.log(editBillRequestObj);
       editbuybillApi(editBillRequestObj).then(
@@ -816,7 +824,7 @@ const Step33 = (props) => {
         }
       );
     } else {
-      console.log(billRequestObj)
+      console.log(billRequestObj);
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -828,8 +836,9 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
+            props.closem();
             window.setTimeout(function () {
-              props.closem();
+             
               navigate("/buy_bill_book");
               window.location.reload();
             }, 2000);
@@ -918,7 +927,7 @@ const Step33 = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
-    if (list.fieldType == "SIMPLE") {
+    if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
       return (list.fee = Number(getTotalUnits(val).toFixed(2)));
@@ -1153,6 +1162,9 @@ const Step33 = (props) => {
     dispatch(selectTrans(null));
     dispatch(selectBuyer(null));
     props.closem();
+    if (editStatus) {
+      window.location.reload();
+    }
   };
   const [selectedBilldate, setselectedbilldate] = useState(false);
   const [cropEditObject, setcropEditObject] = useState([]);
@@ -1204,15 +1216,21 @@ const Step33 = (props) => {
     );
     dispatch(fromBillbook(false));
   };
-  const [commentShownStatus, setCommentShownStatus] = useState(editStatus ? (billEditItemInfo?.selectedBillInfo?.comments != '' ? true : false) : false);
+  const [commentShownStatus, setCommentShownStatus] = useState(
+    editStatus
+      ? billEditItemInfo?.selectedBillInfo?.comments != ""
+        ? true
+        : false
+      : false
+  );
   const addCommentClick = () => {
     setCommentShownStatus(true);
   };
-  const commentText = (e) =>{
+  const commentText = (e) => {
     var val = e.target.value;
     setCommentFieldText(val);
-  }
-  const cstmCommentText = (groupLiist, index) => (e) =>{
+  };
+  const cstmCommentText = (groupLiist, index) => (e) => {
     var val = e.target.value;
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
@@ -1223,7 +1241,7 @@ const Step33 = (props) => {
             tab[tabIndex].fee = groupLiist[i].value;
           } else {
             tab.push({
-              comments:val,
+              comments: val,
               fee: groupLiist[i].value,
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1241,7 +1259,7 @@ const Step33 = (props) => {
       }
     });
     setAllGroups([...updatedItems]);
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -1360,27 +1378,7 @@ const Step33 = (props) => {
                               </div>
                             </div>
                           </div>
-                          {allGroups[index].comments == true ?  <div className="comm_cards">
-                              <div className="card input_card">
-                                <div className="row">
-                                  <div className="col-lg-3 title_bg">
-                                    <h5 className="comm_card_title mb-0">
-                                      Comments
-                                    </h5>
-                                  </div>
-                                  <div className="col-lg-9 col-sm-12 col_left_border">
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      value={allGroups[index].commentText}
-                                      onChange={cstmCommentText(allGroups,index)}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div> : '' }
-                          {allGroups[index].settingName == "OTHER_FEE" ? (
-                            commentShownStatus ? (
+                          {allGroups[index].comments == true ? (
                             <div className="comm_cards">
                               <div className="card input_card">
                                 <div className="row">
@@ -1393,13 +1391,40 @@ const Step33 = (props) => {
                                     <input
                                       type="text"
                                       placeholder=""
-                                      value={commentFieldText}
-                                      onChange={commentText}
+                                      value={allGroups[index].commentText}
+                                      onChange={cstmCommentText(
+                                        allGroups,
+                                        index
+                                      )}
                                     />
                                   </div>
                                 </div>
                               </div>
                             </div>
+                          ) : (
+                            ""
+                          )}
+                          {allGroups[index].settingName == "OTHER_FEE" ? (
+                            commentShownStatus ? (
+                              <div className="comm_cards">
+                                <div className="card input_card">
+                                  <div className="row">
+                                    <div className="col-lg-3 title_bg">
+                                      <h5 className="comm_card_title mb-0">
+                                        Comments
+                                      </h5>
+                                    </div>
+                                    <div className="col-lg-9 col-sm-12 col_left_border">
+                                      <input
+                                        type="text"
+                                        placeholder=""
+                                        value={commentFieldText}
+                                        onChange={commentText}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             ) : (
                               <p
                                 className="comment_text"
@@ -1478,11 +1503,11 @@ const Step33 = (props) => {
       </div>
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
-          <button className="secondary_btn" onClick={()=>cancelStep()}>
+          <button className="secondary_btn" onClick={() => cancelStep()}>
             cancel
           </button>
           <div className="d-flex align-items-center">
-            <button className="secondary_btn" onClick={() => previousStep()}>
+            <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
               Previous
             </button>
             <button className="primary_btn" onClick={() => postbuybill()}>

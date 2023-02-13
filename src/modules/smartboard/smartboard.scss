@@ -552,3 +552,11 @@
   border-color: #d43939;
   border-width: 2px;
 }
+.pending_rec_card, .all_smartboard_cards{
+  .row{
+    width: 100%;
+  }
+  .card-body{
+    padding: 0px;
+  }
+}
