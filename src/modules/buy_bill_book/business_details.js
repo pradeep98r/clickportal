@@ -53,17 +53,9 @@ export const BusinessDetails = (props) => {
       </div>
       <div className="row mandi_details_header align_items_center">
         <div className="col-lg-2">
-          {mandiData.businessDtls?.imageUrl?
-            <div className='mandi-logo'>
-            <img src={mandiData.businessDtls?.imageUrl} />
-            </div>:
-            <div className="mandi_circle flex_class">
-              <p className="mandi_logo">
-                {mandiData.businessDtls?.shortCode}
-              </p>
-              
-            </div>
-          }
+          <div className="mandi_circle flex_class">
+            <p className="mandi_logo">{mandiData.businessDtls?.shortCode}</p>
+          </div>
           <div className="billid_date_bg">
             <p className="small_text text-center">
               Bill ID : {billData?.caBSeq !== null ? billData?.caBSeq : ""}

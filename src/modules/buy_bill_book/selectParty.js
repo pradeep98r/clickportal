@@ -44,6 +44,7 @@ const SelectPartner = (props) => {
     getPartnerData(clickId, partnerType)
       .then((response) => {
         setAllData(response.data.data);
+        console.log(response,"res")
         setpartnerData(response.data.data);
       })
       .catch((error) => {
@@ -120,6 +121,8 @@ const SelectPartner = (props) => {
         return data.partyName.toLowerCase().search(value) != -1;
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
+      } else if(data.address?.addressLine.toLowerCase().includes(value)){
+        return data.address?.addressLine.toLowerCase().search(value) != -1;
       }
     });
     if (value != "") {
@@ -225,7 +228,7 @@ const SelectPartner = (props) => {
                               <div>
                                 <h5>{item.partyName}</h5>
                                 <h6>
-                                  {item.trader ? "TRADER" : item.partyType} -{" "}
+                                  { item.partyType} -{" "}
                                   {item.partyId} | {item.mobile}
                                 </h6>
                                 <p>{item.address?.addressLine}</p>
