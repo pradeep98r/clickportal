@@ -17,7 +17,7 @@ const CropDetails = (props) => {
     useEffect(()=>{
         setBillViewData(JSON.parse(localStorage.getItem("billData")));
       },[props])
-    
+    console.log(billData,"data");
     return (
         <div>
             <div className="row partner_info_padding">
@@ -117,7 +117,7 @@ const CropDetails = (props) => {
                 <div className="row gross_profit">
                     <div className="col-lg-2"></div>
                     <div className="col-lg-4">
-                        {billData?.lineItems.map((item) => {
+                        {/* {billData?.lineItems.map((item) => {
                             if (item.qtyUnit === "CRATES") {
                                 cratesTotal += item.qty;
                             } else if (item.qtyUnit === "SACS") {
@@ -136,7 +136,7 @@ const CropDetails = (props) => {
                             {bagsTotal ? bagsTotal.toFixed(2) + "Bg |" : ""}
                             {boxesTotal ? boxesTotal.toFixed(2) + "BX |" : ""}{" "}
                             {kgsTotal ? kgsTotal.toFixed(2) + "KGS" : ""}
-                        </p>
+                        </p> */}
                     </div>
                     <div className="col-lg-6 p-0 ">
                         <div className="row">
