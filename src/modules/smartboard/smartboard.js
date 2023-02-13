@@ -341,17 +341,39 @@ const SmartBoard = () => {
   };
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
+  const createBillLink = (path)=>{
+    if (path === "/sellbillbook"){
+      localStorage.setItem("LinkId", 3);
+      localStorage.setItem("LinkPath", "/sellbillbook");
+      setShowStepsModalStatus(true);
+      setShowStepsModal(true);
+      dispatch(selectSteps('step1'))
+      dispatch(selectBuyer(null));
+      dispatch(fromBillbook(true));
+    } else if (path === "/buy_bill_book") {
+      localStorage.setItem("LinkId", 4);
+      localStorage.setItem("LinkPath", "/buy_bill_book");
+      setShowStepsModalStatus(true);
+      setShowStepsModal(true);
+      dispatch(selectSteps("step1"));
+      dispatch(selectBuyer(null));
+      dispatch(selectTrans(null));
+      dispatch(fromBillbook(true));
+    }
+  }
   const handleLinks = (path) => {
     console.log(path);
     if (path === "/sellbillbook") {
       localStorage.setItem("LinkId", 3);
       localStorage.setItem("LinkPath", "/sellbillbook");
       // navigate("/sellbillbook");
-      setShowStepsModalStatus(true);
-    setShowStepsModal(true);
-    dispatch(selectSteps('step1'))
-    dispatch(selectBuyer(null));
-    dispatch(fromBillbook(true));
+
+    //   setShowStepsModalStatus(true);
+    // setShowStepsModal(true);
+    // dispatch(selectSteps('step1'))
+    // dispatch(selectBuyer(null));
+    // dispatch(fromBillbook(true));
+
       // window.location.reload();
     } else if (path === "/buy_bill_book") {
       localStorage.setItem("LinkId", 4);
@@ -360,12 +382,14 @@ const SmartBoard = () => {
       // window.location.reload();
       // stepOneHeader = true;
       // localStorage.setItem("stepOne", stepOneHeader);
-      setShowStepsModalStatus(true);
-      setShowStepsModal(true);
-      dispatch(selectSteps("step1"));
-      dispatch(selectBuyer(null));
-      dispatch(selectTrans(null));
-      dispatch(fromBillbook(true));
+
+      // setShowStepsModalStatus(true);
+      // setShowStepsModal(true);
+      // dispatch(selectSteps("step1"));
+      // dispatch(selectBuyer(null));
+      // dispatch(selectTrans(null));
+      // dispatch(fromBillbook(true));
+
     } else if (path === "/buyerledger") {
       localStorage.setItem("LinkId", 5);
       localStorage.setItem("LinkPath", "/buyerledger");
@@ -571,7 +595,7 @@ const SmartBoard = () => {
                                                 {langFullData.noDataAvailable}
                                               </p>
                                             ) : (
-                                              <h6 className="color_head_subtext color_pending">
+                                              <h6 className="color_head_subtext bills_color">
                                                 {outStandingBal.totalSellBills.toLocaleString(
                                                   "en-IN",
                                                   {
@@ -665,7 +689,7 @@ const SmartBoard = () => {
                                                 {langFullData.noDataAvailable}
                                               </p>
                                             ) : (
-                                              <h6 className="color_red">
+                                              <h6 className="color_black">
                                                 {outStandingBal.totalBuyBills.toLocaleString(
                                                   "en-IN",
                                                   {
@@ -708,7 +732,7 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 pl-0 col_left_border">
                                       <div className="card default_card">
                                         <div className="d-flex align-items-center justify-content-between">
-                                          <h5 className="">
+                                          <h5 className="comm_earn">
                                             {langFullData.commissionEarned}{" "}
                                           </h5>
                                           {commissionEarns.totalComm == 0 ? (
@@ -735,7 +759,7 @@ const SmartBoard = () => {
                                     <div className="col-lg-6 pr-0">
                                       <div className="card default_card">
                                         <div className="d-flex align-items-center justify-content-between">
-                                          <h5 className="">Net Commission </h5>
+                                          <h5 className="net_comm">Net Commission </h5>
                                           {commissionEarns.netComm == 0 ? (
                                              <p className="nodata color_black mt-0">
                                              {langFullData.noDataAvailable}
@@ -1168,14 +1192,14 @@ const SmartBoard = () => {
                                                         <h4>
                                                           {buyerItem.partyName}
                                                         </h4>
-                                                        <h5>
-                                                          {buyerItem.mobile}
-                                                        </h5>
                                                         <h3>
                                                           {buyerItem.trader
                                                             ? langFullData.trader
-                                                            : langFullData.buyer}
+                                                            : langFullData.buyer} - {buyerItem.partyId}
                                                         </h3>
+                                                        <h5>
+                                                          {buyerItem.mobile.replace(/.(?=.{4})/g, 'X')}
+                                                        </h5>  
                                                       </div>
                                                     </div>
                                                     <div>
@@ -1280,14 +1304,15 @@ const SmartBoard = () => {
                                                         <h4>
                                                           {farmerItem.partyName}
                                                         </h4>
-                                                        <h5>
-                                                          {farmerItem.mobile}
-                                                        </h5>
                                                         <h3>
                                                           {farmerItem.trader
                                                             ? langFullData.trader
-                                                            : langFullData.seller}
+                                                            : langFullData.seller} - {farmerItem.partyId}
                                                         </h3>
+                                                        <h5>
+                                                          {farmerItem.mobile.replace(/.(?=.{4})/g, 'X')} 
+                                                        </h5>
+                                                        
                                                       </div>
                                                     </div>
                                                     <div className="row mt-3">
@@ -1440,7 +1465,7 @@ const SmartBoard = () => {
                                                 <td>0</td>
                                                 <td>{item.totalPayble}</td>
                                                 <td>{item.pastBal}</td>
-                                                <td>{item.totalOutstdPay}</td>
+                                                <td className="color_red">{item.totalOutstdPay}</td>
                                               </tr>
                                             );
                                           })}
@@ -1524,7 +1549,7 @@ const SmartBoard = () => {
                                                 <td>0</td>
                                                 <td>{item.totalReceivable}</td>
                                                 <td>{item.pastBal}</td>
-                                                <td>{item.totalOutstdRcv}</td>
+                                                <td className="color_green">{item.totalOutstdRcv}</td>
                                               </tr>
                                             );
                                           })}
@@ -1551,7 +1576,7 @@ const SmartBoard = () => {
                                       </h4>
                                       <div
                                         onClick={() => {
-                                          handleLinks("/sellbillbook");
+                                          createBillLink("/sellbillbook");
                                         }}
                                       >
                                         <button className="primary_btn">
@@ -1565,7 +1590,7 @@ const SmartBoard = () => {
                                       </h4>
                                       <div
                                         onClick={() => {
-                                          handleLinks("/buy_bill_book");
+                                          createBillLink("/buy_bill_book");
                                         }}
                                       >
                                         <button className="primary_btn">
