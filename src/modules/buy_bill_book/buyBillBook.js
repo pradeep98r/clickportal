@@ -312,7 +312,7 @@ function BuyBillBook() {
                                                     ? "#d43939"
                                                     : "#1C1C1C",
                                               }}
-                                            >
+                                              >
                                               <div className="flex_class">
                                               {bill.billStatus == "CANCELLED"?
                                               <img src={cancel} width="10px" height="10px" />:

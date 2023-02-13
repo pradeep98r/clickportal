@@ -1,5 +1,6 @@
 import React, { Component, useEffect, useState } from "react";
 import "../buy_bill_book/buyBillBook.scss";
+import cancel from "../../assets/images/cancel.svg";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { Link, useNavigate, generatePath } from "react-router-dom";
 import { getSellBills } from "../../actions/billCreationService";
@@ -305,21 +306,27 @@ const SellBillBook = (props) => {
                                           )}
                                         </p>
                                         <p
-                                          style={{
-                                            color:
-                                              bill.billStatus == "CANCELLED"
-                                                ? "#d43939"
-                                                : "#16a02c",
-                                          }}
-                                        >
-                                          {getText(bill.billStatus)}
-                                        </p>
+                                              style={{
+                                                color:
+                                                  bill.billStatus == "CANCELLED"
+                                                    ? "#d43939"
+                                                    : "#1C1C1C",
+                                              }}
+                                              >
+                                              <div className="flex_class">
+                                              {bill.billStatus == "CANCELLED"?
+                                              <img src={cancel} width="10px" height="10px" />:
+                                                <div className="complete-dot"></div>
+                                                }
+                                                <div className="bill-name">{getText(bill.billStatus)}</div>
+                                              </div>
+                                            </p>
                                       </div>
                                     </div>
                                   </div>
                                   <div className="col-lg-6 p-0">
                                     {bill.lineItems.map((crop, index) => (
-                                      <div className="row" key={index}>
+                                      <div className="row crops_row_bills" key={index}>
                                         <div className="col-lg-4 col-sm-12 col">
                                           <p className="flex_class crop_name">
                                             <img

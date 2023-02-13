@@ -729,8 +729,8 @@ article.on {
   }
 }
 .complete-dot{
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   background: #16A02C;
   border-radius: 100%;
 }
@@ -761,7 +761,7 @@ article.on {
       margin: 0px;
     }
     .user_icon {
-      width: 30px;
+      width: 40px;
       margin-right: 5px;
     }
   }
@@ -826,6 +826,11 @@ article.on {
   .mandi_logo {
     font-size: 16px;
     font-weight: 600;
+  }
+  .mandi-logo{
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
   }
   .credit_bill {
     font-size: 12px;
@@ -894,6 +899,14 @@ font-size: 12px;
 }
 .partner_info_padding {
   padding: 5px 20px;
+}
+.fee-percentage{
+  font-weight: 500;
+  font-size: 10px;
+  color: #121212;
+}
+.fee-perc{
+  padding: 0px 0px;
 }
 .more-inf-tag{
 background: #FFFFFF;
@@ -1017,14 +1030,22 @@ word-wrap: normal;
   font-weight: 700;
   font-size: 10px;
   color: #121212;
+  text-align: right;
+}
+.groups_values{
+  font-weight: 700;
+  font-size: 10px;
+  color: #121212;
+  text-align: left;
 }
 .grouping_value{
   font-weight: 700;
   font-size: 10px;
   color: #121212;
   padding: 2px 0px;
+  text-align: right;
 }
-.align-items{
+.align-data-items-items{
   text-align: left;
 }
 .group-one-total{
@@ -1048,6 +1069,7 @@ word-wrap: normal;
   padding-top: 5px;
   color:#000;
    font-size: 12px;
+   text-align: right;
 }
 .hr-line-in-totals{
   border-bottom: 0.5px solid #4D4D4D;
@@ -1055,6 +1077,7 @@ word-wrap: normal;
 }
 .out-st-bal{
   background: #D7F3DD;
+  text-align: right;
   // border-bottom-left-radius: 8px;
   // border-bottom-right-radius: 8px;
 }
