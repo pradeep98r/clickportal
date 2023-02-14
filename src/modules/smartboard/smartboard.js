@@ -578,7 +578,7 @@ const SmartBoard = () => {
                                                   {langFullData.noDataAvailable}
                                                 </p>
                                               ) : (
-                                                <h6 className="color_head_subtext color_pending">
+                                                <h6 className="color_head_subtext color_pending color_black">
                                                   {outStandingBal.totalSellBills.toLocaleString(
                                                     "en-IN",
                                                     {
@@ -633,56 +633,69 @@ const SmartBoard = () => {
                                                 </p>
                                               ) : (
                                                 <h6 className="color_red">
-                                                  {outStandingBal.pendingPaybles.toLocaleString(
+                                                  {"₹" + outStandingBal.pendingPaybles.toFixed(2)}
+                                                </h6>
+                                              )}
+                                              <p className="color_blue">
+                                                {outStandingBal.pendingPaybles ==
+                                                0 ? (
+                                                  ""
+                                                ) : (
+                                                  <a
+                                                    href="/sellerledger"
+                                                    onClick={() => {
+                                                      handleLinks(
+                                                        "/sellerledger"
+                                                      );
+                                                    }}
+                                                  >
+                                                    {
+                                                      langFullData.seeSellerLedger
+                                                    }
+                                                  </a>
+                                                )}
+                                              </p>
+                                            </div>
+
+                                            <div className="col-lg-5 col2">
+                                              <h5 className="">
+                                                {langFullData.buyBills}{" "}
+                                              </h5>
+                                              {outStandingBal.totalBuyBills ==
+                                              0 ? (
+                                                <p className="nodata color_black">
+                                                  {langFullData.noDataAvailable}
+                                                </p>
+                                              ) : (
+                                                <h6 className="color_black">
+                                                  {outStandingBal.totalBuyBills.toLocaleString(
                                                     "en-IN",
                                                     {
-                                                      maximumFractionDigits: 2,
-                                                      style: "currency",
                                                       currency: "INR",
                                                     }
                                                   )}
                                                 </h6>
                                               )}
-                                            </div>
-                                         
-                                          <div className="col-lg-5 col2">
-                                            <h5 className="">
-                                              {langFullData.buyBills}{" "}
-                                            </h5>
-                                            {outStandingBal.totalBuyBills ==
-                                            0 ? (
-                                              <p className="nodata color_black">
-                                                {langFullData.noDataAvailable}
-                                              </p>
-                                            ) : (
-                                              <h6 className="color_black">
-                                                {outStandingBal.totalBuyBills.toLocaleString(
-                                                  "en-IN",
-                                                  {
-                                                    currency: "INR",
-                                                  }
-                                                )}
-                                              </h6>
-                                            )}
 
-                                            <p className="color_blue">
-                                              {outStandingBal.pendingPaybles ==
-                                              0 ? (
-                                                ""
-                                              ) : (
-                                                <a
-                                                  href="/sellerledger"
-                                                  onClick={() => {
-                                                    handleLinks(
-                                                      "/sellerledger"
-                                                    );
-                                                  }}
-                                                >
-                                                  {langFullData.seeSellerLedger}
-                                                </a>
-                                              )}
-                                            </p>
-                                          </div>
+                                              <p className="color_blue">
+                                                {outStandingBal.totalBuyBills ==
+                                                0 ? (
+                                                  ""
+                                                ) : (
+                                                  <a
+                                                    id=""
+                                                    href="/buy_bill_book"
+                                                    onClick={() => {
+                                                      handleLinks(
+                                                        "/buy_bill_book"
+                                                      );
+                                                    }}
+                                                  >
+                                                    See All
+                                                  </a>
+                                                )}
+                                              </p>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -739,13 +752,9 @@ const SmartBoard = () => {
                                               <h6 className="m-0">
                                                 {commissionEarns.netComm == 0
                                                   ? ""
-                                                  : commissionEarns.netComm.toLocaleString(
-                                                      "en-IN",
-                                                      {
-                                                        maximumFractionDigits: 2,
-                                                        style: "currency",
-                                                        currency: "INR",
-                                                      }
+                                                  : "₹" +
+                                                    commissionEarns.netComm.toFixed(
+                                                      2
                                                     )}
                                               </h6>
                                             )}
