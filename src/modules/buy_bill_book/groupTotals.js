@@ -1424,48 +1424,7 @@ const GroupTotals = (props) => {
                   </div>
                 </div>
               </div>
-              <div>
-                {billData?.partyType.toUpperCase() === "FARMER" ? (
-                  <div className="row">
-                    <div className="col-lg-2"></div>
-                    <div className="col-lg-6">
-                      {billData?.cashPaid === 0 ? (
-                        "" || billData?.cashPaid === null
-                      ) : (
-                        <p className="grouping_value">Cash Paid :</p>
-                      )}
-                    </div>
-                    <div className="col-lg-4">
-                      <p className="groups_values color_red">
-                        {billData?.cashPaid === 0 || billData?.cashPaid === null
-                          ? " "
-                          : "-" +
-                            getCurrencyNumberWithSymbol(billData?.cashPaid)}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    <div className="col-lg-2"></div>
-                    <div className="col-lg-6">
-                      {billData?.cashRcvd === 0 ||
-                      billData?.cashRcvd === null ? (
-                        ""
-                      ) : (
-                        <p className="grouping_value">Cash Received</p>
-                      )}
-                    </div>
-                    <div className="col-lg-4">
-                      <p className="groups_values ">
-                        {billData?.cashRcvd === 0 || billData?.cashRcvd === null
-                          ? ""
-                          : "-" +
-                            getCurrencyNumberWithSymbol(billData?.cashRcvd)}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
+             
               <div></div>
               <div>
                 <div className="row">
@@ -1495,6 +1454,48 @@ const GroupTotals = (props) => {
                     </p>
                   </div>
                 </div>
+              </div>
+              <div>
+                {billData?.partyType.toUpperCase() === "FARMER" ? (
+                  <div className="row">
+                    <div className="col-lg-2"></div>
+                    <div className="col-lg-6">
+                      {billData?.cashPaid === 0 ? (
+                        "" || billData?.cashPaid === null
+                      ) : (
+                        <p className="grouping_value">Cash Paid :</p>
+                      )}
+                    </div>
+                    <div className="col-lg-4">
+                      <p className="groups_values">
+                        {billData?.cashPaid === 0 || billData?.cashPaid === null
+                          ? " "
+                          : "-" +
+                            getCurrencyNumberWithSymbol(billData?.cashPaid)}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row">
+                    <div className="col-lg-2"></div>
+                    <div className="col-lg-6">
+                      {billData?.cashRcvd === 0 ||
+                      billData?.cashRcvd === null ? (
+                        ""
+                      ) : (
+                        <p className="grouping_value">Cash Received :</p>
+                      )}
+                    </div>
+                    <div className="col-lg-4">
+                      <p className="groups_values ">
+                        {billData?.cashRcvd === 0 || billData?.cashRcvd === null
+                          ? ""
+                          : "-" +
+                            getCurrencyNumberWithSymbol(billData?.cashRcvd)}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

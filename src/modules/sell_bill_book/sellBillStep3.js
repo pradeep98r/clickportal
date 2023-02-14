@@ -79,6 +79,7 @@ const SellBillStep3 = (props) => {
   const [allGroups, setAllGroups] = useState([]);
   const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
   useEffect(() => {
+    $('#disable').attr("disabled", false);
       var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -116,6 +117,7 @@ const SellBillStep3 = (props) => {
     );
     getSystemSettings(clickId).then((res) => {
       var response;
+      console.log(response)
       if(res.data.data.billSetting.length >0){
         response = res.data.data.billSetting;
         for (var i = 0; i < response.length; i++) {
@@ -216,7 +218,6 @@ const SellBillStep3 = (props) => {
   };
   const listSettings = (name, res, index) => {
     var totalQty = 0;
-    var totalQtyBill = 0;
     var item = editStatus
       ? step2CropEditStatus
         ? props.slectedSellCropsArray
@@ -302,7 +303,8 @@ const SellBillStep3 = (props) => {
           case "TRANSPORTATION":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.transportation == 0 ? 0 : ( 
+                  billEditItem?.transportation != 0 ? billEditItem?.transportation : res[j].value)
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -328,7 +330,8 @@ const SellBillStep3 = (props) => {
           case "RENT":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.rent == 0 ? 0 : ( 
+                  billEditItem?.rent != 0 ? billEditItem?.rent : res[j].value)
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -353,7 +356,8 @@ const SellBillStep3 = (props) => {
           case "LABOUR_CHARGES":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.labourCharges == 0 ? 0 : ( 
+                  billEditItem?.labourCharges != 0 ? billEditItem?.labourCharges : res[j].value)
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV =editStatus
@@ -511,17 +515,34 @@ const SellBillStep3 = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
+    console.log(transTotalValue)
     var t = Number(
       // getTotalValue(commValue) +
       (transTotalValue != 0
         ? Number(transTotalValue)
-        : Number(getTotalUnits(transportationValue).toFixed(2))) +
+        : tableChangeStatus
+        ? Number(transportationValue)
+        : getTotalUnits(transportationValue)) +
         (labourTotalValue != 0
           ? Number(labourTotalValue)
+          : tableChangeStatus
+          ? Number(laborChargeValue)
           : getTotalUnits(laborChargeValue)) +
         (rentTotalValue != 0
           ? Number(rentTotalValue)
-          : getTotalUnits(rentValue)) +
+          : tableChangeStatus
+          ? Number(rentValue)
+          : getTotalUnits(rentValue))
+      // (transTotalValue != 0
+      //   ? Number(transTotalValue)
+      //   : Number(getTotalUnits(transportationValue).toFixed(2))) +
+      //   (labourTotalValue != 0
+      //     ? Number(labourTotalValue)
+      //     : getTotalUnits(laborChargeValue)) +
+      //   (rentTotalValue != 0
+      //     ? Number(rentTotalValue)
+      //     : getTotalUnits(rentValue))
+           +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -557,13 +578,20 @@ const SellBillStep3 = (props) => {
     var t = Number(
       (transTotalValue != 0
         ? Number(transTotalValue)
-        : Number(getTotalUnits(transportationValue).toFixed(2))) +
+        : tableChangeStatus
+        ? Number(transportationValue)
+        : getTotalUnits(transportationValue)) +
         (labourTotalValue != 0
           ? Number(labourTotalValue)
+          : tableChangeStatus
+          ? Number(laborChargeValue)
           : getTotalUnits(laborChargeValue)) +
         (rentTotalValue != 0
           ? Number(rentTotalValue)
-          : getTotalUnits(rentValue)) +
+          : tableChangeStatus
+          ? Number(rentValue)
+          : getTotalUnits(rentValue)) 
+          +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -635,11 +663,11 @@ const SellBillStep3 = (props) => {
     }
     if (addRetComm) {
       if (!includeRetComm) {
-        actualRcvd = (actualRcvd - getTotalValue(retcommValue)).toFixed(2);
+        actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if (!includeRetComm) {
-        actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
+        actualRcvd = (actualRcvd - getTotalValue(retcommValue)).toFixed(2);
       }
     }
     return actualRcvd;
@@ -664,9 +692,11 @@ const SellBillStep3 = (props) => {
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,
     labourCharges:
-      labourTotalValue != 0
-        ? Number(labourTotalValue)
-        : Number(getTotalUnits(laborChargeValue).toFixed(2)),
+    labourTotalValue != 0
+    ? Number(labourTotalValue)
+    : (tableChangeStatus
+    ? Number(laborChargeValue)
+    : Number(getTotalUnits(laborChargeValue).toFixed(2))),
     less: addRetComm,
     lineItems: lineItemsArray,
     mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
@@ -674,16 +704,20 @@ const SellBillStep3 = (props) => {
     outStBal: outBal,
     paidTo: 100,
     rent:
-      rentTotalValue != 0
-        ? Number(rentTotalValue)
-        : Number(getTotalUnits(rentValue).toFixed(2)),
+    rentTotalValue != 0
+    ? Number(rentTotalValue)
+    : (tableChangeStatus
+    ? Number(rentValue)
+    : Number(getTotalUnits(rentValue).toFixed(2))),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalReceivable: Number(getTotalRcble().toFixed(2)),
     transportation:
-      transTotalValue != 0
-        ? Number(transTotalValue)
-        : Number(getTotalUnits(transportationValue).toFixed(2)),
+    transTotalValue != 0
+    ? Number(transTotalValue)
+    : (tableChangeStatus
+    ? Number(transportationValue)
+    : Number(getTotalUnits(transportationValue).toFixed(2))),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -706,9 +740,11 @@ const SellBillStep3 = (props) => {
       govtLevies: Number(levisValue),
       grossTotal: grossTotal,
       labourCharges:
-        labourTotalValue != 0
-          ? Number(labourTotalValue)
-          : Number(getTotalUnits(laborChargeValue).toFixed(2)),
+      labourTotalValue != 0
+      ? Number(labourTotalValue)
+      : (tableChangeStatus
+      ? Number(laborChargeValue)
+      : Number(getTotalUnits(laborChargeValue).toFixed(2))),
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
@@ -717,16 +753,21 @@ const SellBillStep3 = (props) => {
       paidTo: 0,
       partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
       rent:
-        rentTotalValue != 0
-          ? Number(rentTotalValue)
-          : Number(getTotalUnits(rentValue).toFixed(2)),
+      rentTotalValue != 0
+      ? Number(rentTotalValue)
+      : (tableChangeStatus
+      ? Number(rentValue)
+      : Number(getTotalUnits(rentValue).toFixed(2))),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: Number(getTotalRcble().toFixed(2)),
       transportation:
-        transTotalValue != 0
-          ? Number(transTotalValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2)),
+      transTotalValue != 0
+      ? Number(transTotalValue)
+      : (tableChangeStatus
+      ? Number(transportationValue)
+      : Number(getTotalUnits(transportationValue).toFixed(2))),
+          
       transporterId:transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
     },
     billId: billEditItem.billId,
@@ -1095,7 +1136,6 @@ const SellBillStep3 = (props) => {
   ) => {
     setpartnerSelectedData(partyselectedarray);
     setTranspoSelectedData(trans);
-    console.log(trans)
     props.step3ParentCallback(
       //   cropTableEditStatus,
       cropEditObject,
@@ -1140,6 +1180,9 @@ const SellBillStep3 = (props) => {
     var val = e.target.value;
     setCommentFieldText(val);
   }
+  $('#disable').on('click', function(){
+    $('#disable').attr("disabled", true);
+});
   return (
     <div>
       <div className="main_div_padding">
@@ -1355,7 +1398,7 @@ const SellBillStep3 = (props) => {
           <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
             Previous
           </button>
-          <button className="primary_btn" onClick={() => postsellbill()}>
+          <button className="primary_btn" id="disable" onClick={() => postsellbill()}>
             Submit
           </button>
           </div>

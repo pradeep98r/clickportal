@@ -1153,7 +1153,7 @@ const Step22 = (props) => {
                                     cropData[index].qtyUnit?.toLowerCase() !=
                                     cropData[index].rateType ? (
                                       <td className="col-1">
-                                        <div className="d-flex justify-content-center">
+                                        <div className="d-flex align-items-center justify-content-center">
                                           <input
                                             type="checkbox"
                                             checked={
@@ -1168,7 +1168,7 @@ const Step22 = (props) => {
                                             }
                                             id="modal_checkbox"
                                             value="my-value"
-                                            className="checkbox_t"
+                                            className="checkbox_t cursor_class"
                                             onChange={() => {
                                               handleCheckEvent(
                                                 cropData,
@@ -1179,9 +1179,8 @@ const Step22 = (props) => {
                                           />
                                           {cropData[index].bags !== null &&
                                           cropData[index].bags.length > 0 ? (
-                                            <p className="unit-type mt-0">
-                                              Edit
-                                            </p>
+                                            
+                                            <label className="unit-type my-0 cursor_class"  for="modal_checkbox">Edit</label>
                                           ) : (
                                             ""
                                           )}{" "}

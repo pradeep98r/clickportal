@@ -79,6 +79,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
+    $('#disable').attr("disabled", false);
     console.log("came to step3 useeffect");
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -316,7 +317,8 @@ const Step33 = (props) => {
           case "TRANSPORTATION":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.transportation == 0 ? 0 : ( 
+                  billEditItem?.transportation != 0 ? billEditItem?.transportation : res[j].value)
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -342,7 +344,8 @@ const Step33 = (props) => {
           case "RENT":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.rent == 0 ? 0 : ( 
+                  billEditItem?.rent != 0 ? billEditItem?.rent : res[j].value)
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -367,7 +370,8 @@ const Step33 = (props) => {
           case "LABOUR_CHARGES":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.labourCharges == 0 ? 0 : ( 
+                  billEditItem?.labourCharges != 0 ? billEditItem?.labourCharges : res[j].value)
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -590,11 +594,11 @@ const Step33 = (props) => {
     }
     if (addRetComm) {
       if (!includeRetComm) {
-        actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
+        actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if (!includeRetComm) {
-        actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
+        actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
       }
     }
     return actualPay;
@@ -618,7 +622,8 @@ const Step33 = (props) => {
           ? Number(rentTotalValue)
           : tableChangeStatus
           ? Number(rentValue)
-          : getTotalUnits(rentValue)) +
+          : getTotalUnits(rentValue)) 
+          +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -777,9 +782,9 @@ const Step33 = (props) => {
       transportation:
         transTotalValue != 0
           ? Number(transTotalValue)
-          : tableChangeStatus
+          : (tableChangeStatus
           ? Number(transportationValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2)),
+          : Number(getTotalUnits(transportationValue).toFixed(2))),
       transporterId:
       transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
     },
@@ -835,9 +840,9 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
-            props.closem();
+            
             window.setTimeout(function () {
-             
+              props.closem();
               navigate("/buy_bill_book");
               window.location.reload();
             }, 2000);
@@ -1259,6 +1264,9 @@ const Step33 = (props) => {
     });
     setAllGroups([...updatedItems]);
   };
+  $('#disable').on('click', function(){
+    $('#disable').attr("disabled", true);
+});
   return (
     <div>
       <div className="main_div_padding">
@@ -1509,7 +1517,7 @@ const Step33 = (props) => {
             <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
               Previous
             </button>
-            <button className="primary_btn" onClick={() => postbuybill()}>
+            <button className="primary_btn" id="disable" onClick={() => postbuybill()}>
               Submit
             </button>
           </div>

@@ -763,6 +763,8 @@ article.on {
     .user_icon {
       width: 40px;
       margin-right: 5px;
+      height: 40px;
+      border-radius: 100%;
     }
   }
   .billid_div {
@@ -842,11 +844,11 @@ article.on {
     margin-left: auto;
   }
   .mandi_circle {
-    border-radius: 100%;
+    border-radius: 20px;
     background-color: var(--ono-yellow);
-    padding: 10px;
-    width: 70px;
-    height: 70px;
+    // padding: 10px;
+    width: 75px;
+    height: 50px;
     color: var(--ono-primary);
     justify-content: center;
     margin: 0 auto;
@@ -854,11 +856,22 @@ article.on {
       line-height: 16px;
     }
   }
+  .mandi_logo_image{
+    img{
+    border-radius: 20px;
+    width: 75px;
+    height: 50px;
+    object-fit: cover;
+    object-position: center;
+    }
+  }
   .billid_date_bg {
     border-radius: 10px 10px 0px 0px;
     background-color: #0c7a1e;
     margin-top: 10px;
     padding: 5px 0px;
+    // position: absolute;
+    // bottom: 0;
   }
 }
 .bill_crop_details {

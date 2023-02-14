@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { getMandiDetails } from "../../actions/billCreationService";
+import { getMandiDetails, getMandiLogoDetails } from "../../actions/billCreationService";
 import moment from "moment/moment";
 import { useSelector } from "react-redux";
 export const BusinessDetails = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [mandiData, setMandiData] = useState({});
-
+  const [mandiLogoData, setMandiLogoData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   useEffect(() => {
@@ -20,6 +20,14 @@ export const BusinessDetails = (props) => {
         console.log(response,"rese");
         setMandiData(response.data.data);
         console.log(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      getMandiLogoDetails(clickId)
+      .then((res) => {
+        setMandiLogoData(res.data.data);
+        console.log(res)
       })
       .catch((error) => {
         console.log(error);
@@ -53,9 +61,10 @@ export const BusinessDetails = (props) => {
       </div>
       <div className="row mandi_details_header align_items_center">
         <div className="col-lg-2">
-          <div className="mandi_circle flex_class">
+          {mandiLogoData.logoUrl ? (<div className="mandi_logo_image"><img src={mandiLogoData.logoUrl}/></div>) : (<div className="mandi_circle flex_class">
             <p className="mandi_logo">{mandiData.businessDtls?.shortCode}</p>
-          </div>
+          </div>) }
+          
           <div className="billid_date_bg">
             <p className="small_text text-center">
               Bill ID : {billData?.caBSeq !== null ? billData?.caBSeq : ""}
