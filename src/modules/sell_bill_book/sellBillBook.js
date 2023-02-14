@@ -28,6 +28,7 @@ import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
 import BillView from "../buy_bill_book/billView";
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -274,22 +275,35 @@ const SellBillBook = (props) => {
                                     <div className="row full_width">
                                       <div className="col-lg-7 col-sm-12 p-0 col">
                                         <div className="bill_user_details flex_class mr-0">
-                                          <img
+                                          {
+                                            bill.profilePic ? <img
+                                            src={bill.profilePic}
+                                            className="user_icon"
+                                            alt="icon"
+                                          /> : <img
                                             src={single_bill}
                                             className="user_icon"
                                             alt="icon"
                                           />
+                                          }
+                                          
                                           <div>
                                             <h6 className="userName">
                                               {bill.buyerName +
                                                 "-" +
                                                 bill.shortName}
                                             </h6>
-                                            <h6 className="mobile">
-                                              {bill.partyType +
+                                           <div className="d-flex align-items-center">
+                                           <h6 className="mobile">
+                                              {getText(bill.partyType) +
                                                 "-" +
                                                 bill.buyerId}
                                             </h6>
+                                            <h6 className="mobile">
+                                              &nbsp;{' |  ' + getMaskedMobileNumber(bill.mobile)}
+                                              </h6>
+                                            
+                                             </div>
                                             <h6 className="address">
                                               {bill.buyerAddress}
                                             </h6>

@@ -317,7 +317,8 @@ const Step33 = (props) => {
           case "TRANSPORTATION":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.transportation == 0 ? 0 : ( 
+                  billEditItem?.transportation != 0 ? billEditItem?.transportation : res[j].value)
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -343,7 +344,8 @@ const Step33 = (props) => {
           case "RENT":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.rent == 0 ? 0 : ( 
+                  billEditItem?.rent != 0 ? billEditItem?.rent : res[j].value)
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -368,7 +370,8 @@ const Step33 = (props) => {
           case "LABOUR_CHARGES":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? res[j].value
+                ? billEditItem?.labourCharges == 0 ? 0 : ( 
+                  billEditItem?.labourCharges != 0 ? billEditItem?.labourCharges : res[j].value)
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -593,11 +596,11 @@ const Step33 = (props) => {
     }
     if (addRetComm) {
       if (!includeRetComm) {
-        actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
+        actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
       if (!includeRetComm) {
-        actualPay = (actualPay + getTotalValue(retcommValue)).toFixed(2);
+        actualPay = (actualPay - getTotalValue(retcommValue)).toFixed(2);
       }
     }
     return actualPay;
@@ -621,7 +624,8 @@ const Step33 = (props) => {
           ? Number(rentTotalValue)
           : tableChangeStatus
           ? Number(rentValue)
-          : getTotalUnits(rentValue)) +
+          : getTotalUnits(rentValue)) 
+          +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -779,9 +783,9 @@ const Step33 = (props) => {
       transportation:
         transTotalValue != 0
           ? Number(transTotalValue)
-          : tableChangeStatus
+          : (tableChangeStatus
           ? Number(transportationValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2)),
+          : Number(getTotalUnits(transportationValue).toFixed(2))),
       transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : 0,
     },
