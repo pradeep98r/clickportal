@@ -633,14 +633,7 @@ const SmartBoard = () => {
                                                 </p>
                                               ) : (
                                                 <h6 className="color_red">
-                                                  {outStandingBal.pendingPaybles.toLocaleString(
-                                                    "en-IN",
-                                                    {
-                                                      maximumFractionDigits: 2,
-                                                      style: "currency",
-                                                      currency: "INR",
-                                                    }
-                                                  )}
+                                                  {"₹" + outStandingBal.pendingPaybles.toFixed(2)}
                                                 </h6>
                                               )}
                                               <p className="color_blue">
