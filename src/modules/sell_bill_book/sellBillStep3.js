@@ -79,6 +79,7 @@ const SellBillStep3 = (props) => {
   const [allGroups, setAllGroups] = useState([]);
   const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
   useEffect(() => {
+    $('#disable').attr("disabled", false);
       var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -1140,6 +1141,9 @@ const SellBillStep3 = (props) => {
     var val = e.target.value;
     setCommentFieldText(val);
   }
+  $('#disable').on('click', function(){
+    $('#disable').attr("disabled", true);
+});
   return (
     <div>
       <div className="main_div_padding">
@@ -1355,7 +1359,7 @@ const SellBillStep3 = (props) => {
           <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
             Previous
           </button>
-          <button className="primary_btn" onClick={() => postsellbill()}>
+          <button className="primary_btn" id="disable" onClick={() => postsellbill()}>
             Submit
           </button>
           </div>

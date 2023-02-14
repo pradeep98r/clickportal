@@ -77,6 +77,7 @@ const SelectPartner = (props) => {
   const partySelect = (item) => {
     Object.assign(item, { itemtype: "" }, { date: "" });
     setGetPartyItem(item);
+    console.log(item)
     setSelectedPartner(item);
     setCount(item.partyId);
     // localStorage.setItem("selectedSearchItem", JSON.stringify(item));
@@ -123,6 +124,9 @@ const SelectPartner = (props) => {
         return data.partyId.toString().search(value) != -1;
       } else if(data.address?.addressLine.toLowerCase().includes(value)){
         return data.address?.addressLine.toLowerCase().search(value) != -1;
+      }
+      else if(data.shortName.toLowerCase().includes(value)){
+        return data.shortName.toLowerCase().search(value) != -1;
       }
     });
     if (value != "") {
@@ -184,7 +188,7 @@ const SelectPartner = (props) => {
                   <img src={single_bill} className="icon_user" />
                 )}
                 <div>
-                  <h5>{getPartyItem.partyName}</h5>
+                  <h5>{getPartyItem.partyName + ' ' + getPartyItem.shortName}</h5>
                   <h6>
                     {getPartyItem.partyType} - {getPartyItem.partyId} |{" "}
                     {getPartyItem.mobile}
@@ -226,7 +230,7 @@ const SelectPartner = (props) => {
                                 <img src={single_bill} className="icon_user" />
                               )}
                               <div>
-                                <h5>{item.partyName}</h5>
+                                <h5>{item.partyName + ' ' + item.shortName}</h5>
                                 <h6>
                                   { item.partyType} -{" "}
                                   {item.partyId} | {item.mobile}

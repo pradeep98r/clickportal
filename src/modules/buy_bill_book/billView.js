@@ -189,6 +189,11 @@ const BillView = (props) => {
       setPrevNextStatus(true);
       setPrevNextDisable(false);
       setNextDisable(false);
+      if (allBillsArray[index1].billStatus === "CANCELLED") {
+        setDisplayCancel(true);
+      } else {
+        setDisplayCancel(false);
+      }
     }
     else{
       setPrevNextDisable(true);
@@ -204,6 +209,11 @@ const BillView = (props) => {
       setPrevNextStatus(true);
       setNextDisable(false);
       setPrevNextDisable(false);
+      if (allBillsArray[index1].billStatus === "CANCELLED") {
+        setDisplayCancel(true);
+      } else {
+        setDisplayCancel(false);
+      }
     }
     else{
       setNextDisable(true);
