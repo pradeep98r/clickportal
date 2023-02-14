@@ -213,7 +213,7 @@ const SellBillBook = (props) => {
                       onClick={handleStep1Header}
                     >
                       <img src={addbill_icon} alt="image" className="mr-2" />
-                      ADD BILL
+                      Add single Bill
                     </a>
                   </div>
                 </div>
@@ -407,7 +407,7 @@ const SellBillBook = (props) => {
                                       className="primary_btn"
                                       onClick={handleStep1Header}
                                     >
-                                      Add Bill
+                                     Add single Bill
                                       
                                     </button>
                                  

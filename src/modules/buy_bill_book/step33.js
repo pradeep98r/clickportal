@@ -79,6 +79,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
+    $('#disable').attr("disabled", false);
     console.log("came to step3 useeffect");
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -836,9 +837,9 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
-            props.closem();
+            
             window.setTimeout(function () {
-             
+              props.closem();
               navigate("/buy_bill_book");
               window.location.reload();
             }, 2000);
@@ -1260,6 +1261,9 @@ const Step33 = (props) => {
     });
     setAllGroups([...updatedItems]);
   };
+  $('#disable').on('click', function(){
+    $('#disable').attr("disabled", true);
+});
   return (
     <div>
       <div className="main_div_padding">
@@ -1510,7 +1514,7 @@ const Step33 = (props) => {
             <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
               Previous
             </button>
-            <button className="primary_btn" onClick={() => postbuybill()}>
+            <button className="primary_btn" id="disable" onClick={() => postbuybill()}>
               Submit
             </button>
           </div>
