@@ -246,6 +246,12 @@ const Step3PartySelect = (props) => {
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
       }
+      else if (data.shortName.toString().includes(value)) {
+        return data.shortName.toString().search(value) != -1;
+      }
+      else if(data.address?.addressLine.toLowerCase().includes(value)){
+        return data.address?.addressLine.toLowerCase().search(value) != -1;
+      }
     });
     if (value != "") {
       setpartnerData(result);
@@ -257,35 +263,7 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-  const getQuantityType = (unit) => {
-    var string = "";
-    switch (unit.toUpperCase()) {
-      case "CRATES":
-        string = "C";
-        break;
-      case "BAGS":
-        string = "Bg";
-        break;
-      case "BOXES":
-        string = "BX";
-        break;
-      case "SACS":
-        string = "S";
-        break;
-      case "LOADS":
-        string = "LDS";
-        break;
-      case "KGS":
-        string = "KGS";
-        break;
-      case "PIECES":
-        string = "P";
-        break;
-      default:
-        string = "";
-    }
-    return string;
-  };
+
   return (
     <div className="">
       <h5 className="head_modal">Bill Information </h5>
@@ -318,11 +296,11 @@ const Step3PartySelect = (props) => {
                     <h5>
                       {billeditStatus
                         ? partySelectStatus
-                          ? partySelecteData.partyName
+                          ? partySelecteData.partyName + ' ' + partySelecteData.shortName
                           : billEditItem.partyType == "FARMER"
                           ? billEditItem.farmerName
                           : billEditItem.buyerName
-                        : partySelecteData.partyName}
+                        : partySelecteData.partyName + ' ' + partySelecteData.shortName}
                     </h5>
                     <h6>
                       {billeditStatus
@@ -384,7 +362,7 @@ const Step3PartySelect = (props) => {
                           <div className="d-flex align-items-center">
                             <img src={single_bill} className="icon_user" />
                             <div>
-                              <h5>{item.partyName}</h5>
+                              <h5>{item.partyName + ' ' + item.shortName}</h5>
                               <h6>
                                 {item.trader ? "TRADER" : item.partyType} -{" "}
                                 {item.partyId} | {item.mobile}
@@ -526,7 +504,7 @@ const Step3PartySelect = (props) => {
                             <div>
                               <h5>{item.partyName}</h5>
                               <h6>
-                                {item.trader ? "TRADER" : item.partyType} -{" "}
+                                {item.partyType} -{" "}
                                 {item.partyId} | {item.mobile}
                               </h6>
                               <p>{item.address.addressLine}</p>
