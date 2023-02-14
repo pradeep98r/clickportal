@@ -10,6 +10,7 @@ import { getOutstandingBal, postRecordPayment } from '../../actions/ledgersServi
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getMaskedMobileNumber } from '../../components/getCurrencyNumber';
 
 const RecordPayment = (props) => {
     const ledgerData = props.LedgerData;
@@ -169,7 +170,7 @@ const RecordPayment = (props) => {
                                                                     ? "Buyer"
                                                                     : "Trader"}{" "}
                                                                 - {ledgerData.partyId}&nbsp;|&nbsp;
-                                                                {ledgerData.mobile}
+                                                                {getMaskedMobileNumber(ledgerData.mobile)}
                                                             </p>
                                                             <p className="addres-tag">
                                                                 {ledgerData.partyAddress

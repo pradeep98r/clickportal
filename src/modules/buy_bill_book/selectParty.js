@@ -11,6 +11,7 @@ import { selectBuyer } from "../../reducers/buyerSlice";
 import { selectTrans } from "../../reducers/transSlice";
 import tickMark from "../../assets/images/tick_mark.svg";
 import $ from "jquery";
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 const SelectPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const users = useSelector((state) => state.buyerInfo);
@@ -191,7 +192,7 @@ const SelectPartner = (props) => {
                   <h5>{getPartyItem.partyName + ' ' + getPartyItem.shortName}</h5>
                   <h6>
                     {getPartyItem.partyType} - {getPartyItem.partyId} |{" "}
-                    {getPartyItem.mobile}
+                    {getMaskedMobileNumber(getPartyItem.mobile)}
                   </h6>
                   <p>{getPartyItem.address?.addressLine}</p>
                 </div>
@@ -233,7 +234,7 @@ const SelectPartner = (props) => {
                                 <h5>{item.partyName + ' ' + item.shortName}</h5>
                                 <h6>
                                   { item.partyType} -{" "}
-                                  {item.partyId} | {item.mobile}
+                                  {item.partyId} | {getMaskedMobileNumber(item.mobile)}
                                 </h6>
                                 <p>{item.address?.addressLine}</p>
                               </div>

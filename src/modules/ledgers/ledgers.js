@@ -17,6 +17,7 @@ import {
     getCurrencyNumberWithOutSymbol,
     getCurrencyNumberWithSymbol,
     getCurrencyNumberWithOneDigit,
+    getMaskedMobileNumber,
 } from "../../components/getCurrencyNumber";
 import { getDetailedLedgerByDate } from '../../actions/billCreationService';
 import DatePickerModel from "../smartboard/datePicker";
@@ -443,7 +444,7 @@ const Ledgers = (props) => {
                                                                                             {item.partyId}&nbsp;
                                                                                         </p>
                                                                                         <p className="mobilee-tag">
-                                                                                            {item.mobile}
+                                                                                            {getMaskedMobileNumber(item.mobile)}
                                                                                         </p>
                                                                                         <p className="address-tag">
                                                                                             {item.partyAddress
@@ -578,7 +579,7 @@ const Ledgers = (props) => {
                                                                         - {ledgerData.partyId}&nbsp;
                                                                     </p>
                                                                     <p className="mobilee-tag">
-                                                                        {ledgerData.mobile}
+                                                                        {getMaskedMobileNumber(ledgerData.mobile)}
                                                                     </p>
 
                                                                 </div>

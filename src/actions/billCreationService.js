@@ -107,6 +107,13 @@ export function getMandiDetails(clickId) {
     `/account/click/profiles/caId/${clickId}`
   );
 }
+
+export function getMandiLogoDetails(clickId){
+  return axiosCommon.get(
+    `/click/bcp-settings/pdf/setting/caId/${clickId}`
+  );
+}
+
 export function postRecordPayment(addRecordPaymentReq) {
   return axiosCommon.post(
     `/click/ledgers/payment/record`,

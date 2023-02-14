@@ -28,6 +28,7 @@ import "react-toastify/dist/ReactToastify.css";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
 import loading from "../../assets/images/loading.gif";
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -783,7 +784,7 @@ const Partner = () => {
                                               partner.trader
                                             )}{" "}
                                             - {partner.partyId} |{" "}
-                                            {partner.mobile}
+                                            {getMaskedMobileNumber(partner.mobile)}
                                           </h6>
                                           <p>{partner.address.addressLine}</p>
                                         </div>

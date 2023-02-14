@@ -36,6 +36,7 @@ import { selectTrans } from "../../reducers/transSlice";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import { useDispatch } from "react-redux";
 import Steps from "../buy_bill_book/steps";
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 const SmartBoard = () => {
   const dispatch = useDispatch();
   const [tabType, setTabType] = useState("Daily");
@@ -1220,10 +1221,8 @@ const SmartBoard = () => {
                                                       - {buyerItem.partyId}
                                                     </h3>
                                                     <h5>
-                                                      {buyerItem.mobile.replace(
-                                                        /.(?=.{4})/g,
-                                                        "X"
-                                                      )}
+                                                      {getMaskedMobileNumber(buyerItem.mobile)}
+                                                      
                                                     </h5>
                                                   </div>
                                                 </div>

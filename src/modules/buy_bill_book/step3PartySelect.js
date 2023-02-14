@@ -27,6 +27,7 @@ import SearchField from "../../components/searchField";
 import { selectTrans } from "../../reducers/transSlice";
 import { qtyValues } from "../../components/qtyValues";
 import NoDataAvailable from "../../components/noDataAvailable";
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -319,11 +320,11 @@ const Step3PartySelect = (props) => {
                       |{" "}
                       {billeditStatus
                         ? partySelectStatus
-                          ? partySelecteData.mobile
+                          ? getMaskedMobileNumber(partySelecteData.mobile)
                           : billEditItem.partyType == "FARMER"
                           ? billEditItem.farmerMobile
-                          : billEditItem.mobile
-                        : partySelecteData.mobile}
+                          : getMaskedMobileNumber(billEditItem.mobile)
+                        : getMaskedMobileNumber(partySelecteData.mobile)}
                     </h6>
                     <p>{partnerData.buyerAddress}</p>
                   </div>
@@ -365,7 +366,7 @@ const Step3PartySelect = (props) => {
                               <h5>{item.partyName + ' ' + item.shortName}</h5>
                               <h6>
                                 {item.trader ? "TRADER" : item.partyType} -{" "}
-                                {item.partyId} | {item.mobile}
+                                {item.partyId} | {getMaskedMobileNumber(item.mobile)}
                               </h6>
                               <p>{item.address.addressLine}</p>
                             </div>
@@ -430,13 +431,13 @@ const Step3PartySelect = (props) => {
                             "-" +
                             transpoSelectedData.partyId +
                             " | " +
-                            transpoSelectedData.mobile
+                            getMaskedMobileNumber(transpoSelectedData.mobile)
                           : "TRANSPORTER" + "-" + billEditItem.transporterId
                         : transpoSelectedData.partyType +
                           "-" +
                           transpoSelectedData.partyId +
                           " | " +
-                          transpoSelectedData.mobile}
+                          getMaskedMobileNumber(transpoSelectedData.mobile)}
                     </h6>
                     <p>
                       {billeditStatus
@@ -505,7 +506,7 @@ const Step3PartySelect = (props) => {
                               <h5>{item.partyName}</h5>
                               <h6>
                                 {item.partyType} -{" "}
-                                {item.partyId} | {item.mobile}
+                                {item.partyId} | {getMaskedMobileNumber(item.mobile)}
                               </h6>
                               <p>{item.address.addressLine}</p>
                             </div>

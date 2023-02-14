@@ -33,6 +33,7 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
   getCurrencyNumberWithOneDigit,
+  getMaskedMobileNumber,
 } from "../../components/getCurrencyNumber";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -467,7 +468,7 @@ const resetInput = (e) => {
                                           {item.partyId}&nbsp;
                                         </p>
                                         <p className="mobilee-tag">
-                                          {item.mobile}
+                                          {getMaskedMobileNumber(item.mobile)}
                                         </p>
                                         <p className="address-tag">
                                           {item.partyAddress
@@ -622,7 +623,7 @@ const resetInput = (e) => {
                                             - {item.partyId}&nbsp;
                                           </p>
                                           <p className="mobilee-tag">
-                                            {item.mobile}
+                                            {getMaskedMobileNumber(item.mobile)}
                                           </p>
                                          
                                         </div>
@@ -1162,7 +1163,7 @@ const resetInput = (e) => {
                                                   ? "Farmer"
                                                   : "Trader"}{" "}
                                                 - {item.partyId}&nbsp;|&nbsp;
-                                                {item.mobile}
+                                                {getMaskedMobileNumber(item.mobile)}
                                               </p>
                                               <p className="addres-tag">
                                                 {item.partyAddress
