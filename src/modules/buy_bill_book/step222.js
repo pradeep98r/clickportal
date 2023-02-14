@@ -22,6 +22,7 @@ import {
   fromBillbook,
 } from "../../reducers/billEditItemSlice";
 import { selectTrans } from "../../reducers/transSlice";
+import $ from "jquery";
 var array = [];
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
@@ -424,12 +425,12 @@ const Step22 = (props) => {
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         if (!cropData[index].cropDelete) {
-          // Object.assign(cropData[index], { status: 1 });
           if (
             cropData[index].qtyUnit?.toLowerCase() === "loads" ||
             cropData[index].qtyUnit?.toLowerCase() === "pieces"
           ) {
             if (cropData[index].weight == 0) {
+              console.log("came to here0");
               toast.error("Please enter weight", {
                 toastId: "error2",
               });
@@ -442,6 +443,7 @@ const Step22 = (props) => {
             }
           } else if (cropData[index].qtyUnit?.toLowerCase() === "kgs") {
             if (cropData[index].weight == 0) {
+              console.log("came to here1");
               toast.error("Please enter weight", {
                 toastId: "error2",
               });
@@ -468,12 +470,6 @@ const Step22 = (props) => {
               return null;
             }
           }
-          // else if(cropData[index].rate == 0){
-          //   toast.error('Please enter rate', {
-          //     toastId: "error3"
-          //   });
-          //   return null;
-          // }
           else if (
             cropData[index].qty == 0 &&
             !setQuantityBasedtable(cropData[index].qtyUnit)
@@ -482,15 +478,21 @@ const Step22 = (props) => {
               toastId: "error1",
             });
             return null;
-          } else if (cropData[index].weight == 0) {
-            // if(cropData[index].rateType != 'RATE_PER_UNIT'){
-            toast.error("Please enter weight", {
-              toastId: "error2",
-            });
-            // }
-
+          } 
+          else if (cropData[index].weight == 0 && !billEditStatus) {
+              toast.error("Please enter weight", {
+                toastId: "error2",
+              });
             return null;
-          } else if (cropData[index].rate == 0) {
+          } else if (cropData[index].weight == 0 && billEditStatus) {
+            console.log("came to here2");
+           
+              toast.error("Please enter weight", {
+                toastId: "error2",
+              });
+            return null;
+          }
+          else if (cropData[index].rate == 0) {
             toast.error("Please enter rate", {
               toastId: "error3",
             });
@@ -505,14 +507,7 @@ const Step22 = (props) => {
         }
       }
       for (var k = 0; k < cropData.length; k++) {
-        // if (!cropData[k].cropDelete){
         arrays.push(cropData[k]);
-        // }
-        // else{
-        //   toast.error("Please add Crop", {
-        //     toastId: "error2",
-        //   });
-        // }
       }
 
       if (arrays.length === cropData.length) {
@@ -536,6 +531,31 @@ const Step22 = (props) => {
       t = true;
     }
     return t;
+  };
+
+  //Allow to enter deciaml values
+  const handleInputValueEvent = (e) => {
+    $("input").keypress(function (e) {
+      var a = [];
+      var k = e.which;
+      if (e.charCode === 46) {
+        // if dot is the first symbol
+        if (e.target.value.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        // if there are dots already
+        if (e.target.value.indexOf(".") !== -1) {
+          e.preventDefault();
+          return;
+        }
+
+        a.push(e.charCode);
+      }
+      for (var i = 48; i < 58; i++) a.push(i);
+      if (!($.inArray(k, a) >= 0)) e.preventDefault();
+    });
   };
   //   getting quantiy and rate values from dropdowns
   var arr1 = [];
@@ -561,7 +581,8 @@ const Step22 = (props) => {
   //   getting input values(quantity,weight,wastage,rate) from input fields
   var arr = [];
   const getQuantityValue = (id, index, cropitem) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+      handleInputValueEvent(e)
+      var val = e.target.value;
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], qty: val };
@@ -584,7 +605,9 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    handleInputValueEvent(e)
+    var val = e.target.value;
+    // .replace(/\D/g, "");
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], weight: val };
@@ -599,7 +622,13 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    if(cropitem[index].rateType.toUpperCase().toUpperCase() == cropitem[index].qtyUnit.toUpperCase()){
+      handleInputValueEvent(e)
+      var val = e.target.value  
+    } else{
+      var val = e.target.value.replace(/\D/g, "");
+    }
+    // var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], wastage: val };
@@ -614,7 +643,9 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getRateValue = (id, index, cropitem) => (e) => {
-    var val = e.target.value.replace(/\D/g, "");
+    handleInputValueEvent(e)
+    var val = e.target.value
+    // .replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], rate: val };
@@ -1009,7 +1040,7 @@ const Step22 = (props) => {
                                       ""
                                     )}
                                   </td>
-                                  <td className="col-1" contenteditable="true">  
+                                  <td className="col-1">  
                                     <select
                                       className="form-control qty_dropdown dropdown"
                                       value={cropData[index].qtyUnit}
@@ -1018,6 +1049,7 @@ const Step22 = (props) => {
                                         index,
                                         crop
                                       )}
+                                      
                                     >
                                       <option value="Crates">Crates</option>
                                       <option value="Bags">Bags</option>
@@ -1031,7 +1063,7 @@ const Step22 = (props) => {
                                   {!setQuantityBasedtable(
                                     cropData[index].qtyUnit
                                   ) ? (
-                                    <td className="col-1" contenteditable="true">
+                                    <td className="col-1">
                                       <select
                                         className="form-control qty_dropdown dropdown pl-0 m-0"
                                         value={cropData[index].rateType}
@@ -1199,12 +1231,12 @@ const Step22 = (props) => {
                                     <div className="d-flex align-items-center justify-content-between">
                                       <p className="totals">
                                         {cropData[index].rateType == "kgs"
-                                          ? (cropData[index].weight -
+                                          ? ((cropData[index].weight -
                                               cropData[index].wastage) *
-                                            cropData[index].rate
-                                          : (cropData[index].qty -
+                                            cropData[index].rate).toFixed(2)
+                                          : ((cropData[index].qty -
                                               cropData[index].wastage) *
-                                            cropData[index].rate}
+                                            cropData[index].rate).toFixed(2)}
                                       </p>
                                       <div className="delete_copy_div d-flex">
                                         <div

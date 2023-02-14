@@ -356,7 +356,6 @@ const GroupTotals = (props) => {
       }
     });
   };
-  console.log(groupone.slice().reverse(),"groupOne")
   var groupTotals = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
@@ -936,7 +935,7 @@ const GroupTotals = (props) => {
                         <div className="col-lg-6 align-data-items">
                         <div>
                           <p className="groups_value">
-                            <div>
+                            <div> 
                             {(
                               item.settingName !==
                               handleSettingName(item.settingName, item)
@@ -982,18 +981,23 @@ const GroupTotals = (props) => {
                         </div>
                         </div>
                         <div className="col-lg-4">
+                          <div className="d-flex">
                           <p className="groups_values">
                             {handleGroupNames(
                               handleSettingName(item.settingName, item)
                             ) === 0
                               ? " "
                               :
-                              <span>{billData?.partyType.toUpperCase() == 'BUYER'?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(1) 
-                              : handleGroupNames(item.settingName).toFixed(1)}
-                              </span>
+                              <span>{(billData?.partyType.toUpperCase() == 'BUYER'
+                              || billData?.partyType.toUpperCase() == 'FARMER')
+                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1)?
+                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
+                              billData?.partyType.toUpperCase() == 'BUYER'?' + '+
+                              handleGroupNames(item.settingName).toFixed(2)
+                              :handleGroupNames(item.settingName).toFixed(2)}</span>
                             }
                           </p>
+                        </div>
                         </div>
                       </div>
                       <div
@@ -1094,9 +1098,13 @@ const GroupTotals = (props) => {
                               handleSettingName(item.settingName, item)
                             ) === 0
                               ? " "
-                              :<span>{billData?.partyType.toUpperCase() == 'BUYER'?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(1) 
-                              : handleGroupNames(item.settingName).toFixed(1)}</span>
+                              :<span>{(billData?.partyType.toUpperCase() == 'BUYER'
+                              || billData?.partyType.toUpperCase() == 'FARMER')
+                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1)?
+                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
+                              billData?.partyType.toUpperCase() == 'BUYER'?' + '+
+                              handleGroupNames(item.settingName).toFixed(2)
+                              :handleGroupNames(item.settingName).toFixed(2)}</span>
                               }
                           </p>
                         </div>
@@ -1199,9 +1207,13 @@ const GroupTotals = (props) => {
                               handleSettingName(item.settingName, item)
                             ) === 0
                               ? " "
-                              :<span>{billData?.partyType.toUpperCase() == 'BUYER'?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(1) 
-                              : handleGroupNames(item.settingName).toFixed(1)}</span>
+                              :<span>{(billData?.partyType.toUpperCase() == 'BUYER'
+                              || billData?.partyType.toUpperCase() == 'FARMER')
+                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1)?
+                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
+                              billData?.partyType.toUpperCase() == 'BUYER'?' + '+
+                              handleGroupNames(item.settingName).toFixed(2)
+                              :handleGroupNames(item.settingName).toFixed(2)}</span>
                               }
                           </p>
                         </div>
@@ -1254,6 +1266,7 @@ const GroupTotals = (props) => {
                         <div className="col-lg-2"></div>
                         <div className="col-lg-6">
                         <p className="groups_value">
+
                             <div>
                             {(
                               item.settingName !==
@@ -1265,6 +1278,7 @@ const GroupTotals = (props) => {
                               : item.settingName.includes("CUSTOM_FIELD")
                               ? item.customFieldName
                               : item.settingName?.replaceAll("_", " ")+":"}{" "}
+                          
                           <p className="fee-perc">
                           {item.settingName == 'COMMISSION'?
                           billData?.comm?
@@ -1304,9 +1318,13 @@ const GroupTotals = (props) => {
                               handleSettingName(item.settingName, item)
                             ) === 0
                               ? " "
-                              :<span>{billData?.partyType.toUpperCase() == 'BUYER'?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(1) 
-                              : handleGroupNames(item.settingName).toFixed(1)}</span>
+                              :<span>{(billData?.partyType.toUpperCase() == 'BUYER'
+                              || billData?.partyType.toUpperCase() == 'FARMER')
+                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1)?
+                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
+                              billData?.partyType.toUpperCase() == 'BUYER'?' + '+
+                              handleGroupNames(item.settingName).toFixed(2)
+                              :handleGroupNames(item.settingName).toFixed(2)}</span>
                               }
                           </p>
                         </div>

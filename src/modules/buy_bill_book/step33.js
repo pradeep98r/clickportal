@@ -48,6 +48,7 @@ const Step33 = (props) => {
     //users.buyerInfo
     editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
+
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -60,7 +61,6 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
-    console.log(transpoSelectedData,"data")
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -559,9 +559,7 @@ const Step33 = (props) => {
     );
     let totalValue = grossTotal - t;
     for (var i = 0; i < questionsTitle.length; i++) {
-      console.log(questionsTitle);
       if (questionsTitle[i].field != "") {
-        console.log(questionsTitle[i].field, questionsTitle[i].less);
         if (questionsTitle[i].less) {
           var t = 0;
           totalValue = totalValue - Number(questionsTitle[i].fee);
@@ -736,6 +734,7 @@ const Step33 = (props) => {
     writerId: 0,
     timeStamp: "",
   };
+
   const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
@@ -782,7 +781,7 @@ const Step33 = (props) => {
           ? Number(transportationValue)
           : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
-      transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+      transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
     },
     billId: billEditItem?.billId,
     billType: "BUY",
@@ -1178,7 +1177,7 @@ const Step33 = (props) => {
     cropEditObject,
     // billEditStatus,
     slectedCropstableArray,
-    selectedCrops
+    selectedCrops,
     // selectedPartyType,
     // selectedBilldate
   ) => {

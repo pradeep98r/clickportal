@@ -47,6 +47,7 @@ const Step3PartySelect = (props) => {
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
   );
+
   const [getPartyItem, setGetPartyItem] = useState(null);
   const billeditStatus = billEditItemInfo?.billEditStatus;
   const billEditItem = props.billEditItemval;
@@ -67,9 +68,10 @@ const Step3PartySelect = (props) => {
     console.log(billEditItem, billEditItemCrops, "cropsitems");
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
+      console.log("Came to here0")
       dispatch(selectTrans(props.transpoSelectedData));
+      setTranspoSelectedData(props.transpoSelectedData)
     } else {
-      console.log('hii');
       setTranspoSelectedData(null);
     }
     if (partnerSelectedData != null) {
@@ -126,10 +128,10 @@ const Step3PartySelect = (props) => {
       setActiveTrans(false);
       setTranspoDataStatus(false);
       setTransportoSelectStatus(true);
+      Object.assign(item,{transporterId:item.partyId})
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedTransporter"));
       setTranspoSelectedData(h);
-      
       props.parentSelectedParty(
         partySelecteData,
         h,
@@ -181,12 +183,17 @@ const Step3PartySelect = (props) => {
     console.log("came to here", type);
     setCount(count + 1);
     if (type == "Buyer" || type.toUpperCase() === "BUYER") {
-      setActiveInput(true);
-      setActiveTrans(false);
-      setPartnerDataStatus(true);
-      setTranspoDataStatus(false);
-      setPartnerType("Buyer");
-      fetchPertnerData("Buyer");
+      if(billeditStatus){
+        setActiveInput(false);
+      } else{
+        setActiveInput(true);
+        setActiveTrans(false);
+        setPartnerDataStatus(true);
+        setTranspoDataStatus(false);
+        setPartnerType("Buyer");
+        fetchPertnerData("Buyer");
+      }
+      
     } else if (type == "Transporter") {
       setActiveTrans(true);
       setActiveInput(false);
@@ -195,12 +202,16 @@ const Step3PartySelect = (props) => {
       setPartnerType(type);
       fetchPertnerData(type);
     } else if (type == "Seller" || type.toUpperCase() === "FARMER") {
-      setActiveInput(true);
-      setActiveTrans(false);
-      setPartnerDataStatus(true);
-      setTranspoDataStatus(false);
-      setPartnerType(type);
-      fetchPertnerData("Seller");
+      if(billeditStatus){
+        setActiveInput(false);
+      } else{
+        setActiveInput(true);
+        setActiveTrans(false);
+        setPartnerDataStatus(true);
+        setTranspoDataStatus(false);
+        setPartnerType(type);
+        fetchPertnerData("Seller");
+      }  
     }
   };
   const [showCropModal, setShowCropModal] = useState(false);

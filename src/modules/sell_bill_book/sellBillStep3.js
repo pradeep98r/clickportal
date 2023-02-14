@@ -691,6 +691,7 @@ const SellBillStep3 = (props) => {
     timeStamp: "",
     customFields: questionsTitle,
   };
+  console.log(transpoSelectedData?.partyId,transpoSelectedData?.transporterId,"data");
   const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
@@ -726,8 +727,7 @@ const SellBillStep3 = (props) => {
         transTotalValue != 0
           ? Number(transTotalValue)
           : Number(getTotalUnits(transportationValue).toFixed(2)),
-      transporterId:
-        transpoSelectedData != null ? editStatus ? transpoSelectedData.transporterId : transpoSelectedData.partyId : 0,
+      transporterId:transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
     },
     billId: billEditItem.billId,
     billType: "SELL",
