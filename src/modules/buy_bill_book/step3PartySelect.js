@@ -504,7 +504,7 @@ const Step3PartySelect = (props) => {
                             <div>
                               <h5>{item.partyName}</h5>
                               <h6>
-                                {item.trader ? "TRADER" : item.partyType} -{" "}
+                                {item.partyType} -{" "}
                                 {item.partyId} | {item.mobile}
                               </h6>
                               <p>{item.address.addressLine}</p>

@@ -21,6 +21,10 @@
   }
 }
 .smartboard_div {
+  .comm_earn,.net_comm{
+    font-weight: normal;
+    font-size: 16px;
+  }
   h5,
   .trans_title {
     font-size: 12px;
@@ -59,6 +63,9 @@
   }
   .color_red {
     color: #d43939;
+  }
+  .color_black{
+    color:#121212;
   }
   .color_blue {
     color: #0066ff;
@@ -539,9 +546,13 @@
 .week_picker table {
   height: 80%!important;
 }
+
 .smartboard_div{
   .color_pending{
     color: #16A02C;
+  }
+  .bills_color{
+    color: #171717
   }
   .color_pending_border{
     border-right: 1px solid #16A02C;
