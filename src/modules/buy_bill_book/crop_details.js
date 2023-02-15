@@ -5,6 +5,7 @@ import {
     getCurrencyNumberWithOutSymbol,
     getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
+import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
 const CropDetails = (props) => {
     const  billViewData = useSelector((state)=> state.billViewInfo);
@@ -34,11 +35,12 @@ const CropDetails = (props) => {
             </div>
             <div className="row partner_info_padding">
                 <div className="col-lg-3 pl-0">
-                    <div className="d-flex partner_info">
+                    <div className="d-flex partner_info align-items-center">
                         <div>
                             {billData?.partyType==='FARMER'?
-                            <img src={billData?.farmerProfilePic} className="partner_img"/>
-                            :<img src={billData?.profilePic} className="partner_img"/>}
+                            (billData?.farmerProfilePic ? <img src={billData?.farmerProfilePic} className="partner_img"/>: 
+                            <img src={single_bill} className="partner_img"/>)
+                            :(billData?.profilePic ? <img src={billData?.profilePic} className="partner_img"/> : <img src={single_bill} className="partner_img"/>)}
                         </div>
                         <div className='type-name'>
                             <p className="small_text">{billData?.partyType}:{" "}</p>
