@@ -430,6 +430,7 @@ const Step33 = (props) => {
             break;
           case substring:
             var newitem = 0;
+            var commentTextFor = '';
             var newItem;
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
@@ -441,6 +442,16 @@ const Step33 = (props) => {
                   }
                 })
               : (newitem = res[j].value);
+             var c = editStatus
+              ? billEditItem?.customFields.map((items, i) => {
+                  if (items.fee != 0) {
+                    if (items.field === res[j].settingName) {
+                      commentTextFor = items.comments;
+                      return commentTextFor;
+                    }
+                  }
+                })
+              : (commentTextFor = res[j].commentText);
             setQuestionsTitle(
               editStatus
                 ? step2CropEditStatus
@@ -456,6 +467,7 @@ const Step33 = (props) => {
                 cstmName: res[j].settingName,
                 tableType: 1,
                 value: trVa,
+                commentText:commentTextFor
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
@@ -476,6 +488,7 @@ const Step33 = (props) => {
                 tableType: 3,
                 value: trVa,
                 totalVal: totalV,
+                commentText:commentTextFor
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -496,6 +509,7 @@ const Step33 = (props) => {
                 tableType: 2,
                 value: trVa,
                 totalVal: totalV,
+                commentText:commentTextFor
               };
             }
             break;

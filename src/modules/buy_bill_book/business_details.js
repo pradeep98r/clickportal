@@ -17,9 +17,7 @@ export const BusinessDetails = (props) => {
   const getBusinessDetails = () => {
     getMandiDetails(clickId)
       .then((response) => {
-        console.log(response,"rese");
         setMandiData(response.data.data);
-        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
