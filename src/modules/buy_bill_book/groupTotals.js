@@ -999,7 +999,7 @@ const GroupTotals = (props) => {
                           </p>
                         </div>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-3 p-0">
                           <p className="fee-perc">
                             {item.settingName == 'TRANSPORTATION'?
                             billData?.transportation?
