@@ -356,7 +356,6 @@ const GroupTotals = (props) => {
       }
     });
   };
-  console.log(groupone.slice().reverse(),"groupOne")
   var groupTotals = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
