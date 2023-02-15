@@ -979,6 +979,22 @@ const GroupTotals = (props) => {
                           <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
                           </span>:''
                           :""}</p>
+                          <p className="fee-perc">
+                            <span>
+                            {billData?.customFields.map(i=>{
+                              if(i.field == item.settingName){
+                                return i.comments;
+                              }
+                            })}
+                            </span>
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'OTHER_FEE'?
+                           billData?.misc || billData?.otherFee && billData?.comments?
+                          <span className="fee-percentage">{billData?.comments
+                          }
+                          </span>:''
+                          :""}</p>
                           </div>
                           </p>
                         </div>
@@ -1114,6 +1130,22 @@ const GroupTotals = (props) => {
                           <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
                           </span>:''
                           :""}</p>
+                           <p className="fee-perc">
+                            <span>
+                            {billData?.customFields.map(i=>{
+                              if(i.field == item.settingName){
+                                return i.comments;
+                              }
+                            })}
+                            </span>
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'OTHER_FEE'?
+                           billData?.misc || billData?.otherFee && billData?.comments?
+                          <span className="fee-percentage">{billData?.comments
+                          }
+                          </span>:''
+                          :""}</p>
                           </div>
                           </p>
                         </div>
@@ -1243,6 +1275,22 @@ const GroupTotals = (props) => {
                           {item.settingName == 'LABOUR_CHARGES'?
                            billData?.labourCharges?
                           <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
+                          </span>:''
+                          :""}</p>
+                           <p className="fee-perc">
+                            <span>
+                            {billData?.customFields.map(i=>{
+                              if(i.field == item.settingName){
+                                return i.comments;
+                              }
+                            })}
+                            </span>
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'OTHER_FEE'?
+                           billData?.misc || billData?.otherFee && billData?.comments?
+                          <span className="fee-percentage">{billData?.comments
+                          }
                           </span>:''
                           :""}</p>
                           </div>
@@ -1376,6 +1424,22 @@ const GroupTotals = (props) => {
                           {item.settingName == 'LABOUR_CHARGES'?
                            billData?.labourCharges?
                           <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
+                          </span>:''
+                          :""}</p>
+                           <p className="fee-perc">
+                            <span>
+                            {billData?.customFields.map(i=>{
+                              if(i.field == item.settingName){
+                                return i.comments;
+                              }
+                            })}
+                            </span>
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'OTHER_FEE'?
+                           billData?.misc || billData?.otherFee && billData?.comments?
+                          <span className="fee-percentage">{billData?.comments
+                          }
                           </span>:''
                           :""}</p>
                           </div>
