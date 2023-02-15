@@ -48,6 +48,7 @@ const Step33 = (props) => {
     //users.buyerInfo
     editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
+
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -60,7 +61,6 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
-    console.log(transpoSelectedData,"data")
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -79,8 +79,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
-    $('#disable').attr("disabled", false);
-    console.log("came to step3 useeffect");
+    $("#disable").attr("disabled", false);
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -317,8 +316,11 @@ const Step33 = (props) => {
           case "TRANSPORTATION":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? billEditItem?.transportation == 0 ? 0 : ( 
-                  billEditItem?.transportation != 0 ? billEditItem?.transportation : res[j].value)
+                ? billEditItem?.transportation == 0
+                  ? 0
+                  : billEditItem?.transportation != 0
+                  ? billEditItem?.transportation
+                  : res[j].value
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -344,8 +346,11 @@ const Step33 = (props) => {
           case "RENT":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? billEditItem?.rent == 0 ? 0 : ( 
-                  billEditItem?.rent != 0 ? billEditItem?.rent : res[j].value)
+                ? billEditItem?.rent == 0
+                  ? 0
+                  : billEditItem?.rent != 0
+                  ? billEditItem?.rent
+                  : res[j].value
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -370,8 +375,11 @@ const Step33 = (props) => {
           case "LABOUR_CHARGES":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? billEditItem?.labourCharges == 0 ? 0 : ( 
-                  billEditItem?.labourCharges != 0 ? billEditItem?.labourCharges : res[j].value)
+                ? billEditItem?.labourCharges == 0
+                  ? 0
+                  : billEditItem?.labourCharges != 0
+                  ? billEditItem?.labourCharges
+                  : res[j].value
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -422,6 +430,7 @@ const Step33 = (props) => {
             break;
           case substring:
             var newitem = 0;
+            var commentTextFor = '';
             var newItem;
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
@@ -433,6 +442,16 @@ const Step33 = (props) => {
                   }
                 })
               : (newitem = res[j].value);
+             var c = editStatus
+              ? billEditItem?.customFields.map((items, i) => {
+                  if (items.fee != 0) {
+                    if (items.field === res[j].settingName) {
+                      commentTextFor = items.comments;
+                      return commentTextFor;
+                    }
+                  }
+                })
+              : (commentTextFor = res[j].commentText);
             setQuestionsTitle(
               editStatus
                 ? step2CropEditStatus
@@ -448,6 +467,7 @@ const Step33 = (props) => {
                 cstmName: res[j].settingName,
                 tableType: 1,
                 value: trVa,
+                commentText:commentTextFor
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
@@ -468,6 +488,7 @@ const Step33 = (props) => {
                 tableType: 3,
                 value: trVa,
                 totalVal: totalV,
+                commentText:commentTextFor
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -488,6 +509,7 @@ const Step33 = (props) => {
                 tableType: 2,
                 value: trVa,
                 totalVal: totalV,
+                commentText:commentTextFor
               };
             }
             break;
@@ -563,9 +585,7 @@ const Step33 = (props) => {
     );
     let totalValue = grossTotal - t;
     for (var i = 0; i < questionsTitle.length; i++) {
-      console.log(questionsTitle);
       if (questionsTitle[i].field != "") {
-        console.log(questionsTitle[i].field, questionsTitle[i].less);
         if (questionsTitle[i].less) {
           var t = 0;
           totalValue = totalValue - Number(questionsTitle[i].fee);
@@ -624,8 +644,7 @@ const Step33 = (props) => {
           ? Number(rentTotalValue)
           : tableChangeStatus
           ? Number(rentValue)
-          : getTotalUnits(rentValue)) 
-          +
+          : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -639,6 +658,7 @@ const Step33 = (props) => {
       }
     }
     for (var i = 0; i < questionsTitle.length; i++) {
+      console.log(questionsTitle)
       if (questionsTitle[i].field != "") {
         if (questionsTitle[i].less) {
           var t = 0;
@@ -741,6 +761,7 @@ const Step33 = (props) => {
     writerId: 0,
     timeStamp: "",
   };
+
   const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
@@ -783,11 +804,11 @@ const Step33 = (props) => {
       transportation:
         transTotalValue != 0
           ? Number(transTotalValue)
-          : (tableChangeStatus
+          : tableChangeStatus
           ? Number(transportationValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2))),
+          : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
-      transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+      transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
     },
     billId: billEditItem?.billId,
     billType: "BUY",
@@ -800,9 +821,8 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
-    console.log(editBillRequestObj)
+    console.log(editBillRequestObj);
     if (editStatus) {
-      console.log(editBillRequestObj);
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -841,7 +861,7 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
-            
+
             window.setTimeout(function () {
               props.closem();
               navigate("/buy_bill_book");
@@ -909,7 +929,7 @@ const Step33 = (props) => {
             );
           } else {
             tab.push({
-              comments: "string",
+              comments: e.target.value,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -917,6 +937,7 @@ const Step33 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
+            console.log(tab);
             setCstmval(true);
             setQuestionsTitle(tab);
           }
@@ -1183,7 +1204,7 @@ const Step33 = (props) => {
     cropEditObject,
     // billEditStatus,
     slectedCropstableArray,
-    selectedCrops
+    selectedCrops,
     // selectedPartyType,
     // selectedBilldate
   ) => {
@@ -1237,14 +1258,19 @@ const Step33 = (props) => {
   };
   const cstmCommentText = (groupLiist, index) => (e) => {
     var val = e.target.value;
+    console.log('hey comment')
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
+        console.log(groupLiist[i])
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
+            console.log('tab push','if')
+            tab[tabIndex].comments=val;
             tab[tabIndex].fee = groupLiist[i].value;
           } else {
+            console.log('tab push','else')
             tab.push({
               comments: val,
               fee: groupLiist[i].value,
@@ -1255,6 +1281,7 @@ const Step33 = (props) => {
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
             setCstmval(true);
+            console.log(tab);
             setQuestionsTitle(tab);
           }
         }
@@ -1265,9 +1292,9 @@ const Step33 = (props) => {
     });
     setAllGroups([...updatedItems]);
   };
-  $('#disable').on('click', function(){
-    $('#disable').attr("disabled", true);
-});
+  $("#disable").on("click", function () {
+    $("#disable").attr("disabled", true);
+  });
   return (
     <div>
       <div className="main_div_padding">
@@ -1515,10 +1542,17 @@ const Step33 = (props) => {
             cancel
           </button>
           <div className="d-flex align-items-center">
-            <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
+            <button
+              className="secondary_btn no_delete_btn"
+              onClick={() => previousStep()}
+            >
               Previous
             </button>
-            <button className="primary_btn" id="disable" onClick={() => postbuybill()}>
+            <button
+              className="primary_btn"
+              id="disable"
+              onClick={() => postbuybill()}
+            >
               Submit
             </button>
           </div>

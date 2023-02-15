@@ -17,9 +17,7 @@ export const BusinessDetails = (props) => {
   const getBusinessDetails = () => {
     getMandiDetails(clickId)
       .then((response) => {
-        console.log(response,"rese");
         setMandiData(response.data.data);
-        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -61,9 +59,11 @@ export const BusinessDetails = (props) => {
       </div>
       <div className="row mandi_details_header align_items_center">
         <div className="col-lg-2">
-          {mandiLogoData.logoUrl ? (<div className="mandi_logo_image"><img src={mandiLogoData.logoUrl}/></div>) : (<div className="mandi_circle flex_class">
+          {mandiLogoData?.logoUrl ? (<div className="mandi_logo_image"><img src={mandiLogoData?.logoUrl}/></div>) :
+            <div className="mandi_circle flex_class">
             <p className="mandi_logo">{mandiData.businessDtls?.shortCode}</p>
-          </div>) }
+          </div>
+          }
           
           <div className="billid_date_bg">
             <p className="small_text text-center">
