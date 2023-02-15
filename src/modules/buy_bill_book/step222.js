@@ -43,10 +43,6 @@ const Step22 = (props) => {
   const [cropId, setCropId] = useState(0);
   const [updatedItemList, setUpdatedItemList] = useState([]);
   const [showStep3Modal, setShowStep3Modal] = useState(false);
-  const [showStep3ModalStatus, setShowStep3ModalStatus] = useState(false);
-  const [showStep3SellModal, setShowStep3SellModal] = useState(false);
-  const [showStep3SellModalStatus, setShowStep3SellModalStatus] =
-    useState(false);
   const [quantityValue, setunitValue] = useState();
   const [wastagesValue, setwastageValue] = useState();
   const [rateDefaultValue, setrateValue] = useState();
@@ -133,6 +129,7 @@ const Step22 = (props) => {
       { displayStat: false },
       { cropDelete: false }
     );
+    
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
     setUpdatedItemList([...updatedItemList, ...newArray]);
@@ -205,6 +202,7 @@ const Step22 = (props) => {
         ? props.slectedCrops
         : props.cropEditObject.lineItems
       : props.cropEditObject;
+      console.log(cropObjectArr,cropTableEditStatus)
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt = [];
@@ -235,6 +233,7 @@ const Step22 = (props) => {
           lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         }
         if (lineIt != null) {
+          console.log(lineIt)
           cropResponseData([...lineIt]);
           setUpdatedItemList(lineIt);
           setPreferedCropsData([...lineIt]);
@@ -341,21 +340,26 @@ const Step22 = (props) => {
 
   // function to nevigate to step3 page
   var dArray = [];
+  const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
-    for (var k = 0; k < cropData.length; k++) {
-      if (cropData[k].rateType == "kgs") {
-        cropData[k].total =
-          (cropData[k].weight - cropData[k].wastage) * cropData[k].rate;
+    console.log(cropData,allDeletedCrops,updatedItemList,'add')
+    // cropResponseData(updatedItemList);
+    var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
+    console.log(cropInfo,'lineitems')
+    for (var k = 0; k < cropInfo.length; k++) {
+      if (cropInfo[k].rateType == "kgs") {
+        cropInfo[k].total =
+          (cropInfo[k].weight - cropInfo[k].wastage) * cropInfo[k].rate;
       } else {
-        cropData[k].total =
-          (cropData[k].qty - cropData[k].wastage) * cropData[k].rate;
+        cropInfo[k].total =
+          (cropInfo[k].qty - cropInfo[k].wastage) * cropInfo[k].rate;
       }
     }
     var h = [];
     // if (cropData.length > 0) {
-    cropData.map((item, index) => {
-      if (cropData[index].rate != 0) {
-        localStorage.setItem("lineItemsEdit", JSON.stringify(cropData));
+      cropInfo.map((item, index) => {
+      if (cropInfo[index].rate != 0) {
+        localStorage.setItem("lineItemsEdit", JSON.stringify(cropInfo));
         if (billEditStatus) {
           var lineitem = billEditStatus
             ? props.cropEditObject.lineItems
@@ -364,41 +368,41 @@ const Step22 = (props) => {
           //     (obj) => obj.cropId == item.cropId//cropData[index].cropId
           //   );
           var index1 = lineitem.findIndex(
-            (obj) => obj.cropId == cropData[index].cropId
+            (obj) => obj.cropId == cropInfo[index].cropId
           );
           if (index1 == index) {
             if (!lineitem[index1].cropDelete) {
             } else {
-              cropData[index].status = 0;
+              cropInfo[index].status = 0;
             }
             if (lineitem[index1].id == 0) {
-              cropData[index].status = 1;
+              cropInfo[index].status = 1;
             } else {
-              cropData[index].status = 2;
+              cropInfo[index].status = 2;
             }
           } else {
             if (index1 != -1) {
-              if (!cropData[index].cropDelete) {
+              if (!cropInfo[index].cropDelete) {
                 if (lineitem[index1].id == 0) {
-                  cropData[index].status = 1;
+                  cropInfo[index].status = 1;
                 } else {
-                  cropData[index].status = 2;
+                  cropInfo[index].status = 2;
                 }
               }
               return null;
             } else {
-              if (!cropData[index].cropDelete) {
-                cropData[index].status = 1;
+              if (!cropInfo[index].cropDelete) {
+                cropInfo[index].status = 1;
               } else {
-                cropData[index].status = 0;
+                cropInfo[index].status = 0;
               }
             }
             // cropData[index].status = 1;
           }
         } else {
-          for (var l = 0; l < cropData.length; l++) {
-            if (cropData[l].status == 0 || cropData[l].cropDelete) {
-              cropData.splice(l, 1);
+          for (var l = 0; l < cropInfo.length; l++) {
+            if (cropInfo[l].status == 0 || cropInfo[l].cropDelete) {
+              cropInfo.splice(l, 1);
             }
           }
         }
@@ -406,13 +410,14 @@ const Step22 = (props) => {
     });
     // var selectedArray = props.billEditStatus ? ;
     if (billEditStatus) {
-      dArray = updatedItemList.length != 0 ? updatedItemList : cropData;
+      dArray = updatedItemList.length != 0 ? updatedItemList.concat(allDeletedCrops) : cropInfo;
+      console.log(dArray)
     }
 
     if (h.length > 0) {
       var h1 = h.map((item, index) => {
         if (h[index] != null) {
-          if (h.length == cropData.length) {
+          if (h.length == cropInfo.length) {
             return item;
           }
         }
@@ -422,6 +427,7 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
+
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         if (!cropData[index].cropDelete) {
@@ -675,68 +681,76 @@ const Step22 = (props) => {
   // delete crop funnction
   var dummyList = [];
   var arrylist = [];
-  var cropDeletedList = [];
-  const deleteCrop = (crop, cropArray) => {
+  // var cropDeletedList = [];
+  const [cropDeletedList, setcropDeletedList] = useState([]);
+  const deleteCrop = (crop, cropArray, indexVal) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
-    if (index != -1) {
-      Object.assign(cropArray[index], { status: 0 });
-      cropArray[index].total = 0;
-      cropArray[index].qty = 0;
-      cropArray[index].qtyUnit = "";
-      cropArray[index].cropDelete = true;
-      //   if(billEditStatus){
-      cropDeletedList.push(cropArray[index]);
-      //   }
-      cropArray.splice(index, 1);
-      var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
-      if (index1 != -1) {
-        list[index1].count -= 1;
-        if (list[index1].count == 0) {
-          if (billEditStatus) {
-            list.splice(index1, 1);
-          } else {
-            getPreferredCrops(clickId, clientId, clientSecret)
-              .then((response) => {
-                dummyList = response.data.data;
-                let updatedarr = dummyList.map((item, i) => {
-                  if (item.cropId == list[index1].cropId) {
-                    return { ...dummyList[i] };
-                  } else if (item.cropId != list[index1].cropId) {
-                    return null;
-                  }
-                });
-                for (var k = 0; k < updatedarr.length; k++) {
-                  if (updatedarr[k] != null) {
-                    arrylist.push(updatedarr[k]);
-                  }
-                }
-
-                for (var k = 0; k < list.length; k++) {
-                  for (var t = 0; t < arrylist.length; t++) {
-                    if (list[k].cropId == arrylist[t].cropId) {
-                      list.splice(index1, t);
-                    } else {
-                      console.log("samecrop ");
-                      // return list;
+    // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
+    // console.log(index,indexVal)
+    // for (var i = 0; i < cropArray.length; i++) {
+      if (index != -1) {
+        Object.assign(cropArray[index], { status: 0, index:  index});
+        cropArray[index].total = 0;
+        cropArray[index].qty = 0;
+        cropArray[index].qtyUnit = "";
+        cropArray[index].cropDelete = true;
+        setcropDeletedList([...cropDeletedList, cropArray[index]]);
+        cropDeletedList.push(cropArray[index]);
+        cropArray.splice(index, 1);
+        var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
+        if (index1 != -1) {
+          list[index1].count -= 1;
+          if (list[index1].count == 0) {
+            if (billEditStatus) {
+              list.splice(index1, 1);
+            } else {
+              getPreferredCrops(clickId, clientId, clientSecret)
+                .then((response) => {
+                  dummyList = response.data.data;
+                  let updatedarr = dummyList.map((item, i) => {
+                    if (item.cropId == list[index1].cropId) {
+                      return { ...dummyList[i] };
+                    } else if (item.cropId != list[index1].cropId) {
+                      return null;
+                    }
+                  });
+                  for (var k = 0; k < updatedarr.length; k++) {
+                    if (updatedarr[k] != null) {
+                      arrylist.push(updatedarr[k]);
                     }
                   }
-                }
-                if (arrylist.length == 0) {
-                  list.splice(index1, 1);
-                }
-                setShowStep3Modal(false);
-                setPreferedCropsData([...list]);
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+
+                  for (var k = 0; k < list.length; k++) {
+                    for (var t = 0; t < arrylist.length; t++) {
+                      if (list[k].cropId == arrylist[t].cropId) {
+                        list.splice(index1, t);
+                      } else {
+                        console.log("samecrop ");
+                        // return list;
+                      }
+                    }
+                  }
+                  if (arrylist.length == 0) {
+                    list.splice(index1, 1);
+                  }
+                  setShowStep3Modal(false);
+                  setPreferedCropsData([...list]);
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
           }
         }
       }
-    }
+    
+    // }
+
+    console.log(cropArray, cropDeletedList);
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
-    cropResponseData([...cropArray, ...cropDeletedList]);
+    cropResponseData([...cropArray]);
+    setAllDeletedCrops(cropDeletedList);
   };
   //   getting individual bags popup function
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
@@ -1001,20 +1015,20 @@ const Step22 = (props) => {
                         <div className="crop_table_view">
                           <table className="table table-bordered table_div">
                             {Object.keys(cropData[index]).length != 0 ? (
-                              !cropData[index].cropDelete ? (
+                              // !cropData[index].cropDelete ? (
                                 <tr className="">
                                   <td className="col-2">
                                     {!cropData[index].activeSearch ||
                                     cropData[index].displayStat ? (
                                       // !activeSearch || displayStat?
-                                      
+
                                       <div
                                         contenteditable="true"
                                         className="flex_class mr-0"
                                         onClick={() => {
                                           activeSearchCrop(cropData, index);
                                         }}
-                                        >
+                                      >
                                         <img
                                           src={cropData[index].imageUrl}
                                           className="flex_class mr-2"
@@ -1180,8 +1194,12 @@ const Step22 = (props) => {
                                           />
                                           {cropData[index].bags !== null &&
                                           cropData[index].bags.length > 0 ? (
-                                            
-                                            <label className="unit-type my-0 cursor_class"  for="modal_checkbox">Edit</label>
+                                            <label
+                                              className="unit-type my-0 cursor_class"
+                                              for="modal_checkbox"
+                                            >
+                                              Edit
+                                            </label>
                                           ) : (
                                             ""
                                           )}{" "}
@@ -1254,7 +1272,8 @@ const Step22 = (props) => {
                                           onClick={deleteCrop.bind(
                                             this,
                                             crop,
-                                            cropData
+                                            cropData,
+                                            index
                                           )}
                                         >
                                           <img
@@ -1267,9 +1286,10 @@ const Step22 = (props) => {
                                     </div>
                                   </td>
                                 </tr>
-                              ) : (
-                                ""
-                              )
+                              // ) 
+                              // : (
+                              //   ""
+                              // )
                             ) : (
                               <tr className="empty_row">
                                 <td className="col-2">
