@@ -1220,7 +1220,7 @@ const SmartBoard = () => {
                                                         : langFullData.buyer}{" "}
                                                       - {buyerItem.partyId}
                                                     </h3>
-                                                    <h5>
+                                                    <h5 className="smartboard_mobile">
                                                       {getMaskedMobileNumber(buyerItem.mobile)}
                                                       
                                                     </h5>
@@ -1328,10 +1328,10 @@ const SmartBoard = () => {
                                                       <h3>
                                                         {farmerItem.trader
                                                           ? langFullData.trader
-                                                          : langFullData.seller}{" "}
+                                                          : 'Seller'}{" "}
                                                         - {farmerItem.partyId}
                                                       </h3>
-                                                      <h5>
+                                                      <h5 className="smartboard_mobile">
                                                         {farmerItem.mobile.replace(
                                                           /.(?=.{4})/g,
                                                           "X"
