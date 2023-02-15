@@ -239,7 +239,7 @@ function BuyBillBook() {
                                     <div className="col-lg-4">
                                       <div className="row">
                                         <div className="col-lg-7 col-sm-12 p-0">
-                                          <p>{langFullData.seller}</p>
+                                          <p>Seller</p>
                                         </div>
                                         <div className="col-lg-5 col-sm-12">
                                           <p>{langFullData.billId}</p>
