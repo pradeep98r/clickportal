@@ -357,7 +357,7 @@ const SellBillBook = (props) => {
                                                 {crop.cropName}
                                               </p>
                                             </div>
-                                            <div className="col-lg-4 col-sm-12 col flex_class">
+                                            <div className="col-lg-4 col-sm-12 col ">
                                               <div>
                                                 {" "}
                                                 {qtyValues(
