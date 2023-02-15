@@ -142,20 +142,17 @@ const SelectPartner = (props) => {
     }
     setsearchValue(value);
   };
-  
-  const handleInput = ()=>{
-    setGetPartyName(true)
-  }
-  $(document).mouseup(function(e) {
-    var container = $('.partners_div');
-    if (!container.is(e.target) && container.has(e.target).length === 0) {
-        container.hide();
-        console.log('came to here')
-        setActiveInput(false)
-        setGetPartyName(false)
-        setGetPartyItem(selectedPartner)
-    }
-  });
+
+  // $(document).mouseup(function(e) {
+  //   var container = $('.partners_div');
+  //   if (!container.is(e.target) && container.has(e.target).length === 0) {
+  //       container.hide();
+  //       console.log('came to here')
+  //       setActiveInput(false)
+  //       setGetPartyName(false)
+  //       setGetPartyItem(selectedPartner)
+  //   }
+  // });
   return (
     <div>
       <div
@@ -179,7 +176,6 @@ const SelectPartner = (props) => {
                   
                 /> */}
                   <input
-                    onFocus={handleInput}
                     type="text"
                     className="form-control search_control"
                     placeholder={'Type ' + props.partyType + ' Name Here'}
