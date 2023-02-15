@@ -48,6 +48,7 @@ const Step33 = (props) => {
     //users.buyerInfo
     editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
+
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -746,6 +747,7 @@ const Step33 = (props) => {
     writerId: 0,
     timeStamp: "",
   };
+
   const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
@@ -792,7 +794,7 @@ const Step33 = (props) => {
           ? Number(transportationValue)
           : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
-        transpoSelectedData != null ? transpoSelectedData.partyId : 0,
+      transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
     },
     billId: billEditItem?.billId,
     billType: "BUY",
@@ -1188,7 +1190,7 @@ const Step33 = (props) => {
     cropEditObject,
     // billEditStatus,
     slectedCropstableArray,
-    selectedCrops
+    selectedCrops,
     // selectedPartyType,
     // selectedBilldate
   ) => {

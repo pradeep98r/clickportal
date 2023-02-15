@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
@@ -57,6 +57,8 @@ const SelectPartner = (props) => {
   const [count, setCount] = useState(0);
   const [activeInput, setActiveInput] = useState(false);
   const [selectedPartner, setSelectedPartner] = useState(null);
+    
+  const [show, setDivShow] = useState(false);
 
   const selectParty = () => {
     setActiveInput(true);
@@ -140,6 +142,17 @@ const SelectPartner = (props) => {
     }
     setsearchValue(value);
   };
+
+  // $(document).mouseup(function(e) {
+  //   var container = $('.partners_div');
+  //   if (!container.is(e.target) && container.has(e.target).length === 0) {
+  //       container.hide();
+  //       console.log('came to here')
+  //       setActiveInput(false)
+  //       setGetPartyName(false)
+  //       setGetPartyItem(selectedPartner)
+  //   }
+  // });
   return (
     <div>
       <div
@@ -148,7 +161,7 @@ const SelectPartner = (props) => {
         }}
       >
         {getPartyItem == null ? (
-          <div>
+          <span>
             {activeInput ? (
               <div
                 className="selectparty_field d-flex align-items-center justify-content-between"
@@ -178,7 +191,7 @@ const SelectPartner = (props) => {
                 <img src={d_arrow} />
               </div>
             )}
-          </div>
+          </span>
         ) : (
           <div className="selectparty_field d-flex align-items-center justify-content-between">
             <div className="partner_card">
@@ -203,7 +216,7 @@ const SelectPartner = (props) => {
         )}
       </div>
 
-      {getPartyName ? (
+      {getPartyName ? ( 
         <div className="partners_div" id="scroll_style">
           <div id="partners">
             {partnerData.length > 0 ? (
