@@ -20,16 +20,26 @@ const CropDetails = (props) => {
     console.log(billData,"data");
     return (
         <div>
+            <div className='row'>
+                <div className='col-lg-3'>
+                <p className="small_text">Bill To :</p>
+                </div>
+            </div>
             <div className="row partner_info_padding">
                 <div className="col-lg-3 pl-0">
-                    <div className="partner_info">
-                        <p className="small_text">
-                            Bill To {billData?.partyType}:{" "}
-                        </p>
-                        <h6 className="small_text">
+                    <div className="d-flex partner_info">
+                        <div>
                             {billData?.partyType==='FARMER'?
-                            billData.farmerName:billData?.buyerName}
-                        </h6>
+                            <img src={billData?.farmerProfilePic} className="partner_img"/>
+                            :<img src={billData?.profilePic} className="partner_img"/>}
+                        </div>
+                        <div className='type-name'>
+                            <p className="small_text">{billData?.partyType}:{" "}</p>
+                            <h6>
+                                {billData?.partyType==='FARMER'?
+                                billData.farmerName:billData?.buyerName}
+                            </h6>
+                        </div>
                     </div>
                 </div>
                 {billData?.partyType==='FARMER'&& billData?.farmerAddress != "" ? (

@@ -1041,7 +1041,7 @@ const Step22 = (props) => {
                                     )}
                                   </td>
                                   <td className="col-1">  
-                                    <select
+                                    <select 
                                       className="form-control qty_dropdown dropdown"
                                       value={cropData[index].qtyUnit}
                                       onChange={getQuantity(
@@ -1065,10 +1065,11 @@ const Step22 = (props) => {
                                   ) ? (
                                     <td className="col-1">
                                       <select
-                                        className="form-control qty_dropdown dropdown pl-0 m-0"
+                                        className=
+                                        "form-control qty_dropdown dropdown pl-0 m-0"
                                         value={cropData[index].rateType}
                                         onChange={getRateType(cropData, index)}
-                                      >
+                                        >
                                         <option
                                           value={cropData[
                                             index

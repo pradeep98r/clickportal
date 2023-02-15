@@ -931,8 +931,8 @@ const GroupTotals = (props) => {
                   return (
                     <div>
                       <div className="row" key={index}>
-                        <div className="col-lg-2"></div>
-                        <div className="col-lg-6 align-data-items">
+                        {/* <div className="col-lg-2"></div> */}
+                        <div className="col-lg-5 align-data-items">
                         <div>
                           <p className="groups_value">
                             <div> 
@@ -964,24 +964,46 @@ const GroupTotals = (props) => {
                           <p className="fee-perc">
                           {item.settingName == 'TRANSPORTATION'?
                            billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'RENT'?
                            billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'LABOUR_CHARGES'?
                            billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           </div>
                           </p>
                         </div>
                         </div>
-                        <div className="col-lg-4">
-                          <div className="d-flex">
+                        <div className="col-lg-3">
+                          <p className="fee-perc">
+                            {item.settingName == 'TRANSPORTATION'?
+                            billData?.transportation?
+                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                            :""}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'RENT'?
+                           billData?.rent?
+                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :''}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'LABOUR_CHARGES'?
+                           billData?.labourCharges?
+                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :""}</p>
+                        </div>
+                        <div className="col-lg-3">
+                          {/* <div className="d-flex"> */}
                           <p className="groups_values">
                             {handleGroupNames(
                               handleSettingName(item.settingName, item)
@@ -997,7 +1019,7 @@ const GroupTotals = (props) => {
                               :handleGroupNames(item.settingName).toFixed(2)}</span>
                             }
                           </p>
-                        </div>
+                        {/* </div> */}
                         </div>
                       </div>
                       <div
@@ -1018,7 +1040,7 @@ const GroupTotals = (props) => {
                   );
                 })}
                 <div className="row group-one-total">
-                  <div className="pl-0 col-lg-8 pr-0"></div>
+                  <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
                     <p className="groups_values">
                       {groupOneTotal === 0 || null
@@ -1045,8 +1067,8 @@ const GroupTotals = (props) => {
                   return (
                     <div>
                       <div className="row" key={index}>
-                        <div className="col-lg-2"></div>
-                        <div className="col-lg-6">
+                        {/* <div className="col-lg-2"></div> */}
+                        <div className="col-lg-5">
                           <p className="groups_value">
                             <div>
                             {(
@@ -1077,22 +1099,44 @@ const GroupTotals = (props) => {
                           <p className="fee-perc">
                           {item.settingName == 'TRANSPORTATION'?
                            billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'RENT'?
                            billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'LABOUR_CHARGES'?
                            billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           </div>
                           </p>
                         </div>
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
+                          <p className="fee-perc">
+                            {item.settingName == 'TRANSPORTATION'?
+                            billData?.transportation?
+                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                            :""}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'RENT'?
+                           billData?.rent?
+                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :''}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'LABOUR_CHARGES'?
+                           billData?.labourCharges?
+                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :""}</p>
+                        </div>
+                        <div className="col-lg-3">
                           <p className="groups_values">
                             {handleGroupNames(
                               handleSettingName(item.settingName, item)
@@ -1127,7 +1171,7 @@ const GroupTotals = (props) => {
                   );
                 })}
                 <div className="row group-one-total">
-                  <div className="pl-0 col-lg-8 pr-0"></div>
+                  <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
                     <p className="groups_values">
                       {groupTwoTotal === 0 || null
@@ -1154,8 +1198,8 @@ const GroupTotals = (props) => {
                   return (
                     <div>
                       <div className="row" key={index}>
-                        <div className="col-lg-2"></div>
-                        <div className="col-lg-6">
+                        {/* <div className="col-lg-2"></div> */}
+                        <div className="col-lg-5">
                         <p className="groups_value">
                             <div>
                             {(
@@ -1186,22 +1230,44 @@ const GroupTotals = (props) => {
                           <p className="fee-perc">
                           {item.settingName == 'TRANSPORTATION'?
                            billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'RENT'?
                            billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'LABOUR_CHARGES'?
                            billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           </div>
                           </p>
                         </div>
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
+                          <p className="fee-perc">
+                            {item.settingName == 'TRANSPORTATION'?
+                            billData?.transportation?
+                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                            :""}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'RENT'?
+                           billData?.rent?
+                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :''}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'LABOUR_CHARGES'?
+                           billData?.labourCharges?
+                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :""}</p>
+                        </div>
+                        <div className="col-lg-3">
                           <p className="groups_values">
                             {handleGroupNames(
                               handleSettingName(item.settingName, item)
@@ -1236,7 +1302,7 @@ const GroupTotals = (props) => {
                   );
                 })}
                 <div className="row group-one-total">
-                  <div className="pl-0 col-lg-8 pr-0"></div>
+                  <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
                     <p className="groups_values">
                       {groupThreeTotal === 0 || null
@@ -1263,8 +1329,8 @@ const GroupTotals = (props) => {
                   return (
                     <div>
                       <div className="row" key={index}>
-                        <div className="col-lg-2"></div>
-                        <div className="col-lg-6">
+                        {/* <div className="col-lg-2"></div> */}
+                        <div className="col-lg-5">
                         <p className="groups_value">
 
                             <div>
@@ -1297,22 +1363,44 @@ const GroupTotals = (props) => {
                           <p className="fee-perc">
                           {item.settingName == 'TRANSPORTATION'?
                            billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'RENT'?
                            billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           <p className="fee-perc">
                           {item.settingName == 'LABOUR_CHARGES'?
                            billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}</span>:''
+                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
+                          </span>:''
                           :""}</p>
                           </div>
                           </p>
                         </div>
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
+                          <p className="fee-perc">
+                            {item.settingName == 'TRANSPORTATION'?
+                            billData?.transportation?
+                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                            :""}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'RENT'?
+                           billData?.rent?
+                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :''}
+                          </p>
+                          <p className="fee-perc">
+                          {item.settingName == 'LABOUR_CHARGES'?
+                           billData?.labourCharges?
+                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
+                          :""}</p>
+                        </div>
+                        <div className="col-lg-3">
                           <p className="groups_values">
                             {handleGroupNames(
                               handleSettingName(item.settingName, item)
@@ -1347,7 +1435,7 @@ const GroupTotals = (props) => {
                   );
                 })}
                 <div className="row group-one-total">
-                  <div className="pl-0 col-lg-8 pr-0"></div>
+                  <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
                     <p className="groups_values">
                       {groupFourTotal === 0 || null
@@ -1374,8 +1462,8 @@ const GroupTotals = (props) => {
               </div>
               <div>
                 <div className="row">
-                  <div className="col-lg-2"></div>
-                  <div className="col-lg-6">
+                  {/* <div className="col-lg-2"></div> */}
+                  <div className="col-lg-7">
                     {billData?.grossTotal +
                       (groupFourTotal +
                         groupThreeTotal +
@@ -1428,8 +1516,8 @@ const GroupTotals = (props) => {
               <div></div>
               <div>
                 <div className="row">
-                  <div className="col-lg-2"></div>
-                  <div className="col-lg-6">
+                  {/* <div className="col-lg-2"></div> */}
+                  <div className="col-lg-7">
                     <p
                       className="grouping_value"
                       style={{ display: status ? "block" : "none" }}
@@ -1458,8 +1546,8 @@ const GroupTotals = (props) => {
               <div>
                 {billData?.partyType.toUpperCase() === "FARMER" ? (
                   <div className="row">
-                    <div className="col-lg-2"></div>
-                    <div className="col-lg-6">
+                    {/* <div className="col-lg-2"></div> */}
+                    <div className="col-lg-7">
                       {billData?.cashPaid === 0 ? (
                         "" || billData?.cashPaid === null
                       ) : (
@@ -1477,7 +1565,7 @@ const GroupTotals = (props) => {
                   </div>
                 ) : (
                   <div className="row">
-                    <div className="col-lg-2"></div>
+                    {/* <div className="col-lg-2"></div> */}
                     <div className="col-lg-6">
                       {billData?.cashRcvd === 0 ||
                       billData?.cashRcvd === null ? (

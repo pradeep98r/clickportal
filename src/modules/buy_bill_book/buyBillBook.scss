@@ -895,7 +895,7 @@ article.on {
   font-size: 32px;
   font-weight: 700;
 }
-.partner_info {
+.type-name {
   p {
     color: #4d4d4d;
     font-weight: 600;
@@ -903,7 +903,16 @@ article.on {
   h6 {
     color: #121212;
     font-weight: 700;
+    font-size: 12px;
   }
+}
+.partner_img{
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+}
+.type-name{
+  padding: 0px 5px;
 }
 .total-qty{
   color: #121212;
@@ -917,6 +926,12 @@ font-size: 12px;
   font-weight: 500;
   font-size: 10px;
   color: #121212;
+}
+.units-cal{
+  font-weight: 500;
+  font-size: 10px;
+  color: #121212;
+  text-align: left;
 }
 .fee-perc{
   padding: 0px 0px;
@@ -1043,20 +1058,20 @@ word-wrap: normal;
   font-weight: 700;
   font-size: 10px;
   color: #121212;
-  text-align: right;
+  text-align: left;
 }
 .groups_values{
   font-weight: 700;
   font-size: 10px;
   color: #121212;
-  text-align: left;
+  text-align: right;
 }
 .grouping_value{
   font-weight: 700;
   font-size: 10px;
   color: #121212;
   padding: 2px 0px;
-  text-align: right;
+  text-align: left;
 }
 .align-data-items-items{
   text-align: left;
@@ -1088,6 +1103,7 @@ word-wrap: normal;
   border-bottom: 0.5px solid #4D4D4D;
   width: 100%;;
 }
+
 .out-st-bal{
   background: #D7F3DD;
   text-align: right;
