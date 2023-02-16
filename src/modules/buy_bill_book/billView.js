@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import edit from "../../assets/images/edit_round.svg";
+import print from "../../assets/images/print_bill.svg";
 import { useNavigate } from "react-router-dom";
 import { editbuybillApi } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
@@ -29,6 +30,8 @@ import {
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
+import getPdfHeaderData from "../../actions/pdfservice/headerJsonData";
+import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -63,8 +66,8 @@ const BillView = (props) => {
     var arr = [];
     arr.push(itemVal);
     setSlectedCropArray(arr);
-    $('.billView_modal').hide();
-    $('.modal-backdrop').remove();
+    $(".billView_modal").hide();
+    $(".modal-backdrop").remove();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -80,7 +83,6 @@ const BillView = (props) => {
 
     dispatch(cropEditStatus(false));
     setEditCancelStatus(true);
-    
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
@@ -160,7 +162,6 @@ const BillView = (props) => {
               navigate("/sellbillbook");
               window.location.reload();
             }, 2000);
-           
           }
         }
       },
@@ -178,8 +179,8 @@ const BillView = (props) => {
   const closePopup = () => {
     $("#cancelBill").modal("hide");
   };
-  const[prevNextStatus, setPrevNextStatus] = useState(false);
-  const[prevNextDisable, setPrevNextDisable] = useState(false);
+  const [prevNextStatus, setPrevNextStatus] = useState(false);
+  const [prevNextDisable, setPrevNextDisable] = useState(false);
   const previousBill = (id) => {
     var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
     if (index1 != -1) {
@@ -194,12 +195,11 @@ const BillView = (props) => {
       } else {
         setDisplayCancel(false);
       }
-    }
-    else{
+    } else {
       setPrevNextDisable(true);
     }
   };
-  const[nextDisable, setNextDisable] = useState(false);
+  const [nextDisable, setNextDisable] = useState(false);
   const nextBill = (id) => {
     var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
     if (index1 != -1) {
@@ -214,8 +214,7 @@ const BillView = (props) => {
       } else {
         setDisplayCancel(false);
       }
-    }
-    else{
+    } else {
       setNextDisable(true);
     }
   };
@@ -251,12 +250,18 @@ const BillView = (props) => {
         <div className="row">
           <div className="col-lg-10 col_left bill_col bill_col_border">
             <div className="bill_view_card buy_bills_view" id="scroll_style">
-              {
-                prevNextStatus ? <BusinessDetails prevNextStatus1={prevNextStatus} /> : <BusinessDetails />
-              }
-              
+              {prevNextStatus ? (
+                <BusinessDetails prevNextStatus1={prevNextStatus} />
+              ) : (
+                <BusinessDetails />
+              )}
+
               <div className="bill_crop_details">
-                {prevNextStatus ? <CropDetails prevNextStatus1={prevNextStatus} /> : <CropDetails />}
+                {prevNextStatus ? (
+                  <CropDetails prevNextStatus1={prevNextStatus} />
+                ) : (
+                  <CropDetails />
+                )}
                 <div className="row">
                   <div className="col-lg-8"></div>
                   <div className="col-lg-4 stamp_img">
@@ -265,14 +270,22 @@ const BillView = (props) => {
                     )}
                   </div>
                 </div>
-                {prevNextStatus ? <GroupTotals prevNextStatus1={prevNextStatus} /> : <GroupTotals />}
-                {prevNextStatus ? <BillViewFooter prevNextStatus1={prevNextStatus} /> : <BillViewFooter />}
+                {prevNextStatus ? (
+                  <GroupTotals prevNextStatus1={prevNextStatus} />
+                ) : (
+                  <GroupTotals />
+                )}
+                {prevNextStatus ? (
+                  <BillViewFooter prevNextStatus1={prevNextStatus} />
+                ) : (
+                  <BillViewFooter />
+                )}
               </div>
             </div>
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-              {(billData?.billStatus == "CANCELLED" || displayCancel) ? (
+              {billData?.billStatus == "CANCELLED" || displayCancel ? (
                 ""
               ) : (
                 <div>
@@ -295,6 +308,19 @@ const BillView = (props) => {
                       />
                       <p>Edit</p>
                     </div>
+                    <div className="items_div">
+                      <img
+                        src={print}
+                        alt="img"
+                        onClick={() => {
+                          var headerData = getPdfHeaderData({});
+                          var colorThemeInfo = getPdColors();
+                          console.log(headerData);
+                          console.log(colorThemeInfo);
+                        }}
+                      />
+                      <p>Print</p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -308,7 +334,11 @@ const BillView = (props) => {
             previousBill(billData?.caBSeq - 1);
           }}
         >
-          <img src={prev_icon} className={prevNextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image"  />
+          <img
+            src={prev_icon}
+            className={prevNextDisable ? "prev_disable" : "prev_next_icon"}
+            alt="image"
+          />
         </button>
         <p className="b-name">{billData?.caBSeq}</p>
         <button
@@ -316,7 +346,11 @@ const BillView = (props) => {
             nextBill(billData?.caBSeq + 1);
           }}
         >
-          <img src={next_icon} className={nextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image" />
+          <img
+            src={next_icon}
+            className={nextDisable ? "prev_disable" : "prev_next_icon"}
+            alt="image"
+          />
         </button>
       </div>
       {showStepsModalStatus ? (
