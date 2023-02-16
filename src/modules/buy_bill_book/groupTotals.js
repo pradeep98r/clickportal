@@ -1031,7 +1031,8 @@ const GroupTotals = (props) => {
                               && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
                               && billData?.rtComm > 0)?
                               ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER' && item.addToGt!==0?' + '+
+                              billData?.partyType.toUpperCase() == 'BUYER' 
+                              && item.settingName!=='RETURN_COMMISSION' ?' + '+
                               handleGroupNames(item.settingName).toFixed(2)
                               :handleGroupNames(item.settingName)}</span>
                             }
@@ -1180,7 +1181,8 @@ const GroupTotals = (props) => {
                               && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
                               && billData?.rtComm > 0)?
                               ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER' && item.addToGt!==0?' + '+
+                              billData?.partyType.toUpperCase() == 'BUYER'
+                              && item.settingName!=='RETURN_COMMISSION'?' + '+
                               handleGroupNames(item.settingName).toFixed(2)
                               :handleGroupNames(item.settingName)}</span>
                               }
@@ -1328,7 +1330,8 @@ const GroupTotals = (props) => {
                               && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
                               && billData?.rtComm > 0)?
                               ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER' && item.addToGt!==0?' + '+
+                              billData?.partyType.toUpperCase() == 'BUYER'
+                              && item.settingName!=='RETURN_COMMISSION'?' + '+
                               handleGroupNames(item.settingName).toFixed(2)
                               :handleGroupNames(item.settingName)}</span>
                               }
@@ -1478,7 +1481,8 @@ const GroupTotals = (props) => {
                               && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
                               && billData?.rtComm > 0)?
                               ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER' && item.addToGt!==0?' + '+
+                              billData?.partyType.toUpperCase() == 'BUYER'
+                              && item.settingName!=='RETURN_COMMISSION'?' + '+
                               handleGroupNames(item.settingName).toFixed(2)
                               :handleGroupNames(item.settingName)}</span>
                               }
