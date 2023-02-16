@@ -499,7 +499,7 @@ const Step22 = (props) => {
                 toastId: "error2",
               });
             return null;
-          } else if(cropData[index].rateType?.toUpperCase() !== "RATE_PER_UNIT")
+          } else if(cropData[index].rateType?.toUpperCase() !== "RATE_PER_UNIT" && billEditStatus)
             {
               console.log("came to here1",cropData[index].qtyUnit,cropData[index],
               cropData[index].unitType)
