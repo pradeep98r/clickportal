@@ -148,6 +148,13 @@ function BuyBillBook() {
     });
     setBuyBillData(result);
   };
+  const totalBagsValue =(bags)=>{
+    var totalValue=0
+    bags.map(item=>{
+      totalValue += (item.weight - item.wastage);
+    })
+    return totalValue;
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -379,7 +386,7 @@ function BuyBillBook() {
                                                       {crop.cropName}
                                                     </p>
                                                   </div>
-                                                  <div className="col-lg-4 col-sm-12 col flex_class">
+                                                  <div className="col-lg-4 col-sm-12 col">
                                                     {/* {crop.qtyUnit+crop.qty} */}
                                                     <div>
                                                       {" "}
@@ -390,6 +397,37 @@ function BuyBillBook() {
                                                         crop.wastage,
                                                         crop.rateType
                                                       )}
+                                                    </div>
+                                                    <div>
+                                                      {crop.bags !==null && crop.bags.length>0?
+                                                      <div className="flex_class">
+                                                        <input
+                                                        type="checkbox"
+                                                        checked={true}
+                                                        id="modal_checkbox"
+                                                        value="my-value"
+                                                        className="checkbox_t" />
+                                                        <p className="inv-weight">Individual Weights
+                                                        <span className="bags-data">
+                                                          <div className="bags-values">
+                                                          {crop.bags.map(item=>{
+                                                            return(
+                                                            <span >
+                                                            <span>{item.weight?item.weight + " ":''}</span>
+                                                            <span>{item.wastage?' - ':''}</span>
+                                                            <span>{item.wastage?item.wastage:''}</span>
+                                                            <span>,{" "}</span>
+                                                            </span>
+                                                            )
+                                                          })}
+                                                          </div>
+                                                          <span>= {totalBagsValue(crop.bags) + "KGS"}</span>
+                                                        </span>
+        
+                                                        </p>
+                                                      </div>
+                                                      :''}
+                                                    
                                                     </div>
                                                   </div>
                                                   <div className="col-lg-2 col-sm-12 col flex_class">

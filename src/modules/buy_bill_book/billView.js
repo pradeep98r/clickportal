@@ -34,24 +34,24 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const [displayCancel, setDisplayCancel] = useState(false);
+  // const [displayCancel, setDisplayCancel] = useState(false);
   var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
 
   useEffect(() => {
-    cancelBillStatus();
+    // cancelBillStatus();
     dispatch(billViewStatus(true));
     // setBillViewData(JSON.parse(localStorage.getItem("billData")));
     setBillViewData(billViewData.billViewInfo);
   }, [props.showBillViewModal]);
 
-  const cancelBillStatus = () => {
-    if (billData?.billStatus === "CANCELLED") {
-      setDisplayCancel(true);
-    } else {
-      setDisplayCancel(false);
-    }
-  };
+  // const cancelBillStatus = () => {
+  //   if (billData?.billStatus === "CANCELLED") {
+  //     setDisplayCancel(true);
+  //   } else {
+  //     setDisplayCancel(false);
+  //   }
+  // };
 
   const [slectedCropArray, setSlectedCropArray] = useState([]);
   const [editCancelStatus, setEditCancelStatus] = useState(false);
@@ -147,7 +147,7 @@ const BillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
-          setDisplayCancel(true);
+          // setDisplayCancel(true);
           if (billData?.partyType.toUpperCase() === "FARMER") {
             window.setTimeout(function () {
               props.closeBillViewModal();
@@ -189,11 +189,11 @@ const BillView = (props) => {
       setPrevNextStatus(true);
       setPrevNextDisable(false);
       setNextDisable(false);
-      if (allBillsArray[index1].billStatus === "CANCELLED") {
-        setDisplayCancel(true);
-      } else {
-        setDisplayCancel(false);
-      }
+      // if (allBillsArray[index1].billStatus === "CANCELLED") {
+      //   setDisplayCancel(true);
+      // } else {
+      //   setDisplayCancel(false);
+      // }
     }
     else{
       setPrevNextDisable(true);
@@ -209,11 +209,11 @@ const BillView = (props) => {
       setPrevNextStatus(true);
       setNextDisable(false);
       setPrevNextDisable(false);
-      if (allBillsArray[index1].billStatus === "CANCELLED") {
-        setDisplayCancel(true);
-      } else {
-        setDisplayCancel(false);
-      }
+      // if (allBillsArray[index1].billStatus === "CANCELLED") {
+      //   setDisplayCancel(true);
+      // } else {
+      //   setDisplayCancel(false);
+      // }
     }
     else{
       setNextDisable(true);
@@ -260,7 +260,7 @@ const BillView = (props) => {
                 <div className="row">
                   <div className="col-lg-8"></div>
                   <div className="col-lg-4 stamp_img">
-                    {(billData?.billStatus == "CANCELLED" || displayCancel) && (
+                    {(billData?.billStatus?.toUpperCase() == "CANCELLED") && (
                       <img src={cancel_bill_stamp} alt="stammp_img" />
                     )}
                   </div>
@@ -272,7 +272,7 @@ const BillView = (props) => {
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-              {(billData?.billStatus == "CANCELLED" || displayCancel) ? (
+              {(billData?.billStatus?.toUpperCase() == "CANCELLED") ? (
                 ""
               ) : (
                 <div>
