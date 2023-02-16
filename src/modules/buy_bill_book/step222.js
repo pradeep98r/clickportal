@@ -37,12 +37,18 @@ const Step22 = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   let [preferedCropsData, setPreferedCropsData] = useState([]);
-  let [cropData, cropResponseData] = useState(array);
+  console.log(props.maintainCrops,"maintain")
+  
+  const maintainCrop = localStorage.getItem('maintainCrops');
+  let [cropData, cropResponseData] = useState(maintainCrop?[]:array);
+    // props.maintainCrops?
+    
   const [cropInfoModal, setCropInfoModal] = useState(false);
   const [cropInfoModalStatus, setCropInfoModalStatus] = useState(false);
   const [cropId, setCropId] = useState(0);
   const [updatedItemList, setUpdatedItemList] = useState([]);
   const [showStep3Modal, setShowStep3Modal] = useState(false);
+
   const [quantityValue, setunitValue] = useState();
   const [wastagesValue, setwastageValue] = useState();
   const [rateDefaultValue, setrateValue] = useState();
@@ -229,6 +235,7 @@ const Step22 = (props) => {
         }
         cropResponseData([...a]);
       } else {
+        console.log("Came to here0")
         if (!billEditItemInfo?.fromBillBook) {
           lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         }

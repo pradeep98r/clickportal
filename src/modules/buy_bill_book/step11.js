@@ -68,7 +68,7 @@ const Step11 = (props) => {
         var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
         console.log(h,"step1crops")
         props.billEditStatuscallback(h);
-    }
+    } 
   };
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {
