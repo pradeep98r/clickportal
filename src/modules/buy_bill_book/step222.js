@@ -436,6 +436,7 @@ const Step22 = (props) => {
   const step2Next = () => {
 
     if (cropData.length > 0) {
+      
       for (var index = 0; index < cropData.length; index++) {
         if (!cropData[index].cropDelete) {
           if (
@@ -493,17 +494,21 @@ const Step22 = (props) => {
             return null;
           } 
           else if (cropData[index].weight == 0 && !billEditStatus) {
+            console.log("came to here0")
               toast.error("Please enter weight", {
                 toastId: "error2",
               });
             return null;
-          } else if (cropData[index].weight == 0 && billEditStatus) {
-            console.log("came to here2");
-           
-              toast.error("Please enter weight", {
-                toastId: "error2",
-              });
-            return null;
+          } else if(cropData[index].rateType?.toUpperCase() !== "RATE_PER_UNIT")
+            {
+              console.log("came to here1",cropData[index].qtyUnit,cropData[index],
+              cropData[index].unitType)
+              if(cropData[index].weight == 0 && billEditStatus){
+                toast.error("Please enter weight", {
+                  toastId: "error2",
+                });
+              return null;
+              }
           }
           else if (cropData[index].rate == 0) {
             toast.error("Please enter rate", {

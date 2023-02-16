@@ -41,8 +41,8 @@ const SellBillBook = (props) => {
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
-  
-  const  billData = useSelector((state)=> state.billViewInfo);
+
+  const billData = useSelector((state) => state.billViewInfo);
   // console.log(billViiewDate)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -50,20 +50,20 @@ const SellBillBook = (props) => {
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
   var [dateValue, setDateValue] = useState();
-  window.addEventListener('load', function(event) {
+  window.addEventListener('load', function (event) {
     // bDate = '';
   });
   const callbackFunction = (startDate, endDate, dateTab) => {
-    var fromDate = moment(bDate ? bDate :startDate).format("YYYY-MM-DD");
-    var toDate = moment(bDate ? bDate :endDate).format("YYYY-MM-DD");
+    var fromDate = moment(bDate ? bDate : startDate).format("YYYY-MM-DD");
+    var toDate = moment(bDate ? bDate : endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
@@ -72,8 +72,8 @@ const SellBillBook = (props) => {
     } else {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
     }
 
@@ -89,7 +89,7 @@ const SellBillBook = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        if (error.message.toUpperCase() == 'NETWORK ERROR') {
           setOnline(true);
         }
         setOnline(true);
@@ -165,22 +165,29 @@ const SellBillBook = (props) => {
     });
     setSellBillData(result);
   };
+  const totalBagsValue = (bags) => {
+    var totalValue = 0
+    bags.map(item => {
+      totalValue += (item.weight - item.wastage);
+    })
+    return totalValue;
+  }
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-        {isOnline?<NoInternetConnection />:
-          <div>
-          {isLoading ? (
-            <div className="">
-              <img src={loading} alt="my-gif" className="gif_img" />
-            </div>
-          ) : (
+          {isOnline ? <NoInternetConnection /> :
             <div>
-              <div>
-                <div className="d-flex justify-content-between bills_div">
-                  <div className="d-flex">
-                    {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
+              {isLoading ? (
+                <div className="">
+                  <img src={loading} alt="my-gif" className="gif_img" />
+                </div>
+              ) : (
+                <div>
+                  <div>
+                    <div className="d-flex justify-content-between bills_div">
+                      <div className="d-flex">
+                        {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
                           className="nav-link active"
@@ -193,218 +200,249 @@ const SellBillBook = (props) => {
                         </a>
                       </li>
                     </ul> */}
-                  </div>
+                      </div>
 
-                  <div onClick={onclickDate} className="color_blue">
-                    <span className="date_icon m-0">
-                      <img src={date_icon} alt="icon" className="mr-2" />
-                    </span>
-                    {dateValue}
-                  </div>
-                  <div className="d-flex">
-                    {/* <BillsSearchField
+                      <div onClick={onclickDate} className="color_blue">
+                        <span className="date_icon m-0">
+                          <img src={date_icon} alt="icon" className="mr-2" />
+                        </span>
+                        {dateValue}
+                      </div>
+                      <div className="d-flex">
+                        {/* <BillsSearchField
                       placeholder={langFullData.search}
                       onChange={(event) => {
                         handleSearch(event);
                       }}
                     /> */}
-                    <a
-                      className="primary_btn add_bills_btn"
-                      // href="/sellbillstep1"
-                      onClick={handleStep1Header}
-                    >
-                      <img src={addbill_icon} alt="image" className="mr-2" />
-                      Add single Bill
-                    </a>
-                  </div>
-                </div>
-                <div>
-                  <div className="tab-content">
-                    <div
-                      className="tab-pane active"
-                      id="home"
-                      role="tabpanel"
-                      aria-labelledby="home-tab"
-                    >
-                      {sellBillData.length > 0 ? (
-                        <div>
-                          <div className="row header_row">
-                            <div className="col-lg-4">
-                              <div className="row">
-                                <div className="col-lg-7 col-sm-12 p-0">
-                                  <p>{langFullData.buyer}</p>
+                        <a
+                          className="primary_btn add_bills_btn"
+                          // href="/sellbillstep1"
+                          onClick={handleStep1Header}
+                        >
+                          <img src={addbill_icon} alt="image" className="mr-2" />
+                          Add single Bill
+                        </a>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="tab-content">
+                        <div
+                          className="tab-pane active"
+                          id="home"
+                          role="tabpanel"
+                          aria-labelledby="home-tab"
+                        >
+                          {sellBillData.length > 0 ? (
+                            <div>
+                              <div className="row header_row">
+                                <div className="col-lg-4">
+                                  <div className="row">
+                                    <div className="col-lg-7 col-sm-12 p-0">
+                                      <p>{langFullData.buyer}</p>
+                                    </div>
+                                    <div className="col-lg-5 col-sm-12">
+                                      <p>{langFullData.billId}</p>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="col-lg-5 col-sm-12">
-                                  <p>{langFullData.billId}</p>
+                                <div className="col-lg-6 p-0">
+                                  <div className="row">
+                                    <div className="col-lg-4 col-sm-12">
+                                      <p>{langFullData.particulars}</p>
+                                    </div>
+                                    <div className="col-lg-4 col-sm-12">
+                                      <p>{langFullData.qty}</p>
+                                    </div>
+                                    <div className="col-lg-2 col-sm-12">
+                                      <p>{langFullData.rate}(₹) </p>
+                                    </div>
+                                    <div className="col-lg-2 col-sm-12">
+                                      <p>{langFullData.total}(₹)</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-lg-2">
+                                  <div className="row">
+                                    <div className="col-lg-12 col-sm-12">
+                                      <p>{langFullData.totalReceivables} (₹)</p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="col-lg-6 p-0">
-                              <div className="row">
-                                <div className="col-lg-4 col-sm-12">
-                                  <p>{langFullData.particulars}</p>
-                                </div>
-                                <div className="col-lg-4 col-sm-12">
-                                  <p>{langFullData.qty}</p>
-                                </div>
-                                <div className="col-lg-2 col-sm-12">
-                                  <p>{langFullData.rate}(₹) </p>
-                                </div>
-                                <div className="col-lg-2 col-sm-12">
-                                  <p>{langFullData.total}(₹)</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-lg-2">
-                              <div className="row">
-                                <div className="col-lg-12 col-sm-12">
-                                  <p>{langFullData.totalReceivables} (₹)</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="buy_bills" id="scroll_style">
-                            {sellBillData.map((bill, index) => (
-                              <div
-                                onClick={() => billOnClick(bill.caBSeq, bill)}
-                                key={index}
-                                className="billsDiv"
-                              >
-                                <div className="row bills_rows bg_white bottom_space">
-                                  <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
-                                    <div className="row full_width">
-                                      <div className="col-lg-7 col-sm-12 p-0 col">
-                                        <div className="bill_user_details flex_class mr-0">
-                                          {
-                                            bill.profilePic ? <img
-                                            src={bill.profilePic}
-                                            className="user_icon"
-                                            alt="icon"
-                                          /> : <img
-                                            src={single_bill}
-                                            className="user_icon"
-                                            alt="icon"
-                                          />
-                                          }
-                                          
-                                          <div>
-                                            <h6 className="userName">
-                                              {bill.buyerName +
-                                                "-" +
-                                                bill.shortName}
-                                            </h6>
-                                           <div className="d-flex align-items-center">
-                                           <h6 className="mobile">
-                                              {getText(bill.partyType) +
-                                                "-" +
-                                                bill.buyerId}
-                                            </h6>
-                                            <h6 className="mobile">
-                                              &nbsp;{' |  ' + getMaskedMobileNumber(bill.mobile)}
-                                              </h6>
-                                            
-                                             </div>
-                                            <h6 className="address">
-                                              {bill.buyerAddress}
-                                            </h6>
+                              <div className="buy_bills" id="scroll_style">
+                                {sellBillData.map((bill, index) => (
+                                  <div
+                                    onClick={() => billOnClick(bill.caBSeq, bill)}
+                                    key={index}
+                                    className="billsDiv"
+                                  >
+                                    <div className="row bills_rows bg_white bottom_space">
+                                      <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                        <div className="row full_width">
+                                          <div className="col-lg-7 col-sm-12 p-0 col">
+                                            <div className="bill_user_details flex_class mr-0">
+                                              {
+                                                bill.profilePic ? <img
+                                                  src={bill.profilePic}
+                                                  className="user_icon"
+                                                  alt="icon"
+                                                /> : <img
+                                                  src={single_bill}
+                                                  className="user_icon"
+                                                  alt="icon"
+                                                />
+                                              }
+
+                                              <div>
+                                                <h6 className="userName">
+                                                  {bill.buyerName +
+                                                    "-" +
+                                                    bill.shortName}
+                                                </h6>
+                                                <div className="d-flex align-items-center">
+                                                  <h6 className="mobile">
+                                                    {getText(bill.partyType) +
+                                                      "-" +
+                                                      bill.buyerId}
+                                                  </h6>
+                                                  <h6 className="mobile">
+                                                    &nbsp;{' |  ' + getMaskedMobileNumber(bill.mobile)}
+                                                  </h6>
+
+                                                </div>
+                                                <h6 className="address">
+                                                  {bill.buyerAddress}
+                                                </h6>
+                                              </div>
+                                            </div>
                                           </div>
-                                        </div>
-                                      </div>
-                                      <div className="col-lg-5 col-sm-12 billid_div">
-                                        <p className="biilid">
-                                          {langFullData.billNo} : {bill.caBSeq}{" "}
-                                        </p>
-                                        <p>
-                                          {moment(bill.billDate).format(
-                                            "DD-MMM-YYYY"
-                                          )}
-                                        </p>
-                                        <p
+                                          <div className="col-lg-5 col-sm-12 billid_div">
+                                            <p className="biilid">
+                                              {langFullData.billNo} : {bill.caBSeq}{" "}
+                                            </p>
+                                            <p>
+                                              {moment(bill.billDate).format(
+                                                "DD-MMM-YYYY"
+                                              )}
+                                            </p>
+                                            <p
                                               style={{
                                                 color:
                                                   bill.billStatus == "CANCELLED"
                                                     ? "#d43939"
                                                     : "#1C1C1C",
                                               }}
-                                              >
+                                            >
                                               <div className="flex_class">
-                                              {bill.billStatus == "CANCELLED"?
-                                              <img src={cancel} width="10px" height="10px" />:
-                                                <div className="complete-dot"></div>
+                                                {bill.billStatus == "CANCELLED" ?
+                                                  <img src={cancel} width="10px" height="10px" /> :
+                                                  <div className="complete-dot"></div>
                                                 }
                                                 <div className="bill-name">{getText(bill.billStatus)}</div>
                                               </div>
                                             </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 p-0">
-                                    {bill.lineItems.map((crop, index) => (
-                                      <div className="row crops_row_bills" key={index}>
-                                        <div className="col-lg-4 col-sm-12 col">
-                                          <p className="flex_class crop_name">
-                                            <img
-                                              src={crop.imageUrl}
-                                              className="crop_image"
-                                            />
-                                            {crop.cropName}
-                                          </p>
-                                        </div>
-                                        <div className="col-lg-4 col-sm-12 col flex_class">
-                                          <div>
-                                            {" "}
-                                            {qtyValues(
-                                              crop.qty,
-                                              crop.qtyUnit,
-                                              crop.weight,
-                                              crop.wastage,
-                                              crop.rateType
-                                            )}
                                           </div>
                                         </div>
-                                        <div className="col-lg-2 col-sm-12 col flex_class">
-                                          <p className="number_overflow crop_name">
-                                            {getCurrencyNumberWithOutSymbol(
-                                              crop.rate
-                                            )}
-                                          </p>
-                                        </div>
-                                        <div className="col-lg-2 col-sm-12 col flex_class">
-                                          <p className="number_overflow crop_name">
-                                            {getCurrencyNumberWithOutSymbol(
-                                              crop.total
-                                            )}
-                                          </p>
-                                        </div>
                                       </div>
-                                    ))}
-                                  </div>
-                                  <div className="col-lg-2 flex_class">
-                                    <div
-                                      className="row"
-                                      style={{ width: "100%" }}
-                                    >
-                                      <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
-                                        <p className="crop_name payble_text color_green">
-                                          {getCurrencyNumberWithOutSymbol(
-                                            bill.totalReceivable
-                                          )}
-                                        </p>
-                                        <img
-                                          src={left_arrow}
-                                          alt="left-arrow"
-                                          className="left-arrow-img"
-                                        />
+                                      <div className="col-lg-6 p-0">
+                                        {bill.lineItems.map((crop, index) => (
+                                          <div className="row crops_row_bills" key={index}>
+                                            <div className="col-lg-4 col-sm-12 col">
+                                              <p className="flex_class crop_name">
+                                                <img
+                                                  src={crop.imageUrl}
+                                                  className="crop_image"
+                                                />
+                                                {crop.cropName}
+                                              </p>
+                                            </div>
+                                            <div className="col-lg-4 col-sm-12 col ">
+                                              <div>
+                                                {" "}
+                                                {qtyValues(
+                                                  crop.qty,
+                                                  crop.qtyUnit,
+                                                  crop.weight,
+                                                  crop.wastage,
+                                                  crop.rateType
+                                                )}
+                                              </div>
+                                              <div>
+                                                {crop.bags !== null && crop.bags.length > 0 ?
+                                                  <div className="flex_class">
+                                                    <input
+                                                      type="checkbox"
+                                                      checked={true}
+                                                      id="modal_checkbox"
+                                                      value="my-value"
+                                                      className="checkbox_t" />
+                                                    <p className="inv-weight">Individual Weights
+                                                      <span className="bags-data">
+                                                        <div className="bags-values">
+                                                          {crop.bags.map(item => {
+                                                            return (
+                                                              <span >
+                                                                <span>{item.weight ? item.weight + " " : ''}</span>
+                                                                <span>{item.wastage ? ' - ' : ''}</span>
+                                                                <span>{item.wastage ? item.wastage : ''}</span>
+                                                                <span>,{" "}</span>
+                                                              </span>
+                                                            )
+                                                          })}
+                                                        </div>
+                                                        <span>= {totalBagsValue(crop.bags) + "KGS"}</span>
+                                                      </span>
+
+                                                    </p>
+                                                  </div>
+                                                  : ''}
+
+                                              </div>
+                                            </div>
+                                            <div className="col-lg-2 col-sm-12 col flex_class">
+                                              <p className="number_overflow crop_name">
+                                                {getCurrencyNumberWithOutSymbol(
+                                                  crop.rate
+                                                )}
+                                              </p>
+                                            </div>
+                                            <div className="col-lg-2 col-sm-12 col flex_class">
+                                              <p className="number_overflow crop_name">
+                                                {getCurrencyNumberWithOutSymbol(
+                                                  crop.total
+                                                )}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="col-lg-2 flex_class">
+                                        <div
+                                          className="row"
+                                          style={{ width: "100%" }}
+                                        >
+                                          <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
+                                            <p className="crop_name payble_text color_green">
+                                              {getCurrencyNumberWithOutSymbol(
+                                                bill.totalReceivable
+                                              )}
+                                            </p>
+                                            <img
+                                              src={left_arrow}
+                                              alt="left-arrow"
+                                              className="left-arrow-img"
+                                            />
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="row partner_no_data_widget_row">
+                            </div>
+                          ) : (
+                            <div className="row partner_no_data_widget_row">
                               <div className="col-lg-5">
                                 <div className="partner_no_data_widget">
                                   <div className="text-center">
@@ -414,29 +452,29 @@ const SellBillBook = (props) => {
                                       className="d-flex mx-auto justify-content-center"
                                     />
                                     <p>
-                                    No bills available for today. <br></br>
-                                     Add to create a new bill
+                                      No bills available for today. <br></br>
+                                      Add to create a new bill
                                     </p>
                                     <button
                                       className="primary_btn"
                                       onClick={handleStep1Header}
                                     >
-                                     Add single Bill
-                                      
+                                      Add single Bill
+
                                     </button>
-                                 
+
                                   </div>
                                 </div>
                               </div>
                             </div>
-                      )}
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
-          )}
-          </div>
           }
         </div>
       </div>
@@ -455,11 +493,11 @@ const SellBillBook = (props) => {
       ) : (
         ""
       )}
-       {showBillModalStatus ? (
+      {showBillModalStatus ? (
         <BillView
-        showBillViewModal={showBillModal}
-        closeBillViewModal={() => setShowBillModal(false)}
-        allBillsData ={sellBillData}
+          showBillViewModal={showBillModal}
+          closeBillViewModal={() => setShowBillModal(false)}
+          allBillsData={sellBillData}
         />
       ) : (
         ""
