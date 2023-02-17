@@ -658,7 +658,6 @@ const Step33 = (props) => {
       }
     }
     for (var i = 0; i < questionsTitle.length; i++) {
-      console.log(questionsTitle)
       if (questionsTitle[i].field != "") {
         if (questionsTitle[i].less) {
           var t = 0;
@@ -835,11 +834,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {

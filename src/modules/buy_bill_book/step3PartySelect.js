@@ -66,7 +66,6 @@ const Step3PartySelect = (props) => {
   const linkPath = localStorage.getItem("LinkPath");
   
   useEffect(() => {
-    console.log(billEditItem, billEditItemCrops, "cropsitems");
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
       console.log("Came to here0")

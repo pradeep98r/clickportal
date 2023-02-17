@@ -530,7 +530,6 @@ const SellBillStep3 = (props) => {
     return val * totalUnits;
   };
   const getTotalBillAmount = () => {
-    console.log(transTotalValue)
     var t = Number(
       // getTotalValue(commValue) +
       (transTotalValue != 0
@@ -740,7 +739,6 @@ const SellBillStep3 = (props) => {
     timeStamp: "",
     customFields: questionsTitle,
   };
-  console.log(transpoSelectedData?.partyId,transpoSelectedData?.transporterId,"data");
   const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
