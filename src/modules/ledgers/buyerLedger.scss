@@ -64,21 +64,21 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 320px);
+    height: calc(100vh - 327px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .all_ledgerSummary{
-    height: calc(100vh - 303px);
+    height: calc(100vh - 310px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 320px);
+    height: calc(100vh - 327px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -178,6 +178,9 @@ input[type=radio]:checked+label {
 }
 .ledger-table{
     width: 100%;
+    th{
+        font-size: 13px;
+    }
 }
 .tr-tags{
     font-weight: 500;
@@ -563,4 +566,7 @@ a:hover{
   }
   .padding_all{
       padding-top: 15px;
+  }
+  .table thead th{
+      vertical-align: middle;
   }

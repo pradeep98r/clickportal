@@ -113,7 +113,7 @@ const SelectCrop = (props) => {
           {allCropsData.length > 0 ? (
             allCropsData.map((crop_item, index) => {
               return (
-                <div className="col-lg-2">
+                <div className="col-lg-2 p-0">
                   <div
                     className={`text-center crop_div mr-0 crop ${
                       selected.includes(crop_item) &&

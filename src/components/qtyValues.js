@@ -6,25 +6,25 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
         var unitType = "";
         switch (unit.toLowerCase()) {
           case "crates":
-            unitType = "C";
+            unitType = " C";
             break;
           case "boxes":
-            unitType = "BX";
+            unitType = " BX";
             break;
           case "bags":
-            unitType = "BG";
+            unitType = " BG";
             break;
           case "sacs":
-            unitType = "S";
+            unitType = " S";
             break;
           case "loads":
-            unitType = "LDS";
+            unitType = " LDS";
             break;
           case "pieces":
-            unitType = "PCS";
+            unitType = " PCS";
             break;
             case "kgs":
-            unitType = "KGS";
+            unitType = " KGS";
             break;
         }
         return unitType;
@@ -45,7 +45,7 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
           ? getCropUnit(qtyUnit)
           : weight == 0 || weight == null
           ? ""
-          : "KGS")}
+          : " KGS")}
       <span className="color_red">
         {wastage != "0"
           ? wastage != null
@@ -56,7 +56,7 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
                 : qtyUnit.toLowerCase() == "loads"
                 ? ""
                 : rateType == "RATE_PER_KG"
-                ? "KGS"
+                ? " KGS"
                 : getCropUnit(qtyUnit))
             : ""
           : ""}

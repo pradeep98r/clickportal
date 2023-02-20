@@ -7,6 +7,7 @@ import {
 } from "../../components/getCurrencyNumber";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
+import { getText } from '../../components/getText';
 const CropDetails = (props) => {
     const  billViewData = useSelector((state)=> state.billViewInfo);
     const [billData, setBillViewData] = useState(billViewData.billViewInfo); 
@@ -28,13 +29,13 @@ const CropDetails = (props) => {
     }
     return (
         <div>
-            <div className='row'>
-                <div className='col-lg-3'>
+            <div className='row partner_info_padding pb-0'>
+                <div className='col-lg-3 p-0'>
                 <p className="small_text">Bill To :</p>
                 </div>
             </div>
-            <div className="row partner_info_padding">
-                <div className="col-lg-3 pl-0">
+            <div className="row partner_info_padding align-items-center">
+                <div className="col-lg-4 pl-0">
                     <div className="d-flex partner_info align-items-center">
                         <div>
                             {billData?.partyType==='FARMER'?
@@ -43,38 +44,42 @@ const CropDetails = (props) => {
                             :(billData?.profilePic ? <img src={billData?.profilePic} className="partner_img"/> : <img src={single_bill} className="partner_img"/>)}
                         </div>
                         <div className='type-name'>
-                            <p className="small_text">{billData?.partyType}:{" "}</p>
-                            <h6>
-                                {billData?.partyType==='FARMER'?
-                                billData.farmerName:billData?.buyerName}
+                            <p className="small_text">{(billData?.partyType.toLowerCase()==='farmer')?
+                                'Seller':getText(billData?.partyType)}</p>
+                           <div className='d-flex align-items-center'>
+                           <h6>
+                                {(billData?.partyType==='FARMER')?
+                                billData.farmerName:billData?.buyerName} 
                             </h6>
+                            {/* <h6>()</h6> */}
+                           </div>
                         </div>
                     </div>
                 </div>
-                {billData?.partyType==='FARMER'&& billData?.farmerAddress != "" ? (
+                {billData?.partyType==='FARMER' && billData?.farmerAddress != "" ? (
                     <div className="col-lg-3">
                         <div className="partner_info">
                             <p className="small_text">Address: </p>
-                            <h6 className="small_text">
+                            <h6 className="">
                                 {billData?.farmerAddress}
                             </h6>
                         </div>
                     </div>
                 ) : (
-                    <div className="col-lg-3">
+                    billData?.buyerAddress != "" ?  <div className="col-lg-3">
                         <div className="partner_info">
                             <p className="small_text">Address: </p>
-                            <h6 className="small_text">
+                            <h6 className="">
                                 {billData?.buyerAddress}
                             </h6>
                         </div>
-                    </div>
+                    </div> : ''
                 )}
                 {billData?.transporterId != 0 ? (
                     <div className="col-lg-3">
                         <div className="partner_info">
                             <p className="small_text">Transporter :</p>
-                            <h6 className="small_text">
+                            <h6 className="">
                                 {billData?.transporterName}
                             </h6>
                         </div>
@@ -87,7 +92,7 @@ const CropDetails = (props) => {
                 <table className="table table-bordered bill_view mb-0">
                     <thead>
                         <tr>
-                            <th className="col-1">#</th>
+                            <th className="col-1 text-center">#</th>
                             <th className="col-4">Particulars</th>
                             <th className="col-3">Qty. </th>
                             <th className="col-2">Rate (₹)</th>
@@ -98,7 +103,7 @@ const CropDetails = (props) => {
                         {billData?.lineItems.map((item, key) => {
                             return (
                                 <tr key={item}>
-                                    <td className="col-1">{key + 1}</td>
+                                    <td className="col-1 text-center">{key + 1}</td>
                                     <td className="col-4">
                                         <div className="flex_class crop_name">
                                             <img
@@ -180,7 +185,7 @@ const CropDetails = (props) => {
                         </p> */}
                     </div>
                     <div className="col-lg-6 p-0 ">
-                        <div className="row justify-content-center">
+                        <div className="row justify-content-around">
                             {/* <div className="col-lg-4"></div> */}
                             {/* <div className="col-lg-5"> */}
                                 <p className="total_value">Gross Total : </p>

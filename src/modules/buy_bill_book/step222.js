@@ -640,7 +640,6 @@ const Step22 = (props) => {
   var arr1 = [];
   const getQuantity = (cropData, index1, crop) => (e) => {
     cropData[index1].rateType = "kgs";
-    var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
         arr1.push({ ...cropData[i], qtyUnit: e.target.value, qty: 0 });
@@ -654,8 +653,18 @@ const Step22 = (props) => {
     setUpdatedItemList([...updatedItemList]);
   };
   const getRateType = (cropData, index) => (e) => {
-    cropData[index].rateType = e.target.value;
-    cropResponseData([...cropData]);
+    // cropData[index].rateType = e.target.value;
+    let updatedItemListRateType = cropData.map((item, i) => {
+      if (i == index) {
+        arr1.push({ ...cropData[i], rateType: e.target.value });
+        return { ...cropData[i], rateType: e.target.value};
+      } else {
+        cropResponseData([...cropData]);
+        return { ...cropData[i] };
+      }
+    });
+    cropResponseData([...updatedItemListRateType]);
+    setUpdatedItemList([...updatedItemListRateType]);
   };
   //   getting input values(quantity,weight,wastage,rate) from input fields
   var arr = [];
@@ -970,12 +979,12 @@ const Step22 = (props) => {
   return (
     <div>
       <div className="main_div_padding">
-        <h4 className="smartboard_main_header">Select crop and creat bill</h4>
+        <h4 className="smartboard_main_header">Select crop and create bill</h4>
         <div className="d-flex">
           {preferedCropsData.length > 0 && (
             <div className="d-flex total_crops_div">
               {preferedCropsData.map((crop, index) => (
-                <div className="">
+                <div className="row">
                   <div
                     className="text-center crop_div crop_div_ui"
                     key={crop.cropId}
@@ -1016,12 +1025,12 @@ const Step22 = (props) => {
             <p>Other Crop</p>
           </div>
         </div>
-        <div className="crop_table" id="scroll_style">
+        <div >
           <div className="row p-0 mt-2">
             {cropData.length > 0 && (
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
-                <div className="" id="">
+                <div className="crop_table" id="scroll_style">
                   <div className="row header_row p-0 crop_table_header_row">
                     <div className="col-lg-2">
                       <p>Crop</p>
@@ -1030,7 +1039,9 @@ const Step22 = (props) => {
                       <p>Unit type</p>
                     </div>
                     <div className="col-lg-1">
-                      <p>Rate type</p>
+                      <p>Rate type
+                        {/* <br></br>(Per) */}
+                        </p>
                     </div>
                     <div className="col-lg-1">
                       <p>Number of Units</p>
@@ -1399,13 +1410,14 @@ const Step22 = (props) => {
                       </div>
                     </div>
                   ))}
-                  <button
-                    className="add_crop_text"
+                  
+                </div>
+                <button
+                    className="add_crop_text pr-2"
                     onClick={() => addCropRow()}
                   >
                     + Add Crop
                   </button>
-                </div>
               </div>
             )}
           </div>

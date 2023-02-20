@@ -19,7 +19,7 @@ const Step11 = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateSelected = billEditItemInfo?.selectedBillDate;
   const cancelStep = () => {
-    dispatch(selectTrans(null)); 
+    dispatch(selectTrans(null));
     dispatch(selectBuyer(null));
     props.closem();
   };
@@ -87,13 +87,13 @@ const Step11 = (props) => {
                   onClickPage={onClickPage}
                 />
               </div>
-              <div className="col-lg-5 ">
+              <div className="col-lg-4 ">
                 <BillDateSelection
                   parentCallbackDate={callbackFunctionDate}
                   billDate={null}//{null}
                 />
               </div>
-              <div className="col-lg-3 p-0">
+              <div className="col-lg-4 p-0">
                 <SelectPartner
                   partyType="Transporter"
                   parentCallback={callbackFunction}
