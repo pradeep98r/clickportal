@@ -148,13 +148,13 @@ function BuyBillBook() {
     });
     setBuyBillData(result);
   };
-  const totalBagsValue =(bags)=>{
-    var totalValue=0
-    bags.map(item=>{
-      totalValue += (item.weight - item.wastage);
-    })
+  const totalBagsValue = (bags) => {
+    var totalValue = 0;
+    bags.map((item) => {
+      totalValue += item.weight - item.wastage;
+    });
     return totalValue;
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -316,16 +316,16 @@ function BuyBillBook() {
                                                     </h6>
                                                     <div className="d-flex align-items-center">
                                                       <div>
-                                                      <h6 className="mobile">
-                                                        {bill.partyType.toLowerCase() ==
-                                                          "farmer" ||
-                                                        bill.partyType.toLowerCase() ==
-                                                          "seller"
-                                                          ? getText("Seller")
-                                                          : "Seller" +
-                                                            "-" +
-                                                            bill.farmerId}
-                                                      </h6>
+                                                        <h6 className="mobile">
+                                                          {bill.partyType.toLowerCase() ==
+                                                            "farmer" ||
+                                                          bill.partyType.toLowerCase() ==
+                                                            "seller"
+                                                            ? getText("Seller")
+                                                            : "Seller" +
+                                                              "-" +
+                                                              bill.farmerId}
+                                                        </h6>
                                                       </div>
                                                       <h6 className="mobile desk_responsive">
                                                         &nbsp;
@@ -336,12 +336,10 @@ function BuyBillBook() {
                                                       </h6>
                                                     </div>
                                                     <h6 className="mobile mobile_responsive">
-                                                        
-                                                        {
-                                                          getMaskedMobileNumber(
-                                                            bill.farmerMobile
-                                                          )}
-                                                      </h6>
+                                                      {getMaskedMobileNumber(
+                                                        bill.farmerMobile
+                                                      )}
+                                                    </h6>
                                                     <h6 className="address">
                                                       {bill.farmerAddress}
                                                     </h6>
@@ -411,46 +409,76 @@ function BuyBillBook() {
                                                   </div>
                                                   <div className="col-lg-4 col-sm-12 col">
                                                     {/* {crop.qtyUnit+crop.qty} */}
-                                                    <div>
-                                                      {" "}
-                                                      {qtyValues(
-                                                        crop.qty,
-                                                        crop.qtyUnit,
-                                                        crop.weight,
-                                                        crop.wastage,
-                                                        crop.rateType
-                                                      )}
-                                                    </div>
-                                                    <div>
-                                                      {crop.bags !==null && crop.bags.length>0?
-                                                      <div className="flex_class">
-                                                        <input
-                                                        type="checkbox"
-                                                        checked={true}
-                                                        id="modal_checkbox"
-                                                        value="my-value"
-                                                        className="checkbox_t" />
-                                                        <p className="inv-weight">Individual Weights
-                                                        <span className="bags-data">
-                                                          <div className="bags-values">
-                                                          {crop.bags.map(item=>{
-                                                            return(
-                                                            <span >
-                                                            <span>{item.weight?item.weight + " ":''}</span>
-                                                            <span>{item.wastage?' - ':''}</span>
-                                                            <span>{item.wastage?item.wastage:''}</span>
-                                                            <span>,{" "}</span>
-                                                            </span>
-                                                            )
-                                                          })}
+                                                    <div
+                                                      className="d-flex align-items-center"
+                                                      style={{ height: "100%" }}
+                                                    >
+                                                      <div>
+                                                        <div>
+                                                          {" "}
+                                                          {qtyValues(
+                                                            crop.qty,
+                                                            crop.qtyUnit,
+                                                            crop.weight,
+                                                            crop.wastage,
+                                                            crop.rateType
+                                                          )}
+                                                        </div>
+                                                        {crop.bags !== null &&
+                                                        crop.bags.length > 0 ? (
+                                                          <div className="flex_class">
+                                                            <input
+                                                              type="checkbox"
+                                                              checked={true}
+                                                              id="modal_checkbox"
+                                                              value="my-value"
+                                                              className="checkbox_t"
+                                                            />
+                                                            <p className="inv-weight">
+                                                              Individual Weights
+                                                              <span className="bags-data">
+                                                                <div className="bags-values">
+                                                                  {crop.bags.map(
+                                                                    (item) => {
+                                                                      return (
+                                                                        <span>
+                                                                          <span>
+                                                                            {item.weight
+                                                                              ? item.weight +
+                                                                                " "
+                                                                              : ""}
+                                                                          </span>
+                                                                          <span>
+                                                                            {item.wastage
+                                                                              ? " - "
+                                                                              : ""}
+                                                                          </span>
+                                                                          <span>
+                                                                            {item.wastage
+                                                                              ? item.wastage
+                                                                              : ""}
+                                                                          </span>
+                                                                          <span>
+                                                                            ,{" "}
+                                                                          </span>
+                                                                        </span>
+                                                                      );
+                                                                    }
+                                                                  )}
+                                                                </div>
+                                                                <span>
+                                                                  ={" "}
+                                                                  {totalBagsValue(
+                                                                    crop.bags
+                                                                  ) + "KGS"}
+                                                                </span>
+                                                              </span>
+                                                            </p>
                                                           </div>
-                                                          <span>= {totalBagsValue(crop.bags) + "KGS"}</span>
-                                                        </span>
-        
-                                                        </p>
+                                                        ) : (
+                                                          ""
+                                                        )}
                                                       </div>
-                                                      :''}
-                                                    
                                                     </div>
                                                   </div>
                                                   <div className="col-lg-2 col-sm-12 col flex_class">

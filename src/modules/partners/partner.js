@@ -360,6 +360,7 @@ const Partner = () => {
         }
       );
     } else {
+      console.log(obj)
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {

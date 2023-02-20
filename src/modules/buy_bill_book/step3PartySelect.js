@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
-import Step2Modal from "./step2Modal";
 import { useDispatch, useSelector } from "react-redux";
 import edit from "../../assets/images/edit_round.svg";
 import { getPartnerType } from "../../components/getText";
