@@ -28,8 +28,9 @@
   }
 }
 .crop_table {
-  height: calc(100vh - 385px);
+  height: calc(100vh - 450px);
   overflow-y: auto;
+  padding-right: 5px;
 }
 .allCrops_modal {
   .modal-content {
@@ -149,7 +150,7 @@ select,.dropdown:focus {
 }
 .empty_row{
   td{
-    padding: 15px!important;
+    padding:20px 15px!important;
   }
 }
 .add-cropsdiv{

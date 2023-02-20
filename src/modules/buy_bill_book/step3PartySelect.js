@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
-import Step2Modal from "./step2Modal";
 import { useDispatch, useSelector } from "react-redux";
 import edit from "../../assets/images/edit_round.svg";
+import { getPartnerType } from "../../components/getText";
+import Select from "react-select";
 import {
   getPartnerData,
   getOutstandingBal,
@@ -28,6 +26,35 @@ import { selectTrans } from "../../reducers/transSlice";
 import { qtyValues } from "../../components/qtyValues";
 import NoDataAvailable from "../../components/noDataAvailable";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+const colourStyles = {
+  menuList: (styles) => ({
+    ...styles,
+    background: "white",
+    padding: "0px 10px",
+  }),
+  option: (styles, { isFocused, isSelected }) => ({
+    ...styles,
+    background: isFocused ? "#D7F3DD" : isSelected ? "#D7F3DD" : undefined,
+    zIndex: 1,
+    border: isFocused
+      ? "1px solid #16A12C"
+      : isSelected
+      ? "1px solid #16A12C"
+      : undefined,
+    borderRadius: isFocused ? "10px" : isSelected ? "10px" : undefined,
+  }),
+  singleValue: (provided, state) => {
+    const opacity = state.isDisabled ? 0.5 : 1;
+    const transition = "opacity 300ms";
+
+    return { ...provided, opacity, transition };
+  },
+  menu: (base) => ({
+    ...base,
+    zIndex: 100,
+    padding: "10px 0px",
+  }),
+};
 const Step3PartySelect = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -48,7 +75,6 @@ const Step3PartySelect = (props) => {
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     props.transpoSelectedData
   );
-
   const [getPartyItem, setGetPartyItem] = useState(null);
   const billeditStatus = billEditItemInfo?.billEditStatus;
   const billEditItem = props.billEditItemval;
@@ -64,14 +90,24 @@ const Step3PartySelect = (props) => {
   const partnerSelectDate = selectedDate;
   const [outBal, setOutsBal] = useState(0);
   const linkPath = localStorage.getItem("LinkPath");
-  
+  const filterOption = (option, inputValue) => {
+    const { partyName, mobile, shortName, partyId } = option.data;
+    const addressLine = option.data.address?.addressLine;
+    const searchValue = inputValue.toLowerCase();
+
+    return (
+      partyName.toLowerCase().includes(searchValue) ||
+      mobile.toLowerCase().includes(searchValue) ||
+      shortName.toLowerCase().includes(searchValue) ||
+      partyId.toString().includes(searchValue) ||
+      addressLine?.toLowerCase().includes(searchValue)
+    );
+  };
   useEffect(() => {
-    console.log(billEditItem, billEditItemCrops, "cropsitems");
     fetchPertnerData(partyType);
     if (billEditItem.transporterId != 0) {
-      console.log("Came to here0")
       dispatch(selectTrans(props.transpoSelectedData));
-      setTranspoSelectedData(props.transpoSelectedData)
+      setTranspoSelectedData(props.transpoSelectedData);
     } else {
       setTranspoSelectedData(null);
     }
@@ -95,6 +131,7 @@ const Step3PartySelect = (props) => {
   const fetchPertnerData = (type) => {
     var partnerType = "Buyer";
     if (type == "Transporter") {
+      console.log(type, "fetch data");
       partnerType = "TRANSPORTER";
     } else if (type == "Buyer") {
       partnerType = "BUYER";
@@ -120,16 +157,16 @@ const Step3PartySelect = (props) => {
   const partySelect = (item, type) => {
     console.log(item, type, "type");
     setActiveInput(false);
-    if (searchValue != "") {
-      // setAllData([])
-      fetchPertnerData();
-    }
+    // if (searchValue != "") {
+    // setAllData([])
+    fetchPertnerData();
+    // }
     setGetPartyItem(item);
-    if (type == "Transporter") {
+    if (item.partyType.toLowerCase() == "transporter") {
       setActiveTrans(false);
       setTranspoDataStatus(false);
       setTransportoSelectStatus(true);
-      Object.assign(item,{transporterId:item.partyId})
+      Object.assign(item, { transporterId: item.partyId });
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       var h = JSON.parse(localStorage.getItem("selectedTransporter"));
       setTranspoSelectedData(h);
@@ -145,10 +182,10 @@ const Step3PartySelect = (props) => {
       getOutstandingBal(clickId, item.partyId).then((res) => {
         setOutsBal(res.data.data);
       });
-      setTranspoStatus(true)
+      setTranspoStatus(true);
     } else if (
-      type == "Buyer" ||
-      (type === "BUYER" && linkPath === "/sellbillbook")
+      item.partyType.toLowerCase() == "buyer" ||
+      (item.partyType.toUpperCase() === "BUYER" && linkPath === "/sellbillbook")
     ) {
       setTranspoDataStatus(false);
       localStorage.setItem("selectedBuyer", JSON.stringify(item));
@@ -158,20 +195,22 @@ const Step3PartySelect = (props) => {
       setPartnerDataStatus(false);
       setPartySelectStatus(true);
     } else if (
-      type == "Seller" ||
-      (type === "FARMER" && linkPath === "/buy_bill_book")
+      item.partyType.toLowerCase() == "seller" ||
+      (item.partyType.toUpperCase() === "FARMER" &&
+        linkPath === "/buy_bill_book")
     ) {
       setPartySelectedData(item);
       dispatch(selectBuyer(item));
       // dispatch(selectBuyer(partySelecteData));
       setPartnerDataStatus(false);
       localStorage.setItem("selectedPartner", JSON.stringify(item));
+      dispatch(selectBuyer(item));
       getOutstandingBal(clickId, item.partyId).then((res) => {
         setOutsBal(res.data.data);
       });
       setPartySelectStatus(true);
     }
-    setPartnerType(type);
+    setPartnerType(item.partyType);
   };
   const [searchPartyItem, setSearchPartyItem] = useState("");
   const [partnerDataStatus, setPartnerDataStatus] = useState(false);
@@ -184,9 +223,9 @@ const Step3PartySelect = (props) => {
     console.log("came to here", type);
     setCount(count + 1);
     if (type == "Buyer" || type.toUpperCase() === "BUYER") {
-      if(billeditStatus){
+      if (billeditStatus) {
         setActiveInput(false);
-      } else{
+      } else {
         setActiveInput(true);
         setActiveTrans(false);
         setPartnerDataStatus(true);
@@ -194,25 +233,26 @@ const Step3PartySelect = (props) => {
         setPartnerType("Buyer");
         fetchPertnerData("Buyer");
       }
-      
     } else if (type == "Transporter") {
+      console.log(type);
       setActiveTrans(true);
       setActiveInput(false);
       setTranspoDataStatus(true);
       setPartnerDataStatus(false);
       setPartnerType(type);
       fetchPertnerData(type);
+      console.log(transpoSelectedData);
     } else if (type == "Seller" || type.toUpperCase() === "FARMER") {
-      if(billeditStatus){
+      if (billeditStatus) {
         setActiveInput(false);
-      } else{
+      } else {
         setActiveInput(true);
         setActiveTrans(false);
         setPartnerDataStatus(true);
         setTranspoDataStatus(false);
         setPartnerType(type);
         fetchPertnerData("Seller");
-      }  
+      }
     }
   };
   const [showCropModal, setShowCropModal] = useState(false);
@@ -243,9 +283,9 @@ const Step3PartySelect = (props) => {
       props.billEditItemval,
       props.selectedCrop,
       transpoStatus
-      
     );
   };
+
   const [searchValue, setsearchValue] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
@@ -257,11 +297,9 @@ const Step3PartySelect = (props) => {
         return data.partyName.toLowerCase().search(value) != -1;
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
-      }
-      else if (data.shortName.toString().includes(value)) {
+      } else if (data.shortName.toString().includes(value)) {
         return data.shortName.toString().search(value) != -1;
-      }
-      else if(data.address?.addressLine.toLowerCase().includes(value)){
+      } else if (data.address?.addressLine.toLowerCase().includes(value)) {
         return data.address?.addressLine.toLowerCase().search(value) != -1;
       }
     });
@@ -269,57 +307,124 @@ const Step3PartySelect = (props) => {
       setpartnerData(result);
     } else if (value === "") {
       setpartnerData(allData);
-    }
-    else{
+    } else {
       setpartnerData([]);
     }
     setsearchValue(value);
   };
-
+  const partySelectTrans = (item, type) => {};
   return (
     <div className="">
+      
       <h5 className="head_modal">Bill Information </h5>
       {partySelecteData !== null ? (
-        <div className="party_div">
-          <div
-            className="selectparty_field d-flex align-items-center justify-content-between"
-            onClick={() => partnerClick(partySelecteData.partyType)} //"Buyer")}
-          >
-            {activeInput ? (
-              <div className="party_div">
-                <div className="party_div search_control_div" role="search">
-                  <input
-                    type="text"
-                    className="form-control search_control"
-                    placeholder={
-                      "Type " + partySelecteData.partyType + " Name Here"
-                    }
-                    onChange={(event) => {
-                      handleSearch(event);
-                    }}
-                  />
+        <div className="">
+          {activeInput ? (
+            <Select
+              defaultMenuIsOpen
+              isSearchable={true}
+              className="basic-single step3_partners_div"
+              classNamePrefix="select"
+              styles={colourStyles}
+              name="partner"
+              hideSelectedOptions={false}
+              options={partnerData}
+              placeholder={
+                "Select " +
+                (props.partyType == "Seller" ? "Farmer" : props.partyType)
+              }
+              value={partySelecteData}
+              onChange={partySelect}
+              filterOption={filterOption}
+              isClearable={false}
+              noOptionsMessage={() => "No Data Available"}
+              getOptionValue={(e) => e.partyId}
+              getOptionLabel={(e) => (
+                <div
+                  style={{ display: "flex", alignItems: "center" }}
+                  className=""
+                >
+                  {e.profilePic !== "" ? (
+                    <img src={e.profilePic} className="icon_user" />
+                  ) : (
+                    <img src={single_bill} className="icon_user" />
+                  )}
+                  <div style={{ marginLeft: 5 }}>
+                    <div className="partner_card">
+                      <h5>{e.partyName + "bef " + e.shortName}</h5>
+                      <h6>
+                        {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
+                        {getMaskedMobileNumber(e.mobile)}
+                      </h6>
+                      <p>{e.address?.addressLine}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ) : (
+              )}
+            />
+          ) : (
+            <button
+              className="selectparty_field d-flex align-items-center justify-content-between"
+              onClick={() => partnerClick(partySelecteData.partyType)} //"Buyer")}
+            >
               <div className="partner_card">
                 <div className="d-flex align-items-center">
-                  <img src={single_bill} className="icon_user" />
-                  <div>
+                  {billeditStatus ? (
+                    partySelectStatus ? (
+                      partySelecteData.profilePic !== "" ? (
+                        <img
+                          src={partySelecteData.profilePic}
+                          className="icon_user"
+                        />
+                      ) : (
+                        <img src={single_bill} className="icon_user" />
+                      )
+                    ) : billEditItem.profilePic !== "" ? (
+                      <img
+                        src={billEditItem.profilePic}
+                        className="icon_user"
+                      />
+                    ) : (
+                      <img src={single_bill} className="icon_user" />
+                    )
+                  ) : partySelecteData.profilePic !== "" ? (
+                    <img
+                      src={partySelecteData.profilePic}
+                      className="icon_user"
+                    />
+                  ) : (
+                    <img src={single_bill} className="icon_user" />
+                  )}
+
+                  <div className="text-left">
                     <h5>
                       {billeditStatus
                         ? partySelectStatus
-                          ? partySelecteData.partyName + ' ' + partySelecteData.shortName
+                          ? partySelecteData.partyName +
+                            " " +
+                            partySelecteData.shortName
                           : billEditItem.partyType == "FARMER"
                           ? billEditItem.farmerName
                           : billEditItem.buyerName
-                        : partySelecteData.partyName + ' ' + partySelecteData.shortName}
+                        : partySelecteData.partyName +
+                          " " +
+                          partySelecteData.shortName}
                     </h5>
                     <h6>
                       {billeditStatus
                         ? partySelectStatus
-                          ? partySelecteData.partyType
-                          : billEditItem.partyType
-                        : partySelecteData.partyType}{" "}
+                          ? getPartnerType(
+                              partySelecteData.partyType,
+                              partySelecteData.trader
+                            )
+                          : getPartnerType(
+                              billEditItem.partyType,
+                              billEditItem.trader
+                            )
+                        : getPartnerType(
+                            partySelecteData.partyType,
+                            partySelecteData.trader
+                          )}{" "}
                       -{" "}
                       {billeditStatus
                         ? partySelectStatus
@@ -337,95 +442,94 @@ const Step3PartySelect = (props) => {
                           : getMaskedMobileNumber(billEditItem.mobile)
                         : getMaskedMobileNumber(partySelecteData.mobile)}
                     </h6>
-                    <p>{partnerData.buyerAddress}</p>
+                    <p>
+                      {billeditStatus
+                        ? partySelectStatus
+                          ? partySelecteData?.address?.addressLine
+                          : billEditItem.partyType == "FARMER"
+                          ? billEditItem?.farmerAddress
+                          : billEditItem?.buyerAddress
+                        : partySelecteData?.address?.addressLine}
+                    </p>
                   </div>
                 </div>
               </div>
-            )}
-            {billeditStatus ? "" : <img src={d_arrow} />}
-          </div>
+              {billeditStatus ? "" : <img src={d_arrow} />}
+            </button>
+          )}
         </div>
       ) : (
         ""
       )}
-      {partnerDataStatus ? (
-        <div className="partners_div step3_partners_div" id="scroll_style">
-          <div className="d-flex searchparty" role="search">
-          </div>
-          <div>
-            {partnerData.length > 0 ? (
-              <div>
-                <ul>
-                  {partnerData.map((item) => {
-                    return (
-                      <li
-                        key={item.partyId}
-                        onClick={() =>
-                          partySelect(item, partySelecteData.partyType)
-                        }
-                        className={
-                          "nav-item " +
-                          (item.partyId == getPartyItem?.partyId
-                            ? "active_class"
-                            : "")
-                        }
-                      >
-                        <div className="partner_card">
-                          <div className="d-flex align-items-center">
-                            <img src={single_bill} className="icon_user" />
-                            <div>
-                              <h5>{item.partyName + ' ' + item.shortName}</h5>
-                              <h6>
-                                {item.trader ? "TRADER" : item.partyType} -{" "}
-                                {item.partyId} | {getMaskedMobileNumber(item.mobile)}
-                              </h6>
-                              <p>{item.address.addressLine}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ) : (
-            <NoDataAvailable/>
-            )}
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
+
       <div className="date_sec date_step3">
         <BillDateSelection
           parentCallbackDate={callbackFunctionDate}
           billDate={selectedDate}
         />
       </div>
+
+      <div className="d-flex align-items-center justify-content-between">
+        <h5 className="date_sec head_modal p-0">Crop Information </h5>
+        <img
+          src={edit}
+          alt="img"
+          className="head_modal editIcon"
+          onClick={() => editCropTable(billEditItem)}
+        />
+      </div>
       {transpoSelectedData != null ? (
         <div className="transporter_div">
-          <div
-            className="selectparty_field d-flex align-items-center justify-content-between"
-            onClick={() => partnerClick("Transporter")}
-          >
-            {activeTrans ? (
-              <div className="party_div">
-                <div className="party_div search_control_div" role="search">
-                  <input
-                    type="text"
-                    className="form-control search_control"
-                    placeholder={"Type " + "Transporter" + " Name Here"}
-                    onChange={(event) => {
-                      handleSearch(event);
-                    }}
-                  />
+          {activeTrans ? (
+            <Select
+              defaultMenuIsOpen
+              isSearchable={true}
+              className="basic-single step3_partners_div"
+              classNamePrefix="select"
+              styles={colourStyles}
+              name="partner"
+              hideSelectedOptions={false}
+              options={partnerData}
+              placeholder={"Select " + "Transporter"}
+              value={transpoSelectedData}
+              onChange={partySelect}
+              filterOption={filterOption}
+              isClearable={false}
+              noOptionsMessage={() => "No Data Available"}
+              getOptionValue={(e) => e.partyId}
+              getOptionLabel={(e) => (
+                <div
+                  style={{ display: "flex", alignItems: "center" }}
+                  className=""
+                >
+                  {e.profilePic !== "" ? (
+                    <img src={e.profilePic} className="icon_user" />
+                  ) : (
+                    <img src={single_bill} className="icon_user" />
+                  )}
+                  <div style={{ marginLeft: 5 }}>
+                    <div className="partner_card">
+                    <h5>{transportoSelectStatus ? e.partyName : (e.transporterName) ? e.transporterName : e.partyName }</h5>
+                        <h6>
+                          {getPartnerType("Transporter", e.trader)} -{" "}
+                          {transportoSelectStatus ? e.partyId :(e.transporterId) ? e.transporterId : e.partyId }|{" "}
+                          {transportoSelectStatus ? getMaskedMobileNumber(e.mobile)  : (e.transporterMobile) ? getMaskedMobileNumber(e.transporterMobile) :getMaskedMobileNumber(e.mobile)}
+                        </h6>
+                      <p>{e.address?.addressLine}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ) : (
+              )}
+            />
+          ) : (
+            <button
+              className="selectparty_field d-flex align-items-center justify-content-between"
+              onClick={() => partnerClick("Transporter")}
+            >
               <div className="partner_card">
                 <div className="d-flex align-items-center">
                   <img src={single_bill} className="icon_user" />
-                  <div>
+                  <div className="text-left">
                     <h5>
                       {billeditStatus
                         ? transportoSelectStatus
@@ -460,23 +564,47 @@ const Step3PartySelect = (props) => {
                   </div>
                 </div>
               </div>
-            )}
-            <img src={d_arrow} />
-          </div>
+              <img src={d_arrow} />
+            </button>
+          )}
         </div>
       ) : activeTrans ? (
-        <div className="party_div selectparty_field d-flex align-items-center justify-content-between">
-          <div className="party_div search_control_div" role="search">
-            <input
-              type="text"
-              className="form-control search_control"
-              placeholder={"Type " + "Transporter" + " Name Here"}
-              onChange={(event) => {
-                handleSearch(event);
-              }}
-            />
-          </div>
-        </div>
+        <Select
+          defaultMenuIsOpen
+          isSearchable={true}
+          className="basic-single step3_partners_div"
+          classNamePrefix="select"
+          styles={colourStyles}
+          name="partner"
+          hideSelectedOptions={false}
+          options={partnerData}
+          placeholder={"Select " + "Transporter"}
+          value={transpoSelectedData}
+          onChange={partySelect}
+          filterOption={filterOption}
+          isClearable={false}
+          noOptionsMessage={() => "No Data Available"}
+          getOptionValue={(e) => e.partyId}
+          getOptionLabel={(e) => (
+            <div style={{ display: "flex", alignItems: "center" }} className="">
+              {e.profilePic !== "" ? (
+                <img src={e.profilePic} className="icon_user" />
+              ) : (
+                <img src={single_bill} className="icon_user" />
+              )}
+              <div style={{ marginLeft: 5 }}>
+                <div className="partner_card">
+                  <h5>{e.partyName + "h " + e.shortName}</h5>
+                  <h6>
+                    {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
+                    {getMaskedMobileNumber(e.mobile)}
+                  </h6>
+                  <p>{e.address?.addressLine}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        />
       ) : (
         <p
           onClick={() => partnerClick("Transporter")}
@@ -485,70 +613,8 @@ const Step3PartySelect = (props) => {
           Select Transporter
         </p>
       )}
-      {transpoDataStatus ? (
-        <div className="partners_div step3_partners_div" id="scroll_style">
-          <div className="d-flex searchparty" role="search">
-            {/* <SearchField
-              placeholder={langFullData.search}
-              onChange={(event) => {
-                handleSearch(event);
-              }}
-            /> */}
-          </div>
-
-          <div>
-            {partnerData.length > 0 ? (
-              <div>
-                <ul>
-                  {partnerData.map((item) => {
-                    return (
-                      <li
-                        key={item.partyId}
-                        onClick={() => partySelect(item, "Transporter")}
-                        className={
-                          "nav-item " +
-                          (item == getPartyItem ? "active_class" : "")
-                        }
-                      >
-                        <div className="partner_card">
-                          <div className="d-flex align-items-center">
-                            <img src={single_bill} className="icon_user" />
-                            <div>
-                              <h5>{item.partyName}</h5>
-                              <h6>
-                                {item.partyType} -{" "}
-                                {item.partyId} | {getMaskedMobileNumber(item.mobile)}
-                              </h6>
-                              <p>{item.address.addressLine}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ) : (
-              <NoDataAvailable/>
-            )}
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
-      <div className="d-flex align-items-center justify-content-between">
-        <h5 className="date_sec head_modal p-0">Crop Information </h5>
-        <img
-          src={edit}
-          alt="img"
-          className="head_modal"
-          onClick={() => editCropTable(billEditItem)}
-        />
-      </div>
 
       <div>
-        {/* <p className="d-flex align-items-center"> */}
-
         <div className="cropstable" id="scroll_style">
           {billEditItemCrops.length > 0
             ? billEditItemCrops.map((item, i) => {
@@ -576,10 +642,6 @@ const Step3PartySelect = (props) => {
                                 parseInt(item.wastage),
                                 item.rateType
                               )}
-                              {/* {item.qty ? item.qty : ''}{" "}
-                                {item.qty ?getQuantityType(item.qtyUnit) + " | ":''}
-                                {item.weight ? item.weight + ' KGS ' : ''}
-                                <span className='wastage-color'>{item.wastage ? ' - ' : ''}{item.wastage ? item.wastage + ' KGS ' : ''}</span> */}
                             </p>
                           </div>
                         </div>
@@ -598,27 +660,7 @@ const Step3PartySelect = (props) => {
               })
             : ""}
         </div>
-
-        {/* </p> */}
-
-        {/* <p onClick={() => editCropTable(billEditItem)}>Edit</p> */}
       </div>
-
-      {/* {showCropModalStatus ? (
-        <Step2Modal
-          showCrop={showCropModal}
-          closeCropModal={() => setShowCropModal(false)}
-          cropTableEditStatus={true}
-          cropEditObject={cropEditvalArray}
-          billEditStatus={editStatus ? true : false}
-          slectedCropstableArray={props.billEditItemval}
-          selectedPartyType={props.selectedPartyType}
-          selectedBilldate={selectedDate}
-          selectedBuyerSellerData={props.selectedBuyerSellerData}
-        />
-      ) : (
-        ""
-      )} */}
     </div>
   );
 };

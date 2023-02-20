@@ -19,9 +19,9 @@ import {
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
 import { useDispatch, useSelector } from "react-redux";
-import { billViewInfo } from "../../reducers/billViewSlice"
+import { billViewInfo } from "../../reducers/billViewSlice";
 import { selectSteps } from "../../reducers/stepsSlice";
-import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectBuyer } from "../../reducers/buyerSlice";
 import Steps from "../buy_bill_book/steps";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
@@ -40,7 +40,7 @@ const SellBillBook = (props) => {
   const langFullData = JSON.parse(langData);
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
-  var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
+  var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : "";
 
   const billData = useSelector((state) => state.billViewInfo);
   // console.log(billViiewDate)
@@ -50,7 +50,7 @@ const SellBillBook = (props) => {
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
   var [dateValue, setDateValue] = useState();
-  window.addEventListener('load', function (event) {
+  window.addEventListener("load", function (event) {
     // bDate = '';
   });
   const callbackFunction = (startDate, endDate, dateTab) => {
@@ -62,8 +62,8 @@ const SellBillBook = (props) => {
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
@@ -72,8 +72,8 @@ const SellBillBook = (props) => {
     } else {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
     }
 
@@ -89,10 +89,10 @@ const SellBillBook = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.message.toUpperCase() == 'NETWORK ERROR') {
-          setOnline(true);
-        }
-        setOnline(true);
+        // if (error.message.toUpperCase() == "NETWORK ERROR") {
+        //   setOnline(true);
+        // }
+        // setOnline(true);
         console.log(error);
       });
   };
@@ -129,7 +129,7 @@ const SellBillBook = (props) => {
     //stepOneSingleBook
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-    dispatch(selectSteps('step1'))
+    dispatch(selectSteps("step1"));
     dispatch(selectBuyer(null));
     dispatch(fromBillbook(true));
   };
@@ -166,17 +166,19 @@ const SellBillBook = (props) => {
     setSellBillData(result);
   };
   const totalBagsValue = (bags) => {
-    var totalValue = 0
-    bags.map(item => {
-      totalValue += (item.weight - item.wastage);
-    })
+    var totalValue = 0;
+    bags.map((item) => {
+      totalValue += item.weight - item.wastage;
+    });
     return totalValue;
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {isOnline ? <NoInternetConnection /> :
+          {isOnline ? (
+            <NoInternetConnection />
+          ) : (
             <div>
               {isLoading ? (
                 <div className="">
@@ -203,10 +205,16 @@ const SellBillBook = (props) => {
                       </div>
 
                       <div onClick={onclickDate} className="color_blue">
-                        <span className="date_icon m-0">
-                          <img src={date_icon} alt="icon" className="mr-2" />
-                        </span>
-                        {dateValue}
+                        <div className="d-flex align-items-center">
+                          <span className="date_icon m-0">
+                            <img
+                              src={date_icon}
+                              alt="icon"
+                              className="mr-2 d-flex"
+                            />
+                          </span>
+                          {dateValue}
+                        </div>
                       </div>
                       <div className="d-flex">
                         {/* <BillsSearchField
@@ -220,7 +228,11 @@ const SellBillBook = (props) => {
                           // href="/sellbillstep1"
                           onClick={handleStep1Header}
                         >
-                          <img src={addbill_icon} alt="image" className="mr-2" />
+                          <img
+                            src={addbill_icon}
+                            alt="image"
+                            className="mr-2"
+                          />
                           Add single Bill
                         </a>
                       </div>
@@ -262,7 +274,7 @@ const SellBillBook = (props) => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-lg-2">
+                                <div className="col-lg-2 p-0">
                                   <div className="row">
                                     <div className="col-lg-12 col-sm-12">
                                       <p>{langFullData.totalReceivables} (₹)</p>
@@ -273,26 +285,30 @@ const SellBillBook = (props) => {
                               <div className="buy_bills" id="scroll_style">
                                 {sellBillData.map((bill, index) => (
                                   <div
-                                    onClick={() => billOnClick(bill.caBSeq, bill)}
+                                    onClick={() =>
+                                      billOnClick(bill.caBSeq, bill)
+                                    }
                                     key={index}
                                     className="billsDiv"
                                   >
-                                    <div className="row bills_rows bg_white bottom_space">
+                                    <div className="row bg_white bills_rows bottom_space">
                                       <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
                                         <div className="row full_width">
                                           <div className="col-lg-7 col-sm-12 p-0 col">
                                             <div className="bill_user_details flex_class mr-0">
-                                              {
-                                                bill.profilePic ? <img
+                                              {bill.profilePic ? (
+                                                <img
                                                   src={bill.profilePic}
                                                   className="user_icon"
                                                   alt="icon"
-                                                /> : <img
+                                                />
+                                              ) : (
+                                                <img
                                                   src={single_bill}
                                                   className="user_icon"
                                                   alt="icon"
                                                 />
-                                              }
+                                              )}
 
                                               <div>
                                                 <h6 className="userName">
@@ -306,11 +322,19 @@ const SellBillBook = (props) => {
                                                       "-" +
                                                       bill.buyerId}
                                                   </h6>
-                                                  <h6 className="mobile">
-                                                    &nbsp;{' |  ' + getMaskedMobileNumber(bill.mobile)}
+                                                  <h6 className="mobile desk_responsive">
+                                                    &nbsp;
+                                                    {" |  " +
+                                                      getMaskedMobileNumber(
+                                                        bill.mobile
+                                                      )}
                                                   </h6>
-
                                                 </div>
+                                                <h6 className="mobile mobile_responsive">
+                                                  {getMaskedMobileNumber(
+                                                    bill.mobile
+                                                  )}
+                                                </h6>
                                                 <h6 className="address">
                                                   {bill.buyerAddress}
                                                 </h6>
@@ -318,36 +342,53 @@ const SellBillBook = (props) => {
                                             </div>
                                           </div>
                                           <div className="col-lg-5 col-sm-12 billid_div">
-                                            <p className="biilid">
-                                              {langFullData.billNo} : {bill.caBSeq}{" "}
-                                            </p>
-                                            <p>
-                                              {moment(bill.billDate).format(
-                                                "DD-MMM-YYYY"
-                                              )}
-                                            </p>
-                                            <p
-                                              style={{
-                                                color:
-                                                  bill.billStatus == "CANCELLED"
-                                                    ? "#d43939"
-                                                    : "#1C1C1C",
-                                              }}
-                                            >
-                                              <div className="flex_class">
-                                                {bill.billStatus == "CANCELLED" ?
-                                                  <img src={cancel} width="10px" height="10px" /> :
-                                                  <div className="complete-dot"></div>
-                                                }
-                                                <div className="bill-name">{getText(bill.billStatus)}</div>
+                                            <div className="d-flex align-items-center billid_div_flex">
+                                              <div>
+                                                <p className="biilid">
+                                                  {langFullData.billNo} :{" "}
+                                                  {bill.caBSeq}{" "}
+                                                </p>
+                                                <div className="d-flex">
+                                                  <p className="d-a-value">
+                                                    {moment(
+                                                      bill?.timeStamp
+                                                    ).format(
+                                                      "DD-MMM-YY | hh:mm:A"
+                                                    )}
+                                                  </p>
+                                                </div>
+                                                <p
+                                                  style={{
+                                                    color:
+                                                      bill.billStatus ==
+                                                      "CANCELLED"
+                                                        ? "#d43939"
+                                                        : "#1C1C1C",
+                                                  }}
+                                                >
+                                                  <div className="flex_class p-0">
+                                                    {bill.billStatus ==
+                                                    "CANCELLED" ? (
+                                                      <div className="complete-dot cancel_dot"></div>
+                                                    ) : (
+                                                      <div className="complete-dot"></div>
+                                                    )}
+                                                    <div className="bill-name">
+                                                      {getText(bill.billStatus)}
+                                                    </div>
+                                                  </div>
+                                                </p>
                                               </div>
-                                            </p>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
                                       <div className="col-lg-6 p-0">
                                         {bill.lineItems.map((crop, index) => (
-                                          <div className="row crops_row_bills" key={index}>
+                                          <div
+                                            className="row crops_row_bills"
+                                            key={index}
+                                          >
                                             <div className="col-lg-4 col-sm-12 col">
                                               <p className="flex_class crop_name">
                                                 <img
@@ -357,47 +398,77 @@ const SellBillBook = (props) => {
                                                 {crop.cropName}
                                               </p>
                                             </div>
-                                            <div className="col-lg-4 col-sm-12 col ">
-                                              <div>
-                                                {" "}
-                                                {qtyValues(
-                                                  crop.qty,
-                                                  crop.qtyUnit,
-                                                  crop.weight,
-                                                  crop.wastage,
-                                                  crop.rateType
-                                                )}
-                                              </div>
-                                              <div>
-                                                {crop.bags !== null && crop.bags.length > 0 ?
-                                                  <div className="flex_class">
-                                                    <input
-                                                      type="checkbox"
-                                                      checked={true}
-                                                      id="modal_checkbox"
-                                                      value="my-value"
-                                                      className="checkbox_t" />
-                                                    <p className="inv-weight">Individual Weights
-                                                      <span className="bags-data">
-                                                        <div className="bags-values">
-                                                          {crop.bags.map(item => {
-                                                            return (
-                                                              <span >
-                                                                <span>{item.weight ? item.weight + " " : ''}</span>
-                                                                <span>{item.wastage ? ' - ' : ''}</span>
-                                                                <span>{item.wastage ? item.wastage : ''}</span>
-                                                                <span>,{" "}</span>
-                                                              </span>
-                                                            )
-                                                          })}
-                                                        </div>
-                                                        <span>= {totalBagsValue(crop.bags) + "KGS"}</span>
-                                                      </span>
-
-                                                    </p>
+                                            <div className="col-lg-4 col-sm-12 col flex_class">
+                                              <div
+                                                className="d-flex align-items-center"
+                                                style={{ height: "100%" }}
+                                              >
+                                                <div>
+                                                  <div>
+                                                    {" "}
+                                                    {qtyValues(
+                                                      crop.qty,
+                                                      crop.qtyUnit,
+                                                      crop.weight,
+                                                      crop.wastage,
+                                                      crop.rateType
+                                                    )}
                                                   </div>
-                                                  : ''}
-
+                                                  {crop.bags !== null &&
+                                                  crop.bags.length > 0 ? (
+                                                    <div className="flex_class">
+                                                      <input
+                                                        type="checkbox"
+                                                        checked={true}
+                                                        id="modal_checkbox"
+                                                        value="my-value"
+                                                        className="checkbox_t"
+                                                      />
+                                                      <p className="inv-weight">
+                                                        Individual Weights
+                                                        <span className="bags-data">
+                                                          <div className="bags-values">
+                                                            {crop.bags.map(
+                                                              (item) => {
+                                                                return (
+                                                                  <span>
+                                                                    <span>
+                                                                      {item.weight
+                                                                        ? item.weight +
+                                                                          " "
+                                                                        : ""}
+                                                                    </span>
+                                                                    <span>
+                                                                      {item.wastage
+                                                                        ? " - "
+                                                                        : ""}
+                                                                    </span>
+                                                                    <span>
+                                                                      {item.wastage
+                                                                        ? item.wastage
+                                                                        : ""}
+                                                                    </span>
+                                                                    <span>
+                                                                      ,{" "}
+                                                                    </span>
+                                                                  </span>
+                                                                );
+                                                              }
+                                                            )}
+                                                          </div>
+                                                          <span>
+                                                            ={" "}
+                                                            {totalBagsValue(
+                                                              crop.bags
+                                                            ) + "KGS"}
+                                                          </span>
+                                                        </span>
+                                                      </p>
+                                                    </div>
+                                                  ) : (
+                                                    ""
+                                                  )}
+                                                </div>
                                               </div>
                                             </div>
                                             <div className="col-lg-2 col-sm-12 col flex_class">
@@ -460,9 +531,7 @@ const SellBillBook = (props) => {
                                       onClick={handleStep1Header}
                                     >
                                       Add single Bill
-
                                     </button>
-
                                   </div>
                                 </div>
                               </div>
@@ -475,7 +544,7 @@ const SellBillBook = (props) => {
                 </div>
               )}
             </div>
-          }
+          )}
         </div>
       </div>
       {showDatepickerModal1 ? (
@@ -489,7 +558,10 @@ const SellBillBook = (props) => {
         <p></p>
       )}
       {showStepsModalStatus ? (
-        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+        <Steps
+          showStepsModal={showStepsModal}
+          closeStepsModal={() => setShowStepsModal(false)}
+        />
       ) : (
         ""
       )}

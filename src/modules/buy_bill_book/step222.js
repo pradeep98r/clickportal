@@ -37,7 +37,6 @@ const Step22 = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   let [preferedCropsData, setPreferedCropsData] = useState([]);
-  console.log(props.maintainCrops,"maintain")
   
   const maintainCrop = localStorage.getItem('maintainCrops');
   let [cropData, cropResponseData] = useState(maintainCrop?[]:array);
@@ -224,10 +223,10 @@ const Step22 = (props) => {
           ) {
             object = { ...object, rateType: "kgs" };
             a.push(object);
-            if (cropObjectArr[d].qtyUnit == "") {
-              cropObjectArr.splice(d, 1);
-              a.splice(d, 1);
-            }
+            // if (cropObjectArr[d].qtyUnit == "") {
+            //   cropObjectArr.splice(d, 1);
+            //   a.splice(d, 1);
+            // }
           } else {
             object = { ...object, qtyUnit: cropObjectArr[d].qtyUnit };
             a.push(object);
@@ -352,7 +351,6 @@ const Step22 = (props) => {
     console.log(cropData,allDeletedCrops,updatedItemList,'add')
     // cropResponseData(updatedItemList);
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
-    console.log(cropInfo,'lineitems')
     for (var k = 0; k < cropInfo.length; k++) {
       if (cropInfo[k].rateType == "kgs") {
         cropInfo[k].total =
@@ -377,16 +375,32 @@ const Step22 = (props) => {
           var index1 = lineitem.findIndex(
             (obj) => obj.cropId == cropInfo[index].cropId
           );
+          console.log(index,index1,cropInfo,"indexes")
           if (index1 == index) {
-            if (!lineitem[index1].cropDelete) {
-            } else {
+            if(cropInfo[index1]?.cropDelete){
+              console.log("yes",lineitem[index1].id,index1)
               cropInfo[index].status = 0;
-            }
-            if (lineitem[index1].id == 0) {
+            } else if(lineitem[index1].id == 0){
+              console.log("yes1",lineitem[index1].id,index1)
               cropInfo[index].status = 1;
             } else {
+              console.log("yes2",lineitem[index1].id,index1)
               cropInfo[index].status = 2;
             }
+
+
+            // if (!(cropInfo[index1]?.cropDelete)) {
+            // } else {
+            //   console.log("yes",lineitem[index1].id,index1)
+            //   cropInfo[index].status = 0;
+            // }
+            // if (lineitem[index1].id == 0) {
+            //   console.log("yes1",lineitem[index1].id,index1)
+            //   cropInfo[index].status = 1;
+            // } else {
+            //   console.log("yes2",lineitem[index1].id,index1)
+            //   cropInfo[index].status = 2;
+            // }
           } else {
             if (index1 != -1) {
               if (!cropInfo[index].cropDelete) {
@@ -395,8 +409,11 @@ const Step22 = (props) => {
                 } else {
                   cropInfo[index].status = 2;
                 }
+              }else{
+                console.log("came to here111")
+                cropInfo[index].status = 0;
               }
-              return null;
+              // return null;
             } else {
               if (!cropInfo[index].cropDelete) {
                 cropInfo[index].status = 1;
@@ -434,9 +451,8 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
-
     if (cropData.length > 0) {
-      
+      console.log(cropData,"Data")
       for (var index = 0; index < cropData.length; index++) {
         if (!cropData[index].cropDelete) {
           if (
@@ -446,12 +462,23 @@ const Step22 = (props) => {
             if (cropData[index].weight == 0) {
               console.log("came to here0");
               toast.error("Please enter weight", {
-                toastId: "error2",
+                toastId: "error1",
               });
               return null;
             } else if (cropData[index].rate == 0) {
               toast.error("Please enter rate", {
+                toastId: "error2",
+              });
+              return null;
+            } else if(cropData[index].weight == cropData[index].wastage){
+              toast.error("wastage is always less than weight", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if(cropData[index].wastage > cropData[index].weight){
+              toast.error("wastage is always less than weight", {
+                toastId: "error4",
               });
               return null;
             }
@@ -459,12 +486,23 @@ const Step22 = (props) => {
             if (cropData[index].weight == 0) {
               console.log("came to here1");
               toast.error("Please enter weight", {
-                toastId: "error2",
+                toastId: "error1",
               });
               return null;
             } else if (cropData[index].rate == 0) {
               toast.error("Please enter rate", {
+                toastId: "error2",
+              });
+              return null;
+            } else if(cropData[index].weight == cropData[index].wastage){
+              toast.error("wastage is always less than weight", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if(cropData[index].wastage > cropData[index].weight){
+              toast.error("wastage is always less than weight", {
+                toastId: "error4",
               });
               return null;
             }
@@ -479,7 +517,18 @@ const Step22 = (props) => {
               return null;
             } else if (cropData[index].rate == 0) {
               toast.error("Please enter rate", {
+                toastId: "error2",
+              });
+              return null;
+            } else if(cropData[index].qty == cropData[index].wastage){
+              toast.error("wastage is always less than quantity", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if(cropData[index].wastage > cropData[index]?.qty){
+              toast.error("wastage is always less than quantity", {
+                toastId: "error4",
               });
               return null;
             }
@@ -493,16 +542,26 @@ const Step22 = (props) => {
             });
             return null;
           } 
+          else if(cropData[index].weight == cropData[index].wastage){
+            toast.error("wastage is always less than weight", {
+              toastId: "error2",
+            });
+            return null;
+          }
+          else if(cropData[index].wastage > cropData[index].weight){
+            toast.error("wastage is always less than weight", {
+              toastId: "error3",
+            });
+            return null;
+          }
           else if (cropData[index].weight == 0 && !billEditStatus) {
             console.log("came to here0")
               toast.error("Please enter weight", {
-                toastId: "error2",
+                toastId: "error1",
               });
             return null;
           } else if(cropData[index].rateType?.toUpperCase() !== "RATE_PER_UNIT" && billEditStatus)
             {
-              console.log("came to here1",cropData[index].qtyUnit,cropData[index],
-              cropData[index].unitType)
               if(cropData[index].weight == 0 && billEditStatus){
                 toast.error("Please enter weight", {
                   toastId: "error2",
@@ -515,7 +574,8 @@ const Step22 = (props) => {
               toastId: "error3",
             });
             return null;
-          } else if (
+          } 
+          else if (
             setQuantityBasedtable(cropData[index].qtyUnit) &&
             cropData[index].weight != 0 &&
             cropData[index].rate != 0
@@ -531,6 +591,7 @@ const Step22 = (props) => {
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
+        console.log(cropData,dArray,"Data")
         props.parentcall(
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
@@ -579,7 +640,6 @@ const Step22 = (props) => {
   var arr1 = [];
   const getQuantity = (cropData, index1, crop) => (e) => {
     cropData[index1].rateType = "kgs";
-    var index = cropData.findIndex((obj) => obj.cropId == crop.cropId);
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
         arr1.push({ ...cropData[i], qtyUnit: e.target.value, qty: 0 });
@@ -593,8 +653,18 @@ const Step22 = (props) => {
     setUpdatedItemList([...updatedItemList]);
   };
   const getRateType = (cropData, index) => (e) => {
-    cropData[index].rateType = e.target.value;
-    cropResponseData([...cropData]);
+    // cropData[index].rateType = e.target.value;
+    let updatedItemListRateType = cropData.map((item, i) => {
+      if (i == index) {
+        arr1.push({ ...cropData[i], rateType: e.target.value });
+        return { ...cropData[i], rateType: e.target.value};
+      } else {
+        cropResponseData([...cropData]);
+        return { ...cropData[i] };
+      }
+    });
+    cropResponseData([...updatedItemListRateType]);
+    setUpdatedItemList([...updatedItemListRateType]);
   };
   //   getting input values(quantity,weight,wastage,rate) from input fields
   var arr = [];
@@ -640,6 +710,7 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getWastageValue = (id, index, cropitem) => (e) => {
+    console.log(cropData[index].bags , billEditStatus,"Yeah")
     if(cropitem[index].rateType.toUpperCase().toUpperCase() == cropitem[index].qtyUnit.toUpperCase()){
       handleInputValueEvent(e)
       var val = e.target.value  
@@ -682,10 +753,10 @@ const Step22 = (props) => {
   };
 
   //   clone crop (copy crop) function
-  const cloneCrop = (crop) => {
+  const cloneCrop = (crop) => {  
     var list = preferedCropsData;
     var index = list.findIndex((obj) => obj.cropId == crop.cropId);
-    if (index != -1) {
+    if (index != -1) {  
       list[index].count += 1;
     }
     cropResponseData([...cropData, crop]);
@@ -758,7 +829,6 @@ const Step22 = (props) => {
       }
     
     // }
-
     console.log(cropArray, cropDeletedList);
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
@@ -909,12 +979,12 @@ const Step22 = (props) => {
   return (
     <div>
       <div className="main_div_padding">
-        <h4 className="smartboard_main_header">Select crop and creat bill</h4>
+        <h4 className="smartboard_main_header">Select crop and create bill</h4>
         <div className="d-flex">
           {preferedCropsData.length > 0 && (
             <div className="d-flex total_crops_div">
               {preferedCropsData.map((crop, index) => (
-                <div className="">
+                <div className="row">
                   <div
                     className="text-center crop_div crop_div_ui"
                     key={crop.cropId}
@@ -955,12 +1025,12 @@ const Step22 = (props) => {
             <p>Other Crop</p>
           </div>
         </div>
-        <div className="crop_table" id="scroll_style">
+        <div >
           <div className="row p-0 mt-2">
             {cropData.length > 0 && (
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
-                <div className="" id="">
+                <div className="crop_table" id="scroll_style">
                   <div className="row header_row p-0 crop_table_header_row">
                     <div className="col-lg-2">
                       <p>Crop</p>
@@ -969,7 +1039,9 @@ const Step22 = (props) => {
                       <p>Unit type</p>
                     </div>
                     <div className="col-lg-1">
-                      <p>Rate type</p>
+                      <p>Rate type
+                        {/* <br></br>(Per) */}
+                        </p>
                     </div>
                     <div className="col-lg-1">
                       <p>Number of Units</p>
@@ -1228,19 +1300,21 @@ const Step22 = (props) => {
                                     <td className="col-1 fadeOut_col">-</td>
                                   ) : (
                                     <td className="col-1">
-                                      <p>hi</p>
+                                      {/* <p>hi</p> */}
                                       <input
                                         type="text"
                                         name="wastage"
                                         onFocus={(e) => resetInput(e)}
                                         className="form-control wastage_val"
                                         value={cropData[index].wastage}
-                                        onChange={getWastageValue(
+                                        onChange={!(cropData[index].checked)
+                                          ?getWastageValue(
                                           cropData[index].cropId,
                                           index,
                                           cropData
-                                        )}
+                                        ):''}
                                       />
+                                      
                                     </td>
                                   )}
                                   <td className="col-1">
@@ -1336,13 +1410,14 @@ const Step22 = (props) => {
                       </div>
                     </div>
                   ))}
-                  <button
-                    className="add_crop_text"
+                  
+                </div>
+                <button
+                    className="add_crop_text pr-2"
                     onClick={() => addCropRow()}
                   >
                     + Add Crop
                   </button>
-                </div>
               </div>
             )}
           </div>

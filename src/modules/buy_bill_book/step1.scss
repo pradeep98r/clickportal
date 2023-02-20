@@ -1,8 +1,8 @@
-.selectparty_field, .date_col{
+.selectparty_field, .date_col, .select__control{
     width: 100%;
     background-color: #fff;
     border: 1px solid #E4E4E4;
-    padding:20px; 
+    padding:10px 20px; 
     border-radius: 10px;
     height: 80px;
     p{
@@ -203,9 +203,11 @@
 .prev_disable{
     opacity: 0.5; 
     padding: 0px 15px; 
+    width: 60px;
 }
 .prev_next_icon{
     padding: 0px 15px;
+    width: 60px;
 }
 .search_control{
     border: 0px!important;
@@ -224,5 +226,18 @@
     border: 0px;
 }
 .step3_partners_div{
+    .css-1m81j2g-MenuList, .css-ust985-MenuList{
     height: calc(100vh - 520px);
+    max-height: auto!important;
+    }
+}
+.editIcon:hover{
+  cursor: pointer;
+}
+
+.css-1s2u09g-control{
+    padding:10px 20px!important;
+}
+.css-1okebmr-indicatorSeparator{
+    display: none;
 }

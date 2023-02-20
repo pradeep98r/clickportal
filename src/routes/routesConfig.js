@@ -6,14 +6,9 @@ import LoginForm from "../modules/login/loginForm";
 import SmartBoard from "../modules/smartboard/smartboard";
 import BuyBillBook from "../modules/buy_bill_book/buyBillBook";
 import Layout from "../layout/layout";
-import BillCreation from "../modules/buy_bill_book/billCreation";
 import BillView from "../modules/buy_bill_book/billView";
-import Calender from "../modules/buy_bill_book/calender";
 import LanguageSelection from "../modules/login/languageSelection";
-
-import BuyerLedger from "../modules/ledgers/buyerLedger";
 import Partner from "../modules/partners/partner";
-import SellerLedger from "../modules/ledgers/sellerLedger";
 import MyProfile from "../modules/my_profile/myProfile";
 import Reports from "../modules/reports/reports";
 import SellBillBook from "../modules/sell_bill_book/sellBillBook";
@@ -22,9 +17,6 @@ import TransportoLedger from "../modules/transporto_ledger/transportoLedger";
 import Registration from "../modules/registration/registration";
 import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
-import Step1 from "../modules/buy_bill_book/step1";
-import SellebillStep1 from "../modules/sell_bill_book/step1";
-import Step3Modal from "../modules/buy_bill_book/step3Model";
 import BuyerLedgers from "../modules/ledgers/buyerLedgers";
 import SellerLedgers from "../modules/ledgers/sellerLedgers";
 const RoutesConfig = () => {
@@ -65,26 +57,26 @@ const RoutesConfig = () => {
             localStorage.getItem("status") == null
               ? ""
               : localStorage.getItem("status");*/
-              const planStatus=localStorage.getItem("statusPlan") == "FAILURE"?
-              "" : localStorage.getItem("statusPlan");
-              console.log(planStatus);
+          const planStatus =
+            localStorage.getItem("statusPlan") == "FAILURE"
+              ? ""
+              : localStorage.getItem("statusPlan");
+          console.log(planStatus);
           return (
             <BrowserRouter>
-              {planStatus === "SUCCESS" ? (                
+              {planStatus === "SUCCESS" ? (
                 <Layout>
                   <Routes>
                     <Route path="/" element={<SmartBoard />} />
                     <Route path="/smartboard" element={<SmartBoard />} />
                     <Route path="/buy_bill_book" element={<BuyBillBook />} />
-                    <Route path="/bill_creation" element={<BillCreation />} />
                     <Route path="/bill_view/:billId" element={<BillView />} />
-                    <Route path="/calender" element={<Calender />} />
-                    <Route path="/buyerledger" element={<BuyerLedger />}>
-                    
-                    </Route>
-                    <Route path="/sellerledger" element={<SellerLedger />}>
-                     
-                    </Route>
+                    <Route path="buyerledger" element={<BuyerLedgers />} />
+
+                    <Route
+                      path="sellerledger"
+                      element={<SellerLedgers />}
+                    ></Route>
                     <Route path="/partner" element={<Partner />} />
                     <Route path="/myprofile" element={<MyProfile />} />
                     <Route path="/reports" element={<Reports />} />
@@ -93,18 +85,6 @@ const RoutesConfig = () => {
                     <Route
                       path="/transportoledger"
                       element={<TransportoLedger />}
-                    />
-                    <Route
-                      path="/step1"
-                      element={<Step1 />}
-                    />
-                     <Route
-                      path="/sellbillstep1"
-                      element={<SellebillStep1 />}
-                    />
-                    <Route
-                      path="/step3Modal"
-                      element={<Step3Modal />}
                     />
                   </Routes>
                 </Layout>
@@ -120,7 +100,7 @@ const RoutesConfig = () => {
       } else {
         // console.log(loginData, "login data after succesful registration");
         // console.log(localStorage.getItem("registerData"), "aftter data");
-        
+
         return (
           <BrowserRouter>
             <Layout>
@@ -131,17 +111,12 @@ const RoutesConfig = () => {
                 <Route path="/" element={<SmartBoard />} />
                 <Route path="/smartboard" element={<SmartBoard />} />
                 <Route path="/buy_bill_book" element={<BuyBillBook />} />
-                <Route path="/bill_creation" element={<BillCreation />} />
                 <Route path="/bill_view/:billId" element={<BillView />} />
                 {/* <Route path="/sell_bill_view/:billId" element={<SellBillView />} /> */}
-                <Route path="/calender" element={<Calender />} />
                 <Route path="buyerledger" element={<BuyerLedgers />} />
-                {/* <Route path="buyerledger" element={<BuyerLedger />}>
-                </Route> */}
-                <Route path="sellerledger" element={<SellerLedgers />}>
-                </Route>
-                {/* <Route path="sellerledger" element={<SellerLedger />}>
-                </Route> */}
+
+                <Route path="sellerledger" element={<SellerLedgers />}></Route>
+
                 <Route path="/partner" element={<Partner />} />
                 <Route path="/myprofile" element={<MyProfile />} />
                 <Route path="/reports" element={<Reports />} />
@@ -151,19 +126,6 @@ const RoutesConfig = () => {
                   path="/transportoledger"
                   element={<TransportoLedger />}
                 />
-                  <Route
-                      path="/step1"
-                      element={<Step1 />}
-                    />
-                       <Route
-                      path="/sellbillstep1"
-                      element={<SellebillStep1 />}
-                    />
-                      <Route
-                      path="/step3Modal"
-                      element={<Step3Modal />}
-                    />
-                    
               </Routes>
             </Layout>
           </BrowserRouter>

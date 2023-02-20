@@ -29,6 +29,7 @@ import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
 import loading from "../../assets/images/loading.gif";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import { getPartnerType } from "../../components/getText";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -359,6 +360,7 @@ const Partner = () => {
         }
       );
     } else {
+      console.log(obj)
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -639,26 +641,7 @@ const Partner = () => {
     setPincodeLength(false);
     setProfilePic("");
   };
-  const getPartnerType = (item, trader) => {
-    var party = item;
-    switch (item) {
-      case "FARMER":
-        if (trader) {
-          party = "TRADER";
-        } else {
-          party = item;
-        }
-        break;
-      case "BUYER":
-        if (trader) {
-          party = "TRADER";
-        } else {
-          party = item;
-        }
-        break;
-    }
-    return party;
-  };
+
   const [searchValue, setSearchValue] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
