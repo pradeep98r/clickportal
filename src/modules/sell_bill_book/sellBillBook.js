@@ -62,8 +62,8 @@ const SellBillBook = (props) => {
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
@@ -72,8 +72,8 @@ const SellBillBook = (props) => {
     } else {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
     }
 
@@ -166,17 +166,19 @@ const SellBillBook = (props) => {
     setSellBillData(result);
   };
   const totalBagsValue = (bags) => {
-    var totalValue = 0
-    bags.map(item => {
-      totalValue += (item.weight - item.wastage);
-    })
+    var totalValue = 0;
+    bags.map((item) => {
+      totalValue += item.weight - item.wastage;
+    });
     return totalValue;
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {isOnline ? <NoInternetConnection /> :
+          {isOnline ? (
+            <NoInternetConnection />
+          ) : (
             <div>
               {isLoading ? (
                 <div className="">
@@ -329,12 +331,10 @@ const SellBillBook = (props) => {
                                                   </h6>
                                                 </div>
                                                 <h6 className="mobile mobile_responsive">
-                                                    
-                                                    {
-                                                      getMaskedMobileNumber(
-                                                        bill.mobile
-                                                      )}
-                                                  </h6>
+                                                  {getMaskedMobileNumber(
+                                                    bill.mobile
+                                                  )}
+                                                </h6>
                                                 <h6 className="address">
                                                   {bill.buyerAddress}
                                                 </h6>
@@ -399,15 +399,76 @@ const SellBillBook = (props) => {
                                               </p>
                                             </div>
                                             <div className="col-lg-4 col-sm-12 col flex_class">
-                                              <div>
-                                                {" "}
-                                                {qtyValues(
-                                                  crop.qty,
-                                                  crop.qtyUnit,
-                                                  crop.weight,
-                                                  crop.wastage,
-                                                  crop.rateType
-                                                )}
+                                              <div
+                                                className="d-flex align-items-center"
+                                                style={{ height: "100%" }}
+                                              >
+                                                <div>
+                                                  <div>
+                                                    {" "}
+                                                    {qtyValues(
+                                                      crop.qty,
+                                                      crop.qtyUnit,
+                                                      crop.weight,
+                                                      crop.wastage,
+                                                      crop.rateType
+                                                    )}
+                                                  </div>
+                                                  {crop.bags !== null &&
+                                                  crop.bags.length > 0 ? (
+                                                    <div className="flex_class">
+                                                      <input
+                                                        type="checkbox"
+                                                        checked={true}
+                                                        id="modal_checkbox"
+                                                        value="my-value"
+                                                        className="checkbox_t"
+                                                      />
+                                                      <p className="inv-weight">
+                                                        Individual Weights
+                                                        <span className="bags-data">
+                                                          <div className="bags-values">
+                                                            {crop.bags.map(
+                                                              (item) => {
+                                                                return (
+                                                                  <span>
+                                                                    <span>
+                                                                      {item.weight
+                                                                        ? item.weight +
+                                                                          " "
+                                                                        : ""}
+                                                                    </span>
+                                                                    <span>
+                                                                      {item.wastage
+                                                                        ? " - "
+                                                                        : ""}
+                                                                    </span>
+                                                                    <span>
+                                                                      {item.wastage
+                                                                        ? item.wastage
+                                                                        : ""}
+                                                                    </span>
+                                                                    <span>
+                                                                      ,{" "}
+                                                                    </span>
+                                                                  </span>
+                                                                );
+                                                              }
+                                                            )}
+                                                          </div>
+                                                          <span>
+                                                            ={" "}
+                                                            {totalBagsValue(
+                                                              crop.bags
+                                                            ) + "KGS"}
+                                                          </span>
+                                                        </span>
+                                                      </p>
+                                                    </div>
+                                                  ) : (
+                                                    ""
+                                                  )}
+                                                </div>
                                               </div>
                                             </div>
                                             <div className="col-lg-2 col-sm-12 col flex_class">
@@ -483,7 +544,7 @@ const SellBillBook = (props) => {
                 </div>
               )}
             </div>
-          }
+          )}
         </div>
       </div>
       {showDatepickerModal1 ? (
