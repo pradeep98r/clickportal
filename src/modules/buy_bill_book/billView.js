@@ -32,6 +32,7 @@ import {
 import { billViewInfo } from "../../reducers/billViewSlice";
 import getPdfHeaderData from "../../actions/pdfservice/headerJsonData";
 import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
+import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -313,10 +314,7 @@ const BillView = (props) => {
                         src={print}
                         alt="img"
                         onClick={() => {
-                          var headerData = getPdfHeaderData({});
-                          var colorThemeInfo = getPdColors();
-                          console.log(headerData);
-                          console.log(colorThemeInfo);
+                          getBillPdfJson(billData, {});
                         }}
                       />
                       <p>Print</p>
