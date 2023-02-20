@@ -552,11 +552,11 @@ input[type=radio]:label {
     padding-top: 10px;
 }
 .profile-img{
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     cursor: pointer;
     border-radius: 100%;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 .addrecord-img{
     position: relative;
@@ -605,7 +605,7 @@ input[type=radio]:label {
 }
 .mobilee-tag{
     font-weight: 500;
-    font-size: 11px;
+    font-size: 12px;
     color:#121212;
 }
 #cbbk-tag{
@@ -635,4 +635,10 @@ input[type=radio].radioBtnValues{
 .transporter_inventory_modal_header{
     border-bottom: 0px;
     padding-bottom: 0px;
+}
+@media(max-width:1360px){
+    #singles-img{
+        width: 30px;
+        height: 30px;
+    }
 }

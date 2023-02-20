@@ -25,7 +25,7 @@ const DetailedLedger = (props) => {
                             id="ledger-sum"
                         >
                             <thead className="thead-tag">
-                                <tr>
+                                <tr className=''>
                                     <th className="col-1" id="sno">
                                         #
                                     </th>
@@ -34,10 +34,10 @@ const DetailedLedger = (props) => {
                                         <p>Item</p>
                                         <p> Unit | Kgs | Rate</p>
                                     </th>
-                                    {ledgerType == 'BUYER'?<th className="col-3">Received(&#8377;)</th>:
-                                    <th className="col-3">Paid(&#8377;)</th>}
-                                    {ledgerType == 'BUYER'?<th className="col-3">To Be Received(&#8377;)</th>:
-                                    <th className="col-3">To Be Paid(&#8377;)</th>}
+                                    {ledgerType == 'BUYER'?<th className="col-2">Received(&#8377;)</th>:
+                                    <th className="col-2">Paid(&#8377;)</th>}
+                                    {ledgerType == 'BUYER'?<th className="col-2">To Be Received(&#8377;)</th>:
+                                    <th className="col-2">To Be Paid(&#8377;)</th>}
                                     <th className="col-2">Ledger Balance(&#8377;)</th>
                                 </tr>
                             </thead>
@@ -134,10 +134,10 @@ const DetailedLedger = (props) => {
                                         <p>Item</p>
                                         <p> Unit | Kgs | Rate</p>
                                     </th>
-                                    {ledgerType == 'BUYER'?<th className="col-3">Received(&#8377;)</th>:
-                                    <th className="col-3">Paid(&#8377;)</th>}
-                                    {ledgerType == 'BUYER'?<th className="col-3">To Be Received(&#8377;)</th>:
-                                    <th className="col-3">To Be Paid(&#8377;)</th>}
+                                    {ledgerType == 'BUYER'?<th className="col-2">Received(&#8377;)</th>:
+                                    <th className="col-2">Paid(&#8377;)</th>}
+                                    {ledgerType == 'BUYER'?<th className="col-2">To Be Received(&#8377;)</th>:
+                                    <th className="col-2">To Be Paid(&#8377;)</th>}
                                     <th className="col-2">
                                         Ledger Balance(&#8377;)
                                     </th>
@@ -156,7 +156,7 @@ const DetailedLedger = (props) => {
                                                 </p>{" "}
                                                 {moment(item.date).format("DD-MMM-YY")}
                                             </td>
-                                            <td className="col-3">
+                                            <td className="col-2">
                                                 <p style={{ fontSize: "12px" }}>
                                                     {item.itemName}
                                                 </p>
@@ -171,21 +171,21 @@ const DetailedLedger = (props) => {
                                                     {item.rate ? item.rate : ""}
                                                 </span>
                                             </td>
-                                            <td className="col-3">
+                                            <td className="col-2">
                                                 <p id="p-common">
                                                     {ledgerType == 'BUYER'?item.recieved
                                                         ? item.recieved.toFixed(2):''
                                                         : item.paid?item.paid:''}
                                                 </p>
                                             </td>
-                                            <td className="col-3">
+                                            <td className="col-2">
                                                 <p id="p-common">
                                                     {ledgerType == 'BUYER'?item.toBeRecieved
                                                         ? item.toBeRecieved.toFixed(2):''
                                                         : item.toBePaid?item.toBePaid:''}
                                                 </p>
                                             </td>
-                                            <td className="col-3">
+                                            <td className="col-2">
                                                 <p className={ledgerType == 'BUYER'?"coloring":'paid-coloring'}
                                                  id="p-common">
                                                     {item.balance

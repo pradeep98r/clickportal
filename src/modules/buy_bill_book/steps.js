@@ -66,7 +66,8 @@ const Steps = (props) => {
     >
       <div className="modal-header date_modal_header smartboard_modal_header">
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
-          {(() => {
+        Add Purchase Bill
+          {/* {(() => {
             switch (selectedStep.stepsInfo) {
               case "step1":
                 return "Bill Information";
@@ -75,7 +76,7 @@ const Steps = (props) => {
               case "step3":
                 return "Additions/Deductions";
             }
-          })()}
+          })()} */}
         </h5>
         <img
           alt="image"
