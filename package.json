@@ -37,7 +37,6 @@
     "react-select-2": "^2.0.11",
     "react-toastify": "^9.0.5",
     "react-webcam": "^7.0.1",
-    "react-week-picker": "^1.1.4",
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
     "rsuite": "^5.19.1",
