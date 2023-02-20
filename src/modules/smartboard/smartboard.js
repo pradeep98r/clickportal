@@ -462,7 +462,7 @@ const SmartBoard = () => {
                               <img
                                 src={date_icon}
                                 alt="icon"
-                                className="mr-2"
+                                className="mr-2 d-flex"
                               />
                             </span>
                             {(() => {
@@ -527,7 +527,7 @@ const SmartBoard = () => {
                                               />
                                             </div>
                                             <div className="col-lg-5 col_left_border color_pending_border">
-                                              <h5 className="color_head_subtext color_pending">
+                                              <h5 className="">
                                                 Pending Receivables
                                               </h5>
                                               {outStandingBal.pendingRecievables ==
@@ -569,7 +569,7 @@ const SmartBoard = () => {
                                               </p>
                                             </div>
                                             <div className="col-lg-5 col2">
-                                              <h5 className="color_head_subtext color_pending">
+                                              <h5 className="">
                                                 {/* {langData.sellBills}{" "} */}
                                                 Sell Bills
                                               </h5>
@@ -753,10 +753,15 @@ const SmartBoard = () => {
                                               <h6 className="m-0">
                                                 {commissionEarns.netComm == 0
                                                   ? ""
-                                                  : "₹" +
-                                                    commissionEarns.netComm.toFixed(
-                                                      2
-                                                    )}
+                                                  : commissionEarns.netComm.toLocaleString(
+                                                    "en-IN",
+                                                    {
+                                                      maximumFractionDigits: 2,
+                                                      style: "currency",
+                                                      currency: "INR",
+                                                    }
+                                                  )}
+                                                  
                                               </h6>
                                             )}
                                           </div>
@@ -923,11 +928,12 @@ const SmartBoard = () => {
                                           </h5>
                                           {cropSalesData.length != 0 ? (
                                             <div>
-                                              <div className="d-flex crop_data">
+                                              <div className="d-flex pt-2 crop_data outer-wrapper">
                                                 {cropSalesData.map(
                                                   (sellCrop, index) => {
                                                     return (
-                                                      <div
+                                                    <div className="col-lg-2 p-0">
+                                                            <div
                                                         className=""
                                                         key={index}
                                                       >
@@ -966,13 +972,14 @@ const SmartBoard = () => {
                                                           </p>
                                                         </div>
                                                       </div>
+                                                    </div>
                                                     );
                                                   }
                                                 )}
                                               </div>
                                               {cropItem != null && (
                                                 <div>
-                                                  <div className="row top_border mt-3"></div>
+                                                  <div className="row top_border pseduo-track"></div>
                                                   <div className="row mt-3">
                                                     <div className="col-lg-6 col_left_border">
                                                       <h5 className="text-center">
@@ -1062,12 +1069,12 @@ const SmartBoard = () => {
                                           </h5>
                                           {cropPurchaseData.length != 0 ? (
                                             <div>
-                                              <div className="d-flex crop_data">
+                                              <div className="d-flex pt-2 crop_data outer-wrapper">
                                                 {cropPurchaseData.map(
                                                   (buyCrop, index) => {
                                                     return (
                                                       <div
-                                                        className=""
+                                                        className="col-lg-2 p-0"
                                                         key={index}
                                                       >
                                                         <div
@@ -1111,7 +1118,7 @@ const SmartBoard = () => {
                                               </div>
                                               {buycropItem != null && (
                                                 <div>
-                                                  <div className="row top_border mt-3"></div>
+                                                  <div className="row top_border pseduo-track"></div>
                                                   <div className="row mt-3">
                                                     <div className="col-lg-6 col_left_border">
                                                       <h5 className="text-center">
@@ -1189,22 +1196,28 @@ const SmartBoard = () => {
 
                                 <div className="row margin_bottom">
                                   <div className="col-md-6 col_left pr-0">
-                                    <div className="card default_card empty_card2">
-                                      <h5 className="text-center mb-2">
+                                    <div className="card default_card empty_card2 all_smartboard_cards">
+                                    <div class="card-body d-flex align-items-center justify-content-center">
+                                     <div className={
+                                            buyerData.length != 0
+                                              ? "d_flex"
+                                              : ""
+                                          }>
+                                     <h5 className="text-center mb-2">
                                         {langFullData.salesByBuyer}{" "}
                                       </h5>
                                       {buyerData.length != 0 ? (
                                         <OwlCarousel
-                                          className="owl-theme owl_car"
+                                          className="owl-theme owl_car pt-2"
                                           items={1}
-                                          stagePadding={20}
+                                          // stagePadding={20}
                                           margin={20}
                                           responsive={car.responsive}
                                         >
                                           {buyerData.map((buyerItem, index) => {
                                             return (
                                               <div key={index}>
-                                                <div className="d-flex item_div align-items-center">
+                                                <div className="d-flex item_div carosal_div align-items-center">
                                                   <img
                                                     src={single_bill}
                                                     alt="image"
@@ -1214,15 +1227,27 @@ const SmartBoard = () => {
                                                     <h4>
                                                       {buyerItem.partyName}
                                                     </h4>
-                                                    <h3>
+                                                   <div className="d-flex align-items-center">
+                                                   <h3>
                                                       {buyerItem.trader
                                                         ? langFullData.trader
                                                         : langFullData.buyer}{" "}
                                                       - {buyerItem.partyId}
                                                     </h3>
-                                                    <h5 className="smartboard_mobile">
-                                                      {getMaskedMobileNumber(buyerItem.mobile)}
-                                                      
+                                                    <h5 className="smartboard_mobile desk_responsive">
+                                                    &nbsp;
+                                                        {" |  " +
+                                                          getMaskedMobileNumber(
+                                                            buyerItem.mobile
+                                                          )}
+                                                    </h5>
+                                                   </div>
+                                                   <h5 className="smartboard_mobile mobile_responsive">
+                                                    
+                                                        {
+                                                          getMaskedMobileNumber(
+                                                            buyerItem.mobile
+                                                          )}
                                                     </h5>
                                                   </div>
                                                 </div>
@@ -1235,7 +1260,7 @@ const SmartBoard = () => {
                                                           langFullData.totalSales
                                                         }{" "}
                                                       </h5>
-                                                      <h6 className="text-center">
+                                                      <h6 className="text-center mb-0">
                                                         {buyerItem.totalBusiness.toLocaleString(
                                                           "en-IN",
                                                           {
@@ -1252,7 +1277,7 @@ const SmartBoard = () => {
                                                           langFullData.totalQuantity
                                                         }{" "}
                                                       </h5>
-                                                      <h6 className="text-center">
+                                                      <h6 className="text-center mb-0">
                                                         {buyerItem.totalQty == 0
                                                           ? ""
                                                           : buyerItem.totalQty.toLocaleString(
@@ -1291,23 +1316,31 @@ const SmartBoard = () => {
                                           <img
                                             src={no_data_icon}
                                             alt="image"
-                                            className="d-flex aligin-items-center mx-auto my-4"
+                                            className="d-flex aligin-items-center mx-auto"
                                           />
                                           <NoDataText />
                                         </div>
                                       )}
+                                     </div>
+                                     </div>
                                     </div>
                                   </div>
                                   <div className="col-md-6 col_right">
-                                    <div className="card default_card empty_card2">
+                                    <div className="card default_card empty_card2 all_smartboard_cards">
+                                    <div class="card-body d-flex align-items-center justify-content-center">
+                                     <div  className={
+                                            farmerData.length != 0
+                                              ? "d_flex"
+                                              : ""
+                                          }>
                                       <h5 className="text-center mb-2">
                                         {langFullData.purchaseBySeller}{" "}
                                       </h5>
                                       {farmerData.length != 0 ? (
                                         <OwlCarousel
-                                          className="owl-theme owl_car"
+                                          className="owl-theme owl_car pt-2"
                                           items={1}
-                                          stagePadding={20}
+                                          // stagePadding={20}
                                           margin={20}
                                           responsive={car.responsive}
                                         >
@@ -1315,7 +1348,7 @@ const SmartBoard = () => {
                                             (farmerItem, index) => {
                                               return (
                                                 <div key={index}>
-                                                  <div className="d-flex item_div align-items-center">
+                                                  <div className="d-flex item_div carosal_div align-items-center">
                                                     <img
                                                       src={single_bill}
                                                       alt="image"
@@ -1325,17 +1358,28 @@ const SmartBoard = () => {
                                                       <h4>
                                                         {farmerItem.partyName}
                                                       </h4>
+                                                      <div className="d-flex align-items-center">
                                                       <h3>
                                                         {farmerItem.trader
                                                           ? langFullData.trader
                                                           : 'Seller'}{" "}
                                                         - {farmerItem.partyId}
                                                       </h3>
-                                                      <h5 className="smartboard_mobile">
-                                                        {farmerItem.mobile.replace(
-                                                          /.(?=.{4})/g,
-                                                          "X"
-                                                        )}
+                                                      <h5 className="smartboard_mobile desk_responsive">
+                                                      &nbsp;
+                                                        {" |  " +
+                                                          getMaskedMobileNumber(
+                                                            farmerItem.mobile
+                                                          )}
+                                                        
+                                                      </h5>
+                                                      </div>
+                                                      <h5 className="smartboard_mobile mobile_responsive">
+                                                        {
+                                                          getMaskedMobileNumber(
+                                                            farmerItem.mobile
+                                                          )}
+                                                        
                                                       </h5>
                                                     </div>
                                                   </div>
@@ -1347,7 +1391,7 @@ const SmartBoard = () => {
                                                           langFullData.totalPurchases
                                                         }{" "}
                                                       </h5>
-                                                      <h6 className="text-center">
+                                                      <h6 className="text-center mb-0">
                                                         {farmerItem.totalBusiness.toLocaleString(
                                                           "en-IN",
                                                           {
@@ -1364,7 +1408,7 @@ const SmartBoard = () => {
                                                           langFullData.totalQuantity
                                                         }{" "}
                                                       </h5>
-                                                      <h6 className="text-center">
+                                                      <h6 className="text-center mb-0">
                                                         {farmerItem.totalQty ==
                                                         0
                                                           ? ""
@@ -1404,11 +1448,13 @@ const SmartBoard = () => {
                                           <img
                                             src={no_data_icon}
                                             alt="image"
-                                            className="d-flex aligin-items-center mx-auto my-4"
+                                            className="d-flex aligin-items-center mx-auto"
                                           />
                                           <NoDataText />
                                         </div>
                                       )}
+
+                                      </div></div>
                                     </div>
                                   </div>
                                 </div>

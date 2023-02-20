@@ -5,15 +5,27 @@
   // border-bottom: 1px solid #e4e4e4;
   align-items: center;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 .color_blue{
   color: var(--ono-blue);
 }
 .bills_rows{
+  height: 100%;
   .flex_class{
     margin-right: 0px!important;
+    padding: 6px 0px;
   }
+}
+.bills_rows:hover{
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+}
+.date_text_book{
+  font-size: 15px;
+}
+.billid_div_flex{
+  height: 100%;
+  padding: 6px 0px;
 }
 .step3_bottom{
   position: initial;
@@ -83,6 +95,11 @@
 .crop_table_header_row{
   border: 1px solid #666666;
   border-bottom: 1px solid #666666;
+  p{
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
 }
 .bottom_space {
   margin-bottom: 5px;
@@ -120,7 +137,6 @@
 .css-1pahdxg-control {
   border-color: #e4e4e4 !important;
   min-height: auto !important;
-  padding: 4px 10px !important;
   border-radius: 10px !important;
 }
 .css-6j8wv5-Input,
@@ -734,6 +750,9 @@ article.on {
   background: #16A02C;
   border-radius: 100%;
 }
+.cancel_dot{
+  background: #D43939;
+}
 .bill-name{
   padding: 0px 5px;
 }
@@ -744,6 +763,8 @@ article.on {
 }
 .bills_rows {
   .bill_user_details {
+    height: 100%;
+    // padding-right:  10px;
     .userName {
       font-size: 13px;
       font-weight: 600;
@@ -803,6 +824,7 @@ article.on {
 }
 .full_width {
   width: 100%;
+  height: 100%;
 }
 .buy_bills {
   overflow-y: auto;
@@ -818,7 +840,6 @@ article.on {
   border-radius: 10px 10px 0px 0px;
   color: var(--ono-white);
   .bill_view_top_header {
-    align-items: center;
     padding: 10px;
     border-bottom: 0.5px dashed #ffffff;
   }
@@ -881,6 +902,7 @@ article.on {
   background:#FFFFFF ;
   overflow-y: auto;
   height: calc(100vh - 300px);
+  position: relative;
 }
 .small_text {
   font-size: 10px;
@@ -906,13 +928,20 @@ article.on {
     font-size: 12px;
   }
 }
+.partner_info{
+  h6 {
+    color: #121212;
+    font-weight: 700;
+    font-size: 12px;
+  }
+}
 .partner_img{
   width: 40px;
   height: 40px;
   border-radius: 100%;
 }
 .type-name{
-  padding: 0px 5px;
+  padding: 0px 5px 0px 10px;
 }
 .total-qty{
   color: #121212;
@@ -920,7 +949,7 @@ article.on {
 font-size: 12px;
 }
 .partner_info_padding {
-  padding: 5px 20px;
+  padding: 10px 20px;
 }
 .fee-percentage{
   font-weight: 500;
@@ -996,8 +1025,15 @@ word-wrap: normal;
   td{
     font-size: 12px;
     color: #121212;
+    font-weight: 600;
   }
   
+}
+.bill_view{
+  th{
+    background-color: #D7F3DD;
+    font-weight: 600;
+  }
 }
 // .table > :not(:first-child) {
 //   border-top: 0;
@@ -1018,7 +1054,7 @@ word-wrap: normal;
   color: var(--ono-red);
 }
 .total_value {
-  font-size: 12px;
+  font-size: 11px;
   color: #121212;
   font-weight: 700;
 }
@@ -1070,7 +1106,7 @@ word-wrap: normal;
   font-weight: 700;
   font-size: 10px;
   color: #121212;
-  padding: 2px 0px;
+  padding: 5px 0px;
   text-align: left;
 }
 .align-data-items-items{
@@ -1081,6 +1117,11 @@ word-wrap: normal;
   background: #D7F3DD;
   width: 100%;
   font-size: 10px;
+  padding: 5px 0px;
+  border-bottom: 0.5px solid #4D4D4D;
+}
+.group-one-total, .hr-line-in-totals{
+  // padding-top: 5px;
 }
 .total-pay{
   padding-left: 65px;
@@ -1098,6 +1139,7 @@ word-wrap: normal;
   color:#000;
    font-size: 12px;
    text-align: right;
+   font-weight: 600;
 }
 .hr-line-in-totals{
   border-bottom: 0.5px solid #4D4D4D;
@@ -1123,6 +1165,7 @@ word-wrap: normal;
   padding-top: 5px;
    color:#000;
    font-size: 12px;
+   font-weight: 600;
 }
 // calenderr popup styles
 .dates_div {
@@ -1240,9 +1283,9 @@ font-size: 12px;
   padding: 10px 0px;
 }
 .stamp_img{
-  position: sticky;
-  margin: -60px 0px;
-  padding: 0px 40px;
+  position: absolute;
+  top: 50px;
+  right: 20px;
 }
 .stamp_img img{
   height: 90px;
@@ -1333,4 +1376,45 @@ font-size: 12px;
   td{
     border-top: 0px!important;
   }
+}
+.group_totals_div{
+  .row{
+    align-items: center;
+  }
+}
+.main_setting_name{
+  text-transform: capitalize!important;
+}
+.billview_bal{
+  font-size: 11px;
+  text-transform: uppercase;
+}
+.billview_bal_val{
+  text-align: right;
+}
+.crop-name{
+  font-size: 10px;
+}
+.proprietor_name{
+  padding-left: 15px;
+}
+.phone_num_space{
+  padding-right: 15px;
+}
+.grp_one_row{
+  padding: 7px 0px;
+}
+.mobile_responsive{
+   display: none;
+}
+.desk_responsive{
+  display: block;
+}
+@media(max-width : 1360px){
+  .mobile_responsive{
+    display: block;
+ }
+ .desk_responsive{
+  display: none;
+}
 }

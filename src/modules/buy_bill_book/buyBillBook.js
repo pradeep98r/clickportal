@@ -194,14 +194,16 @@ function BuyBillBook() {
                         </ul> */}
                           </div>
                           <div onClick={onclickDate} className="color_blue">
-                            <span className="date_icon m-0">
-                              <img
-                                src={date_icon}
-                                alt="icon"
-                                className="mr-2"
-                              />
-                            </span>
-                            {dateValue}
+                            <div className="d-flex align-items-center">
+                              <p className="date_icon m-0">
+                                <img
+                                  src={date_icon}
+                                  alt="icon"
+                                  className="mr-2 d-flex"
+                                />
+                              </p>
+                              <p className="date_text_book">{dateValue}</p>
+                            </div>
                           </div>
                           <div className="d-flex">
                             {/* <BillsSearchField
@@ -262,7 +264,7 @@ function BuyBillBook() {
                                         </div>
                                       </div>
                                     </div>
-                                    <div className="col-lg-2">
+                                    <div className="col-lg-2 p-0">
                                       <div className="row">
                                         <div className="col-lg-12 col-sm-12">
                                           <p>
@@ -286,32 +288,39 @@ function BuyBillBook() {
                                             <div className="row full_width">
                                               <div className="col-lg-7 col-sm-12 p-0 col">
                                                 <div className="bill_user_details flex_class mr-0">
-                                                {
-                                            bill.profilePic ? <img
-                                            src={bill.profilePic}
-                                            className="user_icon"
-                                            alt="icon"
-                                          /> : <img
-                                            src={single_bill}
-                                            className="user_icon"
-                                            alt="icon"
-                                          />
-                                          }
+                                                  {bill.profilePic ? (
+                                                    <img
+                                                      src={bill.profilePic}
+                                                      className="user_icon"
+                                                      alt="icon"
+                                                    />
+                                                  ) : (
+                                                    <img
+                                                      src={single_bill}
+                                                      className="user_icon"
+                                                      alt="icon"
+                                                    />
+                                                  )}
                                                   <div>
                                                     <h6 className="userName">
-                                                      {
-                                                        bill.farmerName
-                                                       +
+                                                      {bill.farmerName +
                                                         "-" +
                                                         bill.shortName}
                                                     </h6>
                                                     <div className="d-flex align-items-center">
+                                                      <div>
                                                       <h6 className="mobile">
-                                                        {getText(bill.partyType) +
-                                                          "-" +
-                                                          bill.farmerId}
+                                                        {bill.partyType.toLowerCase() ==
+                                                          "farmer" ||
+                                                        bill.partyType.toLowerCase() ==
+                                                          "seller"
+                                                          ? getText("Seller")
+                                                          : "Seller" +
+                                                            "-" +
+                                                            bill.farmerId}
                                                       </h6>
-                                                      <h6 className="mobile">
+                                                      </div>
+                                                      <h6 className="mobile desk_responsive">
                                                         &nbsp;
                                                         {" |  " +
                                                           getMaskedMobileNumber(
@@ -319,6 +328,13 @@ function BuyBillBook() {
                                                           )}
                                                       </h6>
                                                     </div>
+                                                    <h6 className="mobile mobile_responsive">
+                                                        
+                                                        {
+                                                          getMaskedMobileNumber(
+                                                            bill.farmerMobile
+                                                          )}
+                                                      </h6>
                                                     <h6 className="address">
                                                       {bill.farmerAddress}
                                                     </h6>
@@ -326,40 +342,47 @@ function BuyBillBook() {
                                                 </div>
                                               </div>
                                               <div className="col-lg-5 col-sm-12 billid_div">
-                                                <p className="biilid">
-                                                  {langFullData.billNo}:{" "}
-                                                  {bill.caBSeq}{" "}
-                                                </p>
-                                                <p>
-                                                  {moment(bill.billDate).format(
-                                                    "DD-MMM-YYYY"
-                                                  )}
-                                                </p>
-                                                <p
-                                                  style={{
-                                                    color:
-                                                      bill.billStatus ==
-                                                      "CANCELLED"
-                                                        ? "#d43939"
-                                                        : "#1C1C1C",
-                                                  }}
-                                                >
-                                                  <div className="flex_class">
-                                                    {bill.billStatus ==
-                                                    "CANCELLED" ? (
-                                                      <img
-                                                        src={cancel}
-                                                        width="10px"
-                                                        height="10px"
-                                                      />
-                                                    ) : (
-                                                      <div className="complete-dot"></div>
-                                                    )}
-                                                    <div className="bill-name">
-                                                      {getText(bill.billStatus)}
+                                                <div className="d-flex align-items-center billid_div_flex">
+                                                  <div>
+                                                    <p className="biilid">
+                                                      {langFullData.billNo}:{" "}
+                                                      {bill.caBSeq}{" "}
+                                                    </p>
+
+                                                    <div className="d-flex">
+                                                      <p className="d-a-value">
+                                                        {moment(
+                                                          bill?.timeStamp
+                                                        ).format(
+                                                          "DD-MMM-YY | hh:mm:A"
+                                                        )}
+                                                      </p>
                                                     </div>
+                                                    <p
+                                                      style={{
+                                                        color:
+                                                          bill.billStatus ==
+                                                          "CANCELLED"
+                                                            ? "#d43939"
+                                                            : "#1C1C1C",
+                                                      }}
+                                                    >
+                                                      <div className="flex_class p-0">
+                                                        {bill.billStatus ==
+                                                        "CANCELLED" ? (
+                                                          <div className="complete-dot cancel_dot"></div>
+                                                        ) : (
+                                                          <div className="complete-dot"></div>
+                                                        )}
+                                                        <div className="bill-name">
+                                                          {getText(
+                                                            bill.billStatus
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    </p>
                                                   </div>
-                                                </p>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>

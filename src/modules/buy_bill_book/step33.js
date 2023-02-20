@@ -48,7 +48,7 @@ const Step33 = (props) => {
     //users.buyerInfo
     editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
-
+   console.log(buyerInfo,partnerSelectedData)
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -105,7 +105,7 @@ const Step33 = (props) => {
     if (partnerSelectedData != null) {
       var pID = editStatus
         ? billEditItem.farmerId
-        : partnerSelectedData.partyId;
+        : buyerInfo.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
@@ -221,7 +221,7 @@ const Step33 = (props) => {
         });
       }
     });
-  }, []);
+  }, [users.buyerInfo]);
   var gTotal = 0;
   const getGrossTotalValue = (items) => {
     var total = 0;
@@ -724,7 +724,7 @@ const Step33 = (props) => {
     commShown: true,
     comments: commentFieldText,
     createdBy: 0,
-    farmerId: editStatus ? billEditItem.farmerId : partnerSelectedData.partyId, //partnerSelectedData.partyId,
+    farmerId: editStatus ? billEditItem.farmerId : buyerInfo.partyId, //partnerSelectedData.partyId,
     customFields: questionsTitle,
     govtLevies: Number(levisValue),
     grossTotal: grossTotal,

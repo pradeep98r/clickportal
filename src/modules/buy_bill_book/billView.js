@@ -29,6 +29,7 @@ import {
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
+import { getText } from "../../components/getText";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -232,8 +233,8 @@ const BillView = (props) => {
         >
           <p className="b-name">
             {billData?.partyType.toUpperCase() === "FARMER"
-              ? billData.farmerName
-              : billData?.buyerName}
+              ? getText(billData.farmerName)
+              : getText(billData?.buyerName)}
             -
           </p>
           <p className="b-name">{billData?.caBSeq}</p>
@@ -255,16 +256,16 @@ const BillView = (props) => {
                 prevNextStatus ? <BusinessDetails prevNextStatus1={prevNextStatus} /> : <BusinessDetails />
               }
               
-              <div className="bill_crop_details">
+              <div className="bill_crop_details" id="scroll_style">
+              
                 {prevNextStatus ? <CropDetails prevNextStatus1={prevNextStatus} /> : <CropDetails />}
-                <div className="row">
-                  <div className="col-lg-8"></div>
-                  <div className="col-lg-4 stamp_img">
+                
+                <div className="stamp_img">
                     {(billData?.billStatus == "CANCELLED" || displayCancel) && (
                       <img src={cancel_bill_stamp} alt="stammp_img" />
                     )}
                   </div>
-                </div>
+                
                 {prevNextStatus ? <GroupTotals prevNextStatus1={prevNextStatus} /> : <GroupTotals />}
                 {prevNextStatus ? <BillViewFooter prevNextStatus1={prevNextStatus} /> : <BillViewFooter />}
               </div>

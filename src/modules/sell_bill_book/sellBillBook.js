@@ -19,9 +19,9 @@ import {
   getCurrencyNumberWithOneDigit,
 } from "../../components/getCurrencyNumber";
 import { useDispatch, useSelector } from "react-redux";
-import { billViewInfo } from "../../reducers/billViewSlice"
+import { billViewInfo } from "../../reducers/billViewSlice";
 import { selectSteps } from "../../reducers/stepsSlice";
-import { selectBuyer } from "../../reducers/buyerSlice"
+import { selectBuyer } from "../../reducers/buyerSlice";
 import Steps from "../buy_bill_book/steps";
 import { fromBillbook } from "../../reducers/billEditItemSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
@@ -40,9 +40,9 @@ const SellBillBook = (props) => {
   const langFullData = JSON.parse(langData);
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
-  var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : '';
-  
-  const  billData = useSelector((state)=> state.billViewInfo);
+  var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : "";
+
+  const billData = useSelector((state) => state.billViewInfo);
   // console.log(billViiewDate)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -50,12 +50,12 @@ const SellBillBook = (props) => {
     setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
   var [dateValue, setDateValue] = useState();
-  window.addEventListener('load', function(event) {
+  window.addEventListener("load", function (event) {
     // bDate = '';
   });
   const callbackFunction = (startDate, endDate, dateTab) => {
-    var fromDate = moment(bDate ? bDate :startDate).format("YYYY-MM-DD");
-    var toDate = moment(bDate ? bDate :endDate).format("YYYY-MM-DD");
+    var fromDate = moment(bDate ? bDate : startDate).format("YYYY-MM-DD");
+    var toDate = moment(bDate ? bDate : endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
@@ -89,7 +89,7 @@ const SellBillBook = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        if(error.message.toUpperCase() == 'NETWORK ERROR'){
+        if (error.message.toUpperCase() == "NETWORK ERROR") {
           setOnline(true);
         }
         setOnline(true);
@@ -129,7 +129,7 @@ const SellBillBook = (props) => {
     //stepOneSingleBook
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-    dispatch(selectSteps('step1'))
+    dispatch(selectSteps("step1"));
     dispatch(selectBuyer(null));
     dispatch(fromBillbook(true));
   };
@@ -169,18 +169,20 @@ const SellBillBook = (props) => {
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-        {isOnline?<NoInternetConnection />:
-          <div>
-          {isLoading ? (
-            <div className="">
-              <img src={loading} alt="my-gif" className="gif_img" />
-            </div>
+          {isOnline ? (
+            <NoInternetConnection />
           ) : (
             <div>
-              <div>
-                <div className="d-flex justify-content-between bills_div">
-                  <div className="d-flex">
-                    {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
+              {isLoading ? (
+                <div className="">
+                  <img src={loading} alt="my-gif" className="gif_img" />
+                </div>
+              ) : (
+                <div>
+                  <div>
+                    <div className="d-flex justify-content-between bills_div">
+                      <div className="d-flex">
+                        {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
                           className="nav-link active"
@@ -193,218 +195,259 @@ const SellBillBook = (props) => {
                         </a>
                       </li>
                     </ul> */}
-                  </div>
+                      </div>
 
-                  <div onClick={onclickDate} className="color_blue">
-                    <span className="date_icon m-0">
-                      <img src={date_icon} alt="icon" className="mr-2" />
-                    </span>
-                    {dateValue}
-                  </div>
-                  <div className="d-flex">
-                    {/* <BillsSearchField
+                      <div onClick={onclickDate} className="color_blue">
+                        <div className="d-flex align-items-center">
+                          <span className="date_icon m-0">
+                            <img
+                              src={date_icon}
+                              alt="icon"
+                              className="mr-2 d-flex"
+                            />
+                          </span>
+                          {dateValue}
+                        </div>
+                      </div>
+                      <div className="d-flex">
+                        {/* <BillsSearchField
                       placeholder={langFullData.search}
                       onChange={(event) => {
                         handleSearch(event);
                       }}
                     /> */}
-                    <a
-                      className="primary_btn add_bills_btn"
-                      // href="/sellbillstep1"
-                      onClick={handleStep1Header}
-                    >
-                      <img src={addbill_icon} alt="image" className="mr-2" />
-                      Add single Bill
-                    </a>
-                  </div>
-                </div>
-                <div>
-                  <div className="tab-content">
-                    <div
-                      className="tab-pane active"
-                      id="home"
-                      role="tabpanel"
-                      aria-labelledby="home-tab"
-                    >
-                      {sellBillData.length > 0 ? (
-                        <div>
-                          <div className="row header_row">
-                            <div className="col-lg-4">
-                              <div className="row">
-                                <div className="col-lg-7 col-sm-12 p-0">
-                                  <p>{langFullData.buyer}</p>
+                        <a
+                          className="primary_btn add_bills_btn"
+                          // href="/sellbillstep1"
+                          onClick={handleStep1Header}
+                        >
+                          <img
+                            src={addbill_icon}
+                            alt="image"
+                            className="mr-2"
+                          />
+                          Add single Bill
+                        </a>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="tab-content">
+                        <div
+                          className="tab-pane active"
+                          id="home"
+                          role="tabpanel"
+                          aria-labelledby="home-tab"
+                        >
+                          {sellBillData.length > 0 ? (
+                            <div>
+                              <div className="row header_row">
+                                <div className="col-lg-4">
+                                  <div className="row">
+                                    <div className="col-lg-7 col-sm-12 p-0">
+                                      <p>{langFullData.buyer}</p>
+                                    </div>
+                                    <div className="col-lg-5 col-sm-12">
+                                      <p>{langFullData.billId}</p>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="col-lg-5 col-sm-12">
-                                  <p>{langFullData.billId}</p>
+                                <div className="col-lg-6 p-0">
+                                  <div className="row">
+                                    <div className="col-lg-4 col-sm-12">
+                                      <p>{langFullData.particulars}</p>
+                                    </div>
+                                    <div className="col-lg-4 col-sm-12">
+                                      <p>{langFullData.qty}</p>
+                                    </div>
+                                    <div className="col-lg-2 col-sm-12">
+                                      <p>{langFullData.rate}(₹) </p>
+                                    </div>
+                                    <div className="col-lg-2 col-sm-12">
+                                      <p>{langFullData.total}(₹)</p>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="col-lg-2 p-0">
+                                  <div className="row">
+                                    <div className="col-lg-12 col-sm-12">
+                                      <p>{langFullData.totalReceivables} (₹)</p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div className="col-lg-6 p-0">
-                              <div className="row">
-                                <div className="col-lg-4 col-sm-12">
-                                  <p>{langFullData.particulars}</p>
-                                </div>
-                                <div className="col-lg-4 col-sm-12">
-                                  <p>{langFullData.qty}</p>
-                                </div>
-                                <div className="col-lg-2 col-sm-12">
-                                  <p>{langFullData.rate}(₹) </p>
-                                </div>
-                                <div className="col-lg-2 col-sm-12">
-                                  <p>{langFullData.total}(₹)</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="col-lg-2">
-                              <div className="row">
-                                <div className="col-lg-12 col-sm-12">
-                                  <p>{langFullData.totalReceivables} (₹)</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="buy_bills" id="scroll_style">
-                            {sellBillData.map((bill, index) => (
-                              <div
-                                onClick={() => billOnClick(bill.caBSeq, bill)}
-                                key={index}
-                                className="billsDiv"
-                              >
-                                <div className="row bills_rows bg_white bottom_space">
-                                  <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
-                                    <div className="row full_width">
-                                      <div className="col-lg-7 col-sm-12 p-0 col">
-                                        <div className="bill_user_details flex_class mr-0">
-                                          {
-                                            bill.profilePic ? <img
-                                            src={bill.profilePic}
-                                            className="user_icon"
-                                            alt="icon"
-                                          /> : <img
-                                            src={single_bill}
-                                            className="user_icon"
-                                            alt="icon"
-                                          />
-                                          }
-                                          
-                                          <div>
-                                            <h6 className="userName">
-                                              {bill.buyerName +
-                                                "-" +
-                                                bill.shortName}
-                                            </h6>
-                                           <div className="d-flex align-items-center">
-                                           <h6 className="mobile">
-                                              {getText(bill.partyType) +
-                                                "-" +
-                                                bill.buyerId}
-                                            </h6>
-                                            <h6 className="mobile">
-                                              &nbsp;{' |  ' + getMaskedMobileNumber(bill.mobile)}
-                                              </h6>
-                                            
-                                             </div>
-                                            <h6 className="address">
-                                              {bill.buyerAddress}
-                                            </h6>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="col-lg-5 col-sm-12 billid_div">
-                                        <p className="biilid">
-                                          {langFullData.billNo} : {bill.caBSeq}{" "}
-                                        </p>
-                                        <p>
-                                          {moment(bill.billDate).format(
-                                            "DD-MMM-YYYY"
-                                          )}
-                                        </p>
-                                        <p
-                                              style={{
-                                                color:
-                                                  bill.billStatus == "CANCELLED"
-                                                    ? "#d43939"
-                                                    : "#1C1C1C",
-                                              }}
-                                              >
-                                              <div className="flex_class">
-                                              {bill.billStatus == "CANCELLED"?
-                                              <img src={cancel} width="10px" height="10px" />:
-                                                <div className="complete-dot"></div>
-                                                }
-                                                <div className="bill-name">{getText(bill.billStatus)}</div>
+                              <div className="buy_bills" id="scroll_style">
+                                {sellBillData.map((bill, index) => (
+                                  <div
+                                    onClick={() =>
+                                      billOnClick(bill.caBSeq, bill)
+                                    }
+                                    key={index}
+                                    className="billsDiv"
+                                  >
+                                    <div className="row bg_white bills_rows bottom_space">
+                                      <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                        <div className="row full_width">
+                                          <div className="col-lg-7 col-sm-12 p-0 col">
+                                            <div className="bill_user_details flex_class mr-0">
+                                              {bill.profilePic ? (
+                                                <img
+                                                  src={bill.profilePic}
+                                                  className="user_icon"
+                                                  alt="icon"
+                                                />
+                                              ) : (
+                                                <img
+                                                  src={single_bill}
+                                                  className="user_icon"
+                                                  alt="icon"
+                                                />
+                                              )}
+
+                                              <div>
+                                                <h6 className="userName">
+                                                  {bill.buyerName +
+                                                    "-" +
+                                                    bill.shortName}
+                                                </h6>
+                                                <div className="d-flex align-items-center">
+                                                  <h6 className="mobile">
+                                                    {getText(bill.partyType) +
+                                                      "-" +
+                                                      bill.buyerId}
+                                                  </h6>
+                                                  <h6 className="mobile desk_responsive">
+                                                    &nbsp;
+                                                    {" |  " +
+                                                      getMaskedMobileNumber(
+                                                        bill.mobile
+                                                      )}
+                                                  </h6>
+                                                </div>
+                                                <h6 className="mobile mobile_responsive">
+                                                    
+                                                    {
+                                                      getMaskedMobileNumber(
+                                                        bill.mobile
+                                                      )}
+                                                  </h6>
+                                                <h6 className="address">
+                                                  {bill.buyerAddress}
+                                                </h6>
                                               </div>
-                                            </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="col-lg-6 p-0">
-                                    {bill.lineItems.map((crop, index) => (
-                                      <div className="row crops_row_bills" key={index}>
-                                        <div className="col-lg-4 col-sm-12 col">
-                                          <p className="flex_class crop_name">
-                                            <img
-                                              src={crop.imageUrl}
-                                              className="crop_image"
-                                            />
-                                            {crop.cropName}
-                                          </p>
-                                        </div>
-                                        <div className="col-lg-4 col-sm-12 col flex_class">
-                                          <div>
-                                            {" "}
-                                            {qtyValues(
-                                              crop.qty,
-                                              crop.qtyUnit,
-                                              crop.weight,
-                                              crop.wastage,
-                                              crop.rateType
-                                            )}
+                                            </div>
+                                          </div>
+                                          <div className="col-lg-5 col-sm-12 billid_div">
+                                            <div className="d-flex align-items-center billid_div_flex">
+                                              <div>
+                                                <p className="biilid">
+                                                  {langFullData.billNo} :{" "}
+                                                  {bill.caBSeq}{" "}
+                                                </p>
+                                                <div className="d-flex">
+                                                  <p className="d-a-value">
+                                                    {moment(
+                                                      bill?.timeStamp
+                                                    ).format(
+                                                      "DD-MMM-YY | hh:mm:A"
+                                                    )}
+                                                  </p>
+                                                </div>
+                                                <p
+                                                  style={{
+                                                    color:
+                                                      bill.billStatus ==
+                                                      "CANCELLED"
+                                                        ? "#d43939"
+                                                        : "#1C1C1C",
+                                                  }}
+                                                >
+                                                  <div className="flex_class p-0">
+                                                    {bill.billStatus ==
+                                                    "CANCELLED" ? (
+                                                      <div className="complete-dot cancel_dot"></div>
+                                                    ) : (
+                                                      <div className="complete-dot"></div>
+                                                    )}
+                                                    <div className="bill-name">
+                                                      {getText(bill.billStatus)}
+                                                    </div>
+                                                  </div>
+                                                </p>
+                                              </div>
+                                            </div>
                                           </div>
                                         </div>
-                                        <div className="col-lg-2 col-sm-12 col flex_class">
-                                          <p className="number_overflow crop_name">
-                                            {getCurrencyNumberWithOutSymbol(
-                                              crop.rate
-                                            )}
-                                          </p>
-                                        </div>
-                                        <div className="col-lg-2 col-sm-12 col flex_class">
-                                          <p className="number_overflow crop_name">
-                                            {getCurrencyNumberWithOutSymbol(
-                                              crop.total
-                                            )}
-                                          </p>
-                                        </div>
                                       </div>
-                                    ))}
-                                  </div>
-                                  <div className="col-lg-2 flex_class">
-                                    <div
-                                      className="row"
-                                      style={{ width: "100%" }}
-                                    >
-                                      <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
-                                        <p className="crop_name payble_text color_green">
-                                          {getCurrencyNumberWithOutSymbol(
-                                            bill.totalReceivable
-                                          )}
-                                        </p>
-                                        <img
-                                          src={left_arrow}
-                                          alt="left-arrow"
-                                          className="left-arrow-img"
-                                        />
+                                      <div className="col-lg-6 p-0">
+                                        {bill.lineItems.map((crop, index) => (
+                                          <div
+                                            className="row crops_row_bills"
+                                            key={index}
+                                          >
+                                            <div className="col-lg-4 col-sm-12 col">
+                                              <p className="flex_class crop_name">
+                                                <img
+                                                  src={crop.imageUrl}
+                                                  className="crop_image"
+                                                />
+                                                {crop.cropName}
+                                              </p>
+                                            </div>
+                                            <div className="col-lg-4 col-sm-12 col flex_class">
+                                              <div>
+                                                {" "}
+                                                {qtyValues(
+                                                  crop.qty,
+                                                  crop.qtyUnit,
+                                                  crop.weight,
+                                                  crop.wastage,
+                                                  crop.rateType
+                                                )}
+                                              </div>
+                                            </div>
+                                            <div className="col-lg-2 col-sm-12 col flex_class">
+                                              <p className="number_overflow crop_name">
+                                                {getCurrencyNumberWithOutSymbol(
+                                                  crop.rate
+                                                )}
+                                              </p>
+                                            </div>
+                                            <div className="col-lg-2 col-sm-12 col flex_class">
+                                              <p className="number_overflow crop_name">
+                                                {getCurrencyNumberWithOutSymbol(
+                                                  crop.total
+                                                )}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                      <div className="col-lg-2 flex_class">
+                                        <div
+                                          className="row"
+                                          style={{ width: "100%" }}
+                                        >
+                                          <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
+                                            <p className="crop_name payble_text color_green">
+                                              {getCurrencyNumberWithOutSymbol(
+                                                bill.totalReceivable
+                                              )}
+                                            </p>
+                                            <img
+                                              src={left_arrow}
+                                              alt="left-arrow"
+                                              className="left-arrow-img"
+                                            />
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="row partner_no_data_widget_row">
+                            </div>
+                          ) : (
+                            <div className="row partner_no_data_widget_row">
                               <div className="col-lg-5">
                                 <div className="partner_no_data_widget">
                                   <div className="text-center">
@@ -414,30 +457,28 @@ const SellBillBook = (props) => {
                                       className="d-flex mx-auto justify-content-center"
                                     />
                                     <p>
-                                    No bills available for today. <br></br>
-                                     Add to create a new bill
+                                      No bills available for today. <br></br>
+                                      Add to create a new bill
                                     </p>
                                     <button
                                       className="primary_btn"
                                       onClick={handleStep1Header}
                                     >
-                                     Add single Bill
-                                      
+                                      Add single Bill
                                     </button>
-                                 
                                   </div>
                                 </div>
                               </div>
                             </div>
-                      )}
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
-          </div>
-          }
         </div>
       </div>
       {showDatepickerModal1 ? (
@@ -451,15 +492,18 @@ const SellBillBook = (props) => {
         <p></p>
       )}
       {showStepsModalStatus ? (
-        <Steps showStepsModal={showStepsModal} closeStepsModal={() => setShowStepsModal(false)} />
+        <Steps
+          showStepsModal={showStepsModal}
+          closeStepsModal={() => setShowStepsModal(false)}
+        />
       ) : (
         ""
       )}
-       {showBillModalStatus ? (
+      {showBillModalStatus ? (
         <BillView
-        showBillViewModal={showBillModal}
-        closeBillViewModal={() => setShowBillModal(false)}
-        allBillsData ={sellBillData}
+          showBillViewModal={showBillModal}
+          closeBillViewModal={() => setShowBillModal(false)}
+          allBillsData={sellBillData}
         />
       ) : (
         ""
