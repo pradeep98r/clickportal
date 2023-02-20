@@ -182,7 +182,6 @@ function DatePickerModel(props) {
   const [monthDate, setMonthDate] = useState(new Date());
   const [yearDate, setyearDate] = useState(new Date());
   const dateOnchangeEvent = (date, type) => {
-    console.log("came to here");
     setHandleTabs(true);
     setDates(type);
     if (type == "Daily") {
@@ -201,7 +200,7 @@ function DatePickerModel(props) {
   const setToDefaultDate = () => {
     if (link == "/buyerledger" || link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
-        console.log(dates,dateTabs,handleTab,weekDate,week1Date,"dateTabs");
+
         if(dates == 'Daily' && handleTab){
           setDateTabs("Daily");
           setStartDate(dialyDate)
@@ -216,29 +215,10 @@ function DatePickerModel(props) {
           setDateTabs('Yearly')
           setSelectedyearDate(yearDate)
         } else if(dates == 'Custom' && handleTab){
-         
           setDateTabs('Custom');
           setStartsDate(custStDate);
           setEndDate(custEndDate);
         }
-        
-        //setDates(dateTabs);
-        // if(startDate!==null){
-        //   setDateTabs("Custom");
-        //   console.log("customle")
-        // }
-        
-        
-        // if(billEditItemInfo?.dateCustom){
-        //   console.log("customled")
-        // setDateTabs("Custom");
-        // }
-        // else{
-        //   console.log(dateTabs,"datetabs")
-        //   setDateTabs(dateTabs);
-        // }
-        // setStartsDate(new Date());
-        // setEndDate(new Date());
       }
     }
     else {
@@ -335,15 +315,16 @@ function DatePickerModel(props) {
 
   const handleDateTabs = (e) =>{
     setDateTabs(e.target.value);
-    console.log(dateTabs,"datetb")
     if(dateTabs == e.target.value){
-      console.log("came to here");
       setHandleTabs(false);
       setDateTabs(e.target.value);
     }else{
-      console.log("came to handle",dates);
       setDateTabs(e.target.value);
-      setDates(dates);
+      if(link=='/buy_bill_book' || link == "/sellbillbook"){
+        setDates(e.target.value)
+      } else{
+        setDates(dates);
+      }
       setHandleTabs(true);
     }
     setStartDate(new Date());

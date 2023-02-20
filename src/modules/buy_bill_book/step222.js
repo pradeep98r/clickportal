@@ -462,12 +462,12 @@ const Step22 = (props) => {
             if (cropData[index].weight == 0) {
               console.log("came to here0");
               toast.error("Please enter weight", {
-                toastId: "error2",
+                toastId: "error1",
               });
               return null;
             } else if (cropData[index].rate == 0) {
               toast.error("Please enter rate", {
-                toastId: "error3",
+                toastId: "error2",
               });
               return null;
             } else if(cropData[index].weight == cropData[index].wastage){
@@ -476,21 +476,33 @@ const Step22 = (props) => {
               });
               return null;
             }
+            else if(cropData[index].wastage > cropData[index].weight){
+              toast.error("wastage is always less than weight", {
+                toastId: "error4",
+              });
+              return null;
+            }
           } else if (cropData[index].qtyUnit?.toLowerCase() === "kgs") {
             if (cropData[index].weight == 0) {
               console.log("came to here1");
               toast.error("Please enter weight", {
-                toastId: "error2",
+                toastId: "error1",
               });
               return null;
             } else if (cropData[index].rate == 0) {
               toast.error("Please enter rate", {
-                toastId: "error3",
+                toastId: "error2",
               });
               return null;
             } else if(cropData[index].weight == cropData[index].wastage){
               toast.error("wastage is always less than weight", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if(cropData[index].wastage > cropData[index].weight){
+              toast.error("wastage is always less than weight", {
+                toastId: "error4",
               });
               return null;
             }
@@ -505,12 +517,18 @@ const Step22 = (props) => {
               return null;
             } else if (cropData[index].rate == 0) {
               toast.error("Please enter rate", {
-                toastId: "error3",
+                toastId: "error2",
               });
               return null;
             } else if(cropData[index].qty == cropData[index].wastage){
               toast.error("wastage is always less than quantity", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if(cropData[index].wastage > cropData[index]?.qty){
+              toast.error("wastage is always less than quantity", {
+                toastId: "error4",
               });
               return null;
             }
@@ -526,6 +544,12 @@ const Step22 = (props) => {
           } 
           else if(cropData[index].weight == cropData[index].wastage){
             toast.error("wastage is always less than weight", {
+              toastId: "error2",
+            });
+            return null;
+          }
+          else if(cropData[index].wastage > cropData[index].weight){
+            toast.error("wastage is always less than weight", {
               toastId: "error3",
             });
             return null;
@@ -533,7 +557,7 @@ const Step22 = (props) => {
           else if (cropData[index].weight == 0 && !billEditStatus) {
             console.log("came to here0")
               toast.error("Please enter weight", {
-                toastId: "error2",
+                toastId: "error1",
               });
             return null;
           } else if(cropData[index].rateType?.toUpperCase() !== "RATE_PER_UNIT" && billEditStatus)
@@ -550,7 +574,8 @@ const Step22 = (props) => {
               toastId: "error3",
             });
             return null;
-          } else if (
+          } 
+          else if (
             setQuantityBasedtable(cropData[index].qtyUnit) &&
             cropData[index].weight != 0 &&
             cropData[index].rate != 0
