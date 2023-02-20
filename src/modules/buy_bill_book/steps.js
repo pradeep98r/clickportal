@@ -16,8 +16,11 @@ const Steps = (props) => {
   const [cropEditObject, setcropEditObject] = useState([]);
   const [slectedCropstableArray, setslectedCropstableArray] = useState([]);
   const [slectedCrops, setslectedCrops] = useState([]);
+  const [maintainCrops, setMaintainCrops] = useState(false);
+
   const callbackfunction = (chaild, editStatus) => {
     setSelctedCrops(chaild);
+    console.log(chaild,"chaild") 
   };
 
   const partyType = useSelector(
@@ -38,8 +41,11 @@ const Steps = (props) => {
   };
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billViewEditStatus = billEditItemInfo?.billEditStatus;
+  const link = localStorage.getItem('LinkPath');
   const dispatch = useDispatch();
   const clearData = (e) => {
+    setMaintainCrops(true)
+    localStorage.setItem("maintainCrops", true);
     console.log(billViewEditStatus,"stat")
     dispatch(billDate(new Date()));
     localStorage.removeItem("defaultDate");
@@ -109,6 +115,7 @@ const Steps = (props) => {
               return (
                 <Step22
                   parentcall={callbackfunction}
+                  maintainCrops={maintainCrops}
                   cropEditObject={cropEditObject}
                   slectedCropstableArray={slectedCropstableArray}
                   closem={props.closeStepsModal}
