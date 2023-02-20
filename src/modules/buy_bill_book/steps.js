@@ -57,7 +57,7 @@ const Steps = (props) => {
       window.location.reload();
     }
   };
-  console.log()
+
   return (
     <Modal
       show={props.showStepsModal}

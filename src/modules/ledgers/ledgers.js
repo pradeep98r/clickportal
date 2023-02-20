@@ -88,24 +88,28 @@ const Ledgers = (props) => {
     },
   ];
 
-  const onclickDate = () => {
-    setShowDatepickerModal1(true);
-    setShowDatepickerModal(true);
-  };
-  const handleSearch = (event) => {
-    let value = event.target.value.toLowerCase();
-    let result = [];
-    result = allData.filter((data) => {
-      if (data.mobile.includes(value)) {
-        return data.mobile.search(value) != -1;
-      } else if (data.partyName.toLowerCase().includes(value)) {
-        return data.partyName.toLowerCase().search(value) != -1;
-      } else if (data.partyId.toString().includes(value)) {
-        return data.partyId.toString().search(value) != -1;
-      }
-    });
-    setLedgers(result);
-  };
+    const onclickDate = () => {
+        setShowDatepickerModal1(true);
+        setShowDatepickerModal(true);
+    };
+    const handleSearch = (event) => {
+        let value = event.target.value.toLowerCase();
+        let result = [];
+        result = allData.filter((data) => {
+            if (data.mobile.includes(value)) {
+                return data.mobile.search(value) != -1;
+            } else if (data.partyName.toLowerCase().includes(value)) {
+                return data.partyName.toLowerCase().search(value) != -1;
+            } else if (data.partyId.toString().includes(value)) {
+                return data.partyId.toString().search(value) != -1;
+            } else if(data.partyAddress.toLowerCase().includes(value)){
+                return data.partyAddress.toLowerCase().search(value) != -1;
+            } else if(data.shortName.toLowerCase().includes(value)){
+                return data.shortName.toLowerCase().search(value) != -1;
+            }
+        });
+        setLedgers(result);
+    };
 
   useEffect(() => {
     fetchLedgers();

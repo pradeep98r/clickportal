@@ -128,13 +128,44 @@ const Step33 = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response;
-      if (res.data.data.billSetting.length > 0) {
+      // console.log(res,"response")
+      //  Filter the array to include only objects where type=buy and formStatus=1
+      const filteredArray = res.data.data.billSetting.filter((object) => {
+          return object.billType === 'BUY' && object.formStatus === 1;
+      });
+      filteredArray.sort((a, b) => a.groupId - b.groupId);
+      console.log(filteredArray,"filter")
+      //  Group the filtered objects by their groupId using the reduce method
+
+      // const groups = filteredArray.reduce((result, object) => {
+      //   const groupId = object.groupId;
+      //   if (!result[groupId]) {
+      //     result[groupId] = [];
+      //   }
+      //   result[groupId].push(object);
+      //   return result;
+      // }, {});
+      // console.log(groups,"groups")
+      // //Get an array of the groups, sorted by groupId in ascending order
+      // const sortedGroups = Object.values(groups).sort((group1, group2) => {
+      //   return group1[0].groupId - group2[0].groupId;
+      // });
+
+      // // Loop through the sortedGroups array and display the objects in each group
+      // const groupedArray = [];
+      // sortedGroups.forEach((group) => {
+      //   group.forEach((object) => {
+      //     groupedArray.push(object);
+      //   });
+      // });
+      // console.log(groupedArray,"Array")
+      if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
-        for (var i = 0; i < response.length; i++) {
-          if (response[i].billType === "BUY") {
-            if (response[i].formStatus === 1) {
-              Object.assign(response[i], {
-                settingName: response[i].settingName,
+        for (var i = 0; i < filteredArray.length; i++) {
+          if (filteredArray[i].billType === "BUY") {
+            if (filteredArray[i].formStatus === 1) {
+              Object.assign(filteredArray[i], {
+                settingName: filteredArray[i].settingName,
                 tableType: 0,
                 subText: "",
                 subText2: "",
@@ -142,34 +173,36 @@ const Step33 = (props) => {
                 cstmName: "",
                 commentText: "",
               });
+              console.log("came to here")
 
               if (
-                response[i].settingName === "DEFAULT_RATE_TYPE" ||
-                response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
-                response[i].settingName == "WASTAGE"
+                filteredArray[i].settingName === "DEFAULT_RATE_TYPE" ||
+                filteredArray[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
+                filteredArray[i].settingName == "WASTAGE"
               ) {
                 console.log("");
               } else {
-                listSettings(response[i].settingName, response, i);
-                allGroups.push(response[i]);
+                listSettings(filteredArray[i].settingName, filteredArray, i);
+                allGroups.push(filteredArray[i]);
               }
 
-              if (response[i].settingName === "OUT_ST_BALANCE")
+              if (filteredArray[i].settingName === "OUT_ST_BALANCE")
                 setOutBalformStatusvalue(true);
             }
 
-            if (response[i].settingName === "COMMISSION") {
-              setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-              setisShown(response[i].isShown == 1 ? true : false);
-            } else if (response[i].settingName === "RETURN_COMMISSION") {
-              setAddRetComm(response[i].addToGt == 1 ? false : true);
+            if (filteredArray[i].settingName === "COMMISSION") {
+              setIncludeComm(filteredArray[i].includeInLedger == 1 ? true : false);
+              setisShown(filteredArray[i].isShown == 1 ? true : false);
+            } else if (filteredArray[i].settingName === "RETURN_COMMISSION") {
+              setAddRetComm(filteredArray[i].addToGt == 1 ? false : true);
               setIncludeRetComm(
-                response[i].includeInLedger == 1 ? true : false
+                filteredArray[i].includeInLedger == 1 ? true : false
               );
             }
           }
         }
-      } else {
+      }
+       else {
         getDefaultSystemSettings().then((res) => {
           response = res.data.data;
           for (var i = 0; i < response.length; i++) {
@@ -220,6 +253,140 @@ const Step33 = (props) => {
           }
         });
       }
+      // sortedGroups.forEach((group,i) => {
+        
+      //   group.forEach((object) => {
+      //     Object.assign(group[i], {
+      //       settingName: group[i].settingName,
+      //       tableType: 0,
+      //       subText: "",
+      //       subText2: "",
+      //       totalVal: 0,
+      //       cstmName: "",
+      //       commentText: "",
+      //     });
+      //     console.log(i,"i")
+      //     if (
+      //       object.settingName === "DEFAULT_RATE_TYPE" ||
+      //       object.settingName === "SKIP_INDIVIDUAL_EXP" ||
+      //       object.settingName == "WASTAGE"
+      //     ) {
+      //       console.log("came to here");
+      //     } 
+      //     else {
+      //       listSettings(group[i].settingName, response, i);
+      //       allGroups.push(group[i]);
+      //     }
+      //     if (object.settingName === "OUT_ST_BALANCE"){
+      //       setOutBalformStatusvalue(true);
+      //     }
+      //     if (object.settingName === "COMMISSION") {
+      //       setIncludeComm(object.includeInLedger == 1 ? true : false);
+      //       setisShown(object.isShown == 1 ? true : false);
+      //     } else if (object.settingName === "RETURN_COMMISSION") {
+      //       setAddRetComm(object.addToGt == 1 ? false : true);
+      //       setIncludeRetComm(
+      //         object.includeInLedger == 1 ? true : false
+      //       );
+      //     }
+          
+      //     // console.log(object.groupId,`- ${object.settingName}`);
+      //   });
+      // });
+     
+      // if (res.data.data.billSetting.length > 0) {
+      //   response = res.data.data.billSetting;
+      //   for (var i = 0; i < response.length; i++) {
+      //     if (response[i].billType === "BUY") {
+      //       if (response[i].formStatus === 1) {
+      //         Object.assign(response[i], {
+      //           settingName: response[i].settingName,
+      //           tableType: 0,
+      //           subText: "",
+      //           subText2: "",
+      //           totalVal: 0,
+      //           cstmName: "",
+      //           commentText: "",
+      //         });
+
+      //         if (
+      //           response[i].settingName === "DEFAULT_RATE_TYPE" ||
+      //           response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
+      //           response[i].settingName == "WASTAGE"
+      //         ) {
+      //           console.log("");
+      //         } else {
+      //           listSettings(response[i].settingName, response, i);
+      //           allGroups.push(response[i]);
+      //         }
+
+      //         if (response[i].settingName === "OUT_ST_BALANCE")
+      //           setOutBalformStatusvalue(true);
+      //       }
+
+      //       if (response[i].settingName === "COMMISSION") {
+      //         setIncludeComm(response[i].includeInLedger == 1 ? true : false);
+      //         setisShown(response[i].isShown == 1 ? true : false);
+      //       } else if (response[i].settingName === "RETURN_COMMISSION") {
+      //         setAddRetComm(response[i].addToGt == 1 ? false : true);
+      //         setIncludeRetComm(
+      //           response[i].includeInLedger == 1 ? true : false
+      //         );
+      //       }
+      //     }
+      //   }
+      // }
+      //  else {
+      //   getDefaultSystemSettings().then((res) => {
+      //     response = res.data.data;
+      //     for (var i = 0; i < response.length; i++) {
+      //       if (
+      //         response[i].type === "BILL" ||
+      //         response[i].type === "DAILY_CHART"
+      //       ) {
+      //         if (response[i].status === 1) {
+      //           Object.assign(response[i], {
+      //             settingName: response[i].name,
+      //             tableType: 0,
+      //             subText: "",
+      //             subText2: "",
+      //             totalVal: 0,
+      //             cstmName: "",
+      //             value: 0,
+      //             fieldType: null,
+      //           });
+
+      //           if (
+      //             response[i].name === "DEFAULT_RATE_TYPE" ||
+      //             response[i].name === "SKIP_INDIVIDUAL_EXP" ||
+      //             response[i].name == "WASTAGE"
+      //           ) {
+      //             console.log("");
+      //           } else {
+      //             var substring = "CUSTOM_FIELD";
+      //             if (response[i]?.name.includes(substring)) {
+      //               response[i].name = "";
+      //               substring = "";
+      //             }
+      //             listSettings(response[i]?.name, response, i);
+      //             allGroups.push(response[i]);
+      //           }
+
+      //           if (response[i].name === "OUT_ST_BALANCE")
+      //             setOutBalformStatusvalue(true);
+      //         }
+
+      //         if (response[i].name === "COMMISSION") {
+      //           setIncludeComm(true);
+      //           setisShown(true);
+      //         } else if (response[i].name === "RETURN_COMMISSION") {
+      //           setAddRetComm(false);
+      //           setIncludeRetComm(true);
+      //         }
+      //       }
+      //     }
+      //   });
+      // }
     });
   }, [users.buyerInfo]);
   var gTotal = 0;
@@ -658,7 +825,6 @@ const Step33 = (props) => {
       }
     }
     for (var i = 0; i < questionsTitle.length; i++) {
-      console.log(questionsTitle)
       if (questionsTitle[i].field != "") {
         if (questionsTitle[i].less) {
           var t = 0;
@@ -1395,7 +1561,7 @@ const Step33 = (props) => {
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index].settingName)}
+                                    {getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1413,7 +1579,7 @@ const Step33 = (props) => {
                               </div>
                             </div>
                           </div>
-                          {allGroups[index].comments == true ? (
+                          {item?.comments? (
                             <div className="comm_cards">
                               <div className="card input_card">
                                 <div className="row">
