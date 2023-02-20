@@ -20,6 +20,13 @@ const CropDetails = (props) => {
         setBillViewData(JSON.parse(localStorage.getItem("billData")));
       },[props])
     console.log(billData,"data");
+    const totalBagsValue = (bags) => {
+        var totalValue = 0
+        bags.map(item => {
+            totalValue += (item.weight - item.wastage);
+        })
+        return totalValue;
+    }
     return (
         <div>
             <div className='row partner_info_padding pb-0'>
@@ -118,6 +125,28 @@ const CropDetails = (props) => {
                                                 item.wastage,
                                                 item.rateType
                                             )}
+                                        </div>
+                                        <div>
+                                            {item.bags !== null ?
+                                                <div className="flex_class">
+                                                        <span>
+                                                            <span>
+                                                                {item.bags.map(i => {
+                                                                    return (
+                                                                        <span >
+                                                                            <span>{i.weight ? i.weight + " " : ''}</span>
+                                                                            <span>{i.wastage ? ' - ' : ''}</span>
+                                                                            <span>{i.wastage ? i.wastage : ''}</span>
+                                                                            <span>,{" "}</span>
+                                                                        </span>
+                                                                    )
+                                                                })}
+                                                                <span>= {totalBagsValue(item.bags) + "KGS"}</span>
+                                                            </span>
+                                                            
+                                                        </span>
+                                                </div>
+                                                : ''}
                                         </div>
                                     </td>
                                     <td className="col-2">

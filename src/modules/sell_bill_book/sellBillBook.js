@@ -62,8 +62,8 @@ const SellBillBook = (props) => {
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
@@ -72,8 +72,8 @@ const SellBillBook = (props) => {
     } else {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
     }
 
@@ -89,10 +89,10 @@ const SellBillBook = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.message.toUpperCase() == "NETWORK ERROR") {
-          setOnline(true);
-        }
-        setOnline(true);
+        // if (error.message.toUpperCase() == "NETWORK ERROR") {
+        //   setOnline(true);
+        // }
+        // setOnline(true);
         console.log(error);
       });
   };
@@ -165,13 +165,18 @@ const SellBillBook = (props) => {
     });
     setSellBillData(result);
   };
+  const totalBagsValue = (bags) => {
+    var totalValue = 0
+    bags.map(item => {
+      totalValue += (item.weight - item.wastage);
+    })
+    return totalValue;
+  }
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
-          {isOnline ? (
-            <NoInternetConnection />
-          ) : (
+          {isOnline ? <NoInternetConnection /> :
             <div>
               {isLoading ? (
                 <div className="">
@@ -478,7 +483,7 @@ const SellBillBook = (props) => {
                 </div>
               )}
             </div>
-          )}
+          }
         </div>
       </div>
       {showDatepickerModal1 ? (
