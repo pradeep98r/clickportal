@@ -13,7 +13,7 @@ function colorAdjust(color, amount) {
       )
   );
 }
-function getPdfThemeInfo() {
+export default function getPdfThemeInfo() {
   // default shade in app is 80 per
   var settingsData = JSON.parse(localStorage.getItem("settingsData"));
   var primaryColor = settingsData.colorTheme;
@@ -23,10 +23,7 @@ function getPdfThemeInfo() {
     primaryColor: primaryColor,
     lightColor: lightColor,
     darkerColor: darkerColor,
+    mandiName: settingsData.mandiName,
+    signatureUrl: settingsData.drawnSign ? settingsData.signatureUrl : "",
   };
-}
-
-export default function getPdColors() {
-  var pdfThemeInfo = getPdfThemeInfo();
-  console.log(pdfThemeInfo);
 }

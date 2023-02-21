@@ -58,6 +58,10 @@ const GroupTotals = (props) => {
       if (res.data.data.billSetting.length > 0) {
         //res=response.data.data.billSetting;
         billSettingData(res.data.data.billSetting);
+        localStorage.setItem(
+          "BillSettingData",
+          JSON.stringify(res.data.data.billSetting)
+        );
         for (var i = 0; i < res.data.data.billSetting.length; i++) {
           if (
             billData?.partyType.toUpperCase() === "FARMER" ||
@@ -554,37 +558,54 @@ const GroupTotals = (props) => {
           });
         }
         break;
+      default:
+        break;
     }
     return value;
   };
 
-  allGroups.slice().reverse().map((item) => {
-    var substring = "CUSTOM_FIELD";
-    var str = "ADVANCES";
-    if (item?.name.includes(substring)) {
-      item.name = "";
-      substring = "";
-    } else if (item?.name.includes(str)) {
-      item.name = "";
-    }
-    allGroupsTotal += handleGroupNames(item.name);
-    return allGroupsTotal;
-  });
-  groupone.slice().reverse().map((item) => {
-    groupOneTotal += handleGroupNames(item.settingName);
-    return groupOneTotal;
-  });
+  allGroups
+    .slice()
+    .reverse()
+    .map((item) => {
+      var substring = "CUSTOM_FIELD";
+      var str = "ADVANCES";
+      if (item?.name.includes(substring)) {
+        item.name = "";
+        substring = "";
+      } else if (item?.name.includes(str)) {
+        item.name = "";
+      }
+      allGroupsTotal += handleGroupNames(item.name);
+      return allGroupsTotal;
+    });
+  groupone
+    .slice()
+    .reverse()
+    .map((item) => {
+      groupOneTotal += handleGroupNames(item.settingName);
+      return groupOneTotal;
+    });
 
-  groupTwo.slice().reverse().map((item) => {
-    return (groupTwoTotal += handleGroupNames(item.settingName));
-  });
-  groupThree.slice().reverse().map((item) => {
-    return (groupThreeTotal += handleGroupNames(item.settingName));
-  });
+  groupTwo
+    .slice()
+    .reverse()
+    .map((item) => {
+      return (groupTwoTotal += handleGroupNames(item.settingName));
+    });
+  groupThree
+    .slice()
+    .reverse()
+    .map((item) => {
+      return (groupThreeTotal += handleGroupNames(item.settingName));
+    });
 
-  groupFour.slice().reverse().map((item) => {
-    return (groupFourTotal += handleGroupNames(item.settingName));
-  });
+  groupFour
+    .slice()
+    .reverse()
+    .map((item) => {
+      return (groupFourTotal += handleGroupNames(item.settingName));
+    });
 
   const handleSettingName = (item, list) => {
     var substring = "CUSTOM_FIELD";
@@ -746,14 +767,14 @@ const GroupTotals = (props) => {
     }
   };
 
-  const feePerUnit = () =>{
-    var totalQty =0;
-    billData.lineItems?.map(item=>{
+  const feePerUnit = () => {
+    var totalQty = 0;
+    billData.lineItems?.map((item) => {
       totalQty += item.qty;
       return totalQty;
-    })
+    });
     return totalQty;
-  }
+  };
   return (
     <div>
       <div>
@@ -761,49 +782,53 @@ const GroupTotals = (props) => {
           <div className="col-lg-5"></div>
           {allGroups.length > 0 ? (
             <div className="pl-0 col-lg-7 col_border_left pr-0">
-              {allGroups.slice().reverse().map((item, index) => {
-                return (
-                  <div>
-                    <div className="row" key={index}>
-                      <div className="col-lg-2"></div>
-                      <div className="col-lg-6 align-items">
-                        <p className="groups_value">
-                          {(
+              {allGroups
+                .slice()
+                .reverse()
+                .map((item, index) => {
+                  return (
+                    <div>
+                      <div className="row" key={index}>
+                        <div className="col-lg-2"></div>
+                        <div className="col-lg-6 align-items">
+                          <p className="groups_value">
+                            {(
+                              item.name !== handleSettingName(item.name, item)
+                                ? " "
+                                : handleGroupNames(item.name) === 0
+                            )
+                              ? " "
+                              : item.name?.replaceAll("_", " ")}{" "}
+                          </p>
+                        </div>
+                        <div className="col-lg-4">
+                          <p className="groups_value">
+                            {handleGroupNames(
+                              handleSettingName(item.name, item)
+                            ) === 0 ? (
+                              " "
+                            ) : (
+                              <span>+ {handleGroupNames(item.name)}</span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <div
+                        className={
+                          (
                             item.name !== handleSettingName(item.name, item)
                               ? " "
                               : handleGroupNames(item.name) === 0
                           )
                             ? " "
-                            : item.name?.replaceAll("_", " ")}{" "}
-                        </p>
-                      </div>
-                      <div className="col-lg-4">
-                        <p className="groups_value">
-                          {handleGroupNames(
-                            handleSettingName(item.name, item)
-                          ) === 0
-                            ? " "
-                            :<span>+ {handleGroupNames(item.name)}</span>
-                          }
-                        </p>
-                      </div>
+                            : item.name?.replaceAll("_", " ")
+                            ? "hrs-line"
+                            : ""
+                        }
+                      ></div>
                     </div>
-                    <div
-                      className={
-                        (
-                          item.name !== handleSettingName(item.name, item)
-                            ? " "
-                            : handleGroupNames(item.name) === 0
-                        )
-                          ? " "
-                          : item.name?.replaceAll("_", " ")
-                          ? "hrs-line"
-                          : ""
-                      }
-                    ></div>
-                  </div>
-                );
-              })}
+                  );
+                })}
               <div className="row group-one-total">
                 <div className="pl-0 col-lg-8 pr-0"></div>
                 <div className="col-lg-4">
@@ -927,136 +952,253 @@ const GroupTotals = (props) => {
           ) : (
             <div className="pl-0 col-lg-7 col_border_left pr-0">
               <div>
-                {groupone.slice().reverse().map((item, index) => {
-                  return (
-                    <div>
-                      <div className="row" key={index}>
-                        {/* <div className="col-lg-2"></div> */}
-                        <div className="col-lg-5 align-data-items">
-                        <div>
-                          <p className="groups_value">
-                            <div> 
-                            {(
+                {groupone
+                  .slice()
+                  .reverse()
+                  .map((item, index) => {
+                    return (
+                      <div>
+                        <div className="row" key={index}>
+                          {/* <div className="col-lg-2"></div> */}
+                          <div className="col-lg-5 align-data-items">
+                            <div>
+                              <p className="groups_value">
+                                <div>
+                                  {(
+                                    item.settingName !==
+                                    handleSettingName(item.settingName, item)
+                                      ? " "
+                                      : handleGroupNames(item.settingName) === 0
+                                  )
+                                    ? " "
+                                    : item.settingName.includes("CUSTOM_FIELD")
+                                    ? item.customFieldName
+                                    : item.settingName?.replaceAll("_", " ") +
+                                      ":"}{" "}
+                                  <p className="fee-perc">
+                                    {item.settingName == "COMMISSION" ? (
+                                      billData?.comm ? (
+                                        <span className="fee-percentage">
+                                          Rate %
+                                          {(
+                                            (billData?.comm /
+                                              billData?.grossTotal) *
+                                            100
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.settingName == "RETURN_COMMISSION" ? (
+                                      billData?.rtComm ? (
+                                        <span className="fee-percentage">
+                                          Rate %
+                                          {(
+                                            (billData?.rtComm /
+                                              billData?.grossTotal) *
+                                            100
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.settingName == "MANDI_FEE" ? (
+                                      billData?.mandiFee ? (
+                                        <span className="fee-percentage">
+                                          Rate %
+                                          {(
+                                            (billData?.mandiFee /
+                                              billData?.grossTotal) *
+                                            100
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.settingName == "TRANSPORTATION" ? (
+                                      billData?.transportation ? (
+                                        <span className="fee-percentage">
+                                          Fee per Unit{" "}
+                                          {(
+                                            billData?.transportation /
+                                            feePerUnit()
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.settingName == "RENT" ? (
+                                      billData?.rent ? (
+                                        <span className="fee-percentage">
+                                          Fee per Unit{" "}
+                                          {(
+                                            billData?.rent / feePerUnit()
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.settingName == "LABOUR_CHARGES" ? (
+                                      billData?.labourCharges ? (
+                                        <span className="fee-percentage">
+                                          Fee per Unit{" "}
+                                          {(
+                                            billData?.labourCharges /
+                                            feePerUnit()
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    <span>
+                                      {billData?.customFields.map((i) => {
+                                        if (i.field == item.settingName) {
+                                          return i.comments;
+                                        }
+                                      })}
+                                    </span>
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.settingName == "OTHER_FEE" ? (
+                                      billData?.misc ||
+                                      (billData?.otherFee &&
+                                        billData?.comments) ? (
+                                        <span className="fee-percentage">
+                                          {billData?.comments}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                </div>
+                              </p>
+                            </div>
+                          </div>
+                          <div className="col-lg-3 p-0">
+                            <p className="fee-perc">
+                              {item.settingName == "TRANSPORTATION" ? (
+                                billData?.transportation ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "RENT" ? (
+                                billData?.rent ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "LABOUR_CHARGES" ? (
+                                billData?.labourCharges ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            {/* <div className="d-flex"> */}
+                            <p className="groups_values">
+                              {handleGroupNames(
+                                handleSettingName(item.settingName, item)
+                              ) === 0 ? (
+                                " "
+                              ) : (
+                                <span>
+                                  {(billData?.partyType.toUpperCase() ==
+                                    "BUYER" ||
+                                    billData?.partyType.toUpperCase() ==
+                                      "FARMER") &&
+                                  item.settingName == "RETURN_COMMISSION" &&
+                                  item.addToGt == 1 &&
+                                  billData?.rtComm > 0
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : billData?.partyType.toUpperCase() ==
+                                        "BUYER" &&
+                                      item.settingName !== "RETURN_COMMISSION"
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : handleGroupNames(item.settingName)}
+                                </span>
+                              )}
+                            </p>
+                            {/* </div> */}
+                          </div>
+                        </div>
+                        <div
+                          className={
+                            (
                               item.settingName !==
                               handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
-                              : item.settingName.includes("CUSTOM_FIELD")
-                              ? item.customFieldName
-                              : item.settingName?.replaceAll("_", " ")+":"}{" "}
-                          <p className="fee-perc">
-                          {item.settingName == 'COMMISSION'?
-                          billData?.comm?
-                          <span className="fee-percentage">Rate %{((billData?.comm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RETURN_COMMISSION'?
-                          billData?.rtComm?
-                          <span className="fee-percentage">Rate %{((billData?.rtComm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'MANDI_FEE'?
-                          billData?.mandiFee?
-                          <span className="fee-percentage">Rate %{((billData?.mandiFee/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'TRANSPORTATION'?
-                           billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                            <span>
-                            {billData?.customFields.map(i=>{
-                              if(i.field == item.settingName){
-                                return i.comments;
-                              }
-                            })}
-                            </span>
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'OTHER_FEE'?
-                           billData?.misc || billData?.otherFee && billData?.comments?
-                          <span className="fee-percentage">{billData?.comments
+                              : item.settingName?.replaceAll("_", " ")
+                              ? "hrs-line"
+                              : ""
                           }
-                          </span>:''
-                          :""}</p>
-                          </div>
-                          </p>
-                        </div>
-                        </div>
-                        <div className="col-lg-3 p-0">
-                          <p className="fee-perc">
-                            {item.settingName == 'TRANSPORTATION'?
-                            billData?.transportation?
-                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                            :""}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :''}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :""}</p>
-                        </div>
-                        <div className="col-lg-3">
-                          {/* <div className="d-flex"> */}
-                          <p className="groups_values">
-                            {handleGroupNames(
-                              handleSettingName(item.settingName, item)
-                            ) === 0
-                              ? " "
-                              :
-                              <span>{(billData?.partyType.toUpperCase() == 'BUYER'
-                              || billData?.partyType.toUpperCase() == 'FARMER')
-                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
-                              && billData?.rtComm > 0)?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER' 
-                              && item.settingName!=='RETURN_COMMISSION' ?' + '+
-                              handleGroupNames(item.settingName).toFixed(2)
-                              :handleGroupNames(item.settingName)}</span>
-                            }
-                          </p>
-                        {/* </div> */}
-                        </div>
+                        ></div>
                       </div>
-                      <div
-                        className={
-                          (
-                            item.settingName !==
-                            handleSettingName(item.settingName, item)
-                              ? " "
-                              : handleGroupNames(item.settingName) === 0
-                          )
-                            ? " "
-                            : item.settingName?.replaceAll("_", " ")
-                            ? "hrs-line"
-                            : ""
-                        }
-                      ></div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 <div className="row group-one-total">
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
@@ -1081,131 +1223,248 @@ const GroupTotals = (props) => {
                 </div>
               </div>
               <div>
-                {groupTwo.slice().reverse().map((item, index) => {
-                  return (
-                    <div>
-                      <div className="row" key={index}>
-                        {/* <div className="col-lg-2"></div> */}
-                        <div className="col-lg-5">
-                          <p className="groups_value">
-                            <div>
-                            {(
+                {groupTwo
+                  .slice()
+                  .reverse()
+                  .map((item, index) => {
+                    return (
+                      <div>
+                        <div className="row" key={index}>
+                          {/* <div className="col-lg-2"></div> */}
+                          <div className="col-lg-5">
+                            <p className="groups_value">
+                              <div>
+                                {(
+                                  item.settingName !==
+                                  handleSettingName(item.settingName, item)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName.includes("CUSTOM_FIELD")
+                                  ? item.customFieldName
+                                  : item.settingName?.replaceAll("_", " ") +
+                                    ":"}{" "}
+                                <p className="fee-perc">
+                                  {item.settingName == "COMMISSION" ? (
+                                    billData?.comm ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.comm /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "RETURN_COMMISSION" ? (
+                                    billData?.rtComm ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.rtComm /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "MANDI_FEE" ? (
+                                    billData?.mandiFee ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.mandiFee /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "TRANSPORTATION" ? (
+                                    billData?.transportation ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.transportation /
+                                          feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "RENT" ? (
+                                    billData?.rent ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.rent / feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "LABOUR_CHARGES" ? (
+                                    billData?.labourCharges ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.labourCharges / feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  <span>
+                                    {billData?.customFields.map((i) => {
+                                      if (i.field == item.settingName) {
+                                        return i.comments;
+                                      }
+                                    })}
+                                  </span>
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "OTHER_FEE" ? (
+                                    billData?.misc ||
+                                    (billData?.otherFee &&
+                                      billData?.comments) ? (
+                                      <span className="fee-percentage">
+                                        {billData?.comments}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                              </div>
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="fee-perc">
+                              {item.settingName == "TRANSPORTATION" ? (
+                                billData?.transportation ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "RENT" ? (
+                                billData?.rent ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "LABOUR_CHARGES" ? (
+                                billData?.labourCharges ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="groups_values">
+                              {handleGroupNames(
+                                handleSettingName(item.settingName, item)
+                              ) === 0 ? (
+                                " "
+                              ) : (
+                                <span>
+                                  {(billData?.partyType.toUpperCase() ==
+                                    "BUYER" ||
+                                    billData?.partyType.toUpperCase() ==
+                                      "FARMER") &&
+                                  item.settingName == "RETURN_COMMISSION" &&
+                                  item.addToGt == 1 &&
+                                  billData?.rtComm > 0
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : billData?.partyType.toUpperCase() ==
+                                        "BUYER" &&
+                                      item.settingName !== "RETURN_COMMISSION"
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : handleGroupNames(item.settingName)}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          className={
+                            (
                               item.settingName !==
                               handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
-                              : item.settingName.includes("CUSTOM_FIELD")
-                              ? item.customFieldName
-                              : item.settingName?.replaceAll("_", " ")+":"}{" "}
-                          <p className="fee-perc">
-                          {item.settingName == 'COMMISSION'?
-                          billData?.comm?
-                          <span className="fee-percentage">Rate %{((billData?.comm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RETURN_COMMISSION'?
-                          billData?.rtComm?
-                          <span className="fee-percentage">Rate %{((billData?.rtComm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'MANDI_FEE'?
-                          billData?.mandiFee?
-                          <span className="fee-percentage">Rate %{((billData?.mandiFee/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'TRANSPORTATION'?
-                           billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                           <p className="fee-perc">
-                            <span>
-                            {billData?.customFields.map(i=>{
-                              if(i.field == item.settingName){
-                                return i.comments;
-                              }
-                            })}
-                            </span>
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'OTHER_FEE'?
-                           billData?.misc || billData?.otherFee && billData?.comments?
-                          <span className="fee-percentage">{billData?.comments
+                              : item.settingName?.replaceAll("_", " ")
+                              ? "hrs-line"
+                              : ""
                           }
-                          </span>:''
-                          :""}</p>
-                          </div>
-                          </p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="fee-perc">
-                            {item.settingName == 'TRANSPORTATION'?
-                            billData?.transportation?
-                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                            :""}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :''}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :""}</p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="groups_values">
-                            {handleGroupNames(
-                              handleSettingName(item.settingName, item)
-                            ) === 0
-                              ? " "
-                              :<span>{(billData?.partyType.toUpperCase() == 'BUYER'
-                              || billData?.partyType.toUpperCase() == 'FARMER')
-                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
-                              && billData?.rtComm > 0)?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER'
-                              && item.settingName!=='RETURN_COMMISSION'?' + '+
-                              handleGroupNames(item.settingName).toFixed(2)
-                              :handleGroupNames(item.settingName)}</span>
-                              }
-                          </p>
-                        </div>
+                        ></div>
                       </div>
-                      <div
-                        className={
-                          (
-                            item.settingName !==
-                            handleSettingName(item.settingName, item)
-                              ? " "
-                              : handleGroupNames(item.settingName) === 0
-                          )
-                            ? " "
-                            : item.settingName?.replaceAll("_", " ")
-                            ? "hrs-line"
-                            : ""
-                        }
-                      ></div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 <div className="row group-one-total">
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
@@ -1230,131 +1489,248 @@ const GroupTotals = (props) => {
                 </div>
               </div>
               <div>
-                {groupThree.slice().reverse().map((item, index) => {
-                  return (
-                    <div>
-                      <div className="row" key={index}>
-                        {/* <div className="col-lg-2"></div> */}
-                        <div className="col-lg-5">
-                        <p className="groups_value">
-                            <div>
-                            {(
+                {groupThree
+                  .slice()
+                  .reverse()
+                  .map((item, index) => {
+                    return (
+                      <div>
+                        <div className="row" key={index}>
+                          {/* <div className="col-lg-2"></div> */}
+                          <div className="col-lg-5">
+                            <p className="groups_value">
+                              <div>
+                                {(
+                                  item.settingName !==
+                                  handleSettingName(item.settingName, item)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName.includes("CUSTOM_FIELD")
+                                  ? item.customFieldName
+                                  : item.settingName?.replaceAll("_", " ") +
+                                    ":"}{" "}
+                                <p className="fee-perc">
+                                  {item.settingName == "COMMISSION" ? (
+                                    billData?.comm ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.comm /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "RETURN_COMMISSION" ? (
+                                    billData?.rtComm ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.rtComm /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "MANDI_FEE" ? (
+                                    billData?.mandiFee ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.mandiFee /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "TRANSPORTATION" ? (
+                                    billData?.transportation ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.transportation /
+                                          feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "RENT" ? (
+                                    billData?.rent ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.rent / feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "LABOUR_CHARGES" ? (
+                                    billData?.labourCharges ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.labourCharges / feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  <span>
+                                    {billData?.customFields.map((i) => {
+                                      if (i.field == item.settingName) {
+                                        return i.comments;
+                                      }
+                                    })}
+                                  </span>
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "OTHER_FEE" ? (
+                                    billData?.misc ||
+                                    (billData?.otherFee &&
+                                      billData?.comments) ? (
+                                      <span className="fee-percentage">
+                                        {billData?.comments}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                              </div>
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="fee-perc">
+                              {item.settingName == "TRANSPORTATION" ? (
+                                billData?.transportation ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "RENT" ? (
+                                billData?.rent ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "LABOUR_CHARGES" ? (
+                                billData?.labourCharges ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="groups_values">
+                              {handleGroupNames(
+                                handleSettingName(item.settingName, item)
+                              ) === 0 ? (
+                                " "
+                              ) : (
+                                <span>
+                                  {(billData?.partyType.toUpperCase() ==
+                                    "BUYER" ||
+                                    billData?.partyType.toUpperCase() ==
+                                      "FARMER") &&
+                                  item.settingName == "RETURN_COMMISSION" &&
+                                  item.addToGt == 1 &&
+                                  billData?.rtComm > 0
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : billData?.partyType.toUpperCase() ==
+                                        "BUYER" &&
+                                      item.settingName !== "RETURN_COMMISSION"
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : handleGroupNames(item.settingName)}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          className={
+                            (
                               item.settingName !==
                               handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
-                              : item.settingName.includes("CUSTOM_FIELD")
-                              ? item.customFieldName
-                              : item.settingName?.replaceAll("_", " ")+":"}{" "}
-                          <p className="fee-perc">
-                          {item.settingName == 'COMMISSION'?
-                          billData?.comm?
-                          <span className="fee-percentage">Rate %{((billData?.comm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RETURN_COMMISSION'?
-                          billData?.rtComm?
-                          <span className="fee-percentage">Rate %{((billData?.rtComm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'MANDI_FEE'?
-                          billData?.mandiFee?
-                          <span className="fee-percentage">Rate %{((billData?.mandiFee/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'TRANSPORTATION'?
-                           billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                           <p className="fee-perc">
-                            <span>
-                            {billData?.customFields.map(i=>{
-                              if(i.field == item.settingName){
-                                return i.comments;
-                              }
-                            })}
-                            </span>
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'OTHER_FEE'?
-                           billData?.misc || billData?.otherFee && billData?.comments?
-                          <span className="fee-percentage">{billData?.comments
+                              : item.settingName?.replaceAll("_", " ")
+                              ? "hrs-line"
+                              : ""
                           }
-                          </span>:''
-                          :""}</p>
-                          </div>
-                          </p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="fee-perc">
-                            {item.settingName == 'TRANSPORTATION'?
-                            billData?.transportation?
-                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                            :""}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :''}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :""}</p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="groups_values">
-                            {handleGroupNames(
-                              handleSettingName(item.settingName, item)
-                            ) === 0
-                              ? " "
-                              :<span>{(billData?.partyType.toUpperCase() == 'BUYER'
-                              || billData?.partyType.toUpperCase() == 'FARMER')
-                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
-                              && billData?.rtComm > 0)?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER'
-                              && item.settingName!=='RETURN_COMMISSION'?' + '+
-                              handleGroupNames(item.settingName).toFixed(2)
-                              :handleGroupNames(item.settingName)}</span>
-                              }
-                          </p>
-                        </div>
+                        ></div>
                       </div>
-                      <div
-                        className={
-                          (
-                            item.settingName !==
-                            handleSettingName(item.settingName, item)
-                              ? " "
-                              : handleGroupNames(item.settingName) === 0
-                          )
-                            ? " "
-                            : item.settingName?.replaceAll("_", " ")
-                            ? "hrs-line"
-                            : ""
-                        }
-                      ></div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 <div className="row group-one-total">
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
@@ -1379,133 +1755,248 @@ const GroupTotals = (props) => {
                 </div>
               </div>
               <div>
-                {groupFour.slice().reverse().map((item, index) => {
-                  return (
-                    <div>
-                      <div className="row" key={index}>
-                        {/* <div className="col-lg-2"></div> */}
-                        <div className="col-lg-5">
-                        <p className="groups_value">
-
-                            <div>
-                            {(
+                {groupFour
+                  .slice()
+                  .reverse()
+                  .map((item, index) => {
+                    return (
+                      <div>
+                        <div className="row" key={index}>
+                          {/* <div className="col-lg-2"></div> */}
+                          <div className="col-lg-5">
+                            <p className="groups_value">
+                              <div>
+                                {(
+                                  item.settingName !==
+                                  handleSettingName(item.settingName, item)
+                                    ? " "
+                                    : handleGroupNames(item.settingName) === 0
+                                )
+                                  ? " "
+                                  : item.settingName.includes("CUSTOM_FIELD")
+                                  ? item.customFieldName
+                                  : item.settingName?.replaceAll("_", " ") +
+                                    ":"}{" "}
+                                <p className="fee-perc">
+                                  {item.settingName == "COMMISSION" ? (
+                                    billData?.comm ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.comm /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "RETURN_COMMISSION" ? (
+                                    billData?.rtComm ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.rtComm /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "MANDI_FEE" ? (
+                                    billData?.mandiFee ? (
+                                      <span className="fee-percentage">
+                                        Rate %
+                                        {(
+                                          (billData?.mandiFee /
+                                            billData?.grossTotal) *
+                                          100
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "TRANSPORTATION" ? (
+                                    billData?.transportation ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.transportation /
+                                          feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "RENT" ? (
+                                    billData?.rent ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.rent / feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "LABOUR_CHARGES" ? (
+                                    billData?.labourCharges ? (
+                                      <span className="fee-percentage">
+                                        Fee per Unit{" "}
+                                        {(
+                                          billData?.labourCharges / feePerUnit()
+                                        ).toFixed(2)}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                                <p className="fee-perc">
+                                  <span>
+                                    {billData?.customFields.map((i) => {
+                                      if (i.field == item.settingName) {
+                                        return i.comments;
+                                      }
+                                    })}
+                                  </span>
+                                </p>
+                                <p className="fee-perc">
+                                  {item.settingName == "OTHER_FEE" ? (
+                                    billData?.misc ||
+                                    (billData?.otherFee &&
+                                      billData?.comments) ? (
+                                      <span className="fee-percentage">
+                                        {billData?.comments}
+                                      </span>
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    ""
+                                  )}
+                                </p>
+                              </div>
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="fee-perc">
+                              {item.settingName == "TRANSPORTATION" ? (
+                                billData?.transportation ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "RENT" ? (
+                                billData?.rent ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.settingName == "LABOUR_CHARGES" ? (
+                                billData?.labourCharges ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="groups_values">
+                              {handleGroupNames(
+                                handleSettingName(item.settingName, item)
+                              ) === 0 ? (
+                                " "
+                              ) : (
+                                <span>
+                                  {(billData?.partyType.toUpperCase() ==
+                                    "BUYER" ||
+                                    billData?.partyType.toUpperCase() ==
+                                      "FARMER") &&
+                                  item.settingName == "RETURN_COMMISSION" &&
+                                  item.addToGt == 1 &&
+                                  billData?.rtComm > 0
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : billData?.partyType.toUpperCase() ==
+                                        "BUYER" &&
+                                      item.settingName !== "RETURN_COMMISSION"
+                                    ? " + " +
+                                      handleGroupNames(
+                                        item.settingName
+                                      ).toFixed(2)
+                                    : handleGroupNames(item.settingName)}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                        <div
+                          className={
+                            (
                               item.settingName !==
                               handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
-                              : item.settingName.includes("CUSTOM_FIELD")
-                              ? item.customFieldName
-                              : item.settingName?.replaceAll("_", " ")+":"}{" "}
-                          
-                          <p className="fee-perc">
-                          {item.settingName == 'COMMISSION'?
-                          billData?.comm?
-                          <span className="fee-percentage">Rate %{((billData?.comm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RETURN_COMMISSION'?
-                          billData?.rtComm?
-                          <span className="fee-percentage">Rate %{((billData?.rtComm/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'MANDI_FEE'?
-                          billData?.mandiFee?
-                          <span className="fee-percentage">Rate %{((billData?.mandiFee/billData?.grossTotal)*100).toFixed(2)}</span>:''
-                          :''}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'TRANSPORTATION'?
-                           billData?.transportation?
-                          <span className="fee-percentage">Fee per Unit {((billData?.transportation/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="fee-percentage">Fee per Unit {((billData?.rent/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                          <span className="fee-percentage">Fee per Unit {((billData?.labourCharges/feePerUnit())).toFixed(2)}
-                          </span>:''
-                          :""}</p>
-                           <p className="fee-perc">
-                            <span>
-                            {billData?.customFields.map(i=>{
-                              if(i.field == item.settingName){
-                                return i.comments;
-                              }
-                            })}
-                            </span>
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'OTHER_FEE'?
-                           billData?.misc || billData?.otherFee && billData?.comments?
-                          <span className="fee-percentage">{billData?.comments
+                              : item.settingName?.replaceAll("_", " ")
+                              ? "hrs-line"
+                              : ""
                           }
-                          </span>:''
-                          :""}</p>
-                          </div>
-                          </p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="fee-perc">
-                            {item.settingName == 'TRANSPORTATION'?
-                            billData?.transportation?
-                            <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                            :""}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'RENT'?
-                           billData?.rent?
-                          <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :''}
-                          </p>
-                          <p className="fee-perc">
-                          {item.settingName == 'LABOUR_CHARGES'?
-                           billData?.labourCharges?
-                           <span className="units-cal">{feePerUnit().toFixed(1)} Units</span>:''
-                          :""}</p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="groups_values">
-                            {handleGroupNames(
-                              handleSettingName(item.settingName, item)
-                            ) === 0
-                              ? " "
-                              :<span>{(billData?.partyType.toUpperCase() == 'BUYER'
-                              || billData?.partyType.toUpperCase() == 'FARMER')
-                              && (item.settingName == "RETURN_COMMISSION" && item.addToGt==1
-                              && billData?.rtComm > 0)?
-                              ' + '+ handleGroupNames(item.settingName).toFixed(2):
-                              billData?.partyType.toUpperCase() == 'BUYER'
-                              && item.settingName!=='RETURN_COMMISSION'?' + '+
-                              handleGroupNames(item.settingName).toFixed(2)
-                              :handleGroupNames(item.settingName)}</span>
-                              }
-                          </p>
-                        </div>
+                        ></div>
                       </div>
-                      <div
-                        className={
-                          (
-                            item.settingName !==
-                            handleSettingName(item.settingName, item)
-                              ? " "
-                              : handleGroupNames(item.settingName) === 0
-                          )
-                            ? " "
-                            : item.settingName?.replaceAll("_", " ")
-                            ? "hrs-line"
-                            : ""
-                        }
-                      ></div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
                 <div className="row group-one-total">
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4">
@@ -1584,7 +2075,7 @@ const GroupTotals = (props) => {
                   </div>
                 </div>
               </div>
-             
+
               <div></div>
               <div>
                 <div className="row">
