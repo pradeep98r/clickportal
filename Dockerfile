@@ -8,6 +8,8 @@ COPY . /app
 # Install libpng-dev to fix the deployment issue
 
 RUN apt-get update -y
+RUN apt-get install -y wget
+
 RUN wget https://sourceforge.net/projects/libpng/files/libpng16/1.6.37/libpng-1.6.37.tar.gz/download -O libpng.tar.gz
 RUN tar -xzf libpng.tar.gz
 RUN cd libpng-1.6.37/
