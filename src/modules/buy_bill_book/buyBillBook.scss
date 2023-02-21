@@ -365,6 +365,8 @@ option[value=""][disabled] {
   overflow-y: hidden;
   white-space: nowrap;
   position: relative;
+  flex-wrap:initial;
+  padding-top: 10px;
 }
 .other_Crop {
   :hover {
@@ -722,7 +724,7 @@ input:focus-visible {
 }
 article {
   display: none;
-  height: 495px;
+  height: 400px;
   width: 100%;
 }
 .custom_picker, .week_picker{
@@ -1438,5 +1440,8 @@ font-size: 12px;
  }
  .desk_responsive{
   display: none;
+}
+.custom_picker, .week_picker {
+  height: 420px;
 }
 }
