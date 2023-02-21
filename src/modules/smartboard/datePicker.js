@@ -513,6 +513,7 @@ function DatePickerModel(props) {
                 selectsRange
                 inline
                 maxDate={new Date()}
+                disabledKeyboardNavigation
               />
             </article>
           </div>
