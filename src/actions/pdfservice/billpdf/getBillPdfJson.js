@@ -230,7 +230,13 @@ function getQuantityData(qty, qtyUnit, weight) {
     qtyUnit.toLowerCase() === "kgs"
       ? ""
       : getCropUnit(qtyUnit))
-  } ${qty === 0 || qty === null ? "" : weight === 0 || weight === null ? "" : " | "}
+  } ${
+    qty === 0 || qty === null
+      ? ""
+      : weight === 0 || weight === null
+      ? ""
+      : " | "
+  }
   ${
     getCurrencyNumberWithOneDigit(weight) +
     (qtyUnit.toLowerCase() === "loads" ||
@@ -378,6 +384,22 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   }
 };
 
+function getGroupSettingsList(billSettingsData, isFarmer) {
+  var groupListData = [];
+  var hiddenFields = [
+    "COMM_INCLUDE",
+    "DEFAULT_RATE_TYPE",
+    "SKIP_INDIVIDUAL_EXP",
+    "BILL_EDIT",
+    "WASTAGE",
+    "OUT_ST_BALANCE",
+    "CASH_PAID",
+    "CASH_RECEIVED",
+  ];
+  billSettingsData.forEach((settingData) => {});
+  return groupListData;
+}
+
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
   var colorThemeInfo = getPdfThemeInfo();
   var headerData = getPdfHeaderData({});
@@ -430,27 +452,44 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
         individualBags: getIndividualBags(item.bags),
       };
     }),
-    groupSettings: [
-      { settingType: "commission", value: "- 418.24" },
-      { settingType: "return Commission", value: "+ 418.24" },
-      { settingType: "transportation", value: "- 412.0" },
-      { settingType: "labour", value: "- 4532.0" },
-      { settingType: "rent", value: "- 412.0" },
-      { settingType: "mandi Fee", value: "- 418.24" },
-      { settingType: "govt Fee", value: "- 2.0" },
-      { settingType: "SUBTOTAL", value: "₹15,135.76" },
-    ],
+
     finalLedgerBalance: getFinalLedgerBalance(
       billData,
       billSettingsData,
       isFarmer
     ),
-    // billType: billTypeToString[billViewViewModel.billType] ?? "",
-    // totalBillAmount: billViewViewModel.totalBillAmount.toPrice(),
     outStandingBal: billData.outStBal.toLocaleString("en-IN", {
       maximumFractionDigits: 2,
       style: "currency",
       currency: "INR",
     }),
+    // totalBillAmount: billViewViewModel.totalBillAmount.toPrice(),
+    groupSettings: getGroupSettingsList(billSettingsData, isFarmer),
+
+    // [
+    //   { settingType: "commission", value: "- 418.24" },
+    //   { settingType: "return Commission", value: "+ 418.24" },
+    //   { settingType: "transportation", value: "- 412.0" },
+    //   { settingType: "labour", value: "- 4532.0" },
+    //   { settingType: "rent", value: "- 412.0" },
+    //   { settingType: "mandi Fee", value: "- 418.24" },
+    //   { settingType: "govt Fee", value: "- 2.0" },
+    //   { settingType: "SUBTOTAL", value: "₹15,135.76" },
+    // ],
   };
+
+  /*
+  
+   {billData?.grossTotal + allGroupsTotal === 0 ||
+  billData?.grossTotal + allGroupsTotal === null
+    ? " "
+    : (billData?.grossTotal + allGroupsTotal).toLocaleString(
+        "en-IN",
+        {
+          maximumFractionDigits: 2,
+          style: "currency",
+          currency: "INR",
+        }
+      )}
+  */
 }

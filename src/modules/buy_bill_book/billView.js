@@ -196,8 +196,7 @@ const BillView = (props) => {
       // } else {
       //   setDisplayCancel(false);
       // }
-    }
-    else{
+    } else {
       setPrevNextDisable(true);
     }
   };
@@ -216,8 +215,7 @@ const BillView = (props) => {
       // } else {
       //   setDisplayCancel(false);
       // }
-    }
-    else{
+    } else {
       setNextDisable(true);
     }
   };
@@ -268,7 +266,7 @@ const BillView = (props) => {
                 <div className="row">
                   <div className="col-lg-8"></div>
                   <div className="col-lg-4 stamp_img">
-                    {(billData?.billStatus?.toUpperCase() == "CANCELLED") && (
+                    {billData?.billStatus?.toUpperCase() == "CANCELLED" && (
                       <img src={cancel_bill_stamp} alt="stammp_img" />
                     )}
                   </div>
@@ -288,7 +286,7 @@ const BillView = (props) => {
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-              {(billData?.billStatus?.toUpperCase() == "CANCELLED") ? (
+              {billData?.billStatus?.toUpperCase() == "CANCELLED" ? (
                 ""
               ) : (
                 <div>
