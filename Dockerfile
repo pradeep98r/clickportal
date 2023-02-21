@@ -4,6 +4,8 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
+RUN yum install -y epel-release pngquant
+
 RUN npm install --force
 #    && \
 #    npm audit fix --force
