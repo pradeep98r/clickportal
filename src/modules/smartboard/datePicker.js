@@ -7,8 +7,8 @@ import "../../assets/css/calender.scss";
 import { Modal } from "react-bootstrap";
 import moment from "moment";
 import date_icon from "../../assets/images/date_icon.svg";
-import {dateCustomStatus} from "../../reducers/billEditItemSlice";
-import { useDispatch,useSelector } from 'react-redux';
+import { dateCustomStatus } from "../../reducers/billEditItemSlice";
+import { useDispatch, useSelector } from 'react-redux';
 function DatePickerModel(props) {
   $("[name=tab]").each(function (i, d) {
     var p = $(this).prop("checked");
@@ -29,41 +29,39 @@ function DatePickerModel(props) {
   const dispatch = useDispatch();
   useEffect(() => {
     localStorage.setItem("billViiewSttatus", false);
-    // setDateCustom(props.dateCustom)
-    console.log(billEditItemInfo?.dateCustom,link,props.ledgerTabs)
-    if(link == "/buyerledger" ||
-    link == "/sellerledger"){
-      if(props.ledgerTabs == "detailedledger"){
-        if(billEditItemInfo?.dateCustom){
+    console.log(billEditItemInfo?.dateCustom, link, props.ledgerTabs)
+    if (link == "/buyerledger" ||
+      link == "/sellerledger") {
+      if (props.ledgerTabs == "detailedledger") {
+        if (billEditItemInfo?.dateCustom) {
           datev = 'Custom';
-          console.log(endDate,startDate)
+          console.log(endDate, startDate)
           setStartsDate(new Date());
           setEndDate(new Date());
           console.log('detailded')
-         }
-         else{
+        }
+        else {
           datev = dateTabs
-         }
+        }
       }
-      
-       else{
-         if(props.ledgerTabs == "ledgersummary"){
-          if(billEditItemInfo?.dateCustom){
+      else {
+        if (props.ledgerTabs == "ledgersummary") {
+          if (billEditItemInfo?.dateCustom) {
             datev = 'Custom'
             setStartsDate(new Date());
             setEndDate(new Date());
             console.log('summary')
-           }
-           else{
+          }
+          else {
             datev = dateTabs
-           }
-         }
-         else{
+          }
+        }
+        else {
           datev = dateTabs
-         }
-       }
+        }
+      }
     }
-    else{
+    else {
       datev = dateTabs
     }
     setDateTabs(datev);
@@ -75,98 +73,42 @@ function DatePickerModel(props) {
   const [custEndDate, setCustEndDate] = useState(new Date());
   const [sDate, setSDate] = useState(false);
   const [defaultDate, setDefaultDate] = useState(moment(new Date()).format("DD-MMM-YYYY"));
+
+  //New Week Dates
+  const [selectedFromDate, setSelectedFromDate] = useState(new Date());
+  const [selectedToDate, setSelectedToDate] = useState(new Date());
+  const [weekFromDate, setWeekFromDate] = useState(new Date());
+  const [weekToDate, setWeekToDate] = useState(new Date());
+
   const onChangeDate = (dates) => {
     const [start, end] = dates;
-    console.log(start,end,dates)
+    console.log(start, end, dates)
+    if (dateTabs == 'Weekly') {
+      const startOfWeek = new Date(start);
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6);
+      console.log(startOfWeek,endOfWeek,"weeks")
+      setSelectedFromDate(startOfWeek);
+      setWeekFromDate(startOfWeek)
+      setSelectedToDate(endOfWeek);
+      setWeekToDate(endOfWeek)
+    }
     setStartsDate(start);
     setEndDate(end);
     setCustStDate(start);
     setCustEndDate(end);
-    if(end == null){
+    if (end == null) {
       setSDate(true);
       setDefaultDate(defaultDate)
-      // setEndDate(new Date());
     }
-    else{
+    else {
       setSDate(false);
     }
   };
   const [selectedMonthDate, setSelectedMonthDate] = useState(new Date());
   const [selectedYearDate, setSelectedyearDate] = useState(new Date());
-  const [weekDate, setWeekDate] = useState(new Date());
-  const [week1Date, setWeek1Date] = useState(new Date());
-  const [weekFirstDate, setWeekFirstDate] = useState(
-    moment(new Date()).format("YYYY-MMM-DD")
-  );
-  const [weekLastDate, setWeekLastDate] = useState(
-    moment(new Date()).format("YYYY-MMM-DD")
-  );
-  const [weekStartDate, setweekStartDate] = useState(
-    moment(new Date()).format("DD-MMM-YYYY")
-  ); 
-  const [weekEndDate, setweekEndDate] = useState(
-    moment(new Date()).format("DD-MMM-YYYY")
-  );
-  // Setter
-  $(".week-picker").datepicker("option", "hideIfNoPrevNext", true);
-  $(function () {
-    var startWeekDate = moment(new Date()).format("YYYY-MMM-DD");
-    var endWeekDate = new Date();
-    var selectCurrentWeek = function () {
-      window.setTimeout(function () {
-        $(".week-picker")
-          .find(".ui-datepicker-current-day a")
-          .addClass("ui-state-active");
-      }, 1);
-    };
 
-    $(".week-picker").datepicker({
-      showOtherMonths: false,
-      selectOtherMonths: false,
-      maxDate: new Date(),
-      dateFormat: "dd-MM-yy",
-      onSelect: function (dateText, inst) {
-        var date = $(this).datepicker("getDate");
-        startWeekDate = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate() - date.getDay()
-        );
-        endWeekDate = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate() - date.getDay() + 6
-        );
-        var dateFormat =
-          inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-        var weekFdate = moment(startWeekDate).format("YYYY-MMM-DD");
-        //moment(startWeekDate, "DD-MMM-YYYY");
-        var weekLdate = moment(endWeekDate).format("YYYY-MMM-DD");
-        setWeekFirstDate(weekFdate);
-        setWeekLastDate(weekLdate);
-        setWeekDate(weekFdate);
-        setWeek1Date(weekLdate);
-        setweekStartDate(moment(startWeekDate).format("DD-MMM-YYYY"));
-        setweekEndDate(moment(endWeekDate).format("DD-MMM-YYYY"));
-        $("#endWeekDate").text(
-          $.datepicker.formatDate(dateFormat, endWeekDate, inst.settings)
-        );
-
-        selectCurrentWeek();
-      },
-      beforeShowDay: function (date) {
-        var cssClass = "";
-        if (date >= startWeekDate && date <= endWeekDate)
-          cssClass = "ui-datepicker-current-day";
-        return [true, cssClass];
-      },
-      onChangeMonthYear: function (year, month, inst) {
-        selectCurrentWeek();
-      },
-    });
-  });
-
-  //const [active, setActive] =useState(false);
   const link = localStorage.getItem("LinkPath");
   const [dateTabs, setDateTabs] = useState(
     link == "/buyerledger" ||
@@ -177,7 +119,7 @@ function DatePickerModel(props) {
   );
   const [selectedDate, setStartDate] = useState();
   const [handleTab, setHandleTabs] = useState(false);
-  const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger")?'Custom' : 'Daily');
+  const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger") ? 'Custom' : 'Daily');
   const [dialyDate, setDailyDate] = useState()
   const [monthDate, setMonthDate] = useState(new Date());
   const [yearDate, setyearDate] = useState(new Date());
@@ -201,20 +143,20 @@ function DatePickerModel(props) {
     if (link == "/buyerledger" || link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
 
-        if(dates == 'Daily' && handleTab){
+        if (dates == 'Daily' && handleTab) {
           setDateTabs("Daily");
           setStartDate(dialyDate)
-        } else if(dates == 'Weekly' && handleTab){
+        } else if (dates == 'Weekly' && handleTab) {
           setDateTabs('Weekly')
-          setweekStartDate(weekDate);
-          setweekEndDate(week1Date);
-        }else if(dates == 'Monthly' && handleTab){
+          setSelectedFromDate(weekFromDate)
+          setSelectedToDate(weekToDate)
+        } else if (dates == 'Monthly' && handleTab) {
           setDateTabs('Monthly')
           setSelectedMonthDate(monthDate)
-        }else if(dates == 'Yearly' && handleTab){
+        } else if (dates == 'Yearly' && handleTab) {
           setDateTabs('Yearly')
           setSelectedyearDate(yearDate)
-        } else if(dates == 'Custom' && handleTab){
+        } else if (dates == 'Custom' && handleTab) {
           setDateTabs('Custom');
           setStartsDate(custStDate);
           setEndDate(custEndDate);
@@ -224,25 +166,24 @@ function DatePickerModel(props) {
     else {
       console.log("came here");
       commonDateFunction()
-      // setDateTabs("Daily");
     }
   };
-  const commonDateFunction = () =>{
-    console.log('custommmm',dates,handleTab)
-    if(dates == 'Daily' && handleTab){
+  const commonDateFunction = () => {
+    console.log('custommmm', dates, handleTab)
+    if (dates == 'Daily' && handleTab) {
       setDateTabs("Daily");
       setStartDate(dialyDate)
-    } else if(dates == 'Weekly' && handleTab){
+    } else if (dates == 'Weekly' && handleTab) {
       setDateTabs('Weekly')
-      setweekStartDate(weekDate);
-      setweekEndDate(week1Date);
-    }else if(dates == 'Monthly' && handleTab){
+      setSelectedFromDate(weekFromDate)
+      setSelectedToDate(weekToDate);
+    } else if (dates == 'Monthly' && handleTab) {
       setDateTabs('Monthly')
       setSelectedMonthDate(monthDate)
-    }else if(dates == 'Yearly' && handleTab){
+    } else if (dates == 'Yearly' && handleTab) {
       setDateTabs('Yearly')
       setSelectedyearDate(yearDate)
-    } else if(dates == 'Custom' && handleTab){
+    } else if (dates == 'Custom' && handleTab) {
       setDateTabs('Custom');
       setStartsDate(custStDate);
       setEndDate(custEndDate);
@@ -254,7 +195,7 @@ function DatePickerModel(props) {
       dateValue.getMonth() + 1,
       0
     );
-    
+
     var firstDate = moment(dateValue).format("YYYY-MM-DD");
     var lastDate = moment(lastDay).format("YYYY-MM-DD");
     if (dateTabs == "Daily") {
@@ -265,8 +206,13 @@ function DatePickerModel(props) {
       setDateCustom(false);
       dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Weekly") {
-      firstDate = weekFirstDate;
-      lastDate = weekLastDate;
+      firstDate = moment(selectedFromDate).format("YYYY-MM-DD");
+      lastDate = moment(selectedToDate).format("YYYY-MM-DD");
+      console.log(firstDate, lastDate, "Dates")
+      // firstDate = localStorage.getItem('week1');
+      // lastDate = localStorage.getItem('week2');
+      // console.log(localStorage.getItem('week1'), localStorage.getItem('week2'))
+
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Weekly");
@@ -295,44 +241,48 @@ function DatePickerModel(props) {
       setDateCustom(false);
       dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Custom") {
-      console.log(dateTabs,endDate)
-      if(endDate != null){
+      console.log(dateTabs, endDate)
+      if (endDate != null) {
         lastDate = moment(endDate).format("YYYY-MM-DD");
       }
-      else{
+      else {
         lastDate = moment(new Date()).format("YYYY-MM-DD");
         setEndDate(new Date());
-        console.log(lastDate,"else")
+        console.log(lastDate, "else")
       }
       firstDate = moment(startDate).format("YYYY-MM-DD");
       dispatch(dateCustomStatus(false));
-      console.log(firstDate,lastDate)
+      console.log(firstDate, lastDate)
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Custom");
     }
   };
 
-  const handleDateTabs = (e) =>{
+  const handleDateTabs = (e) => {
+    console.log(e.target.value, "value")
     setDateTabs(e.target.value);
-    if(dateTabs == e.target.value){
+    if (dateTabs == e.target.value) {
       setHandleTabs(false);
       setDateTabs(e.target.value);
-    }else{
+    } else {
       setDateTabs(e.target.value);
-      if(link=='/buy_bill_book' || link == "/sellbillbook"){
+      if (link == '/buy_bill_book' || link == "/sellbillbook") {
         setDates(e.target.value)
-      } else{
+      } else {
         setDates(dates);
       }
       setHandleTabs(true);
     }
+    console.log(selectedFromDate, "Date")
+
     setStartDate(new Date());
     setStartsDate(new Date())
     setEndDate(new Date());
     setSelectedMonthDate(new Date());
     setSelectedyearDate(new Date());
-
+    setSelectedFromDate(new Date());
+    setSelectedToDate(new Date());
   }
   return (
     <Modal
@@ -352,11 +302,11 @@ function DatePickerModel(props) {
           {dateTabs == "Daily"
             ? "Date"
             : dateTabs == "Weekly"
-            ? "Week"
-            : dateTabs == "Monthly"
-            ? "Month"
-            : dateTabs == "Yearly"
-            ? "Year" : "Date"}
+              ? "Week"
+              : dateTabs == "Monthly"
+                ? "Month"
+                : dateTabs == "Yearly"
+                  ? "Year" : "Date"}
         </h5>
         <img
           src={close}
@@ -379,7 +329,7 @@ function DatePickerModel(props) {
                   id="tab1"
                   name="tab"
                   value="Daily"
-                  onChange={(e) => {handleDateTabs(e)}}
+                  onChange={(e) => { handleDateTabs(e) }}
                   checked={dateTabs === "Daily"}
                   className="radioBtnVal m-0 mr-1"
                 />
@@ -392,7 +342,7 @@ function DatePickerModel(props) {
                   id="tab4"
                   name="tab"
                   value={"Weekly"}
-                  onChange={(e) => {handleDateTabs(e)}}
+                  onChange={(e) => { handleDateTabs(e) }}
                   checked={dateTabs === "Weekly"}
                 />
                 <label htmlFor="tab4">Weekly</label>
@@ -403,7 +353,7 @@ function DatePickerModel(props) {
                   id="tab2"
                   name="tab"
                   value={"Monthly"}
-                  onChange={(e) => {handleDateTabs(e)}}
+                  onChange={(e) => { handleDateTabs(e) }}
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Monthly"}
                 />
@@ -416,7 +366,7 @@ function DatePickerModel(props) {
                   id="tab3"
                   name="tab"
                   value={"Yearly"}
-                  onChange={(e) => {handleDateTabs(e)}}
+                  onChange={(e) => { handleDateTabs(e) }}
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Yearly"}
                 />
@@ -429,8 +379,8 @@ function DatePickerModel(props) {
                   id="tab5"
                   name="tab"
                   value={"Custom"}
-                  onChange={(e) => {handleDateTabs(e)}}
-                  
+                  onChange={(e) => { handleDateTabs(e) }}
+
                   className="radioBtnVal m-0 mr-1"
                   checked={dateTabs === "Custom"}
                 />
@@ -456,9 +406,18 @@ function DatePickerModel(props) {
               className="week_picker p-0"
               style={{ display: dateTabs === "Weekly" ? "block" : "none" }}
             >
-              <div className="week_cal">
-                <div className="week-picker"></div>
-              </div>
+              <DatePicker
+                key={new Date()}
+                onChange={onChangeDate}
+                selectsRange
+                inline
+                startDate={selectedFromDate}
+                endDate={selectedToDate}
+                dateFormat="dd-MMM-yyyy"
+                className="form-control"
+                maxDate={new Date()}
+                disabledKeyboardNavigation
+              />
             </article>
             <article
               className="month_picker"
@@ -525,7 +484,7 @@ function DatePickerModel(props) {
                   <p>To</p>
                   <div className="d-flex date_flex">
                     <img src={date_icon} className="d_icon" />
-                    
+
                     <DatePicker
                       selected={endDate}
                       name="endDateTime"
@@ -538,7 +497,6 @@ function DatePickerModel(props) {
                       }}
                       id="endDate"
                       value={sDate ? defaultDate : endDate}
-                      // className="date_in_custom"
                     />
                   </div>
                 </div>
@@ -547,7 +505,8 @@ function DatePickerModel(props) {
               <DatePicker
                 selected={startDate}
                 onChange={onChangeDate}
-                startDate={startDate}
+                startDate={billEditItemInfo?.dateCustom ? new Date() : startDate}
+                // startDate={startDate}
                 endDate={endDate}
                 selectsRange
                 inline
@@ -557,20 +516,20 @@ function DatePickerModel(props) {
           </div>
         </div>
         {dateTabs == "Daily" ||
-        dateTabs == "Monthly" ||
-        dateTabs == "Yearly" ? (
+          dateTabs == "Monthly" ||
+          dateTabs == "Yearly" ? (
           ""
         ) : (
           <button
             type="button"
-            className="primary_btn cont_btn w-100 m-0"
+            className="primary_btn datePicker_continue w-100 m-0"
             onClick={() => {
               onclickContinue(
                 dateTabs == "Daily"
                   ? selectedDate
                   : dateTabs == "Yearly"
-                  ? selectedYearDate
-                  : selectedMonthDate
+                    ? selectedYearDate
+                    : selectedMonthDate
               );
             }}
           >
