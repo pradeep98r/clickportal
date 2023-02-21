@@ -8,15 +8,8 @@ COPY . /app
 # Install libpng-dev to fix the deployment issue
 
 RUN apt-get update -y
-
-RUN tar -xzf libpng.tar.gz
-RUN cd libpng-1.6.37/
-RUN bash configure
-RUN make
-RUN make install
-RUN cd ..
-RUN rm -rf libpng-1.6.37
-RUN rm -f libpng.tar.gz
+RUN sudo apt-get install libpng-dev
+RUN npm install -g pngquant-bin
 
 # Rebuild the npm 
 RUN npm rebuild
