@@ -312,12 +312,12 @@ const Step3PartySelect = (props) => {
     }
     setsearchValue(value);
   };
-  const partySelectTrans = (item, type) => {};
   return (
     <div className="">
       
       <h5 className="head_modal">Bill Information </h5>
-      {partySelecteData !== null ? (
+       <div className="" id="scroll_style">
+       {partySelecteData !== null ? (
         <div className="">
           {activeInput ? (
             <Select
@@ -469,15 +469,7 @@ const Step3PartySelect = (props) => {
         />
       </div>
 
-      <div className="d-flex align-items-center justify-content-between">
-        <h5 className="date_sec head_modal p-0">Crop Information </h5>
-        <img
-          src={edit}
-          alt="img"
-          className="head_modal editIcon"
-          onClick={() => editCropTable(billEditItem)}
-        />
-      </div>
+     
       {transpoSelectedData != null ? (
         <div className="transporter_div">
           {activeTrans ? (
@@ -613,7 +605,15 @@ const Step3PartySelect = (props) => {
           Select Transporter
         </p>
       )}
-
+ <div className="d-flex align-items-center justify-content-between">
+        <h5 className="date_sec head_modal p-0">Crop Information </h5>
+        <img
+          src={edit}
+          alt="img"
+          className="head_modal editIcon"
+          onClick={() => editCropTable(billEditItem)}
+        />
+      </div>
       <div>
         <div className="cropstable" id="scroll_style">
           {billEditItemCrops.length > 0
@@ -661,6 +661,7 @@ const Step3PartySelect = (props) => {
             : ""}
         </div>
       </div>
+       </div>
     </div>
   );
 };

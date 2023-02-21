@@ -563,7 +563,7 @@ function DatePickerModel(props) {
         ) : (
           <button
             type="button"
-            className="primary_btn cont_btn w-100 m-0"
+            className="primary_btn datePicker_continue w-100 m-0"
             onClick={() => {
               onclickContinue(
                 dateTabs == "Daily"
