@@ -9,7 +9,6 @@ COPY . /app
 
 RUN apt-get update -y
 RUN apt-get install libpng-dev -y
-RUN npm install -g pngquant-bin
 
 # Rebuild the npm 
 RUN npm rebuild
