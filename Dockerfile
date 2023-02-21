@@ -4,9 +4,17 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
-RUN yum install -y epel-release pngquant
+
+# Install libpng-dev to fix the deployment issue
+
+RUN apt-get update -y
+RUN apt-get install libpng-dev -y
+
+# Rebuild the npm 
+RUN npm rebuild
 
 RUN npm install --force
+
 #    && \
 #    npm audit fix --force
 #-g npm@7.18.1 \
