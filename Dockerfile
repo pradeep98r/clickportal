@@ -4,7 +4,8 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
-RUN apt-get install -y epel-release pngquant
+RUN apt-get update -y
+RUN apt-get install -y pngquant
 
 RUN npm install --force
 #    && \
