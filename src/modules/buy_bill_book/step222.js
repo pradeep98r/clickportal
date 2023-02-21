@@ -984,7 +984,6 @@ const Step22 = (props) => {
           {preferedCropsData.length > 0 && (
             <div className="d-flex total_crops_div">
               {preferedCropsData.map((crop, index) => (
-                <div className="row">
                   <div
                     className="text-center crop_div crop_div_ui"
                     key={crop.cropId}
@@ -992,7 +991,13 @@ const Step22 = (props) => {
                       cropOnclick(crop, crop.cropId, index, preferedCropsData)
                     }
                   >
-                    <div
+                   
+                    <div className="cropImgDiv">
+                    <img
+                      src={crop.imageUrl}
+                      className="flex_class cropImg mx-auto "
+                    />
+                     <div
                       style={{
                         display:
                           preferedCropsData[index].cropActive === true
@@ -1007,13 +1012,10 @@ const Step22 = (props) => {
                         ? ""
                         : preferedCropsData[index].count}
                     </div>
-                    <img
-                      src={crop.imageUrl}
-                      className="flex_class cropImg mx-auto "
-                    />
+                    </div>
+                    
                     <p>{crop.cropName}</p>
                   </div>
-                </div>
               ))}
             </div>
           )}

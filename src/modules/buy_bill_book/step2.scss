@@ -55,19 +55,22 @@
   }
 }
 .wastage_val,
-.wastage_val:focus {
+.wastage_val:focus{
   color: var(--ono-red)!important;
+  -webkit-text-fill-color: var(--ono-red)!important;
 }
 .delete_copy_div {
   margin-left: 10px;
 }
-.crop_div_ui {
+.cropImgDiv {
   position: relative;
+  width: 40px;
+  margin: 0 auto;
 }
 .crp_count {
     position: absolute;
-    right: 0px;
-    top: 0;
+    right: -8px;
+    top: -8px;
     background-color: var(--ono-blue);
     color: #fff;
     font-size: 13px;
@@ -206,4 +209,7 @@ select,.dropdown:focus {
 }
 .cursor_class:hover{
   cursor: pointer;
+}
+.crop_div_ui{
+  // width: 100px;
 }
