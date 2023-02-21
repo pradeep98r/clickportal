@@ -5,7 +5,7 @@ WORKDIR /app
 COPY . /app
 
 RUN apt-get update -y
-RUN apt-get install -y pngquant
+RUN apt-get install -y pngquant libpng-dev
 
 RUN npm install --force
 #    && \
