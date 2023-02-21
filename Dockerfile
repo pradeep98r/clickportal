@@ -13,7 +13,7 @@ RUN apt-get install -y wget
 RUN wget https://sourceforge.net/projects/libpng/files/libpng16/1.6.37/libpng-1.6.37.tar.gz/download -O libpng.tar.gz
 RUN tar -xzf libpng.tar.gz
 RUN cd libpng-1.6.37/
-RUN ./configure
+RUN bash configure
 RUN make
 RUN make install
 RUN cd ..
