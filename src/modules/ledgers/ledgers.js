@@ -154,10 +154,12 @@ const Ledgers = (props) => {
       setPaidRcvd(response.data.data);
     });
   };
+  const [customDateHanlde, setCustomDateHandle] = useState(false);
   //Get Particular ledger data
   const particularLedgerData = (ledgerId, item) => {
     setPartyId(ledgerId);
     setLedgerData(item);
+    setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
     if (allCustom == "custom") {
       setDateDisplay(false);
@@ -182,6 +184,7 @@ const Ledgers = (props) => {
       (allCustom == "custom" && tabs == "ledgersummary") ||
       ledgerTabs == "ledgersummary"
     ) {
+      console.log(date,"date")
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);
@@ -246,7 +249,10 @@ const Ledgers = (props) => {
     } else if (type == "all" && ledgerTabs == "detailedledger") {
       setLedgerTabs("ledgersummary");
     }
-    if (type == "custom" && ledgerTabs == "ledgersummary") {
+    if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
+      setCustomDateHandle(false);
+      ledgerSummaryByDate(clickId, partyId, date, date);
+    }else{
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
     setAllCustom(type);

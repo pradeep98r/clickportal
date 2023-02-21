@@ -26,6 +26,8 @@ function DatePickerModel(props) {
   var datev = '';
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const [dateCustom, setDateCustom] = useState(billEditItemInfo?.dateCustom);
+  const [startDate, setStartsDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const dispatch = useDispatch();
   useEffect(() => {
     localStorage.setItem("billViiewSttatus", false);
@@ -69,13 +71,13 @@ function DatePickerModel(props) {
     setDateTabs(datev);
   }, [props.show]);
 
-  const [startDate, setStartsDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+
   const [custStDate, setCustStDate] = useState(new Date());
   const [custEndDate, setCustEndDate] = useState(new Date());
   const [sDate, setSDate] = useState(false);
   const [defaultDate, setDefaultDate] = useState(moment(new Date()).format("DD-MMM-YYYY"));
   const onChangeDate = (dates) => {
+    dispatch(dateCustomStatus(false));
     const [start, end] = dates;
     console.log(start,end,dates)
     setStartsDate(start);
@@ -547,7 +549,7 @@ function DatePickerModel(props) {
               <DatePicker
                 selected={startDate}
                 onChange={onChangeDate}
-                startDate={startDate}
+                startDate={billEditItemInfo?.dateCustom?new Date():startDate}
                 endDate={endDate}
                 selectsRange
                 inline
