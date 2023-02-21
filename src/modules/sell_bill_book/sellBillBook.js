@@ -12,7 +12,7 @@ import $ from "jquery";
 import DatePickerModel from "../smartboard/datePicker";
 import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
-import { getText } from "../../components/getText";
+import { getPartnerType, getText } from "../../components/getText";
 import { qtyValues } from "../../components/qtyValues";
 import {
   getCurrencyNumberWithOutSymbol,
@@ -318,7 +318,7 @@ const SellBillBook = (props) => {
                                                 </h6>
                                                 <div className="d-flex align-items-center">
                                                   <h6 className="mobile">
-                                                    {getText(bill.partyType) +
+                                                    {getPartnerType(bill.partyType,bill.trader) +
                                                       "-" +
                                                       bill.buyerId}
                                                   </h6>
