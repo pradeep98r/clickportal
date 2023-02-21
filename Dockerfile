@@ -4,7 +4,7 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
-RUN yum install -y epel-release pngquant
+RUN apt-get install -y epel-release pngquant
 
 RUN npm install --force
 #    && \
