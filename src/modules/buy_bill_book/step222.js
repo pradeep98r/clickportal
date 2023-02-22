@@ -156,48 +156,76 @@ const Step22 = (props) => {
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
-        response.data.data.map((item, index) => {
-          Object.assign(
-            item,
-            { count: 0 },
-            { cropActive: false },
-            { qtyUnit: "Crates" },
-            { weight: 0 },
-            { rate: 0 },
-            { total: 0 },
-            { wastage: 0 },
-            { qty: 0 },
-            { status: 1 },
-            { id: 0 },
-            { cropDelete: false }
-          );
-          var index1 = preferedCropsData.findIndex(
-            (obj) => obj.cropId == response.data.data[index].cropId
-          );
-          if (index1 != -1) {
-            response.data.data.splice(index, 1);
-            Object.assign(
-              response.data.data[index],
-              { count: 0 },
-              { cropActive: false },
-              { qtyUnit: "Crates" },
-              { weight: 0 },
-              { rate: 0 },
-              { total: 0 },
-              { wastage: 0 },
-              { qty: 0 },
-              { status: 1 },
-              { id: 0 },
-              { cropDelete: false }
-            );
-          }
+        const newData = response.data.data.map((item) => {
+          return {
+            ...item,
+            count: 0,
+            cropActive: false,
+            qtyUnit: "Crates",
+            weight: 0,
+            rate: 0,
+            total: 0,
+            wastage: 0,
+            qty: 0,
+            status: 1,
+            id: 0,
+            cropDelete: false
+          };
         });
-        setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+        const existingIds = preferedCropsData.map((item) => item.cropId);
+        const filteredData = newData.filter((item) => !existingIds.includes(item.cropId));
+        setPreferedCropsData((prevState) => [...prevState, ...filteredData]);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  
+  // const fetchData = () => {
+  //   getPreferredCrops(clickId, clientId, clientSecret)
+  //     .then((response) => {
+  //       response.data.data.map((item, index) => {
+  //         Object.assign(
+  //           item,
+  //           { count: 0 },
+  //           { cropActive: false },
+  //           { qtyUnit: "Crates" },
+  //           { weight: 0 },
+  //           { rate: 0 },
+  //           { total: 0 },
+  //           { wastage: 0 },
+  //           { qty: 0 },
+  //           { status: 1 },
+  //           { id: 0 },
+  //           { cropDelete: false }
+  //         );
+  //         var index1 = preferedCropsData.findIndex(
+  //           (obj) => obj.cropId == response.data.data[index].cropId
+  //         );
+  //         if (index1 != -1) {
+  //           response.data.data.splice(index, 1);
+  //           Object.assign(
+  //             response.data.data[index],
+  //             { count: 0 },
+  //             { cropActive: false },
+  //             { qtyUnit: "Crates" },
+  //             { weight: 0 },
+  //             { rate: 0 },
+  //             { total: 0 },
+  //             { wastage: 0 },
+  //             { qty: 0 },
+  //             { status: 1 },
+  //             { id: 0 },
+  //             { cropDelete: false }
+  //           );
+  //         }
+  //       });
+  //       setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
   //   to get crop data oon refresh
   useEffect(() => {
     dispatch(cropEditStatus(billEditStatus ? true : false));
