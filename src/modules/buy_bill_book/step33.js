@@ -45,10 +45,8 @@ const Step33 = (props) => {
   var buyerInfo = users.buyerInfo;
   const editStatus = billEditItemInfo?.billEditStatus;
   const [partnerSelectedData, setpartnerSelectedData] = useState(
-    //users.buyerInfo
     editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
-   console.log(buyerInfo,partnerSelectedData)
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -82,8 +80,7 @@ const Step33 = (props) => {
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
       ? step2CropEditStatus
-        ? // ? billEditItemInfo.selectedBillInfo.lineItems
-          props.slectedCropsArray
+        ? props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
     var h = [];
@@ -98,14 +95,13 @@ const Step33 = (props) => {
         h.push(cropArrays[c]);
       }
     }
+    console.log(cropArrays,h,"step3")
     if (cropArrays.length == h.length) {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
     if (partnerSelectedData != null) {
-      var pID = editStatus
-        ? billEditItem.farmerId
-        : buyerInfo.partyId;
+      var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data);
       });
@@ -128,37 +124,12 @@ const Step33 = (props) => {
 
     getSystemSettings(clickId).then((res) => {
       var response;
-      // console.log(res,"response")
       //  Filter the array to include only objects where type=buy and formStatus=1
       const filteredArray = res.data.data.billSetting.filter((object) => {
-          return object.billType === 'BUY' && object.formStatus === 1;
+        return object.billType === "BUY" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-      console.log(filteredArray,"filter")
-      //  Group the filtered objects by their groupId using the reduce method
 
-      // const groups = filteredArray.reduce((result, object) => {
-      //   const groupId = object.groupId;
-      //   if (!result[groupId]) {
-      //     result[groupId] = [];
-      //   }
-      //   result[groupId].push(object);
-      //   return result;
-      // }, {});
-      // console.log(groups,"groups")
-      // //Get an array of the groups, sorted by groupId in ascending order
-      // const sortedGroups = Object.values(groups).sort((group1, group2) => {
-      //   return group1[0].groupId - group2[0].groupId;
-      // });
-
-      // // Loop through the sortedGroups array and display the objects in each group
-      // const groupedArray = [];
-      // sortedGroups.forEach((group) => {
-      //   group.forEach((object) => {
-      //     groupedArray.push(object);
-      //   });
-      // });
-      // console.log(groupedArray,"Array")
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -173,8 +144,6 @@ const Step33 = (props) => {
                 cstmName: "",
                 commentText: "",
               });
-              console.log("came to here")
-
               if (
                 filteredArray[i].settingName === "DEFAULT_RATE_TYPE" ||
                 filteredArray[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
@@ -191,7 +160,9 @@ const Step33 = (props) => {
             }
 
             if (filteredArray[i].settingName === "COMMISSION") {
-              setIncludeComm(filteredArray[i].includeInLedger == 1 ? true : false);
+              setIncludeComm(
+                filteredArray[i].includeInLedger == 1 ? true : false
+              );
               setisShown(filteredArray[i].isShown == 1 ? true : false);
             } else if (filteredArray[i].settingName === "RETURN_COMMISSION") {
               setAddRetComm(filteredArray[i].addToGt == 1 ? false : true);
@@ -201,8 +172,7 @@ const Step33 = (props) => {
             }
           }
         }
-      }
-       else {
+      } else {
         getDefaultSystemSettings().then((res) => {
           response = res.data.data;
           for (var i = 0; i < response.length; i++) {
@@ -253,140 +223,6 @@ const Step33 = (props) => {
           }
         });
       }
-      // sortedGroups.forEach((group,i) => {
-        
-      //   group.forEach((object) => {
-      //     Object.assign(group[i], {
-      //       settingName: group[i].settingName,
-      //       tableType: 0,
-      //       subText: "",
-      //       subText2: "",
-      //       totalVal: 0,
-      //       cstmName: "",
-      //       commentText: "",
-      //     });
-      //     console.log(i,"i")
-      //     if (
-      //       object.settingName === "DEFAULT_RATE_TYPE" ||
-      //       object.settingName === "SKIP_INDIVIDUAL_EXP" ||
-      //       object.settingName == "WASTAGE"
-      //     ) {
-      //       console.log("came to here");
-      //     } 
-      //     else {
-      //       listSettings(group[i].settingName, response, i);
-      //       allGroups.push(group[i]);
-      //     }
-      //     if (object.settingName === "OUT_ST_BALANCE"){
-      //       setOutBalformStatusvalue(true);
-      //     }
-      //     if (object.settingName === "COMMISSION") {
-      //       setIncludeComm(object.includeInLedger == 1 ? true : false);
-      //       setisShown(object.isShown == 1 ? true : false);
-      //     } else if (object.settingName === "RETURN_COMMISSION") {
-      //       setAddRetComm(object.addToGt == 1 ? false : true);
-      //       setIncludeRetComm(
-      //         object.includeInLedger == 1 ? true : false
-      //       );
-      //     }
-          
-      //     // console.log(object.groupId,`- ${object.settingName}`);
-      //   });
-      // });
-     
-      // if (res.data.data.billSetting.length > 0) {
-      //   response = res.data.data.billSetting;
-      //   for (var i = 0; i < response.length; i++) {
-      //     if (response[i].billType === "BUY") {
-      //       if (response[i].formStatus === 1) {
-      //         Object.assign(response[i], {
-      //           settingName: response[i].settingName,
-      //           tableType: 0,
-      //           subText: "",
-      //           subText2: "",
-      //           totalVal: 0,
-      //           cstmName: "",
-      //           commentText: "",
-      //         });
-
-      //         if (
-      //           response[i].settingName === "DEFAULT_RATE_TYPE" ||
-      //           response[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
-      //           response[i].settingName == "WASTAGE"
-      //         ) {
-      //           console.log("");
-      //         } else {
-      //           listSettings(response[i].settingName, response, i);
-      //           allGroups.push(response[i]);
-      //         }
-
-      //         if (response[i].settingName === "OUT_ST_BALANCE")
-      //           setOutBalformStatusvalue(true);
-      //       }
-
-      //       if (response[i].settingName === "COMMISSION") {
-      //         setIncludeComm(response[i].includeInLedger == 1 ? true : false);
-      //         setisShown(response[i].isShown == 1 ? true : false);
-      //       } else if (response[i].settingName === "RETURN_COMMISSION") {
-      //         setAddRetComm(response[i].addToGt == 1 ? false : true);
-      //         setIncludeRetComm(
-      //           response[i].includeInLedger == 1 ? true : false
-      //         );
-      //       }
-      //     }
-      //   }
-      // }
-      //  else {
-      //   getDefaultSystemSettings().then((res) => {
-      //     response = res.data.data;
-      //     for (var i = 0; i < response.length; i++) {
-      //       if (
-      //         response[i].type === "BILL" ||
-      //         response[i].type === "DAILY_CHART"
-      //       ) {
-      //         if (response[i].status === 1) {
-      //           Object.assign(response[i], {
-      //             settingName: response[i].name,
-      //             tableType: 0,
-      //             subText: "",
-      //             subText2: "",
-      //             totalVal: 0,
-      //             cstmName: "",
-      //             value: 0,
-      //             fieldType: null,
-      //           });
-
-      //           if (
-      //             response[i].name === "DEFAULT_RATE_TYPE" ||
-      //             response[i].name === "SKIP_INDIVIDUAL_EXP" ||
-      //             response[i].name == "WASTAGE"
-      //           ) {
-      //             console.log("");
-      //           } else {
-      //             var substring = "CUSTOM_FIELD";
-      //             if (response[i]?.name.includes(substring)) {
-      //               response[i].name = "";
-      //               substring = "";
-      //             }
-      //             listSettings(response[i]?.name, response, i);
-      //             allGroups.push(response[i]);
-      //           }
-
-      //           if (response[i].name === "OUT_ST_BALANCE")
-      //             setOutBalformStatusvalue(true);
-      //         }
-
-      //         if (response[i].name === "COMMISSION") {
-      //           setIncludeComm(true);
-      //           setisShown(true);
-      //         } else if (response[i].name === "RETURN_COMMISSION") {
-      //           setAddRetComm(false);
-      //           setIncludeRetComm(true);
-      //         }
-      //       }
-      //     }
-      //   });
-      // }
     });
   }, [users.buyerInfo]);
   var gTotal = 0;
@@ -597,7 +433,7 @@ const Step33 = (props) => {
             break;
           case substring:
             var newitem = 0;
-            var commentTextFor = '';
+            var commentTextFor = "";
             var newItem;
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
@@ -609,7 +445,7 @@ const Step33 = (props) => {
                   }
                 })
               : (newitem = res[j].value);
-             var c = editStatus
+            var c = editStatus
               ? billEditItem?.customFields.map((items, i) => {
                   if (items.fee != 0) {
                     if (items.field === res[j].settingName) {
@@ -634,7 +470,7 @@ const Step33 = (props) => {
                 cstmName: res[j].settingName,
                 tableType: 1,
                 value: trVa,
-                commentText:commentTextFor
+                commentText: commentTextFor,
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
@@ -655,7 +491,7 @@ const Step33 = (props) => {
                 tableType: 3,
                 value: trVa,
                 totalVal: totalV,
-                commentText:commentTextFor
+                commentText: commentTextFor,
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -676,7 +512,7 @@ const Step33 = (props) => {
                 tableType: 2,
                 value: trVa,
                 totalVal: totalV,
-                commentText:commentTextFor
+                commentText: commentTextFor,
               };
             }
             break;
@@ -850,15 +686,11 @@ const Step33 = (props) => {
   };
   var lineItemsArray = [];
 
-  // if (props.slectedCropsArray.length > 0) {
-
   var cropArray = editStatus
     ? step2CropEditStatus
       ? props.slectedCropsArray
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
-  // : props.slectedCropsArray;
-  // console.log(cropArray,props.slectedCropsArray,"which one");
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -974,7 +806,7 @@ const Step33 = (props) => {
           ? Number(transportationValue)
           : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
-      transpoSelectedData != null ?transpoSelectedData?.transporterId:0,
+        transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
     },
     billId: billEditItem?.billId,
     billType: "BUY",
@@ -987,7 +819,6 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
-    console.log(editBillRequestObj);
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -995,8 +826,6 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-
-            // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
@@ -1015,7 +844,6 @@ const Step33 = (props) => {
         }
       );
     } else {
-      console.log(billRequestObj);
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -1103,7 +931,6 @@ const Step33 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
-            console.log(tab);
             setCstmval(true);
             setQuestionsTitle(tab);
           }
@@ -1370,7 +1197,7 @@ const Step33 = (props) => {
     cropEditObject,
     // billEditStatus,
     slectedCropstableArray,
-    selectedCrops,
+    selectedCrops
     // selectedPartyType,
     // selectedBilldate
   ) => {
@@ -1424,19 +1251,15 @@ const Step33 = (props) => {
   };
   const cstmCommentText = (groupLiist, index) => (e) => {
     var val = e.target.value;
-    console.log('hey comment')
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
-        console.log(groupLiist[i])
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
-            console.log('tab push','if')
-            tab[tabIndex].comments=val;
+            tab[tabIndex].comments = val;
             tab[tabIndex].fee = groupLiist[i].value;
           } else {
-            console.log('tab push','else')
             tab.push({
               comments: val,
               fee: groupLiist[i].value,
@@ -1447,7 +1270,6 @@ const Step33 = (props) => {
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
             setCstmval(true);
-            console.log(tab);
             setQuestionsTitle(tab);
           }
         }
@@ -1579,7 +1401,7 @@ const Step33 = (props) => {
                               </div>
                             </div>
                           </div>
-                          {item?.comments? (
+                          {item?.comments ? (
                             <div className="comm_cards">
                               <div className="card input_card">
                                 <div className="row">

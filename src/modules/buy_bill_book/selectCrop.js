@@ -9,7 +9,6 @@ import tickMark from "../../assets/images/tick_mark.svg";
 const SelectCrop = (props) => {
   const [allData, setAllData] = useState([]);
   let [allCropsData, allCropResponseData] = useState(allData);
-  const [cropItem, setSelectCrop] = useState("");
   const [selected, setSelected] = useState([]);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
@@ -44,7 +43,6 @@ const SelectCrop = (props) => {
   };
 
   const addCropClickNext = (event) => {
-    console.log(selected);
     if (stat === true) {
       props.cropCallback(selected, true);
       while (selected.length > 0) {
@@ -52,7 +50,6 @@ const SelectCrop = (props) => {
       }
     } else {
       props.cropCallback(selected, true);
-      console.log(selected);
       selected.map((item) => {
         item.cropSelect = "";
       });

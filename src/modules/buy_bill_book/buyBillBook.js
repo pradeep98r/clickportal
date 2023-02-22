@@ -93,7 +93,6 @@ function BuyBillBook() {
       })
       .catch((error) => {
         if (error.code == '"ERR_NETWORK"') {
-          console.log("came to error code");
           setOnline(true);
         }
         setOnline(true);
@@ -317,9 +316,12 @@ function BuyBillBook() {
                                                     <div className="d-flex align-items-center">
                                                       <div>
                                                         <h6 className="mobile">
-                                                          {getPartnerType(bill.partyType, bill.trader) +
-                                                              "-" +
-                                                              bill.farmerId}
+                                                          {getPartnerType(
+                                                            bill.partyType,
+                                                            bill.trader
+                                                          ) +
+                                                            "-" +
+                                                            bill.farmerId}
                                                         </h6>
                                                       </div>
                                                       <h6 className="mobile desk_responsive">

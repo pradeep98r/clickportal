@@ -251,8 +251,9 @@
     }
     .css-l2dzg6-menu{
         left: 100%!important;
-        top: -10px!important;
+        top: -130px!important;
     }
+   
     .css-14el2xx-placeholder{
         color: #C9C9C9!important;
     }
@@ -260,3 +261,15 @@
         display: none!important;
     }
 }
+.empty_col{
+    position: relative;
+}
+.empty_col::after {
+    position: absolute;
+    right: -15px;
+    top: 50% !important;
+    // content: '';
+    border-right: 20px solid green;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+  }

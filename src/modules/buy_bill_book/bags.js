@@ -66,10 +66,8 @@ const SelectBags = (props) => {
   var totalVal = 0;
   const getInvTotalValue = () => {
     invArr.map((item) => {
-      console.log(item.weight, "weight");
       totalVal += parseInt(+item.weight || 0);
     });
-    console.log(totalVal, "totalValue");
     return totalVal;
   };
   var wastageSum = 0;
@@ -101,8 +99,6 @@ const SelectBags = (props) => {
       setQuantityVal(0);
       props.closeBagsModal();
     }
-    console.log(invArr, "imvArr");
-    console.log(props.cropsArray[0].qty, quantityVal, "values");
     props.closeBagsModal();
   };
   var arr1 = [];
@@ -255,31 +251,29 @@ const SelectBags = (props) => {
       </div>
       <div className="modal-footer modal_common_footer">
         <div className="row">
-          <div className="col-lg-6 pl-0">
-           
-          </div>
+          <div className="col-lg-6 pl-0"></div>
           <div className="col-lg-6 p-0">
-      <div className="d-flex justify-content-end">
-      <button
-              type="button"
-              className="secondary_btn"
-              onClick={(e) => {
-                clearAddInvBags(e);
-                props.closeBagsModal();
-              }}
-            >
-              CANCEL
-            </button>
-            <button
-              type="button"
-              className="primary_btn"
-              onClick={() => {
-                addInvidualWeights();
-              }}
-            >
-              UPDATE
-            </button>
-      </div>
+            <div className="d-flex justify-content-end">
+              <button
+                type="button"
+                className="secondary_btn"
+                onClick={(e) => {
+                  clearAddInvBags(e);
+                  props.closeBagsModal();
+                }}
+              >
+                CANCEL
+              </button>
+              <button
+                type="button"
+                className="primary_btn"
+                onClick={() => {
+                  addInvidualWeights();
+                }}
+              >
+                UPDATE
+              </button>
+            </div>
           </div>
         </div>
       </div>

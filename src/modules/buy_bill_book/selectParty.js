@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import d_arrow from "../../assets/images/d_arrow.png";
 import "../../modules/buy_bill_book/step1.scss";
-import NoDataAvailable from "../../components/noDataAvailable";
 import { useDispatch, useSelector } from "react-redux";
 import { selectBuyer } from "../../reducers/buyerSlice";
 import { selectTrans } from "../../reducers/transSlice";
-import tickMark from "../../assets/images/tick_mark.svg";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import { getPartnerType } from "../../components/getText";
 import Select from "react-select";
@@ -80,7 +77,6 @@ const SelectPartner = (props) => {
   const filterOption = (option, inputValue) => {
     const { partyName, mobile, shortName, partyId } = option.data;
     const addressLine = option.data.address?.addressLine;
-    console.log(addressLine);
     const searchValue = inputValue.toLowerCase();
 
     return (
@@ -93,7 +89,6 @@ const SelectPartner = (props) => {
   };
   const partySelect = (item) => {
     Object.assign(item, { itemtype: "" }, { date: "" });
-    console.log(item);
     setSelectedPartner(item);
     var itemtype;
     if (props.partyType == "Seller") {
@@ -119,7 +114,6 @@ const SelectPartner = (props) => {
 
   useEffect(() => {
     fetchPertnerData();
-    console.log(users.buyerInfo, "buyerrs");
   }, [users.buyerInfo]);
 
   return (
