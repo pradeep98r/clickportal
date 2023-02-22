@@ -156,48 +156,76 @@ const Step22 = (props) => {
   const fetchData = () => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
-        response.data.data.map((item, index) => {
-          Object.assign(
-            item,
-            { count: 0 },
-            { cropActive: false },
-            { qtyUnit: "Crates" },
-            { weight: 0 },
-            { rate: 0 },
-            { total: 0 },
-            { wastage: 0 },
-            { qty: 0 },
-            { status: 1 },
-            { id: 0 },
-            { cropDelete: false }
-          );
-          var index1 = preferedCropsData.findIndex(
-            (obj) => obj.cropId == response.data.data[index].cropId
-          );
-          if (index1 != -1) {
-            response.data.data.splice(index, 1);
-            Object.assign(
-              response.data.data[index],
-              { count: 0 },
-              { cropActive: false },
-              { qtyUnit: "Crates" },
-              { weight: 0 },
-              { rate: 0 },
-              { total: 0 },
-              { wastage: 0 },
-              { qty: 0 },
-              { status: 1 },
-              { id: 0 },
-              { cropDelete: false }
-            );
-          }
+        const newData = response.data.data.map((item) => {
+          return {
+            ...item,
+            count: 0,
+            cropActive: false,
+            qtyUnit: "Crates",
+            weight: 0,
+            rate: 0,
+            total: 0,
+            wastage: 0,
+            qty: 0,
+            status: 1,
+            id: 0,
+            cropDelete: false
+          };
         });
-        setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+        const existingIds = preferedCropsData.map((item) => item.cropId);
+        const filteredData = newData.filter((item) => !existingIds.includes(item.cropId));
+        setPreferedCropsData((prevState) => [...prevState, ...filteredData]);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  
+  // const fetchData = () => {
+  //   getPreferredCrops(clickId, clientId, clientSecret)
+  //     .then((response) => {
+  //       response.data.data.map((item, index) => {
+  //         Object.assign(
+  //           item,
+  //           { count: 0 },
+  //           { cropActive: false },
+  //           { qtyUnit: "Crates" },
+  //           { weight: 0 },
+  //           { rate: 0 },
+  //           { total: 0 },
+  //           { wastage: 0 },
+  //           { qty: 0 },
+  //           { status: 1 },
+  //           { id: 0 },
+  //           { cropDelete: false }
+  //         );
+  //         var index1 = preferedCropsData.findIndex(
+  //           (obj) => obj.cropId == response.data.data[index].cropId
+  //         );
+  //         if (index1 != -1) {
+  //           response.data.data.splice(index, 1);
+  //           Object.assign(
+  //             response.data.data[index],
+  //             { count: 0 },
+  //             { cropActive: false },
+  //             { qtyUnit: "Crates" },
+  //             { weight: 0 },
+  //             { rate: 0 },
+  //             { total: 0 },
+  //             { wastage: 0 },
+  //             { qty: 0 },
+  //             { status: 1 },
+  //             { id: 0 },
+  //             { cropDelete: false }
+  //           );
+  //         }
+  //       });
+  //       setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
   //   to get crop data oon refresh
   useEffect(() => {
     dispatch(cropEditStatus(billEditStatus ? true : false));
@@ -452,136 +480,96 @@ const Step22 = (props) => {
   var arrays = [];
   const step2Next = () => {
     if (cropData.length > 0) {
-      console.log(cropData,"Data")
       for (var index = 0; index < cropData.length; index++) {
-        if (!cropData[index].cropDelete) {
-          if (
-            cropData[index].qtyUnit?.toLowerCase() === "loads" ||
-            cropData[index].qtyUnit?.toLowerCase() === "pieces"
-          ) {
-            if (cropData[index].weight == 0) {
-              console.log("came to here0");
-              toast.error("Please enter weight", {
-                toastId: "error1",
-              });
-              return null;
-            } else if (cropData[index].rate == 0) {
-              toast.error("Please enter rate", {
-                toastId: "error2",
-              });
-              return null;
-            } else if(cropData[index].weight == cropData[index].wastage){
-              toast.error("wastage is always less than weight", {
-                toastId: "error3",
-              });
-              return null;
-            }
-            else if(cropData[index].wastage > cropData[index].weight){
-              toast.error("wastage is always less than weight", {
-                toastId: "error4",
-              });
-              return null;
-            }
-          } else if (cropData[index].qtyUnit?.toLowerCase() === "kgs") {
-            if (cropData[index].weight == 0) {
-              console.log("came to here1");
-              toast.error("Please enter weight", {
-                toastId: "error1",
-              });
-              return null;
-            } else if (cropData[index].rate == 0) {
-              toast.error("Please enter rate", {
-                toastId: "error2",
-              });
-              return null;
-            } else if(cropData[index].weight == cropData[index].wastage){
-              toast.error("wastage is always less than weight", {
-                toastId: "error3",
-              });
-              return null;
-            }
-            else if(cropData[index].wastage > cropData[index].weight){
-              toast.error("wastage is always less than weight", {
-                toastId: "error4",
-              });
-              return null;
-            }
-          } else if (
-            cropData[index].qtyUnit?.toLowerCase() ===
-            cropData[index].rateType?.toLowerCase()
-          ) {
-            if (cropData[index].qty == 0) {
-              toast.error("Please enter Quantity", {
-                toastId: "error1",
-              });
-              return null;
-            } else if (cropData[index].rate == 0) {
-              toast.error("Please enter rate", {
-                toastId: "error2",
-              });
-              return null;
-            } else if(cropData[index].qty == cropData[index].wastage){
-              toast.error("wastage is always less than quantity", {
-                toastId: "error3",
-              });
-              return null;
-            }
-            else if(cropData[index].wastage > cropData[index]?.qty){
-              toast.error("wastage is always less than quantity", {
-                toastId: "error4",
-              });
-              return null;
-            }
+        const data = cropData[index];
+        if (data.cropDelete) continue;
+        const qtyUnit = data.qtyUnit?.toLowerCase();
+        const rateType = data.rateType?.toLowerCase();
+        if (['loads', 'pieces'].includes(qtyUnit)) {
+          if (data.weight == 0) {
+            toast.error("Please enter weight", {
+              toastId: "error1",
+            });
+            return null;
+          } else if (data.rate == 0) {
+            toast.error("Please enter rate", {
+              toastId: "error2",
+            });
+            return null;
+          } else if (Object.is(data.weight, data.wastage)) {
+            toast.error("wastage is always less than weight", {
+              toastId: "error3",
+            });
+            return null;
+          } else if(parseInt(data.weight) <= parseInt(data.wastage)){
+            toast.error("wastage is always less than weight", {
+              toastId: "error3",
+            });
+            return null;
           }
-          else if (
-            cropData[index].qty == 0 &&
-            !setQuantityBasedtable(cropData[index].qtyUnit)
-          ) {
+        } else if (qtyUnit === 'kgs') {
+          if (data.weight == 0) {
+            toast.error("Please enter weight", {
+              toastId: "error1",
+            });
+            return null;
+          } else if (data.rate == 0) {
+            toast.error("Please enter rate", {
+              toastId: "error2",
+            });
+            return null;
+          } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+            toast.error("wastage is always less than weight", {
+              toastId: "error3",
+            });
+            return null;
+          }
+        } else if (qtyUnit === rateType) {
+          if (data.qty == 0) {
             toast.error("Please enter Quantity", {
               toastId: "error1",
             });
             return null;
-          } 
-          else if(cropData[index].weight == cropData[index].wastage){
-            toast.error("wastage is always less than weight", {
+          } else if (data.rate == 0) {
+            toast.error("Please enter rate", {
               toastId: "error2",
             });
             return null;
-          }
-          else if(cropData[index].wastage > cropData[index].weight){
-            toast.error("wastage is always less than weight", {
-              toastId: "error3",
+          } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
+            toast.error("wastage is always less than quantity", {
+              toastId: "error4",
             });
             return null;
           }
-          else if (cropData[index].weight == 0 && !billEditStatus) {
-            console.log("came to here0")
+        } else if (!setQuantityBasedtable(qtyUnit) && data.rateType?.toUpperCase() !== "RATE_PER_UNIT") {
+          if (data.qty == 0) {
+            toast.error("Please enter Quantity", {
+              toastId: "error1",
+            });
+            return null;
+          }
+          else if (data.weight == 0 && !billEditStatus) {
               toast.error("Please enter weight", {
-                toastId: "error1",
+                toastId: "error2",
               });
             return null;
-          } else if(cropData[index].rateType?.toUpperCase() !== "RATE_PER_UNIT" && billEditStatus)
-            {
-              if(cropData[index].weight == 0 && billEditStatus){
-                toast.error("Please enter weight", {
-                  toastId: "error2",
-                });
-              return null;
-              }
-          }
-          else if (cropData[index].rate == 0) {
+          } else if (data.rate == 0) {
             toast.error("Please enter rate", {
               toastId: "error3",
             });
             return null;
+          } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+            toast.error("wastage is always less than weight", {
+              toastId: "error4",
+            });
+            return null;
           } 
-          else if (
-            setQuantityBasedtable(cropData[index].qtyUnit) &&
-            cropData[index].weight != 0 &&
-            cropData[index].rate != 0
-          ) {
-            return cropData[index];
-          }
+        } else if (
+          setQuantityBasedtable(data.qtyUnit) &&
+          data.weight != 0 &&
+          data.rate != 0
+        ) {
+          return data;
         }
       }
       for (var k = 0; k < cropData.length; k++) {
