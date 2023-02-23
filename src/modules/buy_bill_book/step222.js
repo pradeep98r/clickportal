@@ -185,7 +185,6 @@ const Step22 = (props) => {
 
   //   getting all crops popup when click on other crop
   const allCropData = () => {
-    console.log(preferedCropsData)
     setCropInfoModalStatus(true);
     setCropInfoModal(true);
   };
@@ -195,44 +194,52 @@ const Step22 = (props) => {
     getPreferredCrops(clickId, clientId, clientSecret)
       .then((response) => {
         var res = response.data.data;
-        response.data.data.map((item, index) => {
+        var list = preferedCropsData;
+        var arr=[];
+        res.map((i, ind) => {
+        var index = list.findIndex((obj) => obj.cropId == i.cropId);
+        if (index != -1) {
           Object.assign(
-            item,
-            { count: 0 },
-            { cropActive: false },
-            { qtyUnit: "Crates" },
+            i,
+            { cropActive: true },
+            { cropSelect: "active" },
+            { wastage: 0 },
+            { qty: 0 },
+            { rateType: "kgs" },
             { weight: 0 },
             { rate: 0 },
             { total: 0 },
+            { qtyUnit: "crates" },
+            { checked: false },
+            { bags: [] },
+            { status: 1 },
+            { cropDelete: false }
+          );
+          setPreferedCropsData([...list, ...arr]);
+        } else {
+          Object.assign(
+            i,
+            { count: 0 },
+            { cropActive: true },
+            { cropSelect: "active" },
             { wastage: 0 },
             { qty: 0 },
+            { rateType: "kgs" },
+            { weight: 0 },
+            { rate: 0 },
+            { total: 0 },
+            { qtyUnit: "crates" },
+            { checked: false },
+            { bags: [] },
             { status: 1 },
             { id: 0 },
             { cropDelete: false }
           );
-          var index1 = preferedCropsData.findIndex(
-            (obj) => obj.cropId == response.data.data[index].cropId
-          );
-          if (index1 != -1) {
-            response.data.data.splice(index, 1);
-            Object.assign(
-              response.data.data[index],
-              { count: 0 },
-              { cropActive: false },
-              { qtyUnit: "Crates" },
-              { weight: 0 },
-              { rate: 0 },
-              { total: 0 },
-              { wastage: 0 },
-              { qty: 0 },
-              { status: 1 },
-              { id: 0 },
-              { cropDelete: false }
-            );
-          }
-        });
-        console.log(preferedCropsData,response.data.data,'fetch data')
-        setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+          arr.push(i);
+          setPreferedCropsData([...preferedCropsData, ...arr]);
+        }
+      });
+        
       })
       .catch((error) => {
         console.log(error);
@@ -276,9 +283,7 @@ const Step22 = (props) => {
         if (lineIt != null) {
           cropResponseData([...lineIt]);
           setUpdatedItemList(lineIt);
-          console.log(lineIt)
           setPreferedCropsData([...lineIt]);
-          console.log(lineIt,'use cropedit')
         }
       }
       var cropArr = billEditStatus ? cropObjectArr : lineIt;
@@ -286,17 +291,14 @@ const Step22 = (props) => {
         var k = preferedCropsData.findIndex(
           (obj) => obj.cropId === item.cropId
         );
-        console.log(preferedCropsData,k,'pref')
         if (k != -1) {
           preferedCropsData[k].count++;
-          console.log(preferedCropsData)
         } else {
           let clonedObject = { ...cropArr[index] };
           if (cropArr[index].rateType === "RATE_PER_KG") {
             clonedObject = { ...clonedObject, rateType: "kgs" };
           }
           Object.assign(clonedObject, { count: 1 }, { cropActive: true });
-          console.log(clonedObject,"clonesd")
           preferedCropsData.push(clonedObject);
         }
       });
@@ -306,7 +308,6 @@ const Step22 = (props) => {
           cropResponseData([...props.slectedCropstableArray]);
           setUpdatedItemList(props.slectedCropstableArray);
           setPreferedCropsData([...props.slectedCropstableArray]);
-          console.log(props.slectedCropstableArray,'use no cropedit')
         }
       }
     }
@@ -339,7 +340,6 @@ const Step22 = (props) => {
           var existedItem = list[index];
           existedItem.count += 1;
           list[index] = existedItem;
-          console.log('adding from other poopup if')
           setPreferedCropsData([...list, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
@@ -372,7 +372,6 @@ const Step22 = (props) => {
             { cropDelete: false }
           );
           arr.push(i);
-          console.log('adding from other poopup else differentt')
           setPreferedCropsData([...preferedCropsData, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
@@ -382,7 +381,6 @@ const Step22 = (props) => {
       let deSelectedCrop = preferedCropsData.filter(
         (item) => item.cropId !== childData.cropId
       );
-      console.log('adding from other poopup if elseeeee')
       setPreferedCropsData(deSelectedCrop);
     }
   };
@@ -747,7 +745,6 @@ const Step22 = (props) => {
   // var cropDeletedList = [];
   const [cropDeletedList, setcropDeletedList] = useState([]);
   const deleteCrop = (crop, cropArray, indexVal) => {
-    console.log(indexVal,"val")
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
@@ -808,7 +805,6 @@ const Step22 = (props) => {
                     list.splice(index1, 1);
                   }
                   setShowStep3Modal(false);
-                  console.log('delete]', list)
                   setPreferedCropsData([...list]);
                 })
                 .catch((error) => {
@@ -819,7 +815,6 @@ const Step22 = (props) => {
         }
       }
     // }
-    console.log(cropArray, cropDeletedList);
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
     // cropResponseData([...cropArray]);
@@ -991,7 +986,6 @@ const Step22 = (props) => {
     setAddCropStatus(false);
     cropResponseData([...updatedItem3]);
     setUpdatedItemList([...updatedItem3]);
-    console.log('add new row crrop',updatedItem4)
     setPreferedCropsData([...updatedItem4]);
     setCropItem(false);
   };
@@ -1002,17 +996,18 @@ const Step22 = (props) => {
         <h4 className="smartboard_main_header">Select crop and create bill</h4>
         <div className="d-flex align-itmes-center">
           {preferedCropsData.length > 0 && (
-            <div className="d-flex total_crops_div">
-              {preferedCropsData.length}
-              {preferedCropsData.map((crop, index) => (
-                <div
-                  className="text-center crop_div crop_div_ui"
-                  key={crop.cropId}
-                  onClick={() =>
-                    cropOnclick(crop, crop.cropId, index, preferedCropsData)
-                  }
-                >
-                  <div className="cropImgDiv">
+           <div className="d-flex total_crops_div">
+             {preferedCropsData.length}
+           {preferedCropsData.map((crop, index) => (
+             <div className="">
+               <div
+                 className="text-center crop_div crop_div_ui"
+                 key={crop.cropId}
+                 onClick={() =>
+                   cropOnclick(crop, crop.cropId, index, preferedCropsData)
+                 }
+               >
+                 <div className="cropImgDiv">
                     <img
                       src={crop.imageUrl}
                       className="flex_class cropImg mx-auto "
@@ -1033,11 +1028,11 @@ const Step22 = (props) => {
                         : preferedCropsData[index].count}
                     </div>
                   </div>
-
-                  <p>{crop.cropName}</p>
-                </div>
-              ))}
-            </div>
+                 <p>{crop.cropName}</p>
+               </div>
+             </div>
+           ))}
+         </div>
           )}
           <div
             className="text-center crop_div other_Crop"
