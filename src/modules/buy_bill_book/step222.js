@@ -153,79 +153,79 @@ const Step22 = (props) => {
     setCropInfoModal(true);
   };
   //   fetching preferred crops data
-  const fetchData = () => {
-    getPreferredCrops(clickId, clientId, clientSecret)
-      .then((response) => {
-        const newData = response.data.data.map((item) => {
-          return {
-            ...item,
-            count: 0,
-            cropActive: false,
-            qtyUnit: "Crates",
-            weight: 0,
-            rate: 0,
-            total: 0,
-            wastage: 0,
-            qty: 0,
-            status: 1,
-            id: 0,
-            cropDelete: false
-          };
-        });
-        const existingIds = preferedCropsData.map((item) => item.cropId);
-        const filteredData = newData.filter((item) => !existingIds.includes(item.cropId));
-        setPreferedCropsData((prevState) => [...prevState, ...filteredData]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  
   // const fetchData = () => {
   //   getPreferredCrops(clickId, clientId, clientSecret)
   //     .then((response) => {
-  //       response.data.data.map((item, index) => {
-  //         Object.assign(
-  //           item,
-  //           { count: 0 },
-  //           { cropActive: false },
-  //           { qtyUnit: "Crates" },
-  //           { weight: 0 },
-  //           { rate: 0 },
-  //           { total: 0 },
-  //           { wastage: 0 },
-  //           { qty: 0 },
-  //           { status: 1 },
-  //           { id: 0 },
-  //           { cropDelete: false }
-  //         );
-  //         var index1 = preferedCropsData.findIndex(
-  //           (obj) => obj.cropId == response.data.data[index].cropId
-  //         );
-  //         if (index1 != -1) {
-  //           response.data.data.splice(index, 1);
-  //           Object.assign(
-  //             response.data.data[index],
-  //             { count: 0 },
-  //             { cropActive: false },
-  //             { qtyUnit: "Crates" },
-  //             { weight: 0 },
-  //             { rate: 0 },
-  //             { total: 0 },
-  //             { wastage: 0 },
-  //             { qty: 0 },
-  //             { status: 1 },
-  //             { id: 0 },
-  //             { cropDelete: false }
-  //           );
-  //         }
+  //       const newData = response.data.data.map((item) => {
+  //         return {
+  //           ...item,
+  //           count: 0,
+  //           cropActive: false,
+  //           qtyUnit: "Crates",
+  //           weight: 0,
+  //           rate: 0,
+  //           total: 0,
+  //           wastage: 0,
+  //           qty: 0,
+  //           status: 1,
+  //           id: 0,
+  //           cropDelete: false
+  //         };
   //       });
-  //       setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+  //       const existingIds = preferedCropsData.map((item) => item.cropId);
+  //       const filteredData = newData.filter((item) => !existingIds.includes(item.cropId));
+  //       setPreferedCropsData((prevState) => [...prevState, ...filteredData]);
   //     })
   //     .catch((error) => {
   //       console.log(error);
   //     });
   // };
+  
+  const fetchData = () => {
+    getPreferredCrops(clickId, clientId, clientSecret)
+      .then((response) => {
+        response.data.data.map((item, index) => {
+          Object.assign(
+            item,
+            { count: 0 },
+            { cropActive: false },
+            { qtyUnit: "Crates" },
+            { weight: 0 },
+            { rate: 0 },
+            { total: 0 },
+            { wastage: 0 },
+            { qty: 0 },
+            { status: 1 },
+            { id: 0 },
+            { cropDelete: false }
+          );
+          var index1 = preferedCropsData.findIndex(
+            (obj) => obj.cropId == response.data.data[index].cropId
+          );
+          if (index1 != -1) {
+            response.data.data.splice(index, 1);
+            Object.assign(
+              response.data.data[index],
+              { count: 0 },
+              { cropActive: false },
+              { qtyUnit: "Crates" },
+              { weight: 0 },
+              { rate: 0 },
+              { total: 0 },
+              { wastage: 0 },
+              { qty: 0 },
+              { status: 1 },
+              { id: 0 },
+              { cropDelete: false }
+            );
+          }
+        });
+        setPreferedCropsData([...preferedCropsData, ...response.data.data]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   //   to get crop data oon refresh
   useEffect(() => {
     dispatch(cropEditStatus(billEditStatus ? true : false));
@@ -755,17 +755,30 @@ const Step22 = (props) => {
   // var cropDeletedList = [];
   const [cropDeletedList, setcropDeletedList] = useState([]);
   const deleteCrop = (crop, cropArray, indexVal) => {
+    console.log(indexVal,"val")
+    
+
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
     // console.log(index,indexVal)
     // for (var i = 0; i < cropArray.length; i++) {
       if (index != -1) {
-        Object.assign(cropArray[index], { status: 0, index:  index});
-        cropArray[index].total = 0;
-        cropArray[index].qty = 0;
-        cropArray[index].qtyUnit = "";
-        cropArray[index].cropDelete = true;
+        let data = cropArray.map((item, i)=>{
+          if(i == indexVal){
+            return{
+              ...cropArray[i],cropDelete : true, status:0, index: i
+            }
+          }else {
+              cropResponseData([...cropArray]);
+              return { ...cropArray[i] };
+            }
+        })
+        // Object.assign(cropArray[index], { status: 0, index:  index});
+        // cropArray[index].total = 0;
+        // cropArray[index].qty = 0;
+        // cropArray[index].qtyUnit = "";
+        // cropArray[index].cropDelete = true;
         setcropDeletedList([...cropDeletedList, cropArray[index]]);
         cropDeletedList.push(cropArray[index]);
         cropArray.splice(index, 1);
@@ -820,6 +833,7 @@ const Step22 = (props) => {
     console.log(cropArray, cropDeletedList);
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
+    // cropResponseData([...cropArray]);
     setAllDeletedCrops(cropDeletedList);
   };
   //   getting individual bags popup function

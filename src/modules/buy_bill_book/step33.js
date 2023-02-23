@@ -48,7 +48,7 @@ const Step33 = (props) => {
     //users.buyerInfo
     editStatus ? billEditItemInfo.selectedBillInfo : buyerInfo
   );
-   console.log(buyerInfo,partnerSelectedData)
+
   const [transpoSelectedData, setTranspoSelectedData] = useState(
     transusers.transInfo
   );
@@ -134,7 +134,6 @@ const Step33 = (props) => {
           return object.billType === 'BUY' && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-      console.log(filteredArray,"filter")
       //  Group the filtered objects by their groupId using the reduce method
 
       // const groups = filteredArray.reduce((result, object) => {
