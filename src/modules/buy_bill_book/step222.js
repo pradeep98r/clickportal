@@ -121,10 +121,6 @@ const Step22 = (props) => {
     });
   };
   const [displayStat, setDisplayStat] = useState(false);
-  const handleAddCropStatus = (index) => {
-    setAddCropStatus(true);
-    fetchCropData();
-  };
 
   const date =
     billEditItemInfo.selectedBillDate !== null
@@ -142,17 +138,20 @@ const Step22 = (props) => {
     }
   };
   // navigate to previous step
+  var prevArray = [];
   const previousStep = () => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
     dispatch(billDate(date));
+    console.log(updatedItemList);
     for (var i = 0; i < updatedItemList.length; i++) {
-      if (updatedItemList[i].status == 0) {
-        updatedItemList.splice(i, 1);
+      if (Object.keys(updatedItemList[i]).length != 0) {
+        prevArray.push(updatedItemList[i]);
       }
     }
     dispatch(fromBillbook(false));
-    localStorage.setItem("lineItemsEdit", JSON.stringify(updatedItemList));
+    console.log(prevArray);
+    localStorage.setItem("lineItemsEdit", JSON.stringify(prevArray));
     dispatch(tableEditStatus(true));
   };
   //   click on particular crop function
@@ -194,6 +193,7 @@ const Step22 = (props) => {
       .then((response) => {
         var res = response.data.data;
         var list = preferedCropsData;
+        console.log(list);
         var arr = [];
         res.map((i, ind) => {
           var index = list.findIndex((obj) => obj.cropId == i.cropId);
@@ -306,6 +306,7 @@ const Step22 = (props) => {
           cropResponseData([...props.slectedCropstableArray]);
           setUpdatedItemList(props.slectedCropstableArray);
           setPreferedCropsData([...props.slectedCropstableArray]);
+          console.log(props.slectedCropstableArray);
         }
       }
     }
@@ -388,13 +389,17 @@ const Step22 = (props) => {
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
+
+    console.log(cropInfo);
     for (var k = 0; k < cropInfo.length; k++) {
-      if (cropInfo[k].rateType == "kgs") {
-        cropInfo[k].total =
-          (cropInfo[k].weight - cropInfo[k].wastage) * cropInfo[k].rate;
-      } else {
-        cropInfo[k].total =
-          (cropInfo[k].qty - cropInfo[k].wastage) * cropInfo[k].rate;
+      if (Object.keys(cropInfo[k]).length != 0) {
+        if (cropInfo[k].rateType == "kgs") {
+          cropInfo[k].total =
+            (cropInfo[k].weight - cropInfo[k].wastage) * cropInfo[k].rate;
+        } else {
+          cropInfo[k].total =
+            (cropInfo[k].qty - cropInfo[k].wastage) * cropInfo[k].rate;
+        }
       }
     }
     var h = [];
@@ -467,104 +472,112 @@ const Step22 = (props) => {
   var arrays = [];
   const step2Next = () => {
     if (cropData.length > 0) {
+      console.log(cropData);
       for (var index = 0; index < cropData.length; index++) {
         const data = cropData[index];
-        if (data.cropDelete) continue;
-        const qtyUnit = data.qtyUnit?.toLowerCase();
-        const rateType = data.rateType?.toLowerCase();
-        if (["loads", "pieces"].includes(qtyUnit)) {
-          if (data.weight == 0) {
-            toast.error("Please enter weight", {
-              toastId: "error1",
-            });
-            return null;
-          } else if (data.rate == 0) {
-            toast.error("Please enter rate", {
-              toastId: "error2",
-            });
-            return null;
-          } else if (Object.is(data.weight, data.wastage)) {
-            toast.error("wastage is always less than weight", {
-              toastId: "error3",
-            });
-            return null;
-          } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
-            toast.error("wastage is always less than weight", {
-              toastId: "error3",
-            });
-            return null;
+        console.log(data);
+        if (Object.keys(data).length != 0) {
+          if (data.cropDelete) continue;
+          const qtyUnit = data.qtyUnit?.toLowerCase();
+          const rateType = data.rateType?.toLowerCase();
+          if (["loads", "pieces"].includes(qtyUnit)) {
+            if (data.weight == 0) {
+              toast.error("Please enter weight", {
+                toastId: "error1",
+              });
+              return null;
+            } else if (data.rate == 0) {
+              toast.error("Please enter rate", {
+                toastId: "error2",
+              });
+              return null;
+            } else if (Object.is(data.weight, data.wastage)) {
+              toast.error("wastage is always less than weight", {
+                toastId: "error3",
+              });
+              return null;
+            } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+              toast.error("wastage is always less than weight", {
+                toastId: "error3",
+              });
+              return null;
+            }
+          } else if (qtyUnit === "kgs") {
+            if (data.weight == 0) {
+              toast.error("Please enter weight", {
+                toastId: "error1",
+              });
+              return null;
+            } else if (data.rate == 0) {
+              toast.error("Please enter rate", {
+                toastId: "error2",
+              });
+              return null;
+            } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+              toast.error("wastage is always less than weight", {
+                toastId: "error3",
+              });
+              return null;
+            }
+          } else if (qtyUnit === rateType) {
+            if (data.qty == 0) {
+              toast.error("Please enter Quantity", {
+                toastId: "error1",
+              });
+              return null;
+            } else if (data.rate == 0) {
+              toast.error("Please enter rate", {
+                toastId: "error2",
+              });
+              return null;
+            } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
+              toast.error("wastage is always less than quantity", {
+                toastId: "error4",
+              });
+              return null;
+            }
+          } else if (
+            !setQuantityBasedtable(qtyUnit) &&
+            data.rateType?.toUpperCase() !== "RATE_PER_UNIT"
+          ) {
+            if (data.qty == 0) {
+              toast.error("Please enter Quantity", {
+                toastId: "error1",
+              });
+              return null;
+            } else if (data.weight == 0 && !billEditStatus) {
+              toast.error("Please enter weight", {
+                toastId: "error2",
+              });
+              return null;
+            } else if (data.rate == 0) {
+              toast.error("Please enter rate", {
+                toastId: "error3",
+              });
+              return null;
+            } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+              toast.error("wastage is always less than weight", {
+                toastId: "error4",
+              });
+              return null;
+            }
+          } else if (
+            setQuantityBasedtable(data.qtyUnit) &&
+            data.weight != 0 &&
+            data.rate != 0
+          ) {
+            return data;
           }
-        } else if (qtyUnit === "kgs") {
-          if (data.weight == 0) {
-            toast.error("Please enter weight", {
-              toastId: "error1",
-            });
-            return null;
-          } else if (data.rate == 0) {
-            toast.error("Please enter rate", {
-              toastId: "error2",
-            });
-            return null;
-          } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
-            toast.error("wastage is always less than weight", {
-              toastId: "error3",
-            });
-            return null;
-          }
-        } else if (qtyUnit === rateType) {
-          if (data.qty == 0) {
-            toast.error("Please enter Quantity", {
-              toastId: "error1",
-            });
-            return null;
-          } else if (data.rate == 0) {
-            toast.error("Please enter rate", {
-              toastId: "error2",
-            });
-            return null;
-          } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
-            toast.error("wastage is always less than quantity", {
-              toastId: "error4",
-            });
-            return null;
-          }
-        } else if (
-          !setQuantityBasedtable(qtyUnit) &&
-          data.rateType?.toUpperCase() !== "RATE_PER_UNIT"
-        ) {
-          if (data.qty == 0) {
-            toast.error("Please enter Quantity", {
-              toastId: "error1",
-            });
-            return null;
-          } else if (data.weight == 0 && !billEditStatus) {
-            toast.error("Please enter weight", {
-              toastId: "error2",
-            });
-            return null;
-          } else if (data.rate == 0) {
-            toast.error("Please enter rate", {
-              toastId: "error3",
-            });
-            return null;
-          } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
-            toast.error("wastage is always less than weight", {
-              toastId: "error4",
-            });
-            return null;
-          }
-        } else if (
-          setQuantityBasedtable(data.qtyUnit) &&
-          data.weight != 0 &&
-          data.rate != 0
-        ) {
-          return data;
         }
+        // end if
       }
       for (var k = 0; k < cropData.length; k++) {
-        arrays.push(cropData[k]);
+        if (Object.keys(cropData[k]).length != 0) {
+          arrays.push(cropData[k]);
+        }
       }
 
+      console.log(arrays, cropData);
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
@@ -572,6 +585,14 @@ const Step22 = (props) => {
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
         );
+      } else {
+        for (var j = 0; j < cropData.length; j++) {
+          if (Object.keys(cropData[j]).length == 0) {
+            toast.error("Please add crop", {
+              toastId: "error6",
+            });
+          }
+        }
       }
     }
   };
@@ -724,6 +745,7 @@ const Step22 = (props) => {
     cropResponseData([...updatedItem3]);
     setrateValue(val);
     setCropId(id);
+    console.log(cropData, updatedItem3);
     setUpdatedItemList([...updatedItem3]);
     if (billEditStatus) {
       // props.slectedCropstableArray.lineItems = updatedItem3;
@@ -740,7 +762,6 @@ const Step22 = (props) => {
     cropResponseData([...cropData, crop]);
   };
 
-  console.log(cropData, "DATA");
   // delete crop funnction
   var dummyList = [];
   var arrylist = [];
@@ -884,21 +905,17 @@ const Step22 = (props) => {
     }
   };
   var cropArraynew = [];
-  const [addCrop, setAddCrop] = useState(false);
   const [getCropItem, setCropItem] = useState(false);
   const addCropRow = () => {
-    setAddCrop(true);
-    setCropItem(true);
-    setSearchValue("");
     setSelectedCropItem(null);
     setAddCropsIndex(cropData.length);
     setDisplayStat(false);
     setActiveSearch(true);
     var crpObject = {};
     cropArraynew.push(crpObject);
+    console.log(cropArraynew, cropData);
     cropResponseData([...cropData, ...cropArraynew]);
   };
-  const [searchValue, setSearchValue] = useState("");
 
   const filterOption = (option, inputValue) => {
     const { cropName } = option.data;
@@ -943,8 +960,9 @@ const Step22 = (props) => {
         var countadded;
         if (onFocusCrop != null) {
           if (onFocusCrop.cropId == preferedCropsData[j].cropId) {
-            countadded = preferedCropsData[j].count;
+            countadded = preferedCropsData[j].count + 1;
             var cActive = countadded == 0 ? false : true;
+            console.log(countadded, "focus not nuull same crop same pre");
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -952,6 +970,11 @@ const Step22 = (props) => {
             };
           } else {
             countadded = preferedCropsData[j].count + 1;
+            console.log(
+              countadded,
+              preferedCropsData[j].count,
+              "focus not nuull same crop if not pref"
+            );
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -975,15 +998,24 @@ const Step22 = (props) => {
                 ? preferedCropsData[j].count - 1
                 : preferedCropsData[j].count;
             var cActive = countadded == 0 ? false : true;
+            var cSelect = countadded == 0 ? false : true;
+            console.log(
+              countadded,
+              preferedCropsData[j],
+              "focus not nuull different crop"
+            );
             return {
               ...preferedCropsData[j],
               count: countadded,
               cropActive: cActive,
+              cropSelect: cSelect,
             };
           } else {
+            console.log("elseeee");
             return { ...preferedCropsData[j] };
           }
         } else {
+          console.log(countadded, "focus nuull different crop");
           return { ...preferedCropsData[j] };
         }
       }
@@ -991,7 +1023,6 @@ const Step22 = (props) => {
     var index1 = updatedItem4.findIndex((obj) => obj.cropId == crop.cropId);
     if (index1 != -1) {
     } else {
-      // var c = crop.count + 1;
       Object.assign(crop, { count: 1 });
       const new_obj = { ...crop, cropActive: true };
       updatedItem4.push(new_obj);
@@ -999,8 +1030,8 @@ const Step22 = (props) => {
     setAddCropStatus(false);
     cropResponseData([...updatedItem3]);
     setUpdatedItemList([...updatedItem3]);
+    console.log(updatedItem4, updatedItem3);
     setPreferedCropsData([...updatedItem4]);
-    setCropItem(false);
   };
 
   return (
@@ -1010,7 +1041,6 @@ const Step22 = (props) => {
         <div className="d-flex align-itmes-center">
           {preferedCropsData.length > 0 && (
             <div className="d-flex total_crops_div">
-              {preferedCropsData.length}
               {preferedCropsData.map((crop, index) => (
                 <div className="">
                   <div
@@ -1457,7 +1487,35 @@ const Step22 = (props) => {
                                 <td className="col-1"></td>
                                 <td className="col-1"></td>
                                 <td className="col-1"></td>
-                                <td className="col-3"></td>
+                                <td className="col-3">
+                                  <div className="delete_copy_div d-flex justify-content-end">
+                                    <div
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={cloneCrop.bind(this, crop)}
+                                    >
+                                      <img
+                                        src={copy_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </div>
+                                    <div
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={deleteCrop.bind(
+                                        this,
+                                        crop,
+                                        cropData,
+                                        index
+                                      )}
+                                    >
+                                      <img
+                                        src={delete_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </div>
+                                  </div>
+                                </td>
                               </tr>
                             )}
                           </table>
