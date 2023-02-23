@@ -16,7 +16,7 @@ import loading from "../../assets/images/loading.gif";
 import NoDataAvailable from "../../components/noDataAvailable";
 import BillsSearchField from "../../components/billsSearchField";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
-import { getText } from "../../components/getText";
+import { getPartnerType, getText } from "../../components/getText";
 import Steps from "./steps";
 import {
   getCurrencyNumberWithOutSymbol,
@@ -93,7 +93,6 @@ function BuyBillBook() {
       })
       .catch((error) => {
         if (error.code == '"ERR_NETWORK"') {
-          console.log("came to error code");
           setOnline(true);
         }
         setOnline(true);
@@ -317,14 +316,12 @@ function BuyBillBook() {
                                                     <div className="d-flex align-items-center">
                                                       <div>
                                                         <h6 className="mobile">
-                                                          {bill.partyType.toLowerCase() ==
-                                                            "farmer" ||
-                                                          bill.partyType.toLowerCase() ==
-                                                            "seller"
-                                                            ? getText("Seller")
-                                                            : "Seller" +
-                                                              "-" +
-                                                              bill.farmerId}
+                                                          {getPartnerType(
+                                                            bill.partyType,
+                                                            bill.trader
+                                                          ) +
+                                                            "-" +
+                                                            bill.farmerId}
                                                         </h6>
                                                       </div>
                                                       <h6 className="mobile desk_responsive">

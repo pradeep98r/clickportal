@@ -44,31 +44,27 @@ const Step11 = (props) => {
   const [partnerData, setPartnerData] = useState(null);
   const [partType, separtType] = useState("");
   const [partysType, setpartysType] = useState("");
-//   const [selectedDate, setSelectedDate] = useState(
-//     billDateSelected != null ? billDateSelected : new Date()
-//   );
+
   const callbackFunction = (childData, party, type) => {};
-  const callbackFunctionDate = (date) => {
-    // setSelectedDate(date);
-  };
-  const linkPath = localStorage.getItem('LinkPath');
+  const callbackFunctionDate = (date) => {};
+  const linkPath = localStorage.getItem("LinkPath");
   const addCropModal = () => {
     dispatch(selectSteps("step2"));
     dispatch(selectBill({}));
     dispatch(editStatus(false));
     dispatch(billDate(billDateSelected));
-    dispatch(tableEditStatus(billEditItemInfo?.cropTableEditStatus ? true :false));
-    // dispatch(billDate(selectedDate));
-    if(linkPath ==='/sellbillbook'){
+    dispatch(
+      tableEditStatus(billEditItemInfo?.cropTableEditStatus ? true : false)
+    );
+    if (linkPath === "/sellbillbook") {
       dispatch(selectedParty("buyer"));
-    }else{
+    } else {
       dispatch(selectedParty("seller"));
     }
-    if(!(billEditItemInfo?.fromBillBook)){
-        var h = JSON.parse(localStorage.getItem('lineItemsEdit'));
-        console.log(h,"step1crops")
-        props.billEditStatuscallback(h);
-    } 
+    if (!billEditItemInfo?.fromBillBook) {
+      var h = JSON.parse(localStorage.getItem("lineItemsEdit"));
+      props.billEditStatuscallback(h);
+    }
   };
   const [onClickPage, setonClickPage] = useState(false);
   document.body.addEventListener("click", function (evt) {
@@ -82,7 +78,7 @@ const Step11 = (props) => {
             <div className="row">
               <div className="col-lg-4 p-0">
                 <SelectPartner
-                  partyType={linkPath === '/sellbillbook' ? 'Buyer':"Seller"}
+                  partyType={linkPath === "/sellbillbook" ? "Buyer" : "Seller"}
                   parentCallback={callbackFunction}
                   onClickPage={onClickPage}
                 />
@@ -90,7 +86,7 @@ const Step11 = (props) => {
               <div className="col-lg-4 ">
                 <BillDateSelection
                   parentCallbackDate={callbackFunctionDate}
-                  billDate={null}//{null}
+                  billDate={null} //{null}
                 />
               </div>
               <div className="col-lg-4 p-0">
@@ -104,7 +100,8 @@ const Step11 = (props) => {
         </div>
         <div>
           {partnerData != null &&
-          (partysType.toLowerCase() === "seller" || partysType.toLowerCase() === "buyer"
+          (partysType.toLowerCase() === "seller" ||
+          partysType.toLowerCase() === "buyer"
             ? partType.toLowerCase() === "transporter"
               ? true
               : true

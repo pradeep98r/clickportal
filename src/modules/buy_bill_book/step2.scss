@@ -55,19 +55,22 @@
   }
 }
 .wastage_val,
-.wastage_val:focus {
+.wastage_val:focus{
   color: var(--ono-red)!important;
+  -webkit-text-fill-color: var(--ono-red)!important;
 }
 .delete_copy_div {
   margin-left: 10px;
 }
-.crop_div_ui {
+.cropImgDiv {
   position: relative;
+  width: 40px;
+  margin: 0 auto;
 }
 .crp_count {
     position: absolute;
-    right: 0px;
-    top: 0;
+    right: -8px;
+    top: -8px;
     background-color: var(--ono-blue);
     color: #fff;
     font-size: 13px;
@@ -77,6 +80,9 @@
   }
   .crop_div_ui:hover, .other_Crop:hover{
       cursor: pointer;
+  }
+  .other_Crop{
+    padding-top: 10px;
   }
   .totals{
     font-size: 1rem!important;
@@ -150,7 +156,7 @@ select,.dropdown:focus {
 }
 .empty_row{
   td{
-    padding:20px 15px!important;
+    padding:5px 10px!important;
   }
 }
 .add-cropsdiv{
@@ -206,4 +212,7 @@ select,.dropdown:focus {
 }
 .cursor_class:hover{
   cursor: pointer;
+}
+.crop_div_ui{
+  // width: 100px;
 }
