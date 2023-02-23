@@ -81,6 +81,9 @@
   .crop_div_ui:hover, .other_Crop:hover{
       cursor: pointer;
   }
+  .other_Crop{
+    padding-top: 10px;
+  }
   .totals{
     font-size: 1rem!important;
     font-weight: 400;
@@ -153,7 +156,7 @@ select,.dropdown:focus {
 }
 .empty_row{
   td{
-    padding:20px 15px!important;
+    padding:5px 10px!important;
   }
 }
 .add-cropsdiv{

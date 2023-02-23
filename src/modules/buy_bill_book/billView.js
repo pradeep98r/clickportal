@@ -35,27 +35,14 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  // const [displayCancel, setDisplayCancel] = useState(false);
   var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
 
   useEffect(() => {
-    // cancelBillStatus();
     dispatch(billViewStatus(true));
-    // setBillViewData(JSON.parse(localStorage.getItem("billData")));
     setBillViewData(billViewData.billViewInfo);
   }, [props.showBillViewModal]);
 
-  // const cancelBillStatus = () => {
-  //   if (billData?.billStatus === "CANCELLED") {
-  //     setDisplayCancel(true);
-  //   } else {
-  //     setDisplayCancel(false);
-  //   }
-  // };
-
-  const [slectedCropArray, setSlectedCropArray] = useState([]);
-  const [editCancelStatus, setEditCancelStatus] = useState(false);
   const dispatch = useDispatch();
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
@@ -63,9 +50,8 @@ const BillView = (props) => {
   const editBill = (itemVal) => {
     var arr = [];
     arr.push(itemVal);
-    setSlectedCropArray(arr);
-    $('.billView_modal').hide();
-    $('.modal-backdrop').remove();
+    $(".billView_modal").hide();
+    $(".modal-backdrop").remove();
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -80,8 +66,6 @@ const BillView = (props) => {
     );
 
     dispatch(cropEditStatus(false));
-    setEditCancelStatus(true);
-    
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
@@ -148,7 +132,6 @@ const BillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
-          // setDisplayCancel(true);
           if (billData?.partyType.toUpperCase() === "FARMER") {
             window.setTimeout(function () {
               props.closeBillViewModal();
@@ -161,7 +144,6 @@ const BillView = (props) => {
               navigate("/sellbillbook");
               window.location.reload();
             }, 2000);
-           
           }
         }
       },
@@ -179,8 +161,8 @@ const BillView = (props) => {
   const closePopup = () => {
     $("#cancelBill").modal("hide");
   };
-  const[prevNextStatus, setPrevNextStatus] = useState(false);
-  const[prevNextDisable, setPrevNextDisable] = useState(false);
+  const [prevNextStatus, setPrevNextStatus] = useState(false);
+  const [prevNextDisable, setPrevNextDisable] = useState(false);
   const previousBill = (id) => {
     var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
     if (index1 != -1) {
@@ -195,12 +177,11 @@ const BillView = (props) => {
       // } else {
       //   setDisplayCancel(false);
       // }
-    }
-    else{
+    } else {
       setPrevNextDisable(true);
     }
   };
-  const[nextDisable, setNextDisable] = useState(false);
+  const [nextDisable, setNextDisable] = useState(false);
   const nextBill = (id) => {
     var index1 = allBillsArray.findIndex((obj) => obj.caBSeq == id);
     if (index1 != -1) {
@@ -215,8 +196,7 @@ const BillView = (props) => {
       // } else {
       //   setDisplayCancel(false);
       // }
-    }
-    else{
+    } else {
       setNextDisable(true);
     }
   };
@@ -252,28 +232,41 @@ const BillView = (props) => {
         <div className="row">
           <div className="col-lg-10 col_left bill_col bill_col_border">
             <div className="bill_view_card buy_bills_view" id="scroll_style">
-              {
-                prevNextStatus ? <BusinessDetails prevNextStatus1={prevNextStatus} /> : <BusinessDetails />
-              }
-              
+              {prevNextStatus ? (
+                <BusinessDetails prevNextStatus1={prevNextStatus} />
+              ) : (
+                <BusinessDetails />
+              )}
+
               <div className="bill_crop_details" id="scroll_style">
-              
-                {prevNextStatus ? <CropDetails prevNextStatus1={prevNextStatus} /> : <CropDetails />}
-                
+                {prevNextStatus ? (
+                  <CropDetails prevNextStatus1={prevNextStatus} />
+                ) : (
+                  <CropDetails />
+                )}
+
                 <div className="stamp_img">
-                    {(billData?.billStatus?.toUpperCase() == "CANCELLED") && (
-                      <img src={cancel_bill_stamp} alt="stammp_img" />
-                    )}
-                  </div>
-                
-                {prevNextStatus ? <GroupTotals prevNextStatus1={prevNextStatus} /> : <GroupTotals />}
-                {prevNextStatus ? <BillViewFooter prevNextStatus1={prevNextStatus} /> : <BillViewFooter />}
+                  {billData?.billStatus?.toUpperCase() == "CANCELLED" && (
+                    <img src={cancel_bill_stamp} alt="stammp_img" />
+                  )}
+                </div>
+
+                {prevNextStatus ? (
+                  <GroupTotals prevNextStatus1={prevNextStatus} />
+                ) : (
+                  <GroupTotals />
+                )}
+                {prevNextStatus ? (
+                  <BillViewFooter prevNextStatus1={prevNextStatus} />
+                ) : (
+                  <BillViewFooter />
+                )}
               </div>
             </div>
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-              {(billData?.billStatus?.toUpperCase() == "CANCELLED") ? (
+              {billData?.billStatus?.toUpperCase() == "CANCELLED" ? (
                 ""
               ) : (
                 <div>
@@ -309,7 +302,11 @@ const BillView = (props) => {
             previousBill(billData?.caBSeq - 1);
           }}
         >
-          <img src={prev_icon} className={prevNextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image"  />
+          <img
+            src={prev_icon}
+            className={prevNextDisable ? "prev_disable" : "prev_next_icon"}
+            alt="image"
+          />
         </button>
         <p className="b-name">{billData?.caBSeq}</p>
         <button
@@ -317,7 +314,11 @@ const BillView = (props) => {
             nextBill(billData?.caBSeq + 1);
           }}
         >
-          <img src={next_icon} className={nextDisable ? 'prev_disable' : 'prev_next_icon'} alt="image" />
+          <img
+            src={next_icon}
+            className={nextDisable ? "prev_disable" : "prev_next_icon"}
+            alt="image"
+          />
         </button>
       </div>
       {showStepsModalStatus ? (
@@ -328,6 +329,7 @@ const BillView = (props) => {
       ) : (
         ""
       )}
+      <ToastContainer />
       <div className="modal cancelModal fade" id="cancelBill">
         <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
           <div className="modal-content">

@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  getCurrencyNumberWithOneDigit,
-  getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
 import { useEffect } from "react";
@@ -99,7 +97,6 @@ const GroupTotals = (props) => {
                 );
               }
               groupOne = [res.data.data.billSetting[i], ...groupOne];
-              console.log(groupone, groupOne, "1group");
               setGroupOne([groupone, ...groupOne]);
             } else if (
               res.data.data.billSetting[i].groupId === 2 &&
@@ -653,7 +650,7 @@ const GroupTotals = (props) => {
     }
     return item;
   };
-   const [finalLedgerBal, setFinalLedgerBal] = useState('');
+  const [finalLedgerBal, setFinalLedgerBal] = useState("");
   const getFinalLedgerbalance = () => {
     if (billData?.partyType.toUpperCase() === "FARMER") {
       var t = Number(
@@ -684,7 +681,7 @@ const GroupTotals = (props) => {
       var finalValue = billData?.grossTotal + t;
     }
     var finalVal = finalValue;
-   
+
     if (
       billData?.partyType?.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
@@ -737,24 +734,23 @@ const GroupTotals = (props) => {
       billData?.partyType.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
-      
       return (
         (Number(finalVal) + billData?.outStBal).toFixed(2) -
         Number(billData?.cashPaid)
-      ).toLocaleString('en-IN', {
+      ).toLocaleString("en-IN", {
         maximumFractionDigits: 2,
-        style: 'currency',
-        currency: 'INR'
-    });
+        style: "currency",
+        currency: "INR",
+      });
     } else {
       var cashRecieved = billData?.cashRcvd === null ? 0 : billData?.cashRcvd;
       return (
         (Number(finalVal) + billData?.outStBal).toFixed(2) - cashRecieved
-      ).toLocaleString('en-IN', {
+      ).toLocaleString("en-IN", {
         maximumFractionDigits: 2,
-        style: 'currency',
-        currency: 'INR'
-    });
+        style: "currency",
+        currency: "INR",
+      });
     }
   };
 

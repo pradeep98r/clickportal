@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { billDate } from "../../reducers/billEditItemSlice";
 import date_icon from "../../assets/images/date_icon.svg";
-import {editStatus} from "../../reducers/billEditItemSlice";
+import { editStatus } from "../../reducers/billEditItemSlice";
 
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
@@ -18,56 +18,53 @@ const BillDateSelection = (props) => {
   const dispatch = useDispatch();
   const onclickDate = (date) => {
     setStartDate(date);
-    localStorage.setItem('setDate',date);
+    localStorage.setItem("setDate", date);
     dispatch(billDate(date));
   };
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate")!==null?true:false);
+  const [checked, setChecked] = useState(
+    localStorage.getItem("defaultDate") !== null ? true : false
+  );
   const handleCheckEvent = () => {
     if (!checked) {
       setChecked(!checked);
-      console.log("checked")
       localStorage.setItem("defaultDate", true);
       setStartDate(selectedDate);
-      localStorage.setItem('setDate',selectedDate);
+      localStorage.setItem("setDate", selectedDate);
     } else {
-      console.log("not checked else")
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
     }
   };
   useEffect(() => {
-    if(billEditItemInfo.billEditStatus){
+    if (billEditItemInfo.billEditStatus) {
       setStartDate(new Date(billDateselected));
-    }
-    else if(!checked){
-      console.log("not checked");
-        setStartDate(selectedDate);
-    } else{
-      setStartDate(new Date(localStorage.getItem('setDate')));
+    } else if (!checked) {
+      setStartDate(selectedDate);
+    } else {
+      setStartDate(new Date(localStorage.getItem("setDate")));
     }
     dispatch(billDate(selectedDate));
   }, []);
-  
- 
+
   return (
     <div className="date_col d-flex align-items-center justify-content-between">
-     <div className="d-flex align-items-center dateSelection">
-     <span className="date_icon m-0">
-        <img src={date_icon} alt="icon" className="dateIcon" />
-      </span>
-      <DatePicker
-        dateFormat="dd-MMM-yyyy"
-        selected={selectedDate}
-        onChange={(date) => onclickDate(date)}
-        className="form-control"
-        placeholder="Date"
-        maxDate={new Date()}
-        onKeyDown={(e) => {
-          e.preventDefault();
-        }}
-      />
-     </div>
+      <div className="d-flex align-items-center dateSelection">
+        <span className="date_icon m-0">
+          <img src={date_icon} alt="icon" className="dateIcon" />
+        </span>
+        <DatePicker
+          dateFormat="dd-MMM-yyyy"
+          selected={selectedDate}
+          onChange={(date) => onclickDate(date)}
+          className="form-control"
+          placeholder="Date"
+          maxDate={new Date()}
+          onKeyDown={(e) => {
+            e.preventDefault();
+          }}
+        />
+      </div>
       <label className="custom-control custom-checkbox mb-0">
         <input
           type="checkbox"
