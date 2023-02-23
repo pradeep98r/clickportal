@@ -253,10 +253,11 @@ const Step22 = (props) => {
         ? props.slectedCrops
         : props.cropEditObject.lineItems
       : props.cropEditObject;
-      console.log(cropObjectArr,"arr")
 
       for (let i = cropObjectArr.length - 1; i >= 0; i--) {
         if (cropObjectArr[i].status === 0) {
+          allDeletedCrops.push(cropObjectArr[i]);
+          setAllDeletedCrops(allDeletedCrops);
           cropObjectArr.splice(i, 1);
         }
       }
@@ -395,6 +396,7 @@ const Step22 = (props) => {
   var dArray = [];
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
+    console.log(allDeletedCrops,"crops deletion")
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
 
     console.log(cropInfo);
@@ -578,6 +580,7 @@ const Step22 = (props) => {
         }
         // end if
       }
+
       for (var k = 0; k < cropData.length; k++) {
         if (Object.keys(cropData[k]).length != 0) {
           arrays.push(cropData[k]);
@@ -760,7 +763,7 @@ const Step22 = (props) => {
   };
 
   //   clone crop (copy crop) function
-  const cloneCrop = (crop) => {
+  const cloneCrop = (crop, cropsData, k) => {
     var list = preferedCropsData;
     var index = list.findIndex((obj) => obj.cropId == crop.cropId);
     if (index != -1) {
@@ -775,6 +778,7 @@ const Step22 = (props) => {
   // var cropDeletedList = [];
   const [cropDeletedList, setcropDeletedList] = useState([]);
   const deleteCrop = (crop, cropArray, indexVal) => {
+    console.log(indexVal,"val")
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
@@ -861,6 +865,7 @@ const Step22 = (props) => {
       }
     }
     // }
+
     console.log(cropDeletedList,"list")
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
@@ -1417,7 +1422,7 @@ const Step22 = (props) => {
                                     <div className="delete_copy_div d-flex">
                                       <div
                                         className="flex_class mr-0 sub_icons_div"
-                                        onClick={cloneCrop.bind(this, crop)}
+                                        onClick={cloneCrop.bind(this, crop,cropData,index)}
                                       >
                                         <img
                                           src={copy_icon}
