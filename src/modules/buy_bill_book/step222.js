@@ -1472,9 +1472,6 @@ const Step22 = (props) => {
                                       <div
                                         contenteditable="true"
                                         className="flex_class mr-0"
-                                        // onClick={() => {
-                                        //   activeSearchCrop(cropData, index);
-                                        // }}
                                       >
                                         <img
                                           src={e.imageUrl}
