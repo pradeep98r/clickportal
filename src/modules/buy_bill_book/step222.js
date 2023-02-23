@@ -253,6 +253,13 @@ const Step22 = (props) => {
         ? props.slectedCrops
         : props.cropEditObject.lineItems
       : props.cropEditObject;
+      console.log(cropObjectArr,"arr")
+
+      for (let i = cropObjectArr.length - 1; i >= 0; i--) {
+        if (cropObjectArr[i].status === 0) {
+          cropObjectArr.splice(i, 1);
+        }
+      }
     dispatch(billViewStatus(billEditStatus));
     fetchData();
     var lineIt = [];
@@ -800,15 +807,19 @@ const Step22 = (props) => {
       // cropArray[index].qty = 0;
       // cropArray[index].qtyUnit = "";
       // cropArray[index].cropDelete = true;
-      setcropDeletedList([...cropDeletedList, cropArray[index]]);
-      cropDeletedList.push(cropArray[index]);
+      if(cropArray[index]?.weight != 0 &&
+        cropArray[index]?.rate != 0){
+          setcropDeletedList([...cropDeletedList, cropArray[index]]);
+          cropDeletedList.push(cropArray[index]);
+      }
       cropArray.splice(index, 1);
       var index1 = list.findIndex((obj) => obj.cropId == crop.cropId);
       if (index1 != -1) {
         list[index1].count -= 1;
         if (list[index1].count == 0) {
           if (billEditStatus) {
-            list.splice(index1, 1);
+            console.log("yes if1",list[index1])
+            // list.splice(index1, 1);
           } else {
             getPreferredCrops(clickId, clientId, clientSecret)
               .then((response) => {
@@ -828,6 +839,7 @@ const Step22 = (props) => {
                 for (var k = 0; k < list.length; k++) {
                   for (var t = 0; t < arrylist.length; t++) {
                     if (list[k].cropId == arrylist[t].cropId) {
+                      console.log("here raa babu",list,arrylist)
                       list.splice(index1, t);
                     } else {
                       console.log("samecrop ");
@@ -849,6 +861,7 @@ const Step22 = (props) => {
       }
     }
     // }
+    console.log(cropDeletedList,"list")
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
     // cropResponseData([...cropArray]);
