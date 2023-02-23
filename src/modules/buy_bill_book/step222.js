@@ -403,7 +403,7 @@ const Step22 = (props) => {
           var index1 = lineitem.findIndex(
             (obj) => obj.cropId == cropInfo[index].cropId
           );
-          console.log(index,index1,cropInfo,"indexes")
+          console.log(index,index1,lineitem,"indexes")
           if (index1 == index) {
             if(cropInfo[index1]?.cropDelete){
               console.log("yes",lineitem[index1].id,index1)
@@ -577,9 +577,10 @@ const Step22 = (props) => {
       }
 
       if (arrays.length === cropData.length) {
+        console.log(cropData,dArray,"Data")
         addStep3Modal();
         dispatch(selectSteps("step3"));
-        console.log(cropData,dArray,"Data")
+
         props.parentcall(
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
@@ -741,23 +742,49 @@ const Step22 = (props) => {
   };
 
   //   clone crop (copy crop) function
-  const cloneCrop = (crop) => {  
+  const cloneCrop = (crop, cropdata, index) => {  
     var list = preferedCropsData;
-    var index = list.findIndex((obj) => obj.cropId == crop.cropId);
-    if (index != -1) {  
-      list[index].count += 1;
-    }
-    cropResponseData([...cropData, crop]);
+    let updatedCrops = cropdata.map((item,i)=>{
+      if(i == index){
+        if(billEditStatus){
+          // var k = cropdata.findIndex((obj) => obj.cropId == crop.cropId);
+          list[i].count += 1;
+          console.log("came to here",i)
+          crop.cropDelete = false;
+          crop.status=1;
+          crop.id = 0;
+          cropData[i]=crop;
+          console.log(cropData,"cropdData")
+          cropResponseData([...cropData, crop]);
+          // return {...cropdata[index]}
+          // return Object.assign(list[k],{cropDelete : false, status:1})
+        } else{
+          var k = list.findIndex((obj) => obj.cropId == crop.cropId);
+          if (k != -1) {  
+            list[k].count += 1;
+            return {...list[k]}
+          }
+          cropResponseData([...cropData, crop]);
+        } 
+      }
+      return item;
+    })
+    // cropResponseData([...cropData, { ...crop, status: 1,count:0 }]);
+    // var index = list.findIndex((obj) => obj.cropId == crop.cropId);
+    // if (index != -1) {  
+    //   list[index].count += 1;
+    // }
+    // cropResponseData(updatedCrops)
+    // cropResponseData([...cropData, crop]);
   };
+  
+  console.log(cropData,"DATA")
   // delete crop funnction
   var dummyList = [];
   var arrylist = [];
   // var cropDeletedList = [];
   const [cropDeletedList, setcropDeletedList] = useState([]);
-  const deleteCrop = (crop, cropArray, indexVal) => {
-    console.log(indexVal,"val")
-    
-
+  const deleteCrop = (crop, cropArray, indexVal) => { 
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
@@ -766,9 +793,15 @@ const Step22 = (props) => {
       if (index != -1) {
         let data = cropArray.map((item, i)=>{
           if(i == indexVal){
-            return{
-              ...cropArray[i],cropDelete : true, status:0, index: i
-            }
+            if(billEditStatus){
+              console.log("yes");
+              return Object.assign(cropArray[i],{cropDelete : true, status:0, index: i})
+              console.log(cropArray[i],"i")
+            } else{
+              return{
+                ...cropArray[i],cropDelete : true, status:0, index: i
+              }
+            } 
           }else {
               cropResponseData([...cropArray]);
               return { ...cropArray[i] };
@@ -1349,7 +1382,7 @@ const Step22 = (props) => {
                                       <div className="delete_copy_div d-flex">
                                         <div
                                           className="flex_class mr-0 sub_icons_div"
-                                          onClick={cloneCrop.bind(this, crop)}
+                                          onClick={cloneCrop.bind(this, crop,cropData, index)}
                                         >
                                           <img
                                             src={copy_icon}
