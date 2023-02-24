@@ -157,22 +157,42 @@ const Step22 = (props) => {
   //   click on particular crop function
   var newArray = [];
   const cropOnclick = (crop, id, index2, preferedCrops) => {
-    Object.assign(
-      crop,
-      { wastage: 0 },
-      { qty: 0 },
-      { rateType: "kgs" },
-      { weight: 0 },
-      { rate: 0 },
-      { total: 0 },
-      { bags: [] },
-      { status: 1 },
-      { qtyUnit: "Crates" },
-      { activeSearch: false },
-      { displayStat: false },
-      { cropDelete: false }
-    );
-
+    if(billEditStatus){
+      Object.assign(
+        crop,
+        {id: 0},
+        { wastage: 0 },
+        { qty: 0 },
+        { rateType: "kgs" },
+        { weight: 0 },
+        { rate: 0 },
+        { total: 0 },
+        { bags: [] },
+        { status: 1 },
+        { qtyUnit: "Crates" },
+        { activeSearch: false },
+        { displayStat: false },
+        { cropDelete: false }
+      );
+      cropResponseData([...cropData, preferedCrops[index2]]);
+      setUpdatedItemList([...updatedItemList, ...newArray]);
+    } else{
+      Object.assign(
+        crop,
+        { wastage: 0 },
+        { qty: 0 },
+        { rateType: "kgs" },
+        { weight: 0 },
+        { rate: 0 },
+        { total: 0 },
+        { bags: [] },
+        { status: 1 },
+        { qtyUnit: "Crates" },
+        { activeSearch: false },
+        { displayStat: false },
+        { cropDelete: false }
+      );
+    }
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
     setUpdatedItemList([...updatedItemList, ...newArray]);
