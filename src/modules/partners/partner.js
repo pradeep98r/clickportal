@@ -400,6 +400,7 @@ const Partner = () => {
     console.log("hardrefresh");
   };
   const tabEvent = (type) => {
+    setIsLoading(true);
     setPartyType(type);
     setAadharNumber("");
     setCityVal("");

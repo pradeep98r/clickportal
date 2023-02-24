@@ -160,6 +160,7 @@ const SmartBoard = () => {
   var fromDate = "";
   var toDate = "";
   const tabChange = async (type) => {
+    setLoading(true)
     console.log(type, "startt");
     setTabType(type);
     if (type === "Daily") {
@@ -251,6 +252,7 @@ const SmartBoard = () => {
     }
     console.log(firstDate, lastDate, tabType);
     closePopup();
+    setLoading(true);
     getSmartboardData(clickId, tabType, firstDate, lastDate)
       .then((response) => {
         const data = response.data.data;
@@ -297,7 +299,7 @@ const SmartBoard = () => {
         setcommissionEarns(data.commissionEarns);
         setCropItem(data.cropSalesData[0]);
         setBuyCropItem(data.cropPurchaseData[0]);
-        setLoading(false);
+        setLoading(false); 
       })
       .catch((error) => {
         if (error.message.toUpperCase() == "NETWORK ERROR") {
@@ -496,8 +498,8 @@ const SmartBoard = () => {
                       </div>
 
                       {isLoading ? (
-                        <div className="">
-                          <img src={loading} alt="my-gif" className="gif_img" />
+                        <div className="gif_height">
+                          <img src={loading} alt="my-gif" className="gif_img_smartboard" />
                         </div>
                       ) : (
                         <div>
