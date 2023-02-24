@@ -848,6 +848,7 @@ const SellBillStep3 = (props) => {
           toast.error(error.response.data.status.description, {
             toastId: "error1",
           });
+          $("#disable").attr("disabled", false);
         }
       );
     } else {
@@ -872,6 +873,7 @@ const SellBillStep3 = (props) => {
           toast.error(error.response.data.status.description, {
             toastId: "error1",
           });
+          $("#disable").attr("disabled", false);
         }
       );
     }
