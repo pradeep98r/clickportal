@@ -154,9 +154,16 @@ const BillView = (props) => {
       }
     );
   };
-
+  let isPopupOpen = false;
   const handleCheckEvent = () => {
-    $("#cancelBill").modal("show");
+    if (!isPopupOpen) { // check if popup is already open
+      isPopupOpen = true; // set flag to true
+      $("#cancelBill").modal("show"); // show popup
+      setTimeout(() => { // reset flag after a short delay
+        isPopupOpen = false;
+      }, 1000); // adjust delay time as needed 
+    }
+    // $("#cancelBill").modal("show");
   };
   const closePopup = () => {
     $("#cancelBill").modal("hide");
