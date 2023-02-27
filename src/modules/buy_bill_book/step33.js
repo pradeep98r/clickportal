@@ -848,7 +848,7 @@ const Step33 = (props) => {
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.description, {
+            toast.success(response.data.status.message, {
               toastId: "success1",
             });
 
@@ -1451,12 +1451,12 @@ const Step33 = (props) => {
                                 </div>
                               </div>
                             ) : (
-                              <p
+                              <button
                                 className="comment_text"
                                 onClick={() => addCommentClick()}
                               >
                                 +Add Comment
-                              </p>
+                              </button>
                             )
                           ) : (
                             ""

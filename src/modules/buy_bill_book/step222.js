@@ -1129,7 +1129,7 @@ const Step22 = (props) => {
                       cropOnclick(crop, crop.cropId, index, preferedCropsData)
                     }
                   >
-                    <div className="cropImgDiv">
+                    <button className="cropImgDiv">
                       <img
                         src={crop.imageUrl}
                         className="flex_class cropImg mx-auto "
@@ -1149,20 +1149,20 @@ const Step22 = (props) => {
                           ? ""
                           : preferedCropsData[index].count}
                       </div>
-                    </div>
+                    </button>
                     <p>{crop.cropName}</p>
                   </div>
                 </div>
               ))}
             </div>
           )}
-          <div
+          <button
             className="text-center crop_div other_Crop"
             onClick={() => allCropData()}
           >
             <img src={other_crop} />
             <p>Other Crop</p>
-          </div>
+          </button>
         </div>
         <div>
           <div className="row p-0 mt-2">
@@ -1481,7 +1481,7 @@ const Step22 = (props) => {
                                           ).toFixed(2)}
                                     </p>
                                     <div className="delete_copy_div d-flex">
-                                      <div
+                                      <button
                                         className="flex_class mr-0 sub_icons_div"
                                         onClick={cloneCrop.bind(
                                           this,
@@ -1495,8 +1495,8 @@ const Step22 = (props) => {
                                           className="sub_icons"
                                           alt="image"
                                         />
-                                      </div>
-                                      <div
+                                      </button>
+                                      <button
                                         className="flex_class mr-0 sub_icons_div"
                                         onClick={deleteCrop.bind(
                                           this,
@@ -1510,7 +1510,7 @@ const Step22 = (props) => {
                                           className="sub_icons"
                                           alt="image"
                                         />
-                                      </div>
+                                      </button>
                                     </div>
                                   </div>
                                 </td>
@@ -1570,7 +1570,7 @@ const Step22 = (props) => {
                                 <td className="col-1"></td>
                                 <td className="col-3">
                                   <div className="delete_copy_div d-flex justify-content-end">
-                                    <div
+                                    <button
                                       className="flex_class mr-0 sub_icons_div"
                                       onClick={cloneCrop.bind(this, crop)}
                                     >
@@ -1579,8 +1579,8 @@ const Step22 = (props) => {
                                         className="sub_icons"
                                         alt="image"
                                       />
-                                    </div>
-                                    <div
+                                    </button>
+                                    <button
                                       className="flex_class mr-0 sub_icons_div"
                                       onClick={deleteCrop.bind(
                                         this,
@@ -1594,7 +1594,7 @@ const Step22 = (props) => {
                                         className="sub_icons"
                                         alt="image"
                                       />
-                                    </div>
+                                    </button>
                                   </div>
                                 </td>
                               </tr>

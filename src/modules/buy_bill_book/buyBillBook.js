@@ -85,30 +85,36 @@ function BuyBillBook() {
       .then((response) => {
         if (response.data.data != null) {
           setAllData(response.data.data);
+          // setBuyBillData(response.data.data.singleBills);
+          response.data.data.singleBills.map((i, ind) => {
+            Object.assign(i, {index:ind});
+          })
           setBuyBillData(response.data.data.singleBills);
+          console.log(response.data.data.singleBills)
         } else {
           setBuyBillData([]);
         }
         setLoading(false);
       })
       .catch((error) => {
-        if (error.code == '"ERR_NETWORK"') {
+        if (error.toJSON().message === "Network Error") {
+          console.log(error.message);
           setOnline(true);
         }
         setOnline(true);
-        console.log(error.message);
       });
   };
   var billViewStatus = false;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
-  const billOnClick = (id, bill) => {
+  const billOnClick = (id, bill,i) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
     setShowBillModalStatus(true);
     setShowBillModal(true);
     // navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
+    Object.assign(bill,{index:i});
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
@@ -199,7 +205,7 @@ function BuyBillBook() {
                           </li>
                         </ul> */}
                           </div>
-                          <div onClick={onclickDate} className="color_blue">
+                          <button onClick={onclickDate} className="color_blue">
                             <div className="d-flex align-items-center">
                               <p className="date_icon m-0">
                                 <img
@@ -210,7 +216,7 @@ function BuyBillBook() {
                               </p>
                               <p className="date_text_book">{dateValue}</p>
                             </div>
-                          </div>
+                          </button>
                           <div className="d-flex">
                             {/* <BillsSearchField
                           placeholder={langFullData.search}
@@ -219,7 +225,7 @@ function BuyBillBook() {
                           }}
                         /> */}
 
-                            <a
+                            <button
                               className="primary_btn add_bills_btn"
                               // href="/step1"
                               onClick={handleStep1Header}
@@ -230,7 +236,7 @@ function BuyBillBook() {
                                 className="mr-2"
                               />
                               Add single Bill
-                            </a>
+                            </button>
                           </div>
                         </div>
                         <div>
@@ -282,9 +288,9 @@ function BuyBillBook() {
                                   </div>
                                   <div className="buy_bills" id="scroll_style">
                                     {buyBillData.map((bill, index) => (
-                                      <div
+                                      <button
                                         onClick={() =>
-                                          billOnClick(bill.caBSeq, bill)
+                                          billOnClick(bill.caBSeq, bill,index)
                                         }
                                         key={index}
                                         className="billsDiv"
@@ -307,7 +313,7 @@ function BuyBillBook() {
                                                       alt="icon"
                                                     />
                                                   )}
-                                                  <div>
+                                                  <div className="text-left">
                                                     <h6 className="userName">
                                                       {bill.farmerName +
                                                         "-" +
@@ -345,7 +351,7 @@ function BuyBillBook() {
                                               </div>
                                               <div className="col-lg-5 col-sm-12 billid_div">
                                                 <div className="d-flex align-items-center billid_div_flex">
-                                                  <div>
+                                                  <div className="text-left">
                                                     <p className="biilid">
                                                       {langFullData.billNo}:{" "}
                                                       {bill.caBSeq}{" "}
@@ -516,7 +522,7 @@ function BuyBillBook() {
                                             </div>
                                           </div>
                                         </div>
-                                      </div>
+                                      </button>
                                     ))}
                                   </div>
                                 </div>

@@ -400,6 +400,7 @@ const Partner = () => {
     console.log("hardrefresh");
   };
   const tabEvent = (type) => {
+    setIsLoading(true);
     setPartyType(type);
     setAadharNumber("");
     setCityVal("");
@@ -430,10 +431,9 @@ const Partner = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-        if (error.message.toUpperCase() == "NETWORK ERROR") {
+        if (error.toJSON().message === "Network Error") {
           setOnline(true);
         }
-        setOnline(true);
         console.log(error.message);
       });
   };
