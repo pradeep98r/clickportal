@@ -13,8 +13,8 @@ COPY . /app
 # Rebuild the npm 
 # RUN npm rebuild
 
-RUN sudo yum group install "Development Tools"
-RUN sudo yum -y install libpng-devel
+RUN yum group install "Development Tools"
+RUN yum -y install libpng-devel
 
 RUN npm install --force
 RUN npm install -g npm@9.5.1
