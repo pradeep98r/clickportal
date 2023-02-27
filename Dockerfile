@@ -15,6 +15,7 @@ RUN npm rebuild
 
 RUN npm install --force
 RUN npm install -g npm@9.5.1
+RUN npm install -g pngquant-bin
 
 #    && \
 #    npm audit fix --force
