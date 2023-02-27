@@ -16,7 +16,7 @@ COPY . /app
 # RUN yum group install "Development Tools"
 # RUN yum -y install libpng-devel
 
-RUN apt-get install libpng-dev
+RUN apt-get install libpng-dev -y --no-install-recommends
 RUN npm install -g pngquant-bin
 
 
