@@ -13,12 +13,15 @@ COPY . /app
 # Rebuild the npm 
 # RUN npm rebuild
 
-RUN yum group install "Development Tools"
-RUN yum -y install libpng-devel
+# RUN yum group install "Development Tools"
+# RUN yum -y install libpng-devel
+
+
 
 RUN npm install --force
 RUN npm install -g npm@9.5.1
-# RUN npm install -g pngquant-bin
+RUN npm install imagemin-pngquant@5.0.1 --save
+RUN npm install pngquant-bin@3.1.1 --save
 
 #    && \
 #    npm audit fix --force
