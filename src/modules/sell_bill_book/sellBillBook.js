@@ -82,17 +82,20 @@ const SellBillBook = (props) => {
         console.log(response.data.data);
         if (response.data.data != null) {
           setAllData(response.data.data);
+          response.data.data.singleBills.map((i, ind) => {
+            Object.assign(i, {index:ind});
+          })
           setSellBillData(response.data.data.singleBills);
+          
         } else {
           setSellBillData([]);
         }
         setLoading(false);
       })
       .catch((error) => {
-        // if (error.message.toUpperCase() == "NETWORK ERROR") {
-        //   setOnline(true);
-        // }
-        // setOnline(true);
+        if (error.toJSON().message === "Network Error") {
+          setOnline(true);
+        }
         console.log(error);
       });
   };
@@ -102,7 +105,7 @@ const SellBillBook = (props) => {
   var billViewStatus = false;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
-  const billOnClick = (id, bill) => {
+  const billOnClick = (id, bill, i) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
     // navigate(generatePath(`/sell_bill_view/${id}`, { id }));
@@ -110,6 +113,7 @@ const SellBillBook = (props) => {
     setShowBillModalStatus(true);
     setShowBillModal(true);
     localStorage.setItem("billId", id);
+    Object.assign(bill,{index:i});
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
@@ -204,7 +208,7 @@ const SellBillBook = (props) => {
                     </ul> */}
                       </div>
 
-                      <div onClick={onclickDate} className="color_blue">
+                      <button onClick={onclickDate} className="color_blue">
                         <div className="d-flex align-items-center">
                           <span className="date_icon m-0">
                             <img
@@ -215,7 +219,7 @@ const SellBillBook = (props) => {
                           </span>
                           {dateValue}
                         </div>
-                      </div>
+                      </button>
                       <div className="d-flex">
                         {/* <BillsSearchField
                       placeholder={langFullData.search}
@@ -223,7 +227,7 @@ const SellBillBook = (props) => {
                         handleSearch(event);
                       }}
                     /> */}
-                        <a
+                        <button
                           className="primary_btn add_bills_btn"
                           // href="/sellbillstep1"
                           onClick={handleStep1Header}
@@ -234,7 +238,7 @@ const SellBillBook = (props) => {
                             className="mr-2"
                           />
                           Add single Bill
-                        </a>
+                        </button>
                       </div>
                     </div>
                     <div>
@@ -284,9 +288,9 @@ const SellBillBook = (props) => {
                               </div>
                               <div className="buy_bills" id="scroll_style">
                                 {sellBillData.map((bill, index) => (
-                                  <div
+                                  <button
                                     onClick={() =>
-                                      billOnClick(bill.caBSeq, bill)
+                                      billOnClick(bill.caBSeq, bill,index)
                                     }
                                     key={index}
                                     className="billsDiv"
@@ -310,7 +314,7 @@ const SellBillBook = (props) => {
                                                 />
                                               )}
 
-                                              <div>
+                                              <div className="text-left">
                                                 <h6 className="userName">
                                                   {bill.buyerName +
                                                     "-" +
@@ -343,7 +347,7 @@ const SellBillBook = (props) => {
                                           </div>
                                           <div className="col-lg-5 col-sm-12 billid_div">
                                             <div className="d-flex align-items-center billid_div_flex">
-                                              <div>
+                                              <div className="text-left">
                                                 <p className="biilid">
                                                   {langFullData.billNo} :{" "}
                                                   {bill.caBSeq}{" "}
@@ -508,7 +512,7 @@ const SellBillBook = (props) => {
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                  </button>
                                 ))}
                               </div>
                             </div>

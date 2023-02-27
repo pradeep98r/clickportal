@@ -1451,12 +1451,12 @@ const Step33 = (props) => {
                                 </div>
                               </div>
                             ) : (
-                              <p
+                              <button
                                 className="comment_text"
                                 onClick={() => addCommentClick()}
                               >
                                 +Add Comment
-                              </p>
+                              </button>
                             )
                           ) : (
                             ""

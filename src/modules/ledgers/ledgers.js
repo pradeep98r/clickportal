@@ -141,10 +141,9 @@ const Ledgers = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.message.toUpperCase() == "NETWORK ERROR") {
-          setOnline(true);
-        }
-        setOnline(true);
+        if (error.toJSON().message === "Network Error") {
+            setOnline(true);
+          }
       });
   };
 
@@ -594,7 +593,7 @@ const Ledgers = (props) => {
                         style={{ display: dateDisplay ? "flex" : "none" }}
                         className="dateRangePicker justify-content-center"
                       >
-                        <div onClick={onclickDate} className="color_blue">
+                        <button onClick={onclickDate} className="color_blue">
                           <div className="date_icon m-0">
                             <img
                               src={date_icon}
@@ -603,7 +602,7 @@ const Ledgers = (props) => {
                             />
                             {dateValue}
                           </div>
-                        </div>
+                        </button>
                       </div>
                     </div>
                     <div className="card details-tag">

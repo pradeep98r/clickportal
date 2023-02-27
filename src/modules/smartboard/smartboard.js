@@ -302,10 +302,9 @@ const SmartBoard = () => {
         setLoading(false); 
       })
       .catch((error) => {
-        if (error.message.toUpperCase() == "NETWORK ERROR") {
+        if (error.toJSON().message === "Network Error") {
           setOnline(true);
         }
-        setOnline(true);
         console.log(error);
       });
   };
