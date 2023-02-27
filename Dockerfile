@@ -7,15 +7,18 @@ COPY . /app
 
 # Install libpng-dev to fix the deployment issue
 
-RUN apt-get update -y
-RUN apt-get install libpng-dev -y
+# RUN apt-get update -y
+# RUN apt-get install libpng-dev -y
 
 # Rebuild the npm 
-RUN npm rebuild
+# RUN npm rebuild
+
+RUN sudo yum group install "Development Tools"
+RUN sudo yum -y install libpng-devel
 
 RUN npm install --force
 RUN npm install -g npm@9.5.1
-RUN npm install -g pngquant-bin
+# RUN npm install -g pngquant-bin
 
 #    && \
 #    npm audit fix --force
