@@ -14,6 +14,7 @@ RUN apt-get install libpng-dev -y
 RUN npm rebuild
 
 RUN npm install --force
+RUN npm install -g npm@9.5.1
 
 #    && \
 #    npm audit fix --force
