@@ -20,8 +20,8 @@ COPY . /app
 
 RUN npm install --force
 RUN npm install -g npm@9.5.1
-RUN npm install imagemin-pngquant@5.0.1 --save
-RUN npm install pngquant-bin@3.1.1 --save
+RUN npm i -D imagemin-pngquant@5.0.1
+# RUN npm install pngquant-bin@3.1.1 --save
 
 #    && \
 #    npm audit fix --force
