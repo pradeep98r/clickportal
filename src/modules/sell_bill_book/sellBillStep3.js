@@ -856,7 +856,7 @@ const SellBillStep3 = (props) => {
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
-            toast.success(response.data.status.description, {
+            toast.success(response.data.status.description?.toUpperCase(), {
               toastId: "success1",
             });
 
@@ -1421,12 +1421,12 @@ const SellBillStep3 = (props) => {
                               </div>
                             </div>
                           ) : (
-                            <p
+                            <button
                               className="comment_text"
                               onClick={() => addCommentClick()}
                             >
                               +Add Comment
-                            </p>
+                            </button>
                           )
                         ) : (
                           ""

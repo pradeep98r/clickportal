@@ -38,6 +38,9 @@ const GetLanguages = () => {
             navigate("/login");
       })
       .catch((error) => {
+        if (error.toJSON().message === "Network Error") {
+          setOnline(true);
+        }
         console.log(error);
       });
   };

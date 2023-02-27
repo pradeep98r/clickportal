@@ -7,7 +7,8 @@ const NoInternetConnection = (props) => {
     const [isOnline, setOnline] = useState(true);
      // On initization set the isOnline state.
      useEffect(()=>{
-        setOnline(navigator.onLine)
+        setOnline(navigator.onLine);
+        console.log(isOnline)
     },[])
 
     // event listeners to update the state 
@@ -22,7 +23,11 @@ const NoInternetConnection = (props) => {
   return (
     <div>
         {isOnline?props.children:
-        <div>NoInternetConnection</div>}
+        <div className='text-center'>
+          <h5 className='mb-3'>Error</h5>
+          <h6>No Internet Connection</h6>
+        </div>
+        }
     </div>
   )
 }
