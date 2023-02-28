@@ -201,7 +201,6 @@ select,.dropdown:focus {
   font-weight: normal;
   letter-spacing: -0.3px;
   float: right;
-  padding:10px 0px;
 }
 .unit-type{
   color: #0066FF!important;
@@ -215,4 +214,21 @@ select,.dropdown:focus {
 }
 .crop_div_ui{
   // width: 100px;
+}
+
+.gif_img_bill
+{
+  // background: rgba( 255, 255, 255, 0.8 );
+  display: none;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  z-index: 9999;
+}
+
+.gif_img_bill img
+{
+  left: 50%;
+  position: absolute;
+  top: 50%;
 }

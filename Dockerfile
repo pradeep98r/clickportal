@@ -1,33 +1,17 @@
-FROM node:alpine:3.16 as build
+FROM node:16-alpine3.16 as build
 
 RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
 
-# Install libpng-dev to fix the deployment issue
-
-# RUN apt-get update -y
-# RUN apt-get install libpng-dev -y
-
-# Rebuild the npm 
-# RUN npm rebuild
-
-# RUN yum group install "Development Tools"
-# RUN yum -y install libpng-devel
-
-
+RUN apk add pngquant  bash \
+    libpng-dev \
+    gcc \
+    g++ \
+    make
 
 RUN npm install --force
-RUN npm install -g npm@9.5.1
-
-# RUN npm install pngquant-bin@3.1.1 --save
-
-#    && \
-#    npm audit fix --force
-#-g npm@7.18.1 \
-#    && npm audit fix \
-#    && npm install
 
 RUN npm run build
 

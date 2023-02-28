@@ -157,7 +157,6 @@ function SideNavigation() {
     caches.keys().then((names) => {
       names.forEach((name) => {
         caches.delete(name);
-        alert("hii");
       });
     });
     localStorage.setItem("isauth", false);

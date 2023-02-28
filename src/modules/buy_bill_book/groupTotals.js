@@ -22,6 +22,7 @@ const GroupTotals = (props) => {
 
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  console.log(billData, "data");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
@@ -423,50 +424,62 @@ const GroupTotals = (props) => {
           }
         });
         groupone.map((item) => {
-          if (item.addToGt == 1 && item.settingName === "RETURN_COMMISSION") {
+          if (item.settingName === "RETURN_COMMISSION" && !(billData?.less)) {
             value = billData?.rtComm;
             return value;
           } else if (
-            item.addToGt == 0 &&
-            item.settingName === "RETURN_COMMISSION"
+            item.settingName === "RETURN_COMMISSION" && (billData?.less)
           ) {
-            value = -billData?.rtComm;
+            if (billData?.partyType.toUpperCase() === "FARMER") {
+              value = -billData?.rtComm;
+            } else {
+              value = billData?.rtComm;
+            }
             return value;
           }
         });
         groupTwo.map((item) => {
-          if (item.addToGt == 1 && item.settingName === "RETURN_COMMISSION") {
+          if (item.settingName === "RETURN_COMMISSION" && !(billData?.less)) {
             value = billData?.rtComm;
             return value;
           } else if (
-            item.addToGt == 0 &&
-            item.settingName === "RETURN_COMMISSION"
+            item.settingName === "RETURN_COMMISSION" && (billData?.less)
           ) {
-            value = -billData?.rtComm;
+            if (billData?.partyType.toUpperCase() === "FARMER") {
+              value = -billData?.rtComm;
+            } else {
+              value = billData?.rtComm;
+            }
             return value;
           }
         });
         groupThree.map((item) => {
-          if (item.addToGt == 1 && item.settingName === "RETURN_COMMISSION") {
+          if (item.settingName === "RETURN_COMMISSION" && !(billData?.less)) {
             value = billData?.rtComm;
             return value;
           } else if (
-            item.addToGt == 0 &&
-            item.settingName === "RETURN_COMMISSION"
+            item.settingName === "RETURN_COMMISSION" && (billData?.less)
           ) {
-            value = -billData?.rtComm;
+            if (billData?.partyType.toUpperCase() === "FARMER") {
+              value = -billData?.rtComm;
+            } else {
+              value = billData?.rtComm;
+            }
             return value;
           }
         });
         groupFour.map((item) => {
-          if (item.addToGt == 1 && item.settingName == "RETURN_COMMISSION") {
+          if (item.settingName === "RETURN_COMMISSION" && !(billData?.less)) {
             value = billData?.rtComm;
             return value;
           } else if (
-            item.addToGt == 0 &&
-            item.settingName === "RETURN_COMMISSION"
+            item.settingName === "RETURN_COMMISSION" && (billData?.less)
           ) {
-            value = -billData?.rtComm;
+            if (billData?.partyType.toUpperCase() === "FARMER") {
+              value = -billData?.rtComm;
+            } else {
+              value = billData?.rtComm;
+            }
             return value;
           }
         });
@@ -655,21 +668,21 @@ const GroupTotals = (props) => {
     if (billData?.partyType.toUpperCase() === "FARMER") {
       var t = Number(
         billData?.transportation +
-          billData?.labourCharges +
-          billData?.rent +
-          billData?.mandiFee +
-          billData?.govtLevies +
-          billData?.misc +
-          billData?.advance
+        billData?.labourCharges +
+        billData?.rent +
+        billData?.mandiFee +
+        billData?.govtLevies +
+        billData?.misc +
+        billData?.advance
       );
     } else {
       var t = Number(
         billData?.transportation +
-          billData?.labourCharges +
-          billData?.rent +
-          billData?.mandiFee +
-          billData?.govtLevies +
-          billData?.otherFee
+        billData?.labourCharges +
+        billData?.rent +
+        billData?.mandiFee +
+        billData?.govtLevies +
+        billData?.otherFee
       );
     }
     if (
@@ -809,8 +822,8 @@ const GroupTotals = (props) => {
                           )
                             ? " "
                             : item.name?.replaceAll("_", " ")
-                            ? "hrs-line"
-                            : ""
+                              ? "hrs-line"
+                              : ""
                         }
                       ></div>
                     </div>
@@ -823,13 +836,13 @@ const GroupTotals = (props) => {
                     {allGroupsTotal === 0 || null
                       ? ""
                       : (billData?.grossTotal + allGroupsTotal).toLocaleString(
-                          "en-IN",
-                          {
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: "INR",
-                          }
-                        )}
+                        "en-IN",
+                        {
+                          maximumFractionDigits: 2,
+                          style: "currency",
+                          currency: "INR",
+                        }
+                      )}
                   </p>
                 </div>
                 <div
@@ -842,8 +855,8 @@ const GroupTotals = (props) => {
                 <div className="col-lg-2"></div>
                 <div className="col-lg-6">
                   {billData?.grossTotal + allGroupsTotal ===
-                  // billData?.totalPayables ===
-                  0 ? (
+                    // billData?.totalPayables ===
+                    0 ? (
                     ""
                   ) : (
                     <p className="grouping_value">Total Bill Amount :</p>
@@ -853,22 +866,22 @@ const GroupTotals = (props) => {
                   <p
                     className={
                       billData?.partyType.toUpperCase() === "FARMER" ||
-                      billData?.partyType.toUpperCase() === "SELLER"
+                        billData?.partyType.toUpperCase() === "SELLER"
                         ? "grouping_value color_red"
                         : "grouping_value color_green"
                     }
                   >
                     {billData?.grossTotal + allGroupsTotal === 0 ||
-                    billData?.grossTotal + allGroupsTotal === null
+                      billData?.grossTotal + allGroupsTotal === null
                       ? " "
                       : (billData?.grossTotal + allGroupsTotal).toLocaleString(
-                          "en-IN",
-                          {
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: "INR",
-                          }
-                        )}
+                        "en-IN",
+                        {
+                          maximumFractionDigits: 2,
+                          style: "currency",
+                          currency: "INR",
+                        }
+                      )}
                   </p>
                 </div>
               </div>
@@ -909,7 +922,7 @@ const GroupTotals = (props) => {
                         {billData?.cashPaid === 0 || billData?.cashPaid === null
                           ? " "
                           : "-" +
-                            getCurrencyNumberWithSymbol(billData?.cashPaid)}
+                          getCurrencyNumberWithSymbol(billData?.cashPaid)}
                       </p>
                     </div>
                   </div>
@@ -918,7 +931,7 @@ const GroupTotals = (props) => {
                     {/* <div className="col-lg-1"></div> */}
                     <div className="col-lg-7">
                       {billData?.cashRcvd === 0 ||
-                      billData?.cashRcvd === null ? (
+                        billData?.cashRcvd === null ? (
                         ""
                       ) : (
                         <p className="grouping_value">Cash Received</p>
@@ -929,7 +942,7 @@ const GroupTotals = (props) => {
                         {billData?.cashRcvd === 0 || billData?.cashRcvd === null
                           ? ""
                           : "-" +
-                            getCurrencyNumberWithSymbol(billData?.cashRcvd)}
+                          getCurrencyNumberWithSymbol(billData?.cashRcvd)}
                       </p>
                     </div>
                   </div>
@@ -947,7 +960,7 @@ const GroupTotals = (props) => {
                       <div>
                         {(
                           item.settingName !==
-                          handleSettingName(item.settingName, item)
+                            handleSettingName(item.settingName, item)
                             ? " "
                             : handleGroupNames(item.settingName) === 0
                         ) ? (
@@ -961,15 +974,15 @@ const GroupTotals = (props) => {
                                   <div>
                                     {(
                                       item.settingName !==
-                                      handleSettingName(item.settingName, item)
+                                        handleSettingName(item.settingName, item)
                                         ? " "
                                         : handleGroupNames(item.settingName) ===
-                                          0
+                                        0
                                     ) ? (
                                       " "
                                     ) : item.settingName.includes(
-                                        "CUSTOM_FIELD"
-                                      ) ? (
+                                      "CUSTOM_FIELD"
+                                    ) ? (
                                       item.customFieldName
                                     ) : (
                                       <p className="main_setting_name">
@@ -998,7 +1011,7 @@ const GroupTotals = (props) => {
                                     </p>
                                     <p className="fee-perc">
                                       {item.settingName ==
-                                      "RETURN_COMMISSION" ? (
+                                        "RETURN_COMMISSION" ? (
                                         billData?.rtComm ? (
                                           <span className="fee-percentage">
                                             Rate %
@@ -1095,8 +1108,8 @@ const GroupTotals = (props) => {
                                     <p className="fee-perc">
                                       {item.settingName == "OTHER_FEE" ? (
                                         billData?.misc ||
-                                        (billData?.otherFee &&
-                                          billData?.comments) ? (
+                                          (billData?.otherFee &&
+                                            billData?.comments) ? (
                                           <span className="fee-percentage">
                                             {billData?.comments}
                                           </span>
@@ -1161,25 +1174,24 @@ const GroupTotals = (props) => {
                                   " "
                                 ) : (
                                   <span>
-                                    {(billData?.partyType.toUpperCase() ==
-                                      "BUYER" ||
-                                      billData?.partyType.toUpperCase() ==
-                                        "FARMER") &&
-                                    item.settingName == "RETURN_COMMISSION" &&
-                                    item.addToGt == 1
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
+                                    {(
+                                      item.settingName.includes("CUSTOM_FIELD") ?
+                                        billData?.customFields.map(item => {
+                                          if (item.field == item.settingName && item.less) {
+                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
+                                          } else {
+                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
+                                          }
+                                        }) :
+                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      item.settingName == "RETURN_COMMISSION" && !(billData?.less)
+                                      ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
-                                        "BUYER"
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
-                                      : handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)}
+                                        "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
+                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER"
+                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          : handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -1192,14 +1204,14 @@ const GroupTotals = (props) => {
                           className={
                             (
                               item.settingName !==
-                              handleSettingName(item.settingName, item)
+                                handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
                               : item.settingName?.replaceAll("_", " ")
-                              ? "hrs-line"
-                              : ""
+                                ? "hrs-line"
+                                : ""
                           }
                         ></div>
                       </div>
@@ -1215,12 +1227,12 @@ const GroupTotals = (props) => {
                         {groupOneTotal === 0 || null
                           ? ""
                           : (
-                              billData?.grossTotal + groupOneTotal
-                            ).toLocaleString("en-IN", {
-                              maximumFractionDigits: 2,
-                              style: "currency",
-                              currency: "INR",
-                            })}
+                            billData?.grossTotal + groupOneTotal
+                          ).toLocaleString("en-IN", {
+                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "INR",
+                          })}
                       </p>
                     </div>
                   </div>
@@ -1235,7 +1247,7 @@ const GroupTotals = (props) => {
                       <div>
                         {(
                           item.settingName !==
-                          handleSettingName(item.settingName, item)
+                            handleSettingName(item.settingName, item)
                             ? " "
                             : handleGroupNames(item.settingName) === 0
                         ) ? (
@@ -1248,14 +1260,14 @@ const GroupTotals = (props) => {
                                 <div>
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName, item)
+                                      handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   ) ? (
                                     " "
                                   ) : item.settingName.includes(
-                                      "CUSTOM_FIELD"
-                                    ) ? (
+                                    "CUSTOM_FIELD"
+                                  ) ? (
                                     item.customFieldName
                                   ) : (
                                     <p className="main_setting_name">
@@ -1380,8 +1392,8 @@ const GroupTotals = (props) => {
                                   <p className="fee-perc">
                                     {item.settingName == "OTHER_FEE" ? (
                                       billData?.misc ||
-                                      (billData?.otherFee &&
-                                        billData?.comments) ? (
+                                        (billData?.otherFee &&
+                                          billData?.comments) ? (
                                         <span className="fee-percentage">
                                           {billData?.comments}
                                         </span>
@@ -1444,25 +1456,24 @@ const GroupTotals = (props) => {
                                   " "
                                 ) : (
                                   <span>
-                                    {(billData?.partyType.toUpperCase() ==
-                                      "BUYER" ||
-                                      billData?.partyType.toUpperCase() ==
-                                        "FARMER") &&
-                                    item.settingName == "RETURN_COMMISSION" &&
-                                    item.addToGt == 1
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
+                                    {(
+                                      item.settingName.includes("CUSTOM_FIELD") ?
+                                        billData?.customFields.map(item => {
+                                          if (item.field == item.settingName && item.less) {
+                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
+                                          } else {
+                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
+                                          }
+                                        }) :
+                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      item.settingName == "RETURN_COMMISSION" && !(billData?.less)
+                                      ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
-                                        "BUYER"
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
-                                      : handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)}
+                                        "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
+                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER"
+                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          : handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -1474,14 +1485,14 @@ const GroupTotals = (props) => {
                           className={
                             (
                               item.settingName !==
-                              handleSettingName(item.settingName, item)
+                                handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
                               : item.settingName?.replaceAll("_", " ")
-                              ? "hrs-line"
-                              : ""
+                                ? "hrs-line"
+                                : ""
                           }
                         ></div>
                       </div>
@@ -1497,13 +1508,13 @@ const GroupTotals = (props) => {
                         {groupTwoTotal === 0 || null
                           ? ""
                           : (
-                              billData?.grossTotal +
-                              (groupTwoTotal + groupOneTotal)
-                            ).toLocaleString("en-IN", {
-                              maximumFractionDigits: 2,
-                              style: "currency",
-                              currency: "INR",
-                            })}
+                            billData?.grossTotal +
+                            (groupTwoTotal + groupOneTotal)
+                          ).toLocaleString("en-IN", {
+                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "INR",
+                          })}
                       </p>
                     </div>
                   </div>
@@ -1518,7 +1529,7 @@ const GroupTotals = (props) => {
                       <div>
                         {(
                           item.settingName !==
-                          handleSettingName(item.settingName, item)
+                            handleSettingName(item.settingName, item)
                             ? " "
                             : handleGroupNames(item.settingName) === 0
                         ) ? (
@@ -1531,14 +1542,14 @@ const GroupTotals = (props) => {
                                 <div>
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName, item)
+                                      handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   ) ? (
                                     " "
                                   ) : item.settingName.includes(
-                                      "CUSTOM_FIELD"
-                                    ) ? (
+                                    "CUSTOM_FIELD"
+                                  ) ? (
                                     item.customFieldName
                                   ) : (
                                     <p className="main_setting_name">
@@ -1663,8 +1674,8 @@ const GroupTotals = (props) => {
                                   <p className="fee-perc">
                                     {item.settingName == "OTHER_FEE" ? (
                                       billData?.misc ||
-                                      (billData?.otherFee &&
-                                        billData?.comments) ? (
+                                        (billData?.otherFee &&
+                                          billData?.comments) ? (
                                         <span className="fee-percentage">
                                           {billData?.comments}
                                         </span>
@@ -1727,25 +1738,24 @@ const GroupTotals = (props) => {
                                   " "
                                 ) : (
                                   <span>
-                                    {(billData?.partyType.toUpperCase() ==
-                                      "BUYER" ||
-                                      billData?.partyType.toUpperCase() ==
-                                        "FARMER") &&
-                                    item.settingName == "RETURN_COMMISSION" &&
-                                    item.addToGt == 1
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
+                                    {(
+                                      item.settingName.includes("CUSTOM_FIELD") ?
+                                        billData?.customFields.map(item => {
+                                          if (item.field == item.settingName && item.less) {
+                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
+                                          } else {
+                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
+                                          }
+                                        }) :
+                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      item.settingName == "RETURN_COMMISSION" && !(billData?.less)
+                                      ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
-                                        "BUYER"
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
-                                      : handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)}
+                                        "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
+                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER"
+                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          : handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -1757,16 +1767,16 @@ const GroupTotals = (props) => {
                           className={
                             (
                               item.settingName !==
-                              handleSettingName(item.settingName, item)
+                                handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             ) ? (
                               " "
                             ) : <p className="main_setting_name">
-                                {getText(
-                                  item.settingName?.replaceAll("_", " ")
-                                )}
-                              </p> ? (
+                              {getText(
+                                item.settingName?.replaceAll("_", " ")
+                              )}
+                            </p> ? (
                               //  item.settingName?.replaceAll("_", " ")
                               "hrs-line"
                             ) : (
@@ -1787,13 +1797,13 @@ const GroupTotals = (props) => {
                         {groupThreeTotal === 0 || null
                           ? ""
                           : (
-                              billData?.grossTotal +
-                              (groupThreeTotal + groupTwoTotal + groupOneTotal)
-                            ).toLocaleString("en-IN", {
-                              maximumFractionDigits: 2,
-                              style: "currency",
-                              currency: "INR",
-                            })}
+                            billData?.grossTotal +
+                            (groupThreeTotal + groupTwoTotal + groupOneTotal)
+                          ).toLocaleString("en-IN", {
+                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "INR",
+                          })}
                       </p>
                     </div>
                   </div>
@@ -1808,7 +1818,7 @@ const GroupTotals = (props) => {
                       <div>
                         {(
                           item.settingName !==
-                          handleSettingName(item.settingName, item)
+                            handleSettingName(item.settingName, item)
                             ? " "
                             : handleGroupNames(item.settingName) === 0
                         ) ? (
@@ -1821,14 +1831,14 @@ const GroupTotals = (props) => {
                                 <div>
                                   {(
                                     item.settingName !==
-                                    handleSettingName(item.settingName, item)
+                                      handleSettingName(item.settingName, item)
                                       ? " "
                                       : handleGroupNames(item.settingName) === 0
                                   )
                                     ? " "
                                     : item.settingName.includes("CUSTOM_FIELD")
-                                    ? item.customFieldName
-                                    : item.settingName?.replaceAll(
+                                      ? item.customFieldName
+                                      : item.settingName?.replaceAll(
                                         "_",
                                         " "
                                       )}{" "}
@@ -1948,8 +1958,8 @@ const GroupTotals = (props) => {
                                   <p className="fee-perc">
                                     {item.settingName == "OTHER_FEE" ? (
                                       billData?.misc ||
-                                      (billData?.otherFee &&
-                                        billData?.comments) ? (
+                                        (billData?.otherFee &&
+                                          billData?.comments) ? (
                                         <span className="fee-percentage">
                                           {billData?.comments}
                                         </span>
@@ -2012,25 +2022,24 @@ const GroupTotals = (props) => {
                                   " "
                                 ) : (
                                   <span>
-                                    {(billData?.partyType.toUpperCase() ==
-                                      "BUYER" ||
-                                      billData?.partyType.toUpperCase() ==
-                                        "FARMER") &&
-                                    item.settingName == "RETURN_COMMISSION" &&
-                                    item.addToGt == 1
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
+                                    {(
+                                      item.settingName.includes("CUSTOM_FIELD") ?
+                                        billData?.customFields.map(item => {
+                                          if (item.field == item.settingName && item.less) {
+                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
+                                          } else {
+                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
+                                          }
+                                        }) :
+                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      item.settingName == "RETURN_COMMISSION" && !(billData?.less)
+                                      ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
-                                        "BUYER"
-                                      ? " + " +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
-                                      : handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)}
+                                        "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
+                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER"
+                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          : handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -2042,14 +2051,14 @@ const GroupTotals = (props) => {
                           className={
                             (
                               item.settingName !==
-                              handleSettingName(item.settingName, item)
+                                handleSettingName(item.settingName, item)
                                 ? " "
                                 : handleGroupNames(item.settingName) === 0
                             )
                               ? " "
                               : item.settingName?.replaceAll("_", " ")
-                              ? "hrs-line"
-                              : ""
+                                ? "hrs-line"
+                                : ""
                           }
                         ></div>
                       </div>
@@ -2065,16 +2074,16 @@ const GroupTotals = (props) => {
                         {groupFourTotal === 0 || null
                           ? ""
                           : (
-                              billData?.grossTotal +
-                              (groupFourTotal +
-                                groupThreeTotal +
-                                groupTwoTotal +
-                                groupOneTotal)
-                            ).toLocaleString("en-IN", {
-                              maximumFractionDigits: 2,
-                              style: "currency",
-                              currency: "INR",
-                            })}
+                            billData?.grossTotal +
+                            (groupFourTotal +
+                              groupThreeTotal +
+                              groupTwoTotal +
+                              groupOneTotal)
+                          ).toLocaleString("en-IN", {
+                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "INR",
+                          })}
                       </p>
                     </div>
                     {/* <div
@@ -2095,7 +2104,7 @@ const GroupTotals = (props) => {
                         groupTwoTotal +
                         groupOneTotal) +
                       billData?.totalPayables ===
-                    0 ? (
+                      0 ? (
                       ""
                     ) : (
                       <p className="grouping_value">Total Bill Amount :</p>
@@ -2115,7 +2124,7 @@ const GroupTotals = (props) => {
                           groupTwoTotal +
                           groupOneTotal) ===
                         0 ||
-                      billData?.grossTotal +
+                        billData?.grossTotal +
                         (groupFourTotal +
                           groupThreeTotal +
                           groupTwoTotal +
@@ -2123,16 +2132,16 @@ const GroupTotals = (props) => {
                         null
                         ? " "
                         : (
-                            billData?.grossTotal +
-                            (groupFourTotal +
-                              groupThreeTotal +
-                              groupTwoTotal +
-                              groupOneTotal)
-                          ).toLocaleString("en-IN", {
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: "INR",
-                          })}
+                          billData?.grossTotal +
+                          (groupFourTotal +
+                            groupThreeTotal +
+                            groupTwoTotal +
+                            groupOneTotal)
+                        ).toLocaleString("en-IN", {
+                          maximumFractionDigits: 2,
+                          style: "currency",
+                          currency: "INR",
+                        })}
                     </p>
                   </div>
                 </div>
@@ -2184,7 +2193,7 @@ const GroupTotals = (props) => {
                         {billData?.cashPaid === 0 || billData?.cashPaid === null
                           ? " "
                           : "-" +
-                            getCurrencyNumberWithSymbol(billData?.cashPaid)}
+                          getCurrencyNumberWithSymbol(billData?.cashPaid)}
                       </p>
                     </div>
                   </div>
@@ -2193,7 +2202,7 @@ const GroupTotals = (props) => {
                     {/* <div className="col-lg-2"></div> */}
                     <div className="col-lg-7">
                       {billData?.cashRcvd === 0 ||
-                      billData?.cashRcvd === null ? (
+                        billData?.cashRcvd === null ? (
                         ""
                       ) : (
                         <p className="grouping_value">Cash Received :</p>
@@ -2204,7 +2213,7 @@ const GroupTotals = (props) => {
                         {billData?.cashRcvd === 0 || billData?.cashRcvd === null
                           ? ""
                           : "-" +
-                            getCurrencyNumberWithSymbol(billData?.cashRcvd)}
+                          getCurrencyNumberWithSymbol(billData?.cashRcvd)}
                       </p>
                     </div>
                   </div>
@@ -2243,7 +2252,7 @@ const GroupTotals = (props) => {
                       style={{ display: !status ? "block" : "none" }}
                     >
                       {billData?.totalPayables === 0 ||
-                      billData?.totalPayables === null
+                        billData?.totalPayables === null
                         ? " "
                         : getCurrencyNumberWithSymbol(billData?.totalPayables)}
                     </p>
@@ -2255,7 +2264,7 @@ const GroupTotals = (props) => {
                 <div className="row">
                   <div className="col-lg-6">
                     {billData?.totalReceivable === 0 ||
-                    billData?.totalReceivable === null ? (
+                      billData?.totalReceivable === null ? (
                       ""
                     ) : (
                       <p
@@ -2268,7 +2277,7 @@ const GroupTotals = (props) => {
                   </div>
                   <div className="col-lg-5">
                     {billData?.totalReceivable === 0 ||
-                    billData?.totalReceivable === null ? (
+                      billData?.totalReceivable === null ? (
                       ""
                     ) : (
                       <p

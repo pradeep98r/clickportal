@@ -841,13 +841,14 @@ const Step33 = (props) => {
           toast.error(error.response.data.status.description, {
             toastId: "error1",
           });
+          $("#disable").attr("disabled", false);
         }
       );
     } else {
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.description, {
+            toast.success(response.data.status.message, {
               toastId: "success1",
             });
 
@@ -867,6 +868,7 @@ const Step33 = (props) => {
           toast.error(error.response.data.status.description, {
             toastId: "error1",
           });
+          $("#disable").attr("disabled", false);
         }
       );
     }
@@ -1449,12 +1451,12 @@ const Step33 = (props) => {
                                 </div>
                               </div>
                             ) : (
-                              <p
+                              <button
                                 className="comment_text"
                                 onClick={() => addCommentClick()}
                               >
                                 +Add Comment
-                              </p>
+                              </button>
                             )
                           ) : (
                             ""

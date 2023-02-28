@@ -837,17 +837,18 @@ const SellBillStep3 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
-            // window.setTimeout(function () {
-            //   props.closem();
-            //   navigate("/sellbillbook");
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
           toast.error(error.response.data.status.description, {
             toastId: "error1",
           });
+          $("#disable").attr("disabled", false);
         }
       );
     } else {
@@ -855,7 +856,7 @@ const SellBillStep3 = (props) => {
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
-            toast.success(response.data.status.description, {
+            toast.success(response.data.status.description?.toUpperCase(), {
               toastId: "success1",
             });
 
@@ -872,6 +873,7 @@ const SellBillStep3 = (props) => {
           toast.error(error.response.data.status.description, {
             toastId: "error1",
           });
+          $("#disable").attr("disabled", false);
         }
       );
     }
@@ -1419,12 +1421,12 @@ const SellBillStep3 = (props) => {
                               </div>
                             </div>
                           ) : (
-                            <p
+                            <button
                               className="comment_text"
                               onClick={() => addCommentClick()}
                             >
                               +Add Comment
-                            </p>
+                            </button>
                           )
                         ) : (
                           ""

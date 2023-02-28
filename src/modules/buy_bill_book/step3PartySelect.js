@@ -615,12 +615,14 @@ const Step3PartySelect = (props) => {
         )}
         <div className="d-flex align-items-center justify-content-between">
           <h5 className="date_sec head_modal p-0">Crop Information </h5>
+          <button onClick={() => editCropTable(billEditItem)}>
           <img
             src={edit}
             alt="img"
             className="head_modal editIcon"
-            onClick={() => editCropTable(billEditItem)}
+           
           />
+          </button>
         </div>
         <div>
           <div className="cropstable" id="scroll_style">
