@@ -14,6 +14,8 @@ import "../../assets/css/calender.scss";
 import loading from "../../assets/images/loading.gif";
 import { getPartnerType, getText } from "../../components/getText";
 import { qtyValues } from "../../components/qtyValues";
+import prev_icon from "../../assets/images/prev_icon.svg";
+import next_icon from "../../assets/images/next_icon.svg";
 import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithOneDigit,
@@ -176,6 +178,25 @@ const SellBillBook = (props) => {
     });
     return totalValue;
   };
+
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const onPrevDate =()=>{
+    const newDate = new Date(currentDate.getTime());
+    newDate.setDate(newDate.getDate() - 1);
+    // let date=new Date().setDate(new Date().getDate() - 1);
+    // console.log(date,"date")
+    callbackFunction(newDate, newDate,'Daily')
+    setCurrentDate(newDate);
+  }
+  const onNextDate =()=>{
+    if(currentDate < new Date()){
+      const newDate = new Date(currentDate.getTime());
+      newDate.setDate(newDate.getDate() + 1);
+      callbackFunction(newDate, newDate,'Daily')
+      setCurrentDate(newDate);
+    }
+    
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -208,18 +229,31 @@ const SellBillBook = (props) => {
                     </ul> */}
                       </div>
 
-                      <button onClick={onclickDate} className="color_blue">
-                        <div className="d-flex align-items-center">
-                          <span className="date_icon m-0">
+                      {/* <button  className="color_blue"> */}
+                        <div className="d-flex align-items-center color_blue">
+                          <button onClick={onPrevDate}>
+                          <span className="" onClick={onPrevDate}>
+                            <img src={prev_icon} alt="icon" className="mr-3" />
+                          </span>
+                          </button>
+                          <button onClick={onclickDate}>
+                          <span className="date_icon m-0 d-flex color_blue">
                             <img
                               src={date_icon}
                               alt="icon"
                               className="mr-2 d-flex"
                             />
+                            {dateValue}
                           </span>
-                          {dateValue}
+                          </button>
+                          <button onClick={onNextDate}>
+                          <span className="" onClick={onNextDate}>
+                            <img src={next_icon} alt="icon" className="ml-3" />
+                          </span>
+                          </button>
                         </div>
-                      </button>
+                        
+                      {/* </button> */}
                       <div className="d-flex">
                         {/* <BillsSearchField
                       placeholder={langFullData.search}
