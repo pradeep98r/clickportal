@@ -35,7 +35,8 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  var allBillsArray = props.allBillsData;
+  console.log(billData,'hey')
+  var allBillsArray = props.allBillsData ;
   const navigate = useNavigate();
   const [displayCancel,setDisplayCancel] = useState(false);
   useEffect(() => {
@@ -43,8 +44,10 @@ const BillView = (props) => {
     setBillViewData(billViewData.billViewInfo);
     if(billData?.billStatus == 'COMPLETED'){
       setDisplayCancel(false);
+      console.log('hhy complete')
     }
     else{
+      console.log('hhy cancel')
       setDisplayCancel(true);
     }
   }, [props.showBillViewModal]);
@@ -138,20 +141,7 @@ const BillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
-          if (billData?.partyType.toUpperCase() === "FARMER") {
-            setDisplayCancel(true)
-            window.setTimeout(function () {
-              // props.closeBillViewModal();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
-          } else {
-            window.setTimeout(function () {
-              props.closeBillViewModal();
-              navigate("/sellbillbook");
-              window.location.reload();
-            }, 2000);
-          }
+          setDisplayCancel(true)
         }
       },
       (error) => {
@@ -214,6 +204,23 @@ const BillView = (props) => {
       setNextDisable(true);
     }
   };
+  const clearModal = () =>{
+   if(!(props.fromLedger)){
+    if (billData?.partyType.toUpperCase() === "FARMER") {
+      window.setTimeout(function () {
+        props.closeBillViewModal();
+        navigate("/buy_bill_book");
+        window.location.reload();
+      }, 1000);
+    } else {
+      window.setTimeout(function () {
+        props.closeBillViewModal();
+        navigate("/sellbillbook");
+        window.location.reload();
+      }, 1000);
+    }
+   }
+  }
   return (
     <Modal
       show={props.showBillViewModal}
@@ -226,16 +233,20 @@ const BillView = (props) => {
           id="staticBackdropLabel"
         >
           <p className="b-name">
-            {billData?.partyType.toUpperCase() === "FARMER"
+            {(billData?.partyType.toUpperCase() === "FARMER") || (billData?.partyType.toUpperCase() === "SELLER")
               ? getText(billData.farmerName)
               : getText(billData?.buyerName)}
             -
           </p>
           <p className="b-name">{billData?.caBSeq}</p>
         </h5>
-       <button onClick={(e) => {
+       <button 
+       
+          onClick={(e) => {
+            clearModal();
             props.closeBillViewModal();
-          }}>
+          }}
+          >
        <img
           alt="image"
           src={clo}
@@ -316,7 +327,7 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      <div className="modal-footer bill_footer d-flex justify-content-center">
+      {props.fromLedger ? '' : <div className="modal-footer bill_footer d-flex justify-content-center">
         <button
           onClick={() => {
             previousBill(billData?.index + 1);
@@ -340,7 +351,7 @@ const BillView = (props) => {
             alt="image"
           />
         </button>
-      </div>
+      </div>}
       {showStepsModalStatus ? (
         <Steps
           showStepsModal={showStepsModal}
