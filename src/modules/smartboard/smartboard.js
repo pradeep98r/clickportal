@@ -86,7 +86,7 @@ const SmartBoard = () => {
     $(".week-picker").datepicker({
       showOtherMonths: false,
       selectOtherMonths: false,
-      // maxDate: new Date(),
+      maxDate: new Date(),
       dateFormat: "dd-MM-yy",
       onSelect: function (dateText, inst) {
         var date = $(this).datepicker("getDate");

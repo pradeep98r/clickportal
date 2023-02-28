@@ -730,6 +730,9 @@ article {
 .custom_picker, .week_picker{
   height: 450px;
 }
+.week_picker{
+  height: 400px;
+}
 article.on {
   display: block;
 }
@@ -1443,5 +1446,8 @@ font-size: 12px;
 }
 .custom_picker, .week_picker {
   height: 420px;
+}
+.week_picker {
+  height: 390px;
 }
 }
