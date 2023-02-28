@@ -113,7 +113,8 @@ const SellBillBook = (props) => {
     setShowBillModalStatus(true);
     setShowBillModal(true);
     localStorage.setItem("billId", id);
-    Object.assign(bill,{index:i});
+    let object = { ...bill };
+    Object.assign(object,{index:i});
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
