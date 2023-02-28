@@ -114,7 +114,8 @@ function BuyBillBook() {
     setShowBillModal(true);
     // navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
-    Object.assign(bill,{index:i});
+    let object = { ...bill };
+    Object.assign(object,{index:i});
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
@@ -416,7 +417,7 @@ function BuyBillBook() {
                                                       className="d-flex align-items-center"
                                                       style={{ height: "100%" }}
                                                     >
-                                                      <div>
+                                                       <div className="text-left">
                                                         <div>
                                                           {" "}
                                                           {qtyValues(
