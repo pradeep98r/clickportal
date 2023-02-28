@@ -633,3 +633,8 @@
 .datePicker_continue{
   border-radius: 0px 0px 0.3rem 0.3rem;
 }
+@media(min-width:1600px){
+  .cropSec .crop_tick {
+    right: 12px;
+}
+}

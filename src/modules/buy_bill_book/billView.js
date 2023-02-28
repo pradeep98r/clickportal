@@ -42,6 +42,7 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
+    console.log(billViewData.billViewInfo)
     if(billData?.billStatus == 'COMPLETED'){
       setDisplayCancel(false);
       console.log('hhy complete')
