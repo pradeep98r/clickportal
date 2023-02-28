@@ -45,6 +45,8 @@ const SellBillBook = (props) => {
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : "";
 
   const billData = useSelector((state) => state.billViewInfo);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [showPrevNext, setShowPrevNext] = useState(true)
   // console.log(billViiewDate)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -60,23 +62,34 @@ const SellBillBook = (props) => {
     var toDate = moment(bDate ? bDate : endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
+      setShowPrevNext(true)
+      setLoading(true);
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+      setCurrentDate(new Date(fromDate));
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
+      setLoading(true);
+      setShowPrevNext(false)
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
+      setLoading(true);
+      setShowPrevNext(false)
     } else if (dateTab === "Yearly") {
       setDateValue(moment(fromDate).format("YYYY"));
-    } else {
+      setLoading(true);
+      setShowPrevNext(false)
+    } else if(dateTab === "Custom"){
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
+      setLoading(true);
+      setShowPrevNext(false)
     }
 
     getSellBills(clickId, fromDate, toDate)
@@ -85,10 +98,10 @@ const SellBillBook = (props) => {
         if (response.data.data != null) {
           setAllData(response.data.data);
           response.data.data.singleBills.map((i, ind) => {
-            Object.assign(i, {index:ind});
+            Object.assign(i, { index: ind });
           })
           setSellBillData(response.data.data.singleBills);
-          
+
         } else {
           setSellBillData([]);
         }
@@ -115,8 +128,7 @@ const SellBillBook = (props) => {
     setShowBillModalStatus(true);
     setShowBillModal(true);
     localStorage.setItem("billId", id);
-    let object = { ...bill };
-    Object.assign(object,{index:i});
+    Object.assign(bill, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
@@ -180,23 +192,22 @@ const SellBillBook = (props) => {
     return totalValue;
   };
 
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const onPrevDate =()=>{
+
+  const onPrevDate = () => {
     const newDate = new Date(currentDate.getTime());
     newDate.setDate(newDate.getDate() - 1);
-    // let date=new Date().setDate(new Date().getDate() - 1);
-    // console.log(date,"date")
-    callbackFunction(newDate, newDate,'Daily')
+    setLoading(true);
+    callbackFunction(newDate, newDate, 'Daily')
     setCurrentDate(newDate);
   }
-  const onNextDate =()=>{
-    if(currentDate < new Date()){
-      const newDate = new Date(currentDate.getTime());
-      newDate.setDate(newDate.getDate() + 1);
-      callbackFunction(newDate, newDate,'Daily')
+  const onNextDate = () => {
+    const newDate = new Date(currentDate.getTime());
+    newDate.setDate(newDate.getDate() + 1);
+    if (newDate < new Date()) {
+      setLoading(true);
+      callbackFunction(newDate, newDate, 'Daily')
       setCurrentDate(newDate);
     }
-    
   }
   return (
     <div>
@@ -231,13 +242,15 @@ const SellBillBook = (props) => {
                       </div>
 
                       {/* <button  className="color_blue"> */}
-                        <div className="d-flex align-items-center color_blue">
-                          <button onClick={onPrevDate}>
+                      <div className="d-flex align-items-center color_blue">
+                        {showPrevNext?
+                        <button onClick={onPrevDate}>
                           <span className="" onClick={onPrevDate}>
                             <img src={prev_icon} alt="icon" className="mr-3" />
                           </span>
-                          </button>
-                          <button onClick={onclickDate}>
+                        </button>
+                        :''}
+                        <button onClick={onclickDate}>
                           <span className="date_icon m-0 d-flex color_blue">
                             <img
                               src={date_icon}
@@ -246,14 +259,16 @@ const SellBillBook = (props) => {
                             />
                             {dateValue}
                           </span>
-                          </button>
-                          <button onClick={onNextDate}>
+                        </button>
+                        {showPrevNext?
+                        <button onClick={onNextDate}>
                           <span className="" onClick={onNextDate}>
                             <img src={next_icon} alt="icon" className="ml-3" />
                           </span>
-                          </button>
-                        </div>
-                        
+                        </button>
+                        :''}
+                      </div>
+
                       {/* </button> */}
                       <div className="d-flex">
                         {/* <BillsSearchField
@@ -325,7 +340,7 @@ const SellBillBook = (props) => {
                                 {sellBillData.map((bill, index) => (
                                   <button
                                     onClick={() =>
-                                      billOnClick(bill.caBSeq, bill,index)
+                                      billOnClick(bill.caBSeq, bill, index)
                                     }
                                     key={index}
                                     className="billsDiv"
@@ -357,7 +372,7 @@ const SellBillBook = (props) => {
                                                 </h6>
                                                 <div className="d-flex align-items-center">
                                                   <h6 className="mobile">
-                                                    {getPartnerType(bill.partyType,bill.trader) +
+                                                    {getPartnerType(bill.partyType, bill.trader) +
                                                       "-" +
                                                       bill.buyerId}
                                                   </h6>
@@ -400,14 +415,14 @@ const SellBillBook = (props) => {
                                                   style={{
                                                     color:
                                                       bill.billStatus ==
-                                                      "CANCELLED"
+                                                        "CANCELLED"
                                                         ? "#d43939"
                                                         : "#1C1C1C",
                                                   }}
                                                 >
                                                   <div className="flex_class p-0">
                                                     {bill.billStatus ==
-                                                    "CANCELLED" ? (
+                                                      "CANCELLED" ? (
                                                       <div className="complete-dot cancel_dot"></div>
                                                     ) : (
                                                       <div className="complete-dot"></div>
@@ -454,7 +469,7 @@ const SellBillBook = (props) => {
                                                     )}
                                                   </div>
                                                   {crop.bags !== null &&
-                                                  crop.bags.length > 0 ? (
+                                                    crop.bags.length > 0 ? (
                                                     <div className="flex_class">
                                                       <input
                                                         type="checkbox"
@@ -474,7 +489,7 @@ const SellBillBook = (props) => {
                                                                     <span>
                                                                       {item.weight
                                                                         ? item.weight +
-                                                                          " "
+                                                                        " "
                                                                         : ""}
                                                                     </span>
                                                                     <span>
@@ -589,6 +604,7 @@ const SellBillBook = (props) => {
       {showDatepickerModal1 ? (
         <DatePickerModel
           show={showDatepickerModal}
+          prevNextDate={currentDate}
           close={() => setShowDatepickerModal(false)}
           parentCallback={callbackFunction}
           defaultDate={billViiewDate}
