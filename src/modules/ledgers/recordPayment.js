@@ -6,11 +6,12 @@ import DatePicker from "react-datepicker";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import add from "../../assets/images/add.svg";
 import $ from "jquery";
-import { getOutstandingBal, postRecordPayment } from '../../actions/ledgersService';
+import { getDetailedLedgerByDate, getLedgers, getLedgerSummaryByDate, getOutstandingBal, getSellerDetailedLedger, getSellerDetailedLedgerByDate, postRecordPayment } from '../../actions/ledgersService';
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from '../../components/getCurrencyNumber';
+import { getBuyerDetailedLedger, getLedgerSummary } from '../../actions/billCreationService';
 
 const RecordPayment = (props) => {
     const ledgerData = props.LedgerData;
@@ -24,8 +25,16 @@ const RecordPayment = (props) => {
     const [paymentMode, setPaymentMode] = useState("CASH");
     const [requiredCondition, setRequiredCondition] = useState("");
     const [open, setIsOpen] = useState(false);
-    console.log(ledgerData, "ledgerData");
 
+    const [ledgerSummary, setLedgerSummary] = useState([]);
+    const [detailedLedger, setdetailedLedger] = useState([]);
+    const [outStAmt, setOutStAmt] = useState([]);
+    const [ledgers, setLedgers] = useState([]);
+
+    const [detailedTotal, setTotalDetailed] = useState([]);
+    const [cardDetails, setcardDetails] = useState([]);
+    const [cardDetailed, setcardDetailed] = useState([]);
+    const [summary, setSummary] = useState([]);
     const getAmountVal = (e) => {
         setPaidsRcvd(
             e.target.value.replace(/[^\d]/g, "")
@@ -52,7 +61,7 @@ const RecordPayment = (props) => {
             paidsRcvd < paidRcvd &&
             !(paidsRcvd < 0)
         ) {
-            addRecordPayment();
+             addRecordPayment();
         } else if (parseInt(paidsRcvd) > paidRcvd) {
             setRequiredCondition(
                 "Entered Amount  cannot more than Outstanding Balance"
@@ -60,7 +69,7 @@ const RecordPayment = (props) => {
         }
     };
 
-    const addRecordPayment = () => {
+    const  addRecordPayment = async () => {
         const addRecordData = {
             caId: clickId,
             partyId: partyId,
@@ -69,14 +78,39 @@ const RecordPayment = (props) => {
             paidRcvd: paidsRcvd,
             paymentMode: paymentMode,
         };
-        postRecordPayment(addRecordData).then((response) => {
+       await postRecordPayment(addRecordData).then((response) => {
             closePopup();
             toast.success(response.data.status.message, {
                 toastId: "errorr2",
             })
-            window.setTimeout(function () {
-                window.location.reload();
-            }, 2000);;
+            fetchLedgers();
+            if(props.allCustomTab == 'all' && props.ledgerTab == 'ledgersummary'){
+                summaryData(clickId,partyId);
+            }
+            else if(props.allCustomTab == 'all' && props.ledgerTab == 'detailedledger'){
+                console.log("came to here")
+                if(props.partyType == 'BUYER'){
+                    geyDetailedLedger(clickId,partyId)
+                } else{
+                    sellerDetailed(clickId, partyId)
+                }   
+            } else if(props.allCustomTab == 'custom' && props.ledgerTab == 'ledgersummary'){
+                var fromDate = moment(props.startDate).format("YYYY-MM-DD");
+                var toDate = moment(props.endDate).format("YYYY-MM-DD");
+                ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+            } else{
+                var fromDate = moment(props.startDate).format("YYYY-MM-DD");
+                var toDate = moment(props.endDate).format("YYYY-MM-DD");
+                if(props.partyType == 'BUYER'){
+                    detailedLedgerByDate(clickId,partyId, fromDate, toDate)
+                } else{
+                    sellerDetailedByDate(clickId,partyId, fromDate, toDate)
+                }   
+            }
+            getOutstandingPaybles(clickId,partyId)
+            // window.setTimeout(function () {
+            //     window.location.reload();
+            // }, 2000);;
         },
             (error) => {
                 toast.error(error.response.data.status.message, {
@@ -92,6 +126,120 @@ const RecordPayment = (props) => {
         setComments('');
         setSelectDate(new Date());
         $("#myModal").modal("hide");
+    };
+    const summaryData = (clickId, partyId) => {
+        getLedgerSummary(clickId, partyId)
+          .then((res) => {
+            if (res.data.status.type === "SUCCESS") {
+                setSummary(res.data.data)
+                setLedgerSummary(res.data.data.ledgerSummary);
+                props.setSummary(res.data.data)
+                props.ledgerSummaryData(res.data.data.ledgerSummary)
+            } else {
+                setLedgerSummary([]);
+            }
+          })
+          .catch((error) => console.log(error));
+    };
+    const geyDetailedLedger = (clickId, partyId) => {
+        getBuyerDetailedLedger(clickId, partyId)
+          .then((res) => {
+            if (res.data.status.type === "SUCCESS") {
+                props.setSummary(res.data.data)
+              setdetailedLedger(res.data.data.details);
+              props.ledgerSummaryData(res.data.data.details)
+            } else {
+              setdetailedLedger([]);
+            }
+          })
+          .catch((error) => console.log(error));
+    };
+      //Get Seller Detailed Ledger
+    const sellerDetailed = (clickId, partyId) => {
+        getSellerDetailedLedger(clickId, partyId)
+        .then((res) => {
+            if (res.data.status.type === "SUCCESS") {
+            props.setSummary(res.data.data)
+            setdetailedLedger(res.data.data.details);
+            props.ledgerSummaryData(res.data.data.details)
+            } else {
+            setdetailedLedger([]);
+            }
+        })
+        .catch((error) => console.log(error));
+    };
+    const fetchLedgers =()=>{
+        getLedgers(clickId, props.partyType).then(res=>{
+            if (res.data.status.type === "SUCCESS") {
+                setLedgers(res.data.data.ledgers);
+                setOutStAmt(res.data.data);
+                if(props.allCustomTab =='all' && props.ledgerTab == 'ledgersummary'){
+
+                }
+                props.ledgers(res.data.data.ledgers);
+                props.outStAmt(res.data.data);
+              } else {
+                console.log("some")
+              }
+            setOutStAmt(res.data.data);
+        })
+    }
+      //ledger summary by date
+    const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
+        getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+        .then((res) => {
+            if (res.data.data !== null) {
+            //   setSummaryByDate(res.data.data.ledgerSummary);
+            //   setcardDetails(res.data.data);
+            props.setSummary(res.data.data)
+            props.ledgerSummaryData(res.data.data.ledgerSummary)
+            } else {
+            //   setSummaryByDate([]);
+            //   setcardDetails([]);
+            }
+        })
+        .catch((error) => console.log(error));
+    };
+  //Buyer Detailed Ledger By Date
+    const detailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
+        getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+        .then((res) => {
+            if (res.data.data !== null) {
+            // setdetailedLedgerByDate(res.data.data.details);
+            // setcardDetailed(res.data.data);
+                props.setSummary(res.data.data)
+            //   setdetailedLedger(res.data.data.details);
+              props.ledgerSummaryData(res.data.data.details)
+            } else {
+            // setdetailedLedgerByDate([]);
+            // setcardDetailed([]);
+            }
+        })
+        .catch((error) => console.log(error));
+    };
+
+  //Seller Detailed ledger By Date
+    const sellerDetailedByDate = (clickId, partyId, fromDate, toDate) => {
+        getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+        .then((res) => {
+            if (res.data.data !== null) {
+            // setdetailedLedgerByDate(res.data.data.details);
+            // setcardDetailed(res.data.data);
+            props.setSummary(res.data.data)
+            // setdetailedLedger(res.data.data.details);
+            props.ledgerSummaryData(res.data.data.details)
+            } else {
+            // setdetailedLedgerByDate([]);
+            // setcardDetailed([]);
+            }
+        })
+        .catch((error) => console.log(error));
+    };
+      //Get Outstanding balance
+    const getOutstandingPaybles = (clickId, partyId) => {
+        getOutstandingBal(clickId, partyId).then((response) => {
+            props.setPaidRcvd(response.data.data)
+        });
     };
     return (
         <div>
