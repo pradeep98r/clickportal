@@ -42,7 +42,7 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
-    console.log(billViewData.billViewInfo)
+    console.log(billViewData.billViewInfo,billData?.billStatus)
     if(billData?.billStatus == 'COMPLETED'){
       setDisplayCancel(false);
       console.log('hhy complete')
@@ -206,6 +206,12 @@ const BillView = (props) => {
     }
   };
   const clearModal = () =>{
+    if(billData?.billStatus == 'COMPLETED'){
+      setDisplayCancel(false);
+    }
+    else{
+      setDisplayCancel(true);
+    }
    if(!(props.fromLedger)){
     if (billData?.partyType.toUpperCase() === "FARMER") {
       window.setTimeout(function () {
