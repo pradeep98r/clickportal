@@ -12,6 +12,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from '../../components/getCurrencyNumber';
 import { getBuyerDetailedLedger, getLedgerSummary } from '../../actions/billCreationService';
+import { useEffect } from 'react';
+import { getParticularTransporter, getTransporters } from '../../actions/transporterService';
 
 const RecordPayment = (props) => {
     const ledgerData = props.LedgerData;
@@ -35,6 +37,7 @@ const RecordPayment = (props) => {
     const [cardDetails, setcardDetails] = useState([]);
     const [cardDetailed, setcardDetailed] = useState([]);
     const [summary, setSummary] = useState([]);
+
     const getAmountVal = (e) => {
         setPaidsRcvd(
             e.target.value.replace(/[^\d]/g, "")
@@ -83,34 +86,42 @@ const RecordPayment = (props) => {
             toast.success(response.data.status.message, {
                 toastId: "errorr2",
             })
-            fetchLedgers();
-            if(props.allCustomTab == 'all' && props.ledgerTab == 'ledgersummary'){
-                summaryData(clickId,partyId);
-            }
-            else if(props.allCustomTab == 'all' && props.ledgerTab == 'detailedledger'){
-                console.log("came to here")
-                if(props.partyType == 'BUYER'){
-                    geyDetailedLedger(clickId,partyId)
-                } else{
-                    sellerDetailed(clickId, partyId)
-                }   
-            } else if(props.allCustomTab == 'custom' && props.ledgerTab == 'ledgersummary'){
-                var fromDate = moment(props.startDate).format("YYYY-MM-DD");
-                var toDate = moment(props.endDate).format("YYYY-MM-DD");
-                ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+            if(props.tabs == 'paymentledger'){
+                console.log("came to here",partyId)
+                getTransportersData()
+                getOutstandingPaybles(clickId,partyId)
+                paymentLedger(clickId, partyId)
             } else{
-                var fromDate = moment(props.startDate).format("YYYY-MM-DD");
-                var toDate = moment(props.endDate).format("YYYY-MM-DD");
-                if(props.partyType == 'BUYER'){
-                    detailedLedgerByDate(clickId,partyId, fromDate, toDate)
+                fetchLedgers();
+                if(props.allCustomTab == 'all' && props.ledgerTab == 'ledgersummary'){
+                    summaryData(clickId,partyId);
+                }
+                else if(props.allCustomTab == 'all' && props.ledgerTab == 'detailedledger'){
+                    console.log("came to here")
+                    if(props.partyType == 'BUYER'){
+                        geyDetailedLedger(clickId,partyId)
+                    } else{
+                        sellerDetailed(clickId, partyId)
+                    }   
+                } else if(props.allCustomTab == 'custom' && props.ledgerTab == 'ledgersummary'){
+                    var fromDate = moment(props.startDate).format("YYYY-MM-DD");
+                    var toDate = moment(props.endDate).format("YYYY-MM-DD");
+                    ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
                 } else{
-                    sellerDetailedByDate(clickId,partyId, fromDate, toDate)
-                }   
+                    var fromDate = moment(props.startDate).format("YYYY-MM-DD");
+                    var toDate = moment(props.endDate).format("YYYY-MM-DD");
+                    if(props.partyType == 'BUYER'){
+                        detailedLedgerByDate(clickId,partyId, fromDate, toDate)
+                    } else{
+                        sellerDetailedByDate(clickId,partyId, fromDate, toDate)
+                    }   
+                }
+                getOutstandingPaybles(clickId,partyId)
+                // window.setTimeout(function () {
+                //     window.location.reload();
+                // }, 2000);;
             }
-            getOutstandingPaybles(clickId,partyId)
-            // window.setTimeout(function () {
-            //     window.location.reload();
-            // }, 2000);;
+            
         },
             (error) => {
                 toast.error(error.response.data.status.message, {
@@ -126,6 +137,26 @@ const RecordPayment = (props) => {
         setComments('');
         setSelectDate(new Date());
         $("#myModal").modal("hide");
+    };
+
+    const getTransportersData = () => {
+        getTransporters(clickId).then((response) => {
+            props.outStAmt(response.data.data);
+            props.transData(response.data.data.ledgers);
+            // setOutStAmt(response.data.data)
+            // setTransData(response.data.data.ledgers)
+        });
+    };
+          //get Payment Ledger
+    const paymentLedger = (clickId, partyId) => {
+        getParticularTransporter(clickId, partyId)
+        .then((response) => {
+            props.payledger(response.data.data);
+            props.payledgersummary(response.data.data.details)
+        })
+        .catch((error) => {
+            console.log(error)
+        });
     };
     const summaryData = (clickId, partyId) => {
         getLedgerSummary(clickId, partyId)
@@ -223,10 +254,7 @@ const RecordPayment = (props) => {
         getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
         .then((res) => {
             if (res.data.data !== null) {
-            // setdetailedLedgerByDate(res.data.data.details);
-            // setcardDetailed(res.data.data);
             props.setSummary(res.data.data)
-            // setdetailedLedger(res.data.data.details);
             props.ledgerSummaryData(res.data.data.details)
             } else {
             // setdetailedLedgerByDate([]);
@@ -315,7 +343,7 @@ const RecordPayment = (props) => {
                                                             </p>
                                                             <p className="mobilee-tag">
                                                             {!ledgerData.trader
-                                                                ? props.type == "BUYER"
+                                                                ? props.partyType == "BUYER"
                                                                     ? "Buyer":
                                                                     props.type =='TRANS'?
                                                                     'Transporter'

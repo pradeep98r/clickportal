@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { getInventoryLedgers, getParticularTransporter, getTransporters } from '../../actions/transporterService';
+import { getInventory, getInventoryLedgers, getParticularTransporter, getTransporters } from '../../actions/transporterService';
 import SearchField from '../../components/searchField';
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
     getCurrencyNumberWithOutSymbol,
     getCurrencyNumberWithSymbol,
-    getCurrencyNumberWithOneDigit,
     getMaskedMobileNumber,
 } from "../../components/getCurrencyNumber";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
@@ -13,10 +12,13 @@ import moment from "moment";
 import PaymentLedger from './paymentLedger';
 import InventoryLedger from './inventoryLedger';
 import RecordPayment from '../ledgers/recordPayment';
+import { getOutstandingBal } from '../../actions/ledgersService';
+import AddRecordInventory from './addRecordInventory';
 const Transporters = () => {
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
-    
+    const langData = localStorage.getItem("languageData");
+    const langFullData = JSON.parse(langData);
     const [allData, setallData] = useState([]);
     const [transporter, setTransporter] = useState(allData);
     const [transporterId, setTransporterId] = useState(0);
@@ -27,21 +29,23 @@ const Transporters = () => {
     const [payLedger, setPayLedger] = useState({});
     const [invLedger, setInvLedger] = useState({});
     const [invDetails, setInvDetails] = useState([]);
+    const [paidRcvd, setPaidRcvd] = useState(0);
+    const [getInventor, setGetInventory] = useState([]);
     useEffect(() => {
         getTransportersData();
     }, []);
 
     const getTransportersData = () => {
         getTransporters(clickId).then((response) => {
-            console.log(response, "response");
             setOutStAmt(response.data.data)
             setTransporterId(response.data.data.ledgers[0].partyId)
             setTransData(response.data.data.ledgers[0])
-            console.log(response.data.data.ledgers[0])
             setallData(response.data.data.ledgers);
             setTransporter(response.data.data.ledgers);
+            getOutstandingPaybles(clickId, response.data.data.ledgers[0].partyId);
             paymentLedger(clickId, response.data.data.ledgers[0].partyId);
             inventoryLedger(clickId, response.data.data.ledgers[0].partyId);
+            getInventoryRecord(clickId, response.data.data.ledgers[0].partyId)
         });
     };
     const handleSearch = (event) => {
@@ -74,53 +78,125 @@ const Transporters = () => {
             to: "inventoryledger",
         },
     ];
-    const particularTransporter =(transporterId,item)=>{
+    const particularTransporter = (transporterId, item) => {
         setTransporterId(transporterId);
         setTransData(item);
+        getOutstandingPaybles(clickId, transporterId);
+        getInventoryRecord(clickId, transporterId)
         console.log(tabs);
-        var transTabs=""
-        if(tabs == 'inventoryledger'){
+        var transTabs = ""
+        if (tabs == 'inventoryledger') {
             setTabs('paymentledger');
-            transTabs="paymentledger"
+            transTabs = "paymentledger"
         }
-        if(tabs == 'paymentledger' || transTabs == "paymentledger"){
+        if (tabs == 'paymentledger' || transTabs == "paymentledger") {
             paymentLedger(clickId, transporterId);
-        } 
-        
-    }
-    const tabEvent =(type)=>{
-        if(type == 'inventoryledger'){
-            inventoryLedger(clickId,transporterId);
         }
-        if(type == 'paymentledger'){
+
+    }
+    const tabEvent = (type) => {
+        if (type == 'inventoryledger') {
+            inventoryLedger(clickId, transporterId);
+        }
+        if (type == 'paymentledger') {
             paymentLedger(clickId, transporterId);
         }
         setTabs(type);
     }
-      //get Payment Ledger
+    //get Payment Ledger
     const paymentLedger = (clickId, partyId) => {
         getParticularTransporter(clickId, partyId)
-        .then((response) => {
-            console.log(response, "payledger");
-            setPayLedger(response.data.data);
-            setLedgerSummary(response.data.data.details);
-        })
-        .catch((error) => {
-            console.log(error)
-        });
+            .then((response) => {
+                console.log(response, "payledger");
+                setPayLedger(response.data.data);
+                setLedgerSummary(response.data.data.details);
+            })
+            .catch((error) => {
+                console.log(error)
+            });
     };
     // get Inventory Ledger
     const inventoryLedger = (clickId, transId) => {
         getInventoryLedgers(clickId, transId)
-          .then((response) => {
-            setInvLedger(response.data.data);
-            setInvDetails(response.data.data.details);
-            console.log(invLedger, "Inv Ledger");
-          })
-          .catch((error) => {
-            console.log(error)
-          });
+            .then((response) => {
+                setInvLedger(response.data.data);
+                setInvDetails(response.data.data.details);
+                console.log(invLedger, "Inv Ledger");
+            })
+            .catch((error) => {
+                console.log(error)
+            });
     };
+    //Get Outstanding balance
+    const getOutstandingPaybles = (clickId, partyId) => {
+        getOutstandingBal(clickId, partyId).then((response) => {
+            setPaidRcvd(response.data.data);
+        });
+    };
+
+    //get Inventory
+    const getInventoryRecord = (clickId, transId) => {
+        getInventory(clickId, transId)
+            .then((response) => {
+                console.log(response.data.data);
+                setGetInventory(response.data.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const getCropUnit = (unit, qty) => {
+        var unitType = "";
+        console.log(unit);
+        switch (unit.toUpperCase()) {
+            case "CRATES":
+                unitType = "C";
+                break;
+            case "BOXES":
+                unitType = "BX";
+                break;
+            case "BAGS":
+                unitType = "Bg";
+                break;
+            case "SACS":
+                unitType = "S";
+                break;
+            case "LOADS":
+                unitType = "L";
+                break;
+            case "PIECES":
+                unitType = "P";
+                break;
+        }
+        console.log(unitType);
+        return qty?unitType + " | ":'';
+    };
+
+    const getPaidRcvd = (rcvd) => {
+        setPaidRcvd(rcvd)
+    }
+    const getOutstAmt = (data) => {
+        setOutStAmt(data);
+    }
+
+    const getTransData = (data) => {
+        setTransporter(data);
+    }
+    const getPayledgerSummary = (data) => {
+        setLedgerSummary(data);
+    }
+    const payLedgerData = (data) => {
+        setPayLedger(data);
+    }
+
+    const getInvLedgerData = (data) => {
+        setInvLedger(data);
+    }
+
+    const getInvLedger = (data) => {
+        setInvDetails(data);
+    }
     return (
         <div className="main_div_padding">
             {allData.length > 0 ? (
@@ -154,14 +230,14 @@ const Transporters = () => {
                                                 return (
                                                     <Fragment>
                                                         <tr
-                                                          onClick={() =>
-                                                            particularTransporter(item.partyId, item)
-                                                          }
-                                                          className={
-                                                            transporterId == item.partyId
-                                                              ? "tabRowSelected"
-                                                              : "tr-tags"
-                                                          }
+                                                            onClick={() =>
+                                                                particularTransporter(item.partyId, item)
+                                                            }
+                                                            className={
+                                                                transporterId == item.partyId
+                                                                    ? "tabRowSelected"
+                                                                    : "tr-tags"
+                                                            }
 
                                                         >
                                                             <td scope="row">{index + 1}</td>
@@ -263,10 +339,6 @@ const Transporters = () => {
                         )}
                     </div>
                     <div className="col-lg-7 p-0">
-                        {/* <RecordPayment 
-                                    LedgerData={ledgerData}
-                                    ledgerId ={partyId}
-                                   outStbal = {paidRcvd} /> */}
                         <div className="card details-tag">
                             <div className="card-body" id="card-details">
                                 <div className="row">
@@ -304,189 +376,161 @@ const Transporters = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* {toggleState === "paymentledger" && (
-                        <>
-                          <div className="col-lg-3" id="verticalLines">
-                            <p className="card-text paid">
-                              {langFullData.totalBusiness}{" "}
-                              <p className="coloring color_black">
-                                {payLedger.totalToBePaid
-                                  ? getCurrencyNumberWithSymbol(
-                                      payLedger.totalToBePaid
-                                    )
-                                  : 0}
-                              </p>
-                            </p>
-                          </div>
-                          <div className="col-lg-3" id="verticalLines">
-                            <p className="total-paid">
-                              {langFullData.totalPaid}
-                              <p className="coloring color_black">
-                                {payLedger.totalPaid
-                                  ? getCurrencyNumberWithSymbol(
-                                      payLedger.totalPaid
-                                    )
-                                  : 0}
-                              </p>{" "}
-                            </p>
-                          </div>
-                          <div className="col-lg-3 d-flex align-items-center">
-                            <p className="out-standing">
-                              {langFullData.outstandingPayables}
-                              <p className="coloring color_black">
-                                {payLedger.totalOutStandingBalance
-                                  ? getCurrencyNumberWithSymbol(
-                                      payLedger.totalOutStandingBalance
-                                    )
-                                  : 0}
-                              </p>
-                            </p>
-                          </div>
-                        </>
-                      )}
-                      {toggleState === "inventoryledger" && (
-                        <>
-                          <div className="col-lg-3" id="verticalLines">
-                            <p className="card-text paid">
-                              Total Given{" "}
-                              <p className="coloring color_black">
-                                {invLedger.totalGiven
-                                  ? invLedger.totalGiven.map((item) => {
-                                      return (
-                                        item.qty + " " + getCropUnit(item.unit)
-                                      );
-                                    })
-                                  : 0}
-                              </p>
-                            </p>
-                          </div>
-                          <div className="col-lg-3" id="verticalLines">
-                            <p className="total-paid">
-                              Total Collected
-                              <p className="coloring color_black">
-                                {invLedger.totalCollected
-                                  ? invLedger.totalCollected.map((item) => {
-                                      return (
-                                        item.qty + " " + getCropUnit(item.unit)
-                                      );
-                                    })
-                                  : 0}
-                              </p>{" "}
-                            </p>
-                          </div>
-                          <div className="col-lg-3">
-                            <p className="out-standing">
-                              Total Balance
-                              <p className="coloring color_black">
-                                {invLedger.balance
-                                  ? invLedger.balance.map((item) => {
-                                      return (
-                                        item.qty + " " + getCropUnit(item.unit)
-                                      );
-                                    })
-                                  : 0}
-                                
-                              </p>
-                            </p>
-                          </div>
-                        </>
-                      )} */}
+                                    {tabs === "paymentledger" && (
+                                        <>
+                                            <div className="col-lg-3" id="verticalLines">
+                                                <p className="card-text paid">
+                                                    {langFullData.totalBusiness}{" "}
+                                                    <p className="coloring color_black">
+                                                        {payLedger.totalToBePaid
+                                                            ? getCurrencyNumberWithSymbol(
+                                                                payLedger.totalToBePaid
+                                                            )
+                                                            : 0}
+                                                    </p>
+                                                </p>
+                                            </div>
+                                            <div className="col-lg-3" id="verticalLines">
+                                                <p className="total-paid">
+                                                    {langFullData.totalPaid}
+                                                    <p className="coloring color_black">
+                                                        {payLedger.totalPaid
+                                                            ? getCurrencyNumberWithSymbol(
+                                                                payLedger.totalPaid
+                                                            )
+                                                            : 0}
+                                                    </p>{" "}
+                                                </p>
+                                            </div>
+                                            <div className="col-lg-3 d-flex align-items-center">
+                                                <p className="out-standing">
+                                                    {langFullData.outstandingPayables}
+                                                    <p className="coloring color_black">
+                                                        {payLedger.totalOutStandingBalance
+                                                            ? getCurrencyNumberWithSymbol(
+                                                                payLedger.totalOutStandingBalance
+                                                            )
+                                                            : 0}
+                                                    </p>
+                                                </p>
+                                            </div>
+                                        </>
+                                    )}
+                                    {tabs === "inventoryledger" && (
+                                        <>
+                                            <div className="col-lg-3" id="verticalLines">
+                                                <p className="card-text paid">
+                                                    Total Given{" "}
+                                                    <p className="coloring color_black">
+                                                        {invLedger.totalGiven
+                                                            ? invLedger.totalGiven.map((item) => {
+                                                                return (
+                                                                    item.qty > 0 ? item.qty.toFixed(1) + " " + getCropUnit(item.unit, item.qty)
+                                                                        : '');
+                                                            })
+                                                            : 0}
+                                                    </p>
+                                                </p>
+                                            </div>
+                                            <div className="col-lg-3" id="verticalLines">
+                                                <p className="total-paid">
+                                                    Total Collected
+                                                    <p className="coloring color_black">
+                                                        {invLedger.totalCollected
+                                                            ? invLedger.totalCollected.map((item) => {
+                                                                return (
+                                                                    item.qty > 0 ? item.qty.toFixed(1) + " " + getCropUnit(item.unit, item.qty)
+                                                                        : '');
+                                                            })
+                                                            : 0}
+                                                    </p>{" "}
+                                                </p>
+                                            </div>
+                                            <div className="col-lg-3">
+                                                <p className="out-standing">
+                                                    Total Balance
+                                                    <p className="coloring color_black">
+                                                        {invLedger.balance
+                                                            ? invLedger.balance.map((item) => {
+                                                                return (
+                                                                    item.qty ? item.qty.toFixed(1) + " " + getCropUnit(item.unit, item.qty)
+                                                                        : '');
+                                                            })
+                                                            : 0}
+
+                                                    </p>
+                                                </p>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                             <span id="horizontal-line-card"></span>
                             <div className='d-flex justify-content-between'>
-                            <ul
-                                className="nav nav-tabs ledger_tabs"
-                                id="myTab"
-                                role="tablist"
-                            >
-                                {links.map((link) => {
-                                    return (
-                                        <li key={link.id} className="nav-item ">
-                                            <a
-                                                className={
-                                                    "nav-link" +
-                                                    (tabs == link.to ? " active" : "")
-                                                }
-                                                href={"#" + link.to}
-                                                role="tab"
-                                                aria-controls="home"
-                                                data-bs-toggle="tab"
-                                                onClick={() => tabEvent(link.to)}
-                                            >
-                                                {link.name}
-                                            </a>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                            {tabs == 'paymentledger'?
-                            <RecordPayment 
-                                tabs={tabs}
-                                LedgerData={transData}
-                                ledgerId={transporterId}
-                                type={'TRANS'} 
-                            />
-                            : tabs == 'inventoryledger'?
-                            <RecordPayment />
-                            :''}</div>
-                            
-                            {/* <div className="d-flex justify-content-between">
-                    <div className="bloc-tabs">
-                      <button
-                        className={
-                          toggleState === "paymentledger"
-                            ? "tabs active-tabs"
-                            : "tabs"
-                        }
-                        onClick={() => toggleTab("paymentledger")}
-                      >
-                        {langFullData.paymentLedger}
-                      </button>
-                      <button
-                        className={
-                          toggleState === "inventoryledger"
-                            ? "tabs active-tabs"
-                            : "tabs"
-                        }
-                        onClick={() => toggleTab("inventoryledger")}
-                      >
-                        {langFullData.inventoryLedger}
-                      </button>
-                    </div>
-                    <div className="d-flex recordbtns-style">
-                      <button
-                        className="add-record-btn"
-                        onClick={() => {
-                          toggleState === "paymentledger"
-                            ? setIsOpen(!open)
-                            : setOpenInventory(!openInventory);
-                        }}
-                        data-toggle="modal"
-                        data-target="#myModal"
-                      >
-                        <div className="add-pay-btn">
-                          <img src={add} className="addrecord-img" />
-                        </div>{" "}
-                        Record  { toggleState === "paymentledger"
-                            ? 'Payment'
-                            : 'Inventory'}
-                      </button>
-                    </div>
-                  </div> */}
+                                <ul
+                                    className="nav nav-tabs ledger_tabs"
+                                    id="myTab"
+                                    role="tablist"
+                                >
+                                    {links.map((link) => {
+                                        return (
+                                            <li key={link.id} className="nav-item ">
+                                                <a
+                                                    className={
+                                                        "nav-link" +
+                                                        (tabs == link.to ? " active" : "")
+                                                    }
+                                                    href={"#" + link.to}
+                                                    role="tab"
+                                                    aria-controls="home"
+                                                    data-bs-toggle="tab"
+                                                    onClick={() => tabEvent(link.to)}
+                                                >
+                                                    {link.name}
+                                                </a>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                                {tabs == 'paymentledger' ?
+                                    <RecordPayment
+                                        tabs={tabs}
+                                        LedgerData={transData}
+                                        ledgerId={transporterId}
+                                        type={'TRANS'}
+                                        outStbal={paidRcvd}
+                                        setPaidRcvd={getPaidRcvd}
+                                        outStAmt={getOutstAmt}
+                                        transData={getTransData}
+                                        payledger={payLedgerData}
+                                        payledgersummary={getPayledgerSummary}
+                                    />
+                                    : tabs == 'inventoryledger' ?
+                                        <AddRecordInventory
+                                            tabs={tabs}
+                                            LedgerData={transData}
+                                            ledgerId={transporterId}
+                                            type={'TRANS'}
+                                            getInventor={getInventor}
+                                            invLedger={getInvLedger}
+                                            invLedgerData={getInvLedgerData}
+                                        />
+                                        : ''}
+                            </div>
+
                         </div>
-                        {tabs == 'paymentledger'?
-                            <PaymentLedger 
-                            paymentledgers={ledgerSummary}
-                            tabs={tabs}
-                            /> : tabs == 'inventoryledger'?
-                            <InventoryLedger 
-                                inventoryledgers={invDetails}
+                        {tabs == 'paymentledger' ?
+                            <PaymentLedger
+                                paymentledgers={ledgerSummary}
                                 tabs={tabs}
-                            />:''
+                            /> : tabs == 'inventoryledger' ?
+                                <InventoryLedger
+                                    inventoryledgers={invDetails}
+                                    tabs={tabs}
+                                /> : ''
                         }
-                        
-                        
+
+
                     </div>
                 </div>
             ) : (
