@@ -143,11 +143,11 @@ const RecordPayment = (props) => {
 
                                                 <div
                                                     className="profile-details"
-                                                    key={ledgerData.partyId}
+                                                    key={ledgerData?.partyId}
                                                 >
                                                     <div className="d-flex">
                                                         <div>
-                                                            {ledgerData.profilePic ? (
+                                                            {ledgerData?.profilePic ? (
                                                                 <img
                                                                     id="singles-img"
                                                                     src={ledgerData.profilePic}
@@ -166,9 +166,13 @@ const RecordPayment = (props) => {
                                                                 {ledgerData.partyName}
                                                             </p>
                                                             <p className="mobilee-tag">
-                                                                {!ledgerData.trader
-                                                                    ? "Buyer"
-                                                                    : "Trader"}{" "}
+                                                            {!ledgerData.trader
+                                                                ? props.type == "BUYER"
+                                                                    ? "Buyer":
+                                                                    props.type =='TRANS'?
+                                                                    'Transporter'
+                                                                    : "Seller"
+                                                                : "Trader"}{" "}
                                                                 - {ledgerData.partyId}&nbsp;|&nbsp;
                                                                 {getMaskedMobileNumber(ledgerData.mobile)}
                                                             </p>
