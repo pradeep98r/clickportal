@@ -1,4 +1,4 @@
-FROM node:slim as build
+FROM node:16-alpine3.16 as build
 
 RUN mkdir -p /app
 WORKDIR /app
