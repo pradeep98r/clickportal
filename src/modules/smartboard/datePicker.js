@@ -121,7 +121,7 @@ function DatePickerModel(props) {
       ? "Custom"
       : "Daily"
   );
-  const [selectedDate, setStartDate] = useState();
+  const [selectedDate, setStartDate] = useState(props.prevNextDate?props.prevNextDate:new Date());
   const [handleTab, setHandleTabs] = useState(false);
   console.log(dateTabs,"tabs")
   const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger") ?
@@ -409,6 +409,7 @@ function DatePickerModel(props) {
               <DatePicker
                 key={new Date()}
                 dateFormat="yyyy-MMM-dd"
+                // selected={props.prevNextDate}
                 selected={selectedDate}
                 onChange={(date) => dateOnchangeEvent(date, dateTabs)}
                 className="form-control"
