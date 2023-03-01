@@ -50,9 +50,9 @@ function BuyBillBook() {
   const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
-    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));  
   }, []);
-
+  
   var [dateValue, setDateValue] = useState();
 
   const businessCreatedStatus =
@@ -106,6 +106,7 @@ function BuyBillBook() {
           })
           setBuyBillData(response.data.data.singleBills);
           console.log(response.data.data.singleBills)
+          setOnline(false)
         } else {
           setBuyBillData([]);
         }
