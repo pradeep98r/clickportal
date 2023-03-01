@@ -41,8 +41,7 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
-    console.log(billViewData.billViewInfo)
-    if(billData?.billStatus == 'COMPLETED'){
+    if(billViewData?.billViewInfo?.billStatus == 'COMPLETED'){
       setDisplayCancel(false);
     }
     else{
@@ -215,6 +214,14 @@ const BillView = (props) => {
       setNextDisable(true);
     }
   };
+  const clearModal = () =>{
+    if(billData?.billStatus == 'COMPLETED'){
+      setDisplayCancel(false);
+    }
+    else{
+      setDisplayCancel(true);
+    }
+  }
   return (
     <Modal
       show={props.showBillViewModal}
@@ -234,9 +241,12 @@ const BillView = (props) => {
           </p>
           <p className="b-name">{billData?.caBSeq}</p>
         </h5>
-       <button onClick={(e) => {
-            props.closeBillViewModal();
-          }}>
+       <button 
+       onClick={(e) => {
+        clearModal();
+        props.closeBillViewModal();
+      }}
+          >
        <img
           alt="image"
           src={clo}

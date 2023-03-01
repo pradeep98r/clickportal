@@ -337,7 +337,7 @@
   .ui-widget-content .ui-priority-secondary {
     opacity: 1;
   }
-  .ui-datepicker td a {
+  .ui-datepicker td a, .ui-datepicker td span {
     text-align: center;
     padding: 0px;
     display: flex;
@@ -361,7 +361,7 @@
     color: #000;
   }
   .ui-datepicker td span {
-    display: inline;
+    // display: inline;
   }
   .ui-datepicker td {
     text-align: center;
