@@ -42,13 +42,10 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
-    console.log(billViewData.billViewInfo,billData?.billStatus)
-    if(billData?.billStatus == 'COMPLETED'){
+    if(billViewData?.billViewInfo?.billStatus == 'COMPLETED'){
       setDisplayCancel(false);
-      console.log('hhy complete')
     }
     else{
-      console.log('hhy cancel')
       setDisplayCancel(true);
     }
   }, [props.showBillViewModal]);
@@ -143,6 +140,21 @@ const BillView = (props) => {
           });
           localStorage.setItem("billViewStatus", false);
           setDisplayCancel(true)
+          if(!(props.fromLedger)){
+            if (billData?.partyType.toUpperCase() === "FARMER") {
+              window.setTimeout(function () {
+                props.closeBillViewModal();
+                navigate("/buy_bill_book");
+                window.location.reload();
+              }, 1000);
+            } else {
+              window.setTimeout(function () {
+                props.closeBillViewModal();
+                navigate("/sellbillbook");
+                window.location.reload();
+              }, 1000);
+            }
+           }
         }
       },
       (error) => {
@@ -206,27 +218,13 @@ const BillView = (props) => {
     }
   };
   const clearModal = () =>{
-    if(billData?.billStatus == 'COMPLETED'){
-      setDisplayCancel(false);
-    }
-    else{
-      setDisplayCancel(true);
-    }
-   if(!(props.fromLedger)){
-    if (billData?.partyType.toUpperCase() === "FARMER") {
-      window.setTimeout(function () {
-        props.closeBillViewModal();
-        navigate("/buy_bill_book");
-        window.location.reload();
-      }, 1000);
-    } else {
-      window.setTimeout(function () {
-        props.closeBillViewModal();
-        navigate("/sellbillbook");
-        window.location.reload();
-      }, 1000);
-    }
-   }
+    // if(billData?.billStatus == 'COMPLETED'){
+    //   setDisplayCancel(false);
+    // }
+    // else{
+    //   setDisplayCancel(true);
+    // }
+
   }
   return (
     <Modal

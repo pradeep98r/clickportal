@@ -53,34 +53,38 @@ const PaymentHistoryView = (props) => {
               <div className="partyDetails">
                 <div className="row justify-content-between align-items-center">
                   <div className="col-lg-4 p-0">
-                  <div className="d-flex align-items-center">
-                    <img src={paymentHistoryData.profilePic} />
-                    <div>
-                      <h6>{paymentHistoryData.partyName}</h6>
-                      <p>{getMaskedMobileNumber(paymentHistoryData.mobile)}</p>
+                    <div className="d-flex align-items-center">
+                      <img
+                        src={paymentHistoryData.profilePic}
+                        className="payment_profilepic"
+                      />
+                      <div>
+                        <h6>{paymentHistoryData.partyName}</h6>
+                        <p>
+                          {getMaskedMobileNumber(paymentHistoryData.mobile)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  </div>
-                  <div className="col-lg-5 p-0">
-
-                  </div>
+                  <div className="col-lg-5 p-0"></div>
                   <div className="col-lg-3 p-0">
                     <h6>Date</h6>
                     <h5>{paymentHistoryData.date}</h5>
                   </div>
                 </div>
               </div>
-              <div className="partyDetails">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <h6>Selected Bills</h6>
-                    {paymentHistoryData.billIds.length > 0 &&
-                      paymentHistoryData.billIds.map((item, index) => {
-                        return <h5>{item + ','}</h5>;
+              {paymentHistoryData.billIds.length > 0 && (
+                <div className="partyDetails">
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6>Selected Bills</h6>
+                      {paymentHistoryData.billIds.map((item, index) => {
+                        return <h5>{item + ","}</h5>;
                       })}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               <PaymentHistoryCard
                 title1="Amount"
                 title2="Payment Mode"
@@ -101,7 +105,7 @@ const PaymentHistoryView = (props) => {
               ) : (
                 ""
               )}
-              <div className="partyDetails">
+              <div className="partyDetails comment_details">
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <h6>Comment</h6>
@@ -113,23 +117,17 @@ const PaymentHistoryView = (props) => {
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-            <div>
-                  <p className="more-p-tag">Actions</p>
-                  <div className="action_icons">
-                    <div className="items_div">
-                     <button >
-                     <img
-                        src={cancel}
-                        alt="img"
-                        className=""
-                        
-                      />
-                     </button>
-                      <p>Cancel</p>
-                    </div>
-                  
+              <div>
+                <p className="more-p-tag">Actions</p>
+                <div className="action_icons">
+                  <div className="items_div">
+                    <button>
+                      <img src={cancel} alt="img" className="" />
+                    </button>
+                    <p>Delete</p>
                   </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>

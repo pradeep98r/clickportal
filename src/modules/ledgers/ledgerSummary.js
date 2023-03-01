@@ -33,8 +33,7 @@ const LedgerSummary = (props) => {
   const billOnClickView = (billId, type, i) => {
     console.log(billId, type);
     var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
-
-    if (bId?.includes("P")) {
+    if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
           console.log(res.data.data);

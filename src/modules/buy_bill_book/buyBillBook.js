@@ -32,6 +32,8 @@ import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
 import BillView from "./billView";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import prev_icon from "../../assets/images/prev_icon.svg";
+import next_icon from "../../assets/images/next_icon.svg";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -43,6 +45,8 @@ function BuyBillBook() {
   const langFullData = JSON.parse(langData);
 
   const billData = useSelector((state) => state.billViewInfo);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [showPrevNext, setShowPrevNext] = useState(true)
   const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
@@ -55,31 +59,42 @@ function BuyBillBook() {
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
       : loginData.useStatus == "WRITER"
-      ? "writer"
-      : "ca";
+        ? "writer"
+        : "ca";
 
   const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
+      setShowPrevNext(true)
+      setLoading(true);
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+      setCurrentDate(new Date(fromDate));
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
+      setLoading(true);
+      setShowPrevNext(false)
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
+      setLoading(true);
+      setShowPrevNext(false)
     } else if (dateTab === "Yearly") {
       setDateValue(moment(fromDate).format("YYYY"));
-    } else {
+      setLoading(true);
+      setShowPrevNext(false)
+    } else if(dateTab == 'Custom'){
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
+      setLoading(true);
+      setShowPrevNext(false)
     }
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
@@ -87,7 +102,7 @@ function BuyBillBook() {
           setAllData(response.data.data);
           // setBuyBillData(response.data.data.singleBills);
           response.data.data.singleBills.map((i, ind) => {
-            Object.assign(i, {index:ind});
+            Object.assign(i, { index: ind });
           })
           setBuyBillData(response.data.data.singleBills);
           console.log(response.data.data.singleBills)
@@ -107,7 +122,7 @@ function BuyBillBook() {
   var billViewStatus = false;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
-  const billOnClick = (id, bill,i) => {
+  const billOnClick = (id, bill, i) => {
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
     setShowBillModalStatus(true);
@@ -115,7 +130,7 @@ function BuyBillBook() {
     // navigate(generatePath(`/bill_view/${id}`, { id }));
     localStorage.setItem("billId", id);
     let object = { ...bill };
-    Object.assign(object,{index:i});
+    Object.assign(object, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
@@ -161,6 +176,23 @@ function BuyBillBook() {
     });
     return totalValue;
   };
+
+  const onPrevDate = () => {
+    const newDate = new Date(currentDate.getTime());
+    newDate.setDate(newDate.getDate() - 1);
+    setLoading(true);
+    callbackFunction(newDate, newDate, 'Daily')
+    setCurrentDate(newDate);
+  }
+  const onNextDate = () => {
+    const newDate = new Date(currentDate.getTime());
+    newDate.setDate(newDate.getDate() + 1);
+    if (newDate < new Date()) {
+      setLoading(true);
+      callbackFunction(newDate, newDate, 'Daily')
+      setCurrentDate(newDate);
+    }
+  }
   return (
     <div>
       <div className="main_div_padding">
@@ -206,7 +238,33 @@ function BuyBillBook() {
                           </li>
                         </ul> */}
                           </div>
-                          <button onClick={onclickDate} className="color_blue">
+                          <div className="d-flex align-items-center color_blue">
+                            {showPrevNext?
+                            <button onClick={onPrevDate} className="p-0">
+                              <span className="" onClick={onPrevDate}>
+                                <img src={prev_icon} alt="icon" className="mr-3" />
+                              </span>
+                            </button>
+                            :''}
+                            <button onClick={onclickDate} className="p-0">
+                              <span className="date_icon m-0 d-flex color_blue">
+                                <img
+                                  src={date_icon}
+                                  alt="icon"
+                                  className="mr-2 d-flex"
+                                />
+                                {dateValue}
+                              </span>
+                            </button>
+                            {showPrevNext?
+                            <button onClick={onNextDate}>
+                              <span className="" onClick={onNextDate}>
+                                <img src={next_icon} alt="icon" className="ml-3" />
+                              </span>
+                            </button>
+                            :''}
+                          </div>
+                          {/* <button onClick={onclickDate} className="color_blue">
                             <div className="d-flex align-items-center">
                               <p className="date_icon m-0">
                                 <img
@@ -217,7 +275,7 @@ function BuyBillBook() {
                               </p>
                               <p className="date_text_book">{dateValue}</p>
                             </div>
-                          </button>
+                          </button> */}
                           <div className="d-flex">
                             {/* <BillsSearchField
                           placeholder={langFullData.search}
@@ -291,7 +349,7 @@ function BuyBillBook() {
                                     {buyBillData.map((bill, index) => (
                                       <button
                                         onClick={() =>
-                                          billOnClick(bill.caBSeq, bill,index)
+                                          billOnClick(bill.caBSeq, bill, index)
                                         }
                                         key={index}
                                         className="billsDiv"
@@ -371,14 +429,14 @@ function BuyBillBook() {
                                                       style={{
                                                         color:
                                                           bill.billStatus ==
-                                                          "CANCELLED"
+                                                            "CANCELLED"
                                                             ? "#d43939"
                                                             : "#1C1C1C",
                                                       }}
                                                     >
                                                       <div className="flex_class p-0">
                                                         {bill.billStatus ==
-                                                        "CANCELLED" ? (
+                                                          "CANCELLED" ? (
                                                           <div className="complete-dot cancel_dot"></div>
                                                         ) : (
                                                           <div className="complete-dot"></div>
@@ -417,7 +475,7 @@ function BuyBillBook() {
                                                       className="d-flex align-items-center"
                                                       style={{ height: "100%" }}
                                                     >
-                                                       <div className="text-left">
+                                                      <div className="text-left">
                                                         <div>
                                                           {" "}
                                                           {qtyValues(
@@ -429,7 +487,7 @@ function BuyBillBook() {
                                                           )}
                                                         </div>
                                                         {crop.bags !== null &&
-                                                        crop.bags.length > 0 ? (
+                                                          crop.bags.length > 0 ? (
                                                           <div className="flex_class">
                                                             <input
                                                               type="checkbox"
@@ -449,7 +507,7 @@ function BuyBillBook() {
                                                                           <span>
                                                                             {item.weight
                                                                               ? item.weight +
-                                                                                " "
+                                                                              " "
                                                                               : ""}
                                                                           </span>
                                                                           <span>
@@ -571,6 +629,7 @@ function BuyBillBook() {
           show={showDatepickerModal}
           close={() => setShowDatepickerModal(false)}
           parentCallback={callbackFunction}
+          prevNextDate={currentDate}
         />
       ) : (
         <p></p>
