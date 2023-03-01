@@ -3,7 +3,7 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import d_arrow from "../../assets/images/d_arrow.png";
 import { useDispatch, useSelector } from "react-redux";
 import edit from "../../assets/images/edit_round.svg";
-import { getPartnerType } from "../../components/getText";
+import { getPartnerType, getText } from "../../components/getText";
 import Select from "react-select";
 import {
   getPartnerData,
@@ -342,7 +342,7 @@ const Step3PartySelect = (props) => {
                     )}
                     <div style={{ marginLeft: 5 }}>
                       <div className="partner_card">
-                        <h5>{e.partyName + "bef " + e.shortName}</h5>
+                        <h5>{getText(e.partyName) + " " + e.shortName}</h5>
                         <h6>
                           {getPartnerType(e.partyType, e.trader)} - {e.partyId}{" "}
                           | {getMaskedMobileNumber(e.mobile)}
@@ -391,13 +391,13 @@ const Step3PartySelect = (props) => {
                       <h5>
                         {billeditStatus
                           ? partySelectStatus
-                            ? partySelecteData.partyName +
+                            ? getText(partySelecteData.partyName) +
                               " " +
                               partySelecteData.shortName
                             : billEditItem.partyType == "FARMER"
                             ? billEditItem.farmerName
                             : billEditItem.buyerName
-                          : partySelecteData.partyName +
+                          : getText(partySelecteData.partyName) +
                             " " +
                             partySelecteData.shortName}
                       </h5>
@@ -429,7 +429,7 @@ const Step3PartySelect = (props) => {
                           ? partySelectStatus
                             ? getMaskedMobileNumber(partySelecteData.mobile)
                             : billEditItem.partyType == "FARMER"
-                            ? billEditItem.farmerMobile
+                            ? getMaskedMobileNumber(billEditItem.farmerMobile)
                             : getMaskedMobileNumber(billEditItem.mobile)
                           : getMaskedMobileNumber(partySelecteData.mobile)}
                       </h6>
@@ -493,10 +493,10 @@ const Step3PartySelect = (props) => {
                       <div className="partner_card">
                         <h5>
                           {transportoSelectStatus
-                            ? e.partyName
+                            ? getText(e.partyName)
                             : e.transporterName
                             ? e.transporterName
-                            : e.partyName}
+                            : getText(e.partyName)}
                         </h5>
                         <h6>
                           {getPartnerType("Transporter", e.trader)} -{" "}
@@ -530,22 +530,22 @@ const Step3PartySelect = (props) => {
                       <h5>
                         {billeditStatus
                           ? transportoSelectStatus
-                            ? transpoSelectedData.partyName
+                            ? getText(transpoSelectedData.partyName)
                             : billEditItem.transporterName
-                          : transpoSelectedData.partyName}
+                          : getText(transpoSelectedData.partyName)}
                         {/* {transpoSelectedData.partyName} */}
                       </h5>
                       <h6>
                         {/* {transpoSelectedData.mobile } */}
                         {billeditStatus
                           ? transportoSelectStatus
-                            ? transpoSelectedData.partyType +
+                            ? getText(transpoSelectedData.partyType) +
                               "-" +
                               transpoSelectedData.partyId +
                               " | " +
                               getMaskedMobileNumber(transpoSelectedData.mobile)
-                            : "TRANSPORTER" + "-" + billEditItem.transporterId
-                          : transpoSelectedData.partyType +
+                            : getText("TRANSPORTER") + "-" + billEditItem.transporterId
+                          : getText(transpoSelectedData.partyType) +
                             "-" +
                             transpoSelectedData.partyId +
                             " | " +
@@ -594,7 +594,7 @@ const Step3PartySelect = (props) => {
                 )}
                 <div style={{ marginLeft: 5 }}>
                   <div className="partner_card">
-                    <h5>{e.partyName + "h " + e.shortName}</h5>
+                    <h5>{getText(e.partyName) + " " + e.shortName}</h5>
                     <h6>
                       {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
                       {getMaskedMobileNumber(e.mobile)}

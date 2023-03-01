@@ -244,13 +244,13 @@ const SellBillBook = (props) => {
                       {/* <button  className="color_blue"> */}
                       <div className="d-flex align-items-center color_blue">
                         {showPrevNext?
-                        <button onClick={onPrevDate}>
+                        <button onClick={onPrevDate} className="p-0">
                           <span className="" onClick={onPrevDate}>
                             <img src={prev_icon} alt="icon" className="mr-3" />
                           </span>
                         </button>
                         :''}
-                        <button onClick={onclickDate}>
+                        <button onClick={onclickDate} className="p-0">
                           <span className="date_icon m-0 d-flex color_blue">
                             <img
                               src={date_icon}
