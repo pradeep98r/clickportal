@@ -219,7 +219,7 @@
 .item_div {
   background-color: #f9f9f9;
   border: 1px solid #16a02c;
-  padding: 5px 15px;
+  padding: 10px 15px;
   border-radius: 3px;
   margin: 0px 70px;
 }
@@ -337,7 +337,7 @@
   .ui-widget-content .ui-priority-secondary {
     opacity: 1;
   }
-  .ui-datepicker td a {
+  .ui-datepicker td a, .ui-datepicker td span {
     text-align: center;
     padding: 0px;
     display: flex;
@@ -361,7 +361,7 @@
     color: #000;
   }
   .ui-datepicker td span {
-    display: inline;
+    // display: inline;
   }
   .ui-datepicker td {
     text-align: center;
