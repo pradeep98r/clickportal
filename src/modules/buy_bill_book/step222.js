@@ -1387,6 +1387,13 @@ const Step22 = (props) => {
                                   cropData[index].rateType ? (
                                     <td className="col-1">
                                       <div className="d-flex align-items-center justify-content-center">
+                                        <button onClick={() => {
+                                            handleCheckEvent(
+                                              cropData,
+                                              index,
+                                              crop
+                                            );
+                                          }}>
                                         <input
                                           type="checkbox"
                                           checked={
@@ -1408,6 +1415,7 @@ const Step22 = (props) => {
                                             );
                                           }}
                                         />
+                                        </button>
                                         {cropData[index].bags !== null &&
                                         cropData[index].bags.length > 0 ? (
                                           <label
