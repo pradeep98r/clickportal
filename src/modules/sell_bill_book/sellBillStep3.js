@@ -354,7 +354,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -380,7 +380,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -406,7 +406,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),

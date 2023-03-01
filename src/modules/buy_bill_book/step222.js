@@ -951,6 +951,7 @@ const Step22 = (props) => {
       setEditBagsStatus(true);
     }
   };
+
   //   gettinng inndividual bags data
   const callbackFunction = (childData, invArr) => {
     let updatedItems = cropData.map((item, i) => {

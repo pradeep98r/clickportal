@@ -12,13 +12,18 @@
 }
 .bills_rows{
   height: 100%;
+  
   .flex_class{
     margin-right: 0px!important;
     padding: 6px 0px;
   }
 }
+.header_row, .bills_rows{
+  margin: 0px 3px;
+}
 .bills_rows:hover{
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.3s ease-in-out;
 }
 .date_text_book{
   font-size: 15px;
@@ -710,6 +715,7 @@ input:focus-visible {
     font-size: var(--body-small-text);
   }
 }
+
 .date_class {
   color: var(--ono-blue) !important;
 }
@@ -975,10 +981,11 @@ font-size: 12px;
   border-radius: 6px;
   position: absolute;
   z-index: 1;
+  text-align: left;
 }
 .bags-data{
   color: #171717;
-  padding: 5px 5px;
+  padding: 15px;
 }
 .inv-weight:hover .bags-data {
   visibility: visible;
@@ -1450,4 +1457,11 @@ font-size: 12px;
 .week_picker {
   height: 390px;
 }
+}
+.btn_bill_book{
+  position: absolute;
+    right: 0;
+}
+.wastsge_color{
+  color: #D43939!important;
 }
