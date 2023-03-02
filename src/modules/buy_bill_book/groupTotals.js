@@ -373,6 +373,7 @@ const GroupTotals = (props) => {
             });
           }
           groupTotals.push(res.data.data[i]);
+          groupTotals = groupTotals.sort((a,b) =>(a.id - b.id))
           setAllGroups([...allGroups, ...groupTotals]);
         }
       } else {
@@ -387,6 +388,7 @@ const GroupTotals = (props) => {
             });
           }
           groupTotals.push(res.data.data[i]);
+          groupTotals = groupTotals.sort((a,b) =>(a.id - b.id))
           setAllGroups([...allGroups, ...groupTotals]);
         }
       }
@@ -570,17 +572,16 @@ const GroupTotals = (props) => {
   };
 
   allGroups
-    .slice()
-    .reverse()
     .map((item) => {
       var substring = "CUSTOM_FIELD";
-      var str = "ADVANCES";
+      // var str = "ADVANCES";
       if (item?.name.includes(substring)) {
         item.name = "";
         substring = "";
-      } else if (item?.name.includes(str)) {
-        item.name = "";
-      }
+      } 
+      // else if (item?.name.includes(str)) {
+      //   item.name = "";
+      // }
       allGroupsTotal += handleGroupNames(item.name);
       return allGroupsTotal;
     });
@@ -691,6 +692,7 @@ const GroupTotals = (props) => {
       var finalValue = billData.grossTotal - t;
     } else {
       var finalValue = billData?.grossTotal + t;
+      console.log(finalValue,"he")
     }
     var finalVal = finalValue;
 
@@ -710,7 +712,6 @@ const GroupTotals = (props) => {
         }
       }
     }
-
     if (
       billData?.partyType?.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
@@ -782,15 +783,175 @@ const GroupTotals = (props) => {
           {allGroups.length > 0 ? (
             <div className="pl-0 col-lg-7 col_border_left pr-0">
               {allGroups
-                .slice()
-                .reverse()
                 .map((item, index) => {
                   return (
                     <div>
-                      <div className="row" key={index}>
-                        <div className="col-lg-2"></div>
-                        <div className="col-lg-6 align-items">
-                          <p className="groups_value">
+                      {(
+                        item.name !==
+                          handleSettingName(item.name, item)
+                          ? " "
+                          : handleGroupNames(item.name) === 0
+                      ) ? (
+                        " "
+                      ) : (
+                        <div className="row grp_one_row" key={index}>
+                          {/* <div className="col-lg-2"></div> */}
+                          <div className="col-lg-5 align-data-items">
+                            <div>
+                              <p className="groups_value">
+                                <div>
+                                  {(
+                                    item.name !==
+                                      handleSettingName(item.name, item)
+                                      ? " "
+                                      : handleGroupNames(item.name) ===
+                                      0
+                                  ) ? (
+                                    " "
+                                  ) : item.name.includes(
+                                    "CUSTOM_FIELD"
+                                  ) ? (
+                                    item.customFieldName
+                                  ) : (
+                                    <p className="main_setting_name">
+                                      {getText(
+                                        item.name?.replaceAll("_", " ")
+                                      )}
+                                    </p>
+                                  )}
+                                  <p className="fee-perc">
+                                    {item.name == "COMMISSION" ? (
+                                      billData?.comm ? (
+                                        <span className="fee-percentage">
+                                          Rate %
+                                          {(
+                                            (billData?.comm /
+                                              billData?.grossTotal) *
+                                            100
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.name ==
+                                      "RETURN_COMMISSION" ? (
+                                      billData?.rtComm ? (
+                                        <span className="fee-percentage">
+                                          Rate %
+                                          {(
+                                            (billData?.rtComm /
+                                              billData?.grossTotal) *
+                                            100
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.name == "MANDI_FEE" ? (
+                                      billData?.mandiFee ? (
+                                        <span className="fee-percentage">
+                                          Rate %
+                                          {(
+                                            (billData?.mandiFee /
+                                              billData?.grossTotal) *
+                                            100
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.name == "TRANSPORTATION" ? (
+                                      billData?.transportation ? (
+                                        <span className="fee-percentage">
+                                          Fee per Unit{" "}
+                                          {(
+                                            billData?.transportation /
+                                            feePerUnit()
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.name == "RENT" ? (
+                                      billData?.rent ? (
+                                        <span className="fee-percentage">
+                                          Fee per Unit{" "}
+                                          {(
+                                            billData?.rent / feePerUnit()
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.name == "LABOUR_CHARGES" ? (
+                                      billData?.labourCharges ? (
+                                        <span className="fee-percentage">
+                                          Fee per Unit{" "}
+                                          {(
+                                            billData?.labourCharges /
+                                            feePerUnit()
+                                          ).toFixed(2)}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                  <p className="fee-perc">
+                                    <span className="fee-percentage">
+                                      {billData?.customFields.map((i) => {
+                                        if (i.field == item.name) {
+                                          return i.comments;
+                                        }
+                                      })}
+                                    </span>
+                                  </p>
+                                  <p className="fee-perc">
+                                    {item.name == "OTHER_FEE" ? (
+                                      billData?.misc ||
+                                        (billData?.otherFee &&
+                                          billData?.comments) ? (
+                                        <span className="fee-percentage">
+                                          {billData?.comments}
+                                        </span>
+                                      ) : (
+                                        ""
+                                      )
+                                    ) : (
+                                      ""
+                                    )}
+                                  </p>
+                                </div>
+                              </p>
+                            </div>
+                            {/* <p className="groups_value">
                             {(
                               item.name !== handleSettingName(item.name, item)
                                 ? " "
@@ -798,20 +959,82 @@ const GroupTotals = (props) => {
                             )
                               ? " "
                               : item.name?.replaceAll("_", " ")}{" "}
-                          </p>
+                          </p> */}
+                          </div>
+                          <div className="col-lg-3 p-0">
+                            <p className="fee-perc">
+                              {item.name == "TRANSPORTATION" ? (
+                                billData?.transportation ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.name == "RENT" ? (
+                                billData?.rent ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                            <p className="fee-perc">
+                              {item.name == "LABOUR_CHARGES" ? (
+                                billData?.labourCharges ? (
+                                  <span className="units-cal">
+                                    {feePerUnit().toFixed(1)} Units
+                                  </span>
+                                ) : (
+                                  ""
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="groups_values">
+                              {handleGroupNames(
+                                handleSettingName(item.name, item)
+                              ) === 0 ? (
+                                " "
+                              ) : (
+                                <span>
+                                  {(
+                                    item.name.includes("CUSTOM_FIELD") ?
+                                      billData?.customFields.map(item => {
+                                        if (item.field == item.name && item.less) {
+                                          return '-' + handleGroupNames(item.name).toFixed(2)
+                                        } else {
+                                          return '+' + handleGroupNames(item.name).toFixed(2)
+                                        }
+                                      }) :
+                                      billData?.partyType.toUpperCase() == "FARMER") &&
+                                    item.name == "RETURN_COMMISSION" && !(billData?.less)
+                                    ? " + " + handleGroupNames(item.name).toFixed(2)
+                                    : billData?.partyType.toUpperCase() ==
+                                      "BUYER" && item.name == "RETURN_COMMISSION" && (billData?.less)
+                                      ? " - " + handleGroupNames(item.name).toFixed(2)
+                                      : billData?.partyType.toUpperCase() == "BUYER"
+                                        ? " + " + handleGroupNames(item.name).toFixed(2)
+                                        : handleGroupNames(item.name).toFixed(2)}
+                                </span>
+                                // <span>+ {handleGroupNames(item.name)}</span>
+                              )}
+                            </p>
+                          </div>
                         </div>
-                        <div className="col-lg-4">
-                          <p className="groups_value">
-                            {handleGroupNames(
-                              handleSettingName(item.name, item)
-                            ) === 0 ? (
-                              " "
-                            ) : (
-                              <span>+ {handleGroupNames(item.name)}</span>
-                            )}
-                          </p>
-                        </div>
-                      </div>
+                      )}
                       <div
                         className={
                           (
@@ -824,41 +1047,49 @@ const GroupTotals = (props) => {
                               ? "hrs-line"
                               : ""
                         }
-                      ></div>
+                      >
+
+                      </div>
+                      {/* </div> */}
                     </div>
                   );
                 })}
-              <div className="row group-one-total">
-                <div className="pl-0 col-lg-8 pr-0"></div>
-                <div className="col-lg-4">
-                  <p className="groups_value">
-                    {allGroupsTotal === 0 || null
-                      ? ""
-                      : (billData?.grossTotal + allGroupsTotal).toLocaleString(
-                        "en-IN",
-                        {
-                          maximumFractionDigits: 2,
-                          style: "currency",
-                          currency: "INR",
-                        }
-                      )}
-                  </p>
-                </div>
-                <div
+              {allGroupsTotal === 0 || allGroupsTotal === null ? (
+                ""
+              ) : (
+                <div className="row group-one-total">
+                  <div className="pl-0 col-lg-7 pr-0"></div>
+                  <div className="col-lg-4">
+                    <p className="groups_values">
+                      {allGroupsTotal === 0 || null
+                        ? ""
+                        : (billData?.grossTotal + allGroupsTotal).toLocaleString(
+                          "en-IN",
+                          {
+                            maximumFractionDigits: 2,
+                            style: "currency",
+                            currency: "INR",
+                          }
+                        )}
+                    </p>
+                  </div>
+
+                  {/* <div
                   className={
                     allGroupsTotal === 0 || null ? "" : "hr-line-in-totals"
                   }
-                ></div>
-              </div>
+                ></div> */}
+                </div>
+              )}
               <div className="row">
-                <div className="col-lg-2"></div>
-                <div className="col-lg-6">
+                {/* <div className="col-lg-2"></div> */}
+                <div className="col-lg-7">
                   {billData?.grossTotal + allGroupsTotal ===
                     // billData?.totalPayables ===
                     0 ? (
                     ""
                   ) : (
-                    <p className="grouping_value">Total Bill Amount :</p>
+                    <p className="grouping_value">Total Bill Amount </p>
                   )}
                 </div>
                 <div className="col-lg-4">
@@ -866,8 +1097,8 @@ const GroupTotals = (props) => {
                     className={
                       billData?.partyType.toUpperCase() === "FARMER" ||
                         billData?.partyType.toUpperCase() === "SELLER"
-                        ? "grouping_value color_red"
-                        : "grouping_value color_green"
+                        ? "groups_values color_red"
+                        : "groups_values color_green"
                     }
                   >
                     {billData?.grossTotal + allGroupsTotal === 0 ||
@@ -885,16 +1116,15 @@ const GroupTotals = (props) => {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-2"></div>
-                <div className="col-lg-6">
-                  <p className="grouping_value">Outstanding Balance:</p>
+                <div className="col-lg-7">
+                  <p className="grouping_value">Outstanding Balance</p>
                 </div>
                 <div className="col-lg-4">
                   <p
                     className={
                       billData?.partyType.toUpperCase() === "FARMER"
-                        ? "grouping_value color_red"
-                        : "grouping_value color_green"
+                        ? "groups_values color_red"
+                        : "groups_values color_green"
                     }
                   >
                     {billData?.outStBal.toLocaleString("en-IN", {
@@ -913,11 +1143,11 @@ const GroupTotals = (props) => {
                       {billData?.cashPaid === 0 ? (
                         "" || billData?.cashPaid === null
                       ) : (
-                        <p className="grouping_value">Cash Paid :</p>
+                        <p className="grouping_value">Cash Paid </p>
                       )}
                     </div>
                     <div className="col-lg-4">
-                      <p className="grouping_value color_red">
+                      <p className="groups_values color_red">
                         {billData?.cashPaid === 0 || billData?.cashPaid === null
                           ? " "
                           : "-" +
@@ -937,7 +1167,7 @@ const GroupTotals = (props) => {
                       )}
                     </div>
                     <div className="col-lg-4">
-                      <p className="grouping_value ">
+                      <p className="groups_values ">
                         {billData?.cashRcvd === 0 || billData?.cashRcvd === null
                           ? ""
                           : "-" +
