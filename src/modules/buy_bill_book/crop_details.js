@@ -152,8 +152,9 @@ const CropDetails = (props) => {
                   <td className="col-2">
                     {getCurrencyNumberWithOutSymbol(item.rate)}
                   </td>
-                  <td className="col-2 color_red">
+                  <td className={ billData?.partyType === "FARMER" ? "col-2 color_red" :  "col-2 color_green"}>
                     {getCurrencyNumberWithOutSymbol(item.total)}
+                    {/* color_green */}
                   </td>
                 </tr>
               );
