@@ -403,7 +403,7 @@ const BillView = (props) => {
                 <div className="col-lg-12">
                   <p className="desc-tag">
                     Please note that cancellation of bill result in ledger
-                    adjustments (rol back) and you will see an adjustment record
+                    adjustments (roll back) and you will see an adjustment record
                     in ledger for the same bill
                   </p>
                 </div>

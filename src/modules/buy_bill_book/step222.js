@@ -213,6 +213,7 @@ const Step22 = (props) => {
       .then((response) => {
         var res = response.data.data;
         var list = preferedCropsData;
+        console.log(res);
         var arr = [];
         res.map((i, ind) => {
           var index = list.findIndex((obj) => obj.cropId == i.cropId);
@@ -506,7 +507,7 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
-    console.log(cropData)
+    console.log(cropData);
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         const data = cropData[index];
@@ -607,15 +608,19 @@ const Step22 = (props) => {
       }
 
       for (var k = 0; k < cropData.length; k++) {
-        console.log(cropData)
+        console.log(cropData);
         if (Object.keys(cropData[k]).length != 0) {
-          console.log(cropData[k].cropName,typeof(cropData[k].cropName),'name')
-          if(cropData[k].cropName != ''){
+        
+          if (cropData[k].cropName != "") {
             arrays.push(cropData[k]);
+          }
+          if (cropData[k].wastage == "") {
+            cropData[k].wastage = 0;
           }
         }
       }
       if (arrays.length === cropData.length) {
+        console.log(dArray);
         addStep3Modal();
         dispatch(selectSteps("step3"));
         props.parentcall(
@@ -624,7 +629,10 @@ const Step22 = (props) => {
         );
       } else {
         for (var j = 0; j < cropData.length; j++) {
-          if (Object.keys(cropData[j]).length == 0 || cropData[j].cropName == '') {
+          if (
+            Object.keys(cropData[j]).length == 0 ||
+            cropData[j].cropName == ""
+          ) {
             toast.error("Please add crop", {
               toastId: "error6",
             });
@@ -754,6 +762,7 @@ const Step22 = (props) => {
       var val = e.target.value.replace(/\D/g, "");
     }
     // var val = e.target.value.replace(/[^0-9.]/g, "");
+    
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], wastage: val };
@@ -762,6 +771,7 @@ const Step22 = (props) => {
         return { ...cropitem[i] };
       }
     });
+    console.log(updatedItem2)
     cropResponseData([...updatedItem2]);
     setwastageValue(val);
     setUpdatedItemList([...updatedItem2]);
@@ -1002,7 +1012,6 @@ const Step22 = (props) => {
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
         setSelectedCropItem(crop);
-        console.log(c[j], "if");
         return {
           ...c[j],
           cropName: crop.cropName,
@@ -1024,7 +1033,6 @@ const Step22 = (props) => {
           activeSearch: true,
         };
       } else {
-        console.log(c, c[j], "else");
         cropResponseData([...c]);
         return { ...c[j] };
       }
@@ -1035,14 +1043,12 @@ const Step22 = (props) => {
         var countadded;
         if (onFocusCrop != null) {
           if (onFocusCrop.cropId == preferedCropsData[j].cropId) {
-            if(preferedCropsData[j].cropId == c[i].cropId){
+            if (preferedCropsData[j].cropId == c[i].cropId) {
               countadded = preferedCropsData[j].count;
-            }
-            else{
+            } else {
               countadded = preferedCropsData[j].count + 1;
             }
             var cActive = countadded == 0 ? false : true;
-            console.log(countadded,c[i], "focus not nuull same crop same pre");
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1050,11 +1056,7 @@ const Step22 = (props) => {
             };
           } else {
             countadded = preferedCropsData[j].count + 1;
-            console.log(
-              countadded,
-              preferedCropsData[j].count,
-              "focus not nuull same crop if not pref"
-            );
+           
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1073,17 +1075,22 @@ const Step22 = (props) => {
         var countadded;
         if (onFocusCrop != null) {
           if (onFocusCrop.cropId == preferedCropsData[j].cropId) {
-            countadded =
+            console.log(preferedCropsData[j].cropId,c[i].cropId)
+            if (preferedCropsData[j].cropId == c[i].cropId) {
+              
+              countadded =
               preferedCropsData[j].count != 0
                 ? preferedCropsData[j].count - 1
                 : preferedCropsData[j].count;
+              console.log(countadded,'appu if')
+            } else {
+              countadded = preferedCropsData[j].count;
+                console.log(countadded,'appu else')
+            }
+            
             var cActive = countadded == 0 ? false : true;
             var cSelect = countadded == 0 ? false : true;
-            console.log(
-              countadded,
-              preferedCropsData[j],
-              "focus not nuull different crop"
-            );
+            
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1091,11 +1098,9 @@ const Step22 = (props) => {
               cropSelect: cSelect,
             };
           } else {
-            console.log("elseeee");
             return { ...preferedCropsData[j] };
           }
         } else {
-          console.log(countadded, "focus nuull different crop");
           return { ...preferedCropsData[j] };
         }
       }
@@ -1171,7 +1176,7 @@ const Step22 = (props) => {
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
                 <div className="crop_table" id="scroll_style">
-                  <div className="row header_row p-0 crop_table_header_row">
+                  <div className="row header_row p-0 crop_table_header_row m-0">
                     <div className="col-lg-2">
                       <p>Crop</p>
                     </div>

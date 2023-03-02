@@ -710,7 +710,7 @@ const SmartBoard = () => {
                                   </h4>
                                   {/* <div className="card default_card"> */}
                                   <div className="row">
-                                    <div className="col-lg-6 pl-0 col_left_border">
+                                    <div className="col-lg-6 p-0">
                                       <div className="card default_card all_smartboard_cards">
                                         <div class="card-body d-flex align-items-center justify-content-center">
                                           <div className="d-flex align-items-center justify-content-between">
