@@ -479,7 +479,8 @@ const GroupTotals = (props) => {
             if (billData?.partyType.toUpperCase() === "FARMER") {
               value = -billData?.rtComm;
             } else {
-              value = billData?.rtComm;
+              value = billData?.partyType.toUpperCase() === "BUYER"?-billData?.rtComm:
+              billData?.rtComm;
             }
             return value;
           }
@@ -556,7 +557,22 @@ const GroupTotals = (props) => {
               }
             }
           });
-        } else {
+        }  else if (billData?.partyType.toUpperCase() === "BUYER") {
+          billData?.customFields.map((item) => {
+            if (item.fee != 0) {
+              if (item.field === name) {
+                if (item.less) {
+                  value = -item.fee;
+                } else {
+                  value = item.fee;
+                }
+                value = value == null ? 0 : value;
+                return value;
+              }
+            }
+          })
+        }
+          else {
           billData?.customFields.map((item) => {
             if (item.fee != 0) {
               if (item.field === name) {
@@ -1404,23 +1420,35 @@ const GroupTotals = (props) => {
                                 ) : (
                                   <span>
                                     {(
-                                      item.settingName.includes("CUSTOM_FIELD") ?
-                                        billData?.customFields.map(item => {
-                                          if (item.field == item.settingName && item.less) {
-                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
-                                          } else {
-                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
-                                          }
-                                        }) :
-                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      
+                                      billData?.partyType.toUpperCase() == "FARMER") &&
                                       item.settingName == "RETURN_COMMISSION" && !(billData?.less)
                                       ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
                                         "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
-                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
-                                        : billData?.partyType.toUpperCase() == "BUYER"
-                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
-                                          : handleGroupNames(item.settingName).toFixed(2)}
+                                        ?handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER" &&
+                                        item.settingName?.includes('CUSTOM_FIELD')?
+                                        billData?.customFields.map((i) => {
+                                          if (i.field === item.settingName && !i.less) {
+                                            return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                          } else if(i.field === item.settingName && i.less){
+                                            return handleGroupNames(item.settingName).toFixed(2);
+                                          }
+                                          })
+                                          :billData?.partyType.toUpperCase() == "FARMER" &&
+                                          item.settingName?.includes('CUSTOM_FIELD')?
+                                          billData?.customFields.map((i) => {
+                                            if (i.field === item.settingName && !i.less) {
+                                              return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                            } else if(i.field === item.settingName && i.less){
+                                              return handleGroupNames(item.settingName).toFixed(2);
+                                            }
+                                            })
+                                          // ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          :billData?.partyType.toUpperCase() == "BUYER"?
+                                          '+'+handleGroupNames(item.settingName).toFixed(2)
+                                          :handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -1686,23 +1714,35 @@ const GroupTotals = (props) => {
                                 ) : (
                                   <span>
                                     {(
-                                      item.settingName.includes("CUSTOM_FIELD") ?
-                                        billData?.customFields.map(item => {
-                                          if (item.field == item.settingName && item.less) {
-                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
-                                          } else {
-                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
-                                          }
-                                        }) :
-                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      
+                                      billData?.partyType.toUpperCase() == "FARMER") &&
                                       item.settingName == "RETURN_COMMISSION" && !(billData?.less)
                                       ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
                                         "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
-                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
-                                        : billData?.partyType.toUpperCase() == "BUYER"
-                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
-                                          : handleGroupNames(item.settingName).toFixed(2)}
+                                        ?handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER" &&
+                                        item.settingName?.includes('CUSTOM_FIELD')?
+                                        billData?.customFields.map((i) => {
+                                          if (i.field === item.settingName && !i.less) {
+                                            return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                          } else if(i.field === item.settingName && i.less){
+                                            return handleGroupNames(item.settingName).toFixed(2);
+                                          }
+                                          })
+                                          :billData?.partyType.toUpperCase() == "FARMER" &&
+                                          item.settingName?.includes('CUSTOM_FIELD')?
+                                          billData?.customFields.map((i) => {
+                                            if (i.field === item.settingName && !i.less) {
+                                              return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                            } else if(i.field === item.settingName && i.less){
+                                              return handleGroupNames(item.settingName).toFixed(2);
+                                            }
+                                            })
+                                          // ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          :billData?.partyType.toUpperCase() == "BUYER"?
+                                          '+'+handleGroupNames(item.settingName).toFixed(2)
+                                          :handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -1968,23 +2008,35 @@ const GroupTotals = (props) => {
                                 ) : (
                                   <span>
                                     {(
-                                      item.settingName.includes("CUSTOM_FIELD") ?
-                                        billData?.customFields.map(item => {
-                                          if (item.field == item.settingName && item.less) {
-                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
-                                          } else {
-                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
-                                          }
-                                        }) :
-                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      
+                                      billData?.partyType.toUpperCase() == "FARMER") &&
                                       item.settingName == "RETURN_COMMISSION" && !(billData?.less)
                                       ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
                                         "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
-                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
-                                        : billData?.partyType.toUpperCase() == "BUYER"
-                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
-                                          : handleGroupNames(item.settingName).toFixed(2)}
+                                        ?handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER" &&
+                                        item.settingName?.includes('CUSTOM_FIELD')?
+                                        billData?.customFields.map((i) => {
+                                          if (i.field === item.settingName && !i.less) {
+                                            return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                          } else if(i.field === item.settingName && i.less){
+                                            return handleGroupNames(item.settingName).toFixed(2);
+                                          }
+                                          })
+                                          :billData?.partyType.toUpperCase() == "FARMER" &&
+                                          item.settingName?.includes('CUSTOM_FIELD')?
+                                          billData?.customFields.map((i) => {
+                                            if (i.field === item.settingName && !i.less) {
+                                              return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                            } else if(i.field === item.settingName && i.less){
+                                              return handleGroupNames(item.settingName).toFixed(2);
+                                            }
+                                            })
+                                          // ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          :billData?.partyType.toUpperCase() == "BUYER"?
+                                          '+'+handleGroupNames(item.settingName).toFixed(2)
+                                          :handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
@@ -2252,23 +2304,35 @@ const GroupTotals = (props) => {
                                 ) : (
                                   <span>
                                     {(
-                                      item.settingName.includes("CUSTOM_FIELD") ?
-                                        billData?.customFields.map(item => {
-                                          if (item.field == item.settingName && item.less) {
-                                            return '-' + handleGroupNames(item.settingName).toFixed(2)
-                                          } else {
-                                            return '+' + handleGroupNames(item.settingName).toFixed(2)
-                                          }
-                                        }) :
-                                        billData?.partyType.toUpperCase() == "FARMER") &&
+                                      
+                                      billData?.partyType.toUpperCase() == "FARMER") &&
                                       item.settingName == "RETURN_COMMISSION" && !(billData?.less)
                                       ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
                                         "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
-                                        ? " - " + handleGroupNames(item.settingName).toFixed(2)
-                                        : billData?.partyType.toUpperCase() == "BUYER"
-                                          ? " + " + handleGroupNames(item.settingName).toFixed(2)
-                                          : handleGroupNames(item.settingName).toFixed(2)}
+                                        ?handleGroupNames(item.settingName).toFixed(2)
+                                        : billData?.partyType.toUpperCase() == "BUYER" &&
+                                        item.settingName?.includes('CUSTOM_FIELD')?
+                                        billData?.customFields.map((i) => {
+                                          if (i.field === item.settingName && !i.less) {
+                                            return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                          } else if(i.field === item.settingName && i.less){
+                                            return handleGroupNames(item.settingName).toFixed(2);
+                                          }
+                                          })
+                                          :billData?.partyType.toUpperCase() == "FARMER" &&
+                                          item.settingName?.includes('CUSTOM_FIELD')?
+                                          billData?.customFields.map((i) => {
+                                            if (i.field === item.settingName && !i.less) {
+                                              return " + " + handleGroupNames(item.settingName).toFixed(2);
+                                            } else if(i.field === item.settingName && i.less){
+                                              return handleGroupNames(item.settingName).toFixed(2);
+                                            }
+                                            })
+                                          // ? " + " + handleGroupNames(item.settingName).toFixed(2)
+                                          :billData?.partyType.toUpperCase() == "BUYER"?
+                                          '+'+handleGroupNames(item.settingName).toFixed(2)
+                                          :handleGroupNames(item.settingName).toFixed(2)}
                                   </span>
                                 )}
                               </p>
