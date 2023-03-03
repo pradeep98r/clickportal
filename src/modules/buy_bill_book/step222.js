@@ -272,8 +272,8 @@ const Step22 = (props) => {
         ? props.slectedCrops
         : props.cropEditObject.lineItems
       : props.cropEditObject;
-      console.log(cropObjectArr,"arry")
-    
+    console.log(cropObjectArr, "arry");
+
     for (let i = cropObjectArr.length - 1; i >= 0; i--) {
       if (cropObjectArr[i].status === 0) {
         allDeletedCrops.push(cropObjectArr[i]);
@@ -441,8 +441,6 @@ const Step22 = (props) => {
           var index1 = lineitem.findIndex(
             (obj) => obj.cropId == cropInfo[index].cropId
           );
-            console.log(lineitem,"item")
-                
           if (index1 == index) {
             if (cropInfo[index1]?.cropDelete) {
               cropInfo[index].status = 0;
@@ -454,6 +452,17 @@ const Step22 = (props) => {
             // }
             else {
               cropInfo[index].status = 2;
+            }
+            var arr = [];
+            if(cropInfo[index1]?.bags != null){
+              if(cropInfo[index1]?.bags.length > 0){
+                cropInfo[index1].bags.map((item, i) => {
+                  let clonedObject = { ...cropInfo[index].bags[i] };
+                  Object.assign(clonedObject, { status: 2 });
+                  arr.push(clonedObject)
+                });
+                cropInfo[index].bags = [...arr];
+              }
             }
           } else {
             if (index1 != -1) {
@@ -493,19 +502,19 @@ const Step22 = (props) => {
         updatedItemList.length != 0
           ? updatedItemList.concat(allDeletedCrops)
           : cropInfo;
-        if(dArray?.length>0){
-          for (let i = 0; i < dArray.length; i++) {  
-            const bags = dArray[i].bags
-            let normBags=bags.map((item,index)=>{
-              let clonedObject = { ...bags[i] };
-              console.log(clonedObject,"item")
-              Object.assign(clonedObject,{status:2})
-            })
-            dArray[i].bags=normBags;
-        }
-        console.log(dArray,"arraud")
-        }
-          
+      // if (dArray?.length > 0) {
+      //   for (let i = 0; i < dArray.length; i++) {
+      //     const bags = dArray[i].bags;
+      //     console.log(bags);
+      //     let normBags = bags.map((item, index) => {
+      //       let clonedObject = { ...bags[i] };
+      //       console.log(clonedObject, "item");
+      //       Object.assign(clonedObject, { status: 2 });
+      //     });
+      //     console.log(normBags);
+      //     dArray[i].bags = normBags;
+      //   }
+      // }
     }
 
     if (h.length > 0) {
@@ -521,7 +530,7 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
-    console.log(cropData)
+    console.log(cropData);
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         const data = cropData[index];
@@ -622,10 +631,14 @@ const Step22 = (props) => {
       }
 
       for (var k = 0; k < cropData.length; k++) {
-        console.log(cropData)
+        console.log(cropData);
         if (Object.keys(cropData[k]).length != 0) {
-          console.log(cropData[k].cropName,typeof(cropData[k].cropName),'name')
-          if(cropData[k].cropName != ''){
+          console.log(
+            cropData[k].cropName,
+            typeof cropData[k].cropName,
+            "name"
+          );
+          if (cropData[k].cropName != "") {
             arrays.push(cropData[k]);
           }
         }
@@ -633,13 +646,18 @@ const Step22 = (props) => {
       if (arrays.length === cropData.length) {
         addStep3Modal();
         dispatch(selectSteps("step3"));
+
         props.parentcall(
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
         );
+        console.log(dArray)
       } else {
         for (var j = 0; j < cropData.length; j++) {
-          if (Object.keys(cropData[j]).length == 0 || cropData[j].cropName == '') {
+          if (
+            Object.keys(cropData[j]).length == 0 ||
+            cropData[j].cropName == ""
+          ) {
             toast.error("Please add crop", {
               toastId: "error6",
             });
@@ -1050,14 +1068,13 @@ const Step22 = (props) => {
         var countadded;
         if (onFocusCrop != null) {
           if (onFocusCrop.cropId == preferedCropsData[j].cropId) {
-            if(preferedCropsData[j].cropId == c[i].cropId){
+            if (preferedCropsData[j].cropId == c[i].cropId) {
               countadded = preferedCropsData[j].count;
-            }
-            else{
+            } else {
               countadded = preferedCropsData[j].count + 1;
             }
             var cActive = countadded == 0 ? false : true;
-            console.log(countadded,c[i], "focus not nuull same crop same pre");
+            console.log(countadded, c[i], "focus not nuull same crop same pre");
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1403,52 +1420,56 @@ const Step22 = (props) => {
                                   cropData[index].rateType ? (
                                     <td className="col-1">
                                       <div className="d-flex align-items-center justify-content-center">
-                                        <button onClick={() => {
+                                        <button
+                                          onClick={() => {
                                             handleCheckEvent(
                                               cropData,
                                               index,
                                               crop
                                             );
-                                          }}>
+                                          }}
+                                        >
                                           <div className="d-flex align-items-center justify-content-center">
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              billEditStatus
-                                                ? cropData[index].bags !== null &&
-                                                  cropData[index].bags.length > 0
-                                                  ? true
-                                                  : false
-                                                : cropData[index].checked
-                                            }
-                                            id="modal_checkbox"
-                                            value="my-value"
-                                            className="checkbox_t cursor_class"
-                                            onChange={() => {
-                                              handleCheckEvent(
-                                                cropData,
-                                                index,
-                                                crop
-                                              );
-                                            }}
-                                          />
-                                        <div>
-                                          {cropData[index].bags !== null &&
-                                          cropData[index].bags.length > 0 ? (
-                                            <span
-                                              className="unit-type my-0 cursor_class"
-                                              for="modal_checkbox"
-                                            >
-                                              Edit
-                                            </span>
-                                          ) : (
-                                            ""
-                                          )}{" "}
-                                        </div>
-                                        </div>
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                billEditStatus
+                                                  ? cropData[index].bags !==
+                                                      null &&
+                                                    cropData[index].bags
+                                                      .length > 0
+                                                    ? true
+                                                    : false
+                                                  : cropData[index].checked
+                                              }
+                                              id="modal_checkbox"
+                                              value="my-value"
+                                              className="checkbox_t cursor_class"
+                                              onChange={() => {
+                                                handleCheckEvent(
+                                                  cropData,
+                                                  index,
+                                                  crop
+                                                );
+                                              }}
+                                            />
+                                            <div>
+                                              {cropData[index].bags !== null &&
+                                              cropData[index].bags.length >
+                                                0 ? (
+                                                <span
+                                                  className="unit-type my-0 cursor_class"
+                                                  for="modal_checkbox"
+                                                >
+                                                  Edit
+                                                </span>
+                                              ) : (
+                                                ""
+                                              )}{" "}
+                                            </div>
+                                          </div>
                                         </button>
                                       </div>
-
                                     </td>
                                   ) : (
                                     <td className="col-1 fadeOut_col">-</td>
