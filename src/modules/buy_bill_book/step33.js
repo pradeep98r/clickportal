@@ -28,6 +28,7 @@ import {
   tableEditStatus,
   fromBillbook,
 } from "../../reducers/billEditItemSlice";
+import { getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
 
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
@@ -83,6 +84,7 @@ const Step33 = (props) => {
         ? props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
+
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -91,7 +93,7 @@ const Step33 = (props) => {
         cropArrays[c].qtyUnit.toLowerCase() == "pieces"
       ) {
         h.push(cropArrays[c]);
-      } else if (cropArrays[c].qtyUnit == "") {
+      } else if (cropArrays[c].qtyUnit == "" || cropArrays[c].status == 0) {
         h.push(cropArrays[c]);
       }
     }
@@ -132,6 +134,7 @@ const Step33 = (props) => {
 
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
+        console.log(response)
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "BUY") {
             if (filteredArray[i].formStatus === 1) {
@@ -174,7 +177,8 @@ const Step33 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          response = res.data.data;
+          console.log(res,"Res")
+          response=res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (
               response[i].type === "BILL" ||
@@ -340,7 +344,7 @@ const Step33 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -369,7 +373,7 @@ const Step33 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -398,7 +402,7 @@ const Step33 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -422,6 +426,7 @@ const Step33 = (props) => {
           //   break;
           case "CASH_PAID":
             var trVa = getSingleValues(billEditItem?.cashPaid, res[j].value);
+            console.log(trVa)
             getCashpaidValue(trVa);
             setcashPaidStatus(true);
             res[j] = { ...res[j], tableType: 1, value: trVa };
@@ -469,7 +474,7 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
-                value: trVa,
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
                 commentText: commentTextFor,
               };
             }
@@ -489,9 +494,11 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 3,
-                value: trVa,
-                totalVal: totalV,
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                totalVal:  totalV != 0 ? totalV.toFixed(2) : totalV,
                 commentText: commentTextFor,
+                subText:'Default Rs',
+                subText2:'Number of units'
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -510,9 +517,10 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 2,
-                value: trVa,
-                totalVal: totalV,
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                totalVal: totalV != 0 ? totalV.toFixed(2) : totalV,
                 commentText: commentTextFor,
+                subText:'Default Percentage %'
               };
             }
             break;
@@ -886,29 +894,29 @@ const Step33 = (props) => {
     }
   };
 
-  const handleInputValueEvent = (e) => {
-    $("input").keypress(function (e) {
-      var a = [];
-      var k = e.which;
-      if (e.charCode === 46) {
-        // if dot is the first symbol
-        if (e.target.value.length === 0) {
-          e.preventDefault();
-          return;
-        }
+  // const handleInputValueEvent = (e) => {
+  //   $("input").keypress(function (e) {
+  //     var a = [];
+  //     var k = e.which;
+  //     if (e.charCode === 46) {
+  //       // if dot is the first symbol
+  //       if (e.target.value.length === 0) {
+  //         e.preventDefault();
+  //         return;
+  //       }
 
-        // if there are dots already
-        if (e.target.value.indexOf(".") !== -1) {
-          e.preventDefault();
-          return;
-        }
+  //       // if there are dots already
+  //       if (e.target.value.indexOf(".") !== -1) {
+  //         e.preventDefault();
+  //         return;
+  //       }
 
-        a.push(e.charCode);
-      }
-      for (i = 48; i < 58; i++) a.push(i);
-      if (!($.inArray(k, a) >= 0)) e.preventDefault();
-    });
-  };
+  //       a.push(e.charCode);
+  //     }
+  //     for (i = 48; i < 58; i++) a.push(i);
+  //     if (!($.inArray(k, a) >= 0)) e.preventDefault();
+  //   });
+  // };
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
@@ -971,8 +979,9 @@ const Step33 = (props) => {
               i
             );
           } else {
+            console.log('normal field')
             tab.push({
-              comments: "string",
+              comments: groupLiist[i].commentText,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1035,9 +1044,12 @@ const Step33 = (props) => {
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
     // var val = e.target.value.replace(/[^0-9.]/g, "");
-    handleInputValueEvent(e);
+    // handleInputValueEvent(e);
     // if (val != 0) {
-    var val = e.target.value;
+    var val = e.target.value.replace(/[^0-9.]/g, '')
+                            .replace(/^(\d+\.\d{1}).*$/, '$1')
+                            .replace(/(\.\d{1})\d+/, '$1')
+                            .replace(/(\.\d*)\./, '$1');
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1051,8 +1063,9 @@ const Step33 = (props) => {
               i
             );
           } else {
+            console.log('return')
             tab.push({
-              comments: "string",
+              comments: groupLiist[i].commentText,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1092,7 +1105,7 @@ const Step33 = (props) => {
             tab[tabIndex].fee = Number(e.target.value);
           } else {
             tab.push({
-              comments: "string",
+              comments: groupLiist[i].commentText,
               fee: Number(e.target.value),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1155,9 +1168,9 @@ const Step33 = (props) => {
       }
     }
     if (groupLiist.settingName == "CASH_PAID") {
-      if (v != "") {
+      // if (v != "") {
         getCashpaidValue(v);
-      }
+      // }
     }
     if (groupLiist.settingName == "ADVANCES") {
       if (v != "") {
@@ -1252,7 +1265,9 @@ const Step33 = (props) => {
     setCommentFieldText(val);
   };
   const cstmCommentText = (groupLiist, index) => (e) => {
-    var val = e.target.value;
+    console.log('hii')
+     var regEx = /^[a-z][a-z\s]*$/;
+    var val = e.target.value.match(regEx);
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -1326,6 +1341,7 @@ const Step33 = (props) => {
                 ? allGroups.map((item, index) => {
                     if (item.tableType == 2) {
                       return (
+                        <div>
                         <CommissionCard
                           title={item.settingName}
                           rateTitle={item.subText}
@@ -1338,6 +1354,33 @@ const Step33 = (props) => {
                             index
                           )}
                         />
+                        {item?.comments ? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                       );
                     } else if (allGroups[index].tableType == 3) {
                       return tableChangeStatus ? (
@@ -1365,7 +1408,8 @@ const Step33 = (props) => {
                           </div>
                         </div>
                       ) : (
-                        <CommonCard
+                        <div>
+                          <CommonCard
                           title={allGroups[index].settingName}
                           rateTitle={allGroups[index].subText}
                           onChange={fieldOnchangeEvent(allGroups, index)}
@@ -1376,6 +1420,33 @@ const Step33 = (props) => {
                           units={totalUnits}
                           onChangeTotals={fieldOnchangeTotals(allGroups, index)}
                         />
+                        {item?.comments ? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        </div>
                       );
                     } else if (allGroups[index].tableType == 1) {
                       return (
@@ -1409,7 +1480,7 @@ const Step33 = (props) => {
                                 <div className="row">
                                   <div className="col-lg-3 title_bg">
                                     <h5 className="comm_card_title mb-0">
-                                      Comments
+                                      Commentsdd
                                     </h5>
                                   </div>
                                   <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1473,11 +1544,11 @@ const Step33 = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
+                <h6 className="black_color">{getCurrencyNumberWithOutSymbol(grossTotal)}</h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
-                <h6>{getTotalBillAmount()}</h6>
+                <h6>{getCurrencyNumberWithOutSymbol(getTotalBillAmount())}</h6>
               </div>
               {outBalformStatusvalue ? (
                 <div className="totals_value">
@@ -1485,8 +1556,8 @@ const Step33 = (props) => {
                   <h6>
                     {outBal != 0
                       ? editStatus
-                        ? billEditItem?.outStBal
-                        : outBal.toFixed(2)
+                        ? getCurrencyNumberWithOutSymbol(billEditItem?.outStBal)
+                        : getCurrencyNumberWithOutSymbol(outBal)
                       : "0"}
                   </h6>
                 </div>
@@ -1512,12 +1583,12 @@ const Step33 = (props) => {
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Final Ledger Balance (₹)</h5>
-                  <h6>{getFinalLedgerbalance().toFixed(2)}</h6>
+                  <h6>{getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}</h6>
                 </div>
               ) : (
                 <div className="totals_value">
                   <h5>Total Paybles (₹)</h5>
-                  <h6>{getTotalPayble().toFixed(2)}</h6>
+                  <h6>{getCurrencyNumberWithOutSymbol(getTotalPayble())}</h6>
                 </div>
               )}
             </div>
