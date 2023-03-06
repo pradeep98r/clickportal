@@ -193,7 +193,7 @@ const SellBillStep3 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          response = res.data.data;
+          response=res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
               if (response[i].status === 1) {

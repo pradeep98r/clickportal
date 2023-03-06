@@ -84,6 +84,7 @@ const Step33 = (props) => {
         ? props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
+
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -176,7 +177,8 @@ const Step33 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          response = res.data.data;
+          console.log(res,"Res")
+          response=res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (
               response[i].type === "BILL" ||
@@ -836,11 +838,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {
