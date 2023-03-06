@@ -92,7 +92,7 @@ const Step33 = (props) => {
         cropArrays[c].qtyUnit.toLowerCase() == "pieces"
       ) {
         h.push(cropArrays[c]);
-      } else if (cropArrays[c].qtyUnit == "") {
+      } else if (cropArrays[c].qtyUnit == "" || cropArrays[c].status == 0) {
         h.push(cropArrays[c]);
       }
     }
@@ -528,7 +528,6 @@ const Step33 = (props) => {
         return { ...res[j] };
       }
     });
-    console.log(updatedItem)
     setAllGroups(updatedItem);
 
     // return type;
@@ -978,8 +977,9 @@ const Step33 = (props) => {
               i
             );
           } else {
+            console.log('normal field')
             tab.push({
-              comments: "string",
+              comments: groupLiist[i].commentText,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1045,6 +1045,7 @@ const Step33 = (props) => {
     handleInputValueEvent(e);
     // if (val != 0) {
     var val = e.target.value;
+    console.log('ret coomm')
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1058,8 +1059,9 @@ const Step33 = (props) => {
               i
             );
           } else {
+            console.log('return')
             tab.push({
-              comments: "string",
+              comments: groupLiist[i].commentText,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1099,7 +1101,7 @@ const Step33 = (props) => {
             tab[tabIndex].fee = Number(e.target.value);
           } else {
             tab.push({
-              comments: "string",
+              comments: groupLiist[i].commentText,
               fee: Number(e.target.value),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -1259,7 +1261,9 @@ const Step33 = (props) => {
     setCommentFieldText(val);
   };
   const cstmCommentText = (groupLiist, index) => (e) => {
-    var val = e.target.value;
+    console.log('hii')
+     var regEx = /^[a-z][a-z\s]*$/;
+    var val = e.target.value.match(regEx);
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -1472,7 +1476,7 @@ const Step33 = (props) => {
                                 <div className="row">
                                   <div className="col-lg-3 title_bg">
                                     <h5 className="comm_card_title mb-0">
-                                      Comments
+                                      Commentsdd
                                     </h5>
                                   </div>
                                   <div className="col-lg-9 col-sm-12 col_left_border">

@@ -111,6 +111,7 @@ const Step22 = (props) => {
     });
     cropResponseData([...updatedItem3]);
     console.log(c[i]);
+    Object.assign(c[i], { status: 0, cropDelete: true });
     setOnFocusCrop(c[i]);
   };
   const fetchCropData = () => {
@@ -416,8 +417,7 @@ const Step22 = (props) => {
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
-
-    console.log(cropInfo, "all crrops");
+    console.log(cropInfo, allDeletedCrops, "all crops with deleted edit");
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
         if (cropInfo[k].rateType == "kgs") {
@@ -452,6 +452,7 @@ const Step22 = (props) => {
             //   cropInfo[index].status = 1;
             // }
             else {
+              console.log("not deleted status 2");
               cropInfo[index].status = 2;
             }
           } else {
@@ -464,6 +465,7 @@ const Step22 = (props) => {
                 //   cropInfo[index].status = 1;
                 // }
                 else {
+                  console.log("status2");
                   cropInfo[index].status = 2;
                 }
               } else {
@@ -488,11 +490,9 @@ const Step22 = (props) => {
       }
     });
     if (billEditStatus) {
-      dArray =
-        updatedItemList.length != 0
-          ? updatedItemList.concat(allDeletedCrops)
-          : cropInfo;
+      dArray = updatedItemList.length != 0 ? updatedItemList : cropInfo;
     }
+    console.log(dArray, cropInfo, updatedItemList);
 
     if (h.length > 0) {
       var h1 = h.map((item, index) => {
@@ -507,7 +507,6 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
-    console.log(cropData);
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         const data = cropData[index];
@@ -610,7 +609,6 @@ const Step22 = (props) => {
       for (var k = 0; k < cropData.length; k++) {
         console.log(cropData);
         if (Object.keys(cropData[k]).length != 0) {
-        
           if (cropData[k].cropName != "") {
             arrays.push(cropData[k]);
           }
@@ -620,7 +618,7 @@ const Step22 = (props) => {
         }
       }
       if (arrays.length === cropData.length) {
-        console.log(dArray);
+        console.log(allDeletedCrops, dArray, cropData,"after length");
         addStep3Modal();
         dispatch(selectSteps("step3"));
         props.parentcall(
@@ -699,12 +697,13 @@ const Step22 = (props) => {
     let updatedItemListRateType = cropData.map((item, i) => {
       if (i == index) {
         arr1.push({ ...cropData[i], rateType: e.target.value });
-        return { ...cropData[i], rateType: e.target.value };
+        return { ...cropData[i], rateType: e.target.value, weight: 0 };
       } else {
         cropResponseData([...cropData]);
         return { ...cropData[i] };
       }
     });
+    console.log(updatedItemListRateType);
     cropResponseData([...updatedItemListRateType]);
     setUpdatedItemList([...updatedItemListRateType]);
   };
@@ -762,7 +761,7 @@ const Step22 = (props) => {
       var val = e.target.value.replace(/\D/g, "");
     }
     // var val = e.target.value.replace(/[^0-9.]/g, "");
-    
+
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], wastage: val };
@@ -771,7 +770,7 @@ const Step22 = (props) => {
         return { ...cropitem[i] };
       }
     });
-    console.log(updatedItem2)
+    console.log(updatedItem2);
     cropResponseData([...updatedItem2]);
     setwastageValue(val);
     setUpdatedItemList([...updatedItem2]);
@@ -793,6 +792,7 @@ const Step22 = (props) => {
     setrateValue(val);
     setCropId(id);
     setUpdatedItemList([...updatedItem3]);
+    console.log(allDeletedCrops,updatedItem3);
     if (billEditStatus) {
       // props.slectedCropstableArray.lineItems = updatedItem3;
     }
@@ -1012,6 +1012,9 @@ const Step22 = (props) => {
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
         setSelectedCropItem(crop);
+
+        setcropDeletedList([...cropDeletedList, onFocusCrop]);
+        cropDeletedList.push(onFocusCrop);
         return {
           ...c[j],
           cropName: crop.cropName,
@@ -1056,7 +1059,7 @@ const Step22 = (props) => {
             };
           } else {
             countadded = preferedCropsData[j].count + 1;
-           
+
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1075,22 +1078,21 @@ const Step22 = (props) => {
         var countadded;
         if (onFocusCrop != null) {
           if (onFocusCrop.cropId == preferedCropsData[j].cropId) {
-            console.log(preferedCropsData[j].cropId,c[i].cropId)
+            console.log(preferedCropsData[j].cropId, c[i].cropId);
             if (preferedCropsData[j].cropId == c[i].cropId) {
-              
               countadded =
-              preferedCropsData[j].count != 0
-                ? preferedCropsData[j].count - 1
-                : preferedCropsData[j].count;
-              console.log(countadded,'appu if')
+                preferedCropsData[j].count != 0
+                  ? preferedCropsData[j].count - 1
+                  : preferedCropsData[j].count;
+              console.log(countadded, "appu if");
             } else {
               countadded = preferedCropsData[j].count;
-                console.log(countadded,'appu else')
+              console.log(countadded, "appu else");
             }
-            
+
             var cActive = countadded == 0 ? false : true;
             var cSelect = countadded == 0 ? false : true;
-            
+
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1114,9 +1116,13 @@ const Step22 = (props) => {
     }
     setAddCropStatus(false);
     cropResponseData([...updatedItem3]);
-    setUpdatedItemList([...updatedItem3]);
+    setUpdatedItemList([...updatedItem3, ...cropDeletedList]);
     console.log(updatedItem4, updatedItem3);
     setPreferedCropsData([...updatedItem4]);
+    if (cropDeletedList?.length > 0) {
+      console.log(onFocusCrop, cropDeletedList);
+      setAllDeletedCrops(cropDeletedList);
+    }
   };
 
   return (

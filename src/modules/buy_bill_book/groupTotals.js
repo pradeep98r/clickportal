@@ -830,7 +830,7 @@ const GroupTotals = (props) => {
                 })}
               <div className="row group-one-total">
                 <div className="pl-0 col-lg-8 pr-0"></div>
-                <div className="col-lg-4">
+                <div className="col-lg-4 p-0">
                   <p className="groups_value">
                     {allGroupsTotal === 0 || null
                       ? ""
@@ -1164,7 +1164,7 @@ const GroupTotals = (props) => {
                                 )}
                               </p>
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3 p-0">
                               {/* <div className="d-flex"> */}
                               <p className="groups_values">
                                 {handleGroupNames(
@@ -1221,7 +1221,7 @@ const GroupTotals = (props) => {
                 ) : (
                   <div className="row group-one-total">
                     <div className="pl-0 col-lg-7 pr-0"></div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 p-0">
                       <p className="groups_values">
                         {groupOneTotal === 0 || null
                           ? ""
@@ -1447,7 +1447,7 @@ const GroupTotals = (props) => {
                                 )}
                               </p>
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3 p-0">
                               <p className="groups_values">
                                 {handleGroupNames(
                                   handleSettingName(item.settingName, item)
@@ -1502,7 +1502,7 @@ const GroupTotals = (props) => {
                 ) : (
                   <div className="row group-one-total">
                     <div className="pl-0 col-lg-7 pr-0"></div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 p-0">
                       <p className="groups_values">
                         {groupTwoTotal === 0 || null
                           ? ""
@@ -1729,7 +1729,7 @@ const GroupTotals = (props) => {
                                 )}
                               </p>
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3 p-0">
                               <p className="groups_values">
                                 {handleGroupNames(
                                   handleSettingName(item.settingName, item)
@@ -1791,7 +1791,7 @@ const GroupTotals = (props) => {
                 ) : (
                   <div className="row group-one-total">
                     <div className="pl-0 col-lg-7 pr-0"></div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 p-0">
                       <p className="groups_values">
                         {groupThreeTotal === 0 || null
                           ? ""
@@ -2013,7 +2013,7 @@ const GroupTotals = (props) => {
                                 )}
                               </p>
                             </div>
-                            <div className="col-lg-3">
+                            <div className="col-lg-3 p-0">
                               <p className="groups_values">
                                 {handleGroupNames(
                                   handleSettingName(item.settingName, item)
