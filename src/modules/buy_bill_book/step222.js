@@ -24,6 +24,7 @@ import {
 import { selectTrans } from "../../reducers/transSlice";
 import $ from "jquery";
 import Select from "react-select";
+import { getUnitVal } from "../../components/getText";
 var array = [];
 const colourStyles = {
   menuList: (styles) => ({
@@ -57,6 +58,8 @@ const colourStyles = {
 const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const dispatch = useDispatch();
+  const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
+  console.log(settingsData);
   const transusers = useSelector((state) => state.transInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billEditStatus = billEditItemInfo?.billEditStatus;
@@ -96,7 +99,6 @@ const Step22 = (props) => {
     setAddCropsIndex(i);
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
-        console.log(c[j]);
         return {
           ...c[j],
           cropActive: false,
@@ -110,13 +112,28 @@ const Step22 = (props) => {
       }
     });
     cropResponseData([...updatedItem3]);
-    console.log(c[i]);
+    Object.assign(c[i], { status: 0, cropDelete: true });
     setOnFocusCrop(c[i]);
   };
   const fetchCropData = () => {
     getAllCrops().then((response) => {
       response.data.data.map((item) => {
-        Object.assign(item, { cropSelect: "" });
+        var cIndex;
+        var qSetting = settingsData.qtySetting;
+        if (qSetting.length != 0) {
+          cIndex = qSetting.findIndex((obj) => obj.cropId == item.cropId);
+         
+        }
+        Object.assign(item, {
+          cropSelect: "",
+          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
+          rateType:
+            defaultUnitTypeVal == "unit_kg"
+              ? "kgs"
+              : cIndex != -1
+              ? getUnitVal(qSetting, cIndex)
+              : "crates",
+        });
       });
       setCropsData(response.data.data);
       setAllData(response.data.data);
@@ -157,19 +174,48 @@ const Step22 = (props) => {
   //   click on particular crop function
   var newArray = [];
   const cropOnclick = (crop, id, index2, preferedCrops) => {
+    var i;
+    var qSetting = settingsData.qtySetting;
+    if (qSetting.length != 0) {
+      i = qSetting.findIndex((obj) => obj.cropId == crop.cropId);
+      if (i != -1) {
+        if (qSetting[i].qtyUnit.toLowerCase() == "kgs") {
+          qSetting[i].qtyUnit = "kgs";
+        } else if (qSetting[i].qtyUnit.toLowerCase() == "boxes") {
+          qSetting[i].qtyUnit = "Boxes";
+        } else if (qSetting[i].qtyUnit.toLowerCase() == "bags") {
+          qSetting[i].qtyUnit = "Bags";
+        } else if (qSetting[i].qtyUnit.toLowerCase() == "sacs") {
+          qSetting[i].qtyUnit = "Sacs";
+        } else if (qSetting[i].qtyUnit.toLowerCase() == "loads") {
+          qSetting[i].qtyUnit = "loads";
+        } else if (qSetting[i].qtyUnit.toLowerCase() == "pieces") {
+          qSetting[i].qtyUnit = "pieces";
+        } else if (qSetting[i].qtyUnit.toLowerCase() == "crates") {
+          qSetting[i].qtyUnit = "Crates";
+        }
+      }
+    }
     if (billEditStatus) {
       Object.assign(
         crop,
         { id: 0 },
         { wastage: 0 },
         { qty: 0 },
-        { rateType: "kgs" },
+        {
+          rateType:
+            defaultUnitTypeVal == "unit_kg"
+              ? "kgs"
+              : i != -1
+              ? qSetting[i].qtyUnit
+              : "Crates",
+        },
         { weight: 0 },
         { rate: 0 },
         { total: 0 },
         { bags: [] },
         { status: 1 },
-        { qtyUnit: "Crates" },
+        { qtyUnit: i != -1 ? qSetting[i].qtyUnit : "Crates" },
         { activeSearch: false },
         { displayStat: false },
         { cropDelete: false }
@@ -181,18 +227,26 @@ const Step22 = (props) => {
         crop,
         { wastage: 0 },
         { qty: 0 },
-        { rateType: "kgs" },
+        {
+          rateType:
+            defaultUnitTypeVal == "unit_kg"
+              ? "kgs"
+              : i != -1
+              ? qSetting[i].qtyUnit
+              : "Crates",
+        },
         { weight: 0 },
         { rate: 0 },
         { total: 0 },
         { bags: [] },
         { status: 1 },
-        { qtyUnit: "Crates" },
+        { qtyUnit: i != -1 ? qSetting[i].qtyUnit : "Crates" },
         { activeSearch: false },
         { displayStat: false },
         { cropDelete: false }
       );
     }
+
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
     setUpdatedItemList([...updatedItemList, ...newArray]);
@@ -263,8 +317,34 @@ const Step22 = (props) => {
       });
   };
   //   to get crop data oon refresh
+  const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
   useEffect(() => {
     fetchCropData();
+    var k = settingsData.billSetting.findIndex(
+      (obj) => obj.settingName === "DEFAULT_RATE_TYPE"
+    );
+    console.log(users)
+    // for (var i = 0; i < settingsData.billSetting.length; i++) {
+      if (settingsData.billSetting[k].billType == "BUY") {
+        if (k != -1) {
+          if (settingsData.billSetting[k].value == 0) {
+            setDefaultUnitTypeVal("unit_kg");
+          } else {
+            setDefaultUnitTypeVal("unit_other");
+          }
+        }
+      } 
+       if (settingsData.billSetting[k].billType == "SELL") {
+        console.log('sell')
+        if (k != -1) {
+          if (settingsData.billSetting[k].value == 0) {
+            setDefaultUnitTypeVal("unit_kg");
+          } else {
+            setDefaultUnitTypeVal("unit_other");
+          }
+        }
+      }
+    // }
     dispatch(cropEditStatus(billEditStatus ? true : false));
 
     cropObjectArr = billEditStatus
@@ -272,7 +352,6 @@ const Step22 = (props) => {
         ? props.slectedCrops
         : props.cropEditObject.lineItems
       : props.cropEditObject;
-    console.log(cropObjectArr, "arry");
 
     for (let i = cropObjectArr.length - 1; i >= 0; i--) {
       if (cropObjectArr[i].status === 0) {
@@ -337,15 +416,21 @@ const Step22 = (props) => {
         }
       }
     }
-  }, []);
+  }, [props]);
 
   var arr = [];
   //   getting selected crops from crops popup
   const cropDataFunction = (childData, status) => {
     if (status === true) {
       var list = preferedCropsData;
+
       childData.map((i, ind) => {
         var index = list.findIndex((obj) => obj.cropId == i.cropId);
+        var cIndex;
+        var qSetting = settingsData.qtySetting;
+        if (qSetting.length != 0) {
+          cIndex = qSetting.findIndex((obj) => obj.cropId == i.cropId);
+        }
         if (index != -1) {
           Object.assign(
             i,
@@ -353,11 +438,18 @@ const Step22 = (props) => {
             { cropSelect: "active" },
             { wastage: 0 },
             { qty: 0 },
-            { rateType: "kgs" },
+            {
+              rateType:
+                defaultUnitTypeVal == "unit_kg"
+                  ? "kgs"
+                  : cIndex != -1
+                  ? getUnitVal(qSetting, cIndex)
+                  : "Crates",
+            },
             { weight: 0 },
             { rate: 0 },
             { total: 0 },
-            { qtyUnit: "crates" },
+            { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates" },
             { checked: false },
             { bags: [] },
             { status: 1 },
@@ -372,7 +464,14 @@ const Step22 = (props) => {
           Object.assign(
             list[index],
             { cropActive: true },
-            { qtyUnit: "crates" },
+            {
+              rateType:
+                defaultUnitTypeVal == "unit_kg"
+                  ? "kgs"
+                  : cIndex != -1
+                  ? getUnitVal(qSetting, cIndex)
+                  : "Crates",
+            },
             { addInv: false },
             { status: 1 },
             { cropDelete: false }
@@ -386,11 +485,18 @@ const Step22 = (props) => {
             { cropSelect: "active" },
             { wastage: 0 },
             { qty: 0 },
-            { rateType: "kgs" },
+            {
+              rateType:
+                defaultUnitTypeVal == "unit_kg"
+                  ? "kgs"
+                  : cIndex != -1
+                  ? getUnitVal(qSetting, cIndex)
+                  : "Crates",
+            },
             { weight: 0 },
             { rate: 0 },
             { total: 0 },
-            { qtyUnit: "crates" },
+            { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates" },
             { checked: false },
             { bags: [] },
             { status: 1 },
@@ -401,6 +507,7 @@ const Step22 = (props) => {
           setPreferedCropsData([...preferedCropsData, ...arr]);
           cropData.push(i);
           cropResponseData([...cropData]);
+          setUpdatedItemList([...cropData]);
         }
       });
     } else {
@@ -416,8 +523,6 @@ const Step22 = (props) => {
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
-
-    console.log(cropInfo, "all crrops");
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
         if (cropInfo[k].rateType == "kgs") {
@@ -454,12 +559,12 @@ const Step22 = (props) => {
               cropInfo[index].status = 2;
             }
             var arr = [];
-            if(cropInfo[index1]?.bags != null){
-              if(cropInfo[index1]?.bags.length > 0){
+            if (cropInfo[index1]?.bags != null) {
+              if (cropInfo[index1]?.bags.length > 0) {
                 cropInfo[index1].bags.map((item, i) => {
                   let clonedObject = { ...cropInfo[index].bags[i] };
                   Object.assign(clonedObject, { status: 2 });
-                  arr.push(clonedObject)
+                  arr.push(clonedObject);
                 });
                 cropInfo[index].bags = [...arr];
               }
@@ -516,6 +621,7 @@ const Step22 = (props) => {
       //   }
       // }
     }
+    console.log(dArray, cropInfo, updatedItemList);
 
     if (h.length > 0) {
       var h1 = h.map((item, index) => {
@@ -530,7 +636,6 @@ const Step22 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const step2Next = () => {
-    console.log(cropData);
     if (cropData.length > 0) {
       for (var index = 0; index < cropData.length; index++) {
         const data = cropData[index];
@@ -631,15 +736,12 @@ const Step22 = (props) => {
       }
 
       for (var k = 0; k < cropData.length; k++) {
-        console.log(cropData);
         if (Object.keys(cropData[k]).length != 0) {
-          console.log(
-            cropData[k].cropName,
-            typeof cropData[k].cropName,
-            "name"
-          );
           if (cropData[k].cropName != "") {
             arrays.push(cropData[k]);
+          }
+          if (cropData[k].wastage == "") {
+            cropData[k].wastage = 0;
           }
         }
       }
@@ -651,7 +753,6 @@ const Step22 = (props) => {
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
         );
-        console.log(dArray)
       } else {
         for (var j = 0; j < cropData.length; j++) {
           if (
@@ -724,7 +825,7 @@ const Step22 = (props) => {
     let updatedItemListRateType = cropData.map((item, i) => {
       if (i == index) {
         arr1.push({ ...cropData[i], rateType: e.target.value });
-        return { ...cropData[i], rateType: e.target.value };
+        return { ...cropData[i], rateType: e.target.value, weight: 0 };
       } else {
         cropResponseData([...cropData]);
         return { ...cropData[i] };
@@ -787,6 +888,7 @@ const Step22 = (props) => {
       var val = e.target.value.replace(/\D/g, "");
     }
     // var val = e.target.value.replace(/[^0-9.]/g, "");
+
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], wastage: val };
@@ -823,7 +925,6 @@ const Step22 = (props) => {
 
   //   clone crop (copy crop) function
   const cloneCrop = (crop, cropsData, k) => {
-    console.log(k, "k index");
     if (billEditStatus) {
       var list = preferedCropsData;
       var index = list.findIndex((obj) => obj.cropId == crop.cropId);
@@ -861,7 +962,6 @@ const Step22 = (props) => {
   // var cropDeletedList = [];
   const [cropDeletedList, setcropDeletedList] = useState([]);
   const deleteCrop = (crop, cropArray, indexVal) => {
-    console.log(indexVal, "val");
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
     // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
@@ -870,7 +970,6 @@ const Step22 = (props) => {
     if (index != -1) {
       let data = cropArray.map((item, i) => {
         if (Object.keys(cropArray[i]).length != 0) {
-          console.log("if", cropArray[i]);
           if (i == indexVal) {
             if (billEditStatus) {
               return Object.assign(cropArray[i], {
@@ -899,7 +998,6 @@ const Step22 = (props) => {
       // cropArray[index].cropDelete = true;
       if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
         if (Object.keys(cropArray[index]).length != 0) {
-          console.log("hey", cropArray[index]);
           setcropDeletedList([...cropDeletedList, cropArray[index]]);
           cropDeletedList.push(cropArray[index]);
         }
@@ -910,7 +1008,6 @@ const Step22 = (props) => {
         list[index1].count -= 1;
         if (list[index1].count == 0) {
           if (billEditStatus) {
-            console.log("yes if1", list[index1]);
             // list.splice(index1, 1);
           } else {
             getPreferredCrops(clickId, clientId, clientSecret)
@@ -931,7 +1028,6 @@ const Step22 = (props) => {
                 for (var k = 0; k < list.length; k++) {
                   for (var t = 0; t < arrylist.length; t++) {
                     if (list[k].cropId == arrylist[t].cropId) {
-                      console.log("here raa babu", list, arrylist);
                       list.splice(index1, t);
                     } else {
                       console.log("samecrop ");
@@ -954,7 +1050,6 @@ const Step22 = (props) => {
     }
     // }
 
-    console.log(cropDeletedList, cropArray, "list");
     setUpdatedItemList([...cropArray, ...cropDeletedList]);
     cropResponseData([...cropArray]);
     // cropResponseData([...cropArray]);
@@ -988,6 +1083,7 @@ const Step22 = (props) => {
       setEditBagsStatus(true);
     }
   };
+
   //   gettinng inndividual bags data
   const callbackFunction = (childData, invArr) => {
     let updatedItems = cropData.map((item, i) => {
@@ -1022,7 +1118,6 @@ const Step22 = (props) => {
     setActiveSearch(true);
     var crpObject = {};
     cropArraynew.push(crpObject);
-    console.log(cropArraynew, cropData);
     cropResponseData([...cropData, ...cropArraynew]);
   };
 
@@ -1038,7 +1133,13 @@ const Step22 = (props) => {
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
         setSelectedCropItem(crop);
-        console.log(c[j], "if");
+        setcropDeletedList([...cropDeletedList, onFocusCrop]);
+        cropDeletedList.push(onFocusCrop);
+        var cIndex;
+        var qSetting = settingsData.qtySetting;
+        if (qSetting.length != 0) {
+          cIndex = qSetting.findIndex((obj) => obj.cropId == c[j].cropId);
+        }
         return {
           ...c[j],
           cropName: crop.cropName,
@@ -1052,7 +1153,7 @@ const Step22 = (props) => {
           rateType: "kgs",
           rate: 0,
           total: 0,
-          qtyUnit: "crates",
+          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates",
           checked: false,
           bags: [],
           count: 1,
@@ -1060,12 +1161,10 @@ const Step22 = (props) => {
           activeSearch: true,
         };
       } else {
-        console.log(c, c[j], "else");
         cropResponseData([...c]);
         return { ...c[j] };
       }
     });
-
     let updatedItem4 = preferedCropsData.map((item, j) => {
       if (item.cropId == crop.cropId) {
         var countadded;
@@ -1077,7 +1176,6 @@ const Step22 = (props) => {
               countadded = preferedCropsData[j].count + 1;
             }
             var cActive = countadded == 0 ? false : true;
-            console.log(countadded, c[i], "focus not nuull same crop same pre");
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1085,11 +1183,7 @@ const Step22 = (props) => {
             };
           } else {
             countadded = preferedCropsData[j].count + 1;
-            console.log(
-              countadded,
-              preferedCropsData[j].count,
-              "focus not nuull same crop if not pref"
-            );
+
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1108,17 +1202,18 @@ const Step22 = (props) => {
         var countadded;
         if (onFocusCrop != null) {
           if (onFocusCrop.cropId == preferedCropsData[j].cropId) {
-            countadded =
-              preferedCropsData[j].count != 0
-                ? preferedCropsData[j].count - 1
-                : preferedCropsData[j].count;
+            if (preferedCropsData[j].cropId == c[i].cropId) {
+              countadded =
+                preferedCropsData[j].count != 0
+                  ? preferedCropsData[j].count - 1
+                  : preferedCropsData[j].count;
+            } else {
+              countadded = preferedCropsData[j].count;
+            }
+
             var cActive = countadded == 0 ? false : true;
             var cSelect = countadded == 0 ? false : true;
-            console.log(
-              countadded,
-              preferedCropsData[j],
-              "focus not nuull different crop"
-            );
+
             return {
               ...preferedCropsData[j],
               count: countadded,
@@ -1126,11 +1221,9 @@ const Step22 = (props) => {
               cropSelect: cSelect,
             };
           } else {
-            console.log("elseeee");
             return { ...preferedCropsData[j] };
           }
         } else {
-          console.log(countadded, "focus nuull different crop");
           return { ...preferedCropsData[j] };
         }
       }
@@ -1144,9 +1237,11 @@ const Step22 = (props) => {
     }
     setAddCropStatus(false);
     cropResponseData([...updatedItem3]);
-    setUpdatedItemList([...updatedItem3]);
-    console.log(updatedItem4, updatedItem3);
+    setUpdatedItemList([...updatedItem3, ...cropDeletedList]);
     setPreferedCropsData([...updatedItem4]);
+    if (cropDeletedList?.length > 0) {
+      setAllDeletedCrops(cropDeletedList);
+    }
   };
 
   return (
@@ -1206,7 +1301,7 @@ const Step22 = (props) => {
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
                 <div className="crop_table" id="scroll_style">
-                  <div className="row header_row p-0 crop_table_header_row">
+                  <div className="row header_row p-0 crop_table_header_row m-0">
                     <div className="col-lg-2">
                       <p>Crop</p>
                     </div>

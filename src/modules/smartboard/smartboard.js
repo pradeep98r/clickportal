@@ -710,7 +710,7 @@ const SmartBoard = () => {
                                   </h4>
                                   {/* <div className="card default_card"> */}
                                   <div className="row">
-                                    <div className="col-lg-6 pl-0 col_left_border">
+                                    <div className="col-lg-6 p-0">
                                       <div className="card default_card all_smartboard_cards">
                                         <div class="card-body d-flex align-items-center justify-content-center">
                                           <div className="d-flex align-items-center justify-content-between">
@@ -914,6 +914,7 @@ const SmartBoard = () => {
                                   </div>
                                 </div>
                                 <div className="row margin_bottom">
+                                
                                   <div className="col-md-6 col_left pr-0">
                                     <div className="card default_card empty_card1 all_smartboard_cards">
                                       <div class="card-body d-flex align-items-center justify-content-center">
@@ -933,21 +934,20 @@ const SmartBoard = () => {
                                                 {cropSalesData.map(
                                                   (sellCrop, index) => {
                                                     return (
-                                                    <div className="col-lg-2 p-0">
-                                                            <div
-                                                        className=""
+                                                      <div
+                                                        className="col-lg-2 p-0"
                                                         key={index}
                                                       >
                                                         <div
                                                           className={
                                                             "crop_div cropSec" +
                                                             (cropItem ==
-                                                            sellCrop
+                                                              sellCrop
                                                               ? " active"
                                                               : "")
                                                           }
                                                           onClick={() =>
-                                                            cropOnclick(
+                                                            buyCropOnclick(
                                                               sellCrop
                                                             )
                                                           }
@@ -973,7 +973,6 @@ const SmartBoard = () => {
                                                           </p>
                                                         </div>
                                                       </div>
-                                                    </div>
                                                     );
                                                   }
                                                 )}
@@ -986,7 +985,7 @@ const SmartBoard = () => {
                                                       <h5 className="text-center">
                                                         {" "}
                                                         {
-                                                          langFullData.totalSales
+                                                          langFullData.totalPurchases
                                                         }{" "}
                                                       </h5>
                                                       <h6 className="text-center mb-0">
@@ -1006,30 +1005,29 @@ const SmartBoard = () => {
                                                           langFullData.totalQuantity
                                                         }{" "}
                                                       </h5>
-                                                      <h6 className="text-center">
-                                                        {(cropItem.totalQty == 0
+                                                      <h6 className="text-center mb-0">
+                                                        {cropItem.totalQty ==
+                                                        0
                                                           ? ""
                                                           : cropItem.totalQty.toLocaleString(
-                                                              undefined,
+                                                              "en-IN",
                                                               {
-                                                                minimumFractionDigits: 1,
                                                                 maximumFractionDigits: 2,
+                                                                currency: "INR",
                                                               }
-                                                            )) +
-                                                          (cropItem.totalWeight
-                                                            ? (cropItem.totalQty ==
-                                                              0
-                                                                ? ""
-                                                                : " | ") +
+                                                            ) +
+                                                            (cropItem.totalWeight
+                                                              ? " | " +
                                                               cropItem.totalWeight.toLocaleString(
-                                                                undefined,
-                                                                {
-                                                                  minimumFractionDigits: 1,
-                                                                  maximumFractionDigits: 2,
-                                                                }
-                                                              ) +
-                                                              langFullData.kgs
-                                                            : "")}
+                                                                  "en-IN",
+                                                                  {
+                                                                    maximumFractionDigits: 2,
+                                                                    currency:
+                                                                      "INR",
+                                                                  }
+                                                                ) +
+                                                                " KGS"
+                                                              : "")}
                                                       </h6>
                                                     </div>
                                                   </div>

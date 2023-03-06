@@ -30,6 +30,7 @@ import {
   fromBillbook,
   tableEditStatus,
 } from "../../reducers/billEditItemSlice";
+import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 const SellBillStep3 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -354,7 +355,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -380,7 +381,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -406,7 +407,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -476,7 +477,7 @@ const SellBillStep3 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
-                value: trVa,
+                value: trVa.toFixed(2),
                 fieldType: 'SIMPlE',
                 commentText: commentTextFor
               };
@@ -498,9 +499,11 @@ const SellBillStep3 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 3,
-                value: trVa,
-                totalVal: totalV,
-                commentText: commentTextFor
+                value: trVa.toFixed(2),
+                totalVal: totalV.toFixed(2),
+                commentText: commentTextFor,
+                subText:'Default Rs',
+                subText2:'Number of units'
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -520,9 +523,10 @@ const SellBillStep3 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 2,
-                value: trVa,
-                totalVal: totalV,
-                commentText: commentTextFor
+                value: trVa.toFixed(2),
+                totalVal: totalV.toFixed(2),
+                commentText: commentTextFor,
+                subText:'Default Percentage %'
               };
             }
             break;
@@ -1146,9 +1150,9 @@ const SellBillStep3 = (props) => {
       }
     }
     if (groupLiist.settingName == "CASH_RECEIVED") {
-      if (v != "") {
+     
         getCashRcvdValue(v);
-      }
+      
     }
     if (groupLiist.settingName == "ADVANCES") {
       if (v != "") {
@@ -1299,7 +1303,8 @@ const SellBillStep3 = (props) => {
                 ? allGroups.map((item, index) => {
                   if (item.tableType == 2) {
                     return (
-                      <CommissionCard
+                      <div>
+                        <CommissionCard
                         title={item.settingName}
                         rateTitle={item.subText}
                         onChange={commRetCommOnchangeEvent(allGroups, index)}
@@ -1311,9 +1316,37 @@ const SellBillStep3 = (props) => {
                           index
                         )}
                       />
+                        {item?.comments? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                     );
                   } else if (allGroups[index].tableType == 3) {
                     return tableChangeStatus ? (
+                      <div>
                       <div className="comm_cards">
                         <div className="card input_card">
                           <div className="row">
@@ -1337,6 +1370,33 @@ const SellBillStep3 = (props) => {
                           </div>
                         </div>
                       </div>
+                         {item?.comments? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        </div>
                     ) : (
                       <CommonCard
                         title={allGroups[index].settingName}
@@ -1446,11 +1506,11 @@ const SellBillStep3 = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
+                <h6 className="black_color">{getCurrencyNumberWithOutSymbol(grossTotal)}</h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
-                <h6 className="color_green">{getTotalBillAmount()}</h6>
+                <h6 className="color_green">{getCurrencyNumberWithOutSymbol(getTotalBillAmount())}</h6>
               </div>
               {outBalformStatusvalue ? (
                 <div className="totals_value">
@@ -1458,8 +1518,8 @@ const SellBillStep3 = (props) => {
                   <h6 className="color_green">
                     {outBal != 0
                       ? editStatus
-                        ? billEditItem?.outStBal
-                        : outBal.toFixed(2)
+                        ? getCurrencyNumberWithOutSymbol(billEditItem?.outStBal)
+                        : getCurrencyNumberWithOutSymbol(outBal)
                       : "0"}
                   </h6>
                 </div>
@@ -1486,13 +1546,13 @@ const SellBillStep3 = (props) => {
                 <div className="totals_value">
                   <h5>Final Ledger Balance (₹)</h5>
                   <h6 className="color_green">
-                    {getFinalLedgerbalance().toFixed(2)}
+                    {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
                   </h6>
                 </div>
               ) : (
                 <div className="totals_value">
                   <h5>Total Receivables (₹)</h5>
-                  <h6 className="color_green">{getTotalRcble().toFixed(2)}</h6>
+                  <h6 className="color_green">{getCurrencyNumberWithOutSymbol(getTotalRcble())}</h6>
                 </div>
               )}
             </div>

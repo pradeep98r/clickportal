@@ -46,6 +46,9 @@
         color: #1C1C1C;
     }
 }
+.totals_value:last-child{
+    border-bottom: 0px;
+}
 .color_green{
     color: var(--ono-primary)!important;
 }
