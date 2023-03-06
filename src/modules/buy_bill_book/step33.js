@@ -474,7 +474,7 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
-                value: trVa.toFixed(2),
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
                 commentText: commentTextFor,
               };
             }
@@ -494,8 +494,8 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 3,
-                value: trVa.toFixed(2),
-                totalVal: totalV.toFixed(2),
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                totalVal:  totalV != 0 ? totalV.toFixed(2) : totalV,
                 commentText: commentTextFor,
                 subText:'Default Rs',
                 subText2:'Number of units'
@@ -517,8 +517,8 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 2,
-                value: trVa.toFixed(2),
-                totalVal: totalV.toFixed(2),
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                totalVal: totalV != 0 ? totalV.toFixed(2) : totalV,
                 commentText: commentTextFor,
                 subText:'Default Percentage %'
               };
@@ -838,11 +838,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            // window.setTimeout(function () {
-            //   props.closem();
-            //   navigate("/buy_bill_book");
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
