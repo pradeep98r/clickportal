@@ -30,6 +30,7 @@ function DatePickerModel(props) {
   const [endDate, setEndDate] = useState(new Date());
   const dispatch = useDispatch();
   useEffect(() => {
+    setStartDate(props.prevNextDate)
     localStorage.setItem("billViiewSttatus", false);
     console.log(billEditItemInfo?.dateCustom, link, props.ledgerTabs)
     if (link == "/buyerledger" ||
@@ -409,8 +410,8 @@ function DatePickerModel(props) {
               <DatePicker
                 key={new Date()}
                 dateFormat="yyyy-MMM-dd"
-                // selected={props.prevNextDate}
                 selected={selectedDate}
+                // selected={selectedDate}
                 onChange={(date) => dateOnchangeEvent(date, dateTabs)}
                 className="form-control"
                 placeholder="Date"

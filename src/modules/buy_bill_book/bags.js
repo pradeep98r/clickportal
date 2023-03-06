@@ -5,20 +5,22 @@ import { ToastContainer, toast } from "react-toastify";
 const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
+  const [quantityVal, setQuantityVal] = useState(0);
   useEffect(() => {
     if (props.editBagsStatus) {
+      setQuantityVal(props.cropsArray[0].qty)
       setInvArr(props.cropsArray[0].bags);
+      setQuantityVal(props.cropsArray[0].qty)
     }
   }, [props.show]);
   var arr = [];
-  const [quantityVal, setQuantityVal] = useState(0);
-
   const addInvQuantityValue = (ind, cropitem) => (e) => {
     var obj = {
       id: 0,
       total: 0,
       wastage: 0,
       weight: 0,
+      status:props.editBagsStatus?2:1
     };
     props.cropsArray[0].unitValue = e.target.value;
     var k = props.editBagsStatus
@@ -73,6 +75,7 @@ const SelectBags = (props) => {
   var wastageSum = 0;
   var totalw = 0;
   const addInvidualWeights = () => {
+
     if (quantityVal == 0 && props.cropsArray[0].qty == 0) {
       toast.error("Please Enter Number of " + props.cropsArray[0].qtyUnit, {
         toastId: "error1",
@@ -86,9 +89,19 @@ const SelectBags = (props) => {
         });
         return null;
       }
+      
+      if(invArr[l].status == 1 || props.cropsArray[0].status == 1){
+        invArr[l].status=1;
+      } else if(props.editBagsStatus){
+        invArr[l].status=2;
+      }
+      else{
+        invArr[l].status=2;
+      }
       wastageSum += parseInt(invArr[l].wastage);
       totalw += parseInt(invArr[l].weight);
     }
+    console.log(invArr,props.cropsArray,"arr");
     if (quantityVal !== 0 && totalVal !== 0) {
       props.cropsArray[0].wastage = wastageSum;
       props.cropsArray[0].weight = totalw;
@@ -108,6 +121,7 @@ const SelectBags = (props) => {
       total: 0,
       wastage: 0,
       weight: 0,
+      status:1,
     };
     arr1.push(addObj);
     if (props.editBagsStatus) {
@@ -179,9 +193,9 @@ const SelectBags = (props) => {
                       className="form-control mb-0"
                       name="totalbags"
                       value={
-                        props.editBagsStatus
-                          ? props.cropsArray[0].qty
-                          : quantityVal
+                        // props.editBagsStatus
+                        //   ? props.cropsArray[0].qty
+                           quantityVal
                       }
                       // value={props.cropsArray[0].unitValue}
                       onChange={addInvQuantityValue(0)}

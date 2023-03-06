@@ -83,6 +83,7 @@ const Step33 = (props) => {
         ? props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
+
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -831,11 +832,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {

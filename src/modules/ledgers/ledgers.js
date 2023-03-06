@@ -471,7 +471,7 @@ const Ledgers = (props) => {
                                               {!item.trader
                                                 ? ledgerType == "BUYER"
                                                   ? "Buyer"
-                                                  : "Seller"
+                                                  : "Farmer"
                                                 : "Trader"}{" "}
                                               - {item.partyId}&nbsp;
                                             </p>
@@ -637,7 +637,7 @@ const Ledgers = (props) => {
                                     {!ledgerData.trader
                                       ? props.type == "BUYER"
                                         ? "Buyer"
-                                        : "Sellre"
+                                        : "Farmer"
                                       : "Trader"}{" "}
                                     - {ledgerData.partyId}&nbsp;
                                   </p>
