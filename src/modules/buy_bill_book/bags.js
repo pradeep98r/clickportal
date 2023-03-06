@@ -6,11 +6,11 @@ const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
   const [quantityVal, setQuantityVal] = useState(0);
-
   useEffect(() => {
     if (props.editBagsStatus) {
       setQuantityVal(props.cropsArray[0].qty)
       setInvArr(props.cropsArray[0].bags);
+      setQuantityVal(props.cropsArray[0].qty)
     }
   }, [props.show]);
   var arr = [];
