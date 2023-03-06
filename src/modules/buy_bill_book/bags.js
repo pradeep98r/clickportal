@@ -5,13 +5,15 @@ import { ToastContainer, toast } from "react-toastify";
 const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
+  const [quantityVal, setQuantityVal] = useState(0);
   useEffect(() => {
     if (props.editBagsStatus) {
       setInvArr(props.cropsArray[0].bags);
+      setQuantityVal(props.cropsArray[0].qty)
     }
   }, [props.show]);
   var arr = [];
-  const [quantityVal, setQuantityVal] = useState(0);
+
 
   const addInvQuantityValue = (ind, cropitem) => (e) => {
     var obj = {
@@ -178,10 +180,10 @@ const SelectBags = (props) => {
                       type="text"
                       className="form-control mb-0"
                       name="totalbags"
-                      value={
-                        props.editBagsStatus
-                          ? props.cropsArray[0].qty
-                          : quantityVal
+                      value={quantityVal
+                        // props.editBagsStatus
+                        //   ? props.cropsArray[0].qty
+                        //   : quantityVal
                       }
                       // value={props.cropsArray[0].unitValue}
                       onChange={addInvQuantityValue(0)}
