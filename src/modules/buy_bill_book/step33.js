@@ -888,29 +888,29 @@ const Step33 = (props) => {
     }
   };
 
-  const handleInputValueEvent = (e) => {
-    $("input").keypress(function (e) {
-      var a = [];
-      var k = e.which;
-      if (e.charCode === 46) {
-        // if dot is the first symbol
-        if (e.target.value.length === 0) {
-          e.preventDefault();
-          return;
-        }
+  // const handleInputValueEvent = (e) => {
+  //   $("input").keypress(function (e) {
+  //     var a = [];
+  //     var k = e.which;
+  //     if (e.charCode === 46) {
+  //       // if dot is the first symbol
+  //       if (e.target.value.length === 0) {
+  //         e.preventDefault();
+  //         return;
+  //       }
 
-        // if there are dots already
-        if (e.target.value.indexOf(".") !== -1) {
-          e.preventDefault();
-          return;
-        }
+  //       // if there are dots already
+  //       if (e.target.value.indexOf(".") !== -1) {
+  //         e.preventDefault();
+  //         return;
+  //       }
 
-        a.push(e.charCode);
-      }
-      for (i = 48; i < 58; i++) a.push(i);
-      if (!($.inArray(k, a) >= 0)) e.preventDefault();
-    });
-  };
+  //       a.push(e.charCode);
+  //     }
+  //     for (i = 48; i < 58; i++) a.push(i);
+  //     if (!($.inArray(k, a) >= 0)) e.preventDefault();
+  //   });
+  // };
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value.replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
@@ -1037,9 +1037,12 @@ const Step33 = (props) => {
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
     // var val = e.target.value.replace(/[^0-9.]/g, "");
-    handleInputValueEvent(e);
+    // handleInputValueEvent(e);
     // if (val != 0) {
-    var val = e.target.value;
+    var val = e.target.value.replace(/[^0-9.]/g, '')
+                            .replace(/^(\d+\.\d{1}).*$/, '$1')
+                            .replace(/(\.\d{1})\d+/, '$1')
+                            .replace(/(\.\d*)\./, '$1');
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
