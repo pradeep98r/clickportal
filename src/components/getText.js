@@ -35,7 +35,6 @@ export function getPartnerType(item, trader) {
 }
 export function getUnitVal(qSetting,cIndex){
   var unit =  qSetting[cIndex].qtyUnit;
-  console.log(unit)
   if(cIndex != -1){
     if(qSetting[cIndex].qtyUnit.toLowerCase() == 'kgs'){
     unit = 'kgs'
