@@ -938,7 +938,8 @@ const Step22 = (props) => {
       });
       // cropsData.push(clonedCrop);
       // cropResponseData([...cropsData,clonedCrop]);
-      const updatedCropsData = [...cropsData, clonedCrop];
+      const updatedCropsData = [...cropsData.slice(0,k+1), clonedCrop, ...cropsData.slice(k+1)];
+      // const updatedCropsData = [...cropsData, clonedCrop];
       cropResponseData(updatedCropsData);
       setUpdatedItemList(updatedCropsData);
     } else {
@@ -947,7 +948,9 @@ const Step22 = (props) => {
       if (index != -1) {
         list[index].count += 1;
       }
-      const updatedCropsData = [...cropsData, crop];
+      // setObjectList([...objectList.slice(0, index+1), newObj, ...objectList.slice(index+1)]);
+      const updatedCropsData = [...cropsData.slice(0,k+1), crop, ...cropsData.slice(k+1)];
+      // const updatedCropsData = [...cropsData, crop];
       cropResponseData(updatedCropsData);
       // cropResponseData([...cropData, crop]);
     }
