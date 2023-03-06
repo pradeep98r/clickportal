@@ -59,7 +59,6 @@ const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const dispatch = useDispatch();
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
-  console.log(settingsData);
   const transusers = useSelector((state) => state.transInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billEditStatus = billEditItemInfo?.billEditStatus;
