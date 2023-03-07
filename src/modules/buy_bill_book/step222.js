@@ -24,7 +24,7 @@ import {
 import { selectTrans } from "../../reducers/transSlice";
 import $ from "jquery";
 import Select from "react-select";
-import { getUnitVal } from "../../components/getText";
+import { getQuantityUnit, getUnitVal } from "../../components/getText";
 var array = [];
 const colourStyles = {
   menuList: (styles) => ({
@@ -199,15 +199,16 @@ const Step22 = (props) => {
             defaultUnitTypeVal == "unit_kg"
               ? "kgs"
               : cIndex != -1
-              ? getUnitVal(qSetting, cIndex)
-              : "Crates",
+              ? getQuantityUnit(qSetting, cIndex) :'Crates'
+              // getUnitVal(qSetting, cIndex)
+              // : "Crates",
         },
         { weight: 0 },
         { rate: 0 },
         { total: 0 },
         { bags: [] },
         { status: 1 },
-        { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates" },
+        { qtyUnit: cIndex != -1 ?  getUnitVal(qSetting, cIndex) : "Crates" },
         { activeSearch: false },
         { displayStat: false },
         { cropDelete: false }
@@ -224,8 +225,10 @@ const Step22 = (props) => {
             defaultUnitTypeVal == "unit_kg"
               ? "kgs"
               : cIndex != -1
-              ? getUnitVal(qSetting, cIndex)
-              : "Crates",
+              ? getQuantityUnit(qSetting, cIndex):'Crates'
+              
+              // getUnitVal(qSetting, cIndex)
+              // : "Crates",
         },
         { weight: 0 },
         { rate: 0 },
@@ -238,6 +241,7 @@ const Step22 = (props) => {
         { cropDelete: false }
       );
     }
+    console.log(crop)
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
     setUpdatedItemList([...updatedItemList, ...newArray]);
@@ -445,7 +449,7 @@ const Step22 = (props) => {
                   ? "kgs"
                   : cIndex != -1
                   ? getUnitVal(qSetting, cIndex)
-                  : "Crates",
+                  : "crates",
             },
             { weight: 0 },
             { rate: 0 },
@@ -465,7 +469,7 @@ const Step22 = (props) => {
           Object.assign(
             list[index],
             { cropActive: true },
-            { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates" },
+            { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates" },
             { addInv: false },
             { status: 1 },
             { cropDelete: false }
@@ -485,12 +489,12 @@ const Step22 = (props) => {
                   ? "kgs"
                   : cIndex != -1
                   ? getUnitVal(qSetting, cIndex)
-                  : "Crates",
+                  : "crates",
             },
             { weight: 0 },
             { rate: 0 },
             { total: 0 },
-            { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates" },
+            { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates" },
             { checked: false },
             { bags: [] },
             { status: 1 },
