@@ -565,7 +565,7 @@ const Step33 = (props) => {
   };
 
   const getTotalValue = (value) => {
-    return (value / 100) * grossTotal;
+    return ((value / 100) * grossTotal);
   };
   const getTotalUnits = (val) => {
     return val * totalUnits;
@@ -859,17 +859,17 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-
+            console.log(billRequestObj,"payload")
             // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {
@@ -894,31 +894,12 @@ const Step33 = (props) => {
     }
   };
 
-  // const handleInputValueEvent = (e) => {
-  //   $("input").keypress(function (e) {
-  //     var a = [];
-  //     var k = e.which;
-  //     if (e.charCode === 46) {
-  //       // if dot is the first symbol
-  //       if (e.target.value.length === 0) {
-  //         e.preventDefault();
-  //         return;
-  //       }
-
-  //       // if there are dots already
-  //       if (e.target.value.indexOf(".") !== -1) {
-  //         e.preventDefault();
-  //         return;
-  //       }
-
-  //       a.push(e.charCode);
-  //     }
-  //     for (i = 48; i < 58; i++) a.push(i);
-  //     if (!($.inArray(k, a) >= 0)) e.preventDefault();
-  //   });
-  // };
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value.replace(/[^\d.]/g, '') // Remove all characters except digits and dots
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2') // Allow only one dot and up to two digits after the dot
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1');
+    // .replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         groupLiist[i].value = val;
@@ -956,6 +937,7 @@ const Step33 = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
+    console.log(val,list,"values")
     if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
@@ -965,7 +947,12 @@ const Step33 = (props) => {
     }
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value
+    .replace(/[^\d.]/g, '')
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');
+    // .replace(/[^0-9.]/g, "");
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1043,13 +1030,11 @@ const Step33 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    // var val = e.target.value.replace(/[^0-9.]/g, "");
-    // handleInputValueEvent(e);
-    // if (val != 0) {
-    var val = e.target.value.replace(/[^0-9.]/g, '')
-                            .replace(/^(\d+\.\d{1}).*$/, '$1')
-                            .replace(/(\.\d{1})\d+/, '$1')
-                            .replace(/(\.\d*)\./, '$1');
+    var val = e.target.value
+      .replace(/[^\d.]/g, '') // Remove all characters except digits and dots
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2') // Allow only one dot and up to two digits after the dot
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1063,7 +1048,6 @@ const Step33 = (props) => {
               i
             );
           } else {
-            console.log('return')
             tab.push({
               comments: groupLiist[i].commentText,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
@@ -1264,8 +1248,11 @@ const Step33 = (props) => {
     var val = e.target.value;
     setCommentFieldText(val);
   };
+
+  const customFieldComments =(e)=>{
+    return e.target.value
+  }
   const cstmCommentText = (groupLiist, index) => (e) => {
-    console.log('hii')
      var regEx = /^[a-z][a-z\s]*$/;
     var val = e.target.value.match(regEx);
     let updatedItems = groupLiist.map((item, i) => {
@@ -1274,7 +1261,8 @@ const Step33 = (props) => {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
-            tab[tabIndex].comments = val;
+            tab[tabIndex].comments =customFieldComments(e) 
+            // val;
             tab[tabIndex].fee = groupLiist[i].value;
           } else {
             tab.push({
@@ -1384,6 +1372,7 @@ const Step33 = (props) => {
                       );
                     } else if (allGroups[index].tableType == 3) {
                       return tableChangeStatus ? (
+                        <div>
                         <div className="comm_cards">
                           <div className="card input_card">
                             <div className="row">
@@ -1407,19 +1396,6 @@ const Step33 = (props) => {
                             </div>
                           </div>
                         </div>
-                      ) : (
-                        <div>
-                          <CommonCard
-                          title={allGroups[index].settingName}
-                          rateTitle={allGroups[index].subText}
-                          onChange={fieldOnchangeEvent(allGroups, index)}
-                          inputValue={allGroups[index].value}
-                          inputText={allGroups[index].totalVal}
-                          totalTitle="Total"
-                          unitsTitle={allGroups[index].subText2}
-                          units={totalUnits}
-                          onChangeTotals={fieldOnchangeTotals(allGroups, index)}
-                        />
                         {item?.comments ? (
                           <div className="comm_cards">
                             <div className="card input_card">
@@ -1446,6 +1422,21 @@ const Step33 = (props) => {
                         ) : (
                           ""
                         )}
+                        </div>
+                      ) : (
+                        <div>
+                          <CommonCard
+                          title={allGroups[index].settingName}
+                          rateTitle={allGroups[index].subText}
+                          onChange={fieldOnchangeEvent(allGroups, index)}
+                          inputValue={allGroups[index].value}
+                          inputText={allGroups[index].totalVal}
+                          totalTitle="Total"
+                          unitsTitle={allGroups[index].subText2}
+                          units={totalUnits}
+                          onChangeTotals={fieldOnchangeTotals(allGroups, index)}
+                        />
+                        
                         </div>
                       );
                     } else if (allGroups[index].tableType == 1) {
@@ -1480,7 +1471,7 @@ const Step33 = (props) => {
                                 <div className="row">
                                   <div className="col-lg-3 title_bg">
                                     <h5 className="comm_card_title mb-0">
-                                      Commentsdd
+                                      Comments
                                     </h5>
                                   </div>
                                   <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1500,7 +1491,7 @@ const Step33 = (props) => {
                           ) : (
                             ""
                           )}
-                          {allGroups[index].settingName == "OTHER_FEE" ? (
+                          {allGroups[index].settingName == "OTHER_FEE"? (
                             commentShownStatus ? (
                               <div className="comm_cards">
                                 <div className="card input_card">
