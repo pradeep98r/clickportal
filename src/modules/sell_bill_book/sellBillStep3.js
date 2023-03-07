@@ -1233,11 +1233,18 @@ const SellBillStep3 = (props) => {
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].comments = val;
-            tab[tabIndex].fee = groupLiist[i].value;
+            console.log(tab[index],groupLiist[index])
+            if(groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE' || groupLiist[index].fieldType == null){
+              console.log("here",)
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            } else{
+              tab[tabIndex].fee = groupLiist[i].totalVal;
+            }
+            
           } else {
             tab.push({
               comments: val,
-              fee: groupLiist[i].value,
+              fee: groupLiist[i]?.fieldType == 'SIMPLE'?parseFloat(groupLiist[i].value): groupLiist[i].totalVal,
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
               fieldType: groupLiist[i].fieldType,
@@ -1444,7 +1451,7 @@ const SellBillStep3 = (props) => {
                         ) : (
                           ""
                         )}
-                        {allGroups[index].settingName == "OTHER_FEE" && item?.comments ? (
+                        {allGroups[index].settingName == "OTHER_FEE"? (
                           commentShownStatus ? (
                             <div className="comm_cards">
                               <div className="card input_card">
