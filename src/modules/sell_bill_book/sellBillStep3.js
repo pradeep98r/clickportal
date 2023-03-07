@@ -79,6 +79,7 @@ const SellBillStep3 = (props) => {
   const [isShown, setisShown] = useState(false);
   const [allGroups, setAllGroups] = useState([]);
   const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
+
   useEffect(() => {
     $('#disable').attr("disabled", false);
     var cropArrays = editStatus
@@ -149,7 +150,7 @@ const SellBillStep3 = (props) => {
       //     groupedArray.push(object);
       //   });
       // });
-      // console.log(response)
+      // console.log(response)FO
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -882,32 +883,14 @@ const SellBillStep3 = (props) => {
       );
     }
   };
-  // const handleInputValueEvent = (e) => {
-  //   $("input").keypress(function (e) {
-  //     var a = [];
-  //     var k = e.which;
-  //     if (e.charCode === 46) {
-  //       // if dot is the first symbol
-  //       if (e.target.value.length === 0) {
-  //         e.preventDefault();
-  //         return;
-  //       }
 
-  //       // if there are dots already
-  //       if (e.target.value.indexOf(".") !== -1) {
-  //         e.preventDefault();
-  //         return;
-  //       }
-
-  //       a.push(e.charCode);
-  //     }
-  //     for (i = 48; i < 58; i++) a.push(i);
-  //     if (!($.inArray(k, a) >= 0)) e.preventDefault();
-  //   });
-  // };
   const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value.replace(/[^\d.]/g, '') 
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1')
+    // .replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -921,7 +904,7 @@ const SellBillStep3 = (props) => {
             );
           } else {
             tab.push({
-              comments: "string",
+              comments: "",
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -943,7 +926,12 @@ const SellBillStep3 = (props) => {
     setEnterVal(val);
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value
+    .replace(/[^\d.]/g, '')
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1')
+    // .replace(/[^0-9.]/g, "");
 
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
@@ -1019,12 +1007,10 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    // var val = e.target.value.replace(/[^0-9.]/g, "");
-    // handleInputValueEvent(e);
-    var val = e.target.value.replace(/[^0-9.]/g, '')
-                            .replace(/^(\d+\.\d{1}).*$/, '$1')
-                            .replace(/(\.\d{1})\d+/, '$1')
-                            .replace(/(\.\d*)\./, '$1');
+    var val = e.target.value.replace(/[^\d.]/g, '')
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1');
     // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
@@ -1239,7 +1225,6 @@ const SellBillStep3 = (props) => {
   });
   const cstmCommentText = (groupLiist, index) => (e) => {
     var val = e.target.value;
-    console.log('hey comment')
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         console.log(groupLiist[i])
@@ -1247,11 +1232,9 @@ const SellBillStep3 = (props) => {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
-            console.log('tab push', 'if')
             tab[tabIndex].comments = val;
             tab[tabIndex].fee = groupLiist[i].value;
           } else {
-            console.log('tab push', 'else')
             tab.push({
               comments: val,
               fee: groupLiist[i].value,
@@ -1261,7 +1244,6 @@ const SellBillStep3 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
-            console.log(tab);
             setQuestionsTitle(tab);
           }
         }
@@ -1462,7 +1444,7 @@ const SellBillStep3 = (props) => {
                         ) : (
                           ""
                         )}
-                        {allGroups[index].settingName == "OTHER_FEE" ? (
+                        {allGroups[index].settingName == "OTHER_FEE" && item?.comments ? (
                           commentShownStatus ? (
                             <div className="comm_cards">
                               <div className="card input_card">

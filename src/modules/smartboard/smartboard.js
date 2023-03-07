@@ -1361,7 +1361,7 @@ const SmartBoard = () => {
                                                       <h3>
                                                         {farmerItem.trader
                                                           ? langFullData.trader
-                                                          : 'Seller'}{" "}
+                                                          : 'Farmer'}{" "}
                                                         - {farmerItem.partyId}
                                                       </h3>
                                                       <h5 className="smartboard_mobile desk_responsive">

@@ -522,7 +522,8 @@ function DatePickerModel(props) {
               </div>
 
               <DatePicker
-                selected={startDate}
+                key={new Date()}
+                selected={billEditItemInfo?.dateCustom ? new Date():startDate}
                 onChange={onChangeDate}
                 startDate={billEditItemInfo?.dateCustom ? new Date() : startDate}
                 // startDate={startDate}
