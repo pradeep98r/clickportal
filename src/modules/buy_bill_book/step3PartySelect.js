@@ -649,7 +649,7 @@ const Step3PartySelect = (props) => {
                                   parseInt(item.qty),
                                   item.qtyUnit,
                                   parseInt(item.weight),
-                                  parseInt(item.wastage),
+                                  parseInt(item.wastage) | '',
                                   item.rateType
                                 )}
                               </p>

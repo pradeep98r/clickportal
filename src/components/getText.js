@@ -55,9 +55,37 @@ export function getUnitVal(qSetting,cIndex){
       unit = 'pieces'
     }
     else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'crates'){
-      unit= 'Crates'
+      unit= 'crates'
     }
    }
    return unit;
 }
-export default { getText, getPartnerType, getUnitVal };
+
+export function getQuantityUnit(qSetting,cIndex){
+  var unit =  qSetting[cIndex].qtyUnit;
+  if(cIndex != -1){
+    if(qSetting[cIndex].qtyUnit.toLowerCase() == 'kgs'){
+    unit = 'kgs'
+    }
+    else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'boxes'){
+      unit = 'boxes'
+    }
+    else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'bags'){
+      unit = 'bags'
+    }
+    else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'sacs'){
+      unit = 'sacs'
+    }
+    else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'loads'){
+      unit = 'Loads'
+    }
+    else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'pieces'){
+      unit = 'pieces'
+    }
+    else if(qSetting[cIndex].qtyUnit.toLowerCase() == 'crates'){
+      unit= 'crates'
+    }
+   }
+   return unit;
+}
+export default { getText, getPartnerType, getUnitVal, getQuantityUnit};

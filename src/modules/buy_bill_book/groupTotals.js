@@ -72,6 +72,7 @@ const GroupTotals = (props) => {
     }
   }, [props]);
 
+  console.log(billData)
   const getBuyBillsById = () => {
     var res;
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
@@ -584,8 +585,10 @@ const GroupTotals = (props) => {
               if (item.field === name) {
                 if (item.less) {
                   value = -item.fee;
+                  console.log(item.fee)
                 } else {
                   value = item.fee;
+                  console.log(item.fee)
                 }
                 value = value == null ? 0 : value;
                 return value;
@@ -1433,6 +1436,21 @@ const GroupTotals = (props) => {
                               </div>
                             </div>
                             <div className="col-lg-3 p-0">
+                            <p className="fee-perc">
+                              {billData?.customFields.map(m=>{
+                                    return(
+                                    <div>
+                                      {m.fieldType === "COMPLEX_RS" &&
+                                      m.field == item.settingName?
+                                      <span className="units-cal">
+                                      {(m.fee/100)*billData?.grossTotal} Units
+                                    </span>
+                                      :''}
+                                    </div>
+                                    )
+                                  })
+                                }
+                              </p>
                               <p className="fee-perc">
                                 {item.settingName == "TRANSPORTATION" ? (
                                   billData?.transportation ? (
@@ -1771,6 +1789,21 @@ const GroupTotals = (props) => {
                               </p>
                             </div>
                             <div className="col-lg-3 p-0">
+                            <p className="fee-perc">
+                              {billData?.customFields.map(m=>{
+                                    return(
+                                    <div>
+                                      {m.fieldType === "COMPLEX_RS" &&
+                                      m.field == item.settingName?
+                                      <span className="units-cal">
+                                      {(m.fee/100)*billData?.grossTotal} Units
+                                    </span>
+                                      :''}
+                                    </div>
+                                    )
+                                  })
+                                }
+                              </p>
                               <p className="fee-perc">
                                 {item.settingName == "TRANSPORTATION" ? (
                                   billData?.transportation ? (
@@ -2108,6 +2141,21 @@ const GroupTotals = (props) => {
                               </p>
                             </div>
                             <div className="col-lg-3">
+                            <p className="fee-perc">
+                              {billData?.customFields.map(m=>{
+                                    return(
+                                    <div>
+                                      {m.fieldType === "COMPLEX_RS" &&
+                                      m.field == item.settingName?
+                                      <span className="units-cal">
+                                      {(m.fee/100)*billData?.grossTotal} Units
+                                    </span>
+                                      :''}
+                                    </div>
+                                    )
+                                  })
+                                }
+                              </p>
                               <p className="fee-perc">
                                 {item.settingName == "TRANSPORTATION" ? (
                                   billData?.transportation ? (
@@ -2454,7 +2502,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {feePerUnit().toFixed(1)} Units
+                                      {(m.fee/100)*billData?.grossTotal} Units
                                     </span>
                                       :''}
                                     </div>

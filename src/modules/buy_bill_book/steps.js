@@ -22,6 +22,7 @@ const Steps = (props) => {
     setSelctedCrops(chaild);
     console.log(chaild,"chaild") 
   };
+  const linkPath = localStorage.getItem('LinkPath');
 
   const partyType = useSelector(
     (state) => state.billEditItemInfo?.selectedPartyType
@@ -64,6 +65,7 @@ const Steps = (props) => {
       className="cropmodal_poopup steps_modal"
     >
       <div className="modal-header date_modal_header smartboard_modal_header">
+      {linkPath == '/buy_bill_book'?
         <h5 className="modal-title header2_text" id="staticBackdropLabel">
         Add Purchase Bill
           {/* {(() => {
@@ -77,6 +79,8 @@ const Steps = (props) => {
             }
           })()} */}
         </h5>
+        : <h5 className="modal-title header2_text" id="staticBackdropLabel">
+        Add Sales Bill</h5>}
         <img
           alt="image"
           src={clo}
