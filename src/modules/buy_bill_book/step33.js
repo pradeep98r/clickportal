@@ -609,6 +609,8 @@ const Step33 = (props) => {
       if (isShown) {
         totalValue = totalValue - getTotalValue(commValue);
       }
+    } else{
+      totalValue = totalValue - getTotalValue(commValue);
     }
     if (addRetComm) {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
@@ -624,6 +626,8 @@ const Step33 = (props) => {
       if (!isShown) {
         actualPay = actualPay - getTotalValue(commValue);
       }
+    } else{
+      actualPay = actualPay + getTotalValue(commValue);
     }
     if (addRetComm) {
       if (!includeRetComm) {
