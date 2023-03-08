@@ -430,7 +430,8 @@ const GroupTotals = (props) => {
     switch (name) {
       case "COMMISSION":
         if (billData?.partyType.toUpperCase() === "FARMER") {
-          value = -billData?.comm;
+          value= billData?.commShown ? -billData?.comm : 0
+          // value = -billData?.comm;
         } else {
           if (allGroups.length > 0) {
             value = billData?.comm;

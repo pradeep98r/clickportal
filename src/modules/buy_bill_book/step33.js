@@ -605,6 +605,7 @@ const Step33 = (props) => {
         }
       }
     }
+    console.log(isShown)
     if (includeComm) {
       if (isShown) {
         totalValue = totalValue - getTotalValue(commValue);
@@ -731,7 +732,8 @@ const Step33 = (props) => {
     cashPaid: Number(cashpaidValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
-    commShown: true,
+    commShown: isShown,
+    // true,
     comments: commentFieldText,
     createdBy: 0,
     farmerId: editStatus ? billEditItem.farmerId : buyerInfo.partyId, //partnerSelectedData.partyId,
