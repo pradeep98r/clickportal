@@ -523,7 +523,7 @@ const Step22 = (props) => {
     console.log(cropInfo, allDeletedCrops, "all crops with deleted edit");
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
-        if (cropInfo[k].rateType == "kgs") {
+        if (cropInfo[k].rateType?.toLowerCase() == "kgs" || cropInfo[k].rateType?.toLowerCase() == "loads" || cropInfo[k].rateType?.toLowerCase() == "pieces") {
           cropInfo[k].total =
             (cropInfo[k].weight - cropInfo[k].wastage) * cropInfo[k].rate;
         } else {
@@ -1648,7 +1648,8 @@ const Step22 = (props) => {
                                 <td className="col-3">
                                   <div className="d-flex align-items-center justify-content-between">
                                     <p className="totals">
-                                      {cropData[index].rateType == "kgs"
+                                  
+                                      {cropData[index].rateType.toLowerCase() == "kgs" || cropData[index].rateType.toLowerCase() == "loads" || cropData[index].rateType.toLowerCase() == "pieces"
                                         ? (
                                             (cropData[index].weight -
                                               cropData[index].wastage) *
