@@ -851,11 +851,11 @@ const SellBillStep3 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
-            // window.setTimeout(function () {
-            //   props.closem();
-            //   navigate("/sellbillbook");
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
@@ -876,11 +876,11 @@ const SellBillStep3 = (props) => {
 
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
-            // window.setTimeout(function () {
-            //   props.closem();
-            //   navigate("/sellbillbook");
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
