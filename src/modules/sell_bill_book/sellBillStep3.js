@@ -916,12 +916,14 @@ const SellBillStep3 = (props) => {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
+            console.log("if ")
             tab[tabIndex].fee = getTargetValue(
               e.target.value,
               groupLiist[i],
               i
             );
           } else {
+            console.log("else",tab)
             tab.push({
               comments: "",
               fee: getTargetValue(e.target.value, groupLiist[i], i),
@@ -931,6 +933,7 @@ const SellBillStep3 = (props) => {
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
+
           }
           setQuestionsTitle(tab);
           console.log(tab);
@@ -1106,6 +1109,7 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const getTargetValue = (val, list, index) => {
+    console.log(list,index,"get")
     if (list.fieldType == "SIMPlE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
