@@ -925,6 +925,7 @@ const Step33 = (props) => {
             setCstmval(true);
             setQuestionsTitle(tab);
           }
+          console.log(tab)
         }
         getAdditionValues(groupLiist[i], val);
 
@@ -940,7 +941,11 @@ const Step33 = (props) => {
     if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
-      return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      if(tableChangeStatus){
+        return (list.fee = Number(val));
+      }else{
+        return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
     }
