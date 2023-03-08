@@ -655,6 +655,8 @@ const Partner = () => {
         return data.partyId.toString().search(value) != -1;
       } else if (data.shortName.toLowerCase().includes(value)) {
         return data.shortName.toLowerCase().search(value) != -1;
+      } else if (data?.address?.addressLine.toLowerCase().includes(value)) {
+        return data?.address?.addressLine.toLowerCase().search(value) != -1;
       }
     });
     setPartnerData(result);

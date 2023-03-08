@@ -603,15 +603,6 @@ const SellBillStep3 = (props) => {
           : tableChangeStatus
           ? Number(rentValue)
           : getTotalUnits(rentValue)) +
-        // (transTotalValue != 0
-        //   ? Number(transTotalValue)
-        //   : Number(getTotalUnits(transportationValue).toFixed(2))) +
-        //   (labourTotalValue != 0
-        //     ? Number(labourTotalValue)
-        //     : getTotalUnits(laborChargeValue)) +
-        //   (rentTotalValue != 0
-        //     ? Number(rentTotalValue)
-        //     : getTotalUnits(rentValue))
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
         Number(otherfeeValue) +
@@ -916,21 +907,49 @@ const SellBillStep3 = (props) => {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
+            console.log("if ")
             tab[tabIndex].fee = getTargetValue(
               e.target.value,
               groupLiist[i],
               i
             );
-          } else {
-            tab.push({
-              comments: "",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+          } 
+          else{
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = {...tab[tabIndex] };
+                tabObje = { ...tabObje, fee : getTargetValue(
+                  e.target.value,
+                  groupLiist[i],
+                  i
+                )};
+               tab[tabIndex] = tabObje;
+              }
+            }
+            else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
           }
           setQuestionsTitle(tab);
           console.log(tab);
@@ -964,9 +983,35 @@ const SellBillStep3 = (props) => {
               groupLiist[i],
               i
             );
-          } else {
+          } 
+         else{
+          if (editStatus) {
+            let tabIndex = tab.findIndex(
+              (x) => x.fieldName === groupLiist[i].settingName
+            );
+            if (tabIndex == -1) {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            } else {
+              let tabObje = {...tab[tabIndex] };
+              tabObje = { ...tabObje, fee : getTargetValue(
+                e.target.value,
+                groupLiist[i],
+                i
+              )};
+             tab[tabIndex] = tabObje;
+            }
+          }
+          else {
             tab.push({
-              comments: "string",
+              comments: "",
               fee: getTargetValue(e.target.value, groupLiist[i], i),
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
@@ -975,6 +1020,7 @@ const SellBillStep3 = (props) => {
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
           }
+         }
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], val);
@@ -1004,17 +1050,41 @@ const SellBillStep3 = (props) => {
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
-          } else {
-            tab.push({
-              comments: "string",
-              fee: Number(e.target.value),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+          } 
+          else{
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: Number(e.target.value),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = {...tab[tabIndex] };
+                tabObje = { ...tabObje, fee : Number(e.target.value)};
+               tab[tabIndex] = tabObje;
+              }
+            }
+            else {
+              tab.push({
+                comments: "string",
+                fee: Number(e.target.value),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
           }
+         
           setQuestionsTitle(tab);
         }
         getOnchangeTotals(groupLiist[i], val);
@@ -1037,25 +1107,53 @@ const SellBillStep3 = (props) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
-          let tabIndex = tab.findIndex((x) => x.index === index);
+          let tabIndex = tab.findIndex((x) => x.index === i);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = getTargetValue(
               e.target.value,
               groupLiist[i],
               i
             );
-          } else {
-            tab.push({
-              comments: "",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+          } 
+          else {
+            if (editStatus) {
+
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = {...tab[tabIndex] };
+                tabObje = { ...tabObje, fee : getTargetValue(
+                  e.target.value,
+                  groupLiist[i],
+                  i
+                )};
+               tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: i,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
+            setQuestionsTitle(tab);
           }
-          setQuestionsTitle(tab);
+
         }
         getAdditionValues(groupLiist[i], val);
         return {
@@ -1081,20 +1179,47 @@ const SellBillStep3 = (props) => {
         }
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
+          console.log(tab);
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
-          } else {
-            tab.push({
-              comments: "",
-              fee: Number(e.target.value),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+          } 
+          else {
+            if (editStatus) {
+
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: Number(e.target.value),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = {...tab[tabIndex] };
+                tabObje = { ...tabObje, fee : Number(e.target.value)};
+               tab[tabIndex] = tabObje;
+              }
+            }  else {
+              tab.push({
+                comments: "",
+                fee: Number(e.target.value),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
+            setQuestionsTitle(tab);
           }
+          
+         
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], v);
@@ -1106,15 +1231,15 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const getTargetValue = (val, list, index) => {
+    console.log(list,index,"get")
     if (list.fieldType == "SIMPlE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
-      if(tableChangeStatus){
+      if (tableChangeStatus) {
         return (list.fee = Number(val));
+      } else {
+        return (list.fee = Number(getTotalUnits(val).toFixed(2)));
       }
-     else{
-      return (list.fee = Number(getTotalUnits(val).toFixed(2)));
-     }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
     }
