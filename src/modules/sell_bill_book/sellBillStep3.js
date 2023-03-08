@@ -1227,24 +1227,26 @@ const SellBillStep3 = (props) => {
     var val = e.target.value;
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
-        console.log(groupLiist[i])
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].comments = val;
-            console.log(tab[index],groupLiist[index])
             if(groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE' || groupLiist[index].fieldType == null){
-              console.log("here",)
               tab[tabIndex].fee = parseFloat(groupLiist[i].value);
-            } else{
+            }  else if(groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS"){
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            }
+            else{
               tab[tabIndex].fee = groupLiist[i].totalVal;
             }
             
           } else {
             tab.push({
               comments: val,
-              fee: groupLiist[i]?.fieldType == 'SIMPLE'?parseFloat(groupLiist[i].value): groupLiist[i].totalVal,
+              fee: groupLiist[index]?.fieldType == 'SIMPLE'?parseFloat(groupLiist[i].value):
+              groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS"?
+              parseFloat(groupLiist[i].value): groupLiist[i].totalVal,
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
               fieldType: groupLiist[i].fieldType,
