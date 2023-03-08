@@ -1263,7 +1263,8 @@ const Step33 = (props) => {
           if (tabIndex !== -1) {
             tab[tabIndex].comments =customFieldComments(e) 
             // val;
-            if(groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE' || groupLiist[index].fieldType == null){
+            console.log(tab[tabIndex], groupLiist[index],groupLiist[i])
+            if(groupLiist[index]?.fieldType == null || groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE' ){
               console.log("here",)
               tab[tabIndex].fee = parseFloat(groupLiist[i].value);
             } else{

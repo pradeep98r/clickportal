@@ -1443,7 +1443,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -1796,7 +1796,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -2148,7 +2148,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -2502,7 +2502,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
