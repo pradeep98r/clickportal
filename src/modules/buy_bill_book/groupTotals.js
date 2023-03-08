@@ -456,7 +456,8 @@ const GroupTotals = (props) => {
             if (billData?.partyType.toUpperCase() === "FARMER") {
               value = -billData?.rtComm;
             } else {
-              value = billData?.rtComm;
+              value = value = billData?.partyType.toUpperCase() === "BUYER" ? -billData?.rtComm :
+              billData?.rtComm;;
             }
             return value;
           }
@@ -471,7 +472,8 @@ const GroupTotals = (props) => {
             if (billData?.partyType.toUpperCase() === "FARMER") {
               value = -billData?.rtComm;
             } else {
-              value = billData?.rtComm;
+              value = value = billData?.partyType.toUpperCase() === "BUYER" ? -billData?.rtComm :
+              billData?.rtComm;
             }
             return value;
           }
@@ -486,7 +488,8 @@ const GroupTotals = (props) => {
             if (billData?.partyType.toUpperCase() === "FARMER") {
               value = -billData?.rtComm;
             } else {
-              value = billData?.rtComm;
+              value = value = billData?.partyType.toUpperCase() === "BUYER" ? -billData?.rtComm :
+              billData?.rtComm;
             }
             return value;
           }
@@ -2211,7 +2214,7 @@ const GroupTotals = (props) => {
                                       ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       : billData?.partyType.toUpperCase() ==
                                         "BUYER" && item.settingName == "RETURN_COMMISSION" && (billData?.less)
-                                        ? handleGroupNames(item.settingName).toFixed(2)
+                                        ?handleGroupNames(item.settingName).toFixed(2)
                                         : billData?.partyType.toUpperCase() == "BUYER" &&
                                           item.settingName?.includes('CUSTOM_FIELD') ?
                                           billData?.customFields.map((i) => {
