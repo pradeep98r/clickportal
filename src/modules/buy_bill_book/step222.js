@@ -198,8 +198,8 @@ const Step22 = (props) => {
           rateType:
             defaultUnitTypeVal == "unit_kg"
               ? "kgs"
-              : cIndex != -1
-              ? getQuantityUnit(qSetting, cIndex) :'Crates'
+              : (cIndex != -1
+              ? getQuantityUnit(qSetting, cIndex) :'kgs')
               // getUnitVal(qSetting, cIndex)
               // : "Crates",
         },
@@ -1498,12 +1498,12 @@ const Step22 = (props) => {
                                 ) : (
                                   <td className="col-1 fadeOut_col">-</td>
                                 )}
-
                                 {cropData[index].qtyUnit?.toLowerCase() !=
-                                (cropData[index].rateType == "RATE_PER_UNIT"
+                                ((cropData[index].rateType == "RATE_PER_UNIT" || cropData[index].rateType?.toLowerCase() == cropData[index].qtyUnit?.toLowerCase())
                                   ? cropData[index].qtyUnit?.toLowerCase()
                                   : cropData[index].rateType) ? (
                                   <td className="col-1">
+                                    {cropData[index].rateType}
                                     <input
                                       type="text"
                                       className="form-control"
