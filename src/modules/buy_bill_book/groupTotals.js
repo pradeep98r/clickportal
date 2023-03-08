@@ -1098,7 +1098,7 @@ const GroupTotals = (props) => {
               ) : (
                 <div className="row group-one-total">
                   <div className="pl-0 col-lg-7 pr-0"></div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-4 p-0">
                     <p className="groups_values">
                       {allGroupsTotal === 0 || null
                         ? ""
@@ -1131,7 +1131,7 @@ const GroupTotals = (props) => {
                     <p className="grouping_value">Total Bill Amount </p>
                   )}
                 </div>
-                <div className="col-lg-4">
+                <div className="col-lg-4 p-0">
                   <p
                     className={
                       billData?.partyType.toUpperCase() === "FARMER" ||
@@ -1443,7 +1443,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -1796,7 +1796,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -2148,7 +2148,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -2502,7 +2502,7 @@ const GroupTotals = (props) => {
                                       {m.fieldType === "COMPLEX_RS" &&
                                       m.field == item.settingName?
                                       <span className="units-cal">
-                                      {(m.fee/100)*billData?.grossTotal} Units
+                                      {feePerUnit().toFixed(1)} Units
                                     </span>
                                       :''}
                                     </div>
@@ -2617,7 +2617,7 @@ const GroupTotals = (props) => {
                 ) : (
                   <div className="row group-one-total">
                     <div className="pl-0 col-lg-7 pr-0"></div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 p-0">
                       <p className="groups_values">
                         {groupFourTotal === 0 || null
                           ? ""
@@ -2658,7 +2658,7 @@ const GroupTotals = (props) => {
                       <p className="grouping_value">Total Bill Amount :</p>
                     )}
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-4 p-0">
                     <p
                       className={
                         billData?.partyType.toUpperCase() === "FARMER"
@@ -2707,7 +2707,7 @@ const GroupTotals = (props) => {
                       Outstanding Balance:
                     </p>
                   </div>
-                  <div className="col-lg-4">
+                  <div className="col-lg-4 p-0">
                     <p
                       className={
                         billData?.partyType.toUpperCase() === "FARMER"
@@ -2736,7 +2736,7 @@ const GroupTotals = (props) => {
                         <p className="grouping_value">Cash Paid :</p>
                       )}
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 p-0">
                       <p className="groups_values">
                         {billData?.cashPaid === 0 || billData?.cashPaid === null
                           ? " "
@@ -2756,7 +2756,7 @@ const GroupTotals = (props) => {
                         <p className="grouping_value">Cash Received :</p>
                       )}
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 p-0">
                       <p className="groups_values ">
                         {billData?.cashRcvd === 0 || billData?.cashRcvd === null
                           ? ""
@@ -2794,7 +2794,7 @@ const GroupTotals = (props) => {
                       </p>
                     )}
                   </div>
-                  <div className="col-lg-5">
+                  <div className="col-lg-5 p-0">
                     <p
                       className="groups_value color_red billview_bal billview_bal_val"
                       style={{ display: !status ? "block" : "none" }}
@@ -2823,7 +2823,7 @@ const GroupTotals = (props) => {
                       </p>
                     )}
                   </div>
-                  <div className="col-lg-5">
+                  <div className="col-lg-5 p-0">
                     {billData?.totalReceivable === 0 ||
                       billData?.totalReceivable === null ? (
                       ""

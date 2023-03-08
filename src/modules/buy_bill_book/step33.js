@@ -925,6 +925,7 @@ const Step33 = (props) => {
             setCstmval(true);
             setQuestionsTitle(tab);
           }
+          console.log(tab)
         }
         getAdditionValues(groupLiist[i], val);
 
@@ -937,11 +938,14 @@ const Step33 = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
-    console.log(val,list,"values")
     if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
-      return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      if(tableChangeStatus){
+        return (list.fee = Number(val));
+      }else{
+        return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
     }
@@ -966,7 +970,6 @@ const Step33 = (props) => {
               i
             );
           } else {
-            console.log('normal field')
             tab.push({
               comments: groupLiist[i].commentText,
               fee: getTargetValue(e.target.value, groupLiist[i], i),
@@ -1263,16 +1266,20 @@ const Step33 = (props) => {
           if (tabIndex !== -1) {
             tab[tabIndex].comments =customFieldComments(e) 
             // val;
-            if(groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE' || groupLiist[index].fieldType == null){
-              console.log("here",)
+            if(groupLiist[index]?.fieldType == null || groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE' ){
               tab[tabIndex].fee = parseFloat(groupLiist[i].value);
-            } else{
+            } else if(groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS"){
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            }
+            else{
               tab[tabIndex].fee = groupLiist[i].totalVal;
             }
           } else {
             tab.push({
               comments: val,
-              fee: groupLiist[i]?.fieldType == 'SIMPLE'?parseFloat(groupLiist[i].value): groupLiist[i].totalVal,
+              fee: groupLiist[i]?.fieldType == 'SIMPLE'?parseFloat(groupLiist[i].value):
+              groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS"?
+              parseFloat(groupLiist[i].value): groupLiist[i].totalVal,
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
               fieldType: groupLiist[i].fieldType,
