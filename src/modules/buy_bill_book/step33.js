@@ -611,7 +611,7 @@ const Step33 = (props) => {
         totalValue = totalValue - getTotalValue(commValue);
       }
     } else{
-      totalValue = totalValue - getTotalValue(commValue);
+      totalValue = totalValue + getTotalValue(commValue);
     }
     if (addRetComm) {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
@@ -628,7 +628,7 @@ const Step33 = (props) => {
         actualPay = actualPay - getTotalValue(commValue);
       }
     } else{
-      actualPay = actualPay + getTotalValue(commValue);
+      actualPay = actualPay - getTotalValue(commValue);
     }
     if (addRetComm) {
       if (!includeRetComm) {

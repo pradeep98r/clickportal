@@ -614,8 +614,8 @@ const SellBillStep3 = (props) => {
         totalValue = totalValue + getTotalValue(commValue);
       }
     }
-    else {
-      totalValue = totalValue - getTotalValue(commValue)
+    else{
+      totalValue = totalValue + getTotalValue(commValue);
     }
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
@@ -635,7 +635,13 @@ const SellBillStep3 = (props) => {
     return totalValue;
   };
   const getTotalRcble = () => {
-    return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+    if(!includeComm){
+      return Number(getTotalBillAmount()) - (Number(cashRcvdValue)+Number(getTotalValue(commValue)))
+    }
+    else{
+      return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+    }
+    
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
