@@ -97,7 +97,6 @@ const Step33 = (props) => {
         h.push(cropArrays[c]);
       }
     }
-    console.log(cropArrays, h, "step3")
     if (cropArrays.length == h.length) {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
@@ -134,7 +133,6 @@ const Step33 = (props) => {
 
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
-        console.log(response)
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "BUY") {
             if (filteredArray[i].formStatus === 1) {
@@ -177,7 +175,6 @@ const Step33 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          console.log(res, "Res")
           response = res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (
@@ -426,7 +423,7 @@ const Step33 = (props) => {
           //   break;
           case "CASH_PAID":
             var trVa = getSingleValues(billEditItem?.cashPaid, res[j].value);
-            console.log(trVa)
+            
             getCashpaidValue(trVa);
             setcashPaidStatus(true);
             res[j] = { ...res[j], tableType: 1, value: trVa };
@@ -610,6 +607,11 @@ const Step33 = (props) => {
         totalValue = totalValue - getTotalValue(commValue);
       }
     } 
+    else{
+      if (isShown) {
+        totalValue = totalValue - getTotalValue(commValue);
+      }
+    }
     if (addRetComm) {
       totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
     } else {
@@ -626,7 +628,7 @@ const Step33 = (props) => {
       }
     } else{
       if(isShown){
-      actualPay = actualPay - getTotalValue(commValue);
+      actualPay = actualPay + getTotalValue(commValue);
       }
     }
     if (addRetComm) {
@@ -864,12 +866,8 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(billRequestObj, "payload")
-            // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-            // props.closem();
-
             window.setTimeout(function () {
               props.closem();
               navigate("/buy_bill_book");

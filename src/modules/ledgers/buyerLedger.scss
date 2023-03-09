@@ -574,3 +574,8 @@ a:hover{
   .table thead th{
       vertical-align: middle;
   }
+  @media(max-width:1430px){
+    .mobilee-tag{
+      font-size: 11px;
+    }
+  }
