@@ -843,11 +843,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            // window.setTimeout(function () {
-            //   props.closem();
-            //   navigate("/buy_bill_book");
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
@@ -870,11 +870,11 @@ const Step33 = (props) => {
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
 
-            // window.setTimeout(function () {
-            //   props.closem();
-            //   navigate("/buy_bill_book");
-            //   window.location.reload();
-            // }, 2000);
+            window.setTimeout(function () {
+              props.closem();
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 2000);
           }
         },
         (error) => {
