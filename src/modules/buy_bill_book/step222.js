@@ -165,9 +165,9 @@ const Step22 = (props) => {
     dispatch(selectBuyer(users.buyerInfo));
     dispatch(selectSteps("step1"));
     dispatch(billDate(date));
-    console.log(updatedItemList)
+    console.log(updatedItemList);
     for (var i = 0; i < updatedItemList.length; i++) {
-      if(updatedItemList[i] != null){
+      if (updatedItemList[i] != null) {
         if (Object.keys(updatedItemList[i]).length != 0) {
           prevArray.push(updatedItemList[i]);
         }
@@ -198,17 +198,18 @@ const Step22 = (props) => {
           rateType:
             defaultUnitTypeVal == "unit_kg"
               ? "kgs"
-              : (cIndex != -1
-              ? getQuantityUnit(qSetting, cIndex) :'kgs')
-              // getUnitVal(qSetting, cIndex)
-              // : "Crates",
+              : cIndex != -1
+              ? getQuantityUnit(qSetting, cIndex)
+              : "kgs",
+          // getUnitVal(qSetting, cIndex)
+          // : "Crates",
         },
         { weight: 0 },
         { rate: 0 },
         { total: 0 },
         { bags: [] },
         { status: 1 },
-        { qtyUnit: cIndex != -1 ?  getUnitVal(qSetting, cIndex) : "Crates" },
+        { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates" },
         { activeSearch: false },
         { displayStat: false },
         { cropDelete: false }
@@ -224,11 +225,12 @@ const Step22 = (props) => {
           rateType:
             defaultUnitTypeVal == "unit_kg"
               ? "kgs"
-              : cIndex != -1
-              ? getQuantityUnit(qSetting, cIndex):'Crates'
-              
-              // getUnitVal(qSetting, cIndex)
-              // : "Crates",
+              : (cIndex != -1
+              ? getQuantityUnit(qSetting, cIndex)
+              : "kgs"),
+
+          // getUnitVal(qSetting, cIndex)
+          // : "Crates",
         },
         { weight: 0 },
         { rate: 0 },
@@ -241,7 +243,7 @@ const Step22 = (props) => {
         { cropDelete: false }
       );
     }
-    console.log(crop)
+    console.log(crop,defaultUnitTypeVal,cIndex);
     cropResponseData([...cropData, preferedCrops[index2]]);
     newArray.push(preferedCrops[index2]);
     setUpdatedItemList([...updatedItemList, ...newArray]);
@@ -316,37 +318,37 @@ const Step22 = (props) => {
   useEffect(() => {
     fetchCropData();
     var party = billEditStatus
-    ? billEditItemInfo.selectedPartyType
-    : users.buyerInfo.partyType;
-  for (var i = 0; i < settingsData.billSetting.length; i++) {
-    if (party.toLowerCase() == "buyer") {
-      if (
-        settingsData.billSetting[i].billType == "SELL" &&
-        settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
-      ) {
-        console.log("sell", settingsData.billSetting[i].value);
+      ? billEditItemInfo.selectedPartyType
+      : users.buyerInfo.partyType;
+    for (var i = 0; i < settingsData.billSetting.length; i++) {
+      if (party.toLowerCase() == "buyer") {
+        if (
+          settingsData.billSetting[i].billType == "SELL" &&
+          settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
+        ) {
+          console.log("sell", settingsData.billSetting[i].value);
 
-        if (settingsData.billSetting[i].value == 0) {
-          setDefaultUnitTypeVal("unit_kg");
-          console.log("if");
-        } else {
-          setDefaultUnitTypeVal("unit_other");
-          console.log("else");
+          if (settingsData.billSetting[i].value == 0) {
+            setDefaultUnitTypeVal("unit_kg");
+            console.log("if");
+          } else {
+            setDefaultUnitTypeVal("unit_other");
+            console.log("else");
+          }
         }
-      }
-    } else {
-      if (
-        settingsData.billSetting[i].billType == "BUY" &&
-        settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
-      ) {
-        if (settingsData.billSetting[i].value == 0) {
-          setDefaultUnitTypeVal("unit_kg");
-        } else {
-          setDefaultUnitTypeVal("unit_other");
+      } else {
+        if (
+          settingsData.billSetting[i].billType == "BUY" &&
+          settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
+        ) {
+          if (settingsData.billSetting[i].value == 0) {
+            setDefaultUnitTypeVal("unit_kg");
+          } else {
+            setDefaultUnitTypeVal("unit_other");
+          }
         }
       }
     }
-  }
 
     dispatch(cropEditStatus(billEditStatus ? true : false));
 
@@ -523,7 +525,11 @@ const Step22 = (props) => {
     console.log(cropInfo, allDeletedCrops, "all crops with deleted edit");
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
-        if (cropInfo[k].rateType?.toLowerCase() == "kgs" || cropInfo[k].rateType?.toLowerCase() == "loads" || cropInfo[k].rateType?.toLowerCase() == "pieces") {
+        if (
+          cropInfo[k].rateType?.toLowerCase() == "kgs" ||
+          cropInfo[k].rateType?.toLowerCase() == "loads" ||
+          cropInfo[k].rateType?.toLowerCase() == "pieces"
+        ) {
           cropInfo[k].total =
             (cropInfo[k].weight - cropInfo[k].wastage) * cropInfo[k].rate;
         } else {
@@ -558,12 +564,12 @@ const Step22 = (props) => {
               cropInfo[index].status = 2;
             }
             var arr = [];
-            if(cropInfo[index1]?.bags != null){
-              if(cropInfo[index1]?.bags.length > 0){
+            if (cropInfo[index1]?.bags != null) {
+              if (cropInfo[index1]?.bags.length > 0) {
                 cropInfo[index1].bags.map((item, i) => {
                   let clonedObject = { ...cropInfo[index].bags[i] };
                   Object.assign(clonedObject, { status: 2 });
-                  arr.push(clonedObject)
+                  arr.push(clonedObject);
                 });
                 cropInfo[index].bags = [...arr];
               }
@@ -747,7 +753,7 @@ const Step22 = (props) => {
         }
       }
       if (arrays.length === cropData.length) {
-        console.log(allDeletedCrops, dArray, cropData,"after length");
+        console.log(allDeletedCrops, dArray, cropData, "after length");
         addStep3Modal();
         dispatch(selectSteps("step3"));
 
@@ -755,7 +761,7 @@ const Step22 = (props) => {
           dArray.length != 0 ? dArray : cropData,
           billEditStatus
         );
-        console.log(dArray)
+        console.log(dArray);
       } else {
         for (var j = 0; j < cropData.length; j++) {
           if (
@@ -810,16 +816,33 @@ const Step22 = (props) => {
   //   getting quantiy and rate values from dropdowns
   var arr1 = [];
   const getQuantity = (cropData, index1, crop) => (e) => {
-    cropData[index1].rateType = "kgs";
+    // cropData[index1].rateType = "kgs";
+    var cIndex = 0;
+    var qSetting = settingsData.qtySetting;
+    if (qSetting.length > 0) {
+      cIndex = qSetting.findIndex((obj) => obj.cropId == crop.cropId);
+      console.log(cIndex)
+      if(cIndex != -1){
+        qSetting[cIndex].qtyUnit = e.target.value
+      }
+    } else {
+      cIndex = -1;
+    }
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
         arr1.push({ ...cropData[i], qtyUnit: e.target.value });
-        return { ...cropData[i], qtyUnit: e.target.value };
+        return { ...cropData[i], qtyUnit: e.target.value,rateType:
+          defaultUnitTypeVal == "unit_kg"
+            ? "kgs"
+            : (cIndex != -1
+            ? getQuantityUnit(qSetting, cIndex)
+            : e.target.value), };
       } else {
         cropResponseData([...cropData]);
         return { ...cropData[i] };
       }
     });
+    console.log(updatedItemList,cIndex,qSetting[cIndex])
     cropResponseData([...updatedItemList]);
     setUpdatedItemList([...updatedItemList]);
   };
@@ -923,7 +946,7 @@ const Step22 = (props) => {
     setrateValue(val);
     setCropId(id);
     setUpdatedItemList([...updatedItem3]);
-    console.log(allDeletedCrops,updatedItem3);
+    console.log(allDeletedCrops, updatedItem3);
     if (billEditStatus) {
       // props.slectedCropstableArray.lineItems = updatedItem3;
     }
@@ -946,7 +969,11 @@ const Step22 = (props) => {
       // cropsData.push(clonedCrop);
       // cropResponseData([...cropsData,clonedCrop]);
       // const updatedCropsData = [...cropsData, clonedCrop];
-      const updatedCropsData = [...cropsData.slice(0,k+1), clonedCrop, ...cropsData.slice(k+1)];
+      const updatedCropsData = [
+        ...cropsData.slice(0, k + 1),
+        clonedCrop,
+        ...cropsData.slice(k + 1),
+      ];
       cropResponseData(updatedCropsData);
       setUpdatedItemList(updatedCropsData);
     } else {
@@ -955,7 +982,11 @@ const Step22 = (props) => {
       if (index != -1) {
         list[index].count += 1;
       }
-      const updatedCropsData = [...cropsData.slice(0,k+1), crop, ...cropsData.slice(k+1)];
+      const updatedCropsData = [
+        ...cropsData.slice(0, k + 1),
+        crop,
+        ...cropsData.slice(k + 1),
+      ];
       cropResponseData(updatedCropsData);
       // cropResponseData([...cropData, crop]);
     }
@@ -1165,14 +1196,14 @@ const Step22 = (props) => {
           qty: 0,
           weight: 0,
           rateType:
-          defaultUnitTypeVal == "unit_kg"
-            ? "kgs"
-            : (cIndex != -1
-            ? getUnitVal(qSetting, cIndex)
-            : "crates"),
+            defaultUnitTypeVal == "unit_kg"
+              ? "kgs"
+              : cIndex != -1
+              ? getUnitVal(qSetting, cIndex)
+              : "crates",
           rate: 0,
           total: 0,
-          qtyUnit: (cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates"),
+          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
           checked: false,
           bags: [],
           count: 1,
@@ -1499,11 +1530,12 @@ const Step22 = (props) => {
                                   <td className="col-1 fadeOut_col">-</td>
                                 )}
                                 {cropData[index].qtyUnit?.toLowerCase() !=
-                                ((cropData[index].rateType == "RATE_PER_UNIT" || cropData[index].rateType?.toLowerCase() == cropData[index].qtyUnit?.toLowerCase())
+                                (cropData[index].rateType == "RATE_PER_UNIT" ||
+                                cropData[index].rateType?.toLowerCase() ==
+                                  cropData[index].qtyUnit?.toLowerCase()
                                   ? cropData[index].qtyUnit?.toLowerCase()
                                   : cropData[index].rateType) ? (
                                   <td className="col-1">
-                                    {cropData[index].rateType}
                                     <input
                                       type="text"
                                       className="form-control"
@@ -1520,26 +1552,40 @@ const Step22 = (props) => {
                                 ) : setQuantityBasedtable(
                                     cropData[index].qtyUnit
                                   ) ? (
-                                  cropData[index].qtyUnit?.toLowerCase() ==
-                                  "loads" ? (
-                                    <td className="col-1 fadeOut_col">-</td>
-                                  ) : (
-                                    <td className="col-1">
-                                      <input
-                                        type="text"
-                                        className="form-control"
-                                        name="weight"
-                                        onFocus={(e) => resetInput(e)}
-                                        value={cropData[index].weight}
-                                        onChange={getWeightValue(
-                                          cropData[index].cropId,
-                                          index,
-                                          cropData
-                                        )}
-                                      />
-                                    </td>
-                                  )
+                                  <td className="col-1">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="weight"
+                                      onFocus={(e) => resetInput(e)}
+                                      value={cropData[index].weight}
+                                      onChange={getWeightValue(
+                                        cropData[index].cropId,
+                                        index,
+                                        cropData
+                                      )}
+                                    />
+                                  </td>
                                 ) : (
+                                  // cropData[index].qtyUnit?.toLowerCase() ==
+                                  // "loads" ? (
+                                  //   <td className="col-1 fadeOut_col">-</td>
+                                  // ) : (
+                                  //   <td className="col-1">
+                                  //     <input
+                                  //       type="text"
+                                  //       className="form-control"
+                                  //       name="weight"
+                                  //       onFocus={(e) => resetInput(e)}
+                                  //       value={cropData[index].weight}
+                                  //       onChange={getWeightValue(
+                                  //         cropData[index].cropId,
+                                  //         index,
+                                  //         cropData
+                                  //       )}
+                                  //     />
+                                  //   </td>
+                                  // )
                                   <td className="col-1 fadeOut_col">-</td>
                                 )}
                                 {cropData[index].qtyUnit?.toLowerCase() ===
@@ -1648,8 +1694,12 @@ const Step22 = (props) => {
                                 <td className="col-3">
                                   <div className="d-flex align-items-center justify-content-between">
                                     <p className="totals">
-                                  
-                                      {cropData[index].rateType.toLowerCase() == "kgs" || cropData[index].rateType.toLowerCase() == "loads" || cropData[index].rateType.toLowerCase() == "pieces"
+                                      {cropData[index].rateType.toLowerCase() ==
+                                        "kgs" ||
+                                      cropData[index].rateType.toLowerCase() ==
+                                        "loads" ||
+                                      cropData[index].rateType.toLowerCase() ==
+                                        "pieces"
                                         ? (
                                             (cropData[index].weight -
                                               cropData[index].wastage) *
