@@ -605,7 +605,6 @@ const Step33 = (props) => {
         }
       }
     }
-    console.log(isShown)
     if (includeComm) {
       if (isShown) {
         totalValue = totalValue - getTotalValue(commValue);
@@ -844,11 +843,11 @@ const Step33 = (props) => {
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {
@@ -871,11 +870,11 @@ const Step33 = (props) => {
             localStorage.setItem("LinkPath", "/buy_bill_book");
             // props.closem();
 
-            window.setTimeout(function () {
-              props.closem();
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 2000);
+            // window.setTimeout(function () {
+            //   props.closem();
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 2000);
           }
         },
         (error) => {
@@ -969,7 +968,6 @@ const Step33 = (props) => {
           }
           setCstmval(true);
           setQuestionsTitle(tab);
-          console.log(tab)
         }
         getAdditionValues(groupLiist[i], val);
 
