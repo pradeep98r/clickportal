@@ -70,7 +70,6 @@ const GroupTotals = (props) => {
     }
   }, [props]);
 
-  console.log(billData);
   const getBuyBillsById = () => {
     var res;
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
@@ -429,7 +428,6 @@ const GroupTotals = (props) => {
       case "COMMISSION":
         if (billData?.partyType.toUpperCase() === "FARMER") {
           value = billData?.commShown ? -billData?.comm : 0;
-          console.log(billData.commShown,billData.comm,value)
         } else {
           if (allGroups.length > 0) {
             value = billData?.comm;
@@ -599,10 +597,8 @@ const GroupTotals = (props) => {
               if (item.field === name) {
                 if (item.less) {
                   value = -item.fee;
-                  console.log(item.fee);
                 } else {
                   value = item.fee;
-                  console.log(item.fee);
                 }
                 value = value == null ? 0 : value;
                 return value;
