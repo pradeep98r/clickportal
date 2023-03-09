@@ -129,32 +129,6 @@ const SellBillStep3 = (props) => {
         return object.billType === "SELL" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-      console.log(filteredArray, "aray");
-
-      // //  Group the filtered objects by their groupId using the reduce method
-      // const groups = filteredArray.reduce((result, object) => {
-      //   const groupId = object.groupId;
-      //   if (!result[groupId]) {
-      //     result[groupId] = [];
-      //   }
-      //   result[groupId].push(object);
-      //   return result;
-      // }, {});
-      // console.log(groups, "groups")
-
-      // //Get an array of the groups, sorted by groupId in ascending order
-      // const sortedGroups = Object.values(groups).sort((group1, group2) => {
-      //   return group1[0].groupId - group2[0].groupId;
-      // });
-
-      // // Loop through the sortedGroups array and display the objects in each group
-      // const groupedArray = [];
-      // sortedGroups.forEach((group) => {
-      //   group.forEach((object) => {
-      //     groupedArray.push(object);
-      //   });
-      // });
-      // console.log(response)FO
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -175,7 +149,6 @@ const SellBillStep3 = (props) => {
                 filteredArray[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
                 filteredArray[i].settingName == "WASTAGE"
               ) {
-                console.log("");
               } else {
                 if (filteredArray[i]?.settingName.includes("ADVANCES")) {
                   filteredArray[i].settingName = "";
@@ -225,7 +198,6 @@ const SellBillStep3 = (props) => {
                   response[i].name === "SKIP_INDIVIDUAL_EXP" ||
                   response[i].name == "WASTAGE"
                 ) {
-                  console.log("");
                 } else {
                   var substring = "CUSTOM_FIELD";
                   if (response[i]?.name.includes(substring)) {
@@ -270,13 +242,7 @@ const SellBillStep3 = (props) => {
       : props.slectedSellCropsArray;
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
-      // console.log(totalQty,"qtyy")
     }
-    // console.log(props.selectedBillData)
-    // for (var i = 0; i < props.selectedBillData[0]?.lineItems.length; i++) {
-    //   totalQtyBill += parseInt(props.selectedBillData[0]?.lineItems[i].qty);
-    //   console.log(totalQtyBill,"qtyy")
-    // }
     var substring = "CUSTOM_FIELD";
     if (name.includes(substring)) {
       substring = name;
@@ -639,14 +605,19 @@ const SellBillStep3 = (props) => {
   const getTotalRcble = () => {
     if(!includeComm){
       if(isShown){
-        return Number(getTotalBillAmount()) - (Number(cashRcvdValue)+Number(getTotalValue(commValue)))
+        return Number(getTotalBillAmount()) - (Number(cashRcvdValue))
       }
       else{
         return Number(getTotalBillAmount()) - (Number(cashRcvdValue))
       }
     }
-    else{
-      return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+    else{ 
+      if(isShown){
+        return Number(getTotalBillAmount()) - Number(cashRcvdValue);
+      } else{
+        return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+      }
+      
     }
     
   };
@@ -736,7 +707,12 @@ const SellBillStep3 = (props) => {
       if (!isShown) {
         actualRcvd = actualRcvd + getTotalValue(commValue);
       }
+    } else{
+      if(isShown){
+        actualRcvd = actualRcvd - getTotalValue(commValue)
+      }
     }
+
     if (addRetComm) {
       if (!includeRetComm) {
         actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
@@ -857,7 +833,6 @@ const SellBillStep3 = (props) => {
   };
 
   const postsellbill = () => {
-    console.log(editBillRequestObj);
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -883,15 +858,12 @@ const SellBillStep3 = (props) => {
         }
       );
     } else {
-      console.log(sellBillRequestObj);
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
             toast.success(response.data.status.description?.toUpperCase(), {
               toastId: "success1",
             });
-
-            // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             window.setTimeout(function () {
               props.closem();
@@ -917,14 +889,12 @@ const SellBillStep3 = (props) => {
       .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
       .replace(/(\.\d{0,2})\d*/, "$1")
       .replace(/(\.\d*)\./, "$1");
-    // .replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
-            console.log("if ")
             tab[tabIndex].fee = getTargetValue(
               e.target.value,
               groupLiist[i],
@@ -971,7 +941,6 @@ const SellBillStep3 = (props) => {
             }
           }
           setQuestionsTitle(tab);
-          console.log(tab);
         }
         getAdditionValues(groupLiist[i], val);
         return { ...groupLiist[i], value: val };
@@ -989,8 +958,6 @@ const SellBillStep3 = (props) => {
       .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
       .replace(/(\.\d{0,2})\d*/, "$1")
       .replace(/(\.\d*)\./, "$1");
-    // .replace(/[^0-9.]/g, "");
-
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -1123,7 +1090,6 @@ const SellBillStep3 = (props) => {
       .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
       .replace(/(\.\d{0,2})\d*/, "$1")
       .replace(/(\.\d*)\./, "$1");
-    // if (val != 0) {
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -1189,7 +1155,6 @@ const SellBillStep3 = (props) => {
       }
     });
     setAllGroups([...updatedItem2]);
-    // }
     setEnterVal(val);
   };
   const commRetComTotalOnchangeEvent = (groupLiist, index) => (e) => {
@@ -1202,7 +1167,6 @@ const SellBillStep3 = (props) => {
         }
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
-          console.log(tab);
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
@@ -1254,7 +1218,6 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const getTargetValue = (val, list, index) => {
-    console.log(list, index, "get")
     if (list.fieldType == "SIMPlE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
@@ -1336,24 +1299,16 @@ const SellBillStep3 = (props) => {
   const callbackFunctionPartySelect = (
     partyselectedarray,
     trans,
-    // cropTableEditStatus,
     cropEditObject,
-    // billEditStatus,
     slectedCropstableArray,
     selectedCrops
-    // selectedPartyType,
-    // selectedBilldate
   ) => {
     setpartnerSelectedData(partyselectedarray);
     setTranspoSelectedData(trans);
     props.step3ParentCallback(
-      //   cropTableEditStatus,
       cropEditObject,
-      //   billEditStatus,
       slectedCropstableArray,
       selectedCrops
-      //   selectedPartyType,
-      //   selectedBilldate
     );
     setcropEditObject(cropEditObject);
     setselectedCrops(selectedCrops);
