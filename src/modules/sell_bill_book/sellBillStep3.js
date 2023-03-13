@@ -843,11 +843,13 @@ const SellBillStep3 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {
               navigate("/sellbillbook");
               window.location.reload();
-            }, 2000);
+            }, 1000);
           }
         },
         (error) => {
@@ -865,11 +867,13 @@ const SellBillStep3 = (props) => {
               toastId: "success1",
             });
             localStorage.setItem("stepOneSingleBook", false);
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {
               navigate("/sellbillbook");
               window.location.reload();
-            }, 2000);
+            }, 1000);
           }
         },
         (error) => {
