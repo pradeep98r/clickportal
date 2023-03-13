@@ -838,18 +838,20 @@ const Step33 = (props) => {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
+           
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {  
               navigate("/buy_bill_book");
               window.location.reload();
-            }, 2000);
+            }, 1000);
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
           }
         },
         (error) => {
@@ -868,11 +870,14 @@ const Step33 = (props) => {
             });
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-            window.setTimeout(function () {
+
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {
               navigate("/buy_bill_book");
               window.location.reload();
-            }, 2000);
+            }, 1000);
           }
         },
         (error) => {
