@@ -349,7 +349,7 @@ const Partner = () => {
               toastId: "success2",
             });
 
-            // handleRefreshClick();
+            handleRefreshClick();
           }
         },
         (error) => {
@@ -375,7 +375,7 @@ const Partner = () => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     }
@@ -396,7 +396,7 @@ const Partner = () => {
     });
     window.setTimeout(function () {
       window.location.reload();
-    }, 2000);
+    }, 1000);
     console.log("hardrefresh");
   };
   const tabEvent = (type) => {
