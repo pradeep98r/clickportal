@@ -28,6 +28,7 @@ import {
   tableEditStatus,
   fromBillbook,
 } from "../../reducers/billEditItemSlice";
+import { getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
 
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
@@ -83,6 +84,7 @@ const Step33 = (props) => {
         ? props.slectedCropsArray
         : billEditItem.lineItems
       : props.slectedCropsArray;
+
     var h = [];
     for (var c = 0; c < cropArrays.length; c++) {
       if (
@@ -91,11 +93,10 @@ const Step33 = (props) => {
         cropArrays[c].qtyUnit.toLowerCase() == "pieces"
       ) {
         h.push(cropArrays[c]);
-      } else if (cropArrays[c].qtyUnit == "") {
+      } else if (cropArrays[c].qtyUnit == "" || cropArrays[c].status == 0) {
         h.push(cropArrays[c]);
       }
     }
-    console.log(cropArrays,h,"step3")
     if (cropArrays.length == h.length) {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
@@ -174,7 +175,7 @@ const Step33 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          response = res.data.data;
+          response = res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (
               response[i].type === "BILL" ||
@@ -322,8 +323,8 @@ const Step33 = (props) => {
                 ? billEditItem?.transportation == 0
                   ? 0
                   : billEditItem?.transportation != 0
-                  ? billEditItem?.transportation
-                  : res[j].value
+                    ? billEditItem?.transportation
+                    : res[j].value
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -333,14 +334,14 @@ const Step33 = (props) => {
                   : totalQty * trVa
                 : billEditItem.transportation
               : tableChangeStatusval
-              ? res[j].value
-              : res[j].value * totalQty;
+                ? res[j].value
+                : res[j].value * totalQty;
 
             getTransportationValue(trVa);
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -352,8 +353,8 @@ const Step33 = (props) => {
                 ? billEditItem?.rent == 0
                   ? 0
                   : billEditItem?.rent != 0
-                  ? billEditItem?.rent
-                  : res[j].value
+                    ? billEditItem?.rent
+                    : res[j].value
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -363,13 +364,13 @@ const Step33 = (props) => {
                   : totalQty * trVa
                 : billEditItem.rent
               : tableChangeStatusval
-              ? res[j].value
-              : res[j].value * totalQty;
+                ? res[j].value
+                : res[j].value * totalQty;
             getRentValue(trVa);
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -381,8 +382,8 @@ const Step33 = (props) => {
                 ? billEditItem?.labourCharges == 0
                   ? 0
                   : billEditItem?.labourCharges != 0
-                  ? billEditItem?.labourCharges
-                  : res[j].value
+                    ? billEditItem?.labourCharges
+                    : res[j].value
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -392,13 +393,13 @@ const Step33 = (props) => {
                   : totalQty * trVa
                 : billEditItem.labourCharges
               : tableChangeStatusval
-              ? res[j].value
-              : res[j].value * totalQty;
+                ? res[j].value
+                : res[j].value * totalQty;
             getLaborChargeValue(trVa);
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -422,6 +423,7 @@ const Step33 = (props) => {
           //   break;
           case "CASH_PAID":
             var trVa = getSingleValues(billEditItem?.cashPaid, res[j].value);
+            
             getCashpaidValue(trVa);
             setcashPaidStatus(true);
             res[j] = { ...res[j], tableType: 1, value: trVa };
@@ -437,23 +439,23 @@ const Step33 = (props) => {
             var newItem;
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
-                  if (items.fee != 0) {
-                    if (items.field === res[j].settingName) {
-                      newitem = items.fee;
-                      return newitem;
-                    }
+                if (items.fee != 0) {
+                  if (items.field === res[j].settingName) {
+                    newitem = items.fee;
+                    return newitem;
                   }
-                })
+                }
+              })
               : (newitem = res[j].value);
             var c = editStatus
               ? billEditItem?.customFields.map((items, i) => {
-                  if (items.fee != 0) {
-                    if (items.field === res[j].settingName) {
-                      commentTextFor = items.comments;
-                      return commentTextFor;
-                    }
+                if (items.fee != 0) {
+                  if (items.field === res[j].settingName) {
+                    commentTextFor = items.comments;
+                    return commentTextFor;
                   }
-                })
+                }
+              })
               : (commentTextFor = res[j].commentText);
             setQuestionsTitle(
               editStatus
@@ -469,7 +471,7 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
-                value: trVa,
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
                 commentText: commentTextFor,
               };
             }
@@ -489,9 +491,11 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 3,
-                value: trVa,
-                totalVal: totalV,
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                totalVal: totalV != 0 ? totalV.toFixed(2) : totalV,
                 commentText: commentTextFor,
+                subText: 'Default Rs',
+                subText2: 'Number of units'
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -510,9 +514,10 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 2,
-                value: trVa,
-                totalVal: totalV,
+                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                totalVal: totalV != 0 ? totalV.toFixed(2) : totalV,
                 commentText: commentTextFor,
+                subText: 'Default Percentage %'
               };
             }
             break;
@@ -557,7 +562,7 @@ const Step33 = (props) => {
   };
 
   const getTotalValue = (value) => {
-    return (value / 100) * grossTotal;
+    return ((value / 100) * grossTotal);
   };
   const getTotalUnits = (val) => {
     return val * totalUnits;
@@ -569,22 +574,22 @@ const Step33 = (props) => {
       (transTotalValue != 0
         ? Number(transTotalValue)
         : tableChangeStatus
-        ? Number(transportationValue)
-        : getTotalUnits(transportationValue)) +
-        (labourTotalValue != 0
-          ? Number(labourTotalValue)
-          : tableChangeStatus
+          ? Number(transportationValue)
+          : getTotalUnits(transportationValue)) +
+      (labourTotalValue != 0
+        ? Number(labourTotalValue)
+        : tableChangeStatus
           ? Number(laborChargeValue)
           : getTotalUnits(laborChargeValue)) +
-        (rentTotalValue != 0
-          ? Number(rentTotalValue)
-          : tableChangeStatus
+      (rentTotalValue != 0
+        ? Number(rentTotalValue)
+        : tableChangeStatus
           ? Number(rentValue)
           : getTotalUnits(rentValue)) +
-        getTotalValue(mandifeeValue) +
-        Number(levisValue) +
-        Number(otherfeeValue) +
-        Number(advancesValue)
+      getTotalValue(mandifeeValue) +
+      Number(levisValue) +
+      Number(otherfeeValue) +
+      Number(advancesValue)
     );
     let totalValue = grossTotal - t;
     for (var i = 0; i < questionsTitle.length; i++) {
@@ -598,6 +603,11 @@ const Step33 = (props) => {
       }
     }
     if (includeComm) {
+      if (isShown) {
+        totalValue = totalValue - getTotalValue(commValue);
+      }
+    } 
+    else{
       if (isShown) {
         totalValue = totalValue - getTotalValue(commValue);
       }
@@ -615,6 +625,10 @@ const Step33 = (props) => {
     if (includeComm) {
       if (!isShown) {
         actualPay = actualPay - getTotalValue(commValue);
+      }
+    } else{
+      if(isShown){
+      actualPay = actualPay + getTotalValue(commValue);
       }
     }
     if (addRetComm) {
@@ -636,22 +650,22 @@ const Step33 = (props) => {
       (transTotalValue != 0
         ? Number(transTotalValue)
         : tableChangeStatus
-        ? Number(transportationValue)
-        : getTotalUnits(transportationValue)) +
-        (labourTotalValue != 0
-          ? Number(labourTotalValue)
-          : tableChangeStatus
+          ? Number(transportationValue)
+          : getTotalUnits(transportationValue)) +
+      (labourTotalValue != 0
+        ? Number(labourTotalValue)
+        : tableChangeStatus
           ? Number(laborChargeValue)
           : getTotalUnits(laborChargeValue)) +
-        (rentTotalValue != 0
-          ? Number(rentTotalValue)
-          : tableChangeStatus
+      (rentTotalValue != 0
+        ? Number(rentTotalValue)
+        : tableChangeStatus
           ? Number(rentValue)
           : getTotalUnits(rentValue)) +
-        getTotalValue(mandifeeValue) +
-        Number(levisValue) +
-        Number(otherfeeValue) +
-        Number(advancesValue)
+      getTotalValue(mandifeeValue) +
+      Number(levisValue) +
+      Number(otherfeeValue) +
+      Number(advancesValue)
     );
     var finalValue = grossTotal - t;
     var finalVal = finalValue;
@@ -719,7 +733,8 @@ const Step33 = (props) => {
     cashPaid: Number(cashpaidValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
-    commShown: true,
+    commShown: isShown,
+    // true,
     comments: commentFieldText,
     createdBy: 0,
     farmerId: editStatus ? billEditItem.farmerId : buyerInfo.partyId, //partnerSelectedData.partyId,
@@ -730,8 +745,8 @@ const Step33 = (props) => {
       labourTotalValue != 0
         ? Number(labourTotalValue)
         : tableChangeStatus
-        ? Number(laborChargeValue)
-        : Number(getTotalUnits(laborChargeValue).toFixed(2)),
+          ? Number(laborChargeValue)
+          : Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
     mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
@@ -742,8 +757,8 @@ const Step33 = (props) => {
       rentTotalValue != 0
         ? Number(rentTotalValue)
         : tableChangeStatus
-        ? Number(rentValue)
-        : Number(getTotalUnits(rentValue).toFixed(2)),
+          ? Number(rentValue)
+          : Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalPayble: getTotalPayble(),
@@ -751,8 +766,8 @@ const Step33 = (props) => {
       transTotalValue != 0
         ? Number(transTotalValue)
         : tableChangeStatus
-        ? Number(transportationValue)
-        : Number(getTotalUnits(transportationValue).toFixed(2)),
+          ? Number(transportationValue)
+          : Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -781,8 +796,8 @@ const Step33 = (props) => {
         labourTotalValue != 0
           ? Number(labourTotalValue)
           : tableChangeStatus
-          ? Number(laborChargeValue)
-          : Number(getTotalUnits(laborChargeValue).toFixed(2)),
+            ? Number(laborChargeValue)
+            : Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
@@ -794,8 +809,8 @@ const Step33 = (props) => {
         rentTotalValue != 0
           ? Number(rentTotalValue)
           : tableChangeStatus
-          ? Number(rentValue)
-          : Number(getTotalUnits(rentValue).toFixed(2)),
+            ? Number(rentValue)
+            : Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: getTotalPayble(),
@@ -803,8 +818,8 @@ const Step33 = (props) => {
         transTotalValue != 0
           ? Number(transTotalValue)
           : tableChangeStatus
-          ? Number(transportationValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2)),
+            ? Number(transportationValue)
+            : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
     },
@@ -823,18 +838,20 @@ const Step33 = (props) => {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
+           
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {  
               navigate("/buy_bill_book");
               window.location.reload();
-            }, 2000);
+            }, 1000);
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
           }
         },
         (error) => {
@@ -851,17 +868,16 @@ const Step33 = (props) => {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-
-            // props.closeStep3Modal();
             localStorage.setItem("stepOne", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-            // props.closem();
 
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {
               navigate("/buy_bill_book");
               window.location.reload();
-            }, 2000);
+            }, 1000);
           }
         },
         (error) => {
@@ -886,31 +902,12 @@ const Step33 = (props) => {
     }
   };
 
-  const handleInputValueEvent = (e) => {
-    $("input").keypress(function (e) {
-      var a = [];
-      var k = e.which;
-      if (e.charCode === 46) {
-        // if dot is the first symbol
-        if (e.target.value.length === 0) {
-          e.preventDefault();
-          return;
-        }
-
-        // if there are dots already
-        if (e.target.value.indexOf(".") !== -1) {
-          e.preventDefault();
-          return;
-        }
-
-        a.push(e.charCode);
-      }
-      for (i = 48; i < 58; i++) a.push(i);
-      if (!($.inArray(k, a) >= 0)) e.preventDefault();
-    });
-  };
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value.replace(/[^\d.]/g, '') // Remove all characters except digits and dots
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2') // Allow only one dot and up to two digits after the dot
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');
+    // .replace(/[^0-9.]/g, "");
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         groupLiist[i].value = val;
@@ -924,18 +921,56 @@ const Step33 = (props) => {
               i
             );
           } else {
-            tab.push({
-              comments: e.target.value,
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
-            setCstmval(true);
-            setQuestionsTitle(tab);
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje, fee: getTargetValue(
+                    e.target.value,
+                    groupLiist[i],
+                    i
+                  )
+                };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: i,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
+            // tab.push({
+            //   comments: e.target.value,
+            //   fee: getTargetValue(e.target.value, groupLiist[i], i),
+            //   field: groupLiist[i].cstmName,
+            //   fieldName: groupLiist[i].settingName,
+            //   fieldType: groupLiist[i].fieldType,
+            //   index: index,
+            //   less: groupLiist[i].addToGt == 1 ? false : true,
+            // });
+            // setCstmval(true);
+
           }
+          setCstmval(true);
+          setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], val);
 
@@ -951,13 +986,22 @@ const Step33 = (props) => {
     if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
-      return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      if (tableChangeStatus) {
+        return (list.fee = Number(val));
+      } else {
+        return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
     }
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value
+      .replace(/[^\d.]/g, '')
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');
+    // .replace(/[^0-9.]/g, "");
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -971,18 +1015,57 @@ const Step33 = (props) => {
               i
             );
           } else {
-            tab.push({
-              comments: "string",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+              if (editStatus) {
+                let tabIndex = tab.findIndex(
+                  (x) => x.fieldName === groupLiist[i].settingName
+                );
+                if (tabIndex == -1) {
+                  tab.push({
+                    comments: "",
+                    fee: getTargetValue(e.target.value, groupLiist[i], i),
+                    field: groupLiist[i].cstmName,
+                    fieldName: groupLiist[i].settingName,
+                    fieldType: groupLiist[i].fieldType,
+                    index: i,
+                    less: groupLiist[i].addToGt == 1 ? false : true,
+                  });
+                } else {
+                  let tabObje = { ...tab[tabIndex] };
+                  tabObje = {
+                    ...tabObje, fee: getTargetValue(
+                      e.target.value,
+                      groupLiist[i],
+                      i
+                    )
+                  };
+                  tab[tabIndex] = tabObje;
+                }
+              } else {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+                
+              }
+            }
             setCstmval(true);
-          }
-          setQuestionsTitle(tab);
+            setQuestionsTitle(tab);
+          //   tab.push({
+          //     comments: groupLiist[i].commentText,
+          //     fee: getTargetValue(e.target.value, groupLiist[i], i),
+          //     field: groupLiist[i].cstmName,
+          //     fieldName: groupLiist[i].settingName,
+          //     fieldType: groupLiist[i].fieldType,
+          //     index: index,
+          //     less: groupLiist[i].addToGt == 1 ? false : true,
+          //   });
+          //   setCstmval(true);
+          // }
         }
         return {
           ...groupLiist[i],
@@ -1011,17 +1094,54 @@ const Step33 = (props) => {
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
           } else {
-            tab.push({
-              comments: "string",
-              fee: Number(e.target.value),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
-            setCstmval(true);
+              if (editStatus) {
+                let tabIndex = tab.findIndex(
+                  (x) => x.fieldName === groupLiist[i].settingName
+                );
+                if (tabIndex == -1) {
+                  tab.push({
+                    comments: "",
+                    fee: getTargetValue(e.target.value, groupLiist[i], i),
+                    field: groupLiist[i].cstmName,
+                    fieldName: groupLiist[i].settingName,
+                    fieldType: groupLiist[i].fieldType,
+                    index: i,
+                    less: groupLiist[i].addToGt == 1 ? false : true,
+                  });
+                } else {
+                  let tabObje = { ...tab[tabIndex] };
+                  tabObje = {
+                    ...tabObje, fee: getTargetValue(
+                      e.target.value,
+                      groupLiist[i],
+                      i
+                    )
+                  };
+                  tab[tabIndex] = tabObje;
+                }
+              } else {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              }
+            // tab.push({
+            //   comments: "string",
+            //   fee: Number(e.target.value),
+            //   field: groupLiist[i].cstmName,
+            //   fieldName: groupLiist[i].settingName,
+            //   fieldType: groupLiist[i].fieldType,
+            //   index: index,
+            //   less: groupLiist[i].addToGt == 1 ? false : true,
+            // });
+            // setCstmval(true);
           }
+          setCstmval(true);
           setQuestionsTitle(tab);
         }
         getOnchangeTotals(groupLiist[i], val);
@@ -1034,10 +1154,11 @@ const Step33 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    // var val = e.target.value.replace(/[^0-9.]/g, "");
-    handleInputValueEvent(e);
-    // if (val != 0) {
-    var val = e.target.value;
+    var val = e.target.value
+      .replace(/[^\d.]/g, '') // Remove all characters except digits and dots
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2') // Allow only one dot and up to two digits after the dot
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         getAdditionValues(groupLiist[i], val);
@@ -1051,17 +1172,44 @@ const Step33 = (props) => {
               i
             );
           } else {
-            tab.push({
-              comments: "string",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
-            setCstmval(true);
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje, fee: getTargetValue(
+                    e.target.value,
+                    groupLiist[i],
+                    i
+                  )
+                };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: i,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
           }
+          setCstmval(true);
           setQuestionsTitle(tab);
         }
         return {
@@ -1091,17 +1239,56 @@ const Step33 = (props) => {
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
           } else {
-            tab.push({
-              comments: "string",
-              fee: Number(e.target.value),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
-            setCstmval(true);
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje, fee: getTargetValue(
+                    e.target.value,
+                    groupLiist[i],
+                    i
+                  )
+                };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: i,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+              setCstmval(true);
+            }
+
+            // tab.push({
+            //   comments: groupLiist[i].commentText,
+            //   fee: Number(e.target.value),
+            //   field: groupLiist[i].cstmName,
+            //   fieldName: groupLiist[i].settingName,
+            //   fieldType: groupLiist[i].fieldType,
+            //   index: index,
+            //   less: groupLiist[i].addToGt == 1 ? false : true,
+            // });
+            // setCstmval(true);
           }
+          setCstmval(true);
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], v);
@@ -1155,9 +1342,9 @@ const Step33 = (props) => {
       }
     }
     if (groupLiist.settingName == "CASH_PAID") {
-      if (v != "") {
-        getCashpaidValue(v);
-      }
+      // if (v != "") {
+      getCashpaidValue(v);
+      // }
     }
     if (groupLiist.settingName == "ADVANCES") {
       if (v != "") {
@@ -1251,20 +1438,35 @@ const Step33 = (props) => {
     var val = e.target.value;
     setCommentFieldText(val);
   };
+
+  const customFieldComments = (e) => {
+    return e.target.value
+  }
   const cstmCommentText = (groupLiist, index) => (e) => {
-    var val = e.target.value;
+    var regEx = /^[a-z][a-z\s]*$/;
+    var val = e.target.value.match(regEx);
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
-            tab[tabIndex].comments = val;
-            tab[tabIndex].fee = groupLiist[i].value;
+            tab[tabIndex].comments = customFieldComments(e)
+            // val;
+            if (groupLiist[index]?.fieldType == null || groupLiist[index]?.fieldType.toUpperCase() == 'SIMPLE') {
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            } else if (groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS") {
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            }
+            else {
+              tab[tabIndex].fee = groupLiist[i].totalVal;
+            }
           } else {
             tab.push({
               comments: val,
-              fee: groupLiist[i].value,
+              fee: groupLiist[i]?.fieldType == 'SIMPLE' ? parseFloat(groupLiist[i].value) :
+                groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS" ?
+                  parseFloat(groupLiist[i].value) : groupLiist[i].totalVal,
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
               fieldType: groupLiist[i].fieldType,
@@ -1324,8 +1526,9 @@ const Step33 = (props) => {
             >
               {allGroups.length > 0
                 ? allGroups.map((item, index) => {
-                    if (item.tableType == 2) {
-                      return (
+                  if (item.tableType == 2) {
+                    return (
+                      <div>
                         <CommissionCard
                           title={item.settingName}
                           rateTitle={item.subText}
@@ -1338,9 +1541,37 @@ const Step33 = (props) => {
                             index
                           )}
                         />
-                      );
-                    } else if (allGroups[index].tableType == 3) {
-                      return tableChangeStatus ? (
+                        {item?.comments ? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    );
+                  } else if (allGroups[index].tableType == 3) {
+                    return tableChangeStatus ? (
+                      <div>
                         <div className="comm_cards">
                           <div className="card input_card">
                             <div className="row">
@@ -1364,7 +1595,35 @@ const Step33 = (props) => {
                             </div>
                           </div>
                         </div>
-                      ) : (
+                        {item?.comments ? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    ) : (
+                      <div>
                         <CommonCard
                           title={allGroups[index].settingName}
                           rateTitle={allGroups[index].subText}
@@ -1376,25 +1635,50 @@ const Step33 = (props) => {
                           units={totalUnits}
                           onChangeTotals={fieldOnchangeTotals(allGroups, index)}
                         />
-                      );
-                    } else if (allGroups[index].tableType == 1) {
-                      return (
-                        <div>
+
+                      </div>
+                    );
+                  } else if (allGroups[index].tableType == 1) {
+                    return (
+                      <div>
+                        <div className="comm_cards">
+                          <div className="card input_card">
+                            <div className="row">
+                              <div className="col-lg-3 title_bg">
+                                <h5 className="comm_card_title mb-0">
+                                  {getText(allGroups[index]?.settingName)}
+                                </h5>
+                              </div>
+                              <div className="col-lg-9 col-sm-12 col_left_border">
+                                <input
+                                  type="text"
+                                  placeholder=""
+                                  onFocus={(e) => resetInput(e)}
+                                  value={allGroups[index].value}
+                                  onChange={advLevOnchangeEvent(
+                                    allGroups,
+                                    index
+                                  )}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {item?.comments ? (
                           <div className="comm_cards">
                             <div className="card input_card">
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index]?.settingName)}
+                                    Comments
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
                                   <input
                                     type="text"
                                     placeholder=""
-                                    onFocus={(e) => resetInput(e)}
-                                    value={allGroups[index].value}
-                                    onChange={advLevOnchangeEvent(
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
                                       allGroups,
                                       index
                                     )}
@@ -1403,7 +1687,11 @@ const Step33 = (props) => {
                               </div>
                             </div>
                           </div>
-                          {item?.comments ? (
+                        ) : (
+                          ""
+                        )}
+                        {allGroups[index].settingName == "OTHER_FEE" ? (
+                          commentShownStatus ? (
                             <div className="comm_cards">
                               <div className="card input_card">
                                 <div className="row">
@@ -1416,55 +1704,28 @@ const Step33 = (props) => {
                                     <input
                                       type="text"
                                       placeholder=""
-                                      value={allGroups[index].commentText}
-                                      onChange={cstmCommentText(
-                                        allGroups,
-                                        index
-                                      )}
+                                      value={commentFieldText}
+                                      onChange={commentText}
                                     />
                                   </div>
                                 </div>
                               </div>
                             </div>
                           ) : (
-                            ""
-                          )}
-                          {allGroups[index].settingName == "OTHER_FEE" ? (
-                            commentShownStatus ? (
-                              <div className="comm_cards">
-                                <div className="card input_card">
-                                  <div className="row">
-                                    <div className="col-lg-3 title_bg">
-                                      <h5 className="comm_card_title mb-0">
-                                        Comments
-                                      </h5>
-                                    </div>
-                                    <div className="col-lg-9 col-sm-12 col_left_border">
-                                      <input
-                                        type="text"
-                                        placeholder=""
-                                        value={commentFieldText}
-                                        onChange={commentText}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <button
-                                className="comment_text"
-                                onClick={() => addCommentClick()}
-                              >
-                                +Add Comment
-                              </button>
-                            )
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      );
-                    }
-                  })
+                            <button
+                              className="comment_text"
+                              onClick={() => addCommentClick()}
+                            >
+                              +Add Comment
+                            </button>
+                          )
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    );
+                  }
+                })
                 : ""}
             </div>
           </div>
@@ -1473,11 +1734,11 @@ const Step33 = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
+                <h6 className="black_color">{getCurrencyNumberWithOutSymbol(grossTotal)}</h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
-                <h6>{getTotalBillAmount()}</h6>
+                <h6>{getCurrencyNumberWithOutSymbol(getTotalBillAmount())}</h6>
               </div>
               {outBalformStatusvalue ? (
                 <div className="totals_value">
@@ -1485,8 +1746,8 @@ const Step33 = (props) => {
                   <h6>
                     {outBal != 0
                       ? editStatus
-                        ? billEditItem?.outStBal
-                        : outBal.toFixed(2)
+                        ? getCurrencyNumberWithOutSymbol(billEditItem?.outStBal)
+                        : getCurrencyNumberWithOutSymbol(outBal)
                       : "0"}
                   </h6>
                 </div>
@@ -1512,12 +1773,12 @@ const Step33 = (props) => {
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Final Ledger Balance (₹)</h5>
-                  <h6>{getFinalLedgerbalance().toFixed(2)}</h6>
+                  <h6>{getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}</h6>
                 </div>
               ) : (
                 <div className="totals_value">
                   <h5>Total Paybles (₹)</h5>
-                  <h6>{getTotalPayble().toFixed(2)}</h6>
+                  <h6>{getCurrencyNumberWithOutSymbol(getTotalPayble())}</h6>
                 </div>
               )}
             </div>

@@ -30,7 +30,7 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
         return unitType;
       };
   return (
-    <p className="crop_name">
+    <p className="crop_name text-left">
       {(qty == 0 ? "" : getCurrencyNumberWithOneDigit(qty)) +
         (qtyUnit.toLowerCase() == "loads" ||
         qtyUnit.toLowerCase() == "pieces" ||

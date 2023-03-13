@@ -55,8 +55,8 @@ const CropDetails = (props) => {
               <div className="d-flex align-items-center">
                 <h6>
                   {billData?.partyType === "FARMER"
-                    ? billData.farmerName
-                    : billData?.buyerName}
+                    ? billData.farmerName + (billData.shortName ? (' - ' + billData.shortName) : '')
+                    : billData?.buyerName + (billData.shortName ? (' - ' + billData.shortName) : '')}
                 </h6>
               </div>
             </div>
@@ -80,7 +80,7 @@ const CropDetails = (props) => {
           ""
         )}
         {billData?.transporterId != 0 ? (
-          <div className="col-lg-3">
+          <div className="col-lg-4">
             <div className="partner_info">
               <p className="small_text">Transporter :</p>
               <h6 className="">{billData?.transporterName}</h6>
@@ -152,8 +152,9 @@ const CropDetails = (props) => {
                   <td className="col-2">
                     {getCurrencyNumberWithOutSymbol(item.rate)}
                   </td>
-                  <td className="col-2 color_red">
+                  <td className={ billData?.partyType === "FARMER" ? "col-2 color_red" :  "col-2 color_green"}>
                     {getCurrencyNumberWithOutSymbol(item.total)}
+                    {/* color_green */}
                   </td>
                 </tr>
               );

@@ -30,6 +30,7 @@ function DatePickerModel(props) {
   const [endDate, setEndDate] = useState(new Date());
   const dispatch = useDispatch();
   useEffect(() => {
+    setStartDate(props.prevNextDate)
     localStorage.setItem("billViiewSttatus", false);
     console.log(billEditItemInfo?.dateCustom, link, props.ledgerTabs)
     if (link == "/buyerledger" ||
@@ -121,7 +122,7 @@ function DatePickerModel(props) {
       ? "Custom"
       : "Daily"
   );
-  const [selectedDate, setStartDate] = useState();
+  const [selectedDate, setStartDate] = useState(props.prevNextDate?props.prevNextDate:new Date());
   const [handleTab, setHandleTabs] = useState(false);
   console.log(dateTabs,"tabs")
   const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger") ?
@@ -410,6 +411,7 @@ function DatePickerModel(props) {
                 key={new Date()}
                 dateFormat="yyyy-MMM-dd"
                 selected={selectedDate}
+                // selected={selectedDate}
                 onChange={(date) => dateOnchangeEvent(date, dateTabs)}
                 className="form-control"
                 placeholder="Date"
@@ -520,7 +522,8 @@ function DatePickerModel(props) {
               </div>
 
               <DatePicker
-                selected={startDate}
+                key={new Date()}
+                selected={billEditItemInfo?.dateCustom ? new Date():startDate}
                 onChange={onChangeDate}
                 startDate={billEditItemInfo?.dateCustom ? new Date() : startDate}
                 // startDate={startDate}

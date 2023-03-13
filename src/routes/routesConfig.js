@@ -20,7 +20,18 @@ import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import BuyerLedgers from "../modules/ledgers/buyerLedgers";
 import SellerLedgers from "../modules/ledgers/sellerLedgers";
 import Transporters from "../modules/transporto_ledger/transporters";
+import { getSystemSettings } from "../actions/billCreationService";
 const RoutesConfig = () => {
+  function setSystemSettingsDetails(clickId){
+    console.log(clickId)
+    getSystemSettings(clickId).then((response) => {
+      console.log(response);
+      localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
   const isLocalAuth = localStorage.getItem("isauth");
 
   if (isLocalAuth == null) {
@@ -45,6 +56,7 @@ const RoutesConfig = () => {
             : localStorage.getItem("registerData");
         // console.log(loginData.clickId, id, "login data before registration");
         if (id !== loginData.clickId.toString()) {
+          setSystemSettingsDetails(loginData.clickId)
           return (
             <BrowserRouter>
               <Routes>
@@ -53,6 +65,7 @@ const RoutesConfig = () => {
             </BrowserRouter>
           );
         } else if (id === loginData.clickId.toString()) {
+          setSystemSettingsDetails(loginData.clickId)
           // console.log(loginData, localStorage.getItem("status"));
           /*const savePref =
             localStorage.getItem("status") == null
@@ -103,6 +116,7 @@ const RoutesConfig = () => {
           );
         }
       } else {
+        setSystemSettingsDetails(loginData.clickId)
         // console.log(loginData, "login data after succesful registration");
         // console.log(localStorage.getItem("registerData"), "aftter data");
 

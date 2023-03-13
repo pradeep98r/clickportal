@@ -447,7 +447,7 @@ const Ledgers = (props) => {
                           className="table-scroll ledger-table"
                           id="scroll_style"
                         >
-                          <table className="table table-fixed">
+                          <table className="table table-fixed ledgers">
                             <thead className="theadr-tag">
                               <tr>
                                 <th scope="col-4">#</th>
@@ -509,7 +509,7 @@ const Ledgers = (props) => {
                                               {!item.trader
                                                 ? ledgerType == "BUYER"
                                                   ? "Buyer"
-                                                  : "Seller"
+                                                  : "Farmer"
                                                 : "Trader"}{" "}
                                               - {item.partyId}&nbsp;
                                             </p>
@@ -686,7 +686,7 @@ const Ledgers = (props) => {
                                     {!ledgerData.trader
                                       ? props.type == "BUYER"
                                         ? "Buyer"
-                                        : "Sellre"
+                                        : "Farmer"
                                       : "Trader"}{" "}
                                     - {ledgerData.partyId}&nbsp;
                                   </p>

@@ -41,7 +41,7 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
-    if(billData?.billStatus == 'COMPLETED'){
+    if(billViewData?.billViewInfo?.billStatus == 'COMPLETED'){
       setDisplayCancel(false);
     }
     else{
@@ -214,6 +214,14 @@ const BillView = (props) => {
       setNextDisable(true);
     }
   };
+  const clearModal = () =>{
+    if(billData?.billStatus == 'COMPLETED'){
+      setDisplayCancel(false);
+    }
+    else{
+      setDisplayCancel(true);
+    }
+  }
   return (
     <Modal
       show={props.showBillViewModal}
@@ -233,9 +241,12 @@ const BillView = (props) => {
           </p>
           <p className="b-name">{billData?.caBSeq}</p>
         </h5>
-       <button onClick={(e) => {
-            props.closeBillViewModal();
-          }}>
+       <button 
+       onClick={(e) => {
+        clearModal();
+        props.closeBillViewModal();
+      }}
+          >
        <img
           alt="image"
           src={clo}
@@ -254,7 +265,7 @@ const BillView = (props) => {
                 <BusinessDetails />
               )}
 
-              <div className="bill_crop_details" id="scroll_style">
+              <div className="bill_crop_details" id="scroll_style1">
                 {prevNextStatus ? (
                   <CropDetails prevNextStatus1={prevNextStatus} />
                 ) : (
@@ -316,8 +327,11 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      <div className="modal-footer bill_footer d-flex justify-content-center">
-        <button
+      <div className="modal-footer bill_footer ">
+       <div className="row" style={{'width':'100%'}}>
+         <div className="col-lg-10 p-0 ">
+           <div className="d-flex justify-content-center align-items-center">
+           <button
           onClick={() => {
             previousBill(billData?.index + 1);
           }}
@@ -340,6 +354,13 @@ const BillView = (props) => {
             alt="image"
           />
         </button>
+           </div>
+         
+         </div>
+         <div className="col-lg-2 p-0">
+
+         </div>
+       </div>
       </div>
       {showStepsModalStatus ? (
         <Steps
@@ -382,7 +403,7 @@ const BillView = (props) => {
                 <div className="col-lg-12">
                   <p className="desc-tag">
                     Please note that cancellation of bill result in ledger
-                    adjustments (rol back) and you will see an adjustment record
+                    adjustments (roll back) and you will see an adjustment record
                     in ledger for the same bill
                   </p>
                 </div>

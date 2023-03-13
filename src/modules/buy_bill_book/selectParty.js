@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectBuyer } from "../../reducers/buyerSlice";
 import { selectTrans } from "../../reducers/transSlice";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
-import { getPartnerType } from "../../components/getText";
+import { getPartnerType, getText } from "../../components/getText";
 import Select from "react-select";
 const colourStyles = {
   menuList: (styles) => ({
@@ -151,7 +151,7 @@ const SelectPartner = (props) => {
                 )}
                 <div style={{ marginLeft: 5 }}>
                   <div className="partner_card">
-                    <h5>{e.partyName + " " + e.shortName}</h5>
+                    <h5>{getText(e.partyName) + " " + e.shortName}</h5>
                     <h6>
                       {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
                       {getMaskedMobileNumber(e.mobile)}

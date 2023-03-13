@@ -1,25 +1,17 @@
-FROM node:slim as build
+FROM node:16-alpine3.16 as build
 
 RUN mkdir -p /app
 WORKDIR /app
 COPY . /app
 
 
-# Install libpng-dev to fix the deployment issue
-
-RUN apt-get update -y
-RUN apt-get install libpng-dev -y
-
-# Rebuild the npm 
-RUN npm rebuild
+RUN apk add pngquant  bash \
+    libpng-dev \
+    gcc \
+    g++ \
+    make
 
 RUN npm install --force
-
-#    && \
-#    npm audit fix --force
-#-g npm@7.18.1 \
-#    && npm audit fix \
-#    && npm install
 
 RUN npm run build
 
