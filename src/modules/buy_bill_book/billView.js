@@ -270,7 +270,7 @@ const BillView = (props) => {
                 <BusinessDetails />
               )}
 
-              <div className="bill_crop_details" id="scroll_style">
+              <div className="bill_crop_details" id="scroll_style1">
                 {prevNextStatus ? (
                   <CropDetails prevNextStatus1={prevNextStatus} />
                 ) : (
@@ -332,7 +332,12 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      {props.fromLedger ? '' : <div className="modal-footer bill_footer d-flex justify-content-center">
+      {props.fromLedger ? '' : 
+      <div className="modal-footer bill_footer d-flex justify-content-center">
+         
+       <div className="row" style={{'width':'100%'}}>
+         <div className="col-lg-10 p-0 ">
+           <div className="d-flex justify-content-center align-items-center"></div>
         <button
           onClick={() => {
             previousBill(billData?.index + 1);
@@ -356,7 +361,13 @@ const BillView = (props) => {
             alt="image"
           />
         </button>
-      </div>}
+      </div>
+      <div className="col-lg-2">
+
+      </div>
+      </div>
+      </div>
+      }
       {showStepsModalStatus ? (
         <Steps
           showStepsModal={showStepsModal}
@@ -398,7 +409,7 @@ const BillView = (props) => {
                 <div className="col-lg-12">
                   <p className="desc-tag">
                     Please note that cancellation of bill result in ledger
-                    adjustments (rol back) and you will see an adjustment record
+                    adjustments (roll back) and you will see an adjustment record
                     in ledger for the same bill
                   </p>
                 </div>

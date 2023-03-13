@@ -74,6 +74,7 @@ const Step11 = (props) => {
     <div>
       <div>
         <div className="main_div_padding">
+          <h5 className="head_modal">Bill Information </h5>
           <div className="container-fluid px-0">
             <div className="row">
               <div className="col-lg-4 p-0">

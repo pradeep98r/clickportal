@@ -224,8 +224,8 @@ const SellBillBook = (props) => {
               ) : (
                 <div>
                   <div>
-                    <div className="d-flex justify-content-between bills_div">
-                      <div className="d-flex">
+                    <div className="d-flex justify-content-center bills_div">
+                      
                         {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
@@ -239,7 +239,7 @@ const SellBillBook = (props) => {
                         </a>
                       </li>
                     </ul> */}
-                      </div>
+                    
 
                       {/* <button  className="color_blue"> */}
                       <div className="d-flex align-items-center color_blue">
@@ -270,7 +270,7 @@ const SellBillBook = (props) => {
                       </div>
 
                       {/* </button> */}
-                      <div className="d-flex">
+                      <div className="d-flex btn_bill_book">
                         {/* <BillsSearchField
                       placeholder={langFullData.search}
                       onChange={(event) => {
@@ -492,12 +492,12 @@ const SellBillBook = (props) => {
                                                                         " "
                                                                         : ""}
                                                                     </span>
-                                                                    <span>
+                                                                    <span className="wastsge_color">
                                                                       {item.wastage
                                                                         ? " - "
                                                                         : ""}
                                                                     </span>
-                                                                    <span>
+                                                                    <span className="wastsge_color">
                                                                       {item.wastage
                                                                         ? item.wastage
                                                                         : ""}

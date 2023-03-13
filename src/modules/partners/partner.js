@@ -344,11 +344,20 @@ const Partner = () => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(obj, "obj");
-            tabEvent(partyType);
             toast.success("Updated Successfully", {
               toastId: "success2",
             });
-
+            getPartnerData(clickId, partyType)
+            .then((response) => {
+              setAllData(response.data.data);
+              setPartnerData(response.data.data);
+              // setIsLoading(false);
+            })
+            .catch((error) => {
+              if (error.toJSON().message === "Network Error") {
+                setOnline(true);
+              }
+            });
             // handleRefreshClick();
           }
         },
@@ -364,18 +373,30 @@ const Partner = () => {
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            tabEvent(partyType);
+            // tabEvent(partyType);
             toast.success(response.data.status.message, {
               toastId: "success2",
             });
-            handleRefreshClick();
+            getPartnerData(clickId, partyType)
+            .then((response) => {
+              setAllData(response.data.data);
+              setPartnerData(response.data.data);
+              // setIsLoading(false);
+            })
+            .catch((error) => {
+              if (error.toJSON().message === "Network Error") {
+                setOnline(true);
+              }
+            });
+            // window.location.reload();
+            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
-          handleRefreshClick();
+          // handleRefreshClick();
         }
       );
     }
@@ -396,7 +417,7 @@ const Partner = () => {
     });
     window.setTimeout(function () {
       window.location.reload();
-    }, 2000);
+    }, 1000);
     console.log("hardrefresh");
   };
   const tabEvent = (type) => {
@@ -434,7 +455,6 @@ const Partner = () => {
         if (error.toJSON().message === "Network Error") {
           setOnline(true);
         }
-        console.log(error.message);
       });
   };
   const links = [
@@ -655,6 +675,8 @@ const Partner = () => {
         return data.partyId.toString().search(value) != -1;
       } else if (data.shortName.toLowerCase().includes(value)) {
         return data.shortName.toLowerCase().search(value) != -1;
+      } else if (data?.address?.addressLine.toLowerCase().includes(value)) {
+        return data?.address?.addressLine.toLowerCase().search(value) != -1;
       }
     });
     setPartnerData(result);

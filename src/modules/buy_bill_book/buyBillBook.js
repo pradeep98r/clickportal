@@ -50,9 +50,9 @@ function BuyBillBook() {
   const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
-    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));  
   }, []);
-
+  
   var [dateValue, setDateValue] = useState();
 
   const businessCreatedStatus =
@@ -106,6 +106,7 @@ function BuyBillBook() {
           })
           setBuyBillData(response.data.data.singleBills);
           console.log(response.data.data.singleBills)
+          setOnline(false)
         } else {
           setBuyBillData([]);
         }
@@ -222,8 +223,8 @@ function BuyBillBook() {
                   ) : (
                     <div>
                       <div>
-                        <div className="d-flex justify-content-between bills_div">
-                          <div className="d-flex">
+                        <div className="d-flex justify-content-center bills_div">
+                          
                             {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                           <li className="nav-item active">
                             <a
@@ -237,7 +238,6 @@ function BuyBillBook() {
                             </a>
                           </li>
                         </ul> */}
-                          </div>
                           <div className="d-flex align-items-center color_blue">
                             {showPrevNext?
                             <button onClick={onPrevDate} className="p-0">
@@ -276,7 +276,7 @@ function BuyBillBook() {
                               <p className="date_text_book">{dateValue}</p>
                             </div>
                           </button> */}
-                          <div className="d-flex">
+                          <div className="d-flex btn_bill_book">
                             {/* <BillsSearchField
                           placeholder={langFullData.search}
                           onChange={(event) => {
@@ -510,12 +510,12 @@ function BuyBillBook() {
                                                                               " "
                                                                               : ""}
                                                                           </span>
-                                                                          <span>
+                                                                          <span className="wastsge_color">
                                                                             {item.wastage
                                                                               ? " - "
                                                                               : ""}
                                                                           </span>
-                                                                          <span>
+                                                                          <span className="wastsge_color">
                                                                             {item.wastage
                                                                               ? item.wastage
                                                                               : ""}

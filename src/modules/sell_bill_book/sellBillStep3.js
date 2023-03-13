@@ -30,6 +30,7 @@ import {
   fromBillbook,
   tableEditStatus,
 } from "../../reducers/billEditItemSlice";
+import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 const SellBillStep3 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -77,9 +78,14 @@ const SellBillStep3 = (props) => {
   var tableChangeStatusval;
   const [isShown, setisShown] = useState(false);
   const [allGroups, setAllGroups] = useState([]);
-  const [commentFieldText, setCommentFieldText] = useState(billEditItemInfo?.selectedBillInfo?.comments != '' ? billEditItemInfo?.selectedBillInfo?.comments : '');
+  const [commentFieldText, setCommentFieldText] = useState(
+    billEditItemInfo?.selectedBillInfo?.comments != ""
+      ? billEditItemInfo?.selectedBillInfo?.comments
+      : ""
+  );
+
   useEffect(() => {
-    $('#disable').attr("disabled", false);
+    $("#disable").attr("disabled", false);
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? // ? billEditItemInfo.selectedBillInfo.lineItems
@@ -120,35 +126,9 @@ const SellBillStep3 = (props) => {
 
       //  Filter the array to include only objects where type=buy and formStatus=1
       const filteredArray = res.data.data.billSetting.filter((object) => {
-        return object.billType === 'SELL' && object.formStatus === 1;
+        return object.billType === "SELL" && object.formStatus === 1;
       });
-      filteredArray.sort((a,b) => a.groupId - b.groupId)
-      console.log(filteredArray, "aray")
-
-      // //  Group the filtered objects by their groupId using the reduce method
-      // const groups = filteredArray.reduce((result, object) => {
-      //   const groupId = object.groupId;
-      //   if (!result[groupId]) {
-      //     result[groupId] = [];
-      //   }
-      //   result[groupId].push(object);
-      //   return result;
-      // }, {});
-      // console.log(groups, "groups")
-      
-      // //Get an array of the groups, sorted by groupId in ascending order
-      // const sortedGroups = Object.values(groups).sort((group1, group2) => {
-      //   return group1[0].groupId - group2[0].groupId;
-      // });
-
-      // // Loop through the sortedGroups array and display the objects in each group
-      // const groupedArray = [];
-      // sortedGroups.forEach((group) => {
-      //   group.forEach((object) => {
-      //     groupedArray.push(object);
-      //   });
-      // });
-      // console.log(response)
+      filteredArray.sort((a, b) => a.groupId - b.groupId);
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -169,9 +149,8 @@ const SellBillStep3 = (props) => {
                 filteredArray[i].settingName === "SKIP_INDIVIDUAL_EXP" ||
                 filteredArray[i].settingName == "WASTAGE"
               ) {
-                console.log("");
               } else {
-                if (filteredArray[i]?.settingName.includes('ADVANCES')) {
+                if (filteredArray[i]?.settingName.includes("ADVANCES")) {
                   filteredArray[i].settingName = "";
                 }
                 listSettings(filteredArray[i].settingName, filteredArray, i);
@@ -182,19 +161,26 @@ const SellBillStep3 = (props) => {
             }
 
             if (filteredArray[i].settingName === "COMMISSION") {
-              setIncludeComm(filteredArray[i].includeInLedger == 1 ? true : false);
+              setIncludeComm(
+                filteredArray[i].includeInLedger == 1 ? true : false
+              );
               setisShown(filteredArray[i].isShown == 1 ? true : false);
             } else if (filteredArray[i].settingName === "RETURN_COMMISSION") {
               setAddRetComm(filteredArray[i].addToGt == 1 ? false : true);
-              setIncludeRetComm(filteredArray[i].includeInLedger == 1 ? true : false);
+              setIncludeRetComm(
+                filteredArray[i].includeInLedger == 1 ? true : false
+              );
             }
           }
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          response = res.data.data;
+          response = res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
-            if (response[i].type === "BILL" || response[i].type === "DAILY_CHART") {
+            if (
+              response[i].type === "BILL" ||
+              response[i].type === "DAILY_CHART"
+            ) {
               if (response[i].status === 1) {
                 Object.assign(response[i], {
                   settingName: response[i].name,
@@ -212,13 +198,12 @@ const SellBillStep3 = (props) => {
                   response[i].name === "SKIP_INDIVIDUAL_EXP" ||
                   response[i].name == "WASTAGE"
                 ) {
-                  console.log("");
                 } else {
                   var substring = "CUSTOM_FIELD";
                   if (response[i]?.name.includes(substring)) {
                     response[i].name = "";
-                    substring = '';
-                  } else if (response[i]?.name.includes('ADVANCES')) {
+                    substring = "";
+                  } else if (response[i]?.name.includes("ADVANCES")) {
                     response[i].name = "";
                   }
                   listSettings(response[i].name, response, i);
@@ -237,8 +222,7 @@ const SellBillStep3 = (props) => {
               }
             }
           }
-        })
-
+        });
       }
     });
   }, []);
@@ -258,13 +242,7 @@ const SellBillStep3 = (props) => {
       : props.slectedSellCropsArray;
     for (var i = 0; i < item.length; i++) {
       totalQty += parseInt(item[i].qty);
-      // console.log(totalQty,"qtyy")
     }
-    // console.log(props.selectedBillData)
-    // for (var i = 0; i < props.selectedBillData[0]?.lineItems.length; i++) {
-    //   totalQtyBill += parseInt(props.selectedBillData[0]?.lineItems[i].qty);
-    //   console.log(totalQtyBill,"qtyy")
-    // }
     var substring = "CUSTOM_FIELD";
     if (name.includes(substring)) {
       substring = name;
@@ -336,8 +314,11 @@ const SellBillStep3 = (props) => {
           case "TRANSPORTATION":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? billEditItem?.transportation == 0 ? 0 : (
-                  billEditItem?.transportation != 0 ? billEditItem?.transportation : res[j].value)
+                ? billEditItem?.transportation == 0
+                  ? 0
+                  : billEditItem?.transportation != 0
+                    ? billEditItem?.transportation
+                    : res[j].value
                 : billEditItem?.transportation / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -354,7 +335,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -363,8 +344,11 @@ const SellBillStep3 = (props) => {
           case "RENT":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? billEditItem?.rent == 0 ? 0 : (
-                  billEditItem?.rent != 0 ? billEditItem?.rent : res[j].value)
+                ? billEditItem?.rent == 0
+                  ? 0
+                  : billEditItem?.rent != 0
+                    ? billEditItem?.rent
+                    : res[j].value
                 : billEditItem?.rent / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -380,7 +364,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -389,8 +373,11 @@ const SellBillStep3 = (props) => {
           case "LABOUR_CHARGES":
             var trVa = editStatus
               ? tableChangeStatusval
-                ? billEditItem?.labourCharges == 0 ? 0 : (
-                  billEditItem?.labourCharges != 0 ? billEditItem?.labourCharges : res[j].value)
+                ? billEditItem?.labourCharges == 0
+                  ? 0
+                  : billEditItem?.labourCharges != 0
+                    ? billEditItem?.labourCharges
+                    : res[j].value
                 : billEditItem?.labourCharges / totalQty
               : res[j].value;
             var totalV = editStatus
@@ -406,7 +393,7 @@ const SellBillStep3 = (props) => {
             res[j] = {
               ...res[j],
               tableType: 3,
-              subText: "Per Bag/Box /Creat /Sac",
+              subText: "Per Bag /Box /Crate /Sac",
               subText2: "Number of Units",
               totalVal: totalV.toFixed(2),
               value: trVa.toFixed(2),
@@ -438,7 +425,7 @@ const SellBillStep3 = (props) => {
           case substring:
             var newitem = 0;
             var newItem;
-            var commentTextFor = '';
+            var commentTextFor = "";
             newItem = editStatus
               ? billEditItem?.customFields.map((items, i) => {
                 if (items.fee != 0) {
@@ -476,9 +463,9 @@ const SellBillStep3 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
-                value: trVa,
-                fieldType: 'SIMPlE',
-                commentText: commentTextFor
+                value: trVa.toFixed(2),
+                fieldType: "SIMPlE",
+                commentText: commentTextFor,
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
@@ -498,9 +485,11 @@ const SellBillStep3 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 3,
-                value: trVa,
-                totalVal: totalV,
-                commentText: commentTextFor
+                value: trVa.toFixed(2),
+                totalVal: totalV.toFixed(2),
+                commentText: commentTextFor,
+                subText: "Default Rs",
+                subText2: "Number of units",
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -520,9 +509,10 @@ const SellBillStep3 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 2,
-                value: trVa,
-                totalVal: totalV,
-                commentText: commentTextFor
+                value: trVa.toFixed(2),
+                totalVal: totalV.toFixed(2),
+                commentText: commentTextFor,
+                subText: "Default Percentage %",
               };
             }
             break;
@@ -578,17 +568,7 @@ const SellBillStep3 = (props) => {
         ? Number(rentTotalValue)
         : tableChangeStatus
           ? Number(rentValue)
-          : getTotalUnits(rentValue))
-      // (transTotalValue != 0
-      //   ? Number(transTotalValue)
-      //   : Number(getTotalUnits(transportationValue).toFixed(2))) +
-      //   (labourTotalValue != 0
-      //     ? Number(labourTotalValue)
-      //     : getTotalUnits(laborChargeValue)) +
-      //   (rentTotalValue != 0
-      //     ? Number(rentTotalValue)
-      //     : getTotalUnits(rentValue))
-      +
+          : getTotalUnits(rentValue)) +
       getTotalValue(mandifeeValue) +
       Number(levisValue) +
       Number(otherfeeValue) +
@@ -599,6 +579,11 @@ const SellBillStep3 = (props) => {
       if (isShown) {
         totalValue = totalValue + getTotalValue(commValue);
       }
+    }
+    else{
+      if(isShown){
+        totalValue = totalValue + getTotalValue(commValue);
+      } 
     }
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
@@ -618,7 +603,23 @@ const SellBillStep3 = (props) => {
     return totalValue;
   };
   const getTotalRcble = () => {
-    return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+    if(!includeComm){
+      if(isShown){
+        return Number(getTotalBillAmount()) - (Number(cashRcvdValue))
+      }
+      else{
+        return Number(getTotalBillAmount()) - (Number(cashRcvdValue))
+      }
+    }
+    else{ 
+      if(isShown){
+        return Number(getTotalBillAmount()) - Number(cashRcvdValue);
+      } else{
+        return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+      }
+      
+    }
+    
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
@@ -636,8 +637,7 @@ const SellBillStep3 = (props) => {
         ? Number(rentTotalValue)
         : tableChangeStatus
           ? Number(rentValue)
-          : getTotalUnits(rentValue))
-      +
+          : getTotalUnits(rentValue)) +
       getTotalValue(mandifeeValue) +
       Number(levisValue) +
       Number(otherfeeValue) +
@@ -650,6 +650,7 @@ const SellBillStep3 = (props) => {
         finalVal = finalValue + getTotalValue(commValue);
       }
     }
+
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
         if (questionsTitle[i].less) {
@@ -706,7 +707,12 @@ const SellBillStep3 = (props) => {
       if (!isShown) {
         actualRcvd = actualRcvd + getTotalValue(commValue);
       }
+    } else{
+      if(isShown){
+        actualRcvd = actualRcvd - getTotalValue(commValue)
+      }
     }
+
     if (addRetComm) {
       if (!includeRetComm) {
         actualRcvd = (actualRcvd + getTotalValue(retcommValue)).toFixed(2);
@@ -740,9 +746,9 @@ const SellBillStep3 = (props) => {
     labourCharges:
       labourTotalValue != 0
         ? Number(labourTotalValue)
-        : (tableChangeStatus
+        : tableChangeStatus
           ? Number(laborChargeValue)
-          : Number(getTotalUnits(laborChargeValue).toFixed(2))),
+          : Number(getTotalUnits(laborChargeValue).toFixed(2)),
     less: addRetComm,
     lineItems: lineItemsArray,
     mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
@@ -752,18 +758,18 @@ const SellBillStep3 = (props) => {
     rent:
       rentTotalValue != 0
         ? Number(rentTotalValue)
-        : (tableChangeStatus
+        : tableChangeStatus
           ? Number(rentValue)
-          : Number(getTotalUnits(rentValue).toFixed(2))),
+          : Number(getTotalUnits(rentValue).toFixed(2)),
     rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
     rtCommIncluded: includeRetComm,
     totalReceivable: Number(getTotalRcble().toFixed(2)),
     transportation:
       transTotalValue != 0
         ? Number(transTotalValue)
-        : (tableChangeStatus
+        : tableChangeStatus
           ? Number(transportationValue)
-          : Number(getTotalUnits(transportationValue).toFixed(2))),
+          : Number(getTotalUnits(transportationValue).toFixed(2)),
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
@@ -787,9 +793,9 @@ const SellBillStep3 = (props) => {
       labourCharges:
         labourTotalValue != 0
           ? Number(labourTotalValue)
-          : (tableChangeStatus
+          : tableChangeStatus
             ? Number(laborChargeValue)
-            : Number(getTotalUnits(laborChargeValue).toFixed(2))),
+            : Number(getTotalUnits(laborChargeValue).toFixed(2)),
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
@@ -800,20 +806,21 @@ const SellBillStep3 = (props) => {
       rent:
         rentTotalValue != 0
           ? Number(rentTotalValue)
-          : (tableChangeStatus
+          : tableChangeStatus
             ? Number(rentValue)
-            : Number(getTotalUnits(rentValue).toFixed(2))),
+            : Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
       rtCommIncluded: includeRetComm,
       totalPayRecieevable: Number(getTotalRcble().toFixed(2)),
       transportation:
         transTotalValue != 0
           ? Number(transTotalValue)
-          : (tableChangeStatus
+          : tableChangeStatus
             ? Number(transportationValue)
-            : Number(getTotalUnits(transportationValue).toFixed(2))),
+            : Number(getTotalUnits(transportationValue).toFixed(2)),
 
-      transporterId: transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
+      transporterId:
+        transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
     },
     billId: billEditItem.billId,
     billType: "SELL",
@@ -826,7 +833,6 @@ const SellBillStep3 = (props) => {
   };
 
   const postsellbill = () => {
-    console.log(editBillRequestObj)
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -837,11 +843,13 @@ const SellBillStep3 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {
               navigate("/sellbillbook");
               window.location.reload();
-            }, 2000);
+            }, 1000);
           }
         },
         (error) => {
@@ -852,21 +860,20 @@ const SellBillStep3 = (props) => {
         }
       );
     } else {
-      console.log(sellBillRequestObj)
       postsellbillApi(sellBillRequestObj).then(
         (response) => {
           if (response.data.status.message === "SUCCESS") {
             toast.success(response.data.status.description?.toUpperCase(), {
               toastId: "success1",
             });
-
-            // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
-            window.setTimeout(function () {
+            window.setTimeout(function (){
               props.closem();
+            },800);
+            window.setTimeout(function () {
               navigate("/sellbillbook");
               window.location.reload();
-            }, 2000);
+            }, 1000);
           }
         },
         (error) => {
@@ -878,32 +885,14 @@ const SellBillStep3 = (props) => {
       );
     }
   };
-  const handleInputValueEvent = (e) => {
-    $("input").keypress(function (e) {
-      var a = [];
-      var k = e.which;
-      if (e.charCode === 46) {
-        // if dot is the first symbol
-        if (e.target.value.length === 0) {
-          e.preventDefault();
-          return;
-        }
 
-        // if there are dots already
-        if (e.target.value.indexOf(".") !== -1) {
-          e.preventDefault();
-          return;
-        }
-
-        a.push(e.charCode);
-      }
-      for (i = 48; i < 58; i++) a.push(i);
-      if (!($.inArray(k, a) >= 0)) e.preventDefault();
-    });
-  };
   const [enterVal, setEnterVal] = useState();
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
+    var val = e.target.value
+      .replace(/[^\d.]/g, "")
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+      .replace(/(\.\d{0,2})\d*/, "$1")
+      .replace(/(\.\d*)\./, "$1");
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -915,16 +904,45 @@ const SellBillStep3 = (props) => {
               groupLiist[i],
               i
             );
-          } else {
-            tab.push({
-              comments: "string",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+          }
+          else {
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje, fee: getTargetValue(
+                    e.target.value,
+                    groupLiist[i],
+                    i
+                  )
+                };
+                tab[tabIndex] = tabObje;
+              }
+            }
+            else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
           }
           setQuestionsTitle(tab);
         }
@@ -939,8 +957,11 @@ const SellBillStep3 = (props) => {
     setEnterVal(val);
   };
   const fieldOnchangeEvent = (groupLiist, index) => (e) => {
-    var val = e.target.value.replace(/[^0-9.]/g, "");
-
+    var val = e.target.value
+      .replace(/[^\d.]/g, "")
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+      .replace(/(\.\d{0,2})\d*/, "$1")
+      .replace(/(\.\d*)\./, "$1");
     let updatedItem3 = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
@@ -952,16 +973,45 @@ const SellBillStep3 = (props) => {
               groupLiist[i],
               i
             );
-          } else {
-            tab.push({
-              comments: "string",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
+          }
+          else {
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje, fee: getTargetValue(
+                    e.target.value,
+                    groupLiist[i],
+                    i
+                  )
+                };
+                tab[tabIndex] = tabObje;
+              }
+            }
+            else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
           }
           setQuestionsTitle(tab);
         }
@@ -992,17 +1042,41 @@ const SellBillStep3 = (props) => {
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
-          } else {
-            tab.push({
-              comments: "string",
-              fee: Number(e.target.value),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
           }
+          else {
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: Number(e.target.value),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = { ...tabObje, fee: Number(e.target.value) };
+                tab[tabIndex] = tabObje;
+              }
+            }
+            else {
+              tab.push({
+                comments: "string",
+                fee: Number(e.target.value),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
+          }
+
           setQuestionsTitle(tab);
         }
         getOnchangeTotals(groupLiist[i], val);
@@ -1015,33 +1089,64 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const commRetCommOnchangeEvent = (groupLiist, index) => (e) => {
-    // var val = e.target.value.replace(/[^0-9.]/g, "");
-    handleInputValueEvent(e);
-    var val = e.target.value;
-    // if (val != 0) {
+    var val = e.target.value
+      .replace(/[^\d.]/g, "")
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+      .replace(/(\.\d{0,2})\d*/, "$1")
+      .replace(/(\.\d*)\./, "$1");
     let updatedItem2 = groupLiist.map((item, i) => {
       if (i == index) {
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
-          let tabIndex = tab.findIndex((x) => x.index === index);
+          let tabIndex = tab.findIndex((x) => x.index === i);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = getTargetValue(
               e.target.value,
               groupLiist[i],
               i
             );
-          } else {
-            tab.push({
-              comments: "",
-              fee: getTargetValue(e.target.value, groupLiist[i], i),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
           }
-          setQuestionsTitle(tab);
+          else {
+            if (editStatus) {
+
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: getTargetValue(e.target.value, groupLiist[i], i),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: i,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje, fee: getTargetValue(
+                    e.target.value,
+                    groupLiist[i],
+                    i
+                  )
+                };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee: getTargetValue(e.target.value, groupLiist[i], i),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: i,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
+            setQuestionsTitle(tab);
+          }
+
         }
         getAdditionValues(groupLiist[i], val);
         return {
@@ -1054,7 +1159,6 @@ const SellBillStep3 = (props) => {
       }
     });
     setAllGroups([...updatedItem2]);
-    // }
     setEnterVal(val);
   };
   const commRetComTotalOnchangeEvent = (groupLiist, index) => (e) => {
@@ -1070,17 +1174,43 @@ const SellBillStep3 = (props) => {
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
             tab[tabIndex].fee = Number(e.target.value);
-          } else {
-            tab.push({
-              comments: "",
-              fee: Number(e.target.value),
-              field: groupLiist[i].cstmName,
-              fieldName: groupLiist[i].settingName,
-              fieldType: groupLiist[i].fieldType,
-              index: index,
-              less: groupLiist[i].addToGt == 1 ? false : true,
-            });
           }
+          else {
+            if (editStatus) {
+
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === groupLiist[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee: Number(e.target.value),
+                  field: groupLiist[i].cstmName,
+                  fieldName: groupLiist[i].settingName,
+                  fieldType: groupLiist[i].fieldType,
+                  index: index,
+                  less: groupLiist[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = { ...tabObje, fee: Number(e.target.value) };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee: Number(e.target.value),
+                field: groupLiist[i].cstmName,
+                fieldName: groupLiist[i].settingName,
+                fieldType: groupLiist[i].fieldType,
+                index: index,
+                less: groupLiist[i].addToGt == 1 ? false : true,
+              });
+            }
+            setQuestionsTitle(tab);
+          }
+
+
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], v);
@@ -1095,7 +1225,11 @@ const SellBillStep3 = (props) => {
     if (list.fieldType == "SIMPlE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
-      return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      if (tableChangeStatus) {
+        return (list.fee = Number(val));
+      } else {
+        return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+      }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
     }
@@ -1143,9 +1277,7 @@ const SellBillStep3 = (props) => {
       }
     }
     if (groupLiist.settingName == "CASH_RECEIVED") {
-      if (v != "") {
-        getCashRcvdValue(v);
-      }
+      getCashRcvdValue(v);
     }
     if (groupLiist.settingName == "ADVANCES") {
       if (v != "") {
@@ -1167,30 +1299,20 @@ const SellBillStep3 = (props) => {
   const [cropTableEditStatus, setcropTableEditStatus] = useState(
     billEditItemInfo?.cropTableEditStatus
   );
-  const [selectedCrops, setselectedCrops] = useState(
-    []
-  );
+  const [selectedCrops, setselectedCrops] = useState([]);
   const callbackFunctionPartySelect = (
     partyselectedarray,
     trans,
-    // cropTableEditStatus,
     cropEditObject,
-    // billEditStatus,
     slectedCropstableArray,
     selectedCrops
-    // selectedPartyType,
-    // selectedBilldate
   ) => {
     setpartnerSelectedData(partyselectedarray);
     setTranspoSelectedData(trans);
     props.step3ParentCallback(
-      //   cropTableEditStatus,
       cropEditObject,
-      //   billEditStatus,
       slectedCropstableArray,
       selectedCrops
-      //   selectedPartyType,
-      //   selectedBilldate
     );
     setcropEditObject(cropEditObject);
     setselectedCrops(selectedCrops);
@@ -1209,7 +1331,11 @@ const SellBillStep3 = (props) => {
     );
     dispatch(fromBillbook(false));
     dispatch(tableEditStatus(true));
-    props.step3ParentCallback(slectedCropstableArray, slectedCropstableArray, selectedCrops);
+    props.step3ParentCallback(
+      slectedCropstableArray,
+      slectedCropstableArray,
+      selectedCrops
+    );
   };
   const cancelStep = () => {
     dispatch(selectTrans(null));
@@ -1219,42 +1345,59 @@ const SellBillStep3 = (props) => {
       window.location.reload();
     }
   };
-  const [commentShownStatus, setCommentShownStatus] = useState(editStatus ? (billEditItemInfo?.selectedBillInfo?.comments != '' ? true : false) : false);
+  const [commentShownStatus, setCommentShownStatus] = useState(
+    editStatus
+      ? billEditItemInfo?.selectedBillInfo?.comments != ""
+        ? true
+        : false
+      : false
+  );
   const addCommentClick = () => {
     setCommentShownStatus(true);
   };
   const commentText = (e) => {
     var val = e.target.value;
     setCommentFieldText(val);
-  }
-  $('#disable').on('click', function () {
-    $('#disable').attr("disabled", true);
+  };
+  $("#disable").on("click", function () {
+    $("#disable").attr("disabled", true);
   });
   const cstmCommentText = (groupLiist, index) => (e) => {
     var val = e.target.value;
-    console.log('hey comment')
     let updatedItems = groupLiist.map((item, i) => {
       if (i == index) {
-        console.log(groupLiist[i])
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
-            console.log('tab push', 'if')
             tab[tabIndex].comments = val;
-            tab[tabIndex].fee = groupLiist[i].value;
+            if (
+              groupLiist[index]?.fieldType.toUpperCase() == "SIMPLE" ||
+              groupLiist[index].fieldType == null
+            ) {
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            } else if (
+              groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS"
+            ) {
+              tab[tabIndex].fee = parseFloat(groupLiist[i].value);
+            } else {
+              tab[tabIndex].fee = groupLiist[i].totalVal;
+            }
           } else {
-            console.log('tab push', 'else')
             tab.push({
               comments: val,
-              fee: groupLiist[i].value,
+              fee:
+                groupLiist[index]?.fieldType == "SIMPLE"
+                  ? parseFloat(groupLiist[i].value)
+                  : groupLiist[index]?.fieldType.toUpperCase() == "COMPLEX_RS"
+                    ? parseFloat(groupLiist[i].value)
+                    : groupLiist[i].totalVal,
               field: groupLiist[i].cstmName,
               fieldName: groupLiist[i].settingName,
               fieldType: groupLiist[i].fieldType,
               index: index,
               less: groupLiist[i].addToGt == 1 ? false : true,
             });
-            console.log(tab);
             setQuestionsTitle(tab);
           }
         }
@@ -1283,7 +1426,13 @@ const SellBillStep3 = (props) => {
                   ? billEditItemInfo.selectedBillInfo
                   : transpoSelectedData
               }
-              selectedCrop={editStatus ? step2CropEditStatus ? props.slectedSellCropsArray : billEditItemInfo.selectedBillInfo : props.slectedSellCropsArray}
+              selectedCrop={
+                editStatus
+                  ? step2CropEditStatus
+                    ? props.slectedSellCropsArray
+                    : billEditItemInfo.selectedBillInfo
+                  : props.slectedSellCropsArray
+              }
             />
           </div>
           <div className="col-lg-6">
@@ -1296,43 +1445,102 @@ const SellBillStep3 = (props) => {
                 ? allGroups.map((item, index) => {
                   if (item.tableType == 2) {
                     return (
-                      <CommissionCard
-                        title={item.settingName}
-                        rateTitle={item.subText}
-                        onChange={commRetCommOnchangeEvent(allGroups, index)}
-                        inputValue={allGroups[index].value}
-                        inputText={allGroups[index].totalVal}
-                        totalTitle="Total"
-                        totalOnChange={commRetComTotalOnchangeEvent(
-                          allGroups,
-                          index
+                      <div>
+                        <CommissionCard
+                          title={item.settingName}
+                          rateTitle={item.subText}
+                          onChange={commRetCommOnchangeEvent(
+                            allGroups,
+                            index
+                          )}
+                          inputValue={allGroups[index].value}
+                          inputText={allGroups[index].totalVal}
+                          totalTitle="Total"
+                          totalOnChange={commRetComTotalOnchangeEvent(
+                            allGroups,
+                            index
+                          )}
+                        />
+                        {item?.comments ? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
                         )}
-                      />
+                      </div>
                     );
                   } else if (allGroups[index].tableType == 3) {
                     return tableChangeStatus ? (
-                      <div className="comm_cards">
-                        <div className="card input_card">
-                          <div className="row">
-                            <div className="col-lg-3 title_bg">
-                              <h5 className="comm_card_title mb-0">
-                                {getText(allGroups[index].settingName)}
-                              </h5>
-                            </div>
-                            <div className="col-lg-9 col-sm-12 col_left_border">
-                              <input
-                                type="text"
-                                placeholder=""
-                                onFocus={(e) => resetInput(e)}
-                                value={allGroups[index].value}
-                                onChange={advLevOnchangeEvent(
-                                  allGroups,
-                                  index
-                                )}
-                              />
+                      <div>
+                        <div className="comm_cards">
+                          <div className="card input_card">
+                            <div className="row">
+                              <div className="col-lg-3 title_bg">
+                                <h5 className="comm_card_title mb-0">
+                                  {getText(allGroups[index].settingName)}
+                                </h5>
+                              </div>
+                              <div className="col-lg-9 col-sm-12 col_left_border">
+                                <input
+                                  type="text"
+                                  placeholder=""
+                                  onFocus={(e) => resetInput(e)}
+                                  value={allGroups[index].value}
+                                  onChange={advLevOnchangeEvent(
+                                    allGroups,
+                                    index
+                                  )}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
+                        {item?.comments ? (
+                          <div className="comm_cards">
+                            <div className="card input_card">
+                              <div className="row">
+                                <div className="col-lg-3 title_bg">
+                                  <h5 className="comm_card_title mb-0">
+                                    Comments
+                                  </h5>
+                                </div>
+                                <div className="col-lg-9 col-sm-12 col_left_border">
+                                  <input
+                                    type="text"
+                                    placeholder=""
+                                    value={allGroups[index].commentText}
+                                    onChange={cstmCommentText(
+                                      allGroups,
+                                      index
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     ) : (
                       <CommonCard
@@ -1373,7 +1581,7 @@ const SellBillStep3 = (props) => {
                             </div>
                           </div>
                         </div>
-                        {item?.comments? (
+                        {item?.comments ? (
                           <div className="comm_cards">
                             <div className="card input_card">
                               <div className="row">
@@ -1443,11 +1651,15 @@ const SellBillStep3 = (props) => {
             <div className="default_card comm_total_card total_bal">
               <div className="totals_value pt-0">
                 <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">{grossTotal.toFixed(2)}</h6>
+                <h6 className="black_color">
+                  {getCurrencyNumberWithOutSymbol(grossTotal)}
+                </h6>
               </div>
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
-                <h6 className="color_green">{getTotalBillAmount()}</h6>
+                <h6 className="color_green">
+                  {getCurrencyNumberWithOutSymbol(getTotalBillAmount())}
+                </h6>
               </div>
               {outBalformStatusvalue ? (
                 <div className="totals_value">
@@ -1455,8 +1667,8 @@ const SellBillStep3 = (props) => {
                   <h6 className="color_green">
                     {outBal != 0
                       ? editStatus
-                        ? billEditItem?.outStBal
-                        : outBal.toFixed(2)
+                        ? getCurrencyNumberWithOutSymbol(billEditItem?.outStBal)
+                        : getCurrencyNumberWithOutSymbol(outBal)
                       : "0"}
                   </h6>
                 </div>
@@ -1483,13 +1695,15 @@ const SellBillStep3 = (props) => {
                 <div className="totals_value">
                   <h5>Final Ledger Balance (₹)</h5>
                   <h6 className="color_green">
-                    {getFinalLedgerbalance().toFixed(2)}
+                    {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
                   </h6>
                 </div>
               ) : (
                 <div className="totals_value">
                   <h5>Total Receivables (₹)</h5>
-                  <h6 className="color_green">{getTotalRcble().toFixed(2)}</h6>
+                  <h6 className="color_green">
+                    {getCurrencyNumberWithOutSymbol(getTotalRcble())}
+                  </h6>
                 </div>
               )}
             </div>
@@ -1503,10 +1717,17 @@ const SellBillStep3 = (props) => {
             cancel
           </button>
           <div className="d-flex align-items-center">
-            <button className="secondary_btn no_delete_btn" onClick={() => previousStep()}>
+            <button
+              className="secondary_btn no_delete_btn"
+              onClick={() => previousStep()}
+            >
               Previous
             </button>
-            <button className="primary_btn" id="disable" onClick={() => postsellbill()}>
+            <button
+              className="primary_btn"
+              id="disable"
+              onClick={() => postsellbill()}
+            >
               Submit
             </button>
           </div>
