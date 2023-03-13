@@ -647,6 +647,7 @@ function BuyBillBook() {
           showBillViewModal={showBillModal}
           closeBillViewModal={() => setShowBillModal(false)}
           allBillsData={buyBillData}
+          fromLedger={false}
         />
       ) : (
         ""

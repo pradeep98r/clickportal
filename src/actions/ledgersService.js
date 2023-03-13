@@ -50,6 +50,21 @@ export function getOutstandingBal(clickId,partyId,){
     `/click/ledgers/balance/caId/${clickId}/partyId/${partyId}`
   );
 }
+export function getBuyBillId(clickId,billId){
+  return axiosCommon.get(
+    `/click/bills/buy-bill/caId/${clickId}/billId/${billId}`
+  );
+}
+export function getSellBillId(clickId,billId){
+  return axiosCommon.get(
+    `/click/bills/sales-bill/caId/${clickId}/billId/${billId}`
+  );
+}
+export function getPaymentListById(clickId,billId){
+  return axiosCommon.get(
+    `/click/ledgers/caId/${clickId}/refId/${billId}`
+  );
+}
 export default{
     getLedgers,
     getLedgerSummary,
@@ -58,5 +73,8 @@ export default{
     getSellerDetailedLedger,
     getSellerDetailedLedgerByDate,
     postRecordPayment,
-    getOutstandingBal
+    getOutstandingBal,
+    getBuyBillId,
+    getSellBillId,
+    getPaymentListById
 }
