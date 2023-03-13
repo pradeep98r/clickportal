@@ -3,6 +3,7 @@ import moment from "moment/moment";
 import { useSelector } from "react-redux";
 const BillViewFooter = (props) => {
   var billViewData = useSelector((state) => state.billViewInfo);
+  
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
