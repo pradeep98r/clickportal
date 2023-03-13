@@ -344,12 +344,21 @@ const Partner = () => {
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             console.log(obj, "obj");
-            tabEvent(partyType);
             toast.success("Updated Successfully", {
               toastId: "success2",
             });
-
-            handleRefreshClick();
+            getPartnerData(clickId, partyType)
+            .then((response) => {
+              setAllData(response.data.data);
+              setPartnerData(response.data.data);
+              // setIsLoading(false);
+            })
+            .catch((error) => {
+              if (error.toJSON().message === "Network Error") {
+                setOnline(true);
+              }
+            });
+            // handleRefreshClick();
           }
         },
         (error) => {
@@ -364,11 +373,23 @@ const Partner = () => {
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            tabEvent(partyType);
+            // tabEvent(partyType);
             toast.success(response.data.status.message, {
               toastId: "success2",
             });
-            handleRefreshClick();
+            getPartnerData(clickId, partyType)
+            .then((response) => {
+              setAllData(response.data.data);
+              setPartnerData(response.data.data);
+              // setIsLoading(false);
+            })
+            .catch((error) => {
+              if (error.toJSON().message === "Network Error") {
+                setOnline(true);
+              }
+            });
+            // window.location.reload();
+            // handleRefreshClick();
           }
         },
         (error) => {
@@ -434,7 +455,6 @@ const Partner = () => {
         if (error.toJSON().message === "Network Error") {
           setOnline(true);
         }
-        console.log(error.message);
       });
   };
   const links = [

@@ -838,13 +838,10 @@ const Step33 = (props) => {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
+           
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
             localStorage.setItem("LinkPath", "/buy_bill_book");
-
             window.setTimeout(function (){
               props.closem();
             },800);
@@ -852,6 +849,9 @@ const Step33 = (props) => {
               navigate("/buy_bill_book");
               window.location.reload();
             }, 1000);
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
           }
         },
         (error) => {
