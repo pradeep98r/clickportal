@@ -337,7 +337,7 @@ const BillView = (props) => {
          
        <div className="row" style={{'width':'100%'}}>
          <div className="col-lg-10 p-0 ">
-           <div className="d-flex justify-content-center align-items-center"></div>
+           <div className="d-flex justify-content-center align-items-center">
         <button
           onClick={() => {
             previousBill(billData?.index + 1);
@@ -361,6 +361,7 @@ const BillView = (props) => {
             alt="image"
           />
         </button>
+        </div>
       </div>
       <div className="col-lg-2">
 
