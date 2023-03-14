@@ -6,6 +6,7 @@ import "../ledgers/paymentHistory.scss";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import PaymentHistoryCard from "../../components/paymentHistoryCard";
 import cancel from "../../assets/images/cancel.svg";
+import edit from "../../assets/images/edit_round.svg";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const [paymentHistoryData, setPaymentHistoryData] = useState(
@@ -117,9 +118,20 @@ const PaymentHistoryView = (props) => {
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
+            {paymentHistoryData.comments == 'FROM BILL' ? '' : <div>
+            <p className="more-p-tag">Actions</p>
               <div>
-                <p className="more-p-tag">Actions</p>
                 <div className="action_icons">
+                  {paymentHistoryData.billPaid ? (
+                    ""
+                  ) : (
+                    <div className="items_div">
+                      <button>
+                        <img src={edit} alt="img" className="" />
+                      </button>
+                      <p>Edit</p>
+                    </div>
+                  )}
                   <div className="items_div">
                     <button>
                       <img src={cancel} alt="img" className="" />
@@ -128,6 +140,7 @@ const PaymentHistoryView = (props) => {
                   </div>
                 </div>
               </div>
+            </div> }
             </div>
           </div>
         </div>

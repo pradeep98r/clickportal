@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import edit from "../../assets/images/edit_round.svg";
+import received_stamp from "../../assets/images/received_stamp.svg";
+import paid_stamp from "../../assets/images/paid_stamp.svg";
+import pay_icon from "../../assets/images/pay_icon.svg";
 import { useNavigate } from "react-router-dom";
 import { editbuybillApi } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
@@ -280,7 +283,7 @@ const BillView = (props) => {
                 <div className="stamp_img">
                   {(billData?.billStatus?.toUpperCase() == "CANCELLED" || displayCancel) ? (
                     <img src={cancel_bill_stamp} alt="stammp_img" />
-                  ) : ''}
+                  ) : billData?.paid ? ((billData?.partyType.toUpperCase() === "FARMER") || (billData?.partyType.toUpperCase() === "SELLER") ? <img src={paid_stamp} alt="stammp_img" /> : <img src={received_stamp} alt="stammp_img"/>) : '' }
                 </div>
 
                 {prevNextStatus ? (
@@ -301,9 +304,28 @@ const BillView = (props) => {
               {billData?.billStatus?.toUpperCase() == "CANCELLED" || displayCancel ? (
                 ""
               ) : (
+                billData?.paid ? '' : 
                 <div>
                   <p className="more-p-tag">Actions</p>
                   <div className="action_icons">
+                  <div className="items_div">
+                      <button >
+                      <img
+                        src={pay_icon}
+                        alt="img"
+                      />
+                      </button>
+                      <p>Pay</p>
+                    </div>
+                    <div className="items_div">
+                      <button onClick={() => editBill(billData)}>
+                      <img
+                        src={edit}
+                        alt="img"
+                      />
+                      </button>
+                      <p>Edit</p>
+                    </div>
                     <div className="items_div">
                      <button onClick={() => handleCheckEvent()}>
                      <img
@@ -315,19 +337,12 @@ const BillView = (props) => {
                      </button>
                       <p>Cancel</p>
                     </div>
-                    <div className="items_div">
-                      <button onClick={() => editBill(billData)}>
-                      <img
-                        src={edit}
-                        alt="img"
-                       
-                      />
-                      </button>
-                      <p>Edit</p>
-                    </div>
+                   
+                   
                   </div>
-                </div>
-              )}
+                </div> 
+              )
+              }
             </div>
           </div>
         </div>

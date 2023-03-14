@@ -1,7 +1,6 @@
 import { useState, React } from "react";
 import "../../modules/ledgers/buyerLedger.scss";
 import moment from "moment";
-import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
   getCurrencyNumberWithOutSymbol,
 } from "../../components/getCurrencyNumber";
@@ -16,6 +15,7 @@ import { billViewInfo } from "../../reducers/billViewSlice";
 import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import tick from "../../assets/images/tick.svg";
 const LedgerSummary = (props) => {
   // const partyId = props.ledgerId;
   const ledgerSummary = props.LedgerSummary;
@@ -108,8 +108,13 @@ const LedgerSummary = (props) => {
                           onClick={() =>
                             billOnClickView(item.refId, ledgerType, index)
                           }
-                        >
-                          {item.refId}
+                        > 
+                        
+                          <div className="d-flex">
+                            <span>{item.refId}</span>
+                            {item?.billPaid ? (<img src={tick} alt="image" className="ml-2" />) : '' }
+
+                          </div>
                         </p>
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
