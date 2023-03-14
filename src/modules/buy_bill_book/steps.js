@@ -134,6 +134,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
+                  fromLedger = {props.fromLedger}
                 />
               );
             case partyType.toUpperCase() === "BUYER" && "step3":
@@ -144,6 +145,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
+                  fromLedger = {props.fromLedger}
                 />
               );
           }

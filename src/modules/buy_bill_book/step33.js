@@ -838,9 +838,9 @@ const Step33 = (props) => {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-           
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
+           if(!(props.fromLedger)){
             localStorage.setItem("LinkPath", "/buy_bill_book");
             window.setTimeout(function (){
               props.closem();
@@ -849,9 +849,21 @@ const Step33 = (props) => {
               navigate("/buy_bill_book");
               window.location.reload();
             }, 1000);
+           }
+           else{
+            console.log('from ledger step3',props.fromLedger)
+            window.setTimeout(function (){
+              props.closem();
+            },800);
+            window.setTimeout(function () {  
+              navigate("/sellerledger");
+              window.location.reload();
+            }, 1000);
+           }
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
+            
           }
         },
         (error) => {

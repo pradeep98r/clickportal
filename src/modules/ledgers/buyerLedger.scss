@@ -579,3 +579,33 @@ a:hover{
       font-size: 11px;
     }
   }
+  .billHistory_view{
+      h6,p{
+          font-size: 12px;
+          font-weight: 800;
+          color: #595959;
+      }
+      p{
+          font-weight: 500;
+      }
+      .billHistory_view_row{
+          padding: 20px 0px;
+          border-top: 1px solid #E4E4E4;
+      }
+      .col-lg-3{
+          padding: 0px 10px;
+      }
+      .date_text{
+          font-size: 10px;
+          font-weight: normal;
+      }
+  }
+  .billHistoryViewData_modal{
+    .modal-dialog{
+max-width: 600px;
+      }
+  }
+  .billHistory_view_main_div {
+    max-height: calc(100vh - 240px);
+    overflow-y: auto;
+}

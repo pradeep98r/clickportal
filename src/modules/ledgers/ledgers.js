@@ -884,6 +884,7 @@ const Ledgers = (props) => {
                           LedgerSummary={ledgerSummary}
                           partyType={props.type}
                           dateDisplay={dateDisplay}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -895,6 +896,7 @@ const Ledgers = (props) => {
                           allCustomTab={allCustom}
                           partyType={props.type}
                           dateDisplay={dateDisplay}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -906,6 +908,7 @@ const Ledgers = (props) => {
                           ledgerTab={ledgerTabs}
                           allCustomTab={allCustom}
                           partyType={props.type}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -917,6 +920,7 @@ const Ledgers = (props) => {
                           ledgerTab={ledgerTabs}
                           allCustomTab={allCustom}
                           partyType={props.type}
+                          partyId={partyId}
                         />
                       ) : (
                         ""

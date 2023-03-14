@@ -9,6 +9,7 @@ import {
   getBuyBillId,
   getSellBillId,
   getPaymentListById,
+  getAdvanceListById,
 } from "../../actions/ledgersService";
 import { useDispatch } from "react-redux";
 import { billViewInfo } from "../../reducers/billViewSlice";
@@ -17,7 +18,7 @@ import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import tick from "../../assets/images/tick.svg";
 const LedgerSummary = (props) => {
-  // const partyId = props.ledgerId;
+  const partyId = props.partyId;
   const ledgerSummary = props.LedgerSummary;
   const ledgerSummaryByDate = props.LedgerSummaryByDate;
   const allCustom = props.allCustomTab;
@@ -30,8 +31,8 @@ const LedgerSummary = (props) => {
   const [showBillModal, setShowBillModal] = useState(false);
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const billOnClickView = (billId, type, i) => {
-    console.log(billId, type);
+  const billOnClickView = (billId, type, i, partyId) => {
+    console.log(billId, type,partyId);
     var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
     if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
@@ -42,7 +43,18 @@ const LedgerSummary = (props) => {
           setShowPaymentModal(true);
         }
       });
-    } else {
+    } 
+   else if (bId?.includes("A")) {
+      getAdvanceListById(clickId, bId, partyId).then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          console.log(res.data.data);
+          dispatch(paymentViewInfo(res.data.data));
+          setShowPaymentModalStatus(true);
+          setShowPaymentModal(true);
+        }
+      });
+    } 
+    else {
       if (type?.toLowerCase() == "seller" || type?.toLowerCase() == "farmer") {
         getBuyBillId(clickId, bId).then((res) => {
           if (res.data.status.type === "SUCCESS") {
@@ -67,6 +79,7 @@ const LedgerSummary = (props) => {
       }
     }
   };
+  
   return (
     <div>
       {allCustom == "all" ? (
@@ -106,7 +119,7 @@ const LedgerSummary = (props) => {
                         <p
                           style={{ color: "#0066FF" }}
                           onClick={() =>
-                            billOnClickView(item.refId, ledgerType, index)
+                            billOnClickView(item.refId, ledgerType, index, partyId)
                           }
                         > 
                         
@@ -185,7 +198,19 @@ const LedgerSummary = (props) => {
                         <p id="p-common-sno">{index + 1}</p>
                       </td>
                       <td className="col-2">
-                        <p style={{ color: "#0066FF" }}>{item.refId}</p>
+                        <p
+                          style={{ color: "#0066FF" }}
+                          onClick={() =>
+                            billOnClickView(item.refId, ledgerType, index, partyId)
+                          }
+                        > 
+                        
+                          <div className="d-flex">
+                            <span>{item.refId}</span>
+                            {item?.billPaid ? (<img src={tick} alt="image" className="ml-2" />) : '' }
+
+                          </div>
+                        </p>
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-3">
