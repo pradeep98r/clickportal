@@ -116,11 +116,12 @@ const LedgerSummary = (props) => {
                         <p id="p-common-sno">{index + 1}</p>
                       </td>
                       <td className="col-2">
+                        <button onClick={() =>
+                            billOnClickView(item.refId, ledgerType, index, partyId)
+                          }>
                         <p
                           style={{ color: "#0066FF" }}
-                          onClick={() =>
-                            billOnClickView(item.refId, ledgerType, index, partyId)
-                          }
+                          
                         > 
                         
                           <div className="d-flex">
@@ -129,6 +130,7 @@ const LedgerSummary = (props) => {
 
                           </div>
                         </p>
+                        </button>
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-3">
