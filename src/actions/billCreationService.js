@@ -86,7 +86,7 @@ export function getPreferredCrops(clickId) {
   );
 }
 export function getAllCrops() {
-  return axiosCommon.get("https://dev-api.onoark.com/v1/account/common/crops", {
+  return axiosCommon.get("/account/common/crops", {
 
   });
 }
