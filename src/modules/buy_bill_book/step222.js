@@ -221,17 +221,7 @@ const Step22 = (props) => {
         crop,
         { wastage: 0 },
         { qty: 0 },
-        {
-          rateType:
-            defaultUnitTypeVal == "unit_kg"
-              ? "kgs"
-              : (cIndex != -1
-              ? getQuantityUnit(qSetting, cIndex)
-              : "kgs"),
-
-          // getUnitVal(qSetting, cIndex)
-          // : "Crates",
-        },
+        
         { weight: 0 },
         { rate: 0 },
         { total: 0 },
@@ -240,7 +230,18 @@ const Step22 = (props) => {
         { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates" },
         { activeSearch: false },
         { displayStat: false },
-        { cropDelete: false }
+        { cropDelete: false },
+        {
+          rateType:
+            defaultUnitTypeVal == "unit_kg"
+              ? "kgs"
+              : (cIndex != -1
+              ? getQuantityUnit(qSetting, cIndex)
+              : crop.qtyUnit),
+
+          // getUnitVal(qSetting, cIndex)
+          // : "Crates",
+        },
       );
     }
     console.log(crop,defaultUnitTypeVal,cIndex);
