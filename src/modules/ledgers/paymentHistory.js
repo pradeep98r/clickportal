@@ -39,9 +39,10 @@ const PaymentHistoryView = (props) => {
   }, [props.showPaymentViewModal]);
 
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
+  const [recordPaymentModal, setRecordPaymentModal] = useState(false);
   const activeRecordPayment =()=>{
     setRecordPaymentActive(true);
-    console.log("its true")
+    setRecordPaymentModal(true);
   }
   return (
     <Modal
@@ -181,8 +182,11 @@ const PaymentHistoryView = (props) => {
           </div>
         </div>
         {recordPaymentActive?
-        <RecordPayment LedgerData={paymentViewData?.paymentViewInfo}
+        <RecordPayment 
+          LedgerData={paymentViewData?.paymentViewInfo}
           ledgerId={paymentViewData?.paymentViewInfo?.partyId}
+          showRecordPaymentModal={recordPaymentModal}
+          closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
           fromPaymentHistory={recordPaymentActive} />:''}
       </div>
     </Modal>
