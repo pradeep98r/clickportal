@@ -609,3 +609,21 @@ max-width: 600px;
     max-height: calc(100vh - 240px);
     overflow-y: auto;
 }
+
+  .select-bill-box{
+    width: 100%;
+    height: 40px;
+    background: #FFFFFF;
+    border: 1px solid #C9C9C9;
+    border-radius: 4px;
+    // overflow-x: scroll;
+  }
+  .pselect-bill{
+    color: #0066FF;
+    padding: 10px 10px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .select-bills{
+    padding: 0px 0px;
+  }

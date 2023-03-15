@@ -76,6 +76,12 @@ export function getBillHistoryListById(clickId,billId,type){
     `/click/bills/history/caId/${clickId}/refId/${billId}/type/${type}`
   );
 }
+
+export function getListOfBillIds(clickId, partyId,fromDate, toDate){
+  return axiosCommon.get(
+    `/common/bills/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}`
+  )
+}
 export default{
     getLedgers,
     getLedgerSummary,
@@ -89,5 +95,6 @@ export default{
     getSellBillId,
     getPaymentListById,
     getBillHistoryListById,
-    getAdvanceListById
+    getAdvanceListById,
+    getListOfBillIds
 }

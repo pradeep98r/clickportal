@@ -259,6 +259,9 @@ const Ledgers = (props) => {
   const [dateCustom, setdateCustom] = useState(false);
   //ledger and detailed ledger tabs
   const ledgerTabEvent = (ledgerTabType) => {
+    if(allCustom == 'all' && ledgerTabType == 'ledgersummary'){
+      summaryData(clickId, partyId);
+    }
     if (allCustom == "all" && ledgerTabType == "detailedledger") {
       if (ledgerType == "BUYER") {
         geyDetailedLedger(clickId, partyId);
@@ -380,6 +383,41 @@ const Ledgers = (props) => {
       }
     }
   };
+  const getData =(data)=>{
+    console.log(data);
+    if(allCustom == 'all' && ledgerTabs =='ledgersummary'){
+      setLedgerSummary(data);
+    } else if(allCustom == 'all' && ledgerTabs == 'detailedledger'){
+      console.log("here")
+      setdetailedLedger(data);
+    } else if(allCustom == 'custom' && ledgerTabs =='ledgersummary'){
+      setSummaryByDate(data)
+    } else{
+      setdetailedLedgerByDate(data);
+    }
+  }
+  const getOutstAmt =(data)=>{
+    setOutStAmt(data);
+  }
+  const getALlLedgers =(data)=>{
+    setLedgers(data);
+  }
+  const getCardDtl=(data)=>{
+    if(allCustom == "all" && ledgerTabs == "ledgersummary"){
+      setSummary(data);
+    }
+    else if(allCustom == "all" && ledgerTabs == "detailedledger"){
+      setTotalDetailed(data);
+    } else if(allCustom == 'custom' && ledgerTabs == "ledgersummary"){
+      setcardDetails(data);
+    } else if(allCustom == 'custom' && ledgerTabs == "detailedledger"){
+        setcardDetailed(data);
+    }
+    
+  }
+  const getPaidRcvd=(rcvd)=>{
+    setPaidRcvd(rcvd)
+  }
   return (
     <div className="main_div_padding">
       {isOnline ? (
@@ -556,10 +594,22 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   <div className="col-lg-7 p-0">
-                    {/* <RecordPayment 
-                                    LedgerData={ledgerData}
-                                    ledgerId ={partyId}
-                                    outStbal = {paidRcvd} /> */}
+                    <RecordPayment 
+                            LedgerData={ledgerData}
+                            ledgerId ={partyId}
+                            ledgerSummary={ledgerSummary}
+                            outStbal = {paidRcvd} 
+                            setSummary={getCardDtl}
+                            ledgerSummaryData={getData}
+                            ledgerTab={ledgerTabs}
+                            allCustomTab={allCustom}
+                            partyType={ledgerType}
+                            ledgers={getALlLedgers}
+                            outStAmt={getOutstAmt}
+                            setPaidRcvd={getPaidRcvd}
+                            startDate={startDate}
+                            endDate={endDate}
+                          />
                     <div className="d-flex">
                       <ul
                         className="nav nav-tabs partner_tabs ledger_all_custom mb-0"
@@ -660,7 +710,7 @@ const Ledgers = (props) => {
                                     ? "coloring"
                                     : "paid-coloring"
                                 }
-                              >
+                                >
                                 {allCustom == "custom" &&
                                 ledgerTabs == "ledgersummary"
                                   ? cardDetails.totalTobePaidRcvd
