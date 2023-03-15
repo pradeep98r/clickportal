@@ -7,8 +7,10 @@ import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import PaymentHistoryCard from "../../components/paymentHistoryCard";
 import cancel from "../../assets/images/cancel.svg";
 import edit from "../../assets/images/edit_round.svg";
+import RecordPayment from "./recordPayment";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
+  console.log(paymentViewData,"data")
   const [paymentHistoryData, setPaymentHistoryData] = useState(
     paymentViewData.paymentViewInfo
   );
@@ -35,6 +37,12 @@ const PaymentHistoryView = (props) => {
     }
     setPaymentHistoryData(paymentViewData.paymentViewInfo);
   }, [props.showPaymentViewModal]);
+
+  const [recordPaymentActive, setRecordPaymentActive] = useState(false);
+  const activeRecordPayment =()=>{
+    setRecordPaymentActive(true);
+    console.log("its true")
+  }
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -152,9 +160,10 @@ const PaymentHistoryView = (props) => {
                         ) : (
                           <div className="items_div">
                             <button>
-                              <img src={edit} alt="img" className="" />
+                              <img src={edit} alt="img" className="" onClick={()=>{activeRecordPayment()}}/>
                             </button>
-                            <p>Edit</p>
+                            <p>
+                              Edit</p>
                           </div>
                         )}
                         <div className="items_div">
@@ -171,6 +180,10 @@ const PaymentHistoryView = (props) => {
             </div>
           </div>
         </div>
+        {recordPaymentActive?
+        <RecordPayment LedgerData={paymentViewData?.paymentViewInfo}
+          ledgerId={paymentViewData?.paymentViewInfo?.partyId}
+          fromPaymentHistory={recordPaymentActive} />:''}
       </div>
     </Modal>
   );
