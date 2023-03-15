@@ -340,7 +340,7 @@ const RecordPayment = (props) => {
         <Modal
             show={props.showRecordPaymentModal}
             close={props.closeRecordPaymentModal}
-             className="modal fade" id="myModal">
+              >
 
             <div className="modal-header">
                 <h5
