@@ -635,7 +635,26 @@ max-width: 600px;
      .modal-dialog{
          max-width: 600px;
      }
+    
  }
  .record_modal_row{
      margin-bottom: 20px!important;
+ }
+ .partner_model_body_row{
+     padding-left: 5px;
+     padding-right: 5px;
+ }
+ .select_billID_popup{
+     .modal-content{
+         margin-top: -50px;
+         height: 630px;
+     }
+ }
+ .bill_id_popup_row {
+     padding: 10px;
+     p{
+         font-size: 13px;
+         font-weight: 500;
+         color: #121212;
+     }
  }

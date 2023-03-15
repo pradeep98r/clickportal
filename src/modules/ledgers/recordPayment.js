@@ -358,9 +358,9 @@ const RecordPayment = (props) => {
       close={props.closeRecordPaymentModal}
       className="record_payment_modal"
     >
-      <div className="modal-body partner_model_body" id="scroll_style">
+      <div className="modal-body partner_model_body">
         <form>
-          <div className="d-flex align-items-center justify-content-between modal_common_header">
+          <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
             <h5 className="modal-title header2_text" id="staticBackdropLabel">
               Add Record Payment
             </h5>
@@ -374,7 +374,7 @@ const RecordPayment = (props) => {
             />
           </div>
           <div className="partner_model_scroll" id="scroll_style">
-            <div className="row">
+            <div className="row partner_model_body_row">
               <div className="col-lg-12 p-0">
                 <div className="card record_modal_row">
                   <div
@@ -437,7 +437,7 @@ const RecordPayment = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="row record_modal_row">
+                <div className="row align-items-center record_modal_row">
                   <div className="col-lg-6 select-bills">
                     <label hmtlFor="amtRecieved" id="amt-tag">
                       Select Bills
@@ -468,8 +468,7 @@ const RecordPayment = (props) => {
                       />
                     )}
                   </div>
-                  <div className="col-lg-2"></div>
-                  <div className="col-lg-4" align="left">
+                  <div className="col-lg-6" align="left">
                     <div className="out-paybles">
                       <p id="p-tag">Outstanding Recievables</p>
                       <p id="recieve-tag">
@@ -506,7 +505,7 @@ const RecordPayment = (props) => {
                 {billIds.length > 0 ? (
                   <div className="row record_modal_row">
                     <div className="col-lg-6 discount-prec">
-                      <label hmtlFor="amtRecieved" className="disc-per">
+                      <label hmtlFor="amtRecieved" className="disc-per" id="amt-tag">
                         Discount(%)
                       </label>
                       <input
@@ -520,8 +519,8 @@ const RecordPayment = (props) => {
                         }}
                       />
                     </div>
-                    <div className="col-lg-6">
-                      <label hmtlFor="amtRecieved" className="disc-per">
+                    <div className="col-lg-6 pl-3">
+                      <label hmtlFor="amtRecieved" className="disc-per" id="amt-tag">
                         Discount(Rs)
                       </label>
                       <input

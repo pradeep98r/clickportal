@@ -303,6 +303,10 @@ input[type=radio]:label {
 }
 #out-paybles{
     margin: auto;
+   
+}
+.out-paybles{
+    padding-left: 40px;
 }
 .react-datepicker__input-container input{
     // border: none;
@@ -403,7 +407,6 @@ input[type=radio]:label {
 .form-check-label{
     font-weight: 600;
     font-size: 13px;
-    padding: 0px 10px;
     color: black;
     cursor: pointer;
 }
