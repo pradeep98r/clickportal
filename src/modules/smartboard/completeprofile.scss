@@ -1,0 +1,226 @@
+
+.modal_popup{
+    .modal-dialog {
+        max-width: 600px;
+    }
+    .hidden_field{
+        visibility: hidden;
+    }
+   
+}
+
+// #market-modal-content{
+//     position: absolute;
+//     margin-top: -100px;
+//     margin-left: 0px;
+// }
+// #other-modal-content{
+//     position: absolute;
+//     margin-top: -5px;
+//     margin-left: 0px;
+//     max-width: 750px;
+// }
+.market_name_popup{
+    max-width: 650px;
+    // margin-top: 0px;
+    iframe{
+        border: none;
+    }
+}
+.market_name_modal_mody{
+    // max-width: 650px;
+    // max-height: calc(100vh - 0px);
+    // margin-top: 60px;
+}
+.drop-down-image{
+    position: absolute;
+    margin: 50px 120px;
+}
+
+.searchicon{
+    padding-top: 5px;
+}
+.note_text{
+    font-size: 12px;
+}
+.custom-select{
+    padding: 18px;
+}
+#searchbar-mk{
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#search-mk-field{
+    padding-bottom: 10px;
+}
+
+.market-names{
+    width: 100%;
+    margin: auto;
+    overflow: auto;
+    max-height: calc(100vh - 300px);
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 4px;
+}
+#market-div{
+    // margin: auto;
+    width: 100%;
+}
+#mk-name{
+    padding:10px 10px;
+    width: 100%;
+    position: relative;
+    #mk-Name{
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 16px;
+        color: #1C1C1C;
+        cursor: pointer;
+        padding: 10px 15px;
+    }
+}
+#mk-header{
+    padding: 10px 0px;
+}
+#hr-lines{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E4E4E4;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+}
+#mk-other-name{
+    border-bottom:1px solid #E4E4E4;
+    padding: 10px;
+}
+#ot-m-img{
+}
+#mk-other-Name{
+    padding: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+    color: #1C1C1C;
+    cursor: pointer;   
+}
+.star-color{
+    color:#D43939;
+}
+.cont_btn {
+    // border-radius: 0px 0px 9px 9px !important;
+  }
+.modal-footer{
+    padding: 0px;
+    border-top: none;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius:0px
+}
+.modal-content{
+    border: 0px solid rgba(0, 0, 0, 0.2);
+}
+input[type=radio]{
+    background-color: #16A12C;
+    border: 2px solid #16A12C;
+    
+  }
+.profileModal{
+    padding: 20px 30px!important;
+    .modal-body {
+        // height: 620px;
+    }
+    .others_name_modal{
+        // height: 530px;
+    }
+    .modal-footer{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+    .othermarkerClose{
+        margin-top: -15px;
+    }
+    .container{
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0px 100px;
+    }
+}
+#mk-name:hover, .marketfrom:hover{
+cursor: pointer;}
+.markets_name_modal, .others_name_modal{
+    padding-top: 0px!important;
+}
+.mk-header_main{
+    padding-bottom: 20px;
+}
+@media(min-width:1600px){
+   .modal_popup .modal-content{
+        height: 770px;
+    }
+    .market-names{
+        max-height: calc(100vh - 340px);
+    }
+    .market-names{
+        // max-height: calc(100vh - 430px);
+    }
+    
+   .profileModal .markets_name_modal{
+       
+        // height: 745px;
+    }
+    .profileModal .others_name_modal{
+        // height: 640px;
+    }
+}
+@media(max-width:1400px){
+    body{
+        height: 100vh;
+        overflow: hidden;
+    }
+    .modal_popup .modal-content{
+        height: 665px;
+        overflow: hidden!important;
+    }
+    .market-names{
+        // max-height: calc(100vh - 300px);
+    }
+   #marketNamePopUpModal{
+    .modal-content{
+        height: 630px;
+    }
+    }
+    #otherModalPopUp{
+        .modal-content{
+            height: 650px;
+            // background-color: yellow;
+        } 
+    }
+    .profileModal .others_name_modal{
+        // height: 630px;
+    }
+    .market-names {
+        max-height: calc(100vh - 265px);}
+}
+.all_popup_header{
+    padding-bottom: 30px;
+}
+.all_popup_modal_footer{
+    padding: 10px;
+    border-top: 0px!important;
+}
+@media(max-width:1300px){
+    .modal_popup .modal-content{
+        height: 580px;
+        overflow: hidden!important;
+    }
+   
+}

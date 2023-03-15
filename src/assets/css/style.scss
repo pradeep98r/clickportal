@@ -4,6 +4,10 @@ body {
   font-family: "Manrope", sans-serif;
   font-weight: normal;
   background-color: var(--ono-primary-background);
+  height: 100%;
+}
+.ui-widget{
+  font-family: "Manrope", sans-serif;
 }
 body p {
   letter-spacing: 0.3px;
@@ -18,7 +22,7 @@ h5,
 h6 {
   margin: 0px;
 }
-a {
+a:hover {
   text-decoration: none;
 }
 .card {
@@ -28,7 +32,17 @@ a {
   background-color: var(--ono-white);
 }
 .main_div_padding {
-  padding: 20px;
+  padding:20px 20px 20px;
+}
+button{
+  border: none;
+  background-color: transparent;
+}
+ul {
+  li{
+    list-style: none;
+  }
+  padding-left: 0px;
 }
 :root {
   --ono-primary: #16a12c;
@@ -46,9 +60,15 @@ a {
   --btn-text: 15px;
   --header5-text: 14px;
   --body-text: 13px;
+  --body-small-text: 12px;
+}
+.header2_text {
+  font-size: var(--header2-text);
+  color: var(--ono-primary-text);
 }
 .main_div {
-  width: calc(100% - 210px);
+  width: calc(100% - 210px)!important;
+  overflow-x: hidden;
 }
 .main_wrapper {
   background-color: var(--ono-primary);
@@ -61,23 +81,26 @@ a {
   padding: 25px;
   width: 100%;
   h1 {
-    font-size: var(--main-heading);
+    font-size: 22px;
   }
 }
 .flex_class {
   display: flex;
   align-items: center;
+  margin-right: 30px;
 }
 .primary_btn,
 .btn_white,
-.outline_btn {
+.outline_btn, .no_delete_btn{
   color: var(--ono-white);
   background-color: var(--ono-primary);
-  border-radius: 4px;
-  padding: 13px 40px;
-  font-size: var(--btn-text);
+  border-radius: 6px;
+  padding: 12px 30px;
+  font-size: 14px;
   border: none;
+  text-transform: uppercase;
 }
+
 .btn_white,
 .outline_btn {
   background-color: var(--ono-white);
@@ -88,17 +111,43 @@ a {
   border: 1px solid var(--ono-primary);
   color: var(--ono-primary);
 }
-.buttons {
-  margin-top: 30px;
+.partner_btn{
+  padding: 12px 20px;
+}
+.secondary_btn,
+.secondary_btn:hover {
+  color: #16A02C;
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 12px 30px;
+  font-size: 14px;
+  border: none;
+  text-transform: uppercase;
+}
+.no_delete_btn{
+  background-color: #D7F3DD!important;
+  color: #16A02C!important;
+  // width: 100%;
+}
+.add_bills_btn, .add_bills_btn:hover {
+  padding: 8px 25px;
+  color: #fff;
+}
+
+.buttons:hover {
+  // margin-top: 30px;
+  background-color: var(--ono-primary);
+  color: #fff;
 }
 .para_margin {
   margin-top: 20px;
 }
 .logo_top {
-  position: absolute;
-  bottom: 15%;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: 5rem;
+  // position: absolute;
+  // bottom: 15%;
+  // left: 50%;
+  // transform: translateX(-50%);
 }
 .green_border {
   border-right: 1px solid var(--ono-primary);
@@ -109,9 +158,17 @@ a {
   border-radius: 10px;
   p {
     font-size: var(--btn-text);
-    color: var(--ono-primary-text);
+    color: var(--ono-primary-text)!important;
     margin-top: 20px;
   }
+}
+.coming_soon{
+  background-color: transparent;
+  padding: 0px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-60%);
 }
 .default_card {
   background-color: var(--ono-white);
@@ -120,7 +177,7 @@ a {
   padding: 20px 30px;
 }
 .green_card {
-  background-color: var(--ono-primary);
+  background-color: #D7F3DD;
   border-radius: 10px;
 }
 .warning_card {
@@ -163,4 +220,131 @@ a {
   .card {
     padding: 20px 30px;
   }
+}
+.cloose:hover{
+  cursor: pointer;
+}
+// bills
+.bottom_div {
+  background-color: var(--ono-white);
+  padding: 10px 20px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 0px 0px 8px 8px;
+  border-top: 1px solid #dee2e6;
+  justify-content: space-between;
+  .primary_btn {
+    margin-left: 20px;
+  }
+}
+.input_field {
+  margin-bottom: 10px;
+}
+.color_black {
+  color: #1c1c1c!important;
+}
+// scrollbar css
+#scroll_style::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+#scroll_style::-webkit-scrollbar {
+  width: 3px;
+  background-color: #f5f5f5;
+  
+}
+#scroll_style::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: var(--ono-primary);
+}
+#scroll_style1::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+#scroll_style1::-webkit-scrollbar {
+  width: 4px;
+  background-color: #f5f5f5;
+  
+}
+#scroll_style1::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: var(--ono-primary);
+}
+.profileCard {
+  h6 {
+    color: #666666;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+  h5 {
+    font-size: 15px;
+    color: #121212;
+    font-weight: 600;
+  }
+  img{
+    margin-right: 10px;
+    width: 40px;
+  }
+}
+.proofilecard_icon{
+  margin-left: 50px;
+}
+.no_data_text{
+  font-size: 13px;
+  color: #121212!important;
+  margin-top: 15px;
+}
+// calender
+.samrtboard_calender {
+  .react-datepicker {
+    width: 100%;
+  }
+  .react-datepicker__month-container {
+    width: 100%;
+  }
+  .react-datepicker__navigation {
+    top: 20px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 30px;
+  }
+  .react-datepicker__navigation--next {
+    right: 30px;
+  }
+  .modal-content {
+    border: none;
+  }
+}
+.crop_footer{
+  padding: 10px!important;
+  border-top: 1px solid #dee2e6!important;
+}
+.crop_modal_head{
+  border-bottom: 1px solid #dee2e6!important;
+}
+.crop_tick{
+  position: absolute;
+  top: -8px;
+  right: 22px;
+}
+.gif_img{
+  width: 100px;
+}
+.billsDiv{
+  padding: 0px;
+  width: 100%;
+}
+.coming_soon {
+  img{
+    width: 250px;
+  }
+ p{
+   margin-top: 0px;
+ }
 }

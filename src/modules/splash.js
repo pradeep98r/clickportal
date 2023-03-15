@@ -14,7 +14,7 @@ class Splash extends Component {
   }
   render() {
     return this.state.redirect ? (
-      <Navigate replace to="/login" />
+      <Navigate replace to="/languageSelection" />
     ) : (
       <div>
         <div className="main_wrapper">

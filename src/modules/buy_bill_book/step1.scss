@@ -1,0 +1,279 @@
+.selectparty_field, .date_col, .select__control{
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #E4E4E4;
+    padding:10px 20px; 
+    border-radius: 10px;
+    height: 80px;
+    p{
+        color: #1C1C1C;
+        font-size: 13px;
+        font-weight: 600;
+    }
+}
+.edit_crop_item_div{
+    padding: 10px 20px;
+}
+.selectparty_field:hover{
+    cursor: pointer;
+}
+
+.partners_div {
+    background-color: #fff;
+    position: absolute;
+    z-index: 999;
+    border: 1px solid #e4e4e4;
+    box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    width: 100%;
+    border-bottom: 0px;
+    overflow-y: auto;
+    height: calc(100vh - 350px);
+    display: block;
+    ul{
+        margin: 0px;
+    }
+    li{
+        padding: 5px;
+        border-bottom: 1px solid #e4e4e4;
+       :hover{
+           cursor: pointer;
+       } 
+    }
+    .partner_card{
+        padding: 4px;
+    }
+    li.active_class{ 
+        .partner_card{
+            background-color:#D7F3DD;
+            border-radius: 10px;
+            border: 1px solid #16A12C;
+        }
+    }
+    .searchparty{
+        padding: 10px;
+        .form-control{
+            border-radius: 10px;
+        }
+        ::placeholder{
+            color: #16A12C;
+            text-align: left;
+            padding-left: 0;
+        }
+    }
+  }
+  .date_col{ 
+      padding: 21px 20px;
+      .react-datepicker-wrapper{
+      width: auto;
+  }
+  label{
+    display: flex;
+    align-items: center;
+      color: var(--ono-blue);
+      font-size: 14px;
+      :hover{
+          cursor: pointer;
+      }
+  }
+  .custom-control-input{
+      opacity: 1;
+      border: 1px solid #e4e4e4;
+      margin-top: 3px;
+  }
+  .react-datepicker__input-container input{
+      border: 1px solid #e4e4e4;
+      margin-bottom: 0px;
+      width: 120px;
+      text-align: center;
+  }
+  .form-control:focus{
+      border-color: 1px solid var(--ono-blue)!important;
+  }
+  .react-datepicker {
+    border: 0px;
+    padding: 15px;
+    margin-top: 22px;
+    box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+  }
+  .react-datepicker__header {
+    background-color: var(--ono-white);
+    border-bottom: 0px;
+  }
+  .react-datepicker__navigation {
+    top: 25px;
+  }
+  .react-datepicker__navigation--previous {
+    left: 15px;
+  }
+  .react-datepicker__navigation--next {
+    right: 15px;
+  }
+  .react-datepicker-popper[data-placement^="bottom"] {
+    padding-top: 0px;
+    transform: translate3d(5px, 35.5px, 0px) !important;
+    z-index: 99;
+  }
+}
+.steps_modal{
+    .modal-content{
+        height: calc(100vh - 70px);
+    }
+}
+
+.steps_btn{
+    color: #171717;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: #D1D1D1;
+    width: 80px;
+    border: none;
+    letter-spacing: 1px;
+    font-weight: 500;
+    padding: 4px 15px;
+}
+.steps_btn_border{
+    border-bottom: 1px solid #D1D1D1;
+    height: 1px;
+    width: 20px;
+}
+.steps_flex{
+    margin: 20px 0px 0px;
+}
+.steps_btn_active{
+    background-color: #16A12C;
+    color: #fff;
+}
+
+
+
+.billView_modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	width: 750px;
+	height: 100%;
+	-webkit-transform: translate3d(0%, 0, 0);
+	-ms-transform: translate3d(0%, 0, 0);
+	-o-transform: translate3d(0%, 0, 0);
+	transform: translate3d(0%, 0, 0);
+}
+
+.billView_modal.right .modal-content {
+	height: 100%;
+	overflow-y: auto;
+}
+.cancelModal .modal-content{
+    height: auto!important;
+    border-radius: 10px!important;
+    box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25)!important;
+}
+/*Right*/
+.billView_modal.right.fade .modal-dialog {
+	right: -750px;
+    // right: 0;
+	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	-moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+	-o-transition: opacity 0.3s linear, right 0.3s ease-out;
+	transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+.billView_modal.right.fade.show .modal-dialog {
+	right: 0;
+}
+.billView_modal.right .modal-content{
+    border-radius: 0px;
+}
+.cancelModal .modal-dialog{
+    position: initial!important;
+    width: 500px!important;
+    height: auto!important;
+    transform: none!important;
+    right: initial!important;
+    margin: 0;
+}
+.bill_col{
+    padding: 15px 15px 15px 0px;
+}
+.bill_col_border{
+    border-right: 1px solid #E4E4E4;
+}
+.bill_footer{
+    padding: 10px!important;
+}
+.prev_disable{
+    opacity: 0.5; 
+    padding: 0px 15px; 
+    width: 60px;
+}
+.prev_next_icon{
+    padding: 0px 15px;
+    width: 60px;
+}
+.search_control{
+    border: 0px!important;
+    margin: 0px!important;
+    padding: 0px;
+    width: 100%;
+   
+}
+.search_control_div{
+    ::placeholder{
+        text-align: left!important;
+        padding-left: 0!important;
+    }
+}
+.search_control:focus{
+    border: 0px;
+}
+.step3_partners_div{
+    .css-1m81j2g-MenuList, .css-ust985-MenuList{
+    height: calc(100vh - 540px);
+    max-height: auto!important;
+    }
+}
+.editIcon:hover{
+  cursor: pointer;
+}
+
+.css-1s2u09g-control{
+    padding:10px 20px!important;
+}
+.css-1okebmr-indicatorSeparator{
+    display: none;
+}
+.crop_select{
+    .select__control{
+        height: auto!important;
+        padding: 0px !important;
+        padding-left: 5px!important;
+        border-radius: 0px!important;
+        border: none!important;
+    }
+    .css-l2dzg6-menu{
+        left: 100%!important;
+        top: -75px!important;
+    }
+   
+    .css-14el2xx-placeholder{
+        color: #C9C9C9!important;
+    }
+    .css-1hb7zxy-IndicatorsContainer{
+        display: none!important;
+    }
+    .css-1m81j2g-MenuList{
+        max-height: 245px!important;
+    }
+}
+.empty_col{
+    position: relative;
+}
+.empty_col::after {
+    position: absolute;
+    right: -15px;
+    top: 50% !important;
+    // content: '';
+    border-right: 20px solid green;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+  }
+  

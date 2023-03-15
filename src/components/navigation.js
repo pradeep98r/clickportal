@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 
 function Navigation(props) {
+  const [navigationHeader, setNavigationHeader] = useState('');
+  useEffect(() => {
+    if(props.login_type === "login_type_selection"){
+      setNavigationHeader("Login as a ");
+    }
+    else if(props.login_type == "login_form"){
+      setNavigationHeader("Account Login");
+    }
+    else if(props.login_type == "registration"){
+      setNavigationHeader("User Details");
+    }
+    else{
+      setNavigationHeader("Select your preferred language");
+    }
+  }, []);
+
   return (
     <div className="login_nav">
       <div className="">
         <h1>
-          {props.login_type === "login_type_selection"
-            ? "Login as a "
-            : "Account Login"}{" "}
+         {navigationHeader}
         </h1>
       </div>
     </div>

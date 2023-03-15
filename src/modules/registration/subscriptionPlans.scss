@@ -1,0 +1,203 @@
+
+#plan1,#plan2,#plan3,#plan4{
+    position: relative;
+    top: 10px;
+    height: calc(100vh - 350px);
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 10px;
+}
+#header-tag{
+    width: 100%;
+    background: #D6F5DB;
+    border-radius: 9px 9px 0px 0px;
+    height: 40px;
+}
+#free-trail-tag{
+    position: relative;
+    margin: auto;
+    background: #FFFFFF;
+    border: 1px solid #E4E4E4;
+    border-radius: 10px;
+}
+#free-trail{
+    margin: auto;
+}
+#lable-name{
+    color: #16A02C;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 25px;
+    padding-left: 10px;
+}
+#radio-tag{
+    padding-top: 10px;
+    padding-left: 10px;
+}
+#an-price{
+    display: flex;
+    padding-left: 10px;
+    padding-bottom: 15px;
+}
+#anaul-price{
+    padding-top: 15px;
+    padding-left: 20px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+    color: #4D4D4D;
+}
+#perMonth{
+    padding-top: 15px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+    color: #4D4D4D;
+}
+#value{
+    padding-top: 10px;
+    color: #363636;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 18px;
+}
+.vertical{
+    position: relative;
+    border-left: 1px solid #E4E4E4;
+    height: 50px;
+    top: 10px;
+    left: 10px;
+}
+.horizontal{
+    border-bottom: 1px solid #E4E4E4;
+    width: 100%;
+}
+#features{
+    padding-top: 5px;
+    padding-left: 10px;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+    color: #363636;
+}
+#rightMark{
+    padding-left: 10px;
+    padding-top: 5px;
+    color: #16A12C;;
+}
+.markers{
+    position: relative;
+    display: block;
+    height: calc(100vh - 468px);
+    overflow-y: auto;
+}
+#free-trail-tag{
+  padding: 30px
+}
+#prm-value,#save-tag,#discount-tag{
+    color: #121212;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 18px;
+}
+#str-tag{
+    color: #4D4D4D;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 11px;
+    line-height: 18px;
+}
+#save-tag{
+    color: #16A02C;
+}
+#free-trail-btn:hover{
+    background:#16A02C;
+    color: #FFFFFF;
+}
+#free-trail-btn{
+    position: relative;
+    border: 1px solid #16A12C;
+    border-radius: 6px;
+    text-align: center;
+    color: #16A12C;
+    background: #FFFFFF;
+    padding: 8px 30px;
+   font-size: 15px;
+}
+#de-flex{
+    margin: auto;
+    padding-top: 30px;
+}
+#agree{
+    padding-left: 10px;
+    color: #5B5B5B;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 20px;
+}
+#agreed{
+    color: #5B5B5B;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 20px;
+}
+#condition,#policy{
+    padding-left: 5px;
+    color:#1B85FB;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 20px;
+}
+.change-background{
+    #header-tag{
+        background: #FFF536;
+    }
+    #plan1,#an-price,.markers{
+        background: #16A12C;
+        #perMonth,#value,#anaul-price,#rightMark{
+            color: #FFFFFF;
+        }
+    }
+    .markers{
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    }
+    #features{
+        color: #FFFFFF;
+    }
+}
+input[type="radio"]{
+    background-color: #16A12C;
+}
+#plan1:hover{
+cursor: pointer;
+}
+.free_trail_row{
+    margin-top: 40px;
+}
+.terms_modal_popup{
+    max-width: 1100px;
+    margin-top: 60px;
+    iframe{
+        border: none;
+    }
+    .modal-header, .modal-footer{
+        border: none;
+    }
+}

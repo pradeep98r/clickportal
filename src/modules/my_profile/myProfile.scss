@@ -1,0 +1,76 @@
+.profile_card{
+    margin-bottom: 20px;
+    .card{
+        border: none;
+        padding: 0px;
+        border-radius: 10px;
+      }
+    .card_header{
+        background-color: #D7F3DD;
+        border-radius: 9px 9px 0px 0px;
+        padding: 10px 20px;
+        h6{
+            font-size:15px ;
+            color: #1C1C1C;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    }
+    .card_body{
+        padding: 20px;
+    }
+}
+#market-img{
+    // width: 30px;
+    // height: 30px;
+}
+.business_card .row{
+margin-bottom: 30px;
+}
+.gif_img_smartboard{
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    width: 100px;
+}
+.gif_img{
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    // transform: translateX(-60%);
+}
+.profile_card .langdiv{
+    .lang_id{
+        width: 70px;
+        height: 70px;
+    }
+}
+.myprofile_screen{
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
+.editsave_text{
+    color: #16A02C;
+    height: 24px;
+}
+.editsave_text:hover, .edit_text:hover{
+    cursor: pointer;;
+}
+.modal-footer{
+    padding: 0px;
+    border-top: 1px solid #E4E4E4;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius:0px
+}
+.modal-content{
+    border: 0px solid rgba(0, 0, 0, 0.2);
+    border-radius:10px;
+}
+.edit_text{
+    color: #16A02C;
+    margin-left: 5px; 
+    font-size: 15px;
+}

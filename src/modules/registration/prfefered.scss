@@ -1,0 +1,54 @@
+.cropdiv {
+  overflow-y: auto;
+  height: calc(100vh - 250px);
+  position: relative; 
+  .crop_img:hover, p:hover{
+    cursor: pointer;
+  }
+  p{
+    margin-top: 0px;
+    padding: 0px!important;
+    padding-top: 5px!important;
+  }
+}
+.pref_bottom_div{
+    .primary_btn{
+      display: flex;
+      justify-content: flex-end;
+      margin-left: auto;
+    }
+}
+.crop_div .crop_img {
+  width: 50px;
+}
+.crop.active{
+  .crop_img{
+    border: 2px solid #16A02C;
+    border-radius: 100%;
+  }
+  p{
+    color: #16A02C;
+  }
+}
+.search_div{
+  padding: 0px 10px;
+  margin: 20px 0px;
+  .form-control{
+    padding: 25px 30px;
+    border: 1px solid #E4E4E4;
+    border-radius: 10px;
+  }
+}
+.cropItem_div{
+  width: 120px;
+}
+// .search_div{
+  input[type=search]{
+    padding-left: 20px;
+  }
+// }
+input::placeholder{
+  padding-left: 0px;
+  left: 0px;
+  text-align: left;
+}
