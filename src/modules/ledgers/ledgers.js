@@ -597,6 +597,7 @@ const Ledgers = (props) => {
                     <RecordPayment 
                             LedgerData={ledgerData}
                             ledgerId ={partyId}
+                            ledgerSummary={ledgerSummary}
                             outStbal = {paidRcvd} 
                             setSummary={getCardDtl}
                             ledgerSummaryData={getData}
