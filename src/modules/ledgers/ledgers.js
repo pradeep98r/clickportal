@@ -594,6 +594,7 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   <div className="col-lg-7 p-0">
+                    
                     <RecordPayment 
                             LedgerData={ledgerData}
                             ledgerId ={partyId}

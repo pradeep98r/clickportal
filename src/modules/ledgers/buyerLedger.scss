@@ -430,9 +430,7 @@ a:hover{
     margin: auto;
     // padding-left: 100px;
 }
-.profile-details{
-    padding-left: 10px;
-}
+
 #date_icon_picker{
     cursor: pointer;
     margin: auto;
@@ -627,3 +625,10 @@ max-width: 600px;
   .select-bills{
     padding: 0px 0px;
   }
+  .record_payment_datepicker{
+    .react-datepicker__input-container input {
+        border: none;
+        padding-left: 0px;
+    }
+  }
+ 
