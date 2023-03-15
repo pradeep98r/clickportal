@@ -3,14 +3,19 @@ import { Modal } from "react-bootstrap";
 import clo from "../../assets/images/close.svg";
 import { useSelector } from "react-redux";
 import "../ledgers/paymentHistory.scss";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import PaymentHistoryCard from "../../components/paymentHistoryCard";
 import cancel from "../../assets/images/cancel.svg";
 import edit from "../../assets/images/edit_round.svg";
 import RecordPayment from "./recordPayment";
+import moment from "moment";
+import { updateRecordPayment } from "../../actions/ledgersService";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  console.log(paymentViewData,"data")
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
   const [paymentHistoryData, setPaymentHistoryData] = useState(
     paymentViewData.paymentViewInfo
   );
@@ -40,10 +45,36 @@ const PaymentHistoryView = (props) => {
 
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
-  const activeRecordPayment =()=>{
+  const editRecordPayment =()=>{
     setRecordPaymentActive(true);
     setRecordPaymentModal(true);
   }
+  var partyDetails=paymentViewData.paymentViewInfo
+  const deleteRecordPayment ={
+    action:'DELETE',
+    caId: clickId,
+    partyId: partyDetails?.partyId,
+    date: moment(partyDetails?.date).format("YYYY-MM-DD"),
+    comments:partyDetails?.comments,
+    paidRcvd: partyDetails?.amount,
+    paymentMode:partyDetails?.paymentMode,
+    billIds:partyDetails?.billIds,
+    type: partyDetails?.type,
+    discount: partyDetails?.balance,
+    refId:partyDetails?.refId,
+    toBePaidRcvd:0
+}
+  const removeRecordPayment =()=>{
+    updateRecordPayment(deleteRecordPayment).then(res=>{
+      toast.success(res.data.status.message, {
+        toastId: "errorr2",
+    })
+    window.setTimeout(function(){
+      props.closePaymentViewModal();
+    },1000)
+  })
+  
+}
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -160,16 +191,16 @@ const PaymentHistoryView = (props) => {
                           ""
                         ) : (
                           <div className="items_div">
-                            <button>
-                              <img src={edit} alt="img" className="" onClick={()=>{activeRecordPayment()}}/>
+                            <button onClick={()=>{editRecordPayment()}}>
+                              <img src={edit} alt="img" className="" />
                             </button>
                             <p>
                               Edit</p>
                           </div>
                         )}
                         <div className="items_div">
-                          <button>
-                            <img src={cancel} alt="img" className="" />
+                          <button onClick={()=>{removeRecordPayment()}}>
+                            <img src={cancel} alt="img" className=""/>
                           </button>
                           <p>Delete</p>
                         </div>
@@ -187,8 +218,10 @@ const PaymentHistoryView = (props) => {
           ledgerId={paymentViewData?.paymentViewInfo?.partyId}
           showRecordPaymentModal={recordPaymentModal}
           closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
-          fromPaymentHistory={recordPaymentActive} />:''}
+          fromPaymentHistory={recordPaymentActive}
+          />:''}
       </div>
+      <ToastContainer />
     </Modal>
   );
 };
