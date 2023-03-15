@@ -39,6 +39,7 @@ pipelines:
     master:
       - step:
           name: 'Build and Push Application Docker Image'
+          size: 2x
           services:
             - docker
           script:
