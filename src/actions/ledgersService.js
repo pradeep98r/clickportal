@@ -65,6 +65,17 @@ export function getPaymentListById(clickId,billId){
     `/click/ledgers/caId/${clickId}/refId/${billId}`
   );
 }
+export function getAdvanceListById(clickId,billId,partyId){
+  return axiosCommon.get(
+    `/payments/advances/ledger/caId/${clickId}/partyId/${partyId}/refId/${billId}`
+  );
+}
+
+export function getBillHistoryListById(clickId,billId,type){
+  return axiosCommon.get(
+    `/click/bills/history/caId/${clickId}/refId/${billId}/type/${type}`
+  );
+}
 
 export function getListOfBillIds(clickId, partyId,fromDate, toDate){
   return axiosCommon.get(
@@ -83,5 +94,7 @@ export default{
     getBuyBillId,
     getSellBillId,
     getPaymentListById,
+    getBillHistoryListById,
+    getAdvanceListById,
     getListOfBillIds
 }

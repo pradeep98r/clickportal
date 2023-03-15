@@ -6,6 +6,7 @@ import "../ledgers/paymentHistory.scss";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import PaymentHistoryCard from "../../components/paymentHistoryCard";
 import cancel from "../../assets/images/cancel.svg";
+import edit from "../../assets/images/edit_round.svg";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const [paymentHistoryData, setPaymentHistoryData] = useState(
@@ -22,7 +23,16 @@ const PaymentHistoryView = (props) => {
     discountedAmount = amount - discount;
     discountPercentage = ((discount / amount) * 100).toPrecision(2);
   }
+  // var fromAdvances = false;
+  const [fromAdvances, setfromAdvances] = useState(false);
   useEffect(() => {
+    console.log(paymentViewData.paymentViewInfo.refId);
+    if (paymentViewData.paymentViewInfo.refId?.includes("A")) {
+      setfromAdvances(true);
+    }
+    else{
+      setfromAdvances(false);
+    }
     setPaymentHistoryData(paymentViewData.paymentViewInfo);
   }, [props.showPaymentViewModal]);
   return (
@@ -36,7 +46,8 @@ const PaymentHistoryView = (props) => {
           className="modal-title d-flex align-items-center header2_text"
           id="staticBackdropLabel"
         >
-          Payment Ledger | {paymentHistoryData.refId}
+          {fromAdvances ? "Advance" : "Payment Ledger"} |{" "}
+          {paymentHistoryData.refId}
         </h5>
         <button
           onClick={(e) => {
@@ -78,9 +89,11 @@ const PaymentHistoryView = (props) => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
                       <h6>Selected Bills</h6>
+                      <div className="d-flex">
                       {paymentHistoryData.billIds.map((item, index) => {
-                        return <h5>{item + ","}</h5>;
+                        return <h5>{item + ","}</h5>
                       })}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -117,17 +130,44 @@ const PaymentHistoryView = (props) => {
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-              <div>
-                <p className="more-p-tag">Actions</p>
-                <div className="action_icons">
-                  <div className="items_div">
-                    <button>
-                      <img src={cancel} alt="img" className="" />
-                    </button>
-                    <p>Delete</p>
-                  </div>
+              {paymentHistoryData.comments == "FROM BILL" ? (
+                ""
+              ) : (
+                <div>
+                  <p className="more-p-tag">Actions</p>
+                  {fromAdvances ? (
+                     <div className="action_icons">
+                    <div className="items_div">
+                      <button>
+                        <img src={cancel} alt="img" className="" />
+                      </button>
+                      <p>Delete</p>
+                    </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="action_icons">
+                        {paymentHistoryData.billPaid ? (
+                          ""
+                        ) : (
+                          <div className="items_div">
+                            <button>
+                              <img src={edit} alt="img" className="" />
+                            </button>
+                            <p>Edit</p>
+                          </div>
+                        )}
+                        <div className="items_div">
+                          <button>
+                            <img src={cancel} alt="img" className="" />
+                          </button>
+                          <p>Delete</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

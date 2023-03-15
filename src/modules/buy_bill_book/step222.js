@@ -221,7 +221,6 @@ const Step22 = (props) => {
         crop,
         { wastage: 0 },
         { qty: 0 },
-        
         { weight: 0 },
         { rate: 0 },
         { total: 0 },

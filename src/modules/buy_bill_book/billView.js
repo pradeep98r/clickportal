@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import edit from "../../assets/images/edit_round.svg";
+import received_stamp from "../../assets/images/received_stamp.svg";
+import paid_stamp from "../../assets/images/paid_stamp.svg";
+import history_icon from "../../assets/images/history_icon.svg";
+import pay_icon from "../../assets/images/pay_icon.svg";
 import { useNavigate } from "react-router-dom";
 import { editbuybillApi } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
@@ -30,22 +34,24 @@ import {
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import { getText } from "../../components/getText";
+import { getBillHistoryListById } from "../../actions/ledgersService";
+import { billHistoryView } from "../../reducers/paymentViewSlice";
+import EditPaymentHistoryView from "../ledgers/editPaymentHistoryView";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  console.log(billData,'hey')
-  var allBillsArray = props.allBillsData ;
+  console.log(billData, "hey");
+  var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
-  const [displayCancel,setDisplayCancel] = useState(false);
+  const [displayCancel, setDisplayCancel] = useState(false);
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
-    if(billViewData?.billViewInfo?.billStatus == 'COMPLETED'){
+    if (billViewData?.billViewInfo?.billStatus == "COMPLETED") {
       setDisplayCancel(false);
-    }
-    else{
+    } else {
       setDisplayCancel(true);
     }
   }, [props.showBillViewModal]);
@@ -139,8 +145,8 @@ const BillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
-          setDisplayCancel(true)
-          if(!(props.fromLedger)){
+          setDisplayCancel(true);
+          if (!props.fromLedger) {
             if (billData?.partyType.toUpperCase() === "FARMER") {
               window.setTimeout(function () {
                 props.closeBillViewModal();
@@ -154,7 +160,9 @@ const BillView = (props) => {
                 window.location.reload();
               }, 1000);
             }
-           }
+          } else {
+            console.log("else from ledger");
+          }
         }
       },
       (error) => {
@@ -166,12 +174,14 @@ const BillView = (props) => {
   };
   let isPopupOpen = false;
   const handleCheckEvent = () => {
-    if (!isPopupOpen) { // check if popup is already open
+    if (!isPopupOpen) {
+      // check if popup is already open
       isPopupOpen = true; // set flag to true
       $("#cancelBill").modal("show"); // show popup
-      setTimeout(() => { // reset flag after a short delay
+      setTimeout(() => {
+        // reset flag after a short delay
         isPopupOpen = false;
-      }, 1000); // adjust delay time as needed 
+      }, 1000); // adjust delay time as needed
     }
     // $("#cancelBill").modal("show");
   };
@@ -217,15 +227,36 @@ const BillView = (props) => {
       setNextDisable(true);
     }
   };
-  const clearModal = () =>{
-    // if(billData?.billStatus == 'COMPLETED'){
-    //   setDisplayCancel(false);
-    // }
-    // else{
-    //   setDisplayCancel(true);
-    // }
-
-  }
+  const clearModal = () => {
+    if (props.fromLedger) {
+      window.setTimeout(function () {
+        props.closeBillViewModal();
+        // navigate("/sellerledger");
+        // window.location.reload();
+      }, 1000);
+    }
+  };
+  const [showBillHistoryModal, setShowBillHistoryModal] = useState(false);
+  const [showBillHistoryModalStatus, setShowBillHistoryModalStatus] = useState(false);
+  const [billHistoryArray, setBillHistoryArray] = useState([]);
+  const [selectedRefId, setSelectedRefId] = useState('')
+  const historyData = (id, type) => {
+    var typeVal = "";
+    if (type == "FARMER" || type == "SELLER") {
+      typeVal = "BUY";
+    } else {
+      typeVal = "SELL";
+    }
+    setSelectedRefId(id)
+    getBillHistoryListById(clickId, id, typeVal).then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        console.log(res.data.data);
+        setShowBillHistoryModalStatus(true);
+        setShowBillHistoryModal(true);
+        setBillHistoryArray(res.data.data)
+      }
+    });
+  };
   return (
     <Modal
       show={props.showBillViewModal}
@@ -238,27 +269,22 @@ const BillView = (props) => {
           id="staticBackdropLabel"
         >
           <p className="b-name">
-            {(billData?.partyType.toUpperCase() === "FARMER") || (billData?.partyType.toUpperCase() === "SELLER")
+            {billData?.partyType.toUpperCase() === "FARMER" ||
+            billData?.partyType.toUpperCase() === "SELLER"
               ? getText(billData.farmerName)
               : getText(billData?.buyerName)}
             -
           </p>
           <p className="b-name">{billData?.caBSeq}</p>
         </h5>
-       <button 
-       
+        <button
           onClick={(e) => {
             clearModal();
             props.closeBillViewModal();
           }}
-          >
-       <img
-          alt="image"
-          src={clo}
-          className="cloose"
-          
-        />
-       </button>
+        >
+          <img alt="image" src={clo} className="cloose" />
+        </button>
       </div>
       <div className="modal-body py-0">
         <div className="row">
@@ -278,9 +304,19 @@ const BillView = (props) => {
                 )}
 
                 <div className="stamp_img">
-                  {(billData?.billStatus?.toUpperCase() == "CANCELLED" || displayCancel) ? (
+                  {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
+                  displayCancel ? (
                     <img src={cancel_bill_stamp} alt="stammp_img" />
-                  ) : ''}
+                  ) : billData?.paid ? (
+                    billData?.partyType.toUpperCase() === "FARMER" ||
+                    billData?.partyType.toUpperCase() === "SELLER" ? (
+                      <img src={paid_stamp} alt="stammp_img" />
+                    ) : (
+                      <img src={received_stamp} alt="stammp_img" />
+                    )
+                  ) : (
+                    ""
+                  )}
                 </div>
 
                 {prevNextStatus ? (
@@ -298,32 +334,56 @@ const BillView = (props) => {
           </div>
           <div className="col-lg-2 p-0 ">
             <div className="bill_col pr-0">
-              {billData?.billStatus?.toUpperCase() == "CANCELLED" || displayCancel ? (
+              {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
+              displayCancel ? (
                 ""
+              ) : billData?.paid ? (
+                <div>
+                  <p className="more-p-tag">Actions</p>
+                  <div className="action_icons">
+                    <div className="items_div">
+                      <button
+                        onClick={() =>
+                          historyData(billData?.billId, billData?.partyType)
+                        }
+                      >
+                        <img src={history_icon} alt="img" />
+                      </button>
+                      <p>History</p>
+                    </div>
+                    </div>
+                    </div>
               ) : (
                 <div>
                   <p className="more-p-tag">Actions</p>
                   <div className="action_icons">
                     <div className="items_div">
-                     <button onClick={() => handleCheckEvent()}>
-                     <img
-                        src={cancel}
-                        alt="img"
-                        className=""
-                        
-                      />
-                     </button>
-                      <p>Cancel</p>
+                      <button
+                        onClick={() =>
+                          historyData(billData?.billId, billData?.partyType)
+                        }
+                      >
+                        <img src={history_icon} alt="img" />
+                      </button>
+                      <p>History</p>
+                    </div>
+                    <div className="items_div">
+                      <button>
+                        <img src={pay_icon} alt="img" />
+                      </button>
+                      <p>Pay</p>
                     </div>
                     <div className="items_div">
                       <button onClick={() => editBill(billData)}>
-                      <img
-                        src={edit}
-                        alt="img"
-                       
-                      />
+                        <img src={edit} alt="img" />
                       </button>
                       <p>Edit</p>
+                    </div>
+                    <div className="items_div">
+                      <button onClick={() => handleCheckEvent()}>
+                        <img src={cancel} alt="img" className="" />
+                      </button>
+                      <p>Cancel</p>
                     </div>
                   </div>
                 </div>
@@ -332,47 +392,49 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      {props.fromLedger ? '' : 
-      <div className="modal-footer bill_footer d-flex justify-content-center">
-         
-       <div className="row" style={{'width':'100%'}}>
-         <div className="col-lg-10 p-0 ">
-           <div className="d-flex justify-content-center align-items-center">
-        <button
-          onClick={() => {
-            previousBill(billData?.index + 1);
-          }}
-        >
-          <img
-            src={prev_icon}
-            className={prevNextDisable ? "prev_disable" : "prev_next_icon"}
-            alt="image"
-          />
-        </button>
-        <p className="b-name">{billData?.caBSeq}</p>
-        <button
-          onClick={() => {
-            nextBill(billData?.index - 1);
-          }}
-        >
-          <img
-            src={next_icon}
-            className={nextDisable ? "prev_disable" : "prev_next_icon"}
-            alt="image"
-          />
-        </button>
+      {props.fromLedger ? (
+        ""
+      ) : (
+        <div className="modal-footer bill_footer d-flex justify-content-center">
+          <div className="row" style={{ width: "100%" }}>
+            <div className="col-lg-10 p-0 ">
+              <div className="d-flex justify-content-center align-items-center">
+                <button
+                  onClick={() => {
+                    previousBill(billData?.index + 1);
+                  }}
+                >
+                  <img
+                    src={prev_icon}
+                    className={
+                      prevNextDisable ? "prev_disable" : "prev_next_icon"
+                    }
+                    alt="image"
+                  />
+                </button>
+                <p className="b-name">{billData?.caBSeq}</p>
+                <button
+                  onClick={() => {
+                    nextBill(billData?.index - 1);
+                  }}
+                >
+                  <img
+                    src={next_icon}
+                    className={nextDisable ? "prev_disable" : "prev_next_icon"}
+                    alt="image"
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="col-lg-2"></div>
+          </div>
         </div>
-      </div>
-      <div className="col-lg-2">
-
-      </div>
-      </div>
-      </div>
-      }
+      )}
       {showStepsModalStatus ? (
         <Steps
           showStepsModal={showStepsModal}
           closeStepsModal={() => setShowStepsModal(false)}
+          fromLedger={props.fromLedger}
         />
       ) : (
         ""
@@ -410,8 +472,8 @@ const BillView = (props) => {
                 <div className="col-lg-12">
                   <p className="desc-tag">
                     Please note that cancellation of bill result in ledger
-                    adjustments (roll back) and you will see an adjustment record
-                    in ledger for the same bill
+                    adjustments (roll back) and you will see an adjustment
+                    record in ledger for the same bill
                   </p>
                 </div>
                 <div className="col-lg-1"></div>
@@ -440,6 +502,15 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
+      {
+        showBillHistoryModalStatus ? 
+        <EditPaymentHistoryView showBillHistoryViewModal={showBillHistoryModal}
+        closeBillHistoryViewModal={() => setShowBillHistoryModal(false)} 
+        billHistoryArray={billHistoryArray} 
+        selectedRefId = {selectedRefId}
+        />
+        : ''
+      }
     </Modal>
   );
 };
