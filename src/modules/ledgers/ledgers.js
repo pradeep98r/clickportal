@@ -30,6 +30,7 @@ import NoInternetConnection from "../../components/noInternetConnection";
 import RecordPayment from "./recordPayment";
 import { useDispatch } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
+import add from "../../assets/images/add.svg";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ const Ledgers = (props) => {
   var [dateValue, setDateValue] = useState(defaultDate + " to " + defaultDate);
   const [handleDate, sethandleDate] = useState(false);
   const [paidRcvd, setPaidRcvd] = useState(0);
+  const [open, setIsOpen] = useState(false);
   const tabs = [
     {
       id: 1,
@@ -88,28 +90,28 @@ const Ledgers = (props) => {
     },
   ];
 
-    const onclickDate = () => {
-        setShowDatepickerModal1(true);
-        setShowDatepickerModal(true);
-    };
-    const handleSearch = (event) => {
-        let value = event.target.value.toLowerCase();
-        let result = [];
-        result = allData.filter((data) => {
-            if (data.mobile.includes(value)) {
-                return data.mobile.search(value) != -1;
-            } else if (data.partyName.toLowerCase().includes(value)) {
-                return data.partyName.toLowerCase().search(value) != -1;
-            } else if (data.partyId.toString().includes(value)) {
-                return data.partyId.toString().search(value) != -1;
-            } else if(data.partyAddress.toLowerCase().includes(value)){
-                return data.partyAddress.toLowerCase().search(value) != -1;
-            } else if(data.shortName.toLowerCase().includes(value)){
-                return data.shortName.toLowerCase().search(value) != -1;
-            }
-        });
-        setLedgers(result);
-    };
+  const onclickDate = () => {
+    setShowDatepickerModal1(true);
+    setShowDatepickerModal(true);
+  };
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.mobile.includes(value)) {
+        return data.mobile.search(value) != -1;
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
+      } else if (data.partyId.toString().includes(value)) {
+        return data.partyId.toString().search(value) != -1;
+      } else if (data.partyAddress.toLowerCase().includes(value)) {
+        return data.partyAddress.toLowerCase().search(value) != -1;
+      } else if (data.shortName.toLowerCase().includes(value)) {
+        return data.shortName.toLowerCase().search(value) != -1;
+      }
+    });
+    setLedgers(result);
+  };
 
   useEffect(() => {
     fetchLedgers();
@@ -142,8 +144,8 @@ const Ledgers = (props) => {
       })
       .catch((error) => {
         if (error.toJSON().message === "Network Error") {
-            setOnline(true);
-          }
+          setOnline(true);
+        }
       });
   };
 
@@ -183,7 +185,7 @@ const Ledgers = (props) => {
       (allCustom == "custom" && tabs == "ledgersummary") ||
       ledgerTabs == "ledgersummary"
     ) {
-      console.log(date,"date")
+      console.log(date, "date")
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);
@@ -251,7 +253,7 @@ const Ledgers = (props) => {
     if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
       setCustomDateHandle(false);
       ledgerSummaryByDate(clickId, partyId, date, date);
-    }else{
+    } else {
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
     setAllCustom(type);
@@ -259,7 +261,7 @@ const Ledgers = (props) => {
   const [dateCustom, setdateCustom] = useState(false);
   //ledger and detailed ledger tabs
   const ledgerTabEvent = (ledgerTabType) => {
-    if(allCustom == 'all' && ledgerTabType == 'ledgersummary'){
+    if (allCustom == 'all' && ledgerTabType == 'ledgersummary') {
       summaryData(clickId, partyId);
     }
     if (allCustom == "all" && ledgerTabType == "detailedledger") {
@@ -346,8 +348,8 @@ const Ledgers = (props) => {
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
@@ -356,8 +358,8 @@ const Ledgers = (props) => {
     } else {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
+        " to " +
+        moment(toDate).format("DD-MMM-YYYY")
       );
     }
     if (allCustom == "custom" && ledgerTabs == "ledgersummary") {
@@ -383,40 +385,47 @@ const Ledgers = (props) => {
       }
     }
   };
-  const getData =(data)=>{
+  const getData = (data) => {
     console.log(data);
-    if(allCustom == 'all' && ledgerTabs =='ledgersummary'){
+    if (allCustom == 'all' && ledgerTabs == 'ledgersummary') {
       setLedgerSummary(data);
-    } else if(allCustom == 'all' && ledgerTabs == 'detailedledger'){
+    } else if (allCustom == 'all' && ledgerTabs == 'detailedledger') {
       console.log("here")
       setdetailedLedger(data);
-    } else if(allCustom == 'custom' && ledgerTabs =='ledgersummary'){
+    } else if (allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
       setSummaryByDate(data)
-    } else{
+    } else {
       setdetailedLedgerByDate(data);
     }
   }
-  const getOutstAmt =(data)=>{
+  const getOutstAmt = (data) => {
     setOutStAmt(data);
   }
-  const getALlLedgers =(data)=>{
+  const getALlLedgers = (data) => {
     setLedgers(data);
   }
-  const getCardDtl=(data)=>{
-    if(allCustom == "all" && ledgerTabs == "ledgersummary"){
+  const getCardDtl = (data) => {
+    if (allCustom == "all" && ledgerTabs == "ledgersummary") {
       setSummary(data);
     }
-    else if(allCustom == "all" && ledgerTabs == "detailedledger"){
+    else if (allCustom == "all" && ledgerTabs == "detailedledger") {
       setTotalDetailed(data);
-    } else if(allCustom == 'custom' && ledgerTabs == "ledgersummary"){
+    } else if (allCustom == 'custom' && ledgerTabs == "ledgersummary") {
       setcardDetails(data);
-    } else if(allCustom == 'custom' && ledgerTabs == "detailedledger"){
-        setcardDetailed(data);
+    } else if (allCustom == 'custom' && ledgerTabs == "detailedledger") {
+      setcardDetailed(data);
     }
-    
+
   }
-  const getPaidRcvd=(rcvd)=>{
+  const getPaidRcvd = (rcvd) => {
     setPaidRcvd(rcvd)
+  }
+
+  const [recordPaymentModalStatus, setRecordPaymentModalStatus] = useState(false);
+  const [recordPaymentModal, setRecordPaymentModal] = useState(false);
+  const recordPaymentOnClickEvent = () => {
+    setRecordPaymentModalStatus(true);
+    setRecordPaymentModal(true);
   }
   return (
     <div className="main_div_padding">
@@ -504,22 +513,22 @@ const Ledgers = (props) => {
                                               {item.partyName} -{" "}
                                               {item.shortName}
                                             </p>
-                                           <div className="d-flex align-items-center">
-                                           <p className="mobilee-tag">
-                                              {!item.trader
-                                                ? ledgerType == "BUYER"
-                                                  ? "Buyer"
-                                                  : "Farmer"
-                                                : "Trader"}{" "}
-                                              - {item.partyId}&nbsp;
-                                            </p>
-                                            <p className="mobilee-tag desk_responsive">
-                                              {' | '+getMaskedMobileNumber(
-                                                item.mobile
-                                              )}
-                                            </p>
-                                           </div>
-                                           <p className="mobilee-tag mobile_responsive">
+                                            <div className="d-flex align-items-center">
+                                              <p className="mobilee-tag">
+                                                {!item.trader
+                                                  ? ledgerType == "BUYER"
+                                                    ? "Buyer"
+                                                    : "Farmer"
+                                                  : "Trader"}{" "}
+                                                - {item.partyId}&nbsp;
+                                              </p>
+                                              <p className="mobilee-tag desk_responsive">
+                                                {' | ' + getMaskedMobileNumber(
+                                                  item.mobile
+                                                )}
+                                              </p>
+                                            </div>
+                                            <p className="mobilee-tag mobile_responsive">
                                               {getMaskedMobileNumber(
                                                 item.mobile
                                               )}
@@ -542,8 +551,8 @@ const Ledgers = (props) => {
                                         >
                                           {item.tobePaidRcvd
                                             ? getCurrencyNumberWithOutSymbol(
-                                                item.tobePaidRcvd
-                                              )
+                                              item.tobePaidRcvd
+                                            )
                                             : 0}
                                         </p>
                                       </td>
@@ -569,8 +578,8 @@ const Ledgers = (props) => {
                           >
                             {outStAmt?.totalOutStgAmt
                               ? getCurrencyNumberWithSymbol(
-                                  outStAmt?.totalOutStgAmt
-                                )
+                                outStAmt?.totalOutStgAmt
+                              )
                               : 0}
                           </p>
                         </div>
@@ -594,23 +603,23 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   <div className="col-lg-7 p-0">
-                    
-                    <RecordPayment 
-                            LedgerData={ledgerData}
-                            ledgerId ={partyId}
-                            ledgerSummary={ledgerSummary}
-                            outStbal = {paidRcvd} 
-                            setSummary={getCardDtl}
-                            ledgerSummaryData={getData}
-                            ledgerTab={ledgerTabs}
-                            allCustomTab={allCustom}
-                            partyType={ledgerType}
-                            ledgers={getALlLedgers}
-                            outStAmt={getOutstAmt}
-                            setPaidRcvd={getPaidRcvd}
-                            startDate={startDate}
-                            endDate={endDate}
-                          />
+                    <div className="recordbtn-style">
+                      <button
+                        className="add-record-btns"
+                        onClick={
+                          recordPaymentOnClickEvent
+                        }
+                        data-toggle="modal"
+                        data-target="#myModal"
+                      >
+                        Record payment
+                      </button>
+
+                      <div className="add-pays-btn">
+                        <img src={add} id="addrecord-img" />
+                      </div>
+                    </div>
+
                     <div className="d-flex">
                       <ul
                         className="nav nav-tabs partner_tabs ledger_all_custom mb-0"
@@ -711,61 +720,61 @@ const Ledgers = (props) => {
                                     ? "coloring"
                                     : "paid-coloring"
                                 }
-                                >
+                              >
                                 {allCustom == "custom" &&
-                                ledgerTabs == "ledgersummary"
+                                  ledgerTabs == "ledgersummary"
                                   ? cardDetails.totalTobePaidRcvd
                                     ? cardDetails.totalTobePaidRcvd
                                       ? getCurrencyNumberWithSymbol(
-                                          cardDetails.totalTobePaidRcvd
-                                        )
+                                        cardDetails.totalTobePaidRcvd
+                                      )
                                       : 0
                                     : 0
                                   : allCustom == "custom" &&
                                     ledgerType == "BUYER" &&
                                     ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalToBeRecived
                                     ? cardDetailed.totalToBeRecived
-                                      ? getCurrencyNumberWithSymbol(
+                                      ? cardDetailed.totalToBeRecived
+                                        ? getCurrencyNumberWithSymbol(
                                           cardDetailed.totalToBeRecived
                                         )
+                                        : 0
                                       : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalToBePaid
-                                    ? cardDetailed.totalToBePaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalToBePaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "BUYER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalToBeRecived
-                                    ? detailedTotal.totalToBeRecived
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalToBeRecived
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalToBePaid
-                                    ? detailedTotal.totalToBePaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalToBePaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : summary.totalTobePaidRcvd
-                                  ? getCurrencyNumberWithSymbol(
-                                      summary.totalTobePaidRcvd
-                                    )
-                                  : 0}
+                                    : allCustom == "custom" &&
+                                      ledgerType == "SELLER" &&
+                                      ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalToBePaid
+                                        ? cardDetailed.totalToBePaid
+                                          ? getCurrencyNumberWithSymbol(
+                                            cardDetailed.totalToBePaid
+                                          )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerType == "BUYER" &&
+                                        ledgerTabs == "detailedledger"
+                                        ? detailedTotal.totalToBeRecived
+                                          ? detailedTotal.totalToBeRecived
+                                            ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalToBeRecived
+                                            )
+                                            : 0
+                                          : 0
+                                        : allCustom == "all" &&
+                                          ledgerType == "SELLER" &&
+                                          ledgerTabs == "detailedledger"
+                                          ? detailedTotal.totalToBePaid
+                                            ? detailedTotal.totalToBePaid
+                                              ? getCurrencyNumberWithSymbol(
+                                                detailedTotal.totalToBePaid
+                                              )
+                                              : 0
+                                            : 0
+                                          : summary.totalTobePaidRcvd
+                                            ? getCurrencyNumberWithSymbol(
+                                              summary.totalTobePaidRcvd
+                                            )
+                                            : 0}
                               </p>
                             </p>
                           </div>
@@ -787,59 +796,59 @@ const Ledgers = (props) => {
                                 }
                               >
                                 {allCustom == "custom" &&
-                                ledgerTabs == "ledgersummary"
+                                  ledgerTabs == "ledgersummary"
                                   ? cardDetails.totalRcvdPaid
                                     ? cardDetails.totalRcvdPaid
                                       ? getCurrencyNumberWithSymbol(
-                                          cardDetails.totalRcvdPaid
-                                        )
+                                        cardDetails.totalRcvdPaid
+                                      )
                                       : 0
                                     : 0
                                   : allCustom == "custom" &&
                                     ledgerType == "BUYER" &&
                                     ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalRecieved
                                     ? cardDetailed.totalRecieved
-                                      ? getCurrencyNumberWithSymbol(
+                                      ? cardDetailed.totalRecieved
+                                        ? getCurrencyNumberWithSymbol(
                                           cardDetailed.totalRecieved
                                         )
+                                        : 0
                                       : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalPaid
-                                    ? cardDetailed.totalPaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalPaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "BUYER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalRecieved
-                                    ? detailedTotal.totalRecieved
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalRecieved
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalPaid
-                                    ? detailedTotal.totalPaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalPaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : summary.totalRcvdPaid
-                                  ? getCurrencyNumberWithSymbol(
-                                      summary.totalRcvdPaid
-                                    )
-                                  : 0}
+                                    : allCustom == "custom" &&
+                                      ledgerType == "SELLER" &&
+                                      ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalPaid
+                                        ? cardDetailed.totalPaid
+                                          ? getCurrencyNumberWithSymbol(
+                                            cardDetailed.totalPaid
+                                          )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerType == "BUYER" &&
+                                        ledgerTabs == "detailedledger"
+                                        ? detailedTotal.totalRecieved
+                                          ? detailedTotal.totalRecieved
+                                            ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalRecieved
+                                            )
+                                            : 0
+                                          : 0
+                                        : allCustom == "all" &&
+                                          ledgerType == "SELLER" &&
+                                          ledgerTabs == "detailedledger"
+                                          ? detailedTotal.totalPaid
+                                            ? detailedTotal.totalPaid
+                                              ? getCurrencyNumberWithSymbol(
+                                                detailedTotal.totalPaid
+                                              )
+                                              : 0
+                                            : 0
+                                          : summary.totalRcvdPaid
+                                            ? getCurrencyNumberWithSymbol(
+                                              summary.totalRcvdPaid
+                                            )
+                                            : 0}
                               </p>
                             </div>
                           </div>
@@ -862,37 +871,37 @@ const Ledgers = (props) => {
                                 }
                               >
                                 {allCustom == "custom" &&
-                                ledgerTabs == "ledgersummary"
+                                  ledgerTabs == "ledgersummary"
                                   ? cardDetails.outStdRcvPayble
                                     ? cardDetails?.outStdRcvPayble
                                       ? getCurrencyNumberWithSymbol(
-                                          cardDetails.outStdRcvPayble
-                                        )
+                                        cardDetails.outStdRcvPayble
+                                      )
                                       : 0
                                     : 0
                                   : allCustom == "custom" &&
                                     ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalOutStandingBalance
-                                    ? cardDetailed?.totalOutStandingBalance
-                                      ? getCurrencyNumberWithSymbol(
+                                    ? cardDetailed.totalOutStandingBalance
+                                      ? cardDetailed?.totalOutStandingBalance
+                                        ? getCurrencyNumberWithSymbol(
                                           cardDetailed.totalOutStandingBalance
                                         )
+                                        : 0
                                       : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalOutStandingBalance
-                                    ? detailedTotal?.totalOutStandingBalance
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalOutStandingBalance
+                                    : allCustom == "all" &&
+                                      ledgerTabs == "detailedledger"
+                                      ? detailedTotal.totalOutStandingBalance
+                                        ? detailedTotal?.totalOutStandingBalance
+                                          ? getCurrencyNumberWithSymbol(
+                                            detailedTotal.totalOutStandingBalance
+                                          )
+                                          : 0
+                                        : 0
+                                      : summary.outStdRcvPayble
+                                        ? getCurrencyNumberWithSymbol(
+                                          summary.outStdRcvPayble
                                         )
-                                      : 0
-                                    : 0
-                                  : summary.outStdRcvPayble
-                                  ? getCurrencyNumberWithSymbol(
-                                      summary.outStdRcvPayble
-                                    )
-                                  : 0}
+                                        : 0}
                               </p>
                             </div>
 
@@ -953,7 +962,7 @@ const Ledgers = (props) => {
                         ""
                       )}
                       {allCustom == "custom" &&
-                      ledgerTabs == "ledgersummary" ? (
+                        ledgerTabs == "ledgersummary" ? (
                         <LedgerSummary
                           LedgerSummaryByDate={summaryByDate}
                           ledgerTab={ledgerTabs}
@@ -965,7 +974,7 @@ const Ledgers = (props) => {
                         ""
                       )}
                       {allCustom == "custom" &&
-                      ledgerTabs == "detailedledger" ? (
+                        ledgerTabs == "detailedledger" ? (
                         <DetailedLedger
                           DetailedLedgerByDate={detailedByDate}
                           ledgerTab={ledgerTabs}
@@ -1007,6 +1016,25 @@ const Ledgers = (props) => {
           ) : (
             <p></p>
           )}
+          {recordPaymentModalStatus ?
+            <RecordPayment
+              showRecordPaymentModal={recordPaymentModal}
+              closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
+              LedgerData={ledgerData}
+              ledgerId={partyId}
+              ledgerSummary={ledgerSummary}
+              outStbal={paidRcvd}
+              setSummary={getCardDtl}
+              ledgerSummaryData={getData}
+              ledgerTab={ledgerTabs}
+              allCustomTab={allCustom}
+              partyType={ledgerType}
+              ledgers={getALlLedgers}
+              outStAmt={getOutstAmt}
+              setPaidRcvd={getPaidRcvd}
+              startDate={startDate}
+              endDate={endDate}
+            /> : ''}
         </div>
       )}
     </div>
