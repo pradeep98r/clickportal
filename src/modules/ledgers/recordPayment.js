@@ -35,10 +35,6 @@ const RecordPayment = (props) => {
     const [detailedLedger, setdetailedLedger] = useState([]);
     const [outStAmt, setOutStAmt] = useState([]);
     const [ledgers, setLedgers] = useState([]);
-
-    const [detailedTotal, setTotalDetailed] = useState([]);
-    const [cardDetails, setcardDetails] = useState([]);
-    const [cardDetailed, setcardDetailed] = useState([]);
     const [summary, setSummary] = useState([]);
 
     const [showLisOfBillIdsPopUp, setShowLisOfBillIdsPopUp] = useState(false);
@@ -50,7 +46,10 @@ const RecordPayment = (props) => {
 
     const [billIds, setBillIds] = useState([]);
     const [totalRecieved, setTotalRecieved] = useState(0);
+   
+   useEffect(() => {
 
+   },[props.showRecordPaymentModal])
     const getAmountVal = (e) => {
         setPaidsRcvd(
             e.target.value.replace(/[^\d]/g, "")
@@ -89,6 +88,7 @@ const RecordPayment = (props) => {
     };
 
     const addRecordPayment = async () => {
+        console.log('add')
         const addRecordData = {
             caId: clickId,
             partyId: partyId,
@@ -353,7 +353,7 @@ const RecordPayment = (props) => {
                     src={close}
                     alt="image"
                     className="close_icon"
-                    onClick={props.closeRecordPaymentModal()}
+                    onClick={()=>{props.closeRecordPaymentModal()}}
                 />
             </div>
             <div
@@ -670,7 +670,7 @@ const RecordPayment = (props) => {
                     type="button"
                     id="submit_btn_in_modal"
                     className="primary_btn cont_btn w-100"
-                    onClick={onSubmitRecordPayment}
+                    onClick={()=>{onSubmitRecordPayment()}}
                     // id="close_modal"
                     data-bs-dismiss="modal"
                 >
