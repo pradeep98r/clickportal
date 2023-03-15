@@ -168,7 +168,7 @@ ul {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%,-60%);
 }
 .default_card {
   background-color: var(--ono-white);
@@ -339,4 +339,12 @@ ul {
 .billsDiv{
   padding: 0px;
   width: 100%;
+}
+.coming_soon {
+  img{
+    width: 250px;
+  }
+ p{
+   margin-top: 0px;
+ }
 }

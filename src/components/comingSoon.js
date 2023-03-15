@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import coming_soon from "../assets/images/coming_soon.png";
+import coming_soon from "../assets/images/coming_soon.gif";
 class ComingSoon extends Component {
   render() {
     return (
