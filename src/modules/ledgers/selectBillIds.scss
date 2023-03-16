@@ -10,11 +10,26 @@
   .bills-search{
     padding: 0px 0px;
   }
+  .each-billId:hover{
+    cursor: pointer;
+  }
   .each-billId{
-    padding: 10px 0px;
-    margin: 10px 0px;
+    align-items: center;
+    padding: 10px 30px;
+   margin-top: 10px;
     border: 1px solid #E4E4E4;
     border-radius: 4px;
+    p{
+      font-size: 12px;
+      color: #171717;
+      font-weight: 500;
+    }
+    .date_text{
+      color: #7A7A7A;
+    }
+    .col-lg-5{
+      padding: 0px;
+    }
   }
   .border-bott {
     border-bottom: 1px solid #dee2e6!important;
@@ -22,14 +37,10 @@
   .selected-img{
     height: 20px;
     width: 20px;
-    padding: 0px 80px;
   }
   .selected{
-    padding: 10px 0px;
-    margin: 10px 0px;
     background: #D7F3DD;
     border: 1px solid #16A02C;
-    border-radius: 4px; 
   }
   .discount-prec{
     padding: 0px 0px;
@@ -38,6 +49,7 @@
     font-weight: 700;
   font-size: 13px;
   color: #1C1C1C;
+  margin-bottom: 10px;
   }
   .disc-perc{
     font-weight: 500;
@@ -75,3 +87,7 @@
     font-weight: 600;
   font-size: 15px;
   }
+  .select_billID_popup_scroll {
+    max-height: calc(100vh - 315px);
+    overflow-y: auto;
+}
