@@ -29,8 +29,10 @@ import { Modal } from "react-bootstrap";
 
 const RecordPayment = (props) => {
     const ledgerData = props.LedgerData;
-    console.log(ledgerData, "ledgerData")
+    const fromBillViewPopup = props.fromBillViewPopup;
+    console.log(ledgerData, "ledgerData");
     const partyId = props.ledgerId;
+    console.log(partyId)
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
     const [selectDate, setSelectDate] = useState(props.fromPaymentHistory ?
@@ -411,7 +413,7 @@ const RecordPayment = (props) => {
                     className="d-flex justify-content-between card-body mb-0"
                     id="details-tag"
                   >
-                    <div className="profile-details" key={ledgerData?.partyId}>
+                    <div className="profile-details" key={fromBillViewPopup ? partyId :ledgerData?.partyId}>
                       <div className="d-flex">
                         <div>
                           {ledgerData?.profilePic ? (
@@ -425,7 +427,12 @@ const RecordPayment = (props) => {
                           )}
                         </div>
                         <div id="trans-dtl">
-                          <p className="namedtl-tag">{ledgerData.partyName}</p>
+                          <p className="namedtl-tag">
+                          {fromBillViewPopup ? (
+                              props.partyType == 'BUYER' ? (ledgerData.buyerName) : ledgerData.farmerName
+                            ) : ledgerData.partyName}
+                            {ledgerData.partyName}
+                            </p>
                           <p className="mobilee-tag">
                             {!ledgerData.trader
                               ? props.partyType == "BUYER"
@@ -435,7 +442,10 @@ const RecordPayment = (props) => {
                                 : "Seller"
                               : "Trader"}{" "}
                             - {ledgerData.partyId}&nbsp;|&nbsp;
-                            {getMaskedMobileNumber(ledgerData.mobile)}
+                            
+                            {fromBillViewPopup ? (
+                              props.partyType == 'BUYER' ? (getMaskedMobileNumber(ledgerData.mobile)) : getMaskedMobileNumber(ledgerData.farmerMobile)
+                            ) : getMaskedMobileNumber(ledgerData.mobile)}
                           </p>
                           <p className="addres-tag">
                             {ledgerData.partyAddress

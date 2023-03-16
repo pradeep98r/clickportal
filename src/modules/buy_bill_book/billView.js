@@ -43,6 +43,7 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
   console.log(billData, "hey");
   var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const BillView = (props) => {
     } else {
       setDisplayCancel(true);
     }
+    console.log(billData?.partyType)
   }, [props.showBillViewModal]);
 
   const dispatch = useDispatch();
@@ -118,7 +120,7 @@ const BillView = (props) => {
       outStBal: billData?.outStBal,
       paidTo: 0,
       partyId:
-        billData?.partyType.toUpperCase() === "FARMMER"
+        billData?.partyType.toUpperCase() === "FARMER"
           ? billData?.buyerId
           : billData?.farmerId,
       rent: billData?.rent,
@@ -263,6 +265,7 @@ const BillView = (props) => {
   const recordPaymentOnClickEvent = (data) => {
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
+    setFromBillViewPopup(true);
     setBillViewData(data)
   }
   return (
@@ -524,7 +527,11 @@ const BillView = (props) => {
               showRecordPaymentModal={recordPaymentModal}
               closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
               LedgerData={billData}
-              ledgerId={billData?.partyType}
+              ledgerId={(billData?.partyType.toUpperCase() === "BUYER"
+              ? billData?.buyerId
+              : billData?.farmerId)}
+              partyType={billData?.partyType}
+              fromBillViewPopup={fromBillViewPopup}
             /> : ''}
     </Modal>
   );
