@@ -788,31 +788,7 @@ const Step22 = (props) => {
     }
     return t;
   };
-
-  //Allow to enter deciaml values
-  const handleInputValueEvent = (e) => {
-    $("input").keypress(function (e) {
-      var a = [];
-      var k = e.which;
-      if (e.charCode === 46) {
-        // if dot is the first symbol
-        if (e.target.value.length === 0) {
-          e.preventDefault();
-          return;
-        }
-
-        // if there are dots already
-        if (e.target.value.indexOf(".") !== -1) {
-          e.preventDefault();
-          return;
-        }
-
-        a.push(e.charCode);
-      }
-      for (var i = 48; i < 58; i++) a.push(i);
-      if (!($.inArray(k, a) >= 0)) e.preventDefault();
-    });
-  };
+  
   //   getting quantiy and rate values from dropdowns
   var arr1 = [];
   const getQuantity = (cropData, index1, crop) => (e) => {
@@ -864,8 +840,11 @@ const Step22 = (props) => {
   //   getting input values(quantity,weight,wastage,rate) from input fields
   var arr = [];
   const getQuantityValue = (id, index, cropitem) => (e) => {
-    handleInputValueEvent(e);
-    var val = e.target.value;
+    var val = e.target.value
+    .replace(/[^\d.]/g, '')
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1');
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], qty: val };
@@ -888,8 +867,11 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getWeightValue = (id, index, cropitem) => (e) => {
-    handleInputValueEvent(e);
-    var val = e.target.value;
+    var val = e.target.value
+    .replace(/[^\d.]/g, '')
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');;
     // .replace(/\D/g, "");
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
@@ -909,8 +891,11 @@ const Step22 = (props) => {
       cropitem[index].rateType.toUpperCase().toUpperCase() ==
       cropitem[index].qtyUnit.toUpperCase()
     ) {
-      handleInputValueEvent(e);
-      var val = e.target.value;
+      var val = e.target.value
+      .replace(/[^\d.]/g, '')
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+      .replace(/(\.\d{0,2})\d*/, '$1')
+      .replace(/(\.\d*)\./, '$1');
     } else {
       var val = e.target.value.replace(/\D/g, "");
     }
@@ -931,8 +916,11 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getRateValue = (id, index, cropitem) => (e) => {
-    handleInputValueEvent(e);
-    var val = e.target.value;
+    var val = e.target.value
+    .replace(/[^\d.]/g, '')
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1');
     // .replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {

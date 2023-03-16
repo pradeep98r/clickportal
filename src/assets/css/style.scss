@@ -348,3 +348,28 @@ ul {
    margin-top: 0px;
  }
 }
+@media (max-width: 768px) {
+  #main,
+  .aside,
+  .header, .main_wrapper, .lang_div, .login_page {
+    display: none;
+  }
+  .layout {
+    height: 100%;
+  }
+  .mobile_meassage {
+    display: block !important;
+    .mobile_meassage_div {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    img{
+      width: 300px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+  }
+}

@@ -308,11 +308,13 @@ const Partner = () => {
     } else if (
       nameField.trim().length !== 0 &&
       nameField.trim().length !== 1 &&
+      nameField.trim().length < 30 &&
       mobileNumber.trim().length !== 0 &&
       //aadharNumber.trim().length >0 ? true:false &&
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
+          shortNameField.trim().length < 15 &&
           shortNameField.trim().length !== 1) &&
       (aadharNumber.trim().length == 0
         ? true
@@ -333,7 +335,10 @@ const Partner = () => {
       setNameError("Name should be min 2 characters");
     } else if (shortNameField.trim().length === 1) {
       setShortNameError("Name should be min 2 characters");
-    } else if (aadharNumber.trim().length < 12) {
+    } else if (shortNameField.trim().length > 15) {
+      setShortNameError("Name should be Max 15 characters")
+    }
+    else if (aadharNumber.trim().length < 12) {
       setAadharError("Minimum Adhar number length should be 12");
     }
   };
