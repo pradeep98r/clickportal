@@ -11,16 +11,18 @@ import {
   getPaymentListById,
   getAdvanceListById,
 } from "../../actions/ledgersService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import tick from "../../assets/images/tick.svg";
 const LedgerSummary = (props) => {
+  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
+  var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
-  const ledgerSummary = props.LedgerSummary;
-  const ledgerSummaryByDate = props.LedgerSummaryByDate;
+  const ledgerSummary =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummary;
+  const ledgerSummaryByDate =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummaryByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
   const ledgerType = props.partyType;
