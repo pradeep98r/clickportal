@@ -37,6 +37,7 @@ import { getText } from "../../components/getText";
 import { getBillHistoryListById } from "../../actions/ledgersService";
 import { billHistoryView } from "../../reducers/paymentViewSlice";
 import EditPaymentHistoryView from "../ledgers/editPaymentHistoryView";
+import RecordPayment from "../ledgers/recordPayment";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -257,6 +258,13 @@ const BillView = (props) => {
       }
     });
   };
+  const [recordPaymentModalStatus, setRecordPaymentModalStatus] = useState(false);
+  const [recordPaymentModal, setRecordPaymentModal] = useState(false);
+  const recordPaymentOnClickEvent = (data) => {
+    setRecordPaymentModalStatus(true);
+    setRecordPaymentModal(true);
+    setBillViewData(data)
+  }
   return (
     <Modal
       show={props.showBillViewModal}
@@ -368,7 +376,7 @@ const BillView = (props) => {
                       <p>History</p>
                     </div>
                     <div className="items_div">
-                      <button>
+                      <button onClick={()=>{recordPaymentOnClickEvent(billData)}}>
                         <img src={pay_icon} alt="img" />
                       </button>
                       <p>Pay</p>
@@ -511,6 +519,13 @@ const BillView = (props) => {
         />
         : ''
       }
+      {recordPaymentModalStatus ?
+            <RecordPayment
+              showRecordPaymentModal={recordPaymentModal}
+              closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
+              LedgerData={billData}
+              ledgerId={billData?.partyType}
+            /> : ''}
     </Modal>
   );
 };
