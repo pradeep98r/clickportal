@@ -28,15 +28,19 @@ import date_icon from "../../assets/images/date_icon.svg";
 import loading from "../../assets/images/loading.gif";
 import NoInternetConnection from "../../components/noInternetConnection";
 import RecordPayment from "./recordPayment";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import add from "../../assets/images/add.svg";
+import { allCustomTabs, detaildLedgerInfo, ledgerSummaryInfo, partnerTabs,
+  beginDate,closeDate} from "../../reducers/ledgerSummarySlice";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  var ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
+  var allLedgers = ledgersSummary.allLedgers
   const dispatch = useDispatch();
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
-  const [ledgers, setLedgers] = useState(allData);
+  const [ledgers, setLedgers] = useState(ledgersSummary?.fromRecordPayment?allLedgers:allData);
   const [outStAmt, setOutStAmt] = useState([]);
   const [partyId, setPartyId] = useState(0);
   const [summary, setSummary] = useState([]);
@@ -115,6 +119,9 @@ const Ledgers = (props) => {
 
   useEffect(() => {
     fetchLedgers();
+    dispatch(partnerTabs("ledgersummary"));
+    dispatch(beginDate(startDate));
+    dispatch(closeDate(endDate));
     allCustomEvent("all");
     // moment(new Date()).format("DD-MMM-YYYY")//
     setDateValue(defaultDate + " to " + defaultDate);
@@ -171,6 +178,8 @@ const Ledgers = (props) => {
       ledgerTabs == "detailedledger" ||
       (ledgerTabs == "ledgersummary" && allCustom == "custom")
     ) {
+      dispatch(partnerTabs("ledgersummary"));
+      dispatch(allCustomTabs("all"))
       setLedgerTabs("ledgersummary");
       setAllCustom("all");
       tabs = "ledgersummary";
@@ -197,6 +206,7 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           setSummary(res.data.data);
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
           setLedgerSummary(res.data.data.ledgerSummary);
         } else {
           setSummary([]);
@@ -210,6 +220,7 @@ const Ledgers = (props) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          dispatch(detaildLedgerInfo(res.data.data.details))
           setdetailedLedger(res.data.data.details);
           setTotalDetailed(res.data.data);
         } else {
@@ -224,6 +235,7 @@ const Ledgers = (props) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          dispatch(detaildLedgerInfo(res.data.data.details))
           setdetailedLedger(res.data.data.details);
           setTotalDetailed(res.data.data);
         } else {
@@ -235,6 +247,7 @@ const Ledgers = (props) => {
 
   //All and Custom Tabs
   const allCustomEvent = (type) => {
+    dispatch(allCustomTabs(type));
     if (type == "custom") {
       setDateDisplay(true);
     } else {
@@ -246,8 +259,10 @@ const Ledgers = (props) => {
       setEndDate(date);
     }
     if (type == "custom" && ledgerTabs == "detailedledger") {
+      dispatch(partnerTabs("ledgersummary"));
       setLedgerTabs("ledgersummary");
     } else if (type == "all" && ledgerTabs == "detailedledger") {
+      dispatch(partnerTabs("ledgersummary"));
       setLedgerTabs("ledgersummary");
     }
     if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
@@ -261,6 +276,7 @@ const Ledgers = (props) => {
   const [dateCustom, setdateCustom] = useState(false);
   //ledger and detailed ledger tabs
   const ledgerTabEvent = (ledgerTabType) => {
+    dispatch(partnerTabs(ledgerTabType));
     if (allCustom == 'all' && ledgerTabType == 'ledgersummary') {
       summaryData(clickId, partyId);
     }
@@ -340,6 +356,8 @@ const Ledgers = (props) => {
   };
   //Date Selection
   const callbackFunction = (startDate, endDate, dateTab) => {
+    dispatch(beginDate(startDate));
+    dispatch(closeDate(endDate));
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;

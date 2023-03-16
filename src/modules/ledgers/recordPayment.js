@@ -14,25 +14,20 @@ import { getDetailedLedgerByDate,
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
-import {
-  getBuyerDetailedLedger,
-  getLedgerSummary,
-} from "../../actions/billCreationService";
-import { useEffect } from "react";
-import {
-  getParticularTransporter,
-  getTransporters,
-} from "../../actions/transporterService";
-import SelectBillIds from "./selectBillIds";
-import { Modal } from "react-bootstrap";
-
+import { getMaskedMobileNumber } from '../../components/getCurrencyNumber';
+import { getBuyerDetailedLedger, getLedgerSummary } from '../../actions/billCreationService';
+import { useEffect } from 'react';
+import { getParticularTransporter, getTransporters } from '../../actions/transporterService';
+import SelectBillIds from './selectBillIds';
+import { Modal } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { allLedgers, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo } from '../../reducers/ledgerSummarySlice';
 const RecordPayment = (props) => {
     const ledgerData = props.LedgerData;
-    const fromBillViewPopup = props.fromBillViewPopup;
-    console.log(ledgerData, "ledgerData");
+    const dispatch = useDispatch();
     const partyId = props.ledgerId;
-    console.log(partyId)
+    const fromBillViewPopup = props.fromBillViewPopup;
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
     const [selectDate, setSelectDate] = useState(props.fromPaymentHistory ?
@@ -60,7 +55,12 @@ const RecordPayment = (props) => {
 
     const [billIds, setBillIds] = useState(props.fromPaymentHistory ? ledgerData?.billIds : []);
     const [totalRecieved, setTotalRecieved] = useState(0);
-
+    const tabClick = useSelector(state => state.ledgerSummaryInfo);
+    var ledgerTab = tabClick.partnerTabs;
+    var allCustomTab=tabClick.allCustomTabs;
+    var startDate=tabClick.beginDate;
+    var endDate=tabClick.closeDate;
+    console.log(tabClick,"clicks")
     useEffect(() => {
 
     }, [props.showRecordPaymentModal])
@@ -78,7 +78,6 @@ const RecordPayment = (props) => {
         }
     }
     const onSubmitRecordPayment = () => {
-        console.log(paidsRcvd,paidRcvd)
         if (billIds.length > 0) {
             paidsRcvd = totalRecieved;
         }
@@ -133,10 +132,13 @@ const RecordPayment = (props) => {
                 toast.success(res.data.status.message, {
                     toastId: "errorr2",
                 })
+                dispatch(paymentViewInfo(updateRecordRequest));
+                dispatch(fromRecordPayment(true));
                 window.setTimeout(function(){
                     props.closeRecordPaymentModal();
                 },1000)
-            }).catch(error=>{
+                },(error)=>{
+                console.log(error.message)
                 toast.error(error.res.data.status.message, {
                     toastId: "error3",
                 });
@@ -166,24 +168,26 @@ const RecordPayment = (props) => {
             paymentLedger(clickId, partyId)
         } else {
             fetchLedgers();
-            if (props.allCustomTab == 'all' && props.ledgerTab == 'ledgersummary') {
+            if (allCustomTab == 'all' && ledgerTab == 'ledgersummary') {
                 summaryData(clickId, partyId);
             }
-            else if (props.allCustomTab == 'all' && props.ledgerTab == 'detailedledger') {
-                console.log("came to here")
-                if (props.partyType == 'BUYER') {
+            else if (allCustomTab == 'all' && ledgerTab == 'detailedledger') {
+                console.log("here")
+                if (props.partyType == 'BUYER' || ledgerData?.type=='BUYER') {
+                    console.log("here")
                     geyDetailedLedger(clickId, partyId)
                 } else {
                     sellerDetailed(clickId, partyId)
                 }
-            } else if (props.allCustomTab == 'custom' && props.ledgerTab == 'ledgersummary') {
-                var fromDate = moment(props.startDate).format("YYYY-MM-DD");
-                var toDate = moment(props.endDate).format("YYYY-MM-DD");
+            } else if (allCustomTab == 'custom' && ledgerTab == 'ledgersummary') {
+                console.log("here to custom",startDate)
+                var fromDate = moment(startDate).format("YYYY-MM-DD");
+                var toDate = moment(endDate).format("YYYY-MM-DD");
                 ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
-            } else if(props.allCustomTab == 'custom' && props.ledgerTab == 'detailedledger') {
-                var fromDate = moment(props.startDate).format("YYYY-MM-DD");
-                var toDate = moment(props.endDate).format("YYYY-MM-DD");
-                if (props.partyType == 'BUYER') {
+            } else if(allCustomTab == 'custom' && ledgerTab == 'detailedledger') {
+                var fromDate = moment(startDate).format("YYYY-MM-DD");
+                var toDate = moment(endDate).format("YYYY-MM-DD");
+                if (props.partyType == 'BUYER' || ledgerData?.type=='BUYER') {
                     detailedLedgerByDate(clickId, partyId, fromDate, toDate)
                 } else {
                     sellerDetailedByDate(clickId, partyId, fromDate, toDate)
@@ -218,14 +222,18 @@ const RecordPayment = (props) => {
             });
     };
     const summaryData = (clickId, partyId) => {
-        console.log(partyId,"id")
         getLedgerSummary(clickId, partyId)
             .then((res) => {
                 if (res.data.status.type === "SUCCESS") {
-                    setSummary(res.data.data)
-                    setLedgerSummary(res.data.data.ledgerSummary);
-                    props.setSummary(res.data.data)
-                    props.ledgerSummaryData(res.data.data.ledgerSummary)
+                    // setSummary(res.data.data)
+                    // setLedgerSummary(res.data.data.ledgerSummary);
+                    
+                    if(props.fromPaymentHistory){
+                        dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
+                    } else{
+                        props.setSummary(res.data.data)
+                        props.ledgerSummaryData(res.data.data.ledgerSummary)
+                    }
                 } else {
                     setLedgerSummary([]);
                 }
@@ -236,9 +244,15 @@ const RecordPayment = (props) => {
         getBuyerDetailedLedger(clickId, partyId)
             .then((res) => {
                 if (res.data.status.type === "SUCCESS") {
-                    props.setSummary(res.data.data)
-                    setdetailedLedger(res.data.data.details);
-                    props.ledgerSummaryData(res.data.data.details)
+                    if(props.fromPaymentHistory){
+                        dispatch(detaildLedgerInfo(res.data.data.details))
+                    }
+                    else{
+                        props.setSummary(res.data.data)
+                    // setdetailedLedger(res.data.data.details);
+                        props.ledgerSummaryData(res.data.data.details)
+                    }
+                    
                 } else {
                     setdetailedLedger([]);
                 }
@@ -250,9 +264,14 @@ const RecordPayment = (props) => {
         getSellerDetailedLedger(clickId, partyId)
             .then((res) => {
                 if (res.data.status.type === "SUCCESS") {
-                    props.setSummary(res.data.data)
-                    setdetailedLedger(res.data.data.details);
-                    props.ledgerSummaryData(res.data.data.details)
+                    if(props.fromPaymentHistory){
+                        dispatch(detaildLedgerInfo(res.data.data.details))
+                    }
+                    else{
+                        props.setSummary(res.data.data)
+                    // setdetailedLedger(res.data.data.details);
+                        props.ledgerSummaryData(res.data.data.details)
+                    }
                 } else {
                     setdetailedLedger([]);
                 }
@@ -262,13 +281,17 @@ const RecordPayment = (props) => {
     const fetchLedgers = () => {
         getLedgers(clickId, props.partyType?props.partyType:ledgerData?.type).then(res => {
             if (res.data.status.type === "SUCCESS") {
-                setLedgers(res.data.data.ledgers);
-                setOutStAmt(res.data.data);
+                // setLedgers(res.data.data.ledgers);
+                // setOutStAmt(res.data.data);
                 if (props.allCustomTab == 'all' && props.ledgerTab == 'ledgersummary') {
 
                 }
-                props.ledgers(res.data.data.ledgers);
-                props.outStAmt(res.data.data);
+                if(props.fromPaymentHistory){
+                    dispatch(allLedgers(res.data.data.ledgers));
+                } else{
+                    props.ledgers(res.data.data.ledgers);
+                    props.outStAmt(res.data.data);
+                }
             } else {
                 console.log("some")
             }
@@ -280,10 +303,12 @@ const RecordPayment = (props) => {
         getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
             .then((res) => {
                 if (res.data.data !== null) {
-                    //   setSummaryByDate(res.data.data.ledgerSummary);
-                    //   setcardDetails(res.data.data);
-                    props.setSummary(res.data.data)
-                    props.ledgerSummaryData(res.data.data.ledgerSummary)
+                    if(props.fromPaymentHistory){
+                        dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
+                    } else{
+                        props.setSummary(res.data.data)
+                        props.ledgerSummaryData(res.data.data.ledgerSummary)
+                    };
                 } else {
                     //   setSummaryByDate([]);
                     //   setcardDetails([]);
@@ -296,11 +321,14 @@ const RecordPayment = (props) => {
         getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
             .then((res) => {
                 if (res.data.data !== null) {
-                    // setdetailedLedgerByDate(res.data.data.details);
-                    // setcardDetailed(res.data.data);
-                    props.setSummary(res.data.data)
-                    //   setdetailedLedger(res.data.data.details);
-                    props.ledgerSummaryData(res.data.data.details)
+                    if(props.fromPaymentHistory){
+                        dispatch(detaildLedgerInfo(res.data.data.details))
+                    }
+                    else{
+                        props.setSummary(res.data.data)
+                    // setdetailedLedger(res.data.data.details);
+                        props.ledgerSummaryData(res.data.data.details)
+                    }
                 } else {
                     // setdetailedLedgerByDate([]);
                     // setcardDetailed([]);
@@ -314,8 +342,14 @@ const RecordPayment = (props) => {
         getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
             .then((res) => {
                 if (res.data.data !== null) {
-                    props.setSummary(res.data.data)
-                    props.ledgerSummaryData(res.data.data.details)
+                    if(props.fromPaymentHistory){
+                        dispatch(detaildLedgerInfo(res.data.data.details))
+                    }
+                    else{
+                        props.setSummary(res.data.data)
+                    // setdetailedLedger(res.data.data.details);
+                        props.ledgerSummaryData(res.data.data.details)
+                    }
                 } else {
                     // setdetailedLedgerByDate([]);
                     // setcardDetailed([]);
@@ -335,7 +369,7 @@ const RecordPayment = (props) => {
     }
 
     const billidsData = (data) => {
-        var values = data.map(item => item.caBSeq);
+        var values = data.map(item => item.billId);
         var recieved = 0
         data.map(item => {
             recieved += item.amount;

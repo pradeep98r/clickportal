@@ -15,14 +15,18 @@ import {
   getPaymentListById,
   getSellBillId,
 } from "../../actions/ledgersService";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { detaildLedgerInfo } from "../../reducers/ledgerSummarySlice";
 const DetailedLedger = (props) => {
-  const details = props.detailedLedger;
-  const detailsByDate = props.DetailedLedgerByDate;
+  var detailedLedgerSummary = useSelector(state => state.ledgerSummaryInfo);
+  var partnerDetailedLedger = detailedLedgerSummary?.detaildLedgerInfo;
+  console.log(detailedLedgerSummary,partnerDetailedLedger)
+  const details = detailedLedgerSummary?.fromRecordPayment?partnerDetailedLedger: props.detailedLedger;
+  const detailsByDate =detailedLedgerSummary?.fromRecordPayment?partnerDetailedLedger:props.DetailedLedgerByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
   console.log(details, detailsByDate, "details");
