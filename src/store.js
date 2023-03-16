@@ -11,6 +11,7 @@ import transReducer from './reducers/transSlice';
 import billEditItemReducer from './reducers/billEditItemSlice';
 import step1DataReducer from './reducers/step1DataSlice';
 import paymentViewReducer from './reducers/paymentViewSlice';
+import ledgersSummaryReducer from './reducers/ledgerSummarySlice';
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -24,7 +25,8 @@ export default configureStore({
         transInfo:transReducer,
         billEditItemInfo:billEditItemReducer,
         step1DataInfo:step1DataReducer,
-        paymentViewInfo:paymentViewReducer
+        paymentViewInfo:paymentViewReducer,
+        ledgerSummaryInfo: ledgersSummaryReducer
 
     }
 })

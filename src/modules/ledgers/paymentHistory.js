@@ -14,15 +14,16 @@ import moment from "moment";
 import { updateRecordPayment } from "../../actions/ledgersService";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
+  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const [paymentHistoryData, setPaymentHistoryData] = useState(
-    paymentViewData.paymentViewInfo
+  var [paymentHistoryData, setPaymentHistoryData] = useState(
+    paymentViewData?.paymentViewInfo
   );
-
   var discountedAmount = 0;
   var discountPercentage = 0;
-  var amount = paymentViewData?.paymentViewInfo?.amount;
+  var amount = paymentViewData?.paymentViewInfo?.amount?
+  paymentViewData?.paymentViewInfo?.amount:paymentViewData?.paymentViewInfo?.paidRcvd;
   var discount = paymentViewData?.paymentViewInfo?.discount;
   discount = Math.abs(discount);
   if (discount > 0) {
@@ -33,7 +34,6 @@ const PaymentHistoryView = (props) => {
   // var fromAdvances = false;
   const [fromAdvances, setfromAdvances] = useState(false);
   useEffect(() => {
-    console.log(paymentViewData.paymentViewInfo.refId);
     if (paymentViewData.paymentViewInfo.refId?.includes("A")) {
       setfromAdvances(true);
     }
@@ -112,7 +112,8 @@ const PaymentHistoryView = (props) => {
                       <div>
                         <h6>{paymentHistoryData.partyName}</h6>
                         <p>
-                          {getMaskedMobileNumber(paymentHistoryData.mobile)}
+                          {(paymentHistoryData?.mobile)}
+                          {/* {getMaskedMobileNumber(paymentHistoryData?.mobile)} */}
                         </p>
                       </div>
                     </div>
@@ -120,7 +121,7 @@ const PaymentHistoryView = (props) => {
                   <div className="col-lg-5 p-0"></div>
                   <div className="col-lg-3 p-0">
                     <h6>Date</h6>
-                    <h5>{paymentHistoryData.date}</h5>
+                    <h5>{paymentViewData?.paymentViewInfo.date}</h5>
                   </div>
                 </div>
               </div>
@@ -143,7 +144,7 @@ const PaymentHistoryView = (props) => {
                 title2="Payment Mode"
                 title3="Status"
                 title1Data={amount}
-                title2Data={paymentHistoryData.paymentMode}
+                title2Data={paymentViewData?.paymentViewInfo.paymentMode}
                 title3Data="-"
               />
               {discount > 0 ? (
@@ -162,7 +163,7 @@ const PaymentHistoryView = (props) => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <h6>Comment</h6>
-                    <h5>{paymentHistoryData.comments}</h5>
+                    <h5>{paymentViewData?.paymentViewInfo?.comments}</h5>
                   </div>
                 </div>
               </div>
