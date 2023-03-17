@@ -40,10 +40,13 @@ import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import {
   allBuyBillsData,
   allLedgers,
+  businessValues,
   allSellBillsData,
   detaildLedgerInfo,
   fromRecordPayment,
   ledgerSummaryInfo,
+  outStandingBal,
+  totalRecivables,
 } from "../../reducers/ledgerSummarySlice";
 import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
@@ -195,7 +198,7 @@ const RecordPayment = (props) => {
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
       billIds: billIds,
-      type: ledgerData?.type,
+      type:ledgerData?.type == "FARMER"?'SELLER':ledgerData?.type,
       discount: discountRs,
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
@@ -379,6 +382,7 @@ const RecordPayment = (props) => {
           // setLedgerSummary(res.data.data.ledgerSummary);
 
           if (props.fromPaymentHistory || fromBillViewPopup) {
+            dispatch(businessValues(res.data.data));
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
             props.setSummary(res.data.data);
@@ -395,6 +399,7 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (props.fromPaymentHistory || fromBillViewPopup ) {
+            dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
@@ -413,6 +418,7 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (props.fromPaymentHistory || fromBillViewPopup) {
+            dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
@@ -430,7 +436,8 @@ const RecordPayment = (props) => {
     if (ledgerData?.type == "FARMER" || props.partyType == 'FARMER') {
       partyType = "SELLER";
     } else {
-      partyType = fromBillViewPopup ? props.partyType : ledgerData?.type;
+      partyType = fromBillViewPopup ? props.partyType :props.fromPaymentHistory?ledgerData?.type:
+      props.partyType;
     }
     console.log(partyType,props.partyType)
     getLedgers(clickId, partyType).then(
@@ -446,6 +453,7 @@ const RecordPayment = (props) => {
           if (props.fromPaymentHistory || fromBillViewPopup) {
             // props.ledgers(res.data.data.ledgers);
             dispatch(allLedgers(res.data.data.ledgers));
+            dispatch(outStandingBal(res.data.data));
             console.log('worrking')
           } else {
             props.ledgers(res.data.data.ledgers);
@@ -463,6 +471,7 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           if (props.fromPaymentHistory || fromBillViewPopup) {
+            dispatch(businessValues(res.data.data));
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
             props.setSummary(res.data.data);
@@ -481,6 +490,7 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           if (props.fromPaymentHistory || fromBillViewPopup) {
+            dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
@@ -501,6 +511,7 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           if (props.fromPaymentHistory || fromBillViewPopup) {
+            dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);

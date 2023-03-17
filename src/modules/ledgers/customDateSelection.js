@@ -41,7 +41,7 @@ const CustomDateSelection = (props) => {
         props.setToDate(new Date());
         props.fromCustomDate(false);
         props.allBillIdsDate([]);
-        localStorage.setItem("listOfBillIds", null);
+        localStorage.removeItem("listOfBillIds");
       }
     return (
         <Modal
