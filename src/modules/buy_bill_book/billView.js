@@ -38,6 +38,7 @@ import { getBillHistoryListById, getOutstandingBal } from "../../actions/ledgers
 import { billHistoryView } from "../../reducers/paymentViewSlice";
 import EditPaymentHistoryView from "../ledgers/editPaymentHistoryView";
 import RecordPayment from "../ledgers/recordPayment";
+import { fromRecordPayment } from "../../reducers/ledgerSummarySlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -278,6 +279,7 @@ const BillView = (props) => {
     setRecordPaymentModal(true);
     setFromBillViewPopup(true);
     setBillViewData(data)
+    dispatch(fromRecordPayment(true));
   }
   return (
     <Modal
