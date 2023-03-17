@@ -7,7 +7,9 @@ export const ledgerSummarySlice = createSlice({
     fromRecordPayment:false,
     allLedgers:[],
     detaildLedgerInfo:[],
-    businessValues:[]
+    businessValues:[],
+    allBuyBillsData:[],
+    allSellBillsData:[]
   },
   reducers: {
     ledgerSummaryInfo:(state,action) =>{
@@ -42,7 +44,13 @@ export const ledgerSummarySlice = createSlice({
     },
     totalRecivables: (state,action)=>{
       state.totalRecivables = action.payload;
-    }
+    },
+    allBuyBillsData: (state, action)=>{
+      state.allBuyBillsData = action.payload
+    },
+    allSellBillsData: (state, action)=>{
+      state.allSellBillsData = action.payload
+    },
   },
 });
 
@@ -51,6 +59,6 @@ export const {
   fromRecordPayment,
   allLedgers,
   detaildLedgerInfo,partnerTabs,allCustomTabs,beginDate,closeDate,
-  outStandingBal, businessValues,totalRecivables} = ledgerSummarySlice.actions;
+  outStandingBal, businessValues,totalRecivables,allBuyBillsData,allSellBillsData} = ledgerSummarySlice.actions;
 
 export default ledgerSummarySlice.reducer;

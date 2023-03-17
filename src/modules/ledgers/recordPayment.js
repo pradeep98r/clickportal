@@ -23,8 +23,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import {
+  getBuyBills,
   getBuyerDetailedLedger,
   getLedgerSummary,
+  getSellBills,
 } from "../../actions/billCreationService";
 import { useEffect } from "react";
 import {
@@ -36,8 +38,10 @@ import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import {
+  allBuyBillsData,
   allLedgers,
   businessValues,
+  allSellBillsData,
   detaildLedgerInfo,
   fromRecordPayment,
   ledgerSummaryInfo,
@@ -51,6 +55,7 @@ const RecordPayment = (props) => {
   const dispatch = useDispatch();
   const partyId = props.ledgerId;
   const fromBillViewPopup = props.fromBillViewPopup;
+  const fromBillbookToRecordPayment = props.fromBillbookToRecordPayment;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
@@ -130,10 +135,12 @@ const RecordPayment = (props) => {
   };
   var billidsArray = [];
   const onSubmitRecordPayment = () => {
+    console.log(fromBillViewPopup,ledgerData)
     if (billIds.length > 0) {
       paidsRcvd = totalRecieved;
     } else {
       if (fromBillViewPopup) {
+        console.log(ledgerData)
         billidsArray.push(ledgerData.billId);
         paidsRcvd = fromBillViewPopup
           ? props.partyType == "BUYER"
@@ -143,6 +150,7 @@ const RecordPayment = (props) => {
         setBillIds(billidsArray);
       }
     }
+    console.log(paidsRcvd,paidRcvd)
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
@@ -155,8 +163,10 @@ const RecordPayment = (props) => {
       paidsRcvd < paidRcvd &&
       !(paidsRcvd < 0)
     ) {
+      console.log('hii')
       addRecordPayment();
     } else if (parseInt(paidsRcvd) > paidRcvd) {
+      console.log('more than')
       setRequiredCondition(
         "Entered Amount  cannot more than Outstanding Balance"
       );
@@ -215,6 +225,7 @@ const RecordPayment = (props) => {
       );
     } else {
       await postRecordPayment(addRecordData).then((response) => {
+        console.log(addRecordData,fromBillbookToRecordPayment,response)
         closePopup();
         toast.success(response.data.status.message, {
           toastId: "errorr2",
@@ -222,7 +233,7 @@ const RecordPayment = (props) => {
         window.setTimeout(function () {
           props.closeRecordPaymentModal();
         }, 1000);
-        if (fromBillViewPopup) {
+        if (fromBillViewPopup && !fromBillbookToRecordPayment) {
           if (
             props.partyType?.toLowerCase() == "seller" ||
             props.partyType?.toLowerCase() == "farmer"
@@ -246,6 +257,59 @@ const RecordPayment = (props) => {
                 setShowBillModal(true);
               }
             });
+          }
+        }
+        else{
+          if (
+            props.partyType?.toLowerCase() == "seller" ||
+            props.partyType?.toLowerCase() == "farmer"
+          ) {
+            getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: "FARMER" });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+                setShowBillModalStatus(true);
+                setShowBillModal(true);
+              }
+            });
+            // startDate
+            getBuyBills(clickId, startDate, endDate)
+            .then((response) => {
+              if (response.data.data != null) {
+                // setBuyBillData(response.data.data.singleBills);
+                response.data.data.singleBills.map((i, ind) => {
+                  Object.assign(i, { index: ind });
+                })
+                dispatch(allBuyBillsData(response.data.data.singleBills))
+                console.log(response.data.data.singleBills)
+                // setBuyBillData(response.data.data.singleBills);
+              } 
+            })
+            
+          } else {
+            getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: props.partyType });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+                setShowBillModalStatus(true);
+                setShowBillModal(true);
+              }
+            });
+            getSellBills(clickId, startDate, endDate)
+            .then((response) => {
+              if (response.data.data != null) {
+                response.data.data.singleBills.map((i, ind) => {
+                  Object.assign(i, { index: ind });
+                })
+                dispatch(allSellBillsData(response.data.data.singleBills))
+                console.log(response.data.data.singleBills)
+              } else {
+                dispatch(allSellBillsData([]));
+                // setSellBillData([]);
+              }
+            })
           }
         }
         },
