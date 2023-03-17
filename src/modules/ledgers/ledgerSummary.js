@@ -22,6 +22,7 @@ const LedgerSummary = (props) => {
   var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
   const ledgerSummary =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummary;
+  console.log(ledgerSummary,ledgersSummary?.fromRecordPayment,"ledgersummary")
   const ledgerSummaryByDate =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummaryByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;

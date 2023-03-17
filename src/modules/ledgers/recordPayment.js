@@ -174,7 +174,7 @@ const RecordPayment = (props) => {
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
       billIds: h,
-      type: props.partyType,
+      type: props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType,
       discount: discountRs,
     };
     const updateRecordRequest = {
@@ -245,50 +245,14 @@ const RecordPayment = (props) => {
             });
           }
         }
-
-        (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error3",
-          });
-        };
-      });
-    }
-    const fetchLedgers = () => {
-      var partyType = "";
-      if (ledgerData?.type == "FARMER") {
-        partyType = "SELLER";
-      } else {
-        partyType = ledgerData?.type;
-      }
-      getLedgers(clickId, props.partyType ? props.partyType : partyType).then(
-        (res) => {
-          if (res.data.status.type === "SUCCESS") {
-            // setLedgers(res.data.data.ledgers);
-            // setOutStAmt(res.data.data);
-            if (
-              props.allCustomTab == "all" &&
-              props.ledgerTab == "ledgersummary"
-            ) {
-            }
-            if (props.fromPaymentHistory) {
-              // props.ledgers(res.data.data.ledgers);
-              dispatch(allLedgers(res.data.data.ledgers));
-            } else {
-              props.ledgers(res.data.data.ledgers);
-              props.outStAmt(res.data.data);
-            }
-          } else {
-            console.log("some");
-          }
         },
-
         (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error3",
-          });
-        }
+            toast.error(error.response.data.status.message, {
+              toastId: "error3",
+            });
+          }
       );
-    };
+    }
 
     if (props.tabs == "paymentledger") {
       getTransportersData();
@@ -353,6 +317,7 @@ const RecordPayment = (props) => {
           if (props.fromPaymentHistory) {
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
+            console.log("from billId")
             props.setSummary(res.data.data);
             props.ledgerSummaryData(res.data.data.ledgerSummary);
           }
@@ -366,7 +331,7 @@ const RecordPayment = (props) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          if (props.fromPaymentHistory) {
+          if (props.fromPaymentHistory|| props.fromBillViewPopup ) {
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
@@ -384,7 +349,7 @@ const RecordPayment = (props) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          if (props.fromPaymentHistory) {
+          if (props.fromPaymentHistory || props.fromBillViewPopup) {
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
@@ -398,33 +363,41 @@ const RecordPayment = (props) => {
       .catch((error) => console.log(error));
   };
   const fetchLedgers = () => {
-    getLedgers(
-      clickId,
-      props.partyType ? props.partyType : ledgerData?.type
-    ).then((res) => {
-      if (res.data.status.type === "SUCCESS") {
-        // setLedgers(res.data.data.ledgers);
-        // setOutStAmt(res.data.data);
-        if (props.allCustomTab == "all" && props.ledgerTab == "ledgersummary") {
-        }
-        if (props.fromPaymentHistory) {
-          dispatch(allLedgers(res.data.data.ledgers));
+    var partyType = "";
+    if (ledgerData?.type == "FARMER") {
+      partyType = "SELLER";
+    } else {
+      partyType = ledgerData?.type;
+    }
+    getLedgers(clickId, props.partyType ? props.partyType : partyType).then(
+      (res) => {
+        if (res.data.status.type === "SUCCESS") {
+          // setLedgers(res.data.data.ledgers);
+          // setOutStAmt(res.data.data);
+          if (
+            props.allCustomTab == "all" &&
+            props.ledgerTab == "ledgersummary"
+          ) {
+          }
+          if (props.fromPaymentHistory) {
+            // props.ledgers(res.data.data.ledgers);
+            dispatch(allLedgers(res.data.data.ledgers));
+          } else {
+            props.ledgers(res.data.data.ledgers);
+            props.outStAmt(res.data.data);
+          }
         } else {
-          props.ledgers(res.data.data.ledgers);
-          props.outStAmt(res.data.data);
+          console.log("some");
         }
-      } else {
-        console.log("some");
       }
-      setOutStAmt(res.data.data);
-    });
+    );
   };
   //ledger summary by date
   const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
     getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-          if (props.fromPaymentHistory) {
+          if (props.fromPaymentHistory || props.fromBillViewPopup) {
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
             props.setSummary(res.data.data);
@@ -442,7 +415,7 @@ const RecordPayment = (props) => {
     getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-          if (props.fromPaymentHistory) {
+          if (props.fromPaymentHistory || props.fromBillViewPopups) {
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
@@ -462,7 +435,7 @@ const RecordPayment = (props) => {
     getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-          if (props.fromPaymentHistory) {
+          if (props.fromPaymentHistory || props.fromBillViewPopup) {
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
             props.setSummary(res.data.data);
