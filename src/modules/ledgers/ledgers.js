@@ -32,17 +32,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import add from "../../assets/images/add.svg";
 import { allCustomTabs, detaildLedgerInfo, ledgerSummaryInfo, partnerTabs,
-  beginDate,closeDate} from "../../reducers/ledgerSummarySlice";
+  beginDate,closeDate, allLedgers} from "../../reducers/ledgerSummarySlice";
 import PaymentHistoryView from "./paymentHistory";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
-  const allLedgers = ledgersSummary?.allLedgers
-  console.log(allLedgers)
+  const ledgers = ledgersSummary?.allLedgers
   const dispatch = useDispatch();
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
-  const [ledgers, setLedgers] = useState(allData);
+  // const [ledgers, setLedgers] = useState(ledgersSummary?.allLedgers);
+  console.log(ledgers,ledgersSummary?.allLedgers)
   const [outStAmt, setOutStAmt] = useState([]);
   const [partyId, setPartyId] = useState(0);
   const [summary, setSummary] = useState([]);
@@ -116,7 +116,8 @@ const Ledgers = (props) => {
         return data.shortName.toLowerCase().search(value) != -1;
       }
     });
-    setLedgers(result);
+    // setLedgers(result);
+    ledgers = result
   };
 
   useEffect(() => {
@@ -134,9 +135,12 @@ const Ledgers = (props) => {
     getLedgers(clickId, ledgerType)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          setLedgers(res.data.data.ledgers);
+          // setLedgers(res.data.data.ledgers);
           setAllData(res.data.data.ledgers);
           setOutStAmt(res.data.data);
+          dispatch(allLedgers(res.data.data.ledgers))
+          // ledgers = res.data.data.ledgers;
+          console.log(ledgers)
           setPartyId(res.data.data.ledgers[0].partyId);
           summaryData(clickId, res.data.data.ledgers[0].partyId);
           getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
@@ -147,14 +151,16 @@ const Ledgers = (props) => {
             sellerDetailed(clickId, res.data.data.ledgers[0].partyId);
           }
         } else {
-          setLedgers([]);
+          // setLedgers([]);
+          ledgers = [];
         }
         setLoading(false);
       })
       .catch((error) => {
-        if (error.toJSON().message === "Network Error") {
-          setOnline(true);
-        }
+        console.log('hey')
+        // if (error.toJSON().message === "Network Error") {
+          // setOnline(true);
+        // }
       });
   };
 
@@ -196,7 +202,6 @@ const Ledgers = (props) => {
       (allCustom == "custom" && tabs == "ledgersummary") ||
       ledgerTabs == "ledgersummary"
     ) {
-      console.log(date, "date")
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);
@@ -406,11 +411,10 @@ const Ledgers = (props) => {
     }
   };
   const getData = (data) => {
-    console.log(data);
     if (allCustom == 'all' && ledgerTabs == 'ledgersummary') {
       setLedgerSummary(data);
     } else if (allCustom == 'all' && ledgerTabs == 'detailedledger') {
-      console.log("here")
+      
       setdetailedLedger(data);
     } else if (allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
       setSummaryByDate(data)
@@ -422,8 +426,9 @@ const Ledgers = (props) => {
     setOutStAmt(data);
   }
   const getALlLedgers = (data) => {
-    console.log(data,"main data")
-    setLedgers(data);
+    // setLedgers(data);
+    console.log(data,'add rrecord')
+    dispatch(allLedgers(data))
   }
   const getCardDtl = (data) => {
     if (allCustom == "all" && ledgerTabs == "ledgersummary") {

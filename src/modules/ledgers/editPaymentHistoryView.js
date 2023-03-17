@@ -8,7 +8,6 @@ import moment from "moment";
 import NoDataAvailable from "../../components/noDataAvailable";
 const EditPaymentHistoryView = (props) => {
   var billHistoryViewData = props.billHistoryArray;
-  console.log(billHistoryViewData);
   useEffect(() => {}, [props.showBillHistoryViewModal]);
   return (
     <Modal
