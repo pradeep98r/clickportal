@@ -75,8 +75,10 @@ const BillView = (props) => {
   const editBill = (itemVal) => {
     var arr = [];
     arr.push(itemVal);
-    $(".billView_modal").hide();
-    $(".modal-backdrop").remove();
+    if(!(props.fromLedger)){
+      $(".billView_modal").hide();
+      $(".modal-backdrop").remove();
+    }
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
@@ -543,6 +545,7 @@ const BillView = (props) => {
               fromBillViewPopup={fromBillViewPopup}
               outStbal = {outBal}
               fromPaymentHistory={recordPaymentModalStatus}
+              fromBillbookToRecordPayment = {props.fromBillbookToRecordPayment}
             /> : ''}
     </Modal>
   );

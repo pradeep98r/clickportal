@@ -31,11 +31,19 @@ import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
 import BillView from "../buy_bill_book/billView";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import {
+  allSellBillsData,
+  beginDate,
+  closeDate,
+} from "../../reducers/ledgerSummarySlice";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
-  const [sellBillData, setSellBillData] = useState(allData);
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  var sellBillData = ledgersSummary?.allSellBillsData;
+  console.log(sellBillData)
+  // const [sellBillData, setSellBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
   const langData = localStorage.getItem("languageData");
@@ -46,7 +54,7 @@ const SellBillBook = (props) => {
 
   const billData = useSelector((state) => state.billViewInfo);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [showPrevNext, setShowPrevNext] = useState(true)
+  const [showPrevNext, setShowPrevNext] = useState(true);
   // console.log(billViiewDate)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -62,36 +70,37 @@ const SellBillBook = (props) => {
     var toDate = moment(bDate ? bDate : endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
-      setShowPrevNext(true)
+      setShowPrevNext(true);
       setLoading(true);
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
       setCurrentDate(new Date(fromDate));
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
       setLoading(true);
-      setShowPrevNext(false)
+      setShowPrevNext(false);
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
       setLoading(true);
-      setShowPrevNext(false)
+      setShowPrevNext(false);
     } else if (dateTab === "Yearly") {
       setDateValue(moment(fromDate).format("YYYY"));
       setLoading(true);
-      setShowPrevNext(false)
-    } else if(dateTab === "Custom"){
+      setShowPrevNext(false);
+    } else if (dateTab === "Custom") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
       setLoading(true);
-      setShowPrevNext(false)
+      setShowPrevNext(false);
     }
-
+    dispatch(beginDate(fromDate));
+    dispatch(closeDate(toDate));
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         console.log(response.data.data);
@@ -99,11 +108,12 @@ const SellBillBook = (props) => {
           setAllData(response.data.data);
           response.data.data.singleBills.map((i, ind) => {
             Object.assign(i, { index: ind });
-          })
-          setSellBillData(response.data.data.singleBills);
-
+          });
+          dispatch(allSellBillsData(response.data.data.singleBills));
+          // setSellBillData(response.data.data.singleBills);
         } else {
-          setSellBillData([]);
+          dispatch(allSellBillsData([]));
+          // setSellBillData([]);
         }
         setLoading(false);
       })
@@ -128,7 +138,8 @@ const SellBillBook = (props) => {
     setShowBillModalStatus(true);
     setShowBillModal(true);
     localStorage.setItem("billId", id);
-    Object.assign(bill, { index: i });
+    let object = { ...bill };
+    Object.assign(object, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
   };
@@ -182,7 +193,7 @@ const SellBillBook = (props) => {
         return data.buyerId.toString().search(value) != -1;
       }
     });
-    setSellBillData(result);
+    dispatch(allSellBillsData(result));
   };
   const totalBagsValue = (bags) => {
     var totalValue = 0;
@@ -192,23 +203,22 @@ const SellBillBook = (props) => {
     return totalValue;
   };
 
-
   const onPrevDate = () => {
     const newDate = new Date(currentDate.getTime());
     newDate.setDate(newDate.getDate() - 1);
     setLoading(true);
-    callbackFunction(newDate, newDate, 'Daily')
+    callbackFunction(newDate, newDate, "Daily");
     setCurrentDate(newDate);
-  }
+  };
   const onNextDate = () => {
     const newDate = new Date(currentDate.getTime());
     newDate.setDate(newDate.getDate() + 1);
     if (newDate < new Date()) {
       setLoading(true);
-      callbackFunction(newDate, newDate, 'Daily')
+      callbackFunction(newDate, newDate, "Daily");
       setCurrentDate(newDate);
     }
-  }
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -225,8 +235,7 @@ const SellBillBook = (props) => {
                 <div>
                   <div>
                     <div className="d-flex justify-content-center bills_div">
-                      
-                        {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
+                      {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                       <li className="nav-item active">
                         <a
                           className="nav-link active"
@@ -239,17 +248,22 @@ const SellBillBook = (props) => {
                         </a>
                       </li>
                     </ul> */}
-                    
 
                       {/* <button  className="color_blue"> */}
                       <div className="d-flex align-items-center color_blue">
-                        {showPrevNext?
-                        <button onClick={onPrevDate} className="p-0">
-                          <span className="" onClick={onPrevDate}>
-                            <img src={prev_icon} alt="icon" className="mr-3" />
-                          </span>
-                        </button>
-                        :''}
+                        {showPrevNext ? (
+                          <button onClick={onPrevDate} className="p-0">
+                            <span className="" onClick={onPrevDate}>
+                              <img
+                                src={prev_icon}
+                                alt="icon"
+                                className="mr-3"
+                              />
+                            </span>
+                          </button>
+                        ) : (
+                          ""
+                        )}
                         <button onClick={onclickDate} className="p-0">
                           <span className="date_icon m-0 d-flex color_blue">
                             <img
@@ -260,13 +274,19 @@ const SellBillBook = (props) => {
                             {dateValue}
                           </span>
                         </button>
-                        {showPrevNext?
-                        <button onClick={onNextDate}>
-                          <span className="" onClick={onNextDate}>
-                            <img src={next_icon} alt="icon" className="ml-3" />
-                          </span>
-                        </button>
-                        :''}
+                        {showPrevNext ? (
+                          <button onClick={onNextDate}>
+                            <span className="" onClick={onNextDate}>
+                              <img
+                                src={next_icon}
+                                alt="icon"
+                                className="ml-3"
+                              />
+                            </span>
+                          </button>
+                        ) : (
+                          ""
+                        )}
                       </div>
 
                       {/* </button> */}
@@ -372,7 +392,10 @@ const SellBillBook = (props) => {
                                                 </h6>
                                                 <div className="d-flex align-items-center">
                                                   <h6 className="mobile">
-                                                    {getPartnerType(bill.partyType, bill.trader) +
+                                                    {getPartnerType(
+                                                      bill.partyType,
+                                                      bill.trader
+                                                    ) +
                                                       "-" +
                                                       bill.buyerId}
                                                   </h6>
@@ -415,22 +438,33 @@ const SellBillBook = (props) => {
                                                   style={{
                                                     color:
                                                       bill.billStatus ==
-                                                        "CANCELLED"
+                                                      "CANCELLED"
                                                         ? "#d43939"
                                                         : "#1C1C1C",
                                                   }}
                                                 >
-                                                  <div className="flex_class p-0">
-                                                    {bill.billStatus ==
-                                                      "CANCELLED" ? (
-                                                      <div className="complete-dot cancel_dot"></div>
-                                                    ) : (
+                                                  {bill?.paid == true ? (
+                                                    <div className="flex_class">
                                                       <div className="complete-dot"></div>
-                                                    )}
-                                                    <div className="bill-name">
-                                                      {getText(bill.billStatus)}
+                                                      <div className="bill-name">
+                                                        {getText("Amount Received")}
+                                                      </div>
                                                     </div>
-                                                  </div>
+                                                  ) : (
+                                                    <div className="flex_class p-0">
+                                                      {bill.billStatus ==
+                                                      "CANCELLED" ? (
+                                                        <div className="complete-dot cancel_dot"></div>
+                                                      ) : (
+                                                        <div className="complete-dot"></div>
+                                                      )}
+                                                      <div className="bill-name">
+                                                        {getText(
+                                                          bill.billStatus
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                  )}
                                                 </p>
                                               </div>
                                             </div>
@@ -469,7 +503,7 @@ const SellBillBook = (props) => {
                                                     )}
                                                   </div>
                                                   {crop.bags !== null &&
-                                                    crop.bags.length > 0 ? (
+                                                  crop.bags.length > 0 ? (
                                                     <div className="flex_class">
                                                       <input
                                                         type="checkbox"
@@ -489,7 +523,7 @@ const SellBillBook = (props) => {
                                                                     <span>
                                                                       {item.weight
                                                                         ? item.weight +
-                                                                        " "
+                                                                          " "
                                                                         : ""}
                                                                     </span>
                                                                     <span className="wastsge_color">
@@ -626,6 +660,7 @@ const SellBillBook = (props) => {
           closeBillViewModal={() => setShowBillModal(false)}
           allBillsData={sellBillData}
           fromLedger={false}
+          fromBillbookToRecordPayment= {true}
         />
       ) : (
         ""
