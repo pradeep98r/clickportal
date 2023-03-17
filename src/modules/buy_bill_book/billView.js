@@ -34,7 +34,7 @@ import {
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import { getText } from "../../components/getText";
-import { getBillHistoryListById } from "../../actions/ledgersService";
+import { getBillHistoryListById, getOutstandingBal } from "../../actions/ledgersService";
 import { billHistoryView } from "../../reducers/paymentViewSlice";
 import EditPaymentHistoryView from "../ledgers/editPaymentHistoryView";
 import RecordPayment from "../ledgers/recordPayment";
@@ -43,21 +43,31 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  console.log(billViewData)
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
-  console.log(billData, "hey");
+  var billPaid =  billPaid = billViewData.billViewInfo != null ? (billViewData.billViewInfo)?.paid : false;;
+  const partyId = billData?.partyType.toUpperCase() === "BUYER"
+  ? billData?.buyerId
+  : billData?.farmerId;
   var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
   const [displayCancel, setDisplayCancel] = useState(false);
+  const [outBal, setoutBal] = useState('');
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
+   console.log(billViewData.billViewInfo,billPaid)
     if (billViewData?.billViewInfo?.billStatus == "COMPLETED") {
       setDisplayCancel(false);
     } else {
       setDisplayCancel(true);
     }
-    console.log(billData?.partyType)
-  }, [props.showBillViewModal]);
+    getOutstandingBal(clickId, partyId).then((response) => {
+      if(response.data.data !== null){
+        setoutBal(response.data.data)
+      }
+    });
+  }, [props]);
 
   const dispatch = useDispatch();
   const [showStepsModal, setShowStepsModal] = useState(false);
@@ -244,6 +254,7 @@ const BillView = (props) => {
   const [billHistoryArray, setBillHistoryArray] = useState([]);
   const [selectedRefId, setSelectedRefId] = useState('')
   const historyData = (id, type) => {
+    console.log(billPaid)
     var typeVal = "";
     if (type == "FARMER" || type == "SELLER") {
       typeVal = "BUY";
@@ -318,7 +329,7 @@ const BillView = (props) => {
                   {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
                   displayCancel ? (
                     <img src={cancel_bill_stamp} alt="stammp_img" />
-                  ) : billData?.paid ? (
+                  ) : billPaid ? (
                     billData?.partyType.toUpperCase() === "FARMER" ||
                     billData?.partyType.toUpperCase() === "SELLER" ? (
                       <img src={paid_stamp} alt="stammp_img" />
@@ -348,7 +359,7 @@ const BillView = (props) => {
               {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
               displayCancel ? (
                 ""
-              ) : billData?.paid ? (
+              ) : billPaid ? (
                 <div>
                   <p className="more-p-tag">Actions</p>
                   <div className="action_icons">
@@ -532,6 +543,8 @@ const BillView = (props) => {
               : billData?.farmerId)}
               partyType={billData?.partyType}
               fromBillViewPopup={fromBillViewPopup}
+              outStbal = {outBal}
+              fromPaymentHistory={recordPaymentModalStatus}
             /> : ''}
     </Modal>
   );

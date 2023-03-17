@@ -6,427 +6,559 @@ import DatePicker from "react-datepicker";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import add from "../../assets/images/add.svg";
 import $ from "jquery";
-import { getDetailedLedgerByDate,
-    getLedgers, getLedgerSummaryByDate,
-    getOutstandingBal, getSellerDetailedLedger,
-    getSellerDetailedLedgerByDate, postRecordPayment,
-    updateRecordPayment } from '../../actions/ledgersService';
+import {
+  getBuyBillId,
+  getDetailedLedgerByDate,
+  getLedgers,
+  getLedgerSummaryByDate,
+  getOutstandingBal,
+  getSellBillId,
+  getSellerDetailedLedger,
+  getSellerDetailedLedgerByDate,
+  postRecordPayment,
+  updateRecordPayment,
+} from "../../actions/ledgersService";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getMaskedMobileNumber } from '../../components/getCurrencyNumber';
-import { getBuyerDetailedLedger, getLedgerSummary } from '../../actions/billCreationService';
-import { useEffect } from 'react';
-import { getParticularTransporter, getTransporters } from '../../actions/transporterService';
-import SelectBillIds from './selectBillIds';
-import { Modal } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import {
+  getBuyerDetailedLedger,
+  getLedgerSummary,
+} from "../../actions/billCreationService";
+import { useEffect } from "react";
+import {
+  getParticularTransporter,
+  getTransporters,
+} from "../../actions/transporterService";
+import SelectBillIds from "./selectBillIds";
+import { Modal } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
-import { allLedgers, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, partnerId } from '../../reducers/ledgerSummarySlice';
+import {
+  allLedgers,
+  detaildLedgerInfo,
+  fromRecordPayment,
+  ledgerSummaryInfo,
+} from "../../reducers/ledgerSummarySlice";
+import BillView from "../buy_bill_book/billView";
+import { billViewInfo } from "../../reducers/billViewSlice";
 const RecordPayment = (props) => {
-    const ledgerData = props.LedgerData;
-    const dispatch = useDispatch();
-    const partyId = props.ledgerId;
-    const fromBillViewPopup = props.fromBillViewPopup;
-    const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-    const clickId = loginData.caId;
-    const [selectDate, setSelectDate] = useState(props.fromPaymentHistory ?
-        new Date(ledgerData?.date) : new Date());
-    const paidRcvd =props.fromPaymentHistory ? ledgerData.balance: props.outStbal;
-    let [paidsRcvd, setPaidsRcvd] = useState(props.fromPaymentHistory ? ledgerData?.amount : 0);
-    const [comments, setComments] = useState(
-        props.fromPaymentHistory ? ledgerData?.comments : " ");
-    const [paymentMode, setPaymentMode] = useState(
-        props.fromPaymentHistory ? ledgerData?.paymentMode : "CASH");
-    const [requiredCondition, setRequiredCondition] = useState("");
+  const ledgerData = props.LedgerData;
+  const dispatch = useDispatch();
+  const partyId = props.ledgerId;
+  const fromBillViewPopup = props.fromBillViewPopup;
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
+  const [showBillModalStatus, setShowBillModalStatus] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
+  const [selectDate, setSelectDate] = useState(
+    props.fromPaymentHistory
+      ? fromBillViewPopup
+        ? new Date(ledgerData?.billDate)
+        : new Date(ledgerData?.date)
+      : new Date()
+  );
+  const paidRcvd = props.fromPaymentHistory
+    ? fromBillViewPopup
+      ? props.outStbal
+      : ledgerData.balance
+    : props.outStbal;
+  let [paidsRcvd, setPaidsRcvd] = useState(
+    props.fromPaymentHistory
+      ? fromBillViewPopup
+        ? props.partyType == "BUYER"
+          ? ledgerData?.actualReceivable
+          : ledgerData?.actualPaybles
+        : ledgerData?.amount
+      : 0
+  );
+  const [comments, setComments] = useState(
+    props.fromPaymentHistory ? ledgerData?.comments : " "
+  );
+  const [paymentMode, setPaymentMode] = useState(
+    props.fromPaymentHistory
+      ? fromBillViewPopup
+        ? ""
+        : ledgerData?.paymentMode
+      : "CASH"
+  );
+  const [requiredCondition, setRequiredCondition] = useState("");
 
-    const [ledgerSummary, setLedgerSummary] = useState([]);
-    const [detailedLedger, setdetailedLedger] = useState([]);
-    const [outStAmt, setOutStAmt] = useState([]);
-    const [ledgers, setLedgers] = useState([]);
-    const [summary, setSummary] = useState([]);
+  const [ledgerSummary, setLedgerSummary] = useState([]);
+  const [detailedLedger, setdetailedLedger] = useState([]);
+  const [outStAmt, setOutStAmt] = useState([]);
+  const [ledgers, setLedgers] = useState([]);
+  const [summary, setSummary] = useState([]);
 
-    const [showLisOfBillIdsPopUp, setShowLisOfBillIdsPopUp] = useState(false);
-    const [showBillIdsModal, setShowBillIdsModal] = useState(false);
+  const [showLisOfBillIdsPopUp, setShowLisOfBillIdsPopUp] = useState(false);
+  const [showBillIdsModal, setShowBillIdsModal] = useState(false);
 
-    const [discountRs, setDiscountRs] = useState(0);
-    const [discountPerc, setDiscountPerc] = useState(0);
-    const [billAmount, setBillAmount] = useState(0);
+  const [discountRs, setDiscountRs] = useState(0);
+  const [discountPerc, setDiscountPerc] = useState(0);
+  const [billAmount, setBillAmount] = useState(0);
 
-    const [billIds, setBillIds] = useState([]);
-    const [caBSeq, setCabSeq] = useState(props.fromPaymentHistory ? ledgerData?.billIds : [])
-    const [totalRecieved, setTotalRecieved] = useState(0);
-    const tabClick = useSelector(state => state.ledgerSummaryInfo);
-    var ledgerTab = tabClick.partnerTabs;
-    var allCustomTab=tabClick.allCustomTabs;
-    var startDate=tabClick.beginDate;
-    var endDate=tabClick.closeDate;
+  const [billIds, setBillIds] = useState([]);
+  const [caBSeq, setCabSeq] = useState(
+    props.fromPaymentHistory
+      ? fromBillViewPopup
+        ? []
+        : ledgerData?.billIds
+      : []
+  );
 
-    useEffect(() => {
-    }, [props.showRecordPaymentModal])
-    const getAmountVal = (e) => {
-        setPaidsRcvd(
-            e.target.value.replace(/[^\d]/g, "")
-        );
-        if (e.target.value.length > 0) {
-            setRequiredCondition("");
-        }
+  const [totalRecieved, setTotalRecieved] = useState(0);
+  const tabClick = useSelector((state) => state.ledgerSummaryInfo);
+  console.log(tabClick, "events");
+  var ledgerTab = tabClick.partnerTabs;
+  var allCustomTab = tabClick.allCustomTabs;
+  var startDate = tabClick.beginDate;
+  var endDate = tabClick.closeDate;
+  useEffect(() => {}, [props.showRecordPaymentModal]);
+  const getAmountVal = (e) => {
+    setPaidsRcvd(e.target.value.replace(/[^\d]/g, ""));
+    if (e.target.value.length > 0) {
+      setRequiredCondition("");
     }
-    const resetInput = (e) => {
-        if (e.target.value == 0) {
-            e.target.value = "";
-        }
+  };
+  const resetInput = (e) => {
+    if (e.target.value == 0) {
+      e.target.value = "";
     }
-    const onSubmitRecordPayment = () => {
-        if (billIds.length > 0) {
-            paidsRcvd = totalRecieved;
-        }
-        if (paidsRcvd < 0) {
-            setRequiredCondition("Amount Recieved Cannot be negative");
-        } else if (parseInt(paidsRcvd) === 0) {
-            setRequiredCondition("Amount Received cannot be empty");
-        } else if (isNaN(paidsRcvd)) {
-            setRequiredCondition("Invalid Amount");
-        } else if (
-            paidsRcvd.toString().trim().length !== 0 &&
-            paidsRcvd != 0 &&
-            paidsRcvd < paidRcvd &&
-            !(paidsRcvd < 0)
-        ) {
-            addRecordPayment();
-        } else if (parseInt(paidsRcvd) > paidRcvd) {
-            setRequiredCondition(
-                "Entered Amount  cannot more than Outstanding Balance"
-            );
-        }
+  };
+  var billidsArray = [];
+  const onSubmitRecordPayment = () => {
+    if (billIds.length > 0) {
+      paidsRcvd = totalRecieved;
+    } else {
+      if (fromBillViewPopup) {
+        billidsArray.push(ledgerData.billId);
+        paidsRcvd = fromBillViewPopup
+          ? props.partyType == "BUYER"
+            ? ledgerData?.actualReceivable
+            : ledgerData?.actualPaybles
+          : totalRecieved;
+        setBillIds(billidsArray);
+      }
+    }
+    if (paidsRcvd < 0) {
+      setRequiredCondition("Amount Recieved Cannot be negative");
+    } else if (parseInt(paidsRcvd) === 0) {
+      setRequiredCondition("Amount Received cannot be empty");
+    } else if (isNaN(paidsRcvd)) {
+      setRequiredCondition("Invalid Amount");
+    } else if (
+      paidsRcvd.toString().trim().length !== 0 &&
+      paidsRcvd != 0 &&
+      paidsRcvd < paidRcvd &&
+      !(paidsRcvd < 0)
+    ) {
+      addRecordPayment();
+    } else if (parseInt(paidsRcvd) > paidRcvd) {
+      setRequiredCondition(
+        "Entered Amount  cannot more than Outstanding Balance"
+      );
+    }
+  };
+
+  const addRecordPayment = async () => {
+    var h = fromBillViewPopup
+      ? billidsArray.map((item) => ledgerData.billId)
+      : billIds;
+
+    const addRecordData = {
+      caId: clickId,
+      partyId: partyId,
+      date: moment(selectDate).format("YYYY-MM-DD"),
+      comments: comments,
+      paidRcvd: paidsRcvd,
+      paymentMode: paymentMode,
+      billIds: h,
+      type: props.partyType,
+      discount: discountRs,
     };
+    const updateRecordRequest = {
+      action: "UPDATE",
+      caId: clickId,
+      partyId: partyId,
+      date: moment(selectDate).format("YYYY-MM-DD"),
+      comments: comments,
+      paidRcvd: paidsRcvd,
+      paymentMode: paymentMode,
+      billIds: billIds,
+      type: ledgerData?.type,
+      discount: discountRs,
+      refId: ledgerData?.refId,
+      toBePaidRcvd: 0,
+    };
+    if (props.fromPaymentHistory && !fromBillViewPopup) {
+      await updateRecordPayment(updateRecordRequest).then(
+        (res) => {
+          toast.success(res.data.status.message, {
+            toastId: "errorr2",
+          });
+          dispatch(paymentViewInfo(updateRecordRequest));
+          dispatch(fromRecordPayment(true));
+          window.setTimeout(function () {
+            props.closeRecordPaymentModal();
+          }, 1000);
+        },
+        (error) => {
+          console.log(error.message);
+          toast.error(error.res.data.status.message, {
+            toastId: "error3",
+          });
+        }
+      );
+    } else {
+      await postRecordPayment(addRecordData).then((response) => {
+        closePopup();
+        toast.success(response.data.status.message, {
+          toastId: "errorr2",
+        });
+        window.setTimeout(function () {
+          props.closeRecordPaymentModal();
+        }, 1000);
+        if (fromBillViewPopup) {
+          if (
+            props.partyType?.toLowerCase() == "seller" ||
+            props.partyType?.toLowerCase() == "farmer"
+          ) {
+            getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: "FARMER" });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+                setShowBillModalStatus(true);
+                setShowBillModal(true);
+              }
+            });
+          } else {
+            getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: props.partyType });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+                setShowBillModalStatus(true);
+                setShowBillModal(true);
+              }
+            });
+          }
+        }
 
-    const addRecordPayment = async () => {
-        const addRecordData = {
-            caId: clickId,
-            partyId: partyId,
-            date: moment(selectDate).format("YYYY-MM-DD"),
-            comments: comments,
-            paidRcvd: paidsRcvd,
-            paymentMode: paymentMode,
-            billIds: billIds,
-            type: props.partyType,
-            discount: discountRs
+        (error) => {
+          toast.error(error.response.data.status.message, {
+            toastId: "error3",
+          });
         };
-        const updateRecordRequest ={
-            action:'UPDATE',
-            caId: clickId,
-            partyId: partyId,
-            date: moment(selectDate).format("YYYY-MM-DD"),
-            comments: comments,
-            paidRcvd: paidsRcvd,
-            paymentMode: paymentMode,
-            billIds: billIds,
-            type: ledgerData?.type,
-            discount: discountRs,
-            refId:ledgerData?.refId,
-            toBePaidRcvd:0
-        }
-        if(props.fromPaymentHistory){
-            await updateRecordPayment(updateRecordRequest).then((res)=>{
-                toast.success(res.data.status.message, {
-                    toastId: "errorr2",
-                })
-                dispatch(paymentViewInfo(updateRecordRequest));
-                dispatch(fromRecordPayment(true));
-                window.setTimeout(function(){
-                    props.closeRecordPaymentModal();
-                },1000)
-                },(error)=>{
-                console.log(error.message)
-                toast.error(error.res.data.status.message, {
-                    toastId: "error3",
-                });
-            })  
-           
-        } else{
-            await postRecordPayment(addRecordData).then((response) => {
-                closePopup();
-                toast.success(response.data.status.message, {
-                    toastId: "errorr2",
-                })
-                window.setTimeout(function(){
-                    props.closeRecordPaymentModal();
-                },1000)
-               
-                },
-                (error) => {
-                    toast.error(error.response.data.status.message, {
-                        toastId: "error3",
-                    });
-            });
-        }
-       
-        if (props.tabs == 'paymentledger') {
-            getTransportersData()
-            getOutstandingPaybles(clickId, partyId)
-            paymentLedger(clickId, partyId)
-        } else {
-            fetchLedgers();
-            if (allCustomTab == 'all' && ledgerTab == 'ledgersummary') {
-                summaryData(clickId, partyId);
-            }
-            else if (allCustomTab == 'all' && ledgerTab == 'detailedledger') {
-                console.log("here")
-                if (props.partyType == 'BUYER' || ledgerData?.type=='BUYER') {
-                    console.log("here")
-                    geyDetailedLedger(clickId, partyId)
-                } else {
-                    sellerDetailed(clickId, partyId)
-                }
-            } else if (allCustomTab == 'custom' && ledgerTab == 'ledgersummary') {
-                console.log("here to custom",startDate)
-                var fromDate = moment(startDate).format("YYYY-MM-DD");
-                var toDate = moment(endDate).format("YYYY-MM-DD");
-                ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
-            } else if(allCustomTab == 'custom' && ledgerTab == 'detailedledger') {
-                var fromDate = moment(startDate).format("YYYY-MM-DD");
-                var toDate = moment(endDate).format("YYYY-MM-DD");
-                if (props.partyType == 'BUYER' || ledgerData?.type=='BUYER') {
-                    detailedLedgerByDate(clickId, partyId, fromDate, toDate)
-                } else {
-                    sellerDetailedByDate(clickId, partyId, fromDate, toDate)
-                }
-            }
-            getOutstandingPaybles(clickId, partyId)
-            // window.setTimeout(function () {
-            //     window.location.reload();
-            // }, 2000);;
-        }
-
-
-    };
-
-    const getTransportersData = () => {
-        getTransporters(clickId).then((response) => {
-            props.outStAmt(response.data.data);
-            props.transData(response.data.data.ledgers);
-            // setOutStAmt(response.data.data)
-            // setTransData(response.data.data.ledgers)
-        });
-    };
-    //get Payment Ledger
-    const paymentLedger = (clickId, partyId) => {
-        getParticularTransporter(clickId, partyId)
-            .then((response) => {
-                props.payledger(response.data.data);
-                props.payledgersummary(response.data.data.details)
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-    };
-    const summaryData = (clickId, partyId) => {
-        getLedgerSummary(clickId, partyId)
-            .then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                    // setSummary(res.data.data)
-                    // setLedgerSummary(res.data.data.ledgerSummary);
-                    
-                    if(props.fromPaymentHistory){
-                        dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
-                    } else{
-                        props.setSummary(res.data.data)
-                        props.ledgerSummaryData(res.data.data.ledgerSummary)
-                    }
-                } else {
-                    setLedgerSummary([]);
-                }
-            })
-            .catch((error) => console.log(error));
-    };
-    const geyDetailedLedger = (clickId, partyId) => {
-        getBuyerDetailedLedger(clickId, partyId)
-            .then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                    if(props.fromPaymentHistory){
-                        dispatch(detaildLedgerInfo(res.data.data.details))
-                    }
-                    else{
-                        props.setSummary(res.data.data)
-                    // setdetailedLedger(res.data.data.details);
-                        props.ledgerSummaryData(res.data.data.details)
-                    }
-                    
-                } else {
-                    setdetailedLedger([]);
-                }
-            })
-            .catch((error) => console.log(error));
-    };
-    //Get Seller Detailed Ledger
-    const sellerDetailed = (clickId, partyId) => {
-        getSellerDetailedLedger(clickId, partyId)
-            .then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                    if(props.fromPaymentHistory){
-                        dispatch(detaildLedgerInfo(res.data.data.details))
-                    }
-                    else{
-                        props.setSummary(res.data.data)
-                    // setdetailedLedger(res.data.data.details);
-                        props.ledgerSummaryData(res.data.data.details)
-                    }
-                } else {
-                    setdetailedLedger([]);
-                }
-            })
-            .catch((error) => console.log(error));
-    };
+      });
+    }
     const fetchLedgers = () => {
-        var partyType=""
-        if(ledgerData?.type == 'FARMER'){
-            partyType='SELLER'
-        } else{
-            partyType=ledgerData?.type;
-        }
-        getLedgers(clickId, props.partyType?props.partyType:partyType).then(res => {
-
-            if (res.data.status.type === "SUCCESS") {
-                // setLedgers(res.data.data.ledgers);
-                // setOutStAmt(res.data.data);
-                if (props.allCustomTab == 'all' && props.ledgerTab == 'ledgersummary') {
-
-                }
-                if(props.fromPaymentHistory){
-                    // props.ledgers(res.data.data.ledgers);
-                    dispatch(allLedgers(res.data.data.ledgers));
-                } else{
-                    props.ledgers(res.data.data.ledgers);
-                    props.outStAmt(res.data.data);
-                }
-            } else {
-                console.log("some")
+      var partyType = "";
+      if (ledgerData?.type == "FARMER") {
+        partyType = "SELLER";
+      } else {
+        partyType = ledgerData?.type;
+      }
+      getLedgers(clickId, props.partyType ? props.partyType : partyType).then(
+        (res) => {
+          if (res.data.status.type === "SUCCESS") {
+            // setLedgers(res.data.data.ledgers);
+            // setOutStAmt(res.data.data);
+            if (
+              props.allCustomTab == "all" &&
+              props.ledgerTab == "ledgersummary"
+            ) {
             }
-            setOutStAmt(res.data.data);
-        })
-    }
-    //ledger summary by date
-    const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
-        getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
-            .then((res) => {
-                if (res.data.data !== null) {
-                    if(props.fromPaymentHistory){
-                        dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
-                    } else{
-                        props.setSummary(res.data.data)
-                        props.ledgerSummaryData(res.data.data.ledgerSummary)
-                    };
-                } else {
-                    //   setSummaryByDate([]);
-                    //   setcardDetails([]);
-                }
-            })
-            .catch((error) => console.log(error));
-    };
-    //Buyer Detailed Ledger By Date
-    const detailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
-        getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
-            .then((res) => {
-                if (res.data.data !== null) {
-                    if(props.fromPaymentHistory){
-                        dispatch(detaildLedgerInfo(res.data.data.details))
-                    }
-                    else{
-                        props.setSummary(res.data.data)
-                    // setdetailedLedger(res.data.data.details);
-                        props.ledgerSummaryData(res.data.data.details)
-                    }
-                } else {
-                    // setdetailedLedgerByDate([]);
-                    // setcardDetailed([]);
-                }
-            })
-            .catch((error) => console.log(error));
-    };
+            if (props.fromPaymentHistory) {
+              // props.ledgers(res.data.data.ledgers);
+              dispatch(allLedgers(res.data.data.ledgers));
+            } else {
+              props.ledgers(res.data.data.ledgers);
+              props.outStAmt(res.data.data);
+            }
+          } else {
+            console.log("some");
+          }
+        },
 
-    //Seller Detailed ledger By Date
-    const sellerDetailedByDate = (clickId, partyId, fromDate, toDate) => {
-        getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
-            .then((res) => {
-                if (res.data.data !== null) {
-                    if(props.fromPaymentHistory){
-                        dispatch(detaildLedgerInfo(res.data.data.details))
-                    }
-                    else{
-                        props.setSummary(res.data.data)
-                    // setdetailedLedger(res.data.data.details);
-                        props.ledgerSummaryData(res.data.data.details)
-                    }
-                } else {
-                    // setdetailedLedgerByDate([]);
-                    // setcardDetailed([]);
-                }
-            })
-            .catch((error) => console.log(error));
-    };
-    //Get Outstanding balance
-    const getOutstandingPaybles = (clickId, partyId) => {
-        getOutstandingBal(clickId, partyId).then((response) => {
-            props.setPaidRcvd(response.data.data)
-        });
-    };
-    const showListOfBillIds = (id) => {
-        setShowLisOfBillIdsPopUp(true);
-        setShowBillIdsModal(true);
-    }
-
-    const billidsData = (data) => {
-        var values = data.map(item => item.billId);
-        var caBSeq = data.map(item => item.caBSeq);
-        var recieved = 0
-        data.map(item => {
-            recieved += item.amount;
-        })
-        setCabSeq(caBSeq);
-        setBillIds(values);
-        setTotalRecieved(recieved);
-    }
-
-    const closePopup = () => {
-        setPaidsRcvd(0);
-        setRequiredCondition('');
-        setPaymentMode("CASH");
-        setComments('');
-        setSelectDate(new Date());
-        setBillIds([]);
-        setDiscountRs(0);
-        setBillAmount(0);
-        setDiscountPerc(0);
-        setTotalRecieved(0);
-        $("#myModal").modal("hide");
-    };
-    const getDiscountPercentageValue = (e) => {
-        var val = e.target.value
-            .replace(/[^\d.]/g, '')
-            .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
-            .replace(/(\.\d{0,2})\d*/, '$1')
-            .replace(/(\.\d*)\./, '$1');
-        setDiscountPerc(val);
-        if (totalRecieved !== 0) {
-            var discountRupees = (val / 100) * totalRecieved;
-            setBillAmount((totalRecieved - discountRupees).toFixed(2));
-            setDiscountRs(discountRupees.toFixed(2));
+        (error) => {
+          toast.error(error.response.data.status.message, {
+            toastId: "error3",
+          });
         }
-    }
-    const getDiscountRsValue = (e) => {
-        var val = e.target.value
-            .replace(/[^\d.]/g, '')
-            .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
-            .replace(/(\.\d{0,2})\d*/, '$1')
-            .replace(/(\.\d*)\./, '$1');
-        setDiscountRs(val);
-        if (totalRecieved !== 0) {
-            var perc = (val / totalRecieved) * 100;
-            setDiscountPerc(perc.toFixed(2));
-            setBillAmount((totalRecieved - val).toFixed(2));
+      );
+    };
+
+    if (props.tabs == "paymentledger") {
+      getTransportersData();
+      getOutstandingPaybles(clickId, partyId);
+      paymentLedger(clickId, partyId);
+    } else {
+      fetchLedgers();
+      if (allCustomTab == "all" && ledgerTab == "ledgersummary") {
+        summaryData(clickId, partyId);
+      } else if (allCustomTab == "all" && ledgerTab == "detailedledger") {
+        if (props.partyType == "BUYER" || ledgerData?.type == "BUYER") {
+          geyDetailedLedger(clickId, partyId);
+        } else {
+          sellerDetailed(clickId, partyId);
         }
+      } else if (allCustomTab == "custom" && ledgerTab == "ledgersummary") {
+        var fromDate = moment(startDate).format("YYYY-MM-DD");
+        var toDate = moment(endDate).format("YYYY-MM-DD");
+        ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+      } else if (allCustomTab == "custom" && ledgerTab == "detailedledger") {
+        var fromDate = moment(startDate).format("YYYY-MM-DD");
+        var toDate = moment(endDate).format("YYYY-MM-DD");
+        if (props.partyType == "BUYER" || ledgerData?.type == "BUYER") {
+          detailedLedgerByDate(clickId, partyId, fromDate, toDate);
+        } else {
+          sellerDetailedByDate(clickId, partyId, fromDate, toDate);
+        }
+      }
+      getOutstandingPaybles(clickId, partyId);
+      // window.setTimeout(function () {
+      //     window.location.reload();
+      // }, 2000);;
     }
+  };
+
+  const getTransportersData = () => {
+    getTransporters(clickId).then((response) => {
+      props.outStAmt(response.data.data);
+      props.transData(response.data.data.ledgers);
+      // setOutStAmt(response.data.data)
+      // setTransData(response.data.data.ledgers)
+    });
+  };
+  //get Payment Ledger
+  const paymentLedger = (clickId, partyId) => {
+    getParticularTransporter(clickId, partyId)
+      .then((response) => {
+        props.payledger(response.data.data);
+        props.payledgersummary(response.data.data.details);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const summaryData = (clickId, partyId) => {
+    getLedgerSummary(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          // setSummary(res.data.data)
+          // setLedgerSummary(res.data.data.ledgerSummary);
+
+          if (props.fromPaymentHistory) {
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          } else {
+            props.setSummary(res.data.data);
+            props.ledgerSummaryData(res.data.data.ledgerSummary);
+          }
+        } else {
+          setLedgerSummary([]);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const geyDetailedLedger = (clickId, partyId) => {
+    getBuyerDetailedLedger(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (props.fromPaymentHistory) {
+            dispatch(detaildLedgerInfo(res.data.data.details));
+          } else {
+            props.setSummary(res.data.data);
+            // setdetailedLedger(res.data.data.details);
+            props.ledgerSummaryData(res.data.data.details);
+          }
+        } else {
+          setdetailedLedger([]);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Get Seller Detailed Ledger
+  const sellerDetailed = (clickId, partyId) => {
+    getSellerDetailedLedger(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (props.fromPaymentHistory) {
+            dispatch(detaildLedgerInfo(res.data.data.details));
+          } else {
+            props.setSummary(res.data.data);
+            // setdetailedLedger(res.data.data.details);
+            props.ledgerSummaryData(res.data.data.details);
+          }
+        } else {
+          setdetailedLedger([]);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const fetchLedgers = () => {
+    getLedgers(
+      clickId,
+      props.partyType ? props.partyType : ledgerData?.type
+    ).then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        // setLedgers(res.data.data.ledgers);
+        // setOutStAmt(res.data.data);
+        if (props.allCustomTab == "all" && props.ledgerTab == "ledgersummary") {
+        }
+        if (props.fromPaymentHistory) {
+          dispatch(allLedgers(res.data.data.ledgers));
+        } else {
+          props.ledgers(res.data.data.ledgers);
+          props.outStAmt(res.data.data);
+        }
+      } else {
+        console.log("some");
+      }
+      setOutStAmt(res.data.data);
+    });
+  };
+  //ledger summary by date
+  const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
+    getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+          if (props.fromPaymentHistory) {
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          } else {
+            props.setSummary(res.data.data);
+            props.ledgerSummaryData(res.data.data.ledgerSummary);
+          }
+        } else {
+          //   setSummaryByDate([]);
+          //   setcardDetails([]);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Buyer Detailed Ledger By Date
+  const detailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
+    getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+          if (props.fromPaymentHistory) {
+            dispatch(detaildLedgerInfo(res.data.data.details));
+          } else {
+            props.setSummary(res.data.data);
+            // setdetailedLedger(res.data.data.details);
+            props.ledgerSummaryData(res.data.data.details);
+          }
+        } else {
+          // setdetailedLedgerByDate([]);
+          // setcardDetailed([]);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  //Seller Detailed ledger By Date
+  const sellerDetailedByDate = (clickId, partyId, fromDate, toDate) => {
+    getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+          if (props.fromPaymentHistory) {
+            dispatch(detaildLedgerInfo(res.data.data.details));
+          } else {
+            props.setSummary(res.data.data);
+            // setdetailedLedger(res.data.data.details);
+            props.ledgerSummaryData(res.data.data.details);
+          }
+        } else {
+          // setdetailedLedgerByDate([]);
+          // setcardDetailed([]);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Get Outstanding balance
+  const getOutstandingPaybles = (clickId, partyId) => {
+    getOutstandingBal(clickId, partyId).then((response) => {
+      props.setPaidRcvd(response.data.data);
+    });
+  };
+  const showListOfBillIds = (id) => {
+    setShowLisOfBillIdsPopUp(true);
+    setShowBillIdsModal(true);
+  };
+
+  const billidsData = (data) => {
+    var values = data.map((item) => item.billId);
+    var caBSeq = data.map((item) => item.caBSeq);
+    var recieved = 0;
+    data.map((item) => {
+      recieved += item.amount;
+    });
+    setCabSeq(caBSeq);
+    setBillIds(values);
+    setTotalRecieved(recieved);
+  };
+
+  const closePopup = () => {
+    setPaidsRcvd(0);
+    setRequiredCondition("");
+    setPaymentMode("CASH");
+    setComments("");
+    setSelectDate(new Date());
+    setBillIds([]);
+    setDiscountRs(0);
+    setBillAmount(0);
+    setDiscountPerc(0);
+    setTotalRecieved(0);
+    $("#myModal").modal("hide");
+  };
+  const getDiscountPercentageValue = (e) => {
+    var val = e.target.value
+      .replace(/[^\d.]/g, "")
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+      .replace(/(\.\d{0,2})\d*/, "$1")
+      .replace(/(\.\d*)\./, "$1");
+    setDiscountPerc(val);
+    if (fromBillViewPopup) {
+      if (
+        ledgerData.actualReceivable !== 0 ||
+        ledgerData?.actualPaybles !== 0
+      ) {
+        var discountRupees =
+          (val / 100) *
+          (props.partyType == "BUYER"
+            ? ledgerData?.actualReceivable
+            : ledgerData?.actualPaybles);
+        setBillAmount(
+          (
+            (props.partyType == "BUYER"
+              ? ledgerData?.actualReceivable
+              : ledgerData?.actualPaybles) - discountRupees
+          ).toFixed(2)
+        );
+        setDiscountRs(discountRupees.toFixed(2));
+      }
+    } else {
+      if (totalRecieved !== 0) {
+        var discountRupees = (val / 100) * totalRecieved;
+        setBillAmount((totalRecieved - discountRupees).toFixed(2));
+        setDiscountRs(discountRupees.toFixed(2));
+      }
+    }
+  };
+  const getDiscountRsValue = (e) => {
+    var val = e.target.value
+      .replace(/[^\d.]/g, "")
+      .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+      .replace(/(\.\d{0,2})\d*/, "$1")
+      .replace(/(\.\d*)\./, "$1");
+    setDiscountRs(val);
+    if (totalRecieved !== 0) {
+      var perc = (val / totalRecieved) * 100;
+      setDiscountPerc(perc.toFixed(2));
+      setBillAmount((totalRecieved - val).toFixed(2));
+    }
+  };
 
   return (
     <Modal
@@ -438,7 +570,9 @@ const RecordPayment = (props) => {
         <form>
           <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
             <h5 className="modal-title header2_text" id="staticBackdropLabel">
-            {props.fromPaymentHistory ? 'Update Record Payment' : 'Add Record Payment'}
+              {props.fromPaymentHistory
+                ? "Update Record Payment"
+                : "Add Record Payment"}
             </h5>
             <img
               src={close}
@@ -457,7 +591,10 @@ const RecordPayment = (props) => {
                     className="d-flex justify-content-between card-body mb-0"
                     id="details-tag"
                   >
-                    <div className="profile-details" key={fromBillViewPopup ? partyId :ledgerData?.partyId}>
+                    <div
+                      className="profile-details"
+                      key={fromBillViewPopup ? partyId : ledgerData?.partyId}
+                    >
                       <div className="d-flex">
                         <div>
                           {ledgerData?.profilePic ? (
@@ -472,11 +609,13 @@ const RecordPayment = (props) => {
                         </div>
                         <div id="trans-dtl">
                           <p className="namedtl-tag">
-                          {fromBillViewPopup ? (
-                              props.partyType == 'BUYER' ? (ledgerData.buyerName) : ledgerData.farmerName
-                            ) : ledgerData.partyName}
+                            {fromBillViewPopup
+                              ? props.partyType == "BUYER"
+                                ? ledgerData.buyerName
+                                : ledgerData.farmerName
+                              : ledgerData.partyName}
                             {ledgerData.partyName}
-                            </p>
+                          </p>
                           <p className="mobilee-tag">
                             {!ledgerData.trader
                               ? props.partyType == "BUYER"
@@ -485,11 +624,14 @@ const RecordPayment = (props) => {
                                 ? "Transporter"
                                 : "Seller"
                               : "Trader"}{" "}
-                            - {ledgerData.partyId}&nbsp;|&nbsp;
-                            
-                            {fromBillViewPopup ? (
-                              props.partyType == 'BUYER' ? (getMaskedMobileNumber(ledgerData.mobile)) : getMaskedMobileNumber(ledgerData.farmerMobile)
-                            ) : getMaskedMobileNumber(ledgerData.mobile)}
+                            -{" "}
+                            {fromBillViewPopup ? partyId : ledgerData?.partyId}
+                            &nbsp;|&nbsp;
+                            {fromBillViewPopup
+                              ? props.partyType == "BUYER"
+                                ? getMaskedMobileNumber(ledgerData.mobile)
+                                : getMaskedMobileNumber(ledgerData.farmerMobile)
+                              : getMaskedMobileNumber(ledgerData.mobile)}
                           </p>
                           <p className="addres-tag">
                             {ledgerData.partyAddress
@@ -527,7 +669,17 @@ const RecordPayment = (props) => {
                       Select Bills
                       {billIds.length > 0 ? "(" + billIds.length + ")" : ""}
                     </label>
-                    {billIds.length > 0 ? (
+                    {fromBillViewPopup ? (
+                      <input
+                        readOnly
+                        className="form-cont pselect-bill input-disable"
+                        id="amtRecieved"
+                        placeholder="Select Bill"
+                        value={ledgerData.caBSeq}
+                        required
+                        disabled
+                      />
+                    ) : billIds.length > 0 ? (
                       <input
                         className="form-cont pselect-bill"
                         id="amtRecieved"
@@ -563,20 +715,37 @@ const RecordPayment = (props) => {
                   </div>
                 </div>
 
-                <div className="form-group record_modal_row mb-0" id="input_in_modal">
+                <div
+                  className="form-group record_modal_row mb-0"
+                  id="input_in_modal"
+                >
                   <label hmtlFor="amtRecieved" id="amt-tag">
                     Amount Recieved
                   </label>
-                  <input
-                    className="form-cont"
-                    id="amtRecieved"
-                    onFocus={(e) => resetInput(e)}
-                    value={totalRecieved > 0 ? totalRecieved : paidsRcvd}
-                    required
-                    onChange={(e) => {
-                      getAmountVal(e);
-                    }}
-                  />
+                  {fromBillViewPopup ? (
+                    <input
+                      className="form-cont"
+                      id="amtRecieved"
+                      onFocus={(e) => resetInput(e)}
+                      value={
+                        props.partyType == "BUYER"
+                          ? ledgerData?.actualReceivable
+                          : ledgerData?.actualPaybles
+                      }
+                      required
+                    />
+                  ) : (
+                    <input
+                      className="form-cont"
+                      id="amtRecieved"
+                      onFocus={(e) => resetInput(e)}
+                      value={totalRecieved > 0 ? totalRecieved : paidsRcvd}
+                      required
+                      onChange={(e) => {
+                        getAmountVal(e);
+                      }}
+                    />
+                  )}
                   <p className="text-valid">{requiredCondition}</p>
                 </div>
                 {billIds.length > 0 ? (
@@ -586,10 +755,14 @@ const RecordPayment = (props) => {
                 ) : (
                   ""
                 )}
-                {billIds.length > 0 ? (
+                {billIds.length > 0 || fromBillViewPopup ? (
                   <div className="row ">
                     <div className="col-lg-6 discount-prec record_modal_row">
-                      <label hmtlFor="amtRecieved" className="disc-per" id="amt-tag">
+                      <label
+                        hmtlFor="amtRecieved"
+                        className="disc-per"
+                        id="amt-tag"
+                      >
                         Discount(%)
                       </label>
                       <input
@@ -604,7 +777,11 @@ const RecordPayment = (props) => {
                       />
                     </div>
                     <div className="col-lg-6 record_modal_row pl-3">
-                      <label hmtlFor="amtRecieved" className="disc-per" id="amt-tag">
+                      <label
+                        hmtlFor="amtRecieved"
+                        className="disc-per"
+                        id="amt-tag"
+                      >
                         Discount(Rs)
                       </label>
                       <input
@@ -756,6 +933,16 @@ const RecordPayment = (props) => {
           billIdsCloseModal={() => setShowBillIdsModal(false)}
           setBillIdsData={billidsData}
           selectedDateTo={selectDate}
+        />
+      ) : (
+        ""
+      )}
+      {showBillModalStatus ? (
+        <BillView
+          showBillViewModal={showBillModal}
+          closeBillViewModal={() => setShowBillModal(false)}
+          // allBillsData={buyBillData}
+          fromLedger={true}
         />
       ) : (
         ""
