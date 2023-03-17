@@ -31,8 +31,10 @@ import RecordPayment from "./recordPayment";
 import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import add from "../../assets/images/add.svg";
-import { allCustomTabs, detaildLedgerInfo, ledgerSummaryInfo, partnerTabs,
-  beginDate,closeDate, allLedgers} from "../../reducers/ledgerSummarySlice";
+import {
+  allCustomTabs, detaildLedgerInfo, ledgerSummaryInfo, partnerTabs,
+  beginDate, closeDate, allLedgers, outStandingBal, businessValues, totalRecivables
+} from "../../reducers/ledgerSummarySlice";
 import PaymentHistoryView from "./paymentHistory";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -42,10 +44,13 @@ const Ledgers = (props) => {
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   // const [ledgers, setLedgers] = useState(ledgersSummary?.allLedgers);
-  console.log(ledgers,ledgersSummary?.allLedgers)
-  const [outStAmt, setOutStAmt] = useState([]);
+  console.log(ledgers, ledgersSummary?.allLedgers)
+  const outStAmt = ledgersSummary?.outStandingBal;
+  // const [outStAmt, setOutStAmt] = useState([]);
   const [partyId, setPartyId] = useState(0);
-  const [summary, setSummary] = useState([]);
+  // const [summary, setSummary] = useState([]);
+  console.log(ledgersSummary,"sums")
+  const summary = ledgersSummary?.businessValues;
   const ledgerType = props.type;
   const [ledgerSummary, setLedgerSummary] = useState([]);
   const [detailedLedger, setdetailedLedger] = useState([]);
@@ -55,12 +60,16 @@ const Ledgers = (props) => {
   const [detailedByDate, setdetailedLedgerByDate] = useState([]);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
-  const [cardDetails, setcardDetails] = useState([]);
-  const [cardDetailed, setcardDetailed] = useState([]);
+  // const [cardDetails, setcardDetails] = useState([]);
+  const cardDetails = ledgersSummary?.businessValues;
+  const cardDetailed = ledgersSummary?.totalRecivables;
+  console.log(cardDetailed,"detailed")
+  // const [cardDetailed, setcardDetailed] = useState([]);
   const [ledgerData, setLedgerData] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
-  const [detailedTotal, setTotalDetailed] = useState([]);
+  // const [detailedTotal, setTotalDetailed] = useState([]);
+  const detailedTotal = ledgersSummary?.totalRecivables;
   var date = moment(new Date()).format("YYYY-MM-DD");
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(date);
@@ -137,10 +146,10 @@ const Ledgers = (props) => {
         if (res.data.status.type === "SUCCESS") {
           // setLedgers(res.data.data.ledgers);
           setAllData(res.data.data.ledgers);
-          setOutStAmt(res.data.data);
+          // setOutStAmt(res.data.data);
+          dispatch(outStandingBal(res.data.data));
           dispatch(allLedgers(res.data.data.ledgers))
           // ledgers = res.data.data.ledgers;
-          console.log(ledgers)
           setPartyId(res.data.data.ledgers[0].partyId);
           summaryData(clickId, res.data.data.ledgers[0].partyId);
           getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
@@ -159,7 +168,7 @@ const Ledgers = (props) => {
       .catch((error) => {
         console.log('hey')
         // if (error.toJSON().message === "Network Error") {
-          // setOnline(true);
+        // setOnline(true);
         // }
       });
   };
@@ -212,11 +221,13 @@ const Ledgers = (props) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          setSummary(res.data.data);
+          // setSummary(res.data.data);
+          dispatch(businessValues(res.data.data))
           dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
           setLedgerSummary(res.data.data.ledgerSummary);
         } else {
-          setSummary([]);
+          dispatch(businessValues([]))
+          // setSummary([]);
         }
       })
       .catch((error) => console.log(error));
@@ -227,9 +238,10 @@ const Ledgers = (props) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          dispatch(totalRecivables(res.data.data));
           dispatch(detaildLedgerInfo(res.data.data.details))
           setdetailedLedger(res.data.data.details);
-          setTotalDetailed(res.data.data);
+          // setTotalDetailed(res.data.data);
         } else {
           setdetailedLedger([]);
         }
@@ -242,9 +254,10 @@ const Ledgers = (props) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          dispatch(totalRecivables(res.data.data));
           dispatch(detaildLedgerInfo(res.data.data.details))
           setdetailedLedger(res.data.data.details);
-          setTotalDetailed(res.data.data);
+          // setTotalDetailed(res.data.data);
         } else {
           setdetailedLedger([]);
         }
@@ -323,10 +336,12 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setSummaryByDate(res.data.data.ledgerSummary);
-          setcardDetails(res.data.data);
+          // setcardDetails(res.data.data);
+          dispatch(businessValues(res.data.data));
         } else {
           setSummaryByDate([]);
-          setcardDetails([]);
+          // setcardDetails([]);
+          dispatch(businessValues([]));
         }
       })
       .catch((error) => console.log(error));
@@ -338,10 +353,12 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setdetailedLedgerByDate(res.data.data.details);
-          setcardDetailed(res.data.data);
+          dispatch(totalRecivables(res.data.data));
+          // setcardDetailed(res.data.data);
         } else {
           setdetailedLedgerByDate([]);
-          setcardDetailed([]);
+          dispatch(totalRecivables([]));
+          // setcardDetailed([]);
         }
       })
       .catch((error) => console.log(error));
@@ -353,10 +370,12 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setdetailedLedgerByDate(res.data.data.details);
-          setcardDetailed(res.data.data);
+          // setcardDetailed(res.data.data);
+          dispatch(totalRecivables(res.data.data));
         } else {
           setdetailedLedgerByDate([]);
-          setcardDetailed([]);
+          // setcardDetailed([]);
+          dispatch(totalRecivables([]));
         }
       })
       .catch((error) => console.log(error));
@@ -414,7 +433,7 @@ const Ledgers = (props) => {
     if (allCustom == 'all' && ledgerTabs == 'ledgersummary') {
       setLedgerSummary(data);
     } else if (allCustom == 'all' && ledgerTabs == 'detailedledger') {
-      
+
       setdetailedLedger(data);
     } else if (allCustom == 'custom' && ledgerTabs == 'ledgersummary') {
       setSummaryByDate(data)
@@ -423,23 +442,27 @@ const Ledgers = (props) => {
     }
   }
   const getOutstAmt = (data) => {
-    setOutStAmt(data);
+    dispatch(outStandingBal(data));
+    // setOutStAmt(data);
   }
   const getALlLedgers = (data) => {
     // setLedgers(data);
-    console.log(data,'add rrecord')
     dispatch(allLedgers(data))
   }
   const getCardDtl = (data) => {
     if (allCustom == "all" && ledgerTabs == "ledgersummary") {
-      setSummary(data);
+      // setSummary(data);
+      dispatch(businessValues(data))
     }
     else if (allCustom == "all" && ledgerTabs == "detailedledger") {
-      setTotalDetailed(data);
+      dispatch(totalRecivables(data));
+      // setTotalDetailed(data);
     } else if (allCustom == 'custom' && ledgerTabs == "ledgersummary") {
-      setcardDetails(data);
+      dispatch(businessValues(data));
+      // setcardDetails(data);
     } else if (allCustom == 'custom' && ledgerTabs == "detailedledger") {
-      setcardDetailed(data);
+      // setcardDetailed(data);
+      dispatch(totalRecivables(data));
     }
 
   }
@@ -1045,7 +1068,7 @@ const Ledgers = (props) => {
           {recordPaymentModalStatus ?
             <RecordPayment
               showRecordPaymentModal={recordPaymentModal}
-              closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
+              closeRecordPaymentModal={() => setRecordPaymentModal(false)}
               LedgerData={ledgerData}
               ledgerId={partyId}
               ledgerSummary={ledgerSummary}
