@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import clo from "../../assets/images/close.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "../ledgers/paymentHistory.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,11 +12,14 @@ import edit from "../../assets/images/edit_round.svg";
 import RecordPayment from "./recordPayment";
 import moment from "moment";
 import { updateRecordPayment } from "../../actions/ledgersService";
+import { allLedgers } from "../../reducers/ledgerSummarySlice";
+import Ledgers from "./ledgers";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  const dispatch = useDispatch();
   var [paymentHistoryData, setPaymentHistoryData] = useState(
     paymentViewData?.paymentViewInfo
   );
@@ -40,6 +43,7 @@ const PaymentHistoryView = (props) => {
     else{
       setfromAdvances(false);
     }
+    
     setPaymentHistoryData(paymentViewData.paymentViewInfo);
   }, [props.showPaymentViewModal]);
 
@@ -63,7 +67,7 @@ const PaymentHistoryView = (props) => {
     discount: partyDetails?.balance,
     refId:partyDetails?.refId,
     toBePaidRcvd:0
-}
+  }
   const removeRecordPayment =()=>{
     updateRecordPayment(deleteRecordPayment).then(res=>{
       toast.success(res.data.status.message, {
@@ -74,7 +78,11 @@ const PaymentHistoryView = (props) => {
     },1000)
   })
   
-}
+  }
+  
+  const getALlLedgers = (data) => {
+    dispatch(allLedgers(data));
+  }
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -220,6 +228,7 @@ const PaymentHistoryView = (props) => {
           showRecordPaymentModal={recordPaymentModal}
           closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
           fromPaymentHistory={recordPaymentActive}
+          ledgers={getALlLedgers}
           />:''}
       </div>
       <ToastContainer />
