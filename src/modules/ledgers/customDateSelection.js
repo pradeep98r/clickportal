@@ -53,7 +53,7 @@ const CustomDateSelection = (props) => {
             centered
             className="modal_popup select-billIds"
         >
-            <div className="modal-header d-block date_modal_header  pb-0  w-100">
+            <div className="modal-header d-block date_modal_header pb-0 w-100">
                 <div className="d-flex align-items-center justify-content-between">
                     <h5 className="modal-title header2_text" id="staticBackdropLabel">
                         Select Dates</h5>

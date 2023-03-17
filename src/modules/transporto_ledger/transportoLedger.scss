@@ -284,8 +284,8 @@ input[type=radio]:label {
 }
 .date_icon_in_modal{
     cursor: pointer;
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     padding: 5px 5px;
 
 }
@@ -303,6 +303,10 @@ input[type=radio]:label {
 }
 #out-paybles{
     margin: auto;
+   
+}
+.out-paybles{
+    padding-left: 40px;
 }
 .react-datepicker__input-container input{
     // border: none;
@@ -403,7 +407,6 @@ input[type=radio]:label {
 .form-check-label{
     font-weight: 600;
     font-size: 13px;
-    padding: 0px 10px;
     color: black;
     cursor: pointer;
 }
@@ -528,10 +531,7 @@ input[type=radio]:label {
     width: 50px;
     height: 50px;
 }
-.profile-details{
-    position: relative;
-    left:-20px
-}
+
 #trans-dtl{
     white-space: nowrap;
 }
@@ -619,10 +619,7 @@ input[type=radio]:label {
 }
 #amt-tag, .payment-tag, #comment-tag{
 padding-top: 0px;
-margin-bottom: 2px;
-}
-.payment-tag{
-    margin-bottom: 10px;
+// margin-bottom: 2px;
 }
 input[type=radio].radioBtnValues{
     accent-color: #16A12C;
