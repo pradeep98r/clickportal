@@ -22,7 +22,7 @@ import SelectBillIds from './selectBillIds';
 import { Modal } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
-import { allLedgers, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo } from '../../reducers/ledgerSummarySlice';
+import { allLedgers, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, partnerId } from '../../reducers/ledgerSummarySlice';
 const RecordPayment = (props) => {
     const ledgerData = props.LedgerData;
     const dispatch = useDispatch();
@@ -52,16 +52,16 @@ const RecordPayment = (props) => {
     const [discountPerc, setDiscountPerc] = useState(0);
     const [billAmount, setBillAmount] = useState(0);
 
-    const [billIds, setBillIds] = useState(props.fromPaymentHistory ? ledgerData?.billIds : []);
+    const [billIds, setBillIds] = useState([]);
+    const [caBSeq, setCabSeq] = useState(props.fromPaymentHistory ? ledgerData?.billIds : [])
     const [totalRecieved, setTotalRecieved] = useState(0);
     const tabClick = useSelector(state => state.ledgerSummaryInfo);
     var ledgerTab = tabClick.partnerTabs;
     var allCustomTab=tabClick.allCustomTabs;
     var startDate=tabClick.beginDate;
     var endDate=tabClick.closeDate;
-    console.log(tabClick,"clicks")
-    useEffect(() => {
 
+    useEffect(() => {
     }, [props.showRecordPaymentModal])
     const getAmountVal = (e) => {
         setPaidsRcvd(
@@ -278,7 +278,14 @@ const RecordPayment = (props) => {
             .catch((error) => console.log(error));
     };
     const fetchLedgers = () => {
-        getLedgers(clickId, props.partyType?props.partyType:ledgerData?.type).then(res => {
+        var partyType=""
+        if(ledgerData?.type == 'FARMER'){
+            partyType='SELLER'
+        } else{
+            partyType=ledgerData?.type;
+        }
+        getLedgers(clickId, props.partyType?props.partyType:partyType).then(res => {
+
             if (res.data.status.type === "SUCCESS") {
                 // setLedgers(res.data.data.ledgers);
                 // setOutStAmt(res.data.data);
@@ -286,6 +293,7 @@ const RecordPayment = (props) => {
 
                 }
                 if(props.fromPaymentHistory){
+                    // props.ledgers(res.data.data.ledgers);
                     dispatch(allLedgers(res.data.data.ledgers));
                 } else{
                     props.ledgers(res.data.data.ledgers);
@@ -369,10 +377,12 @@ const RecordPayment = (props) => {
 
     const billidsData = (data) => {
         var values = data.map(item => item.billId);
+        var caBSeq = data.map(item => item.caBSeq);
         var recieved = 0
         data.map(item => {
             recieved += item.amount;
         })
+        setCabSeq(caBSeq);
         setBillIds(values);
         setTotalRecieved(recieved);
     }
@@ -530,7 +540,7 @@ const RecordPayment = (props) => {
                                             className="form-cont pselect-bill"
                                             id="amtRecieved"
                                             onFocus={(e) => resetInput(e)}
-                                            value={billIds.join(" , ")}
+                                            value={caBSeq.join(" , ")}
                                             required
                                             onClick={() => { showListOfBillIds(partyId) }}
                                         />

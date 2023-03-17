@@ -32,7 +32,7 @@ export const ledgerSummarySlice = createSlice({
     },
     closeDate: (state, action)=>{
       state.closeDate = action.payload
-    }
+    },
 
   },
 });

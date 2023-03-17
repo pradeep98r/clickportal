@@ -26,7 +26,7 @@ export default configureStore({
         billEditItemInfo:billEditItemReducer,
         step1DataInfo:step1DataReducer,
         paymentViewInfo:paymentViewReducer,
-        ledgerSummaryInfo: ledgersSummaryReducer
+        ledgerSummaryInfo: ledgersSummaryReducer,
 
     }
 })

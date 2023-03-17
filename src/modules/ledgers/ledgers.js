@@ -33,14 +33,16 @@ import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import add from "../../assets/images/add.svg";
 import { allCustomTabs, detaildLedgerInfo, ledgerSummaryInfo, partnerTabs,
   beginDate,closeDate} from "../../reducers/ledgerSummarySlice";
+import PaymentHistoryView from "./paymentHistory";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  var ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
-  var allLedgers = ledgersSummary.allLedgers
+  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
+  const allLedgers = ledgersSummary?.allLedgers
+  console.log(allLedgers)
   const dispatch = useDispatch();
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
-  const [ledgers, setLedgers] = useState(ledgersSummary?.fromRecordPayment?allLedgers:allData);
+  const [ledgers, setLedgers] = useState(allData);
   const [outStAmt, setOutStAmt] = useState([]);
   const [partyId, setPartyId] = useState(0);
   const [summary, setSummary] = useState([]);
@@ -125,7 +127,7 @@ const Ledgers = (props) => {
     allCustomEvent("all");
     // moment(new Date()).format("DD-MMM-YYYY")//
     setDateValue(defaultDate + " to " + defaultDate);
-  }, []);
+  }, [props]);
 
   //Fetch ledgers using clickId and type
   const fetchLedgers = () => {
@@ -420,6 +422,7 @@ const Ledgers = (props) => {
     setOutStAmt(data);
   }
   const getALlLedgers = (data) => {
+    console.log(data,"main data")
     setLedgers(data);
   }
   const getCardDtl = (data) => {
