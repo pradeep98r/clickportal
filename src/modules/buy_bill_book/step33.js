@@ -29,6 +29,8 @@ import {
   fromBillbook,
 } from "../../reducers/billEditItemSlice";
 import { getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
+import { billViewInfo } from "../../reducers/billViewSlice";
+import { getBuyBillId } from "../../actions/ledgersService";
 
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
@@ -855,10 +857,13 @@ const Step33 = (props) => {
             window.setTimeout(function (){
               props.closem();
             },800);
-            window.setTimeout(function () {  
-              navigate("/sellerledger");
-              window.location.reload();
-            }, 1000);
+            getBuyBillId(clickId, billEditItem?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: "FARMER" });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+              }
+            });
            }
             toast.success(response.data.status.message, {
               toastId: "success1",
@@ -1821,6 +1826,7 @@ const Step33 = (props) => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };
