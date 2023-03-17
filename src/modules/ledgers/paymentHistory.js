@@ -83,6 +83,10 @@ const PaymentHistoryView = (props) => {
   const getALlLedgers = (data) => {
     dispatch(allLedgers(data));
   }
+  
+  const closeEvent = () =>{
+    console.log(ledgersSummary);
+  }
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -100,6 +104,7 @@ const PaymentHistoryView = (props) => {
         <button
           onClick={(e) => {
             props.closePaymentViewModal();
+            closeEvent()
           }}
         >
           <img alt="image" src={clo} className="cloose" />

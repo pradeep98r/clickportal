@@ -22,7 +22,6 @@ const LedgerSummary = (props) => {
   var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
   const ledgerSummary =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummary;
-  console.log(ledgerSummary,ledgersSummary?.fromRecordPayment,"ledgersummary")
   const ledgerSummaryByDate =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummaryByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
@@ -35,7 +34,6 @@ const LedgerSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const billOnClickView = (billId, type, i, partyId) => {
-    console.log(billId, type,partyId);
     var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
     if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
@@ -50,7 +48,6 @@ const LedgerSummary = (props) => {
    else if (bId?.includes("A")) {
       getAdvanceListById(clickId, bId, partyId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log(res.data.data);
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
@@ -71,7 +68,6 @@ const LedgerSummary = (props) => {
       } else {
         getSellBillId(clickId, bId).then((res) => {
           if (res.data.status.type === "SUCCESS") {
-            console.log(res.data.data);
             Object.assign(res.data.data, { index: i, partyType: type });
             dispatch(billViewInfo(res.data.data));
             localStorage.setItem("billData", JSON.stringify(res.data.data));

@@ -44,7 +44,6 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  console.log(billViewData)
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
   var billPaid =  billPaid = billViewData.billViewInfo != null ? (billViewData.billViewInfo)?.paid : false;;
   const partyId = billData?.partyType.toUpperCase() === "BUYER"
@@ -57,7 +56,6 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
-   console.log(billViewData.billViewInfo,billPaid)
     if (billViewData?.billViewInfo?.billStatus == "COMPLETED") {
       setDisplayCancel(false);
     } else {
@@ -255,7 +253,6 @@ const BillView = (props) => {
   const [billHistoryArray, setBillHistoryArray] = useState([]);
   const [selectedRefId, setSelectedRefId] = useState('')
   const historyData = (id, type) => {
-    console.log(billPaid)
     var typeVal = "";
     if (type == "FARMER" || type == "SELLER") {
       typeVal = "BUY";
@@ -265,7 +262,6 @@ const BillView = (props) => {
     setSelectedRefId(id)
     getBillHistoryListById(clickId, id, typeVal).then((res) => {
       if (res.data.status.type === "SUCCESS") {
-        console.log(res.data.data);
         setShowBillHistoryModalStatus(true);
         setShowBillHistoryModal(true);
         setBillHistoryArray(res.data.data)
