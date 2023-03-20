@@ -52,6 +52,7 @@ import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
+  console.log(ledgerData)
   const dispatch = useDispatch();
   const partyId = props.ledgerId;
   const fromBillViewPopup = props.fromBillViewPopup;
@@ -87,7 +88,7 @@ const RecordPayment = (props) => {
   const [paymentMode, setPaymentMode] = useState(
     props.fromPaymentHistory
       ? fromBillViewPopup
-        ? ""
+        ? "CASH"
         : ledgerData?.paymentMode
       : "CASH"
   );
@@ -123,7 +124,11 @@ const RecordPayment = (props) => {
   var endDate = tabClick.closeDate;
   useEffect(() => {}, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
-    setPaidsRcvd(e.target.value.replace(/[^\d]/g, ""));
+    setPaidsRcvd(e.target.value.replace(/[^\d.]/g, '')
+    .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
+    .replace(/(\.\d{0,2})\d*/, '$1')
+    .replace(/(\.\d*)\./, '$1'));
+      // .replace(/[^\d]/g, ""));
     if (e.target.value.length > 0) {
       setRequiredCondition("");
     }

@@ -20,6 +20,7 @@ const SelectBillIds = (props) => {
   const date = moment(props.selectedDateTo).format("DD-MMM-YY");
   var [dateValue, setDateValue] = useState(date + " to " + date);
   const selectDate = moment(props.selectedDate).format("YYYY-MM-DD");
+  console.log(date,selectDate,"data")
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allBillIds, setAllBillIds] = useState([]);
@@ -29,8 +30,8 @@ const SelectBillIds = (props) => {
   const [billObject, setBillIdsObject] = useState([]);
   const [showCustDate, seShowCustDate] = useState(false);
   const [fromCustomDate, setFromCustomDate] = useState(false);
-  const [frDate, setFrDate] = useState(new Date());
-  const [toDates, setToDate] = useState(new Date());
+  const [frDate, setFrDate] = useState(date);
+  const [toDates, setToDate] = useState(date);
   const [fromCustomBillsData, setFromCustomBills] = useState([]);
   var someIds = [];
   var dummyIds = [];
@@ -152,6 +153,8 @@ const SelectBillIds = (props) => {
           <button
             onClick={(e) => {
               setFromCustomDate(false);
+              setFrDate(date);
+              setToDate(date);
               props.billIdsCloseModal();
             }}
           >
@@ -272,6 +275,8 @@ const SelectBillIds = (props) => {
           closeCustomDatePopUp={() => {
             seShowCustDate(false);
           }}
+          beginDate ={frDate}
+          closeDate={toDates}
           setFromDate={fromDate}
           setToDate={toDate}
           fromCustomDate={customDate}
