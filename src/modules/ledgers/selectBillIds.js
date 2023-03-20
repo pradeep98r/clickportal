@@ -189,7 +189,7 @@ const SelectBillIds = (props) => {
           </div>
         </div>
         {getBillids.length > 0 ? (
-          <div className="partner_model_scroll select_billID_popup_scroll" id="scroll_style">
+          <div className="select_billID_popup_scroll" id="scroll_style">
             <div className="row bill_id_popup_row">
               <div className="col-lg-5">
                 <p>Bill Id</p>

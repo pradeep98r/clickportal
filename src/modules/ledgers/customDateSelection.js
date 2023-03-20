@@ -51,7 +51,7 @@ const CustomDateSelection = (props) => {
             }
             aria-labelledby="contained-modal-title-vcenter"
             centered
-            className="modal_popup select-billIds"
+            className="record_payment_modal select_billID_popup"
         >
             <div className="modal-header d-block date_modal_header pb-0 w-100">
                 <div className="d-flex align-items-center justify-content-between">
@@ -68,8 +68,9 @@ const CustomDateSelection = (props) => {
                         data-bs-dismiss="modal"
                     />
                 </div>
-                <div className="modal-body date_modal_mody">
-                    <div className="calender_popup">
+                </div>
+                <div className="modal-body date_modal_mody partner_model_body pb-0" style={{'height':'100%'}}>
+                    <div className="calender_popup" style={{'height':'100%'}}>
                         <div className="row">
                             <div
                                 className="custom_picker"
@@ -131,7 +132,10 @@ const CustomDateSelection = (props) => {
                             </div>
                         </div>
                     </div>
-                    <button
+                   
+                </div>
+                <div className='modal-footer p-0'>
+                <button
                         type="button"
                         className="primary_btn datePicker_continue w-100 m-0"
                         onClick={()=>{sendCustomDates()}}>
@@ -139,7 +143,7 @@ const CustomDateSelection = (props) => {
                         Continue
                     </button>
                 </div>
-            </div>
+            
         </Modal>
     )
 }
