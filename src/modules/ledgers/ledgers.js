@@ -163,7 +163,6 @@ const Ledgers = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log('hey')
         // if (error.toJSON().message === "Network Error") {
         // setOnline(true);
         // }
@@ -182,6 +181,7 @@ const Ledgers = (props) => {
     var customTab=""
     setPartyId(ledgerId);
     setLedgerData(item);
+    setAllCustom("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
     console.log(ledgerTabs,allCustom,"tabs")
@@ -189,9 +189,11 @@ const Ledgers = (props) => {
       var customTab="all"
       setDateDisplay(false);
       dispatch(dateCustomStatus(true));
+      console.log('custom',allCustom)
     }
     console.log(ledgerTabs,allCustom)
     var tabs = "";
+    console.log(tabs,allCustom,ledgerTabs)
     if (
       ledgerTabs == "detailedledger" ||
       (ledgerTabs == "ledgersummary" && allCustom == "custom")
@@ -201,6 +203,7 @@ const Ledgers = (props) => {
       setLedgerTabs("ledgersummary");
       setAllCustom("all");
       tabs = "ledgersummary";
+      console.log('custom ls || dl',allCustom, ledgerTabs)
     }
     console.log(customTab,tabs,"tabse")
     if (
@@ -208,6 +211,7 @@ const Ledgers = (props) => {
     {
       console.log('here')
       summaryData(clickId, ledgerId);
+      console.log('custom ls || all',allCustom, ledgerTabs)
     }
     else if (
       (customTab == "custom" && tabs == "ledgersummary") 

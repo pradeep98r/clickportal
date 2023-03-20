@@ -91,6 +91,12 @@ export function updateRecordPayment(updateRecordPaymentReq){
     updateRecordPaymentReq
   );
 }
+export function deleteAdvancePayment(advanceDeleteObject){
+  return axiosCommon.put(
+    `/payments/advances/cancel`,
+    advanceDeleteObject
+  );
+}
 export default{
     getLedgers,
     getLedgerSummary,
@@ -106,5 +112,6 @@ export default{
     getAdvanceListById,
     getListOfBillIds,
     postRecordPayment,
-    updateRecordPayment
+    updateRecordPayment,
+    deleteAdvancePayment
 }

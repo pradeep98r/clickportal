@@ -55,7 +55,9 @@ const Steps = (props) => {
     setcropEditObject([]);
     setslectedCropstableArray([]);
     if(billViewEditStatus){
-      window.location.reload();
+      if(!props.fromLedger){
+        window.location.reload();
+      }
     }
   };
   return (

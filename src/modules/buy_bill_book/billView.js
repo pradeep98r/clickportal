@@ -90,7 +90,13 @@ const BillView = (props) => {
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-    dispatch(selectBill(arr[0]));
+    
+    if(props.fromLedger){
+      dispatch(selectBill(billViewData.billViewInfo))
+    }
+    else{
+      dispatch(selectBill(arr[0]));
+    }
     dispatch(editStatus(true));
     dispatch(tableEditStatus(false));
     dispatch(billDate(new Date(billData.billDate)));
