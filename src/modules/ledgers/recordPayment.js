@@ -620,7 +620,7 @@ const RecordPayment = (props) => {
           <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
             <h5 className="modal-title header2_text" id="staticBackdropLabel">
               {props.fromPaymentHistory
-                ? "Update Record Payment"
+                ? fromBillViewPopup ?  "Add Record Payment" :  "Update Record Payment"
                 : "Add Record Payment"}
             </h5>
             <img
@@ -725,6 +725,7 @@ const RecordPayment = (props) => {
                         id="amtRecieved"
                         placeholder="Select Bill"
                         value={ledgerData.caBSeq}
+                        name='billIdDisabled'
                         required
                         disabled
                       />
@@ -782,6 +783,7 @@ const RecordPayment = (props) => {
                           : ledgerData?.actualPaybles
                       }
                       required
+                      name='billIdDisabled'
                     />
                   ) : (
                     <input
