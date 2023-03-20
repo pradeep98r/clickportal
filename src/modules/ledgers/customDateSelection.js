@@ -14,8 +14,9 @@ const CustomDateSelection = (props) => {
     const partyId=props.partyId;
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
-    const [startDate, setStartsDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    console.log(props.beginDate,"begonDate")
+    const [startDate, setStartsDate] = useState(new Date(props.beginDate)?new Date(props.beginDate): new Date());
+    const [endDate, setEndDate] = useState(new Date(props.closeDate)?new Date(props.closeDate):new Date());
     const dispatch = useDispatch()
     const onChangeDate = (dates) => {
         const [start, end] = dates;
@@ -37,10 +38,9 @@ const CustomDateSelection = (props) => {
         })
       }
       const clearDates=()=>{;
-        props.setFromDate(new Date());
-        props.setToDate(new Date());
-        props.fromCustomDate(false);
-        props.allBillIdsDate([]);
+        props.setFromDate(startDate);
+        props.setToDate(endDate);
+        props.fromCustomDate(true);
         localStorage.removeItem("listOfBillIds");
       }
     return (
