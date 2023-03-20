@@ -1,13 +1,13 @@
 import axios from 'axios';
 import axiosCommon from "../axios";
 export function doLogin(obj) {
-    return axios.post('https://dev-api.onoark.com/v1/account/click/sign-in', obj);
+    return axiosCommon.post('/account/click/sign-in', obj);
 }
 export function validateOTP(obj) {
-    return axios.post('https://dev-api.onoark.com/v1/account/click/sign-in/validate',obj);
+    return axiosCommon.post('/account/click/sign-in/validate',obj);
 }
 export function langSelection() {
-    return axios.get('https://dev-api.onoark.com/v1/account/common/langs');
+    return axiosCommon.get('/account/common/langs');
 }
 export function createProfile(obj) {
     return axiosCommon.post('/account/click/profile', obj);

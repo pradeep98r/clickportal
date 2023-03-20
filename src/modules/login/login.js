@@ -6,6 +6,7 @@ import ca_avatar from "../../assets/images/login/ca_image.svg";
 import writer_avatar from "../../assets/images/login/writer_avatar.svg";
 import { Link } from "react-router-dom";
 import { getLanguagesData } from "../../actions/profileService";
+import desktop_img from "../../assets/images/desktop.png";
 const Login = () => {
   const langId = localStorage.getItem("langId");
   const langsData = localStorage.getItem("languageData");
@@ -37,6 +38,7 @@ const Login = () => {
 
   return (
     <div>
+      <div className="login_page">
       <Navigation login_type="login_type_selection" />
       <div className="container login_container">
         <div className="row">
@@ -95,6 +97,14 @@ const Login = () => {
         <Logo />
       </div>
       
+    </div>
+     <div className="d-block d-sm-block d-md-none mobile_meassage">
+     <div className="mobile_meassage_div">
+       <img src={desktop_img} className="d-flex mx-auto" alt="image" />
+       Please use it on desktop / Download app from playstore
+       <a href="https://play.google.com/store/apps/details?id=com.ono.click"><button className="primary_btn mt-3">Download Now</button></a>
+     </div>
+   </div>
     </div>
   );
 };
