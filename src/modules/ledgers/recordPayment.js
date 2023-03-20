@@ -157,10 +157,11 @@ const RecordPayment = (props) => {
       setRequiredCondition("Amount Received cannot be empty");
     } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
-    } else if (
+    }
+    else if (
       paidsRcvd.toString().trim().length !== 0 &&
       paidsRcvd != 0 &&
-      paidsRcvd < paidRcvd &&
+      paidsRcvd <= paidRcvd &&
       !(paidsRcvd < 0)
     ) {
       console.log('hii')
@@ -549,17 +550,27 @@ const RecordPayment = (props) => {
   };
 
   const closePopup = () => {
-    setPaidsRcvd(0);
-    setRequiredCondition("");
-    setPaymentMode("CASH");
-    setComments("");
-    setSelectDate(new Date());
-    setBillIds([]);
-    setDiscountRs(0);
-    setBillAmount(0);
-    setDiscountPerc(0);
-    setTotalRecieved(0);
-    $("#myModal").modal("hide");
+    if(!(props.fromPaymentHistory)){
+      setPaidsRcvd(0);
+      setRequiredCondition("");
+      setPaymentMode("CASH");
+      setComments("");
+      setSelectDate(new Date());
+      setBillIds([]);
+      setDiscountRs(0);
+      setBillAmount(0);
+      setDiscountPerc(0);
+      setTotalRecieved(0);
+    }
+    else{
+      if(!fromBillbookToRecordPayment){
+        if(ledgerData?.billIds.length == 0){
+          setBillIds([]);
+          setDiscountRs(0);
+          setDiscountPerc(0);
+        }
+      }
+    }  
   };
   const getDiscountPercentageValue = (e) => {
     var val = e.target.value
@@ -628,6 +639,7 @@ const RecordPayment = (props) => {
               alt="image"
               className="close_icon"
               onClick={() => {
+                closePopup();
                 props.closeRecordPaymentModal();
               }}
             />
@@ -637,14 +649,14 @@ const RecordPayment = (props) => {
               <div className="col-lg-12 p-0">
                 <div className="card record_modal_row">
                   <div
-                    className="d-flex justify-content-between card-body mb-0"
+                    className="d-flex justify-content-between align-items-center card-body mb-0"
                     id="details-tag"
                   >
                     <div
                       className="profile-details"
                       key={fromBillViewPopup ? partyId : ledgerData?.partyId}
                     >
-                      <div className="d-flex">
+                      <div className="d-flex align-items-center">
                         <div>
                           {ledgerData?.profilePic ? (
                             <img
@@ -721,7 +733,7 @@ const RecordPayment = (props) => {
                     {fromBillViewPopup ? (
                       <input
                         readOnly
-                        className="form-cont pselect-bill input-disable"
+                        className="form-cont pselect-bill"
                         id="amtRecieved"
                         placeholder="Select Bill"
                         value={ledgerData.caBSeq}

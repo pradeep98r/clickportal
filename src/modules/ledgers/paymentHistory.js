@@ -11,14 +11,22 @@ import cancel from "../../assets/images/cancel.svg";
 import edit from "../../assets/images/edit_round.svg";
 import RecordPayment from "./recordPayment";
 import moment from "moment";
-import { updateRecordPayment } from "../../actions/ledgersService";
-import { allLedgers } from "../../reducers/ledgerSummarySlice";
+import { updateRecordPayment, getBillHistoryListById, getLedgers, getLedgerSummary, getOutstandingBal, getSellerDetailedLedger
+  ,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate, deleteAdvancePayment } from "../../actions/ledgersService";
+import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables } from "../../reducers/ledgerSummarySlice";
 import Ledgers from "./ledgers";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
+  console.log(paymentViewData)
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  const tabClick = useSelector((state) => state.ledgerSummaryInfo);
+  const allCustomTab=tabClick?.allCustomTabs;
+  const ledgerTabs=tabClick?.partnerTabs;
+  const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
+  const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
+  const partyTypeVal = props.partyType;
   const dispatch = useDispatch();
   var [paymentHistoryData, setPaymentHistoryData] = useState(
     paymentViewData?.paymentViewInfo
@@ -76,17 +84,139 @@ const PaymentHistoryView = (props) => {
     window.setTimeout(function(){
       props.closePaymentViewModal();
     },1000)
+    commonUpdateLedgers();
+    })
+  }
+  const advanceDeleteObject = {
+    action: "DELETE",
+    caId: clickId,
+    paidRcvd: partyDetails?.amount,
+    partyId: partyDetails?.partyId,
+    refId: partyDetails?.refId
+  }
+  const advanceDelete = () =>{
+    deleteAdvancePayment(advanceDeleteObject).then(res=>{
+      toast.success(res.data.status.message, {
+        toastId: "errorr3",
+    })
+    window.setTimeout(function(){
+      props.closePaymentViewModal();
+    },1000)
+    commonUpdateLedgers();
   })
+  }
+  const commonUpdateLedgers = () =>{
+    var partyId = paymentHistoryData?.partyId;
+    var partyType=partyTypeVal =='FARMER'?'SELLER':partyTypeVal
+   
+      dispatch(fromRecordPayment(true));
+      fetchLedgers();
+      summaryData(clickId,partyId);
+      if(allCustomTab =='all' && ledgerTabs =='detailedledger'){
+        if(partyType == 'SELLER'){
+          sellerDetailed(clickId,partyId);
+        }
+        else{
+          geyDetailedLedger(clickId,partyId);
+        }
+      }
+      if(allCustomTab =='custom' && ledgerTabs =='ledgersummary'){
+        ledgerSummaryByDate(clickId,partyId,fromDate,toDate)
+      } else{
+        if(partyType == 'SELLER'){
+          sellerDetailedByDate(clickId,partyId,fromDate,toDate)
+        } else{
+        detailedLedgerByDate(clickId,partyId,fromDate,toDate)
+        }
+      }
+    
   
   }
-  
   const getALlLedgers = (data) => {
     dispatch(allLedgers(data));
   }
-  
+  const fetchLedgers = () => {
+    var partyType=partyTypeVal =='FARMER'?'SELLER':partyTypeVal
+    getLedgers(clickId, partyType).then(
+      (res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(allLedgers(res.data.data.ledgers));
+            dispatch(outStandingBal(res.data.data));
+            console.log('worrking')
+        } else {
+          console.log("some");
+        }
+      }
+    );
+  };
+  const summaryData = (clickId, partyId) => {
+    getLedgerSummary(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const geyDetailedLedger = (clickId, partyId) => {
+    getBuyerDetailedLedger(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+          }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Get Seller Detailed Ledger
+  const sellerDetailed = (clickId, partyId) => {
+    getSellerDetailedLedger(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
+    getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Buyer Detailed Ledger By Date
+  const detailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
+    getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  //Seller Detailed ledger By Date
+  const sellerDetailedByDate = (clickId, partyId, fromDate, toDate) => {
+    getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   const closeEvent = () =>{
     console.log(ledgersSummary);
   }
+ 
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -192,7 +322,7 @@ const PaymentHistoryView = (props) => {
                   {fromAdvances ? (
                      <div className="action_icons">
                     <div className="items_div">
-                      <button>
+                      <button onClick={()=>advanceDelete()}>
                         <img src={cancel} alt="img" className="" />
                       </button>
                       <p>Delete</p>

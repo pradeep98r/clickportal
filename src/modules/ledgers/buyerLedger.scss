@@ -616,11 +616,14 @@ max-width: 600px;
     border-radius: 4px;
     // overflow-x: scroll;
   }
-  .pselect-bill{
+  .pselect-bill, .pselect-bill::placeholder{
     color: #0066FF;
     padding: 10px 10px;
     font-weight: 600;
     font-size: 14px;
+  }
+  .pselect-bill:hover{
+      cursor: pointer;
   }
   .select-bills{
     padding: 0px 0px;

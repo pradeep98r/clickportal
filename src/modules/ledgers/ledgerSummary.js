@@ -22,7 +22,6 @@ const LedgerSummary = (props) => {
   var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
   const ledgerSummary =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummary;
-  console.log(partnerSummary,ledgerSummary,"summary")
   const ledgerSummaryByDate =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummaryByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
@@ -39,7 +38,6 @@ const LedgerSummary = (props) => {
     if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log(res.data.data);
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
@@ -261,6 +259,8 @@ const LedgerSummary = (props) => {
         <PaymentHistoryView
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
+          partyType = {ledgerType}
+          
         />
       ) : (
         ""

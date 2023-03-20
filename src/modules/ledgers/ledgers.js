@@ -44,12 +44,10 @@ const Ledgers = (props) => {
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   // const [ledgers, setLedgers] = useState(ledgersSummary?.allLedgers);
-  console.log(ledgers, ledgersSummary?.allLedgers)
   const outStAmt = ledgersSummary?.outStandingBal;
   // const [outStAmt, setOutStAmt] = useState([]);
   const [partyId, setPartyId] = useState(0);
   // const [summary, setSummary] = useState([]);
-  console.log(ledgersSummary,"sums")
   const summary = ledgersSummary?.businessValues;
   const ledgerType = props.type;
   const [ledgerSummary, setLedgerSummary] = useState([]);
@@ -63,7 +61,6 @@ const Ledgers = (props) => {
   // const [cardDetails, setcardDetails] = useState([]);
   const cardDetails = ledgersSummary?.businessValues;
   const cardDetailed = ledgersSummary?.totalRecivables;
-  console.log(cardDetailed,"detailed")
   // const [cardDetailed, setcardDetailed] = useState([]);
   const [ledgerData, setLedgerData] = useState({});
   const [isLoading, setLoading] = useState(true);
@@ -166,7 +163,6 @@ const Ledgers = (props) => {
         setLoading(false);
       })
       .catch((error) => {
-        console.log('hey')
         // if (error.toJSON().message === "Network Error") {
         // setOnline(true);
         // }
@@ -182,15 +178,19 @@ const Ledgers = (props) => {
   const [customDateHanlde, setCustomDateHandle] = useState(false);
   //Get Particular ledger data
   const particularLedgerData = (ledgerId, item) => {
+    var onclickLedgerstatus = true;
     setPartyId(ledgerId);
     setLedgerData(item);
+    setAllCustom("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
     if (allCustom == "custom") {
       setDateDisplay(false);
       dispatch(dateCustomStatus(true));
+      console.log('custom',allCustom)
     }
     var tabs = "";
+    console.log(tabs,allCustom,ledgerTabs)
     if (
       ledgerTabs == "detailedledger" ||
       (ledgerTabs == "ledgersummary" && allCustom == "custom")
@@ -200,17 +200,19 @@ const Ledgers = (props) => {
       setLedgerTabs("ledgersummary");
       setAllCustom("all");
       tabs = "ledgersummary";
+      console.log('custom ls || dl',allCustom, ledgerTabs)
     }
     if (
       allCustom == "all" ||
       (allCustom == "custom" && ledgerTabs == "ledgersummary")
     ) {
       summaryData(clickId, ledgerId);
+      console.log('custom ls || all',allCustom, ledgerTabs)
     }
     if (
-      (allCustom == "custom" && tabs == "ledgersummary") ||
-      ledgerTabs == "ledgersummary"
+      (!onclickLedgerstatus && allCustom == "custom" && tabs == "ledgersummary")
     ) {
+      console.log('custom ls || ls',allCustom, ledgerTabs)
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);

@@ -332,6 +332,7 @@ const DetailedLedger = (props) => {
         <PaymentHistoryView
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
+          partyType = {ledgerType}
         />
       ) : (
         ""
