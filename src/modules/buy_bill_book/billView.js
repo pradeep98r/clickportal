@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import clo from "../../assets/images/close.svg";
 import { selectSteps } from "../../reducers/stepsSlice";
 import { useDispatch } from "react-redux";
+import moment from "moment";
 import Steps from "./steps";
 import {
   selectBill,
@@ -34,11 +35,12 @@ import {
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import { getText } from "../../components/getText";
-import { getBillHistoryListById, getOutstandingBal } from "../../actions/ledgersService";
+import { getBillHistoryListById, getLedgers, getLedgerSummary, getOutstandingBal, getSellerDetailedLedger
+,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate } from "../../actions/ledgersService";
 import { billHistoryView } from "../../reducers/paymentViewSlice";
 import EditPaymentHistoryView from "../ledgers/editPaymentHistoryView";
 import RecordPayment from "../ledgers/recordPayment";
-import { fromRecordPayment } from "../../reducers/ledgerSummarySlice";
+import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables } from "../../reducers/ledgerSummarySlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -53,6 +55,12 @@ const BillView = (props) => {
   const navigate = useNavigate();
   const [displayCancel, setDisplayCancel] = useState(false);
   const [outBal, setoutBal] = useState('');
+  const tabClick = useSelector((state) => state.ledgerSummaryInfo);
+  const allCustomTab=tabClick?.allCustomTabs;
+  const ledgerTabs=tabClick?.partnerTabs;
+  const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
+  const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
+
   useEffect(() => {
     dispatch(billViewStatus(true));
     setBillViewData(billViewData.billViewInfo);
@@ -242,6 +250,30 @@ const BillView = (props) => {
     }
   };
   const clearModal = () => {
+    var partyId = billData?.partyType =='FARMER'?billData?.farmerId:billData?.buyerId;
+    var partyType=billData?.partyType =='FARMER'?'SELLER':billData?.partyType
+    if(props.fromLedger){
+      dispatch(fromRecordPayment(true));
+      fetchLedgers();
+      summaryData(clickId,partyId);
+      if(allCustomTab =='all' && ledgerTabs =='detailedledger'){
+        if(partyType == 'SELLER'){
+          sellerDetailed(clickId,partyId);
+        }
+        else{
+          geyDetailedLedger(clickId,partyId);
+        }
+      }
+      if(allCustomTab =='custom' && ledgerTabs =='ledgersummary'){
+        ledgerSummaryByDate(clickId,partyId,fromDate,toDate)
+      } else{
+        if(partyType == 'SELLER'){
+          sellerDetailedByDate(clickId,partyId,fromDate,toDate)
+        } else{
+        detailedLedgerByDate(clickId,partyId,fromDate,toDate)
+        }
+      }
+    }
     if (props.fromLedger) {
       window.setTimeout(function () {
         props.closeBillViewModal();
@@ -279,6 +311,85 @@ const BillView = (props) => {
     setBillViewData(data)
     dispatch(fromRecordPayment(true));
   }
+
+  const fetchLedgers = () => {
+    var partyType=billData?.partyType =='FARMER'?'SELLER':billData?.partyType
+    getLedgers(clickId, partyType).then(
+      (res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(allLedgers(res.data.data.ledgers));
+            dispatch(outStandingBal(res.data.data));
+            console.log('worrking')
+        } else {
+          console.log("some");
+        }
+      }
+    );
+  };
+  const summaryData = (clickId, partyId) => {
+    getLedgerSummary(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const geyDetailedLedger = (clickId, partyId) => {
+    getBuyerDetailedLedger(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+          }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Get Seller Detailed Ledger
+  const sellerDetailed = (clickId, partyId) => {
+    getSellerDetailedLedger(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
+    getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          }
+      })
+      .catch((error) => console.log(error));
+  };
+  //Buyer Detailed Ledger By Date
+  const detailedLedgerByDate = (clickId, partyId, fromDate, toDate) => {
+    getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
+  //Seller Detailed ledger By Date
+  const sellerDetailedByDate = (clickId, partyId, fromDate, toDate) => {
+    getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.data !== null) {
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <Modal
       show={props.showBillViewModal}
