@@ -34,11 +34,15 @@ import BillView from "./billView";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import prev_icon from "../../assets/images/prev_icon.svg";
 import next_icon from "../../assets/images/next_icon.svg";
+import { beginDate, closeDate,allBuyBillsData } from "../../reducers/ledgerSummarySlice";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const [allData, setAllData] = useState([]);
-  const [buyBillData, setBuyBillData] = useState(allData);
+  var buyBillData = ledgersSummary?.allBuyBillsData;
+  console.log(buyBillData,"buybills")
+  // const [buyBillData, setBuyBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
   const langData = localStorage.getItem("languageData");
@@ -96,6 +100,8 @@ function BuyBillBook() {
       setLoading(true);
       setShowPrevNext(false)
     }
+    dispatch(beginDate(fromDate));
+    dispatch(closeDate(toDate))
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
         if (response.data.data != null) {
@@ -104,11 +110,13 @@ function BuyBillBook() {
           response.data.data.singleBills.map((i, ind) => {
             Object.assign(i, { index: ind });
           })
-          setBuyBillData(response.data.data.singleBills);
+          dispatch(allBuyBillsData(response.data.data.singleBills))
+          // setBuyBillData(response.data.data.singleBills);
           console.log(response.data.data.singleBills)
           setOnline(false)
         } else {
-          setBuyBillData([]);
+          dispatch(allBuyBillsData([]));
+          // setBuyBillData([]);
         }
         setLoading(false);
       })
@@ -124,6 +132,7 @@ function BuyBillBook() {
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const billOnClick = (id, bill, i) => {
+    
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
     setShowBillModalStatus(true);
@@ -168,7 +177,8 @@ function BuyBillBook() {
         return data.farmerId.toString().search(value) != -1;
       }
     });
-    setBuyBillData(result);
+    dispatch(allBuyBillsData(result))
+    // setBuyBillData(result);
   };
   const totalBagsValue = (bags) => {
     var totalValue = 0;
@@ -435,7 +445,17 @@ function BuyBillBook() {
                                                       }}
                                                     >
                                                       <div className="flex_class p-0">
-                                                        {bill.billStatus ==
+                                                        {bill?.paid == true ? 
+                                                       <div className="flex_class">
+                                                          <div className="complete-dot"></div>
+                                                        <div className="bill-name">
+                                                          {getText(
+                                                            'Amount Paid'
+                                                          )}
+                                                        </div> 
+                                                       </div> 
+                                                        : <div className="flex_class">
+                                                          {bill.billStatus ==
                                                           "CANCELLED" ? (
                                                           <div className="complete-dot cancel_dot"></div>
                                                         ) : (
@@ -446,6 +466,8 @@ function BuyBillBook() {
                                                             bill.billStatus
                                                           )}
                                                         </div>
+                                                        </div> }
+                                                        
                                                       </div>
                                                     </p>
                                                   </div>
@@ -647,6 +669,8 @@ function BuyBillBook() {
           showBillViewModal={showBillModal}
           closeBillViewModal={() => setShowBillModal(false)}
           allBillsData={buyBillData}
+          fromLedger={false}
+          fromBillbookToRecordPayment= {true}
         />
       ) : (
         ""

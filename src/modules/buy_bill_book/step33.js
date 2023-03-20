@@ -29,6 +29,8 @@ import {
   fromBillbook,
 } from "../../reducers/billEditItemSlice";
 import { getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
+import { billViewInfo } from "../../reducers/billViewSlice";
+import { getBuyBillId } from "../../actions/ledgersService";
 
 const Step33 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
@@ -838,9 +840,9 @@ const Step33 = (props) => {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-           
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
+           if(!(props.fromLedger)){
             localStorage.setItem("LinkPath", "/buy_bill_book");
             window.setTimeout(function (){
               props.closem();
@@ -849,9 +851,24 @@ const Step33 = (props) => {
               navigate("/buy_bill_book");
               window.location.reload();
             }, 1000);
+           }
+           else{
+            console.log('from ledger step3',props.fromLedger)
+            window.setTimeout(function (){
+              props.closem();
+            },800);
+            getBuyBillId(clickId, billEditItem?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: "FARMER" });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+              }
+            });
+           }
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
+            
           }
         },
         (error) => {
@@ -1809,6 +1826,7 @@ const Step33 = (props) => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };

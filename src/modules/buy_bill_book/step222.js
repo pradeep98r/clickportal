@@ -227,6 +227,9 @@ const Step22 = (props) => {
         { bags: [] },
         { status: 1 },
         { qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "Crates" },
+        { activeSearch: false },
+        { displayStat: false },
+        { cropDelete: false },
         {
           rateType:
             defaultUnitTypeVal == "unit_kg"
@@ -238,9 +241,6 @@ const Step22 = (props) => {
           // getUnitVal(qSetting, cIndex)
           // : "Crates",
         },
-        { activeSearch: false },
-        { displayStat: false },
-        { cropDelete: false }
       );
     }
     console.log(crop,defaultUnitTypeVal,cIndex);

@@ -19,6 +19,7 @@ import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import BuyerLedgers from "../modules/ledgers/buyerLedgers";
 import SellerLedgers from "../modules/ledgers/sellerLedgers";
+import Transporters from "../modules/transporto_ledger/transporters";
 import { getSystemSettings } from "../actions/billCreationService";
 const RoutesConfig = () => {
   function setSystemSettingsDetails(clickId){
@@ -97,8 +98,12 @@ const RoutesConfig = () => {
                     <Route path="/smartchart" element={<SmartChart />} />
                     <Route
                       path="/transportoledger"
-                      element={<TransportoLedger />}
+                      element={<Transporters />}
                     />
+                    {/* <Route
+                      path="/transportoledger"
+                      element={<TransportoLedger />}
+                    /> */}
                   </Routes>
                 </Layout>
               ) : (
@@ -136,10 +141,15 @@ const RoutesConfig = () => {
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/sellbillbook" element={<SellBillBook />} />
                 <Route path="/smartchart" element={<SmartChart />} />
+
                 <Route
                   path="/transportoledger"
-                  element={<TransportoLedger />}
+                  element={<Transporters />}
                 />
+                {/* <Route
+                  path="/transportoledger"
+                  element={<TransportoLedger />}
+                /> */}
               </Routes>
             </Layout>
           </BrowserRouter>

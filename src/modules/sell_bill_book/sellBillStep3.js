@@ -843,13 +843,25 @@ const SellBillStep3 = (props) => {
             // props.closeStep3Modal();
             localStorage.setItem("stepOneSingleBook", false);
             localStorage.setItem("billViewStatus", false);
-            window.setTimeout(function (){
-              props.closem();
-            },800);
-            window.setTimeout(function () {
-              navigate("/sellbillbook");
-              window.location.reload();
-            }, 1000);
+            if(!(props.fromLedger)){
+              window.setTimeout(function (){
+                props.closem();
+              },800);
+              window.setTimeout(function () {
+                navigate("/sellbillbook");
+                window.location.reload();
+              }, 1000);
+            }
+            else{
+              console.log('from ledger step3',props.fromLedger)
+              window.setTimeout(function (){
+                props.closem();
+              },800);
+              window.setTimeout(function () {  
+                navigate("/buyerLedger");
+                window.location.reload();
+              }, 1000);
+            }
           }
         },
         (error) => {
