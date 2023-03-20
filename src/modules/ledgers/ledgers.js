@@ -178,17 +178,20 @@ const Ledgers = (props) => {
   const [customDateHanlde, setCustomDateHandle] = useState(false);
   //Get Particular ledger data
   const particularLedgerData = (ledgerId, item) => {
-    var onclickLedgerstatus = true;
+    var customTab=""
     setPartyId(ledgerId);
     setLedgerData(item);
     setAllCustom("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
+    console.log(ledgerTabs,allCustom,"tabs")
     if (allCustom == "custom") {
+      var customTab="all"
       setDateDisplay(false);
       dispatch(dateCustomStatus(true));
       console.log('custom',allCustom)
     }
+    console.log(ledgerTabs,allCustom)
     var tabs = "";
     console.log(tabs,allCustom,ledgerTabs)
     if (
@@ -202,17 +205,18 @@ const Ledgers = (props) => {
       tabs = "ledgersummary";
       console.log('custom ls || dl',allCustom, ledgerTabs)
     }
+    console.log(customTab,tabs,"tabse")
     if (
-      allCustom == "all" ||
-      (allCustom == "custom" && ledgerTabs == "ledgersummary")
-    ) {
+      (customTab == "all" && tabs == "ledgersummary") || allCustom == "all")
+    {
+      console.log('here')
       summaryData(clickId, ledgerId);
       console.log('custom ls || all',allCustom, ledgerTabs)
     }
-    if (
-      (!onclickLedgerstatus && allCustom == "custom" && tabs == "ledgersummary")
+    else if (
+      (customTab == "custom" && tabs == "ledgersummary") 
     ) {
-      console.log('custom ls || ls',allCustom, ledgerTabs)
+      console.log('here')
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);
@@ -279,6 +283,9 @@ const Ledgers = (props) => {
       setDateValue(defaultDate + " to " + defaultDate);
       setStartDate(date);
       setEndDate(date);
+    } 
+    if(type == 'all'){
+      summaryData(clickId, partyId);
     }
     if (type == "custom" && ledgerTabs == "detailedledger") {
       dispatch(partnerTabs("ledgersummary"));
@@ -290,7 +297,7 @@ const Ledgers = (props) => {
     if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
       setCustomDateHandle(false);
       ledgerSummaryByDate(clickId, partyId, date, date);
-    } else {
+    } else if(type == "custom") {
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
     setAllCustom(type);

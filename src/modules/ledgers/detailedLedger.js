@@ -24,12 +24,10 @@ import { detaildLedgerInfo } from "../../reducers/ledgerSummarySlice";
 const DetailedLedger = (props) => {
   var detailedLedgerSummary = useSelector(state => state.ledgerSummaryInfo);
   var partnerDetailedLedger = detailedLedgerSummary?.detaildLedgerInfo;
-  console.log(detailedLedgerSummary,partnerDetailedLedger)
   const details = detailedLedgerSummary?.fromRecordPayment?partnerDetailedLedger: props.detailedLedger;
   const detailsByDate =detailedLedgerSummary?.fromRecordPayment?partnerDetailedLedger:props.DetailedLedgerByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
-  console.log(details, detailsByDate, "details");
   const ledgerType = props.partyType;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
