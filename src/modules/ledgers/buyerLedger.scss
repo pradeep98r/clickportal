@@ -662,3 +662,8 @@ max-width: 600px;
     pointer-events: none;
     background-color: lightgrey;
   }
+  input[name=billIdDisabled] {
+    pointer-events: none;
+    background-color: #e8e8e8!important;
+    opacity: 0.6;
+ }

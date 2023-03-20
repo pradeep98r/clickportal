@@ -652,26 +652,11 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   <div className="col-lg-7 p-0">
-                    <div className="recordbtn-style">
-                      <button
-                        className="add-record-btns"
-                        onClick={
-                          recordPaymentOnClickEvent
-                        }
-                        data-toggle="modal"
-                        data-target="#myModal"
-                      >
-                        Record payment
-                      </button>
+                    
 
-                      <div className="add-pays-btn">
-                        <img src={add} id="addrecord-img" />
-                      </div>
-                    </div>
-
-                    <div className="d-flex">
+                    <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between">
                       <ul
-                        className="nav nav-tabs partner_tabs ledger_all_custom mb-0"
+                        className="nav nav-tabs mb-0"
                         id="myTab"
                         role="tablist"
                       >
@@ -695,6 +680,22 @@ const Ledgers = (props) => {
                           );
                         })}
                       </ul>
+                      <div className="recordbtn-style">
+                      <button
+                        className="add-record-btns"
+                        onClick={
+                          recordPaymentOnClickEvent
+                        }
+                        data-toggle="modal"
+                        data-target="#myModal"
+                      >
+                        Record payment
+                      </button>
+
+                      <div className="add-pays-btn">
+                        <img src={add} id="addrecord-img" />
+                      </div>
+                    </div>
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
                     <div className="my-2">
