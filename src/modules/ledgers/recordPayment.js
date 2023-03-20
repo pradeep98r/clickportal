@@ -118,6 +118,7 @@ const RecordPayment = (props) => {
 
   const [totalRecieved, setTotalRecieved] = useState(0);
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
+  const fromRecordPaymentPay = tabClick?.fromRecordPayment;
   var ledgerTab = tabClick.partnerTabs;
   var allCustomTab = tabClick.allCustomTabs;
   var startDate = tabClick.beginDate;
@@ -568,13 +569,21 @@ const RecordPayment = (props) => {
       setTotalRecieved(0);
     }
     else{
-      if(!fromBillbookToRecordPayment){
-        if(ledgerData?.billIds.length == 0){
-          setBillIds([]);
-          setDiscountRs(0);
-          setDiscountPerc(0);
+      console.log(tabClick)
+      if(fromRecordPayment){
+        setDiscountRs(0);
+        setDiscountPerc(0);
+      } else{
+        if(!fromBillbookToRecordPayment){
+          console.log(ledgerData)
+          if(ledgerData?.billIds.length == 0){
+            setBillIds([]);
+            setDiscountRs(0);
+            setDiscountPerc(0);
+          }
         }
       }
+      console.log(tabClick,fromBillbookToRecordPayment,"click")
     }  
   };
   const getDiscountPercentageValue = (e) => {
