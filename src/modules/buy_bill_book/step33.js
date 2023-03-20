@@ -843,7 +843,7 @@ const Step33 = (props) => {
             localStorage.setItem("stepOne", false);
             localStorage.setItem("billViewStatus", false);
            if(!(props.fromLedger)){
-            // localStorage.setItem("LinkPath", "/buy_bill_book");
+            localStorage.setItem("LinkPath", "/buy_bill_book");
             window.setTimeout(function (){
               props.closem();
             },800);
