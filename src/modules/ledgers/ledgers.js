@@ -222,17 +222,26 @@ const Ledgers = (props) => {
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
-        if (res.data.status.type === "SUCCESS") {
-          // setSummary(res.data.data);
-          dispatch(businessValues(res.data.data))
-          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
-          setLedgerSummary(res.data.data.ledgerSummary);
-        } else {
+        console.log(res,"response")
+        if(res.data.data !== null){
+          if (res.data.status.type === "SUCCESS") {
+            // setSummary(res.data.data);
+            console.log(res.data.data.ledgerSummary)
+            dispatch(businessValues(res.data.data))
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
+            // setLedgerSummary(res.data.data.ledgerSummary);
+          } else {
+            dispatch(businessValues([]))
+            dispatch(ledgerSummaryInfo([]))
+            // setSummary([]);
+          }
+        } else{
           dispatch(businessValues([]))
-          // setSummary([]);
+          dispatch(ledgerSummaryInfo([]))
         }
+        
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error),console.log('came to here'));
   };
 
   //Get Detailed Ledger
