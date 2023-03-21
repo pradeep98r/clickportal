@@ -20,10 +20,10 @@ import tick from "../../assets/images/tick.svg";
 const LedgerSummary = (props) => {
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
-  
+  console.log(partnerSummary,"ledgerSummary")
   const partyId = props.partyId;
-  const ledgerSummary =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummary;
-  const ledgerSummaryByDate =ledgersSummary?.fromRecordPayment?partnerSummary:props.LedgerSummaryByDate;
+  const ledgerSummary =partnerSummary;
+  const ledgerSummaryByDate =partnerSummary;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
   const ledgerType = props.partyType;
