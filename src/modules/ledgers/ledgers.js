@@ -209,28 +209,43 @@ const Ledgers = (props) => {
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
-        if (res.data.status.type === "SUCCESS") {
-          dispatch(businessValues(res.data.data));
-          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
-          setLedgerSummary(res.data.data.ledgerSummary);
-        } else {
-          dispatch(businessValues([]));
+        console.log(res,"response")
+        if(res.data.data !== null){
+          if (res.data.status.type === "SUCCESS") {
+            console.log(res.data.data.ledgerSummary)
+            dispatch(businessValues(res.data.data))
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
+          } else {
+            dispatch(businessValues([]))
+            dispatch(ledgerSummaryInfo([]))
+          }
+        } else{
+          dispatch(businessValues([]))
+          dispatch(ledgerSummaryInfo([]))
         }
+        
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error),console.log('came to here'));
   };
 
   //Get Detailed Ledger
   const geyDetailedLedger = (clickId, partyId) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
           dispatch(totalRecivables(res.data.data));
           dispatch(detaildLedgerInfo(res.data.data.details));
           setdetailedLedger(res.data.data.details);
         } else {
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
           setdetailedLedger([]);
         }
+      } else{
+        dispatch(totalRecivables([]));
+        dispatch(detaildLedgerInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };
@@ -239,13 +254,20 @@ const Ledgers = (props) => {
   const sellerDetailed = (clickId, partyId) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
           dispatch(totalRecivables(res.data.data));
           dispatch(detaildLedgerInfo(res.data.data.details));
           setdetailedLedger(res.data.data.details);
         } else {
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
           setdetailedLedger([]);
         }
+      } else{
+        dispatch(totalRecivables([]));
+        dispatch(detaildLedgerInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };

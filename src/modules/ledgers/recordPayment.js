@@ -375,6 +375,7 @@ const RecordPayment = (props) => {
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
           if (props.fromPaymentHistory || fromBillViewPopup) {
             dispatch(businessValues(res.data.data));
@@ -387,6 +388,10 @@ const RecordPayment = (props) => {
           dispatch(businessValues([]));
           dispatch(ledgerSummaryInfo([]));
         }
+      } else{
+        dispatch(businessValues([]));
+        dispatch(ledgerSummaryInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };
@@ -671,7 +676,6 @@ const RecordPayment = (props) => {
                                 ? ledgerData.buyerName
                                 : ledgerData.farmerName
                               : ledgerData.partyName}
-                            {ledgerData.partyName}
                           </p>
                           <p className="mobilee-tag">
                             {!ledgerData.trader
