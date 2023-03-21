@@ -184,16 +184,14 @@ const Ledgers = (props) => {
     setAllCustom("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
-    console.log(ledgerTabs,allCustom,"tabs")
+    
     if (allCustom == "custom") {
       var customTab="all"
       setDateDisplay(false);
       dispatch(dateCustomStatus(true));
-      console.log('custom',allCustom)
     }
-    console.log(ledgerTabs,allCustom)
     var tabs = "";
-    console.log(tabs,allCustom,ledgerTabs)
+    console.log(ledgerTabs,allCustom,customTab,"tabs")
     if (
       ledgerTabs == "detailedledger" ||
       (ledgerTabs == "ledgersummary" && allCustom == "custom")
@@ -205,18 +203,16 @@ const Ledgers = (props) => {
       tabs = "ledgersummary";
       console.log('custom ls || dl',allCustom, ledgerTabs)
     }
-    console.log(customTab,tabs,"tabse")
     if (
       (customTab == "all" && tabs == "ledgersummary") || allCustom == "all")
     {
-      console.log('here')
       summaryData(clickId, ledgerId);
-      console.log('custom ls || all',allCustom, ledgerTabs)
+      console.log('all ls || all',allCustom, ledgerTabs)
     }
     else if (
       (customTab == "custom" && tabs == "ledgersummary") 
     ) {
-      console.log('here')
+      console.log('custom ls',allCustom, ledgerTabs)
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);
@@ -349,12 +345,16 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setSummaryByDate(res.data.data.ledgerSummary);
+          console.log('custom',res.data.data.ledgersSummary)
           // setcardDetails(res.data.data);
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
           dispatch(businessValues(res.data.data));
         } else {
           setSummaryByDate([]);
+          console.log('else')
           // setcardDetails([]);
           dispatch(businessValues([]));
+          dispatch(ledgerSummaryInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -367,10 +367,11 @@ const Ledgers = (props) => {
         if (res.data.data !== null) {
           setdetailedLedgerByDate(res.data.data.details);
           dispatch(totalRecivables(res.data.data));
-          // setcardDetailed(res.data.data);
+          dispatch(detaildLedgerInfo(res.data.data.details))
         } else {
           setdetailedLedgerByDate([]);
           dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]))
           // setcardDetailed([]);
         }
       })
@@ -383,11 +384,11 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setdetailedLedgerByDate(res.data.data.details);
-          // setcardDetailed(res.data.data);
+          dispatch(detaildLedgerInfo(res.data.data.details))
           dispatch(totalRecivables(res.data.data));
         } else {
           setdetailedLedgerByDate([]);
-          // setcardDetailed([]);
+          dispatch(detaildLedgerInfo([]))
           dispatch(totalRecivables([]));
         }
       })
