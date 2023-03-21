@@ -270,6 +270,7 @@ const Ledgers = (props) => {
   //All and Custom Tabs
   const allCustomEvent = (type) => {
     dispatch(allCustomTabs(type));
+    console.log(ledgerTabs,type)
     if (type == "custom") {
       setDateDisplay(true);
     } else {
@@ -281,6 +282,7 @@ const Ledgers = (props) => {
       setEndDate(date);
     } 
     if(type == 'all'){
+      console.log('her',type)
       summaryData(clickId, partyId);
     }
     if (type == "custom" && ledgerTabs == "detailedledger") {
@@ -291,9 +293,11 @@ const Ledgers = (props) => {
       setLedgerTabs("ledgersummary");
     }
     if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
+      console.log('hercustom kedge',type)
       setCustomDateHandle(false);
       ledgerSummaryByDate(clickId, partyId, date, date);
     } else if(type == "custom") {
+      console.log('hercusto',type)
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
     setAllCustom(type);

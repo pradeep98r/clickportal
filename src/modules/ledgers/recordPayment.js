@@ -52,7 +52,6 @@ import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
-  console.log(ledgerData)
   const dispatch = useDispatch();
   const partyId = props.ledgerId;
   const fromBillViewPopup = props.fromBillViewPopup;
@@ -141,12 +140,10 @@ const RecordPayment = (props) => {
   };
   var billidsArray = [];
   const onSubmitRecordPayment = () => {
-    console.log(fromBillViewPopup,ledgerData)
     if (billIds.length > 0) {
       paidsRcvd = totalRecieved;
     } else {
       if (fromBillViewPopup) {
-        console.log(ledgerData)
         billidsArray.push(ledgerData.billId);
         paidsRcvd = fromBillViewPopup
           ? props.partyType == "BUYER"
@@ -156,7 +153,6 @@ const RecordPayment = (props) => {
         setBillIds(billidsArray);
       }
     }
-    console.log(paidsRcvd,paidRcvd)
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
@@ -170,10 +166,8 @@ const RecordPayment = (props) => {
       paidsRcvd <= paidRcvd &&
       !(paidsRcvd < 0)
     ) {
-      console.log('hii')
       addRecordPayment();
     } else if (parseInt(paidsRcvd) > paidRcvd) {
-      console.log('more than')
       setRequiredCondition(
         "Entered Amount  cannot more than Outstanding Balance"
       );
@@ -232,7 +226,6 @@ const RecordPayment = (props) => {
       );
     } else {
       await postRecordPayment(addRecordData).then((response) => {
-        console.log(addRecordData,fromBillbookToRecordPayment,response)
         closePopup();
         toast.success(response.data.status.message, {
           toastId: "errorr2",
@@ -240,6 +233,7 @@ const RecordPayment = (props) => {
         window.setTimeout(function () {
           props.closeRecordPaymentModal();
         }, 1000);
+        dispatch(fromRecordPayment(true));
         if (fromBillViewPopup && !fromBillbookToRecordPayment) {
           if (
             props.partyType?.toLowerCase() == "seller" ||
@@ -289,7 +283,6 @@ const RecordPayment = (props) => {
                   Object.assign(i, { index: ind });
                 })
                 dispatch(allBuyBillsData(response.data.data.singleBills))
-                console.log(response.data.data.singleBills)
                 // setBuyBillData(response.data.data.singleBills);
               } 
             })
@@ -311,10 +304,8 @@ const RecordPayment = (props) => {
                   Object.assign(i, { index: ind });
                 })
                 dispatch(allSellBillsData(response.data.data.singleBills))
-                console.log(response.data.data.singleBills)
               } else {
                 dispatch(allSellBillsData([]));
-                // setSellBillData([]);
               }
             })
           }
@@ -385,18 +376,16 @@ const RecordPayment = (props) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          // setSummary(res.data.data)
-          // setLedgerSummary(res.data.data.ledgerSummary);
-
           if (props.fromPaymentHistory || fromBillViewPopup) {
             dispatch(businessValues(res.data.data));
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
-            props.setSummary(res.data.data);
-            props.ledgerSummaryData(res.data.data.ledgerSummary);
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           }
         } else {
-          setLedgerSummary([]);
+          dispatch(businessValues([]));
+          dispatch(ledgerSummaryInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -409,12 +398,12 @@ const RecordPayment = (props) => {
             dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            props.setSummary(res.data.data);
-            // setdetailedLedger(res.data.data.details);
-            props.ledgerSummaryData(res.data.data.details);
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          setdetailedLedger([]);
+          dispatch(totalRecivables([]))
+            dispatch(detaildLedgerInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -428,12 +417,12 @@ const RecordPayment = (props) => {
             dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            props.setSummary(res.data.data);
-            // setdetailedLedger(res.data.data.details);
-            props.ledgerSummaryData(res.data.data.details);
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          setdetailedLedger([]);
+          dispatch(totalRecivables([]))
+            dispatch(detaildLedgerInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -446,7 +435,6 @@ const RecordPayment = (props) => {
       partyType = fromBillViewPopup ? props.partyType :props.fromPaymentHistory?ledgerData?.type:
       props.partyType;
     }
-    console.log(partyType,props.partyType)
     getLedgers(clickId, partyType).then(
       (res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -458,16 +446,15 @@ const RecordPayment = (props) => {
           ) {
           }
           if (props.fromPaymentHistory || fromBillViewPopup) {
-            // props.ledgers(res.data.data.ledgers);
             dispatch(allLedgers(res.data.data.ledgers));
             dispatch(outStandingBal(res.data.data));
-            console.log('worrking')
           } else {
-            props.ledgers(res.data.data.ledgers);
-            props.outStAmt(res.data.data);
+            dispatch(allLedgers(res.data.data.ledgers));
+            dispatch(outStandingBal(res.data.data));
           }
         } else {
-          console.log("some");
+          dispatch(allLedgers([]));
+          dispatch(outStandingBal([]));
         }
       }
     );
@@ -481,12 +468,12 @@ const RecordPayment = (props) => {
             dispatch(businessValues(res.data.data));
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
-            props.setSummary(res.data.data);
-            props.ledgerSummaryData(res.data.data.ledgerSummary);
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           }
         } else {
-          //   setSummaryByDate([]);
-          //   setcardDetails([]);
+          dispatch(businessValues([]));
+          dispatch(ledgerSummaryInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -500,13 +487,12 @@ const RecordPayment = (props) => {
             dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            props.setSummary(res.data.data);
-            // setdetailedLedger(res.data.data.details);
-            props.ledgerSummaryData(res.data.data.details);
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          // setdetailedLedgerByDate([]);
-          // setcardDetailed([]);
+          dispatch(totalRecivables([]))
+          dispatch(detaildLedgerInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -521,13 +507,12 @@ const RecordPayment = (props) => {
             dispatch(totalRecivables(res.data.data))
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            props.setSummary(res.data.data);
-            // setdetailedLedger(res.data.data.details);
-            props.ledgerSummaryData(res.data.data.details);
+            dispatch(totalRecivables(res.data.data))
+            dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          // setdetailedLedgerByDate([]);
-          // setcardDetailed([]);
+          dispatch(totalRecivables([]))
+          dispatch(detaildLedgerInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -569,13 +554,11 @@ const RecordPayment = (props) => {
       setTotalRecieved(0);
     }
     else{
-      console.log(tabClick)
       if(fromRecordPayment){
         setDiscountRs(0);
         setDiscountPerc(0);
       } else{
         if(!fromBillbookToRecordPayment){
-          console.log(ledgerData)
           if(ledgerData?.billIds.length == 0){
             setBillIds([]);
             setDiscountRs(0);
@@ -583,7 +566,6 @@ const RecordPayment = (props) => {
           }
         }
       }
-      console.log(tabClick,fromBillbookToRecordPayment,"click")
     }  
   };
   const getDiscountPercentageValue = (e) => {
