@@ -212,15 +212,12 @@ const Ledgers = (props) => {
         console.log(res,"response")
         if(res.data.data !== null){
           if (res.data.status.type === "SUCCESS") {
-            // setSummary(res.data.data);
             console.log(res.data.data.ledgerSummary)
             dispatch(businessValues(res.data.data))
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
-            // setLedgerSummary(res.data.data.ledgerSummary);
           } else {
             dispatch(businessValues([]))
             dispatch(ledgerSummaryInfo([]))
-            // setSummary([]);
           }
         } else{
           dispatch(businessValues([]))
@@ -235,13 +232,20 @@ const Ledgers = (props) => {
   const geyDetailedLedger = (clickId, partyId) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
           dispatch(totalRecivables(res.data.data));
           dispatch(detaildLedgerInfo(res.data.data.details));
           setdetailedLedger(res.data.data.details);
         } else {
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
           setdetailedLedger([]);
         }
+      } else{
+        dispatch(totalRecivables([]));
+        dispatch(detaildLedgerInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };
@@ -250,13 +254,20 @@ const Ledgers = (props) => {
   const sellerDetailed = (clickId, partyId) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
           dispatch(totalRecivables(res.data.data));
           dispatch(detaildLedgerInfo(res.data.data.details));
           setdetailedLedger(res.data.data.details);
         } else {
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
           setdetailedLedger([]);
         }
+      } else{
+        dispatch(totalRecivables([]));
+        dispatch(detaildLedgerInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };
