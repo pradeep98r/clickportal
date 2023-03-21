@@ -31,6 +31,8 @@ import {
   tableEditStatus,
 } from "../../reducers/billEditItemSlice";
 import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
+import { getSellBillId } from "../../actions/ledgersService";
+import { billViewInfo } from "../../reducers/billViewSlice";
 const SellBillStep3 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -857,6 +859,13 @@ const SellBillStep3 = (props) => {
               window.setTimeout(function (){
                 props.closem();
               },800);
+              getSellBillId(clickId, billEditItem?.caBSeq).then((res) => {
+                if (res.data.status.type === "SUCCESS") {
+                  Object.assign(res.data.data, { partyType: "BUYER" });
+                  dispatch(billViewInfo(res.data.data));
+                  localStorage.setItem("billData", JSON.stringify(res.data.data));
+                }
+              });
               // window.setTimeout(function () {  
               //   navigate("/buyerLedger");
               //   window.location.reload();
