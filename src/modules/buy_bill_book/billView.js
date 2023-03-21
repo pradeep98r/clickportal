@@ -189,7 +189,6 @@ const BillView = (props) => {
               }, 1000);
             }
           } else {
-            console.log("else from ledger");
           }
         }
       },
@@ -272,7 +271,7 @@ const BillView = (props) => {
       }
       if(allCustomTab =='custom' && ledgerTabs =='ledgersummary'){
         ledgerSummaryByDate(clickId,partyId,fromDate,toDate)
-      } else{
+      } else if(allCustomTab =='custom' && ledgerTabs =='detailedledger'){
         if(partyType == 'SELLER'){
           sellerDetailedByDate(clickId,partyId,fromDate,toDate)
         } else{
@@ -325,9 +324,7 @@ const BillView = (props) => {
         if (res.data.status.type === "SUCCESS") {
             dispatch(allLedgers(res.data.data.ledgers));
             dispatch(outStandingBal(res.data.data));
-            console.log('worrking')
         } else {
-          console.log("some");
         }
       }
     );

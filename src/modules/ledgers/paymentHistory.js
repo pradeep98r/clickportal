@@ -17,7 +17,6 @@ import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledge
 import Ledgers from "./ledgers";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  console.log(paymentViewData)
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -122,7 +121,7 @@ const PaymentHistoryView = (props) => {
       }
       if(allCustomTab =='custom' && ledgerTabs =='ledgersummary'){
         ledgerSummaryByDate(clickId,partyId,fromDate,toDate)
-      } else{
+      } else if(allCustomTab =='custom' && ledgerTabs =='detailedledger'){
         if(partyType == 'SELLER'){
           sellerDetailedByDate(clickId,partyId,fromDate,toDate)
         } else{
@@ -142,9 +141,7 @@ const PaymentHistoryView = (props) => {
         if (res.data.status.type === "SUCCESS") {
             dispatch(allLedgers(res.data.data.ledgers));
             dispatch(outStandingBal(res.data.data));
-            console.log('worrking')
         } else {
-          console.log("some");
         }
       }
     );
@@ -213,9 +210,7 @@ const PaymentHistoryView = (props) => {
       })
       .catch((error) => console.log(error));
   };
-  const closeEvent = () =>{
-    console.log(ledgersSummary);
-  }
+ 
  
   return (
     <Modal
@@ -234,7 +229,6 @@ const PaymentHistoryView = (props) => {
         <button
           onClick={(e) => {
             props.closePaymentViewModal();
-            closeEvent()
           }}
         >
           <img alt="image" src={clo} className="cloose" />
