@@ -148,10 +148,13 @@ input[type=radio]:label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 255px);
+    height: calc(100vh - 308px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
+}
+.transporto_ledger_scroll{
+    height: calc(100vh - 260px)!important;  
 }
 .transporterDetailed{
     width: 100%;
