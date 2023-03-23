@@ -58,6 +58,7 @@ const RecordPayment = (props) => {
   const fromBillbookToRecordPayment = props.fromBillbookToRecordPayment;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [selectDate, setSelectDate] = useState(
@@ -189,6 +190,7 @@ const RecordPayment = (props) => {
       billIds: h,
       type: props.fromPaymentHistory ? (fromBillViewPopup ? props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType : ledgerData?.type) : props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType ,
       discount: discountRs,
+      writerId: writerId
     };
     const updateRecordRequest = {
       action: "UPDATE",
@@ -203,7 +205,8 @@ const RecordPayment = (props) => {
       discount: discountRs,
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
-      mobile:ledgerData?.mobile
+      mobile:ledgerData?.mobile,
+      writerId:writerId
     };
     if (props.fromPaymentHistory && !fromBillViewPopup) {
       await updateRecordPayment(updateRecordRequest).then(

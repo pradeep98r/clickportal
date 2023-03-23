@@ -43,6 +43,7 @@ const Step33 = (props) => {
   const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const navigate = useNavigate();
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
   var buyerInfo = users.buyerInfo;
@@ -773,7 +774,7 @@ const Step33 = (props) => {
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
-    writerId: 0,
+    writerId: writerId,
     timeStamp: "",
   };
 
@@ -832,7 +833,7 @@ const Step33 = (props) => {
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
     updatedOn: "",
-    writerId: 0,
+    writerId: writerId,
   };
   // post bill request api call
   const postbuybill = () => {

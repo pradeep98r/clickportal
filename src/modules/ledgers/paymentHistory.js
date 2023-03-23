@@ -20,6 +20,7 @@ const PaymentHistoryView = (props) => {
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
   const allCustomTab=tabClick?.allCustomTabs;
   const ledgerTabs=tabClick?.partnerTabs;
@@ -73,7 +74,8 @@ const PaymentHistoryView = (props) => {
     type: partyDetails?.type,
     discount: partyDetails?.balance,
     refId:partyDetails?.refId,
-    toBePaidRcvd:0
+    toBePaidRcvd:0,
+    writerId:writerId
   }
   const removeRecordPayment =()=>{
     updateRecordPayment(deleteRecordPayment).then(res=>{
@@ -91,7 +93,8 @@ const PaymentHistoryView = (props) => {
     caId: clickId,
     paidRcvd: partyDetails?.amount,
     partyId: partyDetails?.partyId,
-    refId: partyDetails?.refId
+    refId: partyDetails?.refId,
+    writerId:writerId
   }
   const advanceDelete = () =>{
     deleteAdvancePayment(advanceDeleteObject).then(res=>{

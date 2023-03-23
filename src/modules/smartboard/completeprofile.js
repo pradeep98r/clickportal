@@ -22,6 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 const CompleteProfile = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const mandiEditStatus = localStorage.getItem("mandiEditStatus");
   const data = localStorage.getItem("mandiEditDetails");
   const mandiData = JSON.parse(data);
@@ -262,6 +263,7 @@ const CompleteProfile = (props) => {
     otherMarket: marketname ? marketname : "", //"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
+    writerId:writerId
   };
   const addEditMandiSetupApiCall = () => {
     if (mandiEditStatus == "true") {
