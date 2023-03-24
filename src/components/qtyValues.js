@@ -1,5 +1,6 @@
 
- import { getCurrencyNumberWithOneDigit } from "./getCurrencyNumber";
+ import { getCurrencyNumberForWastage } from "./getCurrencyNumber";
+import { getCurrencyNumberWithOneDigit } from "./getCurrencyNumber";
 
 export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
     const getCropUnit = (unit) => {
@@ -50,7 +51,7 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
         {wastage != "0"
           ? wastage != null
             ? " - " +
-              getCurrencyNumberWithOneDigit(wastage) +
+            getCurrencyNumberForWastage(wastage) +
               (qtyUnit.toLowerCase() == "pieces"
                 ? getCropUnit(qtyUnit)
                 : qtyUnit.toLowerCase() == "loads"

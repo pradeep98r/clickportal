@@ -10,6 +10,7 @@ import "../../assets/css/calender.scss";
 import { useState } from 'react';
 import { getListOfBillIds } from '../../actions/ledgersService';
 import { useDispatch } from 'react-redux';
+import { closeDate, dates } from '../../reducers/ledgersCustomDateSlice';
 const CustomDateSelection = (props) => {
     const partyId=props.partyId;
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -25,12 +26,14 @@ const CustomDateSelection = (props) => {
         setEndDate(end);
       };
       const sendCustomDates=()=>{
+        console.log(startDate,endDate,"in cistom")
+        dispatch(dates(startDate));
+        dispatch(closeDate(endDate?endDate:new Date()));
         props.closeCustomDatePopUp();
-        props.setFromDate(startDate);
-        props.setToDate(endDate);
         props.fromCustomDate(true);
         var frDate= moment(startDate).format("YYYY-MM-DD");
-        var toDate=moment(endDate).format("YYYY-MM-DD");
+        var toDate=moment(endDate?endDate: new Date()).format("YYYY-MM-DD");
+        console.log(frDate,toDate)
         getListOfBillIds(clickId,partyId,frDate,toDate).then(res=>{
             props.allBillIdsDate(res.data.data);
             console.log("contine")
@@ -38,8 +41,8 @@ const CustomDateSelection = (props) => {
         })
       }
       const clearDates=()=>{;
-        props.setFromDate(startDate);
-        props.setToDate(endDate);
+        dispatch(dates(startDate));
+        dispatch(closeDate(endDate));
         props.fromCustomDate(true);
         localStorage.removeItem("listOfBillIds");
       }
@@ -73,9 +76,7 @@ const CustomDateSelection = (props) => {
                     <div className="calender_popup" style={{'height':'100%'}}>
                         <div className="row">
                             <div
-                                className="custom_picker"
-
-                                >
+                                className="custom_picker">
                                 <div className="flex_class justify-content-between custom_input_div mr-0">
                                     <div className="d-flex align-items-center">
                                         <p>From</p>

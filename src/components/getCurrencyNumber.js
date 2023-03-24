@@ -17,6 +17,9 @@ export function getCurrencyNumberWithOutSymbol(number) {
 export function getCurrencyNumberWithOneDigit(number) {
   return number == null || number == 0 ?  '': number.toFixed(1);
 }
+export function getCurrencyNumberForWastage(number) {
+  return number == null || number == 0 ?  '': number;
+}
 export function getMaskedMobileNumber(number) {
   return number.replace(
     /.(?=.{4})/g,

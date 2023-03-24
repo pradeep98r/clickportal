@@ -98,7 +98,7 @@ const RoutesConfig = () => {
                     <Route path="/smartchart" element={<SmartChart />} />
                     <Route
                       path="/transportoledger"
-                      element={<Transporters />}
+                      element={<TransportoLedger />}
                     />
                     {/* <Route
                       path="/transportoledger"
@@ -144,7 +144,7 @@ const RoutesConfig = () => {
 
                 <Route
                   path="/transportoledger"
-                  element={<Transporters />}
+                  element={<TransportoLedger />}
                 />
                 {/* <Route
                   path="/transportoledger"
