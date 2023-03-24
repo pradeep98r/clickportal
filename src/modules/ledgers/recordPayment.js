@@ -237,7 +237,7 @@ const RecordPayment = (props) => {
         });
         window.setTimeout(function () {
           props.closeRecordPaymentModal();
-          // closePopup();
+          closePopup();
         }, 1000);
         dispatch(fromRecordPayment(true));
         if (fromBillViewPopup && !fromBillbookToRecordPayment) {
