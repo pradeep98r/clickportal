@@ -241,7 +241,7 @@ const SellBillStep3 = (props) => {
         : billEditItemInfo.selectedBillInfo.lineItems
       : props.slectedSellCropsArray;
     for (var i = 0; i < item.length; i++) {
-      totalQty += parseInt(item[i].qty);
+      totalQty += parseFloat(item[i].qty);
     }
     var substring = "CUSTOM_FIELD";
     if (name.includes(substring)) {
@@ -537,9 +537,9 @@ const SellBillStep3 = (props) => {
         : items[i].total;
       totalunitvalue += editStatus
         ? step2CropEditStatus
-          ? parseInt(items[i].qty)
-          : parseInt(items[i].qty) // items[i].lineItems[i].qty
-        : parseInt(items[i].qty);
+          ? parseFloat(items[i].qty)
+          : parseFloat(items[i].qty) // items[i].lineItems[i].qty
+        : parseFloat(items[i].qty);
       gTotal = total;
       setGrossTotal(total);
       setTotalUnits(totalunitvalue);
@@ -685,12 +685,12 @@ const SellBillStep3 = (props) => {
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
-      qty: parseInt(cropArray[i].qty),
+      qty: parseFloat(cropArray[i].qty),
       qtyUnit: cropArray[i].qtyUnit,
-      rate: parseInt(cropArray[i].rate),
+      rate: parseFloat(cropArray[i].rate),
       total: cropArray[i].total,
       wastage: cropArray[i].wastage,
-      weight: parseInt(cropArray[i].weight),
+      weight: parseFloat(cropArray[i].weight),
       id: cropArray[i].id,
       sellBillId: billEditItem.billId,
       //bags:[],
