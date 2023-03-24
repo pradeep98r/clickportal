@@ -93,7 +93,7 @@ function SideNavigation() {
       img: reports,
     },
     // {
-    //   id: 10,
+    //   id: 10
     //   name: "System Settings",
     //   to: "/cms",
     //   className: "side_nav_item",

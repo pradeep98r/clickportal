@@ -30,8 +30,9 @@ import {
   inventoryTotals,
   inventorySummaryInfo,
   outstandingBalForParty,
-  inventoryUnitDetails
+  inventoryUnitDetails,
 } from "../../reducers/transpoSlice";
+import add from "../../assets/images/add.svg";
 const Transporters = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -43,7 +44,7 @@ const Transporters = () => {
   var transporter = transpoData?.transpoLedgersInfo;
   var transporterId = transpoData?.transporterIdVal;
   //   const [transporterId, setTransporterId] = useState(0);
-//   const [outStAmt, setOutStAmt] = useState();
+  //   const [outStAmt, setOutStAmt] = useState();
   var outStAmt = transpoData?.outstandingAmount;
   //   const [transData, setTransData] = useState({});
   var transData = transpoData?.singleTransporterObject;
@@ -55,7 +56,7 @@ const Transporters = () => {
   // const [invLedger, setInvLedger] = useState({});
   var invLedger = transpoData?.inventoryTotals;
   // const [invDetails, setInvDetails] = useState([]);
-  var invDetails = transpoData?.inventorySummaryInfo
+  var invDetails = transpoData?.inventorySummaryInfo;
   // const [paidRcvd, setPaidRcvd] = useState(0);
   var paidRcvd = transpoData?.outstandingBalForParty;
   // const [getInventor, setGetInventory] = useState([]);
@@ -67,7 +68,7 @@ const Transporters = () => {
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
       // setOutStAmt(response.data.data);
-      dispatch(outstandingAmount(response.data.data))
+      dispatch(outstandingAmount(response.data.data));
       //   setTransporterId(response.data.data.ledgers[0].partyId);
       //   setTransData(response.data.data.ledgers[0]);
       dispatch(transporterIdVal(response.data.data.ledgers[0].partyId));
@@ -142,8 +143,8 @@ const Transporters = () => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
         // setPayLedger(response.data.data);
-        dispatch(paymentTotals(response.data.data))
-        dispatch(paymentSummaryInfo(response.data.data.details))
+        dispatch(paymentTotals(response.data.data));
+        dispatch(paymentSummaryInfo(response.data.data.details));
         // setLedgerSummary(response.data.data.details);
       })
       .catch((error) => {
@@ -155,8 +156,8 @@ const Transporters = () => {
     getInventoryLedgers(clickId, transId)
       .then((response) => {
         // setInvLedger(response.data.data);
-        dispatch(inventoryTotals(response.data.data))
-        dispatch(inventorySummaryInfo(response.data.data.details))
+        dispatch(inventoryTotals(response.data.data));
+        dispatch(inventorySummaryInfo(response.data.data.details));
         // setInvDetails(response.data.data.details);
         console.log(invLedger, "Inv Ledger");
       })
@@ -168,7 +169,7 @@ const Transporters = () => {
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
       // setPaidRcvd(response.data.data);
-      dispatch(outstandingBalForParty(response.data.data))
+      dispatch(outstandingBalForParty(response.data.data));
     });
   };
 
@@ -177,7 +178,7 @@ const Transporters = () => {
     getInventory(clickId, transId)
       .then((response) => {
         console.log(response.data.data);
-        dispatch(inventoryUnitDetails(response.data.data))
+        dispatch(inventoryUnitDetails(response.data.data));
         // setGetInventory(response.data.data);
       })
       .catch((error) => {
@@ -214,11 +215,11 @@ const Transporters = () => {
 
   const getPaidRcvd = (rcvd) => {
     // setPaidRcvd(rcvd);
-    dispatch(outstandingBalForParty(rcvd))
+    dispatch(outstandingBalForParty(rcvd));
   };
   const getOutstAmt = (data) => {
     // setOutStAmt(data);
-    dispatch(outstandingAmount(data))
+    dispatch(outstandingAmount(data));
   };
 
   const getTransData = (data) => {
@@ -227,21 +228,28 @@ const Transporters = () => {
   };
   const getPayledgerSummary = (data) => {
     // setLedgerSummary(data);
-    dispatch(paymentSummaryInfo(data))
+    dispatch(paymentSummaryInfo(data));
   };
   const payLedgerData = (data) => {
     // setPayLedger(data);
-    dispatch(paymentTotals(data))
+    dispatch(paymentTotals(data));
   };
 
   const getInvLedgerData = (data) => {
     // setInvLedger(data);
-    dispatch(inventoryTotals(data))
+    dispatch(inventoryTotals(data));
   };
 
   const getInvLedger = (data) => {
     // setInvDetails(data);
-    dispatch(inventorySummaryInfo(data))
+    dispatch(inventorySummaryInfo(data));
+  };
+  const [recordInventoryModalStatus, setRecordInventoryModalStatus] =
+    useState(false);
+  const [recordInventoryModal, setRecordInventoryModal] = useState(false);
+  const onClickInventoryRecord = () => {
+    setRecordInventoryModalStatus(true);
+    setRecordInventoryModal(true);
   };
   return (
     <div className="">
@@ -535,15 +543,19 @@ const Transporters = () => {
                     // payledgersummary={getPayledgerSummary}
                   />
                 ) : tabs == "inventoryledger" ? (
-                  <AddRecordInventory
-                    tabs={tabs}
-                    // LedgerData={transData}
-                    // ledgerId={transporterId}
-                    type={"TRANS"}
-                    // getInventor={getInventor}
-                    // invLedger={getInvLedger}
-                    // invLedgerData={getInvLedgerData}
-                  />
+                  <div className="recordbtn-style">
+                    <button
+                      className="add-record-btns"
+                      onClick={() => {
+                        onClickInventoryRecord();
+                      }}
+                    >
+                      Record Inventory
+                    </button>
+                    <div className="add-pays-btn">
+                      <img src={add} id="addrecord-img" />
+                    </div>
+                  </div>
                 ) : (
                   ""
                 )}
@@ -572,6 +584,16 @@ const Transporters = () => {
             </div>
           </div>
         </div>
+      )}
+      {recordInventoryModalStatus ? (
+        <AddRecordInventory
+          showRecordInventoryModal={recordInventoryModal}
+          closeRecordInventoryModal={() => setRecordInventoryModal(false)}
+          tabs={tabs}
+          type={"TRANS"}
+        />
+      ) : (
+        ""
       )}
     </div>
   );
