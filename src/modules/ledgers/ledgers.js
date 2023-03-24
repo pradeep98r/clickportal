@@ -42,6 +42,7 @@ import {
   outStandingBal,
   businessValues,
   totalRecivables,
+  trhoughRecordPayment,
 } from "../../reducers/ledgerSummarySlice";
 import PaymentHistoryView from "./paymentHistory";
 const Ledgers = (props) => {
@@ -212,7 +213,6 @@ const Ledgers = (props) => {
         console.log(res,"response")
         if(res.data.data !== null){
           if (res.data.status.type === "SUCCESS") {
-            console.log(res.data.data.ledgerSummary)
             dispatch(businessValues(res.data.data))
             dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
           } else {
@@ -481,6 +481,7 @@ const Ledgers = (props) => {
     useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
   const recordPaymentOnClickEvent = () => {
+    dispatch(trhoughRecordPayment(true));
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
   };

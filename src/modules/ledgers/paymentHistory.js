@@ -13,7 +13,7 @@ import RecordPayment from "./recordPayment";
 import moment from "moment";
 import { updateRecordPayment, getBillHistoryListById, getLedgers, getLedgerSummary, getOutstandingBal, getSellerDetailedLedger
   ,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate, deleteAdvancePayment } from "../../actions/ledgersService";
-import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables } from "../../reducers/ledgerSummarySlice";
+import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables, trhoughRecordPayment } from "../../reducers/ledgerSummarySlice";
 import Ledgers from "./ledgers";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
@@ -57,6 +57,8 @@ const PaymentHistoryView = (props) => {
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
   const editRecordPayment =()=>{
+    console.log(paymentViewData.paymentViewInfo)
+    dispatch(trhoughRecordPayment(false));
     setRecordPaymentActive(true);
     setRecordPaymentModal(true);
   }
@@ -269,9 +271,10 @@ const PaymentHistoryView = (props) => {
                     <div>
                       <h6>Selected Bills</h6>
                       <div className="d-flex">
-                      {paymentHistoryData.billIds.map((item, index) => {
-                        return <h5>{item + ","}</h5>
-                      })}
+                        <h5>{paymentHistoryData.billIds.join(" , ")}</h5>
+                      {/* {.map((item, index) => {
+                        return <h5>{item?.join(" , ")}</h5>
+                      })} */}
                       </div>
                     </div>
                   </div>

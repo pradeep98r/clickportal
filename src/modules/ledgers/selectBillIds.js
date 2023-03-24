@@ -15,7 +15,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import CustomDateSelection from "./customDateSelection";
 import cust_date from "../../assets/images/cust_date.svg";
 import { getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
-import { closeDate, dates } from "../../reducers/ledgersCustomDateSlice";
+import { allBillIdsObjects, closeDate, dates } from "../../reducers/ledgersCustomDateSlice";
 const SelectBillIds = (props) => {
   const partyId = props.partyId;
   const dispatch = useDispatch();
@@ -44,6 +44,7 @@ const SelectBillIds = (props) => {
   var someIds = [];
   var dummyIds = [];
   // var listOfBillids=localStorage.getItem("listOfBillIds");
+  const billIdObjects=rdDateChange?.allBillIdsObjects;
   var index = selectedIndex;
   const getAllBillIds = () => {
     if (fromCustomDate) {
@@ -115,13 +116,20 @@ const SelectBillIds = (props) => {
     }
   };
   const sendBillIdsData = () => {
+    if(billObject.length>0){
+      dispatch(allBillIdsObjects(billObject));
       props.setBillIdsData(billObject);
+    } else{
+      props.setBillIdsData([]);
+      dispatch(allBillIdsObjects([])); 
+    }
       setSelectedIndex(selectedIndex);
       setFromCustomDate(false);
       // setDateValue(date + " to " + date)
       dispatch(dates(dateFromRecordPayment))
       dispatch(closeDate(dateFromRecordPayment));
-      setBillids([]);
+      setBillids([])
+      setBillIdsObject([]);
   };
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();

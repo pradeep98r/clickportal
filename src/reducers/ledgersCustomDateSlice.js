@@ -6,7 +6,7 @@ export const ledgersCustomDateSlice = createSlice({
         dates:new Date(),
         closeDate:new Date(),
         dateInRP:new Date(),
-        allBillIds:[]
+        allBillIdsObjects:[]
     },
     reducers:{
         dates:(state, action) =>{
@@ -18,12 +18,12 @@ export const ledgersCustomDateSlice = createSlice({
         dateInRP:(state, action) =>{
             state.dateInRP = action.payload;
         },
-        allBillIds:(state, action) =>{
-            state.allBillIds = action.payload;
+        allBillIdsObjects:(state, action) =>{
+            state.allBillIdsObjects = action.payload;
         }
     }
 
 })
 
-export const {dates, closeDate, dateInRP, allBillIds} = ledgersCustomDateSlice.actions;
+export const {dates, closeDate, dateInRP, allBillIdsObjects} = ledgersCustomDateSlice.actions;
 export default ledgersCustomDateSlice.reducer;
