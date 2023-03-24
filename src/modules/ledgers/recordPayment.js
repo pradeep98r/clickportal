@@ -50,6 +50,7 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
+import { dateInRP, dates } from "../../reducers/ledgersCustomDateSlice";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
   const dispatch = useDispatch();
@@ -552,6 +553,8 @@ const RecordPayment = (props) => {
       setPaymentMode("CASH");
       setComments("");
       setSelectDate(new Date());
+      dispatch(dateInRP(new Date()));
+      dispatch(dates(new Date()));
       setBillIds([]);
       setDiscountRs(0);
       setBillAmount(0);
@@ -621,6 +624,11 @@ const RecordPayment = (props) => {
     }
   };
 
+  const onChangeDateSelect =(date)=>{
+    setSelectDate(date)
+    dispatch(dateInRP(date));
+    dispatch(dates(date));
+  }
   return (
     <Modal
       show={props.showRecordPaymentModal}
@@ -711,7 +719,8 @@ const RecordPayment = (props) => {
                         //className="date_picker_in_modal"
                         selected={selectDate}
                         onChange={(date) => {
-                          setSelectDate(date);
+                          onChangeDateSelect(date)
+                          // setSelectDate(date);
                         }}
                         dateFormat="dd-MMM-yy"
                         maxDate={new Date()}
@@ -746,7 +755,7 @@ const RecordPayment = (props) => {
                         className="form-cont pselect-bill"
                         id="amtRecieved"
                         onFocus={(e) => resetInput(e)}
-                        value={billIds.join(" , ")}
+                        value={caBSeq.join(" , ")}
                         required
                         onClick={() => {
                           showListOfBillIds(partyId);
@@ -768,7 +777,10 @@ const RecordPayment = (props) => {
                   </div>
                   <div className="col-lg-6" align="left">
                     <div className="out-paybles">
-                      <p id="p-tag">Outstanding Recievables</p>
+                    {ledgerData?.type == "FARMER" || props.partyType == 'SELLER'
+                    || fromBillViewPopup && props.partyType == 'FARMER'?
+                      <p id="p-tag">Outstanding Payables</p>:<p id="p-tag">Outstanding Recievables</p>
+                      } 
                       <p id="recieve-tag">
                         &#8377;
                         {paidRcvd ? paidRcvd.toFixed(2) : 0}

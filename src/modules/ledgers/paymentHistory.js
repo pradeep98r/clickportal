@@ -258,7 +258,8 @@ const PaymentHistoryView = (props) => {
                   <div className="col-lg-5 p-0"></div>
                   <div className="col-lg-3 p-0">
                     <h6>Date</h6>
-                    <h5>{paymentViewData?.paymentViewInfo.date}</h5>
+                    <h5>{moment(paymentViewData?.paymentViewInfo.date).format("DD-MMM-YY")
+                    }</h5>
                   </div>
                 </div>
               </div>

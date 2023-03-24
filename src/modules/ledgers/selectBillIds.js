@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import clo from "../../assets/images/close.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import cancel from "../../assets/images/cancel.svg";
 import selected_icon from "../../assets/images/selected_icon.svg";
@@ -15,12 +15,18 @@ import date_icon from "../../assets/images/date_icon.svg";
 import CustomDateSelection from "./customDateSelection";
 import cust_date from "../../assets/images/cust_date.svg";
 import { getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
+import { closeDate, dates } from "../../reducers/ledgersCustomDateSlice";
 const SelectBillIds = (props) => {
   const partyId = props.partyId;
-  const date = moment(props.selectedDateTo).format("DD-MMM-YY");
-  var [dateValue, setDateValue] = useState(date + " to " + date);
+  const dispatch = useDispatch();
+  const rdDateChange = useSelector((state) => state.dates);
+  const dateChanged =moment(rdDateChange?.dates).format("DD-MMM-YY");
+  const dateFromRecordPayment =rdDateChange?.dateInRP
+  var dateValue = dateChanged + " to " + dateChanged
+  console.log(dateChanged,"changed")
+  // const date = moment(props.selectedDateTo).format("DD-MMM-YY");
+  // var [dateValue, setDateValue] = useState(date + " to " + date);
   const selectDate = moment(props.selectedDate).format("YYYY-MM-DD");
-  console.log(date,selectDate,"data")
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allBillIds, setAllBillIds] = useState([]);
@@ -30,8 +36,10 @@ const SelectBillIds = (props) => {
   const [billObject, setBillIdsObject] = useState([]);
   const [showCustDate, seShowCustDate] = useState(false);
   const [fromCustomDate, setFromCustomDate] = useState(false);
-  const [frDate, setFrDate] = useState(date);
-  const [toDates, setToDate] = useState(date);
+  const frDate = fromCustomDate?rdDateChange?.dates:dateChanged
+  const toDates = fromCustomDate?rdDateChange?.closeDate:dateChanged
+  // const [frDate, setFrDate] = useState(dateChanged);
+  // const [toDates, setToDate] = useState(dateChanged);
   const [fromCustomBillsData, setFromCustomBills] = useState([]);
   var someIds = [];
   var dummyIds = [];
@@ -60,7 +68,6 @@ const SelectBillIds = (props) => {
     };
   }, [props.showBillIdsModal]);
   const allBills = (data) => {
-    console.log(data, "cust data");
     someIds = data;
     setBillIds(data);
     setAllBillIds(data);
@@ -74,8 +81,7 @@ const SelectBillIds = (props) => {
     } else if (key === 40) {
       // Down arrow
       setSelectedIndex((prev) => (prev === someIds.length - 1 ? 0 : prev + 1));
-      index++;
-      console.log(index, "index down");
+      index++;;
     } else if (key === 13) {
       // Enter key
       var listOfIds = JSON.parse(localStorage.getItem("listOfBillIds"));
@@ -109,8 +115,13 @@ const SelectBillIds = (props) => {
     }
   };
   const sendBillIdsData = () => {
-    props.setBillIdsData(billObject);
-    setSelectedIndex(selectedIndex);
+      props.setBillIdsData(billObject);
+      setSelectedIndex(selectedIndex);
+      setFromCustomDate(false);
+      // setDateValue(date + " to " + date)
+      dispatch(dates(dateFromRecordPayment))
+      dispatch(closeDate(dateFromRecordPayment));
+      setBillids([]);
   };
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
@@ -129,12 +140,7 @@ const SelectBillIds = (props) => {
   const openCustomDatePicker = () => {
     seShowCustDate(true);
   };
-  const fromDate = (date) => {
-    setFrDate(date);
-  };
-  const toDate = (date) => {
-    setToDate(date);
-  };
+
   const customDate = (date) => {
     setFromCustomDate(date);
   };
@@ -153,8 +159,8 @@ const SelectBillIds = (props) => {
           <button
             onClick={(e) => {
               setFromCustomDate(false);
-              setFrDate(date);
-              setToDate(date);
+              dispatch(dates(dateFromRecordPayment))
+              dispatch(closeDate(dateFromRecordPayment));
               props.billIdsCloseModal();
             }}
           >
@@ -254,6 +260,8 @@ const SelectBillIds = (props) => {
             props.billIdsCloseModal();
             setSelectedIndex(0);
             setFromCustomDate(false);
+            dispatch(dates(dateFromRecordPayment))
+            dispatch(closeDate(dateFromRecordPayment));
           }}
         >
           Cancel
@@ -277,8 +285,6 @@ const SelectBillIds = (props) => {
           }}
           beginDate ={frDate}
           closeDate={toDates}
-          setFromDate={fromDate}
-          setToDate={toDate}
           fromCustomDate={customDate}
           partyId={partyId}
           allBillIdsDate={allBills}
