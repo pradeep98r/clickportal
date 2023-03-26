@@ -37,7 +37,8 @@ const PaymentHistoryView = (props) => {
   var discount = paymentViewData?.paymentViewInfo?.discount;
   discount = Math.abs(discount);
   if (discount > 0) {
-    amount = amount + discount;
+    // var amt=amount+discount
+    // amount = amount + discount;
     discountedAmount = amount - discount;
     discountPercentage = ((discount / discountedAmount) * 100).toPrecision(2);
   }
@@ -295,7 +296,7 @@ const PaymentHistoryView = (props) => {
                   title3="Received Amount"
                   title1Data={discountPercentage}
                   title2Data={discount}
-                  title3Data={discountedAmount}
+                  title3Data={discountedAmount?.toFixed(2)}
                 />
               ) : (
                 ""
