@@ -44,6 +44,7 @@ import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledge
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
@@ -162,7 +163,7 @@ const BillView = (props) => {
     lineItems: billData?.lineItems,
     updatedBy: 0,
     updatedOn: "",
-    writerId: 0,
+    writerId: writerId,
   };
 
   const cancelbillApiCall = () => {
