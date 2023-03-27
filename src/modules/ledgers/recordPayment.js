@@ -59,6 +59,7 @@ const RecordPayment = (props) => {
   const fromBillbookToRecordPayment = props.fromBillbookToRecordPayment;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [selectDate, setSelectDate] = useState(
