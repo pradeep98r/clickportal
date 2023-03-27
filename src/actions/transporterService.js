@@ -11,7 +11,7 @@ export function getParticularTransporter(clickId, partyId){
 }
 //get Inventory Ledger
 export function getInventoryLedgers(clickId,transId){
-    return axiosCommon.get(`/account/transporter/detailed/caId/${clickId}/transId/${transId}?period=YEARLY?writerId=${writerId}`);
+    return axiosCommon.get(`/account/transporter/detailed/caId/${clickId}/transId/${transId}?period=YEARLY&writerId=${writerId}`);
 }
 //add record payment
 export function postRecordPayment(request){

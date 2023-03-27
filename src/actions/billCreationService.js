@@ -12,17 +12,17 @@ export function addPartner(obj, clickId) {
 }
 export function deletePartnerId(partyId, clickId) {
   return axiosCommon.put(
-    `/common/reset/caId/${clickId}/partyId/${partyId}?clearPartner=true?writerId=${writerId}`
+    `/common/reset/caId/${clickId}/partyId/${partyId}?clearPartner=true&writerId=${writerId}`
   );
 }
 export function getBuyBills(clickId, fromDate, toDate) {
   return axiosCommon.get(
-    `/click/bills/buy-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/click/bills/buy-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 export function getSellBills(clickId, fromDate, toDate) {
   return axiosCommon.get(
-    `/click/bills/sell-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/click/bills/sell-bills/caId/${clickId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 export function editPartnerItem(obj) {
@@ -62,7 +62,7 @@ export function getDetailedLedgerByDate(
   toDate,
 ) {
   return axiosCommon.get(
-    `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 
@@ -73,7 +73,7 @@ export function getSellerDetailedLedgerByDate(
   toDate,
 ) {
   return axiosCommon.get(
-    `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 

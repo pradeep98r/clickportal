@@ -27,17 +27,17 @@ export function getSellerDetailedLedger(
 }
 export function getLedgerSummaryByDate(clickId,partyId,fromDate,toDate){
   return axiosCommon.get(
-    `/reports/ledger/summary/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/reports/ledger/summary/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 export function getDetailedLedgerByDate(clickId,partyId,fromDate,toDate){
   return axiosCommon.get(
-    `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 export function getSellerDetailedLedgerByDate(clickId,partyId,fromDate,toDate){
   return axiosCommon.get(
-    `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
 
@@ -75,7 +75,7 @@ export function getBillHistoryListById(clickId,billId,type){
 
 export function getListOfBillIds(clickId, partyId,fromDate, toDate){
   return axiosCommon.get(
-    `/common/bills/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+    `/common/bills/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   )
 }
 
