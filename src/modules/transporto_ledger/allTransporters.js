@@ -25,7 +25,7 @@ const AllTransporters = (props) => {
   var transporter = transpoData?.allPartnersInfo;
   var partnerItem = transpoData?.singleTransporter;
   const location = useLocation();
-  console.log(partnerItem)
+  console.log(partnerItem,transporter)
   const [allData, setallData] = useState(transpoData?.transpoLedgersInfo);
   useLayoutEffect(() => {
       console.log('use effect')
@@ -37,8 +37,8 @@ const AllTransporters = (props) => {
         if (response.data.data != null) {
           setallData(response.data.data);
           dispatch(allPartnersInfo(response.data.data));
-          dispatch(singleTransporter(response.data.data[0]));
-          console.log(partnerItem,response.data.data[0]);
+          dispatch(transporterIdVal(response.data.data[0].partyId))
+        //   dispatch(singleTransporter(response.data.data[0]));
         } else {
           setallData([]);
           dispatch(allPartnersInfo([]));
@@ -55,7 +55,7 @@ const AllTransporters = (props) => {
     <div className="">
       {allData.length > 0 ? (
         <div className="row">
-          <div className="col-lg-5 pl-0">
+          <div className="col-lg-4 pl-0">
             <div id="search-field">
               <SearchField
                 placeholder="Search by Name / Short Code"
@@ -71,7 +71,9 @@ const AllTransporters = (props) => {
                   id="scroll_style"
                 >
                   <table className="table table-fixed">
+                    <div className="all_trans_head">
                     <p>Transporter Name</p>
+                    </div>
 
                     {transporter.map((partner, index) => {
                       return (
@@ -107,7 +109,7 @@ const AllTransporters = (props) => {
                                 <div>
                                   <h5>{partner.partyName}</h5>
                                   <h6>
-                                    TRANSPORTER - {partner.partyId} |{" "}
+                                    Transporter - {partner.partyId} |{" "}
                                     {getMaskedMobileNumber(partner.mobile)}
                                   </h6>
                                   <p>{partner.partyAddress}</p>
@@ -147,7 +149,7 @@ const AllTransporters = (props) => {
               </div>
             )}
           </div>
-          <div className="col-lg-7">
+          <div className="col-lg-8">
             <div className="profile_card business_card">
               <div className="card">
                 <div className="card_header">

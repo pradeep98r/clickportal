@@ -133,7 +133,7 @@ const AddRecordPayment = (props) => {
     // } else {
     await postRecordPayment(addRecordData).then(
       (response) => {
-        // closePopup();
+        closePopup();
         toast.success(response.data.status.message, {
           toastId: "errorr2",
         });
@@ -196,6 +196,13 @@ const AddRecordPayment = (props) => {
         name: "IMPS",
       },
   ];
+  const closePopup = () => {
+      setPaidsRcvd(0);
+      setRequiredCondition("");
+      setPaymentMode("CASH");
+      setComments("");
+      setSelectDate(new Date());
+    }
   return (
     <Modal
       show={props.showRecordPayModal}
@@ -215,7 +222,7 @@ const AddRecordPayment = (props) => {
                 alt="image"
                 className="close_icon"
                 onClick={() => {
-                  //   closePopup();
+                    closePopup();
                   props.closeRecordPayModal();
                 }}
               />

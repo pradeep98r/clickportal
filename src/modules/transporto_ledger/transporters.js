@@ -16,7 +16,6 @@ import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import moment from "moment";
 import PaymentLedger from "./paymentLedger";
 import InventoryLedger from "./inventoryLedger";
-import RecordPayment from "../ledgers/recordPayment";
 import { getOutstandingBal } from "../../actions/ledgersService";
 import AddRecordInventory from "./addRecordInventory";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,10 +30,14 @@ import {
   inventorySummaryInfo,
   outstandingBalForParty,
   inventoryUnitDetails,
+  allPartnersInfo,
+  singleTransporter,
 } from "../../reducers/transpoSlice";
 import add from "../../assets/images/add.svg";
 import AddRecordPayment from "./transportoRecord";
-const Transporters = () => {
+import { getCropUnit } from "../../components/getCropUnitValue";
+import { getPartnerData } from "../../actions/billCreationService";
+const Transporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
   const clickId = loginData.caId;
@@ -44,24 +47,12 @@ const Transporters = () => {
   const [allData, setallData] = useState(transpoData?.transpoLedgersInfo);
   var transporter = transpoData?.transpoLedgersInfo;
   var transporterId = transpoData?.transporterIdVal;
-  //   const [transporterId, setTransporterId] = useState(0);
-  //   const [outStAmt, setOutStAmt] = useState();
   var outStAmt = transpoData?.outstandingAmount;
-  //   const [transData, setTransData] = useState({});
   var transData = transpoData?.singleTransporterObject;
-  const [tabs, setTabs] = useState("paymentledger");
-  // // const [ledgerSummary, setLedgerSummary] = useState([]);
-  // var ledgerSummary = transpoData?.paymentSummaryInfo;
-  // const [payLedger, setPayLedger] = useState({});
+  const [tabs, setTabs] = useState(props.transPortoTabVal == 'inventoryLedgerSummary' ? 'inventoryledger':"paymentledger");
+  console.log(props.transPortoTabVal,tabs)
   var payLedger = transpoData?.paymentTotals;
-  // const [invLedger, setInvLedger] = useState({});
   var invLedger = transpoData?.inventoryTotals;
-  // const [invDetails, setInvDetails] = useState([]);
-  var invDetails = transpoData?.inventorySummaryInfo;
-  // const [paidRcvd, setPaidRcvd] = useState(0);
-  var paidRcvd = transpoData?.outstandingBalForParty;
-  // const [getInventor, setGetInventory] = useState([]);
-  var getInventor = transpoData?.inventoryUnitDetails;
   useEffect(() => {
     getTransportersData();
   }, []);
@@ -77,6 +68,7 @@ const Transporters = () => {
       paymentLedger(clickId, response.data.data.ledgers[0].partyId);
       inventoryLedger(clickId, response.data.data.ledgers[0].partyId);
       getInventoryRecord(clickId, response.data.data.ledgers[0].partyId);
+      getPartners(clickId)
     });
   };
   const handleSearch = (event) => {
@@ -110,9 +102,7 @@ const Transporters = () => {
     },
   ];
   const particularTransporter = (transporterId, item) => {
-    // setTransporterId(transporterId);
     dispatch(transporterIdVal(transporterId));
-    // setTransData(item);
     dispatch(singleTransporterObject(item));
     getOutstandingPaybles(clickId, transporterId);
     getInventoryRecord(clickId, transporterId);
@@ -138,10 +128,8 @@ const Transporters = () => {
   const paymentLedger = (clickId, partyId) => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
-        // setPayLedger(response.data.data);
         dispatch(paymentTotals(response.data.data));
         dispatch(paymentSummaryInfo(response.data.data.details));
-        // setLedgerSummary(response.data.data.details);
       })
       .catch((error) => {
         console.log(error);
@@ -151,19 +139,28 @@ const Transporters = () => {
   const inventoryLedger = (clickId, transId) => {
     getInventoryLedgers(clickId, transId)
       .then((response) => {
-        // setInvLedger(response.data.data);
         dispatch(inventoryTotals(response.data.data));
         dispatch(inventorySummaryInfo(response.data.data.details));
-        // setInvDetails(response.data.data.details);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+  const getPartners = (clickId) =>{
+    getPartnerData(clickId, "TRANSPORTER")
+      .then((response) => {
+        if (response.data.data != null) {
+          dispatch(allPartnersInfo(response.data.data));
+          dispatch(singleTransporter(response.data.data[0]));
+        } else {
+          dispatch(allPartnersInfo([]));
+        }
+      })
+      .catch((error) => {});
+  } 
   //Get Outstanding balance
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      // setPaidRcvd(response.data.data);
       dispatch(outstandingBalForParty(response.data.data));
     });
   };
@@ -172,39 +169,14 @@ const Transporters = () => {
   const getInventoryRecord = (clickId, transId) => {
     getInventory(clickId, transId)
       .then((response) => {
-        console.log(response.data.data);
         dispatch(inventoryUnitDetails(response.data.data));
-        // setGetInventory(response.data.data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const getCropUnit = (unit, qty) => {
-    var unitType = "";
-    switch (unit.toUpperCase()) {
-      case "CRATES":
-        unitType = "C";
-        break;
-      case "BOXES":
-        unitType = "BX";
-        break;
-      case "BAGS":
-        unitType = "Bg";
-        break;
-      case "SACS":
-        unitType = "S";
-        break;
-      case "LOADS":
-        unitType = "L";
-        break;
-      case "PIECES":
-        unitType = "P";
-        break;
-    }
-    return qty ? unitType + " | " : "";
-  };
+ 
 
  
   const [recordInventoryModalStatus, setRecordInventoryModalStatus] =

@@ -56,7 +56,7 @@ const TransportoLedger = () => {
             aria-labelledby="home-tab"
           >
             {transPortoTabVal != "myTransporters" ? (
-              <Transporters />
+              <Transporters transPortoTabVal = {transPortoTabVal} />
             ) : (
               <AllTransporters />
             )}
