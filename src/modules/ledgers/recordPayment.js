@@ -51,6 +51,7 @@ import {
 import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import { allBillIdsObjects, dateInRP, dates } from "../../reducers/ledgersCustomDateSlice";
+import { useRef } from "react";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
   const dispatch = useDispatch();
@@ -126,7 +127,8 @@ const RecordPayment = (props) => {
   var endDate = tabClick.closeDate;
   const recordPayment =tabClick?.trhoughRecordPayment;
   console.log(tabClick,"click")
-  useEffect(() => {}, [props.showRecordPaymentModal]);
+  useEffect(() => {
+  }, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
     setPaidsRcvd(e.target.value.replace(/[^\d.]/g, '')
       .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
@@ -161,10 +163,19 @@ const RecordPayment = (props) => {
     }
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
+      toast.error('Amount Recieved Cannot be negative', {
+        toastId: "error4",
+      });
     } else if (parseInt(paidsRcvd) === 0) {
       setRequiredCondition("Amount Received cannot be empty");
+      toast.error('Amount Received cannot be empty', {
+        toastId: "error5",
+      });
     } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
+      toast.error('Invalid Amount', {
+        toastId: "error6",
+      });
     }
     else if (
       paidsRcvd.toString().trim().length !== 0 &&
@@ -177,6 +188,9 @@ const RecordPayment = (props) => {
       setRequiredCondition(
         "Entered Amount  cannot more than Outstanding Balance"
       );
+      toast.error('Entered Amount  cannot more than Outstanding Balance', {
+        toastId: "error7",
+      });
     }
   };
 
@@ -195,6 +209,7 @@ const RecordPayment = (props) => {
       billIds: h,
       type: props.fromPaymentHistory ? (fromBillViewPopup ? props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType : ledgerData?.type) : props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType,
       discount: discountRs,
+      writerId: writerId
     };
     const updateRecordRequest = {
       action: "UPDATE",
@@ -659,7 +674,7 @@ const RecordPayment = (props) => {
     dispatch(dateInRP(date));
     dispatch(dates(date));
   }
-  console.log(props.fromPaymentHistory,fromBillViewPopup,"popup")
+
   return (
     <Modal
       show={props.showRecordPaymentModal}

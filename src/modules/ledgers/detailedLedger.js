@@ -123,16 +123,17 @@ const DetailedLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
-                        <p
-                          style={{ color: "#0066FF" }}
-                          onClick={() =>
+                        <button   onClick={() =>
                             billOnClickView(
                               item.refId,
                               ledgerType,
                               index,
                               partyId
                             )
-                          }
+                          }>
+                        <p
+                          style={{ color: "#0066FF" }}
+                        
                         >
                           <div className="d-flex">
                             <span>{item.refId}</span>
@@ -143,6 +144,8 @@ const DetailedLedger = (props) => {
                             )}
                           </div>
                         </p>
+                        </button>
+                       
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-3">
