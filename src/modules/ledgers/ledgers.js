@@ -485,6 +485,7 @@ const Ledgers = (props) => {
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
   };
+
   return (
     <div className="main_div_padding">
       {isOnline ? (
@@ -535,6 +536,11 @@ const Ledgers = (props) => {
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
+                                    <button className={
+                                        partyId == item.partyId
+                                          ? "tabRowSelected"
+                                          : "tr-tags"
+                                      }>
                                     <tr
                                       onClick={() =>
                                         particularLedgerData(item.partyId, item)
@@ -616,6 +622,7 @@ const Ledgers = (props) => {
                                         </p>
                                       </td>
                                     </tr>
+                                    </button>
                                   </Fragment>
                                 );
                               })}
