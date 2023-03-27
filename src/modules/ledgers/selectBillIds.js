@@ -186,6 +186,7 @@ const SelectBillIds = (props) => {
             />
           </div>
           <div className="col-lg-6 mt-2 pl-3 pr-0">
+            <button className="select-bill-box" style={{'border':'none'}} onClick={openCustomDatePicker}>
             <div className="d-flex select-bill-box">
               <div className="date-icons">
                 <img src={cust_date} className="custom-date-icon" />
@@ -200,6 +201,7 @@ const SelectBillIds = (props) => {
                   : "Slect Date range"}
               </p>
             </div>
+            </button>
           </div>
         </div>
         {getBillids.length > 0 ? (
