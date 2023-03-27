@@ -44,6 +44,7 @@ const SellBillStep3 = (props) => {
   const transusers = useSelector((state) => state.transInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const navigate = useNavigate();
   var buyerInfo = users.buyerInfo;
   var partnerSelectDate = moment(billDateSelected).format("YYYY-MM-DD");
@@ -775,7 +776,7 @@ const SellBillStep3 = (props) => {
     transporterId:
       transpoSelectedData != null ? transpoSelectedData.partyId : "",
     updatedOn: "",
-    writerId: 0,
+    writerId: writerId,
     timeStamp: "",
     customFields: questionsTitle,
   };
@@ -831,7 +832,7 @@ const SellBillStep3 = (props) => {
     lineItems: step2CropEditStatus ? lineItemsArray : [],
     updatedBy: 0,
     updatedOn: "",
-    writerId: 0,
+    writerId: writerId,
   };
 
   const postsellbill = () => {

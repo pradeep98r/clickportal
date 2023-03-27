@@ -33,6 +33,7 @@ import { getPartnerType } from "../../components/getText";
 const Partner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const [allData, setAllData] = useState([]);
   const [partnerData, setPartnerData] = useState(allData);
   const [saveType, setSaveType] = useState("FARMER");
@@ -246,6 +247,7 @@ const Partner = () => {
       let req = {
         file: e.target.files[0],
         type: partyType,
+        writerId:writerId
       };
       uploadProfilePic(clickId, mobileNumber, req)
         .then((response) => {
@@ -287,6 +289,7 @@ const Partner = () => {
       vehicleNum: vehicleNum,
       vehicleType: vehicleType,
     },
+    writerId: writerId
   };
 
   //   file ? URL.createObjectURL(file) :
