@@ -646,10 +646,10 @@ const Step3PartySelect = (props) => {
                               <p className="crops-color">{item.cropName}</p>
                               <p className="crops-color">
                                 {qtyValues(
-                                  parseInt(item.qty),
+                                  parseFloat(item.qty),
                                   item.qtyUnit,
-                                  parseInt(item.weight),
-                                  parseInt(item.wastage) | '',
+                                  parseFloat(item.weight),
+                                  (item.wastage),
                                   item.rateType
                                 )}
                               </p>

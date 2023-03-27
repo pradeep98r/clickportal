@@ -250,7 +250,7 @@ const Step33 = (props) => {
         : billEditItemInfo.selectedBillInfo.lineItems
       : props.slectedCropsArray;
     for (var i = 0; i < item.length; i++) {
-      totalQty += parseInt(item[i].qty);
+      totalQty += parseFloat(item[i].qty);
     }
     var substring = "CUSTOM_FIELD";
     if (name.includes(substring)) {
@@ -557,9 +557,9 @@ const Step33 = (props) => {
     for (var i = 0; i < it.length; i++) {
       totalunitvalue += editStatus
         ? step2CropEditStatus
-          ? parseInt(it[i].qty)
+          ? parseFloat(it[i].qty)
           : it[i].qty
-        : parseInt(it[i].qty);
+        : parseFloat(it[i].qty);
       setTotalUnits(totalunitvalue);
     }
   };
@@ -712,12 +712,12 @@ const Step33 = (props) => {
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
-      qty: parseInt(cropArray[i].qty),
+      qty: parseFloat(cropArray[i].qty),
       qtyUnit: cropArray[i].qtyUnit,
-      rate: parseInt(cropArray[i].rate),
+      rate: parseFloat(cropArray[i].rate),
       total: cropArray[i].total,
       wastage: cropArray[i].wastage,
-      weight: parseInt(cropArray[i].weight),
+      weight: parseFloat(cropArray[i].weight),
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
       id: cropArray[i].id,

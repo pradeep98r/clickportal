@@ -12,6 +12,7 @@ import billEditItemReducer from './reducers/billEditItemSlice';
 import step1DataReducer from './reducers/step1DataSlice';
 import paymentViewReducer from './reducers/paymentViewSlice';
 import ledgersSummaryReducer from './reducers/ledgerSummarySlice';
+import ledgersCustomDateReducer from './reducers/ledgersCustomDateSlice'
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -27,6 +28,6 @@ export default configureStore({
         step1DataInfo:step1DataReducer,
         paymentViewInfo:paymentViewReducer,
         ledgerSummaryInfo: ledgersSummaryReducer,
-
+        dates:ledgersCustomDateReducer
     }
 })
