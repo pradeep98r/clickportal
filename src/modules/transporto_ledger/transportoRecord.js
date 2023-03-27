@@ -10,8 +10,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
-import { getOutstandingBal } from "../../actions/ledgersService";
-import { postRecordPayment } from "../../actions/billCreationService";
+import { getOutstandingBal, postRecordPayment } from "../../actions/ledgersService";
 import moment from "moment";
 import {
   getParticularTransporter,

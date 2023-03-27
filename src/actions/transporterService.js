@@ -13,10 +13,7 @@ export function getParticularTransporter(clickId, partyId){
 export function getInventoryLedgers(clickId,transId){
     return axiosCommon.get(`/account/transporter/detailed/caId/${clickId}/transId/${transId}?period=YEARLY&writerId=${writerId}`);
 }
-//add record payment
-export function postRecordPayment(request){
-    return axiosCommon.post(`/click/ledgers/payment/record`,request);
-}
+
 //add record inventory
 export function addRecordInventory(inventoryRequest){
     return axiosCommon.post(`/account/transporter/record/inventory`, inventoryRequest);
@@ -29,7 +26,6 @@ export default {
     getTransporters,
     getParticularTransporter,
     getInventoryLedgers,
-    postRecordPayment,
     addRecordInventory,
     getInventory
 }

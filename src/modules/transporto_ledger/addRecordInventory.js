@@ -11,12 +11,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import {
   addRecordInventory,
+  getInventory,
   getInventoryLedgers,
+  getTransporters,
 } from "../../actions/transporterService";
 import { useDispatch, useSelector } from "react-redux";
 import {
   inventoryTotals,
   inventorySummaryInfo,
+  outstandingAmount,
+  transpoLedgersInfo,
+  inventoryUnitDetails,
 } from "../../reducers/transpoSlice";
 import { Modal } from "react-bootstrap";
 const AddRecordInventory = (props) => {
@@ -27,6 +32,7 @@ const AddRecordInventory = (props) => {
   const getInventor = transpoData?.inventoryUnitDetails;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   const [selectDate, setSelectDate] = useState(new Date());
@@ -89,6 +95,7 @@ const AddRecordInventory = (props) => {
           unit: unit,
         },
       ],
+      writerId:writerId
     };
     addRecordInventory(inventoryRequest)
       .then((response) => {
@@ -96,8 +103,11 @@ const AddRecordInventory = (props) => {
           toastId: "errorr2",
         });
         closePopup();
+        props.closeRecordInventoryModal()
         if (props.tabs === "inventoryledger") {
+          getTransportersData()
           inventoryLedger(clickId, transId);
+          getInventoryRecord()
         }
       })
       .catch((error) => {
@@ -111,6 +121,22 @@ const AddRecordInventory = (props) => {
     if (e.target.value == 0) {
       e.target.value = "";
     }
+  };
+  const getTransportersData = () => {
+    getTransporters(clickId).then((response) => {
+        console.log(response.data.data)
+      dispatch(outstandingAmount(response.data.data));
+      dispatch(transpoLedgersInfo(response.data.data.ledgers));
+    });
+  };
+  const getInventoryRecord = () => {
+    getInventory(clickId, transId)
+      .then((response) => {
+        dispatch(inventoryUnitDetails(response.data.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   // get Inventory Ledger
   const inventoryLedger = (clickId, transId) => {

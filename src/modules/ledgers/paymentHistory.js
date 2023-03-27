@@ -18,6 +18,8 @@ import Ledgers from "./ledgers";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
+  const transpoData = useSelector((state) => state.transpoInfo);
+  const fromTranspo = transpoData?.fromTransporter;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
@@ -58,11 +60,21 @@ const PaymentHistoryView = (props) => {
 
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
+  const [recordPayModalStatus, setRecordPayModalStatus] =
+  useState(false);
+const [recordPayModal, setRecordPayModal] = useState(false);
   const editRecordPayment =()=>{
     console.log(paymentViewData.paymentViewInfo)
     dispatch(trhoughRecordPayment(false));
-    setRecordPaymentActive(true);
+    if(!fromTranspo)
+    {
+      setRecordPaymentActive(true);
     setRecordPaymentModal(true);
+    }
+    else{
+      setRecordPayModalStatus(true);
+      setRecordPayModal(true)
+    }
   }
   var partyDetails=paymentViewData.paymentViewInfo
   const deleteRecordPayment ={
