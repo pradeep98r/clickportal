@@ -13,7 +13,7 @@ import RecordPayment from "./recordPayment";
 import moment from "moment";
 import { updateRecordPayment, getBillHistoryListById, getLedgers, getLedgerSummary, getOutstandingBal, getSellerDetailedLedger
   ,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate, deleteAdvancePayment } from "../../actions/ledgersService";
-import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables } from "../../reducers/ledgerSummarySlice";
+import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables, trhoughRecordPayment } from "../../reducers/ledgerSummarySlice";
 import Ledgers from "./ledgers";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
@@ -37,9 +37,10 @@ const PaymentHistoryView = (props) => {
   var discount = paymentViewData?.paymentViewInfo?.discount;
   discount = Math.abs(discount);
   if (discount > 0) {
-    amount = amount + discount;
+    // var amt=amount+discount
+    // amount = amount + discount;
     discountedAmount = amount - discount;
-    discountPercentage = ((discount / amount) * 100).toPrecision(2);
+    discountPercentage = ((discount / discountedAmount) * 100).toPrecision(2);
   }
   // var fromAdvances = false;
   const [fromAdvances, setfromAdvances] = useState(false);
@@ -57,6 +58,8 @@ const PaymentHistoryView = (props) => {
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
   const editRecordPayment =()=>{
+    console.log(paymentViewData.paymentViewInfo)
+    dispatch(trhoughRecordPayment(false));
     setRecordPaymentActive(true);
     setRecordPaymentModal(true);
   }
@@ -258,7 +261,8 @@ const PaymentHistoryView = (props) => {
                   <div className="col-lg-5 p-0"></div>
                   <div className="col-lg-3 p-0">
                     <h6>Date</h6>
-                    <h5>{paymentViewData?.paymentViewInfo.date}</h5>
+                    <h5>{moment(paymentViewData?.paymentViewInfo.date).format("DD-MMM-YY")
+                    }</h5>
                   </div>
                 </div>
               </div>
@@ -268,9 +272,10 @@ const PaymentHistoryView = (props) => {
                     <div>
                       <h6>Selected Bills</h6>
                       <div className="d-flex">
-                      {paymentHistoryData.billIds.map((item, index) => {
-                        return <h5>{item + ","}</h5>
-                      })}
+                        <h5>{paymentHistoryData.billIds.join(" , ")}</h5>
+                      {/* {.map((item, index) => {
+                        return <h5>{item?.join(" , ")}</h5>
+                      })} */}
                       </div>
                     </div>
                   </div>
@@ -291,7 +296,7 @@ const PaymentHistoryView = (props) => {
                   title3="Received Amount"
                   title1Data={discountPercentage}
                   title2Data={discount}
-                  title3Data={discountedAmount}
+                  title3Data={discountedAmount?.toFixed(2)}
                 />
               ) : (
                 ""

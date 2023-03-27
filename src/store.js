@@ -13,6 +13,7 @@ import step1DataReducer from './reducers/step1DataSlice';
 import paymentViewReducer from './reducers/paymentViewSlice';
 import ledgersSummaryReducer from './reducers/ledgerSummarySlice';
 import transpoReducer from './reducers/transpoSlice';
+import ledgersCustomDateReducer from './reducers/ledgersCustomDateSlice'
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -29,5 +30,6 @@ export default configureStore({
         paymentViewInfo:paymentViewReducer,
         ledgerSummaryInfo: ledgersSummaryReducer,
         transpoInfo: transpoReducer,
+        dates:ledgersCustomDateReducer
     }
 })

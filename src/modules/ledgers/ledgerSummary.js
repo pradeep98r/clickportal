@@ -20,7 +20,6 @@ import tick from "../../assets/images/tick.svg";
 const LedgerSummary = (props) => {
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
-  console.log(partnerSummary,"ledgerSummary")
   const partyId = props.partyId;
   const ledgerSummary =partnerSummary;
   const ledgerSummaryByDate =partnerSummary;

@@ -50,6 +50,7 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
+import { allBillIdsObjects, dateInRP, dates } from "../../reducers/ledgersCustomDateSlice";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
   const dispatch = useDispatch();
@@ -122,6 +123,8 @@ const RecordPayment = (props) => {
   var allCustomTab = tabClick.allCustomTabs;
   var startDate = tabClick.beginDate;
   var endDate = tabClick.closeDate;
+  const recordPayment =tabClick?.trhoughRecordPayment;
+  console.log(tabClick,"click")
   useEffect(() => {}, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
     setPaidsRcvd(e.target.value.replace(/[^\d.]/g, '')
@@ -142,7 +145,8 @@ const RecordPayment = (props) => {
   const onSubmitRecordPayment = () => {
     if (billIds.length > 0) {
       paidsRcvd = totalRecieved;
-    } else {
+      setBillIds([])
+;    } else {
       if (fromBillViewPopup) {
         billidsArray.push(ledgerData.billId);
         paidsRcvd = fromBillViewPopup
@@ -203,7 +207,8 @@ const RecordPayment = (props) => {
       discount: discountRs,
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
-      mobile:ledgerData?.mobile
+      mobile:ledgerData?.mobile,
+      partyName:ledgerData.partyName
     };
     if (props.fromPaymentHistory && !fromBillViewPopup) {
       await updateRecordPayment(updateRecordRequest).then(
@@ -211,10 +216,11 @@ const RecordPayment = (props) => {
           toast.success(res.data.status.message, {
             toastId: "errorr2",
           });
-          dispatch(paymentViewInfo(updateRecordRequest));
+          // dispatch(paymentViewInfo(updateRecordRequest));
           dispatch(fromRecordPayment(true));
           window.setTimeout(function () {
             props.closeRecordPaymentModal();
+            dispatch(paymentViewInfo(updateRecordRequest))
           }, 1000);
         },
         (error) => {
@@ -226,12 +232,12 @@ const RecordPayment = (props) => {
       );
     } else {
       await postRecordPayment(addRecordData).then((response) => {
-        closePopup();
         toast.success(response.data.status.message, {
           toastId: "errorr2",
         });
         window.setTimeout(function () {
           props.closeRecordPaymentModal();
+          closePopup();
         }, 1000);
         dispatch(fromRecordPayment(true));
         if (fromBillViewPopup && !fromBillbookToRecordPayment) {
@@ -531,18 +537,28 @@ const RecordPayment = (props) => {
   const showListOfBillIds = (id) => {
     setShowLisOfBillIdsPopUp(true);
     setShowBillIdsModal(true);
+    setBillIds([]);
+    setCabSeq([]);
   };
 
   const billidsData = (data) => {
-    var values = data.map((item) => item.billId);
-    var caBSeq = data.map((item) => item.caBSeq);
-    var recieved = 0;
-    data.map((item) => {
-      recieved += item.amount;
-    });
-    setCabSeq(caBSeq);
-    setBillIds(values);
-    setTotalRecieved(recieved);
+    console.log(data,"data")
+    if(data.length > 0){
+      var values = data.map((item) => item.billId);
+      var sequences = data.map((item) => item.caBSeq);
+      var recieved = 0;
+      data.map((item) => {
+        recieved += item.amount;
+      });
+      setCabSeq(sequences);
+      setBillIds(values);
+      setTotalRecieved(recieved);
+    } else{
+      setBillIds([]);
+      setCabSeq([]);
+      setTotalRecieved(0);
+    }
+    
   };
 
   const closePopup = () => {
@@ -552,6 +568,8 @@ const RecordPayment = (props) => {
       setPaymentMode("CASH");
       setComments("");
       setSelectDate(new Date());
+      dispatch(dateInRP(new Date()));
+      dispatch(dates(new Date()));
       setBillIds([]);
       setDiscountRs(0);
       setBillAmount(0);
@@ -559,6 +577,18 @@ const RecordPayment = (props) => {
       setTotalRecieved(0);
     }
     else{
+      if(props.fromPaymentHistory || fromBillViewPopup){
+        if(fromBillViewPopup){
+          setSelectDate(new Date(ledgerData?.billDate));
+          setPaymentMode('CASH');
+          setComments('');
+        } else{
+          setPaidsRcvd(ledgerData?.amount)
+          setComments(ledgerData?.comments);
+          setPaymentMode(ledgerData?.paymentMode);
+          setSelectDate(new Date(ledgerData?.date));
+        }  
+      }
       if(fromRecordPayment){
         setDiscountRs(0);
         setDiscountPerc(0);
@@ -621,6 +651,12 @@ const RecordPayment = (props) => {
     }
   };
 
+  const onChangeDateSelect =(date)=>{
+    setSelectDate(date)
+    dispatch(dateInRP(date));
+    dispatch(dates(date));
+  }
+  console.log(props.fromPaymentHistory,fromBillViewPopup,"popup")
   return (
     <Modal
       show={props.showRecordPaymentModal}
@@ -680,6 +716,7 @@ const RecordPayment = (props) => {
                           <p className="mobilee-tag">
                             {!ledgerData.trader
                               ? props.partyType == "BUYER"
+                              ||ledgerData?.type =='BUYER'
                                 ? "Buyer"
                                 : props.type == "TRANS"
                                 ? "Transporter"
@@ -711,7 +748,8 @@ const RecordPayment = (props) => {
                         //className="date_picker_in_modal"
                         selected={selectDate}
                         onChange={(date) => {
-                          setSelectDate(date);
+                          onChangeDateSelect(date)
+                          // setSelectDate(date);
                         }}
                         dateFormat="dd-MMM-yy"
                         maxDate={new Date()}
@@ -742,16 +780,19 @@ const RecordPayment = (props) => {
                         disabled
                       />
                     ) : billIds.length > 0 ? (
-                      <input
+                      <div>
+                        <input
                         className="form-cont pselect-bill"
                         id="amtRecieved"
                         onFocus={(e) => resetInput(e)}
-                        value={billIds.join(" , ")}
+                        value={caBSeq?.length>0?caBSeq.join(" , "):''}
                         required
                         onClick={() => {
                           showListOfBillIds(partyId);
                         }}
                       />
+                      </div>
+                      
                     ) : (
                       <input
                         readOnly
@@ -767,13 +808,19 @@ const RecordPayment = (props) => {
                     )}
                   </div>
                   <div className="col-lg-6" align="left">
+                  {recordPayment || !props.fromPaymentHistory ||
+                    fromBillViewPopup?
                     <div className="out-paybles">
-                      <p id="p-tag">Outstanding Recievables</p>
+                    {ledgerData?.type == "FARMER" || props.partyType == 'SELLER'
+                    || fromBillViewPopup && props.partyType == 'FARMER'?
+                      <p id="p-tag">Outstanding Payables</p>:<p id="p-tag">Outstanding Recievables</p>
+                      } 
                       <p id="recieve-tag">
                         &#8377;
                         {paidRcvd ? paidRcvd.toFixed(2) : 0}
                       </p>
                     </div>
+                    :''}
                   </div>
                 </div>
 
