@@ -33,6 +33,7 @@ import {
   inventoryUnitDetails,
 } from "../../reducers/transpoSlice";
 import add from "../../assets/images/add.svg";
+import AddRecordPayment from "./transportoRecord";
 const Transporters = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -67,15 +68,10 @@ const Transporters = () => {
 
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-      // setOutStAmt(response.data.data);
       dispatch(outstandingAmount(response.data.data));
-      //   setTransporterId(response.data.data.ledgers[0].partyId);
-      //   setTransData(response.data.data.ledgers[0]);
       dispatch(transporterIdVal(response.data.data.ledgers[0].partyId));
       dispatch(singleTransporterObject(response.data.data.ledgers[0]));
       setallData(response.data.data.ledgers);
-      //   setTransporter(response.data.data.ledgers);
-      console.log(response.data.data.ledgers);
       dispatch(transpoLedgersInfo(response.data.data.ledgers));
       getOutstandingPaybles(clickId, response.data.data.ledgers[0].partyId);
       paymentLedger(clickId, response.data.data.ledgers[0].partyId);
@@ -159,7 +155,6 @@ const Transporters = () => {
         dispatch(inventoryTotals(response.data.data));
         dispatch(inventorySummaryInfo(response.data.data.details));
         // setInvDetails(response.data.data.details);
-        console.log(invLedger, "Inv Ledger");
       })
       .catch((error) => {
         console.log(error);
@@ -188,7 +183,6 @@ const Transporters = () => {
 
   const getCropUnit = (unit, qty) => {
     var unitType = "";
-    console.log(unit);
     switch (unit.toUpperCase()) {
       case "CRATES":
         unitType = "C";
@@ -209,47 +203,23 @@ const Transporters = () => {
         unitType = "P";
         break;
     }
-    console.log(unitType);
     return qty ? unitType + " | " : "";
   };
 
-  const getPaidRcvd = (rcvd) => {
-    // setPaidRcvd(rcvd);
-    dispatch(outstandingBalForParty(rcvd));
-  };
-  const getOutstAmt = (data) => {
-    // setOutStAmt(data);
-    dispatch(outstandingAmount(data));
-  };
-
-  const getTransData = (data) => {
-    // setTransporter(data);
-    dispatch(transpoLedgersInfo(data));
-  };
-  const getPayledgerSummary = (data) => {
-    // setLedgerSummary(data);
-    dispatch(paymentSummaryInfo(data));
-  };
-  const payLedgerData = (data) => {
-    // setPayLedger(data);
-    dispatch(paymentTotals(data));
-  };
-
-  const getInvLedgerData = (data) => {
-    // setInvLedger(data);
-    dispatch(inventoryTotals(data));
-  };
-
-  const getInvLedger = (data) => {
-    // setInvDetails(data);
-    dispatch(inventorySummaryInfo(data));
-  };
+ 
   const [recordInventoryModalStatus, setRecordInventoryModalStatus] =
     useState(false);
   const [recordInventoryModal, setRecordInventoryModal] = useState(false);
   const onClickInventoryRecord = () => {
     setRecordInventoryModalStatus(true);
     setRecordInventoryModal(true);
+  };
+  const [recordPayModalStatus, setRecordPayModalStatus] =
+    useState(false);
+  const [recordPayModal, setRecordPayModal] = useState(false);
+  const onClickPaymentRecord = () => {
+    setRecordPayModal(true);
+    setRecordPayModalStatus(true);
   };
   return (
     <div className="">
@@ -530,18 +500,31 @@ const Transporters = () => {
                   })}
                 </ul>
                 {tabs == "paymentledger" ? (
-                  <RecordPayment
-                    tabs={tabs}
-                    LedgerData={transData}
-                    ledgerId={transporterId}
-                    type={"TRANS"}
-                    // outStbal={paidRcvd}
-                    // setPaidRcvd={getPaidRcvd}
-                    // outStAmt={getOutstAmt}
-                    // transData={getTransData}
-                    // payledger={payLedgerData}
-                    // payledgersummary={getPayledgerSummary}
-                  />
+                  <div className="recordbtn-style">
+                  <button
+                    className="add-record-btns"
+                    onClick={() => {
+                      onClickPaymentRecord();
+                    }}
+                  >
+                    Record Payment
+                  </button>
+                  <div className="add-pays-btn">
+                    <img src={add} id="addrecord-img" />
+                  </div>
+                </div>
+                  // <RecordPayment
+                  //   tabs={tabs}
+                  //   LedgerData={transData}
+                  //   ledgerId={transporterId}
+                  //   type={"TRANS"}
+                  //   // outStbal={paidRcvd}
+                  //   // setPaidRcvd={getPaidRcvd}
+                  //   // outStAmt={getOutstAmt}
+                  //   // transData={getTransData}
+                  //   // payledger={payLedgerData}
+                  //   // payledgersummary={getPayledgerSummary}
+                  // />
                 ) : tabs == "inventoryledger" ? (
                   <div className="recordbtn-style">
                     <button
@@ -591,6 +574,17 @@ const Transporters = () => {
           closeRecordInventoryModal={() => setRecordInventoryModal(false)}
           tabs={tabs}
           type={"TRANS"}
+        />
+      ) : (
+        ""
+      )}
+      {recordPayModalStatus ? (
+        <AddRecordPayment
+          showRecordPayModal={recordPayModal}
+          closeRecordPayModal={() => setRecordPayModal(false)}
+          tabs={tabs}
+          type={"TRANS"}
+          
         />
       ) : (
         ""

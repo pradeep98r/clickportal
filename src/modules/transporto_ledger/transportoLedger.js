@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AllTransporters from "./allTransporters";
 import Transporters from "./transporters";
 const TransportoLedger = () => {
   useEffect(() => {}, []);
@@ -20,7 +21,7 @@ const TransportoLedger = () => {
       to: "myTransporters",
     },
   ];
-  const [transPortoTabVal, setTransPortoTabVal] = useState("");
+  const [transPortoTabVal, setTransPortoTabVal] = useState("transporterLedger");
   const transportoTabChange = (data) => {
     setTransPortoTabVal(data);
   };
@@ -57,7 +58,7 @@ const TransportoLedger = () => {
             {transPortoTabVal != "myTransporters" ? (
               <Transporters />
             ) : (
-              transPortoTabVal
+              <AllTransporters />
             )}
           </div>
         </div>

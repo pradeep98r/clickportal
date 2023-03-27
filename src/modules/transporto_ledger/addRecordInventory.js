@@ -19,7 +19,6 @@ import {
   inventorySummaryInfo,
 } from "../../reducers/transpoSlice";
 import { Modal } from "react-bootstrap";
-import topPartyDetails from "./topPartyDetails"
 const AddRecordInventory = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
@@ -174,7 +173,61 @@ const AddRecordInventory = (props) => {
                 })}
               </ul>
             </div>
-            <topPartyDetails partyType = {props.partyType} type ={props.type} />
+            <div className="d-flex justify-content-between card">
+            <div
+                className="d-flex justify-content-between card-body"
+                id="details-tag"
+              >
+                <div className="profile-details" key={ledgerData?.partyId}>
+                  <div className="d-flex">
+                    <div>
+                      {ledgerData?.profilePic ? (
+                        <img
+                          id="singles-img"
+                          src={ledgerData.profilePic}
+                          alt="buy-img"
+                        />
+                      ) : (
+                        <img id="singles-img" src={single_bill} alt="img" />
+                      )}
+                    </div>
+                    <div id="trans-dtl">
+                      <p className="namedtl-tag">{ledgerData?.partyName}</p>
+                      <p className="mobilee-tag">
+                        {!ledgerData?.trader
+                          ? props.partyType == "BUYER"
+                            ? "Buyer"
+                            : props.type == "TRANS"
+                            ? "Transporter"
+                            : "Seller"
+                          : "Trader"}{" "}
+                        - {ledgerData?.partyId}&nbsp;|&nbsp;
+                        {getMaskedMobileNumber(ledgerData?.mobile)}
+                      </p>
+                      <p className="addres-tag">
+                        {ledgerData?.partyAddress
+                          ? ledgerData?.partyAddress
+                          : ""}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="d-flex card-text" id="date-tag">
+                  <img className="date_icon_in_modal" src={date_icon} />
+                  <div className="d-flex date_popper">
+                    <DatePicker
+                      selected={selectDate}
+                      onChange={(date) => {
+                        setSelectDate(date);
+                      }}
+                      dateFormat="dd-MMM-yy"
+                      maxDate={new Date()}
+                      placeholder="Date"
+                    ></DatePicker>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="out-paybles">
               <p id="p-tag">{langFullData.inventoryBalance}</p>
             </div>

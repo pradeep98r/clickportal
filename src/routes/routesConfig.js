@@ -22,9 +22,7 @@ import SellerLedgers from "../modules/ledgers/sellerLedgers";
 import { getSystemSettings } from "../actions/billCreationService";
 const RoutesConfig = () => {
   function setSystemSettingsDetails(clickId){
-    console.log(clickId)
     getSystemSettings(clickId).then((response) => {
-      console.log(response);
       localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
     })
     .catch((error) => {
