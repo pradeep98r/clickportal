@@ -515,42 +515,42 @@ const Ledgers = (props) => {
                           className="table-scroll ledger-table"
                           id="scroll_style"
                         >
-                          <table className="table table-fixed ledgers">
-                            <thead className="theadr-tag">
-                              <tr>
-                                <th scope="col-4">#</th>
-                                <th scope="col">Date</th>
+                          <div className="ledgers ledger_table_col">
+                          <div className="row theadr-tag p-0">
+                                <th class="col-lg-1">#</th>
+                                <th class="col-lg-2">Date</th>
                                 {ledgerType == "BUYER" ? (
-                                  <th scope="col">Buyer Name</th>
+                                  <th class="col-lg-6">Buyer Name</th>
                                 ) : (
-                                  <th scope="col">Seller Name</th>
+                                  <th class="col-lg-6">Seller Name</th>
                                 )}
                                 {ledgerType == "BUYER" ? (
-                                  <th scope="col">To Be Recieved(&#8377;)</th>
+                                  <th class="col-lg-3">To Be Recieved(&#8377;)</th>
                                 ) : (
-                                  <th scope="col">To Be Paid(&#8377;)</th>
+                                  <th class="col-lg-3">To Be Paid(&#8377;)</th>
                                 )}
-                              </tr>
-                            </thead>
-                            <tbody>
+                            </div>
+                            <div>
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
-                                    <tr
-                                      onClick={() =>
-                                        particularLedgerData(item.partyId, item)
-                                      }
-                                      className={
+                                  <button  className={
                                         partyId == item.partyId
-                                          ? "tabRowSelected"
-                                          : "tr-tags"
-                                      }
+                                          ? "tabRowSelected p-0"
+                                          : "tr-tags p-0"
+                                      } onClick={() =>
+                                        particularLedgerData(item.partyId, item)
+                                      }>
+                                    <div className="row align-items-center"
+                                      
+                                     
                                     >
-                                      <td scope="row">{index + 1}</td>
-                                      <td key={item.date}>
-                                        {moment(item.date).format("DD-MMM-YY")}
+                                        
+                                      <td className="col-lg-1">{index + 1}</td>
+                                      <td key={item.date} className="col-lg-2">
+                                      <p className="date_ledger_val">  {moment(item.date).format("DD-MMM-YY")}</p>
                                       </td>
-                                      <td key={item.partyName}>
+                                      <td key={item.partyName} className="col-lg-6">
                                         <div className="d-flex">
                                           <div className="c-img">
                                             {item.profilePic ? (
@@ -601,7 +601,7 @@ const Ledgers = (props) => {
                                           </div>
                                         </div>
                                       </td>
-                                      <td key={item.tobePaidRcvd}>
+                                      <td className="col-lg-3" key={item.tobePaidRcvd}>
                                         <p
                                           className={
                                             ledgerType == "BUYER"
@@ -616,12 +616,33 @@ const Ledgers = (props) => {
                                             : 0}
                                         </p>
                                       </td>
-                                    </tr>
+                                    </div>
+                                   
+                                    </button>
                                   </Fragment>
                                 );
                               })}
-                            </tbody>
-                          </table>
+                            </div>
+                          </div>
+                          {/* <table className="table table-fixed ledgers">
+                            <thead className="theadr-tag">
+                              <tr>
+                                <th scope="col-4">#</th>
+                                <th scope="col">Date</th>
+                                {ledgerType == "BUYER" ? (
+                                  <th scope="col">Buyer Name</th>
+                                ) : (
+                                  <th scope="col">Seller Name</th>
+                                )}
+                                {ledgerType == "BUYER" ? (
+                                  <th scope="col">To Be Recieved(&#8377;)</th>
+                                ) : (
+                                  <th scope="col">To Be Paid(&#8377;)</th>
+                                )}
+                              </tr>
+                            </thead>
+                            
+                          </table> */}
                         </div>
                         <div className="outstanding-pay d-flex align-items-center justify-content-between">
                           {ledgerType == "BUYER" ? (
