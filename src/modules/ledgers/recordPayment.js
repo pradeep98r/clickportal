@@ -587,12 +587,13 @@ const RecordPayment = (props) => {
   const showListOfBillIds = (id) => {
     setShowLisOfBillIdsPopUp(true);
     setShowBillIdsModal(true);
-    setBillIds([]);
-    setCabSeq([]);
+    if(showBillIdsModal){
+      setBillIds([]);
+      setCabSeq([]);
+    };
   };
 
   const billidsData = (data) => {
-    console.log(data, "data");
     if (data.length > 0) {
       var values = data.map((item) => item.billId);
       var sequences = data.map((item) => item.caBSeq);
@@ -600,9 +601,10 @@ const RecordPayment = (props) => {
       data.map((item) => {
         recieved += item.amount;
       });
+      console.log(data,recieved, "data");
       setCabSeq(sequences);
       setBillIds(values);
-      setTotalRecieved(recieved);
+      setTotalRecieved(recieved.toFixed(2));
     } else {
       setBillIds([]);
       setCabSeq([]);
@@ -706,137 +708,168 @@ const RecordPayment = (props) => {
   };
 
   return (
-    <Modal
-      show={props.showRecordPaymentModal}
-      close={props.closeRecordPaymentModal}
-      className="record_payment_modal"
-    >
-      <div className="modal-body partner_model_body">
-        <form>
-          <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
-            <h5 className="modal-title header2_text" id="staticBackdropLabel">
-              {props.fromPaymentHistory
-                ? fromBillViewPopup
-                  ? "Add Record Payment"
-                  : "Update Record Payment"
-                : "Add Record Payment"}
-            </h5>
-            <button
-              onClick={(e) => {
-                props.closeRecordPaymentModal();
-                closePopup();
-                e.preventDefault();
-              }}
-              data-bs-dismiss="modal"
-            >
-              <img src={close} alt="image" className="close_icon" />
-            </button>
-          </div>
-          <div className="partner_model_scroll" id="scroll_style">
-            <div className="row partner_model_body_row">
-              <div className="col-lg-12 p-0">
-                <div className="card record_modal_row">
-                  <div
-                    className="d-flex justify-content-between align-items-center card-body mb-0"
-                    id="details-tag"
-                  >
+    <div>
+      <Modal
+        show={props.showRecordPaymentModal}
+        close={props.closeRecordPaymentModal}
+        className="record_payment_modal"
+      >
+        <div className="modal-body partner_model_body">
+          <form>
+            <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
+              <h5 className="modal-title header2_text" id="staticBackdropLabel">
+                {props.fromPaymentHistory
+                  ? fromBillViewPopup
+                    ? props.partyType == "BUYER"
+                      ? "Record Receivable"
+                      : "Record Payment"
+                    : "Update Record"
+                  : props.partyType == "BUYER"
+                  ? "Record Receivable"
+                  : "Record Payment"}
+              </h5>
+              <button
+                onClick={(e) => {
+                  props.closeRecordPaymentModal();
+                  closePopup();
+                  e.preventDefault();
+                }}
+                data-bs-dismiss="modal"
+              >
+                <img src={close} alt="image" className="close_icon" />
+              </button>
+            </div>
+            <div className="partner_model_scroll" id="scroll_style">
+              <div className="row partner_model_body_row">
+                <div className="col-lg-12 p-0">
+                  <div className="card record_modal_row">
                     <div
-                      className="profile-details"
-                      key={fromBillViewPopup ? partyId : ledgerData?.partyId}
+                      className="d-flex justify-content-between align-items-center card-body mb-0"
+                      id="details-tag"
                     >
-                      <div className="d-flex align-items-center">
-                        <div>
-                          {ledgerData?.profilePic ? (
-                            <img
-                              id="singles-img"
-                              src={ledgerData.profilePic}
-                              alt="buy-img"
-                            />
-                          ) : (
-                            <img id="singles-img" src={single_bill} alt="img" />
-                          )}
-                        </div>
-                        <div id="trans-dtl">
-                          <p className="namedtl-tag">
-                            {fromBillViewPopup
-                              ? props.partyType == "BUYER"
-                                ? ledgerData.buyerName
-                                : ledgerData.farmerName
-                              : ledgerData.partyName}
-                          </p>
-                          <p className="mobilee-tag">
-                            {!ledgerData.trader
-                              ? props.partyType == "BUYER" ||
-                                ledgerData?.type == "BUYER"
-                                ? "Buyer"
-                                : props.type == "TRANS"
-                                ? "Transporter"
-                                : "Seller"
-                              : "Trader"}{" "}
-                            -{" "}
-                            {fromBillViewPopup ? partyId : ledgerData?.partyId}
-                            &nbsp;|&nbsp;
-                            {fromBillViewPopup
-                              ? props.partyType == "BUYER"
-                                ? getMaskedMobileNumber(ledgerData.mobile)
-                                : getMaskedMobileNumber(ledgerData.farmerMobile)
-                              : getMaskedMobileNumber(ledgerData.mobile)}
-                          </p>
-                          <p className="addres-tag">
-                            {ledgerData.partyAddress
-                              ? ledgerData.partyAddress
-                              : ""}
-                          </p>
+                      <div
+                        className="profile-details"
+                        key={fromBillViewPopup ? partyId : ledgerData?.partyId}
+                      >
+                        <div className="d-flex align-items-center">
+                          <div>
+                            {ledgerData?.profilePic ? (
+                              <img
+                                id="singles-img"
+                                src={ledgerData.profilePic}
+                                alt="buy-img"
+                              />
+                            ) : (
+                              <img
+                                id="singles-img"
+                                src={single_bill}
+                                alt="img"
+                              />
+                            )}
+                          </div>
+                          <div id="trans-dtl">
+                            <p className="namedtl-tag">
+                              {fromBillViewPopup
+                                ? props.partyType == "BUYER"
+                                  ? ledgerData.buyerName
+                                  : ledgerData.farmerName
+                                : ledgerData.partyName}
+                            </p>
+                            <p className="mobilee-tag">
+                              {!ledgerData.trader
+                                ? props.partyType == "BUYER" ||
+                                  ledgerData?.type == "BUYER"
+                                  ? "Buyer"
+                                  : props.type == "TRANS"
+                                  ? "Transporter"
+                                  : "Seller"
+                                : "Trader"}{" "}
+                              -{" "}
+                              {fromBillViewPopup
+                                ? partyId
+                                : ledgerData?.partyId}
+                              &nbsp;|&nbsp;
+                              {fromBillViewPopup
+                                ? props.partyType == "BUYER"
+                                  ? getMaskedMobileNumber(ledgerData.mobile)
+                                  : getMaskedMobileNumber(
+                                      ledgerData.farmerMobile
+                                    )
+                                : getMaskedMobileNumber(ledgerData.mobile)}
+                            </p>
+                            <p className="addres-tag">
+                              {ledgerData.partyAddress
+                                ? ledgerData.partyAddress
+                                : ""}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div
-                      className="d-flex justify-content-between card-text date_field record_payment_datepicker"
-                      id="date-tag"
-                    >
-                      <img className="date_icon_in_modal" src={date_icon} />
-                      <DatePicker
-                        //className="date_picker_in_modal"
-                        selected={selectDate}
-                        onChange={(date) => {
-                          onChangeDateSelect(date);
-                          // setSelectDate(date);
-                        }}
-                        dateFormat="dd-MMM-yy"
-                        maxDate={new Date()}
-                        placeholder="Date"
-                        required
-                        onKeyDown={(e) => {
-                          e.preventDefault();
-                        }}
-                      ></DatePicker>
+                      <div
+                        className="d-flex justify-content-between card-text date_field record_payment_datepicker"
+                        id="date-tag"
+                      >
+                        <img className="date_icon_in_modal" src={date_icon} />
+                        <DatePicker
+                          //className="date_picker_in_modal"
+                          selected={selectDate}
+                          onChange={(date) => {
+                            onChangeDateSelect(date);
+                            // setSelectDate(date);
+                          }}
+                          dateFormat="dd-MMM-yy"
+                          maxDate={new Date()}
+                          placeholder="Date"
+                          required
+                          onKeyDown={(e) => {
+                            e.preventDefault();
+                          }}
+                        ></DatePicker>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="row align-items-center record_modal_row">
-                  <div className="col-lg-6 select-bills">
-                    <label hmtlFor="amtRecieved" id="amt-tag">
-                      Select Bills
-                      {billIds.length > 0 ? "(" + billIds.length + ")" : ""}
-                    </label>
-                    {fromBillViewPopup ? (
-                      <input
-                        readOnly
-                        className="form-cont pselect-bill"
-                        id="amtRecieved"
-                        placeholder="Select Bill"
-                        value={ledgerData.caBSeq}
-                        name="billIdDisabled"
-                        required
-                        disabled
-                      />
-                    ) : billIds.length > 0 ? (
-                      <div>
+                  <div className="row align-items-center record_modal_row">
+                    <div className="col-lg-6 select-bills">
+                      <label hmtlFor="amtRecieved" id="amt-tag">
+                        Select Bills
+                        {billIds.length > 0 ? "(" + billIds.length + ")" : ""}
+                      </label>
+                      {fromBillViewPopup ? (
                         <input
+                          readOnly
+                          className="form-cont pselect-bill"
+                          id="amtRecieved"
+                          placeholder="Select Bill"
+                          value={ledgerData.caBSeq}
+                          name="billIdDisabled"
+                          required
+                          disabled
+                        />
+                      ) : billIds.length > 0 ? (
+                        <div>
+                          <input
+                            className="form-cont pselect-bill"
+                            id="amtRecieved"
+                            onFocus={(e) => resetInput(e)}
+                            value={caBSeq?.length > 0 ? caBSeq.join(" , ") : ""}
+                            required
+                            onClick={() => {
+                              showListOfBillIds(partyId);
+                            }}
+                            onKeyDown={(event) =>
+                              event.key === "Enter"
+                                ? showListOfBillIds(partyId)
+                                : ""
+                            }
+                          />
+                        </div>
+                      ) : (
+                        <input
+                          readOnly
                           className="form-cont pselect-bill"
                           id="amtRecieved"
                           onFocus={(e) => resetInput(e)}
-                          value={caBSeq?.length > 0 ? caBSeq.join(" , ") : ""}
+                          placeholder="Select Bill"
                           required
                           onClick={() => {
                             showListOfBillIds(partyId);
@@ -847,264 +880,277 @@ const RecordPayment = (props) => {
                               : ""
                           }
                         />
-                      </div>
-                    ) : (
-                      <input
-                        readOnly
-                        className="form-cont pselect-bill"
-                        id="amtRecieved"
-                        onFocus={(e) => resetInput(e)}
-                        placeholder="Select Bill"
-                        required
-                        onClick={() => {
-                          showListOfBillIds(partyId);
-                        }}
-                        onKeyDown={(event) =>
-                          event.key === "Enter"
-                            ? showListOfBillIds(partyId)
-                            : ""
-                        }
-                      />
-                    )}
+                      )}
+                    </div>
+                    <div className="col-lg-6" align="left">
+                      {recordPayment ||
+                      !props.fromPaymentHistory ||
+                      fromBillViewPopup ? (
+                        <div className="out-paybles">
+                          {ledgerData?.type == "FARMER" ||
+                          props.partyType == "SELLER" ||
+                          (fromBillViewPopup && props.partyType == "FARMER") ? (
+                            <p id="p-tag">Outstanding Payables</p>
+                          ) : (
+                            <p id="p-tag">Outstanding Recievables</p>
+                          )}
+                          <p id="recieve-tag">
+                            &#8377;
+                            {paidRcvd ? paidRcvd.toFixed(2) : 0}
+                          </p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
-                  <div className="col-lg-6" align="left">
-                    {recordPayment ||
-                    !props.fromPaymentHistory ||
-                    fromBillViewPopup ? (
-                      <div className="out-paybles">
-                        {ledgerData?.type == "FARMER" ||
-                        props.partyType == "SELLER" ||
-                        (fromBillViewPopup && props.partyType == "FARMER") ? (
-                          <p id="p-tag">Outstanding Payables</p>
-                        ) : (
-                          <p id="p-tag">Outstanding Recievables</p>
-                        )}
-                        <p id="recieve-tag">
-                          &#8377;
-                          {paidRcvd ? paidRcvd.toFixed(2) : 0}
-                        </p>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                </div>
 
-                <div
-                  className="form-group record_modal_row mƒb-0"
-                  id="input_in_modal"
-                >
-                  <label hmtlFor="amtRecieved" id="amt-tag">
-                    {ledgerData?.type == "FARMER" ||
-                    props.partyType == "SELLER" ||
-                    (fromBillViewPopup && props.partyType == "FARMER")
-                      ? "Amount Paid"
-                      : "Amount Recieved"}
-                  </label>
-                  {fromBillViewPopup ? (
-                    <input
-                      className="form-cont"
-                      id="amtRecieved"
-                      onFocus={(e) => resetInput(e)}
-                      value={
-                        props.partyType == "BUYER"
-                          ? ledgerData?.actualReceivable
-                          : ledgerData?.actualPaybles
-                      }
-                      required
-                      name="billIdDisabled"
-                    />
-                  ) : (
-                    <input
-                      className="form-cont"
-                      id="amtRecieved"
-                      onFocus={(e) => resetInput(e)}
-                      value={totalRecieved > 0 ? totalRecieved : paidsRcvd}
-                      required
-                      onChange={(e) => {
-                        getAmountVal(e);
-                      }}
-                    />
-                  )}
-                  <p className="text-valid">{requiredCondition}</p>
-                </div>
-                {billIds.length > 0 ? (
-                  <p hmtlFor="amtRecieved" className="discount-label">
-                    Discount
-                  </p>
-                ) : (
-                  ""
-                )}
-                {billIds.length > 0 || fromBillViewPopup ? (
-                  <div className="row ">
-                    <div className="col-lg-6 discount-prec record_modal_row">
-                      <label
-                        hmtlFor="amtRecieved"
-                        className="disc-per"
-                        id="amt-tag"
-                      >
-                        Discount(%)
-                      </label>
-                      <input
-                        className="form-cont"
-                        id="amtRecieved"
-                        onFocus={(e) => resetInput(e)}
-                        required
-                        value={discountPerc}
-                        onChange={(e) => {
-                          getDiscountPercentageValue(e);
-                        }}
-                      />
-                    </div>
-                    <div className="col-lg-6 record_modal_row pl-3">
-                      <label
-                        hmtlFor="amtRecieved"
-                        className="disc-per"
-                        id="amt-tag"
-                      >
-                        Discount(Rs)
-                      </label>
-                      <input
-                        className="form-cont"
-                        id="amtRecieved"
-                        onFocus={(e) => resetInput(e)}
-                        value={discountRs}
-                        required
-                        onChange={(e) => {
-                          getDiscountRsValue(e);
-                        }}
-                      />
-                    </div>
-                    {billAmount > 0 ? (
-                      <div className="amount p-0 record_modal_row">
-                        <p className="amt-after-dic">Amount After Discount</p>
-                        <p className="bill-amt">&#8377;{billAmount}</p>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                ) : (
-                  ""
-                )}
-                <div id="radios_in_modal" className="record_modal_row">
-                  <p className="payment-tag">Payment Mode</p>
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input radioBtnVal mb-0"
-                      type="radio"
-                      name="radio"
-                      id="inlineRadio1"
-                      value="CASH"
-                      onChange={(e) => setPaymentMode(e.target.value)}
-                      checked={paymentMode === "CASH"}
-                      required
-                    />
-                    <label className="form-check-label" for="inlineRadio1">
-                      CASH
-                    </label>
-                  </div>
                   <div
-                    className="form-check form-check-inline"
-                    id="radio-btn-in_modal"
+                    className="form-group record_modal_row mƒb-0"
+                    id="input_in_modal"
                   >
-                    <input
-                      className="form-check-input radioBtnVal mb-0"
-                      type="radio"
-                      name="radio"
-                      id="inlineRadio2"
-                      value="UPI"
-                      onChange={(e) => setPaymentMode(e.target.value)}
-                      checked={paymentMode === "UPI"}
-                      required
-                    />
-                    <label className="form-check-label" for="inlineRadio2">
-                      UPI
+                    <label hmtlFor="amtRecieved" id="amt-tag">
+                      {ledgerData?.type == "FARMER" ||
+                      props.partyType == "SELLER" ||
+                      (fromBillViewPopup && props.partyType == "FARMER")
+                        ? "Amount Paid"
+                        : "Amount Recieved"}
                     </label>
+                    {fromBillViewPopup ? (
+                      <input
+                        className="form-cont"
+                        id="amtRecieved"
+                        onFocus={(e) => resetInput(e)}
+                        value={
+                          props.partyType == "BUYER"
+                            ? ledgerData?.actualReceivable
+                            : ledgerData?.actualPaybles
+                        }
+                        required
+                        name="billIdDisabled"
+                      />
+                    ) : (
+                      <input
+                        className="form-cont"
+                        id="amtRecieved"
+                        onFocus={(e) => resetInput(e)}
+                        value={totalRecieved > 0 ? totalRecieved : paidsRcvd}
+                        required
+                        onChange={(e) => {
+                          getAmountVal(e);
+                        }}
+                      />
+                    )}
+                    <p className="text-valid">{requiredCondition}</p>
                   </div>
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input radioBtnVal mb-0"
-                      type="radio"
-                      name="radio"
-                      id="inlineRadio3"
-                      value="NEFT"
-                      onChange={(e) => setPaymentMode(e.target.value)}
-                      checked={paymentMode === "NEFT"}
-                      required
-                    />
-                    <label className="form-check-label" for="inlineRadio3">
-                      NEFT
-                    </label>
-                  </div>
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input radioBtnVal mb-0"
-                      type="radio"
-                      name="radio"
-                      id="inlineRadio4"
-                      value="RTGS"
-                      onChange={(e) => setPaymentMode(e.target.value)}
-                      checked={paymentMode === "RTGS"}
-                      required
-                    />
-                    <label className="form-check-label" for="inlineRadio4">
-                      RTGS
-                    </label>
-                  </div>
-                  <div className="form-check form-check-inline">
-                    <input
-                      className="form-check-input radioBtnVal mb-0"
-                      type="radio"
-                      name="radio"
-                      id="inlineRadio5"
-                      value="IMPS"
-                      onChange={(e) => setPaymentMode(e.target.value)}
-                      checked={paymentMode === "IMPS"}
-                      required
-                    />
-                    <label className="form-check-label" for="inlineRadio5">
-                      IMPS
-                    </label>
-                  </div>
-                </div>
-                <div id="comment_in_modal record_modal_row">
-                  <div className="mb-3">
-                    <label
-                      for="exampleFormControlTextarea1"
-                      className="form-label"
-                      id="comment-tag"
+                  {billIds.length > 0 ? (
+                    <p hmtlFor="amtRecieved" className="discount-label">
+                      Discount
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                  {billIds.length > 0 || fromBillViewPopup ? (
+                    <div className="row ">
+                      <div className="col-lg-6 discount-prec record_modal_row">
+                        <label
+                          hmtlFor="amtRecieved"
+                          className="disc-per"
+                          id="amt-tag"
+                        >
+                          Discount(%)
+                        </label>
+                        <input
+                          className="form-cont"
+                          id="amtRecieved"
+                          onFocus={(e) => resetInput(e)}
+                          required
+                          value={discountPerc}
+                          onChange={(e) => {
+                            getDiscountPercentageValue(e);
+                          }}
+                        />
+                      </div>
+                      <div className="col-lg-6 record_modal_row pl-3 pr-0">
+                        <label
+                          hmtlFor="amtRecieved"
+                          className="disc-per"
+                          id="amt-tag"
+                        >
+                          Discount(Rs)
+                        </label>
+                        <input
+                          className="form-cont"
+                          id="amtRecieved"
+                          onFocus={(e) => resetInput(e)}
+                          value={discountRs}
+                          required
+                          onChange={(e) => {
+                            getDiscountRsValue(e);
+                          }}
+                        />
+                      </div>
+                      {billAmount > 0 ? (
+                        <div className="amount p-0 record_modal_row">
+                          <p className="amt-after-dic">Amount After Discount</p>
+                          <p className="bill-amt">&#8377;{billAmount}</p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <div id="radios_in_modal" className="record_modal_row">
+                    <p className="payment-tag">Payment Mode</p>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        name="radio"
+                        id="inlineRadio1"
+                        value="CASH"
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        checked={paymentMode === "CASH"}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio1">
+                        CASH
+                      </label>
+                    </div>
+                    <div
+                      className="form-check form-check-inline"
+                      id="radio-btn-in_modal"
                     >
-                      Comment
-                    </label>
-                    <textarea
-                      className="form-control"
-                      id="comments"
-                      rows="2"
-                      value={comments}
-                      onChange={(e) => setComments(e.target.value)}
-                    ></textarea>
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        name="radio"
+                        id="inlineRadio2"
+                        value="UPI"
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        checked={paymentMode === "UPI"}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio2">
+                        UPI
+                      </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        name="radio"
+                        id="inlineRadio3"
+                        value="NEFT"
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        checked={paymentMode === "NEFT"}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio3">
+                        NEFT
+                      </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        name="radio"
+                        id="inlineRadio4"
+                        value="RTGS"
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        checked={paymentMode === "RTGS"}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio4">
+                        RTGS
+                      </label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        name="radio"
+                        id="inlineRadio5"
+                        value="IMPS"
+                        onChange={(e) => setPaymentMode(e.target.value)}
+                        checked={paymentMode === "IMPS"}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio5">
+                        IMPS
+                      </label>
+                    </div>
+                  </div>
+                  <div id="comment_in_modal record_modal_row">
+                    <div className="mb-3">
+                      <label
+                        for="exampleFormControlTextarea1"
+                        className="form-label"
+                        id="comment-tag"
+                      >
+                        Comment
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="comments"
+                        rows="2"
+                        value={comments}
+                        onChange={(e) => setComments(e.target.value)}
+                      ></textarea>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </form>
+        </div>
+        <div className="modal-footer modal_common_footer">
+          <div className="row">
+            <div className="col-lg-6 pl-0"></div>
+            <div className="col-lg-6">
+              <div className="d-flex justify-content-end">
+                <button
+                  type="button"
+                  className="secondary_btn mr-2"
+                  // id="close_modal"
+                  onClick={(e) => {
+                    props.closeRecordPaymentModal();
+                    closePopup();
+                    e.preventDefault();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="primary_btn w-100"
+                  onClick={() => {
+                    onSubmitRecordPayment();
+                  }}
+                  // id="close_modal"
+                  data-bs-dismiss="modal"
+                >
+                  SUBMIT
+                </button>
+              </div>
+            </div>
           </div>
-        </form>
-      </div>
-      <div className="modal-footer" id="modal_footer">
-        <button
-          type="button"
-          id="submit_btn_in_modal"
-          className="primary_btn cont_btn w-100"
-          onClick={() => {
-            onSubmitRecordPayment();
-          }}
-          // id="close_modal"
-          data-bs-dismiss="modal"
-        >
-          SUBMIT
-        </button>
-      </div>
+        </div>
+
+        {showBillModalStatus ? (
+          <BillView
+            showBillViewModal={showBillModal}
+            closeBillViewModal={() => setShowBillModal(false)}
+            // allBillsData={buyBillData}
+            fromLedger={true}
+          />
+        ) : (
+          ""
+        )}
+        <ToastContainer />
+      </Modal>
       {showLisOfBillIdsPopUp ? (
         <SelectBillIds
           showBillIdsModal={showBillIdsModal}
@@ -1117,18 +1163,7 @@ const RecordPayment = (props) => {
       ) : (
         ""
       )}
-      {showBillModalStatus ? (
-        <BillView
-          showBillViewModal={showBillModal}
-          closeBillViewModal={() => setShowBillModal(false)}
-          // allBillsData={buyBillData}
-          fromLedger={true}
-        />
-      ) : (
-        ""
-      )}
-      <ToastContainer />
-    </Modal>
+    </div>
   );
 };
 

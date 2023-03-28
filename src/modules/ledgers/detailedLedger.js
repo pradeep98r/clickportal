@@ -123,7 +123,7 @@ const DetailedLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
-                        <button   onClick={() =>
+                        <button className="pl-0" onClick={() =>
                             billOnClickView(
                               item.refId,
                               ledgerType,

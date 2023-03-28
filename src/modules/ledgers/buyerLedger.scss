@@ -64,21 +64,21 @@ input[type=radio]:checked+label {
     outline: 0;
 }
 .ledgerSummary{
-    height: calc(100vh - 327px);
+    height: calc(100vh - 338px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .all_ledgerSummary{
-    height: calc(100vh - 310px);
+    height: calc(100vh - 320px);
     overflow-y: auto;
     background: #FFFFFF;
     width: 100%;
     border-radius: 10px 10px 10px 10px;
 }
 .detailedLedger{
-    height: calc(100vh - 327px);
+    height: calc(100vh - 338px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
@@ -646,8 +646,8 @@ max-width: 600px;
  }
  .select_billID_popup{
      .modal-content{
-         margin-top: -50px;
-         height: 630px;
+        //  margin-top: -50px;
+         height: 670px;
      }
  }
  .bill_id_popup_row {
@@ -660,17 +660,17 @@ max-width: 600px;
  }
  .input-disable {
     pointer-events: none;
-    background-color: lightgrey;
+    // background-color: lightgrey;
   }
   input[name=billIdDisabled] {
     pointer-events: none;
-    background-color: #e8e8e8!important;
+    // background-color: #e8e8e8!important;
     opacity: 0.6;
  }
 @media(min-width:1400px){
     .select_billID_popup .modal-content {
-        margin-top: -150px;
-        height: 630px;
+        // margin-top: -280px;
+        height: 670px;
     }
 }
 .ledger_table_col{
