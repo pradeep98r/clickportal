@@ -156,7 +156,7 @@ const SelectBillIds = (props) => {
     <Modal
       show={props.showBillIdsModal}
       close={props.billIdsCloseModal}
-      centered
+      
       className="record_payment_modal select_billID_popup"
     >
       <div className="modal-body partner_model_body">
@@ -178,7 +178,7 @@ const SelectBillIds = (props) => {
         <div className="row">
           <div className="d-flex bills-search mt-2 col-lg-6" role="search">
             <SearchField
-              placeholder="Search"
+              placeholder="Bill Id / Amount / date"
               // val={searchValue}
               onChange={(event) => {
                 handleSearch(event);
@@ -211,7 +211,7 @@ const SelectBillIds = (props) => {
                 <p>Bill Id</p>
               </div>
               <div className="col-lg-6">
-                <p>Total Amount</p>
+                <p>Total Bill Amount</p>
               </div>
             </div>
             <div className="border-bott"></div>
@@ -284,7 +284,7 @@ const SelectBillIds = (props) => {
             props.billIdsCloseModal();
           }}
         >
-          CONTINUE
+          Next
         </button>
       </div>
       {showCustDate ? (

@@ -445,7 +445,8 @@ const BillView = (props) => {
       .catch((error) => console.log(error));
   };
   return (
-    <Modal
+    <div>
+      <Modal
       show={props.showBillViewModal}
       close={props.closeBillViewModal}
       className="cropmodal_poopup steps_modal billView_modal right"
@@ -693,7 +694,10 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      {showBillHistoryModalStatus ? (
+    
+    
+    </Modal>
+    {showBillHistoryModalStatus ? (
         <EditPaymentHistoryView
           showBillHistoryViewModal={showBillHistoryModal}
           closeBillHistoryViewModal={() => setShowBillHistoryModal(false)}
@@ -703,7 +707,7 @@ const BillView = (props) => {
       ) : (
         ""
       )}
-      {recordPaymentModalStatus ? (
+    {recordPaymentModalStatus ? (
         <RecordPayment
           showRecordPaymentModal={recordPaymentModal}
           closeRecordPaymentModal={() => setRecordPaymentModal(false)}
@@ -722,7 +726,7 @@ const BillView = (props) => {
       ) : (
         ""
       )}
-    </Modal>
+    </div>
   );
 };
 export default BillView;

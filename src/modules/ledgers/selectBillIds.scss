@@ -89,6 +89,7 @@
   font-size: 15px;
   }
   .select_billID_popup_scroll {
-    max-height: calc(100vh - 450px);
+    // max-height: calc(70vh - 300px);
+    max-height: 400px;
     overflow-y: auto;
 }

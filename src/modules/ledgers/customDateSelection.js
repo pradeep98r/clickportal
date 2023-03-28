@@ -53,7 +53,7 @@ const CustomDateSelection = (props) => {
                 props.closeCustomDatePopUp
             }
             aria-labelledby="contained-modal-title-vcenter"
-            centered
+            
             className="record_payment_modal select_billID_popup"
         >
             <div className="modal-header d-block date_modal_header pb-0 w-100">

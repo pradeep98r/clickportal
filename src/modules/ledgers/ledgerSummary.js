@@ -34,7 +34,9 @@ const LedgerSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const billOnClickView = (billId, type, i, partyId) => {
-    var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
+    var bId = 
+    billId.replace("-", "").replace("C", "").replace("U", "");
+    console.log('c',bId)
     if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -114,7 +116,7 @@ const LedgerSummary = (props) => {
                         <p id="p-common-sno">{index + 1}</p>
                       </td>
                       <td className="col-2">
-                        <button onClick={() =>
+                        <button className="pl-0" onClick={() =>
                             billOnClickView(item.refId, ledgerType, index, partyId)
                           }>
                         <p

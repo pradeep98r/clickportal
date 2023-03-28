@@ -30,7 +30,7 @@ import NoInternetConnection from "../../components/noInternetConnection";
 import RecordPayment from "./recordPayment";
 import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
-import add from "../../assets/images/add.svg";
+import addbill_icon from "../../assets/images/addbill.svg";
 import {
   allCustomTabs,
   detaildLedgerInfo,
@@ -710,20 +710,31 @@ const Ledgers = (props) => {
                           );
                         })}
                       </ul>
-                      <div className="recordbtn-style">
+                      <button
+                              className="primary_btn add_bills_btn"
+                              onClick={recordPaymentOnClickEvent}
+                            >
+                              <img
+                                src={addbill_icon}
+                                alt="image"
+                                className="mr-2"
+                              />
+                             Add Record
+                            </button>
+                      {/* <div className="recordbtn-style">
                         <button
                           className="add-record-btns"
-                          onClick={recordPaymentOnClickEvent}
+                         
                           data-toggle="modal"
                           data-target="#myModal"
                         >
-                          Record payment
+                          
                         </button>
 
                         <div className="add-pays-btn">
                           <img src={add} id="addrecord-img" />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
                     <div className="my-2">
