@@ -50,7 +50,11 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import BillView from "../buy_bill_book/billView";
 import { billViewInfo } from "../../reducers/billViewSlice";
-import { allBillIdsObjects, dateInRP, dates } from "../../reducers/ledgersCustomDateSlice";
+import {
+  allBillIdsObjects,
+  dateInRP,
+  dates,
+} from "../../reducers/ledgersCustomDateSlice";
 import { useRef } from "react";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
@@ -125,15 +129,17 @@ const RecordPayment = (props) => {
   var allCustomTab = tabClick.allCustomTabs;
   var startDate = tabClick.beginDate;
   var endDate = tabClick.closeDate;
-  const recordPayment =tabClick?.trhoughRecordPayment;
-  console.log(tabClick,"click")
-  useEffect(() => {
-  }, [props.showRecordPaymentModal]);
+  const recordPayment = tabClick?.trhoughRecordPayment;
+  console.log(tabClick, "click");
+  useEffect(() => {}, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
-    setPaidsRcvd(e.target.value.replace(/[^\d.]/g, '')
-      .replace(/^(\d*)(\.\d{0,2})\d*$/, '$1$2')
-      .replace(/(\.\d{0,2})\d*/, '$1')
-      .replace(/(\.\d*)\./, '$1'));
+    setPaidsRcvd(
+      e.target.value
+        .replace(/[^\d.]/g, "")
+        .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+        .replace(/(\.\d{0,2})\d*/, "$1")
+        .replace(/(\.\d*)\./, "$1")
+    );
     // .replace(/[^\d]/g, ""));
     if (e.target.value.length > 0) {
       setRequiredCondition("");
@@ -148,8 +154,7 @@ const RecordPayment = (props) => {
   const onSubmitRecordPayment = () => {
     if (billIds.length > 0) {
       paidsRcvd = totalRecieved;
-      setBillIds([])
-        ;
+      setBillIds([]);
     } else {
       if (fromBillViewPopup) {
         billidsArray.push(ledgerData.billId);
@@ -161,23 +166,35 @@ const RecordPayment = (props) => {
         setBillIds(billidsArray);
       }
     }
+    var err1 =
+      ledgerData?.type == "FARMER" ||
+      props.partyType == "SELLER" ||
+      (fromBillViewPopup && props.partyType == "FARMER")
+        ? "Amount Paid cannot be negative"
+        : "Amount Recieved cannot be negative";
+    var errNoval =
+      ledgerData?.type == "FARMER" ||
+      props.partyType == "SELLER" ||
+      (fromBillViewPopup && props.partyType == "FARMER")
+        ? "Amount Paid cannot be empty"
+        : "Amount Recieved cannot be empty";
+
     if (paidsRcvd < 0) {
-      setRequiredCondition("Amount Recieved Cannot be negative");
-      toast.error('Amount Recieved Cannot be negative', {
+      setRequiredCondition(err1);
+      toast.error(err1, {
         toastId: "error4",
       });
     } else if (parseInt(paidsRcvd) === 0) {
-      setRequiredCondition("Amount Received cannot be empty");
-      toast.error('Amount Received cannot be empty', {
+      setRequiredCondition(errNoval);
+      toast.error(errNoval, {
         toastId: "error5",
       });
     } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
-      toast.error('Invalid Amount', {
+      toast.error("Invalid Amount", {
         toastId: "error6",
       });
-    }
-    else if (
+    } else if (
       paidsRcvd.toString().trim().length !== 0 &&
       paidsRcvd != 0 &&
       paidsRcvd <= paidRcvd &&
@@ -188,7 +205,7 @@ const RecordPayment = (props) => {
       setRequiredCondition(
         "Entered Amount  cannot more than Outstanding Balance"
       );
-      toast.error('Entered Amount  cannot more than Outstanding Balance', {
+      toast.error("Entered Amount  cannot more than Outstanding Balance", {
         toastId: "error7",
       });
     }
@@ -207,9 +224,17 @@ const RecordPayment = (props) => {
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
       billIds: h,
-      type: props.fromPaymentHistory ? (fromBillViewPopup ? props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType : ledgerData?.type) : props.partyType.toUpperCase() == 'FARMER' ? 'SELLER' : props.partyType,
+      type: props.fromPaymentHistory
+        ? fromBillViewPopup
+          ? props.partyType.toUpperCase() == "FARMER"
+            ? "SELLER"
+            : props.partyType
+          : ledgerData?.type
+        : props.partyType.toUpperCase() == "FARMER"
+        ? "SELLER"
+        : props.partyType,
       discount: discountRs,
-      writerId: writerId
+      writerId: writerId,
     };
     const updateRecordRequest = {
       action: "UPDATE",
@@ -220,13 +245,13 @@ const RecordPayment = (props) => {
       paidRcvd: paidsRcvd,
       paymentMode: paymentMode,
       billIds: billIds,
-      type: ledgerData?.type == "FARMER" ? 'SELLER' : ledgerData?.type,
+      type: ledgerData?.type == "FARMER" ? "SELLER" : ledgerData?.type,
       discount: discountRs,
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
       mobile: ledgerData?.mobile,
       writerId: writerId,
-      partyName: ledgerData.partyName
+      partyName: ledgerData.partyName,
     };
     if (props.fromPaymentHistory && !fromBillViewPopup) {
       await updateRecordPayment(updateRecordRequest).then(
@@ -238,7 +263,7 @@ const RecordPayment = (props) => {
           dispatch(fromRecordPayment(true));
           window.setTimeout(function () {
             props.closeRecordPaymentModal();
-            dispatch(paymentViewInfo(updateRecordRequest))
+            dispatch(paymentViewInfo(updateRecordRequest));
           }, 1000);
         },
         (error) => {
@@ -249,92 +274,101 @@ const RecordPayment = (props) => {
         }
       );
     } else {
-      await postRecordPayment(addRecordData).then((response) => {
-        toast.success(response.data.status.message, {
-          toastId: "errorr2",
-        });
-        window.setTimeout(function () {
-          props.closeRecordPaymentModal();
-          closePopup();
-        }, 1000);
-        dispatch(fromRecordPayment(true));
-        if (fromBillViewPopup && !fromBillbookToRecordPayment) {
-          if (
-            props.partyType?.toLowerCase() == "seller" ||
-            props.partyType?.toLowerCase() == "farmer"
-          ) {
-            getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
-              if (res.data.status.type === "SUCCESS") {
-                Object.assign(res.data.data, { partyType: "FARMER" });
-                dispatch(billViewInfo(res.data.data));
-                localStorage.setItem("billData", JSON.stringify(res.data.data));
-                setShowBillModalStatus(true);
-                setShowBillModal(true);
-              }
-            });
+      await postRecordPayment(addRecordData).then(
+        (response) => {
+          toast.success(response.data.status.message, {
+            toastId: "errorr2",
+          });
+          window.setTimeout(function () {
+            props.closeRecordPaymentModal();
+            closePopup();
+          }, 1000);
+          dispatch(fromRecordPayment(true));
+          if (fromBillViewPopup && !fromBillbookToRecordPayment) {
+            if (
+              props.partyType?.toLowerCase() == "seller" ||
+              props.partyType?.toLowerCase() == "farmer"
+            ) {
+              getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                if (res.data.status.type === "SUCCESS") {
+                  Object.assign(res.data.data, { partyType: "FARMER" });
+                  dispatch(billViewInfo(res.data.data));
+                  localStorage.setItem(
+                    "billData",
+                    JSON.stringify(res.data.data)
+                  );
+                  setShowBillModalStatus(true);
+                  setShowBillModal(true);
+                }
+              });
+            } else {
+              getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                if (res.data.status.type === "SUCCESS") {
+                  Object.assign(res.data.data, { partyType: props.partyType });
+                  dispatch(billViewInfo(res.data.data));
+                  localStorage.setItem(
+                    "billData",
+                    JSON.stringify(res.data.data)
+                  );
+                  setShowBillModalStatus(true);
+                  setShowBillModal(true);
+                }
+              });
+            }
           } else {
-            getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
-              if (res.data.status.type === "SUCCESS") {
-                Object.assign(res.data.data, { partyType: props.partyType });
-                dispatch(billViewInfo(res.data.data));
-                localStorage.setItem("billData", JSON.stringify(res.data.data));
-                setShowBillModalStatus(true);
-                setShowBillModal(true);
-              }
-            });
-          }
-        }
-        else {
-          if (
-            props.partyType?.toLowerCase() == "seller" ||
-            props.partyType?.toLowerCase() == "farmer"
-          ) {
-            getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
-              if (res.data.status.type === "SUCCESS") {
-                Object.assign(res.data.data, { partyType: "FARMER" });
-                dispatch(billViewInfo(res.data.data));
-                localStorage.setItem("billData", JSON.stringify(res.data.data));
-                setShowBillModalStatus(true);
-                setShowBillModal(true);
-              }
-            });
-            // startDate
-            getBuyBills(clickId, startDate, endDate)
-              .then((response) => {
+            if (
+              props.partyType?.toLowerCase() == "seller" ||
+              props.partyType?.toLowerCase() == "farmer"
+            ) {
+              getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                if (res.data.status.type === "SUCCESS") {
+                  Object.assign(res.data.data, { partyType: "FARMER" });
+                  dispatch(billViewInfo(res.data.data));
+                  localStorage.setItem(
+                    "billData",
+                    JSON.stringify(res.data.data)
+                  );
+                  setShowBillModalStatus(true);
+                  setShowBillModal(true);
+                }
+              });
+              // startDate
+              getBuyBills(clickId, startDate, endDate).then((response) => {
                 if (response.data.data != null) {
                   // setBuyBillData(response.data.data.singleBills);
                   response.data.data.singleBills.map((i, ind) => {
                     Object.assign(i, { index: ind });
-                  })
-                  dispatch(allBuyBillsData(response.data.data.singleBills))
+                  });
+                  dispatch(allBuyBillsData(response.data.data.singleBills));
                   // setBuyBillData(response.data.data.singleBills);
                 }
-              })
-
-          } else {
-            getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
-              if (res.data.status.type === "SUCCESS") {
-                Object.assign(res.data.data, { partyType: props.partyType });
-                dispatch(billViewInfo(res.data.data));
-                localStorage.setItem("billData", JSON.stringify(res.data.data));
-                setShowBillModalStatus(true);
-                setShowBillModal(true);
-              }
-            });
-            getSellBills(clickId, startDate, endDate)
-              .then((response) => {
+              });
+            } else {
+              getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                if (res.data.status.type === "SUCCESS") {
+                  Object.assign(res.data.data, { partyType: props.partyType });
+                  dispatch(billViewInfo(res.data.data));
+                  localStorage.setItem(
+                    "billData",
+                    JSON.stringify(res.data.data)
+                  );
+                  setShowBillModalStatus(true);
+                  setShowBillModal(true);
+                }
+              });
+              getSellBills(clickId, startDate, endDate).then((response) => {
                 if (response.data.data != null) {
                   response.data.data.singleBills.map((i, ind) => {
                     Object.assign(i, { index: ind });
-                  })
-                  dispatch(allSellBillsData(response.data.data.singleBills))
+                  });
+                  dispatch(allSellBillsData(response.data.data.singleBills));
                 } else {
                   dispatch(allSellBillsData([]));
                 }
-              })
+              });
+            }
           }
-        }
-      },
+        },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "error3",
@@ -424,14 +458,14 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (props.fromPaymentHistory || fromBillViewPopup) {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          dispatch(totalRecivables([]))
+          dispatch(totalRecivables([]));
           dispatch(detaildLedgerInfo([]));
         }
       })
@@ -443,14 +477,14 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (props.fromPaymentHistory || fromBillViewPopup) {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          dispatch(totalRecivables([]))
+          dispatch(totalRecivables([]));
           dispatch(detaildLedgerInfo([]));
         }
       })
@@ -458,35 +492,33 @@ const RecordPayment = (props) => {
   };
   const fetchLedgers = () => {
     var partyType = "";
-    if (ledgerData?.type == "FARMER" || props.partyType == 'FARMER') {
+    if (ledgerData?.type == "FARMER" || props.partyType == "FARMER") {
       partyType = "SELLER";
     } else {
-      partyType = fromBillViewPopup ? props.partyType : props.fromPaymentHistory ? ledgerData?.type :
-        props.partyType;
+      partyType = fromBillViewPopup
+        ? props.partyType
+        : props.fromPaymentHistory
+        ? ledgerData?.type
+        : props.partyType;
     }
-    getLedgers(clickId, partyType).then(
-      (res) => {
-        if (res.data.status.type === "SUCCESS") {
-          // setLedgers(res.data.data.ledgers);
-          // setOutStAmt(res.data.data);
-          if (
-            props.allCustomTab == "all" &&
-            props.ledgerTab == "ledgersummary"
-          ) {
-          }
-          if (props.fromPaymentHistory || fromBillViewPopup) {
-            dispatch(allLedgers(res.data.data.ledgers));
-            dispatch(outStandingBal(res.data.data));
-          } else {
-            dispatch(allLedgers(res.data.data.ledgers));
-            dispatch(outStandingBal(res.data.data));
-          }
-        } else {
-          dispatch(allLedgers([]));
-          dispatch(outStandingBal([]));
+    getLedgers(clickId, partyType).then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        // setLedgers(res.data.data.ledgers);
+        // setOutStAmt(res.data.data);
+        if (props.allCustomTab == "all" && props.ledgerTab == "ledgersummary") {
         }
+        if (props.fromPaymentHistory || fromBillViewPopup) {
+          dispatch(allLedgers(res.data.data.ledgers));
+          dispatch(outStandingBal(res.data.data));
+        } else {
+          dispatch(allLedgers(res.data.data.ledgers));
+          dispatch(outStandingBal(res.data.data));
+        }
+      } else {
+        dispatch(allLedgers([]));
+        dispatch(outStandingBal([]));
       }
-    );
+    });
   };
   //ledger summary by date
   const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
@@ -513,14 +545,14 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           if (props.fromPaymentHistory || fromBillViewPopup) {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          dispatch(totalRecivables([]))
+          dispatch(totalRecivables([]));
           dispatch(detaildLedgerInfo([]));
         }
       })
@@ -533,14 +565,14 @@ const RecordPayment = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           if (props.fromPaymentHistory || fromBillViewPopup) {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           } else {
-            dispatch(totalRecivables(res.data.data))
+            dispatch(totalRecivables(res.data.data));
             dispatch(detaildLedgerInfo(res.data.data.details));
           }
         } else {
-          dispatch(totalRecivables([]))
+          dispatch(totalRecivables([]));
           dispatch(detaildLedgerInfo([]));
         }
       })
@@ -560,7 +592,7 @@ const RecordPayment = (props) => {
   };
 
   const billidsData = (data) => {
-    console.log(data, "data")
+    console.log(data, "data");
     if (data.length > 0) {
       var values = data.map((item) => item.billId);
       var sequences = data.map((item) => item.caBSeq);
@@ -576,11 +608,10 @@ const RecordPayment = (props) => {
       setCabSeq([]);
       setTotalRecieved(0);
     }
-
   };
 
   const closePopup = () => {
-    if (!(props.fromPaymentHistory)) {
+    if (!props.fromPaymentHistory) {
       setPaidsRcvd(0);
       setRequiredCondition("");
       setPaymentMode("CASH");
@@ -593,15 +624,14 @@ const RecordPayment = (props) => {
       setBillAmount(0);
       setDiscountPerc(0);
       setTotalRecieved(0);
-    }
-    else {
+    } else {
       if (props.fromPaymentHistory || fromBillViewPopup) {
         if (fromBillViewPopup) {
           setSelectDate(new Date(ledgerData?.billDate));
-          setPaymentMode('CASH');
-          setComments('');
+          setPaymentMode("CASH");
+          setComments("");
         } else {
-          setPaidsRcvd(ledgerData?.amount)
+          setPaidsRcvd(ledgerData?.amount);
           setComments(ledgerData?.comments);
           setPaymentMode(ledgerData?.paymentMode);
           setSelectDate(new Date(ledgerData?.date));
@@ -670,10 +700,10 @@ const RecordPayment = (props) => {
   };
 
   const onChangeDateSelect = (date) => {
-    setSelectDate(date)
+    setSelectDate(date);
     dispatch(dateInRP(date));
     dispatch(dates(date));
-  }
+  };
 
   return (
     <Modal
@@ -686,20 +716,20 @@ const RecordPayment = (props) => {
           <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
             <h5 className="modal-title header2_text" id="staticBackdropLabel">
               {props.fromPaymentHistory
-                ? fromBillViewPopup ? "Add Record Payment" : "Update Record Payment"
+                ? fromBillViewPopup
+                  ? "Add Record Payment"
+                  : "Update Record Payment"
                 : "Add Record Payment"}
             </h5>
-            <button onClick={(e) => {
-              props.closeRecordPaymentModal();
-              closePopup(); 
-              e.preventDefault();
-            }}
-              data-bs-dismiss="modal" >
-              <img
-                src={close}
-                alt="image"
-                className="close_icon"
-              />
+            <button
+              onClick={(e) => {
+                props.closeRecordPaymentModal();
+                closePopup();
+                e.preventDefault();
+              }}
+              data-bs-dismiss="modal"
+            >
+              <img src={close} alt="image" className="close_icon" />
             </button>
           </div>
           <div className="partner_model_scroll" id="scroll_style">
@@ -736,12 +766,12 @@ const RecordPayment = (props) => {
                           </p>
                           <p className="mobilee-tag">
                             {!ledgerData.trader
-                              ? props.partyType == "BUYER"
-                                || ledgerData?.type == 'BUYER'
+                              ? props.partyType == "BUYER" ||
+                                ledgerData?.type == "BUYER"
                                 ? "Buyer"
                                 : props.type == "TRANS"
-                                  ? "Transporter"
-                                  : "Seller"
+                                ? "Transporter"
+                                : "Seller"
                               : "Trader"}{" "}
                             -{" "}
                             {fromBillViewPopup ? partyId : ledgerData?.partyId}
@@ -769,7 +799,7 @@ const RecordPayment = (props) => {
                         //className="date_picker_in_modal"
                         selected={selectDate}
                         onChange={(date) => {
-                          onChangeDateSelect(date)
+                          onChangeDateSelect(date);
                           // setSelectDate(date);
                         }}
                         dateFormat="dd-MMM-yy"
@@ -796,7 +826,7 @@ const RecordPayment = (props) => {
                         id="amtRecieved"
                         placeholder="Select Bill"
                         value={ledgerData.caBSeq}
-                        name='billIdDisabled'
+                        name="billIdDisabled"
                         required
                         disabled
                       />
@@ -806,15 +836,18 @@ const RecordPayment = (props) => {
                           className="form-cont pselect-bill"
                           id="amtRecieved"
                           onFocus={(e) => resetInput(e)}
-                          value={caBSeq?.length > 0 ? caBSeq.join(" , ") : ''}
+                          value={caBSeq?.length > 0 ? caBSeq.join(" , ") : ""}
                           required
                           onClick={() => {
                             showListOfBillIds(partyId);
                           }}
-                          onKeyDown={(event) => event.key === 'Enter' ? showListOfBillIds(partyId) : ''}
+                          onKeyDown={(event) =>
+                            event.key === "Enter"
+                              ? showListOfBillIds(partyId)
+                              : ""
+                          }
                         />
                       </div>
-
                     ) : (
                       <input
                         readOnly
@@ -826,33 +859,47 @@ const RecordPayment = (props) => {
                         onClick={() => {
                           showListOfBillIds(partyId);
                         }}
-                        onKeyDown={(event) => event.key === 'Enter' ? showListOfBillIds(partyId) : ''}
+                        onKeyDown={(event) =>
+                          event.key === "Enter"
+                            ? showListOfBillIds(partyId)
+                            : ""
+                        }
                       />
                     )}
                   </div>
                   <div className="col-lg-6" align="left">
-                    {recordPayment || !props.fromPaymentHistory ||
-                      fromBillViewPopup ?
+                    {recordPayment ||
+                    !props.fromPaymentHistory ||
+                    fromBillViewPopup ? (
                       <div className="out-paybles">
-                        {ledgerData?.type == "FARMER" || props.partyType == 'SELLER'
-                          || fromBillViewPopup && props.partyType == 'FARMER' ?
-                          <p id="p-tag">Outstanding Payables</p> : <p id="p-tag">Outstanding Recievables</p>
-                        }
+                        {ledgerData?.type == "FARMER" ||
+                        props.partyType == "SELLER" ||
+                        (fromBillViewPopup && props.partyType == "FARMER") ? (
+                          <p id="p-tag">Outstanding Payables</p>
+                        ) : (
+                          <p id="p-tag">Outstanding Recievables</p>
+                        )}
                         <p id="recieve-tag">
                           &#8377;
                           {paidRcvd ? paidRcvd.toFixed(2) : 0}
                         </p>
                       </div>
-                      : ''}
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
 
                 <div
-                  className="form-group record_modal_row mb-0"
+                  className="form-group record_modal_row mƒb-0"
                   id="input_in_modal"
                 >
                   <label hmtlFor="amtRecieved" id="amt-tag">
-                    Amount Recieved
+                    {ledgerData?.type == "FARMER" ||
+                    props.partyType == "SELLER" ||
+                    (fromBillViewPopup && props.partyType == "FARMER")
+                      ? "Amount Paid"
+                      : "Amount Recieved"}
                   </label>
                   {fromBillViewPopup ? (
                     <input
@@ -865,7 +912,7 @@ const RecordPayment = (props) => {
                           : ledgerData?.actualPaybles
                       }
                       required
-                      name='billIdDisabled'
+                      name="billIdDisabled"
                     />
                   ) : (
                     <input
