@@ -130,7 +130,6 @@ const RecordPayment = (props) => {
   var startDate = tabClick.beginDate;
   var endDate = tabClick.closeDate;
   const recordPayment = tabClick?.trhoughRecordPayment;
-  console.log(tabClick, "click");
   useEffect(() => {}, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
     setPaidsRcvd(
@@ -601,7 +600,6 @@ const RecordPayment = (props) => {
       data.map((item) => {
         recieved += item.amount;
       });
-      console.log(data,recieved, "data");
       setCabSeq(sequences);
       setBillIds(values);
       setTotalRecieved(recieved.toFixed(2));
