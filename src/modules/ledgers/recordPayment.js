@@ -587,12 +587,13 @@ const RecordPayment = (props) => {
   const showListOfBillIds = (id) => {
     setShowLisOfBillIdsPopUp(true);
     setShowBillIdsModal(true);
-    setBillIds([]);
-    setCabSeq([]);
+    if(showBillIdsModal){
+      setBillIds([]);
+      setCabSeq([]);
+    };
   };
 
   const billidsData = (data) => {
-    console.log(data, "data");
     if (data.length > 0) {
       var values = data.map((item) => item.billId);
       var sequences = data.map((item) => item.caBSeq);
@@ -600,9 +601,10 @@ const RecordPayment = (props) => {
       data.map((item) => {
         recieved += item.amount;
       });
+      console.log(data,recieved, "data");
       setCabSeq(sequences);
       setBillIds(values);
-      setTotalRecieved(recieved);
+      setTotalRecieved(recieved.toFixed(2));
     } else {
       setBillIds([]);
       setCabSeq([]);
