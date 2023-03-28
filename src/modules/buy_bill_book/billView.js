@@ -35,44 +35,67 @@ import {
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import { getText } from "../../components/getText";
-import { getBillHistoryListById, getLedgers, getLedgerSummary, getOutstandingBal, getSellerDetailedLedger
-,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate } from "../../actions/ledgersService";
+import {
+  getBillHistoryListById,
+  getLedgers,
+  getLedgerSummary,
+  getOutstandingBal,
+  getSellerDetailedLedger,
+  getBuyerDetailedLedger,
+  getDetailedLedgerByDate,
+  getSellerDetailedLedgerByDate,
+  getLedgerSummaryByDate,
+} from "../../actions/ledgersService";
 import { billHistoryView } from "../../reducers/paymentViewSlice";
 import EditPaymentHistoryView from "../ledgers/editPaymentHistoryView";
 import RecordPayment from "../ledgers/recordPayment";
-import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables } from "../../reducers/ledgerSummarySlice";
+import {
+  allLedgers,
+  businessValues,
+  detaildLedgerInfo,
+  fromRecordPayment,
+  ledgerSummaryInfo,
+  outStandingBal,
+  totalRecivables,
+} from "../../reducers/ledgerSummarySlice";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
-  const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  // const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  const billData = billViewData?.billViewInfo
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
-  var billPaid =  billPaid = billViewData.billViewInfo != null ? (billViewData.billViewInfo)?.paid : false;;
-  const partyId = billData?.partyType.toUpperCase() === "BUYER"
-  ? billData?.buyerId
-  : billData?.farmerId;
+  var billPaid = (billPaid =
+    billViewData.billViewInfo != null
+      ? billViewData.billViewInfo?.paid
+      : false);
+  const partyId =
+    billData?.partyType.toUpperCase() === "BUYER"
+      ? billData?.buyerId
+      : billData?.farmerId;
   var allBillsArray = props.allBillsData;
   const navigate = useNavigate();
   const [displayCancel, setDisplayCancel] = useState(false);
-  const [outBal, setoutBal] = useState('');
+  const [outBal, setoutBal] = useState("");
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
-  const allCustomTab=tabClick?.allCustomTabs;
-  const ledgerTabs=tabClick?.partnerTabs;
+  const allCustomTab = tabClick?.allCustomTabs;
+  const ledgerTabs = tabClick?.partnerTabs;
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
 
   useEffect(() => {
     dispatch(billViewStatus(true));
-    setBillViewData(billViewData.billViewInfo);
+    // setBillViewData(billViewData.billViewInfo);
+    dispatch(billViewInfo(billViewData.billViewInfo))
     if (billViewData?.billViewInfo?.billStatus == "COMPLETED") {
       setDisplayCancel(false);
     } else {
       setDisplayCancel(true);
     }
     getOutstandingBal(clickId, partyId).then((response) => {
-      if(response.data.data !== null){
-        setoutBal(response.data.data)
+      if (response.data.data !== null) {
+        setoutBal(response.data.data);
       }
     });
   }, [props]);
@@ -81,23 +104,45 @@ const BillView = (props) => {
   const [showStepsModal, setShowStepsModal] = useState(false);
   const [showStepsModalStatus, setShowStepsModalStatus] = useState(false);
 
+  const getCommRetCommPercentages = (data) => {
+    var val = (data / billData?.grossTotal) * 100;
+    return val;
+  };
+  const feePerUnit = () => {
+    var totalQty = 0;
+    billData.lineItems?.map((item) => {
+      totalQty += item.qty;
+      return totalQty;
+    });
+    return totalQty;
+  };
+  const getTransRentPercentage = (data) => {
+    var val = data / feePerUnit();
+    return val;
+  };
   const editBill = (itemVal) => {
+    var valArr = props.fromLedger ? billViewData.billViewInfo : itemVal;
+    let clonedObject = { ...valArr };
+    Object.assign(clonedObject, {
+      commPercenttage: getCommRetCommPercentages(billData?.comm),
+      retCommPercenttage: getCommRetCommPercentages(billData?.rtComm),
+      mandiFeePercentage: getCommRetCommPercentages(billData?.mandiFee),
+      transVal: getTransRentPercentage(billData?.transportation),
+      labourChargesVal:getTransRentPercentage(billData?.labourCharges),
+      rentUnitVal:getTransRentPercentage(billData?.rent)
+    });
     var arr = [];
-    arr.push(itemVal);
-    if(!(props.fromLedger)){
+    arr.push(clonedObject);
+    console.log(valArr, clonedObject);
+    if (!props.fromLedger) {
       $(".billView_modal").hide();
       $(".modal-backdrop").remove();
     }
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-    
-    if(props.fromLedger){
-      dispatch(selectBill(billViewData.billViewInfo))
-    }
-    else{
       dispatch(selectBill(arr[0]));
-    }
+    
     dispatch(editStatus(true));
     dispatch(tableEditStatus(false));
     dispatch(billDate(new Date(billData.billDate)));
@@ -223,7 +268,8 @@ const BillView = (props) => {
     if (index1 != -1) {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
-      setBillViewData(allBillsArray[index1]);
+      // setBillViewData(allBillsArray[index1]);
+      dispatch(billViewInfo(allBillsArray[index1]))
       setPrevNextStatus(true);
       setPrevNextDisable(false);
       setNextDisable(false);
@@ -242,7 +288,8 @@ const BillView = (props) => {
     if (index1 != -1) {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
-      setBillViewData(allBillsArray[index1]);
+      // setBillViewData(allBillsArray[index1]);
+      dispatch(billViewInfo(allBillsArray[index1]))
       setPrevNextStatus(true);
       setNextDisable(false);
       setPrevNextDisable(false);
@@ -256,27 +303,28 @@ const BillView = (props) => {
     }
   };
   const clearModal = () => {
-    var partyId = billData?.partyType =='FARMER'?billData?.farmerId:billData?.buyerId;
-    var partyType=billData?.partyType =='FARMER'?'SELLER':billData?.partyType
-    if(props.fromLedger){
+    var partyId =
+      billData?.partyType == "FARMER" ? billData?.farmerId : billData?.buyerId;
+    var partyType =
+      billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType;
+    if (props.fromLedger) {
       dispatch(fromRecordPayment(true));
       fetchLedgers();
-      summaryData(clickId,partyId);
-      if(allCustomTab =='all' && ledgerTabs =='detailedledger'){
-        if(partyType == 'SELLER'){
-          sellerDetailed(clickId,partyId);
-        }
-        else{
-          geyDetailedLedger(clickId,partyId);
+      summaryData(clickId, partyId);
+      if (allCustomTab == "all" && ledgerTabs == "detailedledger") {
+        if (partyType == "SELLER") {
+          sellerDetailed(clickId, partyId);
+        } else {
+          geyDetailedLedger(clickId, partyId);
         }
       }
-      if(allCustomTab =='custom' && ledgerTabs =='ledgersummary'){
-        ledgerSummaryByDate(clickId,partyId,fromDate,toDate)
-      } else if(allCustomTab =='custom' && ledgerTabs =='detailedledger'){
-        if(partyType == 'SELLER'){
-          sellerDetailedByDate(clickId,partyId,fromDate,toDate)
-        } else{
-        detailedLedgerByDate(clickId,partyId,fromDate,toDate)
+      if (allCustomTab == "custom" && ledgerTabs == "ledgersummary") {
+        ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+      } else if (allCustomTab == "custom" && ledgerTabs == "detailedledger") {
+        if (partyType == "SELLER") {
+          sellerDetailedByDate(clickId, partyId, fromDate, toDate);
+        } else {
+          detailedLedgerByDate(clickId, partyId, fromDate, toDate);
         }
       }
     }
@@ -289,9 +337,10 @@ const BillView = (props) => {
     }
   };
   const [showBillHistoryModal, setShowBillHistoryModal] = useState(false);
-  const [showBillHistoryModalStatus, setShowBillHistoryModalStatus] = useState(false);
+  const [showBillHistoryModalStatus, setShowBillHistoryModalStatus] =
+    useState(false);
   const [billHistoryArray, setBillHistoryArray] = useState([]);
-  const [selectedRefId, setSelectedRefId] = useState('')
+  const [selectedRefId, setSelectedRefId] = useState("");
   const historyData = (id, type) => {
     var typeVal = "";
     if (type == "FARMER" || type == "SELLER") {
@@ -299,43 +348,44 @@ const BillView = (props) => {
     } else {
       typeVal = "SELL";
     }
-    setSelectedRefId(id)
+    setSelectedRefId(id);
     getBillHistoryListById(clickId, id, typeVal).then((res) => {
       if (res.data.status.type === "SUCCESS") {
         setShowBillHistoryModalStatus(true);
         setShowBillHistoryModal(true);
-        setBillHistoryArray(res.data.data)
+        setBillHistoryArray(res.data.data);
       }
     });
   };
-  const [recordPaymentModalStatus, setRecordPaymentModalStatus] = useState(false);
+  const [recordPaymentModalStatus, setRecordPaymentModalStatus] =
+    useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
   const recordPaymentOnClickEvent = (data) => {
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
     setFromBillViewPopup(true);
-    setBillViewData(data)
+    // setBillViewData(data);
+    dispatch(billViewInfo(data))
     dispatch(fromRecordPayment(true));
-  }
+  };
 
   const fetchLedgers = () => {
-    var partyType=billData?.partyType =='FARMER'?'SELLER':billData?.partyType
-    getLedgers(clickId, partyType).then(
-      (res) => {
-        if (res.data.status.type === "SUCCESS") {
-            dispatch(allLedgers(res.data.data.ledgers));
-            dispatch(outStandingBal(res.data.data));
-        } else {
-        }
+    var partyType =
+      billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType;
+    getLedgers(clickId, partyType).then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        dispatch(allLedgers(res.data.data.ledgers));
+        dispatch(outStandingBal(res.data.data));
+      } else {
       }
-    );
+    });
   };
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-            dispatch(businessValues(res.data.data));
-            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          dispatch(businessValues(res.data.data));
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
         }
       })
       .catch((error) => console.log(error));
@@ -344,9 +394,9 @@ const BillView = (props) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
-          }
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -355,8 +405,8 @@ const BillView = (props) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         }
       })
       .catch((error) => console.log(error));
@@ -365,9 +415,9 @@ const BillView = (props) => {
     getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-            dispatch(businessValues(res.data.data));
-            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
-          }
+          dispatch(businessValues(res.data.data));
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -376,8 +426,8 @@ const BillView = (props) => {
     getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         }
       })
       .catch((error) => console.log(error));
@@ -388,8 +438,8 @@ const BillView = (props) => {
     getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         }
       })
       .catch((error) => console.log(error));
@@ -488,8 +538,8 @@ const BillView = (props) => {
                       </button>
                       <p>History</p>
                     </div>
-                    </div>
-                    </div>
+                  </div>
+                </div>
               ) : (
                 <div>
                   <p className="more-p-tag">Actions</p>
@@ -505,7 +555,11 @@ const BillView = (props) => {
                       <p>History</p>
                     </div>
                     <div className="items_div">
-                      <button onClick={()=>{recordPaymentOnClickEvent(billData)}}>
+                      <button
+                        onClick={() => {
+                          recordPaymentOnClickEvent(billData);
+                        }}
+                      >
                         <img src={pay_icon} alt="img" />
                       </button>
                       <p>Pay</p>
@@ -639,29 +693,35 @@ const BillView = (props) => {
           </div>
         </div>
       </div>
-      {
-        showBillHistoryModalStatus ? 
-        <EditPaymentHistoryView showBillHistoryViewModal={showBillHistoryModal}
-        closeBillHistoryViewModal={() => setShowBillHistoryModal(false)} 
-        billHistoryArray={billHistoryArray} 
-        selectedRefId = {selectedRefId}
+      {showBillHistoryModalStatus ? (
+        <EditPaymentHistoryView
+          showBillHistoryViewModal={showBillHistoryModal}
+          closeBillHistoryViewModal={() => setShowBillHistoryModal(false)}
+          billHistoryArray={billHistoryArray}
+          selectedRefId={selectedRefId}
         />
-        : ''
-      }
-      {recordPaymentModalStatus ?
-            <RecordPayment
-              showRecordPaymentModal={recordPaymentModal}
-              closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
-              LedgerData={billData}
-              ledgerId={(billData?.partyType.toUpperCase() === "BUYER"
+      ) : (
+        ""
+      )}
+      {recordPaymentModalStatus ? (
+        <RecordPayment
+          showRecordPaymentModal={recordPaymentModal}
+          closeRecordPaymentModal={() => setRecordPaymentModal(false)}
+          LedgerData={billData}
+          ledgerId={
+            billData?.partyType.toUpperCase() === "BUYER"
               ? billData?.buyerId
-              : billData?.farmerId)}
-              partyType={billData?.partyType}
-              fromBillViewPopup={fromBillViewPopup}
-              outStbal = {outBal}
-              fromPaymentHistory={recordPaymentModalStatus}
-              fromBillbookToRecordPayment = {props.fromBillbookToRecordPayment}
-            /> : ''}
+              : billData?.farmerId
+          }
+          partyType={billData?.partyType}
+          fromBillViewPopup={fromBillViewPopup}
+          outStbal={outBal}
+          fromPaymentHistory={recordPaymentModalStatus}
+          fromBillbookToRecordPayment={props.fromBillbookToRecordPayment}
+        />
+      ) : (
+        ""
+      )}
     </Modal>
   );
 };
