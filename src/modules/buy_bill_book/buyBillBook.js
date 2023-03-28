@@ -296,7 +296,6 @@ function BuyBillBook() {
 
                             <button
                               className="primary_btn add_bills_btn"
-                              // href="/step1"
                               onClick={handleStep1Header}
                             >
                               <img
