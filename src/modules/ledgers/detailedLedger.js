@@ -22,10 +22,14 @@ import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { detaildLedgerInfo } from "../../reducers/ledgerSummarySlice";
 const DetailedLedger = (props) => {
-  var detailedLedgerSummary = useSelector(state => state.ledgerSummaryInfo);
+  var detailedLedgerSummary = useSelector((state) => state.ledgerSummaryInfo);
   var partnerDetailedLedger = detailedLedgerSummary?.detaildLedgerInfo;
-  const details = detailedLedgerSummary?.fromRecordPayment?partnerDetailedLedger: props.detailedLedger;
-  const detailsByDate =detailedLedgerSummary?.fromRecordPayment?partnerDetailedLedger:props.DetailedLedgerByDate;
+  const details = detailedLedgerSummary?.fromRecordPayment
+    ? partnerDetailedLedger
+    : props.detailedLedger;
+  const detailsByDate = detailedLedgerSummary?.fromRecordPayment
+    ? partnerDetailedLedger
+    : props.DetailedLedgerByDate;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
   const ledgerType = props.partyType;
@@ -123,29 +127,29 @@ const DetailedLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
-                        <button className="pl-0" onClick={() =>
+                        <button
+                          className="pl-0"
+                          onClick={() =>
                             billOnClickView(
                               item.refId,
                               ledgerType,
                               index,
                               partyId
                             )
-                          }>
-                        <p
-                          style={{ color: "#0066FF" }}
-                        
+                          }
                         >
-                          <div className="d-flex">
-                            <span>{item.refId}</span>
-                            {item?.billPaid ? (
-                              <img src={tick} alt="image" className="ml-2" />
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                        </p>
+                          <p style={{ color: "#0066FF" }}>
+                            <div className="d-flex">
+                              <span>{item.refId}</span>
+                              {item?.billPaid ? (
+                                <img src={tick} alt="image" className="ml-2" />
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </p>
                         </button>
-                       
+
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-3">
@@ -243,8 +247,7 @@ const DetailedLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
-                        <p
-                          style={{ color: "#0066FF" }}
+                        <button
                           onClick={() =>
                             billOnClickView(
                               item.refId,
@@ -254,16 +257,17 @@ const DetailedLedger = (props) => {
                             )
                           }
                         >
-                          <div className="d-flex">
-                            <span> {item.refId ? item.refId : ""}</span>
-                            {item?.billPaid ? (
-                              <img src={tick} alt="image" className="ml-2" />
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                        </p>
-
+                          <p style={{ color: "#0066FF" }}>
+                            <div className="d-flex">
+                              <span> {item.refId ? item.refId : ""}</span>
+                              {item?.billPaid ? (
+                                <img src={tick} alt="image" className="ml-2" />
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </p>
+                        </button>
                         {moment(item.date).format("DD-MMM-YY")}
                       </td>
                       <td className="col-2">
@@ -333,7 +337,7 @@ const DetailedLedger = (props) => {
         <PaymentHistoryView
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
-          partyType = {ledgerType}
+          partyType={ledgerType}
         />
       ) : (
         ""
