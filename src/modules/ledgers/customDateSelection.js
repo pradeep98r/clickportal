@@ -60,16 +60,17 @@ const CustomDateSelection = (props) => {
                 <div className="d-flex align-items-center justify-content-between">
                     <h5 className="modal-title header2_text" id="staticBackdropLabel">
                         Select Dates</h5>
-                    <img
-                        src={close}
-                        alt="image"
-                        className="close_icon"
-                        onClick={() => {
-                            clearDates();
-                            props.closeCustomDatePopUp()
-                        }}
-                        data-bs-dismiss="modal"
-                    />
+                        <button onClick={() => {
+                                clearDates();
+                                props.closeCustomDatePopUp()
+                            }}
+                            data-bs-dismiss="modal">
+                        <img
+                            src={close}
+                            alt="image"
+                            className="close_icon"
+                        />
+                    </button>
                 </div>
                 </div>
                 <div className="modal-body date_modal_mody partner_model_body pb-0" style={{'height':'100%'}}>
