@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useLayoutEffect } from "react";
 import click_logo from "../../assets/images/click_logo_green.svg";
 import smartboard_icon from "../../assets/images/sidebar/smartboard.svg";
 import smartchart from "../../assets/images/sidebar/smartchart.svg";
@@ -15,18 +15,20 @@ import systemsettings from "../../assets/images/sidebar/systemsettings.svg";
 import transporto from "../../assets/images/sidebar/transporto.svg";
 import menu from "../../assets/images/sidebar/menu.svg";
 import "./sideNavigation.scss";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import logout from "../../assets/images/logout.svg";
+import { getSystemSettings } from "../../actions/billCreationService";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
 console.log(loginData);
-function SideNavigation() {
+function SideNavigation(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isActive, setisActive] = useState(false);
   const links = [
     {
@@ -126,7 +128,9 @@ function SideNavigation() {
     setisActive(!isActive);
     localStorage.setItem("isActiveMenu", !isActive);
   };
-  useEffect(() => {
+  const [logoutStatus, setLogoutStatus] = useState(false);
+  useLayoutEffect(() => {
+    console.log('useeffect')
     if (loginData.useStatus == "WRITER") {
       for (var i = 0; i < links.length; i++) {
         if (links[i].name == langFullData.myProfile) {
@@ -137,7 +141,24 @@ function SideNavigation() {
     } else {
       setLinksData(links);
     }
-  }, []);
+    getSystemSettings(loginData?.clickId).then((response) => {
+      console.log(response);
+      localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
+    })
+    .catch((error) => {
+      // console.log(error.toJSON().message,error.message,'frrom route');
+      // console.log(error.message,'from route no netwoork 401') 
+      if (error.response) {
+        
+        if(error.response.data.status.message == 'INVALID_CREDENTIALS'){
+          setLogoutStatus(true)
+          logOutFunction();
+          console.log(error.response.data.status.message,'from route') 
+        }
+       // some reason error message
+      }
+    })
+  }, [location]);
   // window.addEventListener('load', function(event) {
   //   if (loginData.useStatus == "WRITER") {
   //     console.log('elseifff')
@@ -172,7 +193,8 @@ function SideNavigation() {
     localStorage.setItem("LinkId", "1");
     localStorage.removeItem("businessCreatedStatus");
   };
-
+  
+  
   // activeLink: null,
 
   const [activeLink, setactiveLink] = useState(0);

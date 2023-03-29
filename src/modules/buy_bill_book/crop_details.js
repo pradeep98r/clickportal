@@ -62,7 +62,7 @@ const CropDetails = (props) => {
             </div>
           </div>
         </div>
-        {billData?.partyType === "FARMER" && billData?.farmerAddress != "" ? (
+        {(billData?.partyType === "FARMER" && billData?.farmerAddress != "") ? (
           <div className="col-lg-3">
             <div className="partner_info">
               <p className="small_text">Address: </p>

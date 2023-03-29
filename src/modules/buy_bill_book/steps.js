@@ -55,7 +55,9 @@ const Steps = (props) => {
     setcropEditObject([]);
     setslectedCropstableArray([]);
     if(billViewEditStatus){
-      window.location.reload();
+      if(!props.fromLedger){
+        window.location.reload();
+      }
     }
   };
   return (
@@ -134,6 +136,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
+                  fromLedger = {props.fromLedger}
                 />
               );
             case partyType.toUpperCase() === "BUYER" && "step3":
@@ -144,6 +147,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
+                  fromLedger = {props.fromLedger}
                 />
               );
           }

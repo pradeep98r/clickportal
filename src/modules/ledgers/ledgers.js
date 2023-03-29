@@ -28,17 +28,33 @@ import date_icon from "../../assets/images/date_icon.svg";
 import loading from "../../assets/images/loading.gif";
 import NoInternetConnection from "../../components/noInternetConnection";
 import RecordPayment from "./recordPayment";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
+import addbill_icon from "../../assets/images/addbill.svg";
+import {
+  allCustomTabs,
+  detaildLedgerInfo,
+  ledgerSummaryInfo,
+  partnerTabs,
+  beginDate,
+  closeDate,
+  allLedgers,
+  outStandingBal,
+  businessValues,
+  totalRecivables,
+  trhoughRecordPayment,
+} from "../../reducers/ledgerSummarySlice";
+import PaymentHistoryView from "./paymentHistory";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  const ledgers = ledgersSummary?.allLedgers;
   const dispatch = useDispatch();
   const clickId = loginData.caId;
-  const [allData, setAllData] = useState([]);
-  const [ledgers, setLedgers] = useState(allData);
-  const [outStAmt, setOutStAmt] = useState([]);
+  const [allData, setAllData] = useState(ledgersSummary?.allLedgers);
+  const outStAmt = ledgersSummary?.outStandingBal;
   const [partyId, setPartyId] = useState(0);
-  const [summary, setSummary] = useState([]);
+  const summary = ledgersSummary?.businessValues;
   const ledgerType = props.type;
   const [ledgerSummary, setLedgerSummary] = useState([]);
   const [detailedLedger, setdetailedLedger] = useState([]);
@@ -48,12 +64,12 @@ const Ledgers = (props) => {
   const [detailedByDate, setdetailedLedgerByDate] = useState([]);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
-  const [cardDetails, setcardDetails] = useState([]);
-  const [cardDetailed, setcardDetailed] = useState([]);
+  const cardDetails = ledgersSummary?.businessValues;
+  const cardDetailed = ledgersSummary?.totalRecivables;
   const [ledgerData, setLedgerData] = useState({});
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
-  const [detailedTotal, setTotalDetailed] = useState([]);
+  const detailedTotal = ledgersSummary?.totalRecivables;
   var date = moment(new Date()).format("YYYY-MM-DD");
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(date);
@@ -62,6 +78,7 @@ const Ledgers = (props) => {
   var [dateValue, setDateValue] = useState(defaultDate + " to " + defaultDate);
   const [handleDate, sethandleDate] = useState(false);
   const [paidRcvd, setPaidRcvd] = useState(0);
+  const [open, setIsOpen] = useState(false);
   const tabs = [
     {
       id: 1,
@@ -88,44 +105,46 @@ const Ledgers = (props) => {
     },
   ];
 
-    const onclickDate = () => {
-        setShowDatepickerModal1(true);
-        setShowDatepickerModal(true);
-    };
-    const handleSearch = (event) => {
-        let value = event.target.value.toLowerCase();
-        let result = [];
-        result = allData.filter((data) => {
-            if (data.mobile.includes(value)) {
-                return data.mobile.search(value) != -1;
-            } else if (data.partyName.toLowerCase().includes(value)) {
-                return data.partyName.toLowerCase().search(value) != -1;
-            } else if (data.partyId.toString().includes(value)) {
-                return data.partyId.toString().search(value) != -1;
-            } else if(data.partyAddress.toLowerCase().includes(value)){
-                return data.partyAddress.toLowerCase().search(value) != -1;
-            } else if(data.shortName.toLowerCase().includes(value)){
-                return data.shortName.toLowerCase().search(value) != -1;
-            }
-        });
-        setLedgers(result);
-    };
+  const onclickDate = () => {
+    setShowDatepickerModal1(true);
+    setShowDatepickerModal(true);
+  };
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.mobile.includes(value)) {
+        return data.mobile.search(value) != -1;
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
+      } else if (data.partyId.toString().includes(value)) {
+        return data.partyId.toString().search(value) != -1;
+      } else if (data.partyAddress.toLowerCase().includes(value)) {
+        return data.partyAddress.toLowerCase().search(value) != -1;
+      } else if (data.shortName.toLowerCase().includes(value)) {
+        return data.shortName.toLowerCase().search(value) != -1;
+      }
+    });
+    dispatch(allLedgers(result));
+  };
 
   useEffect(() => {
     fetchLedgers();
+    dispatch(partnerTabs("ledgersummary"));
+    dispatch(beginDate(startDate));
+    dispatch(closeDate(endDate));
     allCustomEvent("all");
-    // moment(new Date()).format("DD-MMM-YYYY")//
     setDateValue(defaultDate + " to " + defaultDate);
-  }, []);
+  }, [props]);
 
   //Fetch ledgers using clickId and type
   const fetchLedgers = () => {
     getLedgers(clickId, ledgerType)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          setLedgers(res.data.data.ledgers);
           setAllData(res.data.data.ledgers);
-          setOutStAmt(res.data.data);
+          dispatch(outStandingBal(res.data.data));
+          dispatch(allLedgers(res.data.data.ledgers));
           setPartyId(res.data.data.ledgers[0].partyId);
           summaryData(clickId, res.data.data.ledgers[0].partyId);
           getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
@@ -136,14 +155,14 @@ const Ledgers = (props) => {
             sellerDetailed(clickId, res.data.data.ledgers[0].partyId);
           }
         } else {
-          setLedgers([]);
+          dispatch(allLedgers([]));
         }
         setLoading(false);
       })
       .catch((error) => {
-        if (error.toJSON().message === "Network Error") {
-            setOnline(true);
-          }
+        // if (error.toJSON().message === "Network Error") {
+        // setOnline(true);
+        // }
       });
   };
 
@@ -156,11 +175,15 @@ const Ledgers = (props) => {
   const [customDateHanlde, setCustomDateHandle] = useState(false);
   //Get Particular ledger data
   const particularLedgerData = (ledgerId, item) => {
+    var customTab = "";
     setPartyId(ledgerId);
     setLedgerData(item);
+    setAllCustom("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
+
     if (allCustom == "custom") {
+      var customTab = "all";
       setDateDisplay(false);
       dispatch(dateCustomStatus(true));
     }
@@ -169,21 +192,15 @@ const Ledgers = (props) => {
       ledgerTabs == "detailedledger" ||
       (ledgerTabs == "ledgersummary" && allCustom == "custom")
     ) {
+      dispatch(partnerTabs("ledgersummary"));
+      dispatch(allCustomTabs("all"));
       setLedgerTabs("ledgersummary");
       setAllCustom("all");
       tabs = "ledgersummary";
     }
-    if (
-      allCustom == "all" ||
-      (allCustom == "custom" && ledgerTabs == "ledgersummary")
-    ) {
+    if ((customTab == "all" && tabs == "ledgersummary") || allCustom == "all") {
       summaryData(clickId, ledgerId);
-    }
-    if (
-      (allCustom == "custom" && tabs == "ledgersummary") ||
-      ledgerTabs == "ledgersummary"
-    ) {
-      console.log(date,"date")
+    } else if (customTab == "custom" && tabs == "ledgersummary") {
       ledgerSummaryByDate(clickId, ledgerId, date, date);
     }
     setDateValue(defaultDate + " to " + defaultDate);
@@ -193,26 +210,42 @@ const Ledgers = (props) => {
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
-        if (res.data.status.type === "SUCCESS") {
-          setSummary(res.data.data);
-          setLedgerSummary(res.data.data.ledgerSummary);
-        } else {
-          setSummary([]);
+        console.log(res,"response")
+        if(res.data.data !== null){
+          if (res.data.status.type === "SUCCESS") {
+            dispatch(businessValues(res.data.data))
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
+          } else {
+            dispatch(businessValues([]))
+            dispatch(ledgerSummaryInfo([]))
+          }
+        } else{
+          dispatch(businessValues([]))
+          dispatch(ledgerSummaryInfo([]))
         }
+        
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log(error),console.log('came to here'));
   };
 
   //Get Detailed Ledger
   const geyDetailedLedger = (clickId, partyId) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
           setdetailedLedger(res.data.data.details);
-          setTotalDetailed(res.data.data);
         } else {
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
           setdetailedLedger([]);
         }
+      } else{
+        dispatch(totalRecivables([]));
+        dispatch(detaildLedgerInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };
@@ -221,18 +254,27 @@ const Ledgers = (props) => {
   const sellerDetailed = (clickId, partyId) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
+        if(res.data.data !== null){
         if (res.data.status.type === "SUCCESS") {
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
           setdetailedLedger(res.data.data.details);
-          setTotalDetailed(res.data.data);
         } else {
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
           setdetailedLedger([]);
         }
+      } else{
+        dispatch(totalRecivables([]));
+        dispatch(detaildLedgerInfo([]));
+      }
       })
       .catch((error) => console.log(error));
   };
 
   //All and Custom Tabs
   const allCustomEvent = (type) => {
+    dispatch(allCustomTabs(type));
     if (type == "custom") {
       setDateDisplay(true);
     } else {
@@ -243,15 +285,20 @@ const Ledgers = (props) => {
       setStartDate(date);
       setEndDate(date);
     }
+    if (type == "all") {
+      summaryData(clickId, partyId);
+    }
     if (type == "custom" && ledgerTabs == "detailedledger") {
+      dispatch(partnerTabs("ledgersummary"));
       setLedgerTabs("ledgersummary");
     } else if (type == "all" && ledgerTabs == "detailedledger") {
+      dispatch(partnerTabs("ledgersummary"));
       setLedgerTabs("ledgersummary");
     }
     if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
       setCustomDateHandle(false);
       ledgerSummaryByDate(clickId, partyId, date, date);
-    }else{
+    } else if (type == "custom") {
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
     setAllCustom(type);
@@ -259,6 +306,10 @@ const Ledgers = (props) => {
   const [dateCustom, setdateCustom] = useState(false);
   //ledger and detailed ledger tabs
   const ledgerTabEvent = (ledgerTabType) => {
+    dispatch(partnerTabs(ledgerTabType));
+    if (allCustom == "all" && ledgerTabType == "ledgersummary") {
+      summaryData(clickId, partyId);
+    }
     if (allCustom == "all" && ledgerTabType == "detailedledger") {
       if (ledgerType == "BUYER") {
         geyDetailedLedger(clickId, partyId);
@@ -295,10 +346,12 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setSummaryByDate(res.data.data.ledgerSummary);
-          setcardDetails(res.data.data);
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          dispatch(businessValues(res.data.data));
         } else {
           setSummaryByDate([]);
-          setcardDetails([]);
+          dispatch(businessValues([]));
+          dispatch(ledgerSummaryInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -310,10 +363,12 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setdetailedLedgerByDate(res.data.data.details);
-          setcardDetailed(res.data.data);
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         } else {
           setdetailedLedgerByDate([]);
-          setcardDetailed([]);
+          dispatch(totalRecivables([]));
+          dispatch(detaildLedgerInfo([]));
         }
       })
       .catch((error) => console.log(error));
@@ -325,16 +380,20 @@ const Ledgers = (props) => {
       .then((res) => {
         if (res.data.data !== null) {
           setdetailedLedgerByDate(res.data.data.details);
-          setcardDetailed(res.data.data);
+          dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
         } else {
           setdetailedLedgerByDate([]);
-          setcardDetailed([]);
+          dispatch(detaildLedgerInfo([]));
+          dispatch(totalRecivables([]));
         }
       })
       .catch((error) => console.log(error));
   };
   //Date Selection
   const callbackFunction = (startDate, endDate, dateTab) => {
+    dispatch(beginDate(startDate));
+    dispatch(closeDate(endDate));
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
@@ -380,6 +439,53 @@ const Ledgers = (props) => {
       }
     }
   };
+  const getData = (data) => {
+    if (allCustom == "all" && ledgerTabs == "ledgersummary") {
+      setLedgerSummary(data);
+    } else if (allCustom == "all" && ledgerTabs == "detailedledger") {
+      setdetailedLedger(data);
+    } else if (allCustom == "custom" && ledgerTabs == "ledgersummary") {
+      setSummaryByDate(data);
+    } else {
+      setdetailedLedgerByDate(data);
+    }
+  };
+  const getOutstAmt = (data) => {
+    dispatch(outStandingBal(data));
+    // setOutStAmt(data);
+  };
+  const getALlLedgers = (data) => {
+    // setLedgers(data);
+    dispatch(allLedgers(data));
+  };
+  const getCardDtl = (data) => {
+    if (allCustom == "all" && ledgerTabs == "ledgersummary") {
+      // setSummary(data);
+      dispatch(businessValues(data));
+    } else if (allCustom == "all" && ledgerTabs == "detailedledger") {
+      dispatch(totalRecivables(data));
+      // setTotalDetailed(data);
+    } else if (allCustom == "custom" && ledgerTabs == "ledgersummary") {
+      dispatch(businessValues(data));
+      // setcardDetails(data);
+    } else if (allCustom == "custom" && ledgerTabs == "detailedledger") {
+      // setcardDetailed(data);
+      dispatch(totalRecivables(data));
+    }
+  };
+  const getPaidRcvd = (rcvd) => {
+    setPaidRcvd(rcvd);
+  };
+
+  const [recordPaymentModalStatus, setRecordPaymentModalStatus] =
+    useState(false);
+  const [recordPaymentModal, setRecordPaymentModal] = useState(false);
+  const recordPaymentOnClickEvent = () => {
+    dispatch(trhoughRecordPayment(true));
+    setRecordPaymentModalStatus(true);
+    setRecordPaymentModal(true);
+  };
+
   return (
     <div className="main_div_padding">
       {isOnline ? (
@@ -409,42 +515,42 @@ const Ledgers = (props) => {
                           className="table-scroll ledger-table"
                           id="scroll_style"
                         >
-                          <table className="table table-fixed ledgers">
-                            <thead className="theadr-tag">
-                              <tr>
-                                <th scope="col-4">#</th>
-                                <th scope="col">Date</th>
+                          <div className="ledgers ledger_table_col">
+                          <div className="row theadr-tag p-0">
+                                <th class="col-lg-1">#</th>
+                                <th class="col-lg-2">Date</th>
                                 {ledgerType == "BUYER" ? (
-                                  <th scope="col">Buyer Name</th>
+                                  <th class="col-lg-6">Buyer Name</th>
                                 ) : (
-                                  <th scope="col">Seller Name</th>
+                                  <th class="col-lg-6">Seller Name</th>
                                 )}
                                 {ledgerType == "BUYER" ? (
-                                  <th scope="col">To Be Recieved(&#8377;)</th>
+                                  <th class="col-lg-3">To Be Recieved(&#8377;)</th>
                                 ) : (
-                                  <th scope="col">To Be Paid(&#8377;)</th>
+                                  <th class="col-lg-3">To Be Paid(&#8377;)</th>
                                 )}
-                              </tr>
-                            </thead>
-                            <tbody>
+                            </div>
+                            <div>
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
-                                    <tr
-                                      onClick={() =>
-                                        particularLedgerData(item.partyId, item)
-                                      }
-                                      className={
+                                  <button  className={
                                         partyId == item.partyId
-                                          ? "tabRowSelected"
-                                          : "tr-tags"
-                                      }
+                                          ? "tabRowSelected p-0"
+                                          : "tr-tags p-0"
+                                      } onClick={() =>
+                                        particularLedgerData(item.partyId, item)
+                                      }>
+                                    <div className="row align-items-center"
+                                      
+                                     
                                     >
-                                      <td scope="row">{index + 1}</td>
-                                      <td key={item.date}>
-                                        {moment(item.date).format("DD-MMM-YY")}
+                                        
+                                      <td className="col-lg-1">{index + 1}</td>
+                                      <td key={item.date} className="col-lg-2">
+                                      <p className="date_ledger_val">  {moment(item.date).format("DD-MMM-YY")}</p>
                                       </td>
-                                      <td key={item.partyName}>
+                                      <td key={item.partyName} className="col-lg-6">
                                         <div className="d-flex">
                                           <div className="c-img">
                                             {item.profilePic ? (
@@ -466,22 +572,23 @@ const Ledgers = (props) => {
                                               {item.partyName} -{" "}
                                               {item.shortName}
                                             </p>
-                                           <div className="d-flex align-items-center">
-                                           <p className="mobilee-tag">
-                                              {!item.trader
-                                                ? ledgerType == "BUYER"
-                                                  ? "Buyer"
-                                                  : "Farmer"
-                                                : "Trader"}{" "}
-                                              - {item.partyId}&nbsp;
-                                            </p>
-                                            <p className="mobilee-tag desk_responsive">
-                                              {' | '+getMaskedMobileNumber(
-                                                item.mobile
-                                              )}
-                                            </p>
-                                           </div>
-                                           <p className="mobilee-tag mobile_responsive">
+                                            <div className="d-flex align-items-center">
+                                              <p className="mobilee-tag">
+                                                {!item.trader
+                                                  ? ledgerType == "BUYER"
+                                                    ? "Buyer"
+                                                    : "Farmer"
+                                                  : "Trader"}{" "}
+                                                - {item.partyId}&nbsp;
+                                              </p>
+                                              <p className="mobilee-tag desk_responsive">
+                                                {" | " +
+                                                  getMaskedMobileNumber(
+                                                    item.mobile
+                                                  )}
+                                              </p>
+                                            </div>
+                                            <p className="mobilee-tag mobile_responsive">
                                               {getMaskedMobileNumber(
                                                 item.mobile
                                               )}
@@ -494,7 +601,7 @@ const Ledgers = (props) => {
                                           </div>
                                         </div>
                                       </td>
-                                      <td key={item.tobePaidRcvd}>
+                                      <td className="col-lg-3" key={item.tobePaidRcvd}>
                                         <p
                                           className={
                                             ledgerType == "BUYER"
@@ -509,12 +616,33 @@ const Ledgers = (props) => {
                                             : 0}
                                         </p>
                                       </td>
-                                    </tr>
+                                    </div>
+                                   
+                                    </button>
                                   </Fragment>
                                 );
                               })}
-                            </tbody>
-                          </table>
+                            </div>
+                          </div>
+                          {/* <table className="table table-fixed ledgers">
+                            <thead className="theadr-tag">
+                              <tr>
+                                <th scope="col-4">#</th>
+                                <th scope="col">Date</th>
+                                {ledgerType == "BUYER" ? (
+                                  <th scope="col">Buyer Name</th>
+                                ) : (
+                                  <th scope="col">Seller Name</th>
+                                )}
+                                {ledgerType == "BUYER" ? (
+                                  <th scope="col">To Be Recieved(&#8377;)</th>
+                                ) : (
+                                  <th scope="col">To Be Paid(&#8377;)</th>
+                                )}
+                              </tr>
+                            </thead>
+                            
+                          </table> */}
                         </div>
                         <div className="outstanding-pay d-flex align-items-center justify-content-between">
                           {ledgerType == "BUYER" ? (
@@ -556,13 +684,9 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   <div className="col-lg-7 p-0">
-                    {/* <RecordPayment 
-                                    LedgerData={ledgerData}
-                                    ledgerId ={partyId}
-                                    outStbal = {paidRcvd} /> */}
-                    <div className="d-flex">
+                    <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between">
                       <ul
-                        className="nav nav-tabs partner_tabs ledger_all_custom mb-0"
+                        className="nav nav-tabs mb-0"
                         id="myTab"
                         role="tablist"
                       >
@@ -586,6 +710,31 @@ const Ledgers = (props) => {
                           );
                         })}
                       </ul>
+                      <button
+                              className="primary_btn add_bills_btn"
+                              onClick={recordPaymentOnClickEvent}
+                            >
+                              <img
+                                src={addbill_icon}
+                                alt="image"
+                                className="mr-2"
+                              />
+                             Add Record
+                            </button>
+                      {/* <div className="recordbtn-style">
+                        <button
+                          className="add-record-btns"
+                         
+                          data-toggle="modal"
+                          data-target="#myModal"
+                        >
+                          
+                        </button>
+
+                        <div className="add-pays-btn">
+                          <img src={add} id="addrecord-img" />
+                        </div>
+                      </div> */}
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
                     <div className="my-2">
@@ -884,6 +1033,7 @@ const Ledgers = (props) => {
                           LedgerSummary={ledgerSummary}
                           partyType={props.type}
                           dateDisplay={dateDisplay}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -895,6 +1045,7 @@ const Ledgers = (props) => {
                           allCustomTab={allCustom}
                           partyType={props.type}
                           dateDisplay={dateDisplay}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -906,6 +1057,7 @@ const Ledgers = (props) => {
                           ledgerTab={ledgerTabs}
                           allCustomTab={allCustom}
                           partyType={props.type}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -917,6 +1069,7 @@ const Ledgers = (props) => {
                           ledgerTab={ledgerTabs}
                           allCustomTab={allCustom}
                           partyType={props.type}
+                          partyId={partyId}
                         />
                       ) : (
                         ""
@@ -951,6 +1104,28 @@ const Ledgers = (props) => {
             />
           ) : (
             <p></p>
+          )}
+          {recordPaymentModalStatus ? (
+            <RecordPayment
+              showRecordPaymentModal={recordPaymentModal}
+              closeRecordPaymentModal={() => setRecordPaymentModal(false)}
+              LedgerData={ledgerData}
+              ledgerId={partyId}
+              ledgerSummary={ledgerSummary}
+              outStbal={paidRcvd}
+              setSummary={getCardDtl}
+              ledgerSummaryData={getData}
+              ledgerTab={ledgerTabs}
+              allCustomTab={allCustom}
+              partyType={ledgerType}
+              ledgers={getALlLedgers}
+              outStAmt={getOutstAmt}
+              setPaidRcvd={getPaidRcvd}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          ) : (
+            ""
           )}
         </div>
       )}

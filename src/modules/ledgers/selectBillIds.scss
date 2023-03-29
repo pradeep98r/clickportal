@@ -1,0 +1,95 @@
+.select-billIds {
+    .modal-content {
+      box-shadow: 0px 7px 34px rgba(0, 0, 0, 0.25);
+    }
+  }
+  .header2_text{
+    font-weight: 600;
+    font-size: 20px;
+  }
+  .bills-search{
+    padding: 0px 0px;
+  }
+  .each-billId:hover{
+    cursor: pointer;
+  }
+  .each-billId{
+    align-items: center;
+    padding: 10px 30px;
+   margin-top: 10px;
+    border: 1px solid #E4E4E4;
+    border-radius: 4px;
+    p{
+      font-size: 12px;
+      color: #171717;
+      font-weight: 500;
+    }
+    .date_text{
+      color: #7A7A7A;
+    }
+    .col-lg-5{
+      padding: 0px;
+    }
+  }
+  .border-bott {
+    border-bottom: 1px solid #dee2e6!important;
+  }
+  .selected-img{
+    height: 20px;
+    width: 20px;
+  }
+  .selected{
+    background: #D7F3DD;
+    border: 1px solid #16A02C;
+  }
+  .discount-prec{
+    padding: 0px 0px;
+  }
+  .discount-label{
+    font-weight: 700;
+  font-size: 13px;
+  color: #1C1C1C;
+  margin-bottom: 10px;
+  }
+  .disc-perc{
+    font-weight: 500;
+  font-size: 13px;
+  color: #1C1C1C;
+  }
+  .custom_picker{
+    padding: 10px 0px;
+    width: 100%;
+  }
+  .date_modal_header{
+    width: 100%;
+  }
+  .date-range{
+    color: #0066FF;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 10px;
+    cursor: pointer;
+  }
+  .custom-date-icon{
+    width: 20px;
+    height: 20px;
+  }
+  .date-icons{
+    padding:5px 5px;
+  }
+  .amount{
+    padding: 5px 0px;
+  } .amt-after-dic{
+    font-weight: 500;
+  font-size: 13px;
+  }
+  .bill-amt{
+    font-weight: 600;
+  font-size: 15px;
+  }
+  .select_billID_popup_scroll {
+    // max-height: calc(70vh - 300px);
+    max-height: 450px;
+    overflow-y: auto;
+}
