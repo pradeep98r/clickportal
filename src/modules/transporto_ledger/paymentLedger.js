@@ -147,7 +147,6 @@ const PaymentLedger = (props) => {
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
           partyType = {'Transporter'}
-          
         />
       ) : (
         ""

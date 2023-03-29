@@ -7,6 +7,9 @@ import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { fromTransporter } from "../../reducers/transpoSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import BillView from "../buy_bill_book/billView";
+import PaymentHistoryView from "../ledgers/paymentHistory";
+import InventoryHistoryView from "./inventoryHistory";
+import { getInventoryListById } from "../../actions/transporterService";
 const InventoryLedger = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -19,19 +22,24 @@ const InventoryLedger = (props) => {
   const dispatch = useDispatch();
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
-  const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showInvtModalStatus, setShowInvModalStatus] = useState(false);
+  const [showInvModal, setShowInvModal] = useState(false);
   const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
   const tabs = props.tabs;
   const billOnClickView = (billId, type, i, partyId) => {
     var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
     if (bId?.includes("T")) {
-      getPaymentListById(clickId, bId).then((res) => {
+      getInventoryListById(clickId,transporterId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          dispatch(paymentViewInfo(res.data.data));
-          setShowPaymentModalStatus(true);
-          setShowPaymentModal(true);
-          dispatch(fromTransporter(true))
+          if(res.data.data != null){
+            dispatch(paymentViewInfo(res.data.data));
+            setShowInvModalStatus(true);
+            setShowInvModal(true);
+            dispatch(fromTransporter(true))
+          }
+          else{
+            dispatch(paymentViewInfo([]));
+          }
         }
       });
     } 
@@ -161,6 +169,15 @@ const InventoryLedger = (props) => {
           closeBillViewModal={() => setShowBillModal(false)}
           fromLedger={true}
           fromTransporter={true}
+        />
+      ) : (
+        ""
+      )}
+      {showInvtModalStatus ? (
+        <InventoryHistoryView
+          showInvViewModal={showInvModal}
+          closeInvViewModal={() => setShowInvModal(false)}
+          partyType = {'Transporter'}
         />
       ) : (
         ""
