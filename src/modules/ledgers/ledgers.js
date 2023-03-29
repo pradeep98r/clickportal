@@ -210,42 +210,41 @@ const Ledgers = (props) => {
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
-        console.log(res,"response")
-        if(res.data.data !== null){
+        console.log(res, "response");
+        if (res.data.data !== null) {
           if (res.data.status.type === "SUCCESS") {
-            dispatch(businessValues(res.data.data))
-            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary))
+            dispatch(businessValues(res.data.data));
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
           } else {
-            dispatch(businessValues([]))
-            dispatch(ledgerSummaryInfo([]))
+            dispatch(businessValues([]));
+            dispatch(ledgerSummaryInfo([]));
           }
-        } else{
-          dispatch(businessValues([]))
-          dispatch(ledgerSummaryInfo([]))
+        } else {
+          dispatch(businessValues([]));
+          dispatch(ledgerSummaryInfo([]));
         }
-        
       })
-      .catch((error) => console.log(error),console.log('came to here'));
+      .catch((error) => console.log(error), console.log("came to here"));
   };
 
   //Get Detailed Ledger
   const geyDetailedLedger = (clickId, partyId) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
-        if(res.data.data !== null){
-        if (res.data.status.type === "SUCCESS") {
-          dispatch(totalRecivables(res.data.data));
-          dispatch(detaildLedgerInfo(res.data.data.details));
-          setdetailedLedger(res.data.data.details);
+        if (res.data.data !== null) {
+          if (res.data.status.type === "SUCCESS") {
+            dispatch(totalRecivables(res.data.data));
+            dispatch(detaildLedgerInfo(res.data.data.details));
+            setdetailedLedger(res.data.data.details);
+          } else {
+            dispatch(totalRecivables([]));
+            dispatch(detaildLedgerInfo([]));
+            setdetailedLedger([]);
+          }
         } else {
           dispatch(totalRecivables([]));
           dispatch(detaildLedgerInfo([]));
-          setdetailedLedger([]);
         }
-      } else{
-        dispatch(totalRecivables([]));
-        dispatch(detaildLedgerInfo([]));
-      }
       })
       .catch((error) => console.log(error));
   };
@@ -254,20 +253,20 @@ const Ledgers = (props) => {
   const sellerDetailed = (clickId, partyId) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
-        if(res.data.data !== null){
-        if (res.data.status.type === "SUCCESS") {
-          dispatch(totalRecivables(res.data.data));
-          dispatch(detaildLedgerInfo(res.data.data.details));
-          setdetailedLedger(res.data.data.details);
+        if (res.data.data !== null) {
+          if (res.data.status.type === "SUCCESS") {
+            dispatch(totalRecivables(res.data.data));
+            dispatch(detaildLedgerInfo(res.data.data.details));
+            setdetailedLedger(res.data.data.details);
+          } else {
+            dispatch(totalRecivables([]));
+            dispatch(detaildLedgerInfo([]));
+            setdetailedLedger([]);
+          }
         } else {
           dispatch(totalRecivables([]));
           dispatch(detaildLedgerInfo([]));
-          setdetailedLedger([]);
         }
-      } else{
-        dispatch(totalRecivables([]));
-        dispatch(detaildLedgerInfo([]));
-      }
       })
       .catch((error) => console.log(error));
   };
@@ -516,108 +515,124 @@ const Ledgers = (props) => {
                           id="scroll_style"
                         >
                           <div className="ledgers ledger_table_col">
-                          <div className="row theadr-tag p-0">
-                                <th class="col-lg-1">#</th>
-                                <th class="col-lg-2">Date</th>
-                                {ledgerType == "BUYER" ? (
-                                  <th class="col-lg-6">Buyer Name</th>
-                                ) : (
-                                  <th class="col-lg-6">Seller Name</th>
-                                )}
-                                {ledgerType == "BUYER" ? (
-                                  <th class="col-lg-3">To Be Recieved(&#8377;)</th>
-                                ) : (
-                                  <th class="col-lg-3">To Be Paid(&#8377;)</th>
-                                )}
+                            <div className="row theadr-tag p-0">
+                              <th class="col-lg-1">#</th>
+                              <th class="col-lg-2">Date</th>
+                              {ledgerType == "BUYER" ? (
+                                <th class="col-lg-6">Buyer Name</th>
+                              ) : (
+                                <th class="col-lg-6">Seller Name</th>
+                              )}
+                              {ledgerType == "BUYER" ? (
+                                <th class="col-lg-3">
+                                  To Be Recieved(&#8377;)
+                                </th>
+                              ) : (
+                                <th class="col-lg-3">To Be Paid(&#8377;)</th>
+                              )}
                             </div>
                             <div>
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
-                                  <button  className={
+                                    <button
+                                      className={
                                         partyId == item.partyId
                                           ? "tabRowSelected p-0"
                                           : "tr-tags p-0"
-                                      } onClick={() =>
+                                      }
+                                      onClick={() =>
                                         particularLedgerData(item.partyId, item)
-                                      }>
-                                    <div className="row align-items-center"
-                                      
-                                     
+                                      }
                                     >
-                                        
-                                      <td className="col-lg-1">{index + 1}</td>
-                                      <td key={item.date} className="col-lg-2">
-                                      <p className="date_ledger_val">  {moment(item.date).format("DD-MMM-YY")}</p>
-                                      </td>
-                                      <td key={item.partyName} className="col-lg-6">
-                                        <div className="d-flex">
-                                          <div className="c-img">
-                                            {item.profilePic ? (
-                                              <img
-                                                className="profile-img"
-                                                src={item.profilePic}
-                                                alt="pref-img"
-                                              />
-                                            ) : (
-                                              <img
-                                                className="profile-img"
-                                                src={single_bill}
-                                                alt="img"
-                                              />
+                                      <div className="row align-items-center">
+                                        <td className="col-lg-1">
+                                          {index + 1}
+                                        </td>
+                                        <td
+                                          key={item.date}
+                                          className="col-lg-2"
+                                        >
+                                          <p className="date_ledger_val">
+                                            {" "}
+                                            {moment(item.date).format(
+                                              "DD-MMM-YY"
                                             )}
-                                          </div>
-                                          <div>
-                                            <p className="namedtl-tag">
-                                              {item.partyName} -{" "}
-                                              {item.shortName}
-                                            </p>
-                                            <div className="d-flex align-items-center">
-                                              <p className="mobilee-tag">
-                                                {!item.trader
-                                                  ? ledgerType == "BUYER"
-                                                    ? "Buyer"
-                                                    : "Farmer"
-                                                  : "Trader"}{" "}
-                                                - {item.partyId}&nbsp;
+                                          </p>
+                                        </td>
+                                        <td
+                                          key={item.partyName}
+                                          className="col-lg-6"
+                                        >
+                                          <div className="d-flex">
+                                            <div className="c-img">
+                                              {item.profilePic ? (
+                                                <img
+                                                  className="profile-img"
+                                                  src={item.profilePic}
+                                                  alt="pref-img"
+                                                />
+                                              ) : (
+                                                <img
+                                                  className="profile-img"
+                                                  src={single_bill}
+                                                  alt="img"
+                                                />
+                                              )}
+                                            </div>
+                                            <div>
+                                              <p className="namedtl-tag">
+                                                {item.partyName} -{" "}
+                                                {item.shortName}
                                               </p>
-                                              <p className="mobilee-tag desk_responsive">
-                                                {" | " +
-                                                  getMaskedMobileNumber(
-                                                    item.mobile
-                                                  )}
+                                              <div className="d-flex align-items-center">
+                                                <p className="mobilee-tag">
+                                                  {!item.trader
+                                                    ? ledgerType == "BUYER"
+                                                      ? "Buyer"
+                                                      : "Farmer"
+                                                    : "Trader"}{" "}
+                                                  - {item.partyId}&nbsp;
+                                                </p>
+                                                <p className="mobilee-tag desk_responsive">
+                                                  {" | " +
+                                                    getMaskedMobileNumber(
+                                                      item.mobile
+                                                    )}
+                                                </p>
+                                              </div>
+                                              <p className="mobilee-tag mobile_responsive">
+                                                {getMaskedMobileNumber(
+                                                  item.mobile
+                                                )}
+                                              </p>
+                                              <p className="address-tag">
+                                                {item.partyAddress
+                                                  ? item.partyAddress
+                                                  : ""}
                                               </p>
                                             </div>
-                                            <p className="mobilee-tag mobile_responsive">
-                                              {getMaskedMobileNumber(
-                                                item.mobile
-                                              )}
-                                            </p>
-                                            <p className="address-tag">
-                                              {item.partyAddress
-                                                ? item.partyAddress
-                                                : ""}
-                                            </p>
                                           </div>
-                                        </div>
-                                      </td>
-                                      <td className="col-lg-3" key={item.tobePaidRcvd}>
-                                        <p
-                                          className={
-                                            ledgerType == "BUYER"
-                                              ? "coloring"
-                                              : "paid-coloring"
-                                          }
+                                        </td>
+                                        <td
+                                          className="col-lg-3"
+                                          key={item.tobePaidRcvd}
                                         >
-                                          {item.tobePaidRcvd
-                                            ? getCurrencyNumberWithOutSymbol(
-                                                item.tobePaidRcvd
-                                              )
-                                            : 0}
-                                        </p>
-                                      </td>
-                                    </div>
-                                   
+                                          <p
+                                            className={
+                                              ledgerType == "BUYER"
+                                                ? "coloring"
+                                                : "paid-coloring"
+                                            }
+                                          >
+                                            {item.tobePaidRcvd
+                                              ? getCurrencyNumberWithOutSymbol(
+                                                  item.tobePaidRcvd
+                                                )
+                                              : 0}
+                                          </p>
+                                        </td>
+                                      </div>
                                     </button>
                                   </Fragment>
                                 );
@@ -684,7 +699,7 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   <div className="col-lg-7 p-0">
-                    <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between">
+                    <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
                       <ul
                         className="nav nav-tabs mb-0"
                         id="myTab"
@@ -711,30 +726,15 @@ const Ledgers = (props) => {
                         })}
                       </ul>
                       <button
-                              className="primary_btn add_bills_btn"
-                              onClick={recordPaymentOnClickEvent}
-                            >
-                              <img
-                                src={addbill_icon}
-                                alt="image"
-                                className="mr-2"
-                              />
-                             Add Record
-                            </button>
-                      {/* <div className="recordbtn-style">
-                        <button
-                          className="add-record-btns"
-                         
-                          data-toggle="modal"
-                          data-target="#myModal"
-                        >
-                          
-                        </button>
-
-                        <div className="add-pays-btn">
-                          <img src={add} id="addrecord-img" />
-                        </div>
-                      </div> */}
+                        className="primary_btn add_bills_btn"
+                        onClick={recordPaymentOnClickEvent}
+                      >
+                        <img src={addbill_icon} alt="image" className="mr-2" />
+                        {ledgerType == "BUYER"
+                          ? "Record Receivable"
+                          : "Record Payment"}
+                        
+                      </button>
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
                     <div className="my-2">
