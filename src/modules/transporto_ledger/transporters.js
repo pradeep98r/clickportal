@@ -36,11 +36,13 @@ import {
   singleTransporter,
   fromInv,
   outstandingAmountInv,
+  transpoTabs,
 } from "../../reducers/transpoSlice";
 import add from "../../assets/images/add.svg";
 import AddRecordPayment from "./transportoRecord";
 import { getCropUnit } from "../../components/getCropUnitValue";
 import { getPartnerData } from "../../actions/billCreationService";
+import TransportoRecord from "./transportoRecord";
 const Transporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -71,6 +73,7 @@ const Transporters = (props) => {
       console.log(props.transPortoTabVal, "all");
       getTransportersData();
     }
+    dispatch(transpoTabs("paymentledger"))
   }, [props]);
 
   const getTransportersData = () => {
@@ -158,6 +161,7 @@ const Transporters = (props) => {
     }
   };
   const tabEvent = (type) => {
+    dispatch(transpoTabs(type));
     if (type == "inventoryledger") {
       inventoryLedger(clickId, transporterId);
     }
@@ -639,7 +643,7 @@ const Transporters = (props) => {
         ""
       )}
       {recordPayModalStatus ? (
-        <AddRecordPayment
+        <TransportoRecord
           showRecordPayModal={recordPayModal}
           closeRecordPayModal={() => setRecordPayModal(false)}
           tabs={tabs}

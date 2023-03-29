@@ -17,7 +17,8 @@ export const transpoSlice = createSlice({
     singleTransporter:{},
     fromTransporter:false,
     fromInv:false,
-    outstandingAmountInv:[]
+    outstandingAmountInv:[],
+    transpoTabs:null,
   },
   reducers: {
     transpoLedgersInfo: (state, action) => {
@@ -65,9 +66,12 @@ export const transpoSlice = createSlice({
       outstandingAmountInv: (state, action) => {
         state.outstandingAmountInv = action.payload;
       },
+      transpoTabs:(state, action) =>{
+        state.transpoTabs = action.payload
+      }
   },
 });
 
-export const { transpoLedgersInfo,singleTransporterObject,transporterIdVal,outstandingAmount,paymentSummaryInfo,paymentTotals,inventoryTotals,inventorySummaryInfo,outstandingBalForParty,inventoryUnitDetails,allPartnersInfo,singleTransporter,fromTransporter,fromInv,outstandingAmountInv } = transpoSlice.actions;
+export const { transpoLedgersInfo,singleTransporterObject,transporterIdVal,outstandingAmount,paymentSummaryInfo,paymentTotals,inventoryTotals,inventorySummaryInfo,outstandingBalForParty,inventoryUnitDetails,allPartnersInfo,singleTransporter,fromTransporter,fromInv,outstandingAmountInv,transpoTabs } = transpoSlice.actions;
 
 export default transpoSlice.reducer;
