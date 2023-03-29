@@ -18,6 +18,7 @@ import Ledgers from "./ledgers";
 import TransportoRecord from "../transporto_ledger/transportoRecord";
 import { fromTransporter, outstandingAmount, paymentSummaryInfo, paymentTotals, transpoLedgersInfo } from "../../reducers/transpoSlice";
 import { getParticularTransporter, getTransporters } from "../../actions/transporterService";
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
