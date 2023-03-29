@@ -27,6 +27,10 @@ export function getInventoryListById(clickId,transId,billId){
       `/account/transporter/caId/${clickId}/transId/${transId}/refId/${billId}?writerId=${writerId}`
     );
   }
+//Update Record Inventory
+export function updateRecordInventory(updateInventoryReq){
+    return axiosCommon.put(`/account/transporter/record/inventory`, updateInventoryReq);
+}
 //   https://dev-api.onoark.com/v1/account/transporter/caId/{caId}/transId/{transId}/refId/{refId}
 export default {
     getTransporters,
@@ -34,5 +38,6 @@ export default {
     getInventoryLedgers,
     addRecordInventory,
     getInventory,
-    getInventoryListById
+    getInventoryListById,
+    updateRecordInventory
 }

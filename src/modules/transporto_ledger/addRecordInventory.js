@@ -14,6 +14,7 @@ import {
   getInventory,
   getInventoryLedgers,
   getTransporters,
+  updateRecordInventory,
 } from "../../actions/transporterService";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,10 +25,15 @@ import {
   inventoryUnitDetails,
 } from "../../reducers/transpoSlice";
 import { Modal } from "react-bootstrap";
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 const AddRecordInventory = (props) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch();  
+  var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const transpoData = useSelector((state) => state.transpoInfo);
-  const ledgerData = transpoData?.singleTransporterObject;
+  const fromInvEditStatus=props.fromInventoryHist
+  console.log(fromInvEditStatus, paymentViewData)
+  const viewInfo=paymentViewData?.paymentViewInfo;
+  const ledgerData =fromInvEditStatus?viewInfo: transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
   const getInventor = transpoData?.inventoryUnitDetails;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -36,11 +42,12 @@ const AddRecordInventory = (props) => {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   const [selectDate, setSelectDate] = useState(new Date());
-  const [comments, setComments] = useState(" ");
-  const [unit, setUnit] = useState("CRATES");
-  const [qty, setQty] = useState(0);
-  const [tabs, setTabs] = useState("Given");
+  const [comments, setComments] = useState(fromInvEditStatus?viewInfo?.comments:" ");
+  const [unit, setUnit] = useState(fromInvEditStatus?viewInfo?.details?.unit:"CRATES");
+  const [qty, setQty] = useState(fromInvEditStatus?viewInfo?.details?.qty:0);
+  const [tabs, setTabs] = useState(fromInvEditStatus?viewInfo?.type =='GIVEN'?'Given':'Collected':"Given");
   const [requiredCondition, setRequiredCondition] = useState("");
+
   const links = [
     {
       id: 1,
@@ -57,11 +64,21 @@ const AddRecordInventory = (props) => {
     setTabs(type);
   };
   const closePopup = () => {
-    setQty(0);
-    setRequiredCondition("");
-    setComments("");
-    setSelectDate(new Date());
-    $("#myModal").modal("hide");
+    if(fromInvEditStatus){
+      setComments(viewInfo?.comments);
+      setUnit(viewInfo?.details?.unit);
+      setQty(viewInfo?.details?.qty);
+      setTabs(viewInfo?.type =='GIVEN'?'Given':'Collected');
+      setRequiredCondition("");
+      setSelectDate(new Date(viewInfo?.date))
+    } else{
+      setQty(0);
+      setRequiredCondition("");
+      setComments("");
+      setSelectDate(new Date());
+      $("#myModal").modal("hide");
+    }
+    
   };
   // Convert standard date time to normal date
   function convert(str) {
@@ -77,7 +94,7 @@ const AddRecordInventory = (props) => {
       setRequiredCondition("Quantity Received cannot be empty");
     } else if (isNaN(qty)) {
       setRequiredCondition("Invalid Quantity");
-    } else if (qty.trim().length !== 0 && !(qty < 0)) {
+    } else if (qty.toString().trim().length !== 0 && !(qty < 0)) {
       postRecordInventory();
     }
   };
@@ -97,14 +114,37 @@ const AddRecordInventory = (props) => {
       ],
       writerId:writerId
     };
-    addRecordInventory(inventoryRequest)
-      .then((response) => {
-        toast.success(response.data.status.message, {
+    const updateInventoryReq={
+      action:'UPDATE',
+      caId: clickId,
+      transId: transId,
+      comments: comments,
+      date: convert(selectDate),
+      type: tabs.toUpperCase(),
+      refId:viewInfo?.refId,
+      inventory:
+        {
+          qty: parseInt(qty),
+          unit: unit,
+        },
+      writerId:writerId,
+      mobile:viewInfo?.mobile,
+      partyName:viewInfo?.partyName,
+      details:{
+        qty: parseInt(qty),
+        unit: unit,
+      }
+    }
+    if(fromInvEditStatus){
+      updateRecordInventory(updateInventoryReq).then(res=>{
+        toast.success(res.data.status.message, {
           toastId: "errorr2",
         });
-        closePopup();
-        props.closeRecordInventoryModal()
-        if (props.tabs === "inventoryledger") {
+        dispatch(paymentViewInfo(updateInventoryReq));
+        window.setTimeout(function(){
+          props.closeRecordInventoryModal();
+        },800)
+        if (transpoData?.transpoTabs=='inventoryledger') {
           getTransportersData()
           inventoryLedger(clickId, transId);
           getInventoryRecord()
@@ -116,6 +156,30 @@ const AddRecordInventory = (props) => {
         });
         console.log(error.message);
       });
+    } else{
+      addRecordInventory(inventoryRequest)
+      .then((response) => {
+        toast.success(response.data.status.message, {
+          toastId: "errorr2",
+        });
+        window.setTimeout(function(){
+          props.closeRecordInventoryModal();
+        },800)
+        closePopup();
+        if (props.tabs === "inventoryledger" || transpoData?.transpoTabs=='inventoryledger') {
+          getTransportersData()
+          inventoryLedger(clickId, transId);
+          getInventoryRecord()
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.status.message, {
+          toastId: "error3",
+        });
+        console.log(error.message);
+      });
+    }
+    
   };
   const resetInput = (e) => {
     if (e.target.value == 0) {
@@ -160,9 +224,8 @@ const AddRecordInventory = (props) => {
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                Add Record Inventory
+                {fromInvEditStatus?'Update Record Inventory': 'Add Record Inventory'}
               </h5>
-
               <img
                 src={close}
                 alt="image"
@@ -184,7 +247,8 @@ const AddRecordInventory = (props) => {
                     <li key={link.id} className="nav-item ">
                       <a
                         className={
-                          "nav-link" + (tabs == link.to ? " active" : "")
+                          "nav-link" + (
+                            tabs == link.to ? " active" : "")
                         }
                         href={"#" + link.to}
                         role="tab"
@@ -255,7 +319,7 @@ const AddRecordInventory = (props) => {
               </div>
             </div>
             <div id="out-paybles">
-              <p id="p-tag">{langFullData.inventoryBalance}</p>
+              <p id="p-tag">{langFullData.inventoryBalance}</p>  
             </div>
             <div id="cbbk-tag">
               {props.tabs === "inventoryledger" &&
@@ -291,7 +355,7 @@ const AddRecordInventory = (props) => {
                   for="inlineRadio1"
                   id="crates"
                 >
-                  {langFullData.crates.toUpperCase()}
+                  CRATES
                 </label>
               </div>
               <div className="form-check form-check-inline">
@@ -302,6 +366,7 @@ const AddRecordInventory = (props) => {
                   id="inlineRadio2"
                   value="SACS"
                   onChange={(e) => setUnit(e.target.value)}
+                  checked={unit === "SACS"}
                   required
                 />
                 <label
@@ -309,7 +374,7 @@ const AddRecordInventory = (props) => {
                   for="inlineRadio2"
                   id="sacs"
                 >
-                  {langFullData.sacs}
+                  SACS
                 </label>
               </div>
               <div className="form-check form-check-inline">
@@ -320,6 +385,7 @@ const AddRecordInventory = (props) => {
                   id="inlineRadio3"
                   value="BOXES"
                   onChange={(e) => setUnit(e.target.value)}
+                  checked={unit === "BOXES"}
                   required
                 />
                 <label
@@ -327,7 +393,7 @@ const AddRecordInventory = (props) => {
                   for="inlineRadio3"
                   id="boxes"
                 >
-                  {langFullData.boxes}
+                  BOXES
                 </label>
               </div>
               <div className="form-check form-check-inline radioBtnValues">
@@ -338,6 +404,7 @@ const AddRecordInventory = (props) => {
                   id="inlineRadio4"
                   value="BAGS"
                   onChange={(e) => setUnit(e.target.value)}
+                  checked={unit === "BAGS"}
                   required
                 />
                 <label
@@ -345,7 +412,7 @@ const AddRecordInventory = (props) => {
                   for="inlineRadio4"
                   id="bags"
                 >
-                  {langFullData.bags}
+                  BAGS
                 </label>
               </div>
               <div className="form-gro">
@@ -357,7 +424,12 @@ const AddRecordInventory = (props) => {
                   id="amtRecieved"
                   onFocus={(e) => resetInput(e)}
                   required
-                  onChange={(e) => setQty(e.target.value)}
+                  value={qty}
+                  onChange={(e) => setQty(e.target.value
+                    .replace(/[^\d.]/g, "")
+                    .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+                    .replace(/(\.\d{0,2})\d*/, "$1")
+                    .replace(/(\.\d*)\./, "$1"))}
                 />
                 <p className="text-valid">{requiredCondition}</p>
               </div>

@@ -14,18 +14,19 @@ const InventoryLedger = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const transpoData = useSelector((state) => state.transpoInfo);
-  const paymentLedgerSummary = transpoData?.paymentSummaryInfo;
+  const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
+  console.log(transpoData);
+  const tabs = props.tabs;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   var transporterId = transpoData?.transporterIdVal;
-  console.log(paymentLedgerSummary)
+
   const dispatch = useDispatch();
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [showInvtModalStatus, setShowInvModalStatus] = useState(false);
   const [showInvModal, setShowInvModal] = useState(false);
-  const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
-  const tabs = props.tabs;
+ 
   const billOnClickView = (billId, type, i, partyId) => {
     var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
     if (bId?.includes("T")) {
