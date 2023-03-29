@@ -1,13 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import NoDataAvailable from "../../components/noDataAvailable";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAdvanceListById, getBuyBillId, getPaymentListById } from "../../actions/ledgersService";
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { fromTransporter } from "../../reducers/transpoSlice";
+import { billViewInfo } from "../../reducers/billViewSlice";
+import BillView from "../buy_bill_book/billView";
 const InventoryLedger = (props) => {
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
   const transpoData = useSelector((state) => state.transpoInfo);
-  const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
-  const tabs = props.tabs;
+  const paymentLedgerSummary = transpoData?.paymentSummaryInfo;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
+  var transporterId = transpoData?.transporterIdVal;
+  console.log(paymentLedgerSummary)
+  const dispatch = useDispatch();
+  const [showBillModalStatus, setShowBillModalStatus] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
+  const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
+  const tabs = props.tabs;
+  const billOnClickView = (billId, type, i, partyId) => {
+    var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
+    if (bId?.includes("T")) {
+      getPaymentListById(clickId, bId).then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          dispatch(paymentViewInfo(res.data.data));
+          setShowPaymentModalStatus(true);
+          setShowPaymentModal(true);
+          dispatch(fromTransporter(true))
+        }
+      });
+    } 
+    else {
+      getBuyBillId(clickId, bId).then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          Object.assign(res.data.data, { index: i, partyType: "FARMER" });
+          dispatch(billViewInfo(res.data.data));
+          localStorage.setItem("billData", JSON.stringify(res.data.data));
+          setShowBillModalStatus(true);
+          setShowBillModal(true);
+        }
+      });
+    }
+  };
   return (
     <div className="transporterSummary" id="scroll_style">
       {tabs == "inventoryledger" ? (
@@ -33,6 +72,9 @@ const InventoryLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
+                      <button className="pl-0" onClick={() =>
+                            billOnClickView(item.refId, index, item.partyId)
+                          }>
                         <p
                           style={{
                             color: "#0066FF",
@@ -41,6 +83,7 @@ const InventoryLedger = (props) => {
                         >
                           {item.refId}
                         </p>
+                        </button>
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-3">
@@ -109,6 +152,16 @@ const InventoryLedger = (props) => {
             <NoDataAvailable />
           )}
         </div>
+      ) : (
+        ""
+      )}
+         {showBillModalStatus ? (
+        <BillView
+          showBillViewModal={showBillModal}
+          closeBillViewModal={() => setShowBillModal(false)}
+          fromLedger={true}
+          fromTransporter={true}
+        />
       ) : (
         ""
       )}
