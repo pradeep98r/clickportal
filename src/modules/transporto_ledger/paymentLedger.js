@@ -37,7 +37,7 @@ const PaymentLedger = (props) => {
       });
     } 
    else if (bId?.includes("A")) {
-      getAdvanceListById(clickId, bId, partyId).then((res) => {
+      getAdvanceListById(clickId, bId, transporterId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
@@ -84,7 +84,7 @@ const PaymentLedger = (props) => {
                         <p id="p-common-sno">{index + 1}</p>
                       </td>
                       <td className="col-2">
-                      <button onClick={() =>
+                      <button className="pl-0" onClick={() =>
                             billOnClickView(item.refId, index, item.partyId)
                           }>
                         <p
@@ -136,7 +136,6 @@ const PaymentLedger = (props) => {
         <BillView
           showBillViewModal={showBillModal}
           closeBillViewModal={() => setShowBillModal(false)}
-          // allBillsData={buyBillData}
           fromLedger={true}
           fromTransporter={true}
         />
@@ -148,7 +147,6 @@ const PaymentLedger = (props) => {
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
           partyType = {'Transporter'}
-          
         />
       ) : (
         ""

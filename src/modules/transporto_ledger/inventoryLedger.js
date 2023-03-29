@@ -1,14 +1,61 @@
-import React from "react";
+import React, { useState } from "react";
 import NoDataAvailable from "../../components/noDataAvailable";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAdvanceListById, getBuyBillId, getPaymentListById } from "../../actions/ledgersService";
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { fromTransporter } from "../../reducers/transpoSlice";
+import { billViewInfo } from "../../reducers/billViewSlice";
+import BillView from "../buy_bill_book/billView";
+import PaymentHistoryView from "../ledgers/paymentHistory";
+import InventoryHistoryView from "./inventoryHistory";
+import { getInventoryListById } from "../../actions/transporterService";
 const InventoryLedger = (props) => {
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
   const transpoData = useSelector((state) => state.transpoInfo);
   const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
   console.log(transpoData);
   const tabs = props.tabs;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
+  var transporterId = transpoData?.transporterIdVal;
+
+  const dispatch = useDispatch();
+  const [showBillModalStatus, setShowBillModalStatus] = useState(false);
+  const [showBillModal, setShowBillModal] = useState(false);
+  const [showInvtModalStatus, setShowInvModalStatus] = useState(false);
+  const [showInvModal, setShowInvModal] = useState(false);
+ 
+  const billOnClickView = (billId, type, i, partyId) => {
+    var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
+    if (bId?.includes("T")) {
+      getInventoryListById(clickId,transporterId, bId).then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if(res.data.data != null){
+            dispatch(paymentViewInfo(res.data.data));
+            setShowInvModalStatus(true);
+            setShowInvModal(true);
+            dispatch(fromTransporter(true))
+          }
+          else{
+            dispatch(paymentViewInfo([]));
+          }
+        }
+      });
+    } 
+    else {
+      getBuyBillId(clickId, bId).then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          Object.assign(res.data.data, { index: i, partyType: "FARMER" });
+          dispatch(billViewInfo(res.data.data));
+          localStorage.setItem("billData", JSON.stringify(res.data.data));
+          setShowBillModalStatus(true);
+          setShowBillModal(true);
+        }
+      });
+    }
+  };
   return (
     <div className="transporterSummary" id="scroll_style">
       {tabs == "inventoryledger" ? (
@@ -34,6 +81,9 @@ const InventoryLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
+                      <button className="pl-0" onClick={() =>
+                            billOnClickView(item.refId, index, item.partyId)
+                          }>
                         <p
                           style={{
                             color: "#0066FF",
@@ -42,6 +92,7 @@ const InventoryLedger = (props) => {
                         >
                           {item.refId}
                         </p>
+                        </button>
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-3">
@@ -110,6 +161,25 @@ const InventoryLedger = (props) => {
             <NoDataAvailable />
           )}
         </div>
+      ) : (
+        ""
+      )}
+         {showBillModalStatus ? (
+        <BillView
+          showBillViewModal={showBillModal}
+          closeBillViewModal={() => setShowBillModal(false)}
+          fromLedger={true}
+          fromTransporter={true}
+        />
+      ) : (
+        ""
+      )}
+      {showInvtModalStatus ? (
+        <InventoryHistoryView
+          showInvViewModal={showInvModal}
+          closeInvViewModal={() => setShowInvModal(false)}
+          partyType = {'Transporter'}
+        />
       ) : (
         ""
       )}

@@ -22,10 +22,17 @@ export function addRecordInventory(inventoryRequest){
 export function getInventory(clickId, transId){
     return axiosCommon.get(`/account/transporter/caId/${clickId}/transId/${transId}?writerId=${writerId}`);
 }
+export function getInventoryListById(clickId,transId,billId){
+    return axiosCommon.get(
+      `/account/transporter/caId/${clickId}/transId/${transId}/refId/${billId}?writerId=${writerId}`
+    );
+  }
+//   https://dev-api.onoark.com/v1/account/transporter/caId/{caId}/transId/{transId}/refId/{refId}
 export default {
     getTransporters,
     getParticularTransporter,
     getInventoryLedgers,
     addRecordInventory,
-    getInventory
+    getInventory,
+    getInventoryListById
 }

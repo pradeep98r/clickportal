@@ -35,7 +35,7 @@ const PaymentHistoryView = (props) => {
   const partyTypeVal = props.partyType;
   const dispatch = useDispatch();
   var [paymentHistoryData, setPaymentHistoryData] = useState(
-    paymentViewData?.paymentViewInfo
+   paymentViewData?.paymentViewInfo
   );
   console.log(paymentHistoryData,paymentViewData?.paymentViewInfo)
   var discountedAmount = 0;
