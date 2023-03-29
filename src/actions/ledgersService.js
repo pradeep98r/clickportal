@@ -61,6 +61,7 @@ export function getPaymentListById(clickId,billId){
     `/click/ledgers/caId/${clickId}/refId/${billId}?writerId=${writerId}`
   );
 }
+
 export function getAdvanceListById(clickId,billId,partyId){
   return axiosCommon.get(
     `/payments/advances/ledger/caId/${clickId}/partyId/${partyId}/refId/${billId}?writerId=${writerId}`
