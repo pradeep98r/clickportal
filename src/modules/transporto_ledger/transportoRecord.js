@@ -10,7 +10,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
-import { getOutstandingBal, postRecordPayment } from "../../actions/ledgersService";
+import { getOutstandingBal, postRecordPayment, updateRecordPayment } from "../../actions/ledgersService";
 import moment from "moment";
 import {
   getParticularTransporter,
@@ -22,15 +22,21 @@ import {
   paymentTotals,
   transpoLedgersInfo,
 } from "../../reducers/transpoSlice";
-const AddRecordPayment = (props) => {
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
-  const ledgerData = transpoData?.singleTransporterObject;
+  var paymentViewData = useSelector((state) => state.paymentViewInfo);
+  const editRecordStatus=props.editRecordStatus;
+  const viewInfo=paymentViewData?.paymentViewInfo
+  const ledgerData =editRecordStatus?viewInfo:transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
   const [selectDate, setSelectDate] = useState(new Date());
   const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
+  var paymentViewData = useSelector((state) => state.paymentViewInfo);
+  console.log(paymentViewData,"data")
   useEffect(() => {
     getOutstandingPaybles(clickId, transId);
   }, [props.showRecordPayModal]);
@@ -43,8 +49,8 @@ const AddRecordPayment = (props) => {
     });
   };
   const [requiredCondition, setRequiredCondition] = useState("");
-  let [paidsRcvd, setPaidsRcvd] = useState(0);
-  const [comments, setComments] = useState(" ");
+  let [paidsRcvd, setPaidsRcvd] = useState(editRecordStatus?viewInfo?.amount:0);
+  const [comments, setComments] = useState(editRecordStatus?viewInfo?.comments:" ");
   const getAmountVal = (e) => {
     setPaidsRcvd(
       e.target.value
@@ -82,8 +88,21 @@ const AddRecordPayment = (props) => {
       );
     }
   };
-  const [paymentMode, setPaymentMode] = useState("CASH");
+  const [paymentMode, setPaymentMode] = useState(editRecordStatus?viewInfo?.paymentMode:"CASH");
   const addRecordPayment = async () => {
+    // const editRecordReq={
+    //   caId: clickId,
+    //   partyId: transId,
+    //   date: moment(selectDate).format("YYYY-MM-DD"),
+    //   comments: comments,
+    //   paidRcvd: paidsRcvd,
+    //   paymentMode: paymentMode,
+    //   billIds: [],
+    //   type: "TRANSPORTER",
+    //   discount: "",
+    //   mobile:transpoData?.mobile,
+    //   partyName:transpoData?.partyName
+    // }
     const addRecordData = {
       caId: clickId,
       partyId: transId,
@@ -102,34 +121,36 @@ const AddRecordPayment = (props) => {
       date: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       paidRcvd: paidsRcvd,
-      //   paymentMode: paymentMode,
+        paymentMode: paymentMode,
       billIds: [],
       type: "TRANSPORTER",
       discount: "",
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
       mobile: ledgerData?.mobile,
+      partyName:ledgerData?.partyName,
+      amount:paidsRcvd
     };
-    // if () {
-    //   await updateRecordPayment(updateRecordRequest).then(
-    //     (res) => {
-    //       toast.success(res.data.status.message, {
-    //         toastId: "errorr2",
-    //       });
-    //       dispatch(paymentViewInfo(updateRecordRequest));
-    //       dispatch(fromRecordPayment(true));
-    //       window.setTimeout(function () {
-    //         props.closeRecordPaymentModal();
-    //       }, 1000);
-    //     },
-    //     (error) => {
-    //       console.log(error.message);
-    //       toast.error(error.res.data.status.message, {
-    //         toastId: "error3",
-    //       });
-    //     }
-    //   );
-    // } else {
+    if (transpoData?.fromTransporter) {
+      await updateRecordPayment(updateRecordRequest).then(
+        (res) => {
+          toast.success(res.data.status.message, {
+            toastId: "errorr2",
+          });
+          dispatch(paymentViewInfo(updateRecordRequest));
+          // dispatch(fromRecordPayment(true));
+          window.setTimeout(function () {
+            props.closeRecordPayModal();
+          }, 1000);
+        },
+        (error) => {
+          console.log(error.message);
+          toast.error(error.res.data.status.message, {
+            toastId: "error3",
+          });
+        }
+      );
+    } else {
     await postRecordPayment(addRecordData).then(
       (response) => {
         closePopup();
@@ -147,8 +168,9 @@ const AddRecordPayment = (props) => {
         });
       }
     );
+    }
     console.log(props.tabs);
-    if (props.tabs == "paymentledger") {
+    if (props.tabs == "paymentledger" || transpoData?.transpoTabs == 'paymentledger') {
       getTransportersData();
       getOutstandingPaybles(clickId, transId);
       paymentLedger(clickId, transId);
@@ -156,7 +178,6 @@ const AddRecordPayment = (props) => {
   };
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-        console.log(response.data.data)
       dispatch(outstandingAmount(response.data.data));
       dispatch(transpoLedgersInfo(response.data.data.ledgers));
     });
@@ -196,12 +217,20 @@ const AddRecordPayment = (props) => {
       },
   ];
   const closePopup = () => {
+    if(editRecordStatus){
+      setPaidsRcvd(viewInfo?.amount);
+      setRequiredCondition("");
+      setPaymentMode(viewInfo?.paymentMode);
+      setComments(viewInfo?.comments);
+      setSelectDate(new Date(viewInfo?.date));
+    } else{
       setPaidsRcvd(0);
       setRequiredCondition("");
       setPaymentMode("CASH");
       setComments("");
       setSelectDate(new Date());
-    }
+    }   
+  }
   return (
     <Modal
       show={props.showRecordPayModal}
@@ -366,4 +395,4 @@ const AddRecordPayment = (props) => {
     </Modal>
   );
 };
-export default AddRecordPayment;
+export default TransportoRecord;

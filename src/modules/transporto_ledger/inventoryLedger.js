@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 const InventoryLedger = (props) => {
   const transpoData = useSelector((state) => state.transpoInfo);
   const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
+  console.log(transpoData);
   const tabs = props.tabs;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);

@@ -15,11 +15,15 @@ import { updateRecordPayment, getBillHistoryListById, getLedgers, getLedgerSumma
   ,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate, deleteAdvancePayment } from "../../actions/ledgersService";
 import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables, trhoughRecordPayment } from "../../reducers/ledgerSummarySlice";
 import Ledgers from "./ledgers";
+import TransportoRecord from "../transporto_ledger/transportoRecord";
+import { fromTransporter, outstandingAmount, paymentSummaryInfo, paymentTotals, transpoLedgersInfo } from "../../reducers/transpoSlice";
+import { getParticularTransporter, getTransporters } from "../../actions/transporterService";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   const transpoData = useSelector((state) => state.transpoInfo);
   const fromTranspo = transpoData?.fromTransporter;
+  const transporterTabs=transpoData?.transpoTabs
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
@@ -64,13 +68,14 @@ const PaymentHistoryView = (props) => {
   const [recordPayModalStatus, setRecordPayModalStatus] =
   useState(false);
 const [recordPayModal, setRecordPayModal] = useState(false);
+  const [editRecordPaymentStat, setRecordPaymentStat] = useState(false);
   const editRecordPayment =()=>{
-    console.log(paymentViewData.paymentViewInfo)
     dispatch(trhoughRecordPayment(false));
-    if(!fromTranspo)
+    if(fromTranspo)
     {
+      setRecordPaymentStat(true);
       setRecordPaymentActive(true);
-    setRecordPaymentModal(true);
+      setRecordPaymentModal(true);
     }
     else{
       setRecordPayModalStatus(true);
@@ -101,7 +106,12 @@ const [recordPayModal, setRecordPayModal] = useState(false);
     window.setTimeout(function(){
       props.closePaymentViewModal();
     },1000)
-    commonUpdateLedgers();
+    if(fromTranspo){
+      updateTransportersData();
+    } else{
+      commonUpdateLedgers();
+    }
+    
     })
   }
   const advanceDeleteObject = {
@@ -122,6 +132,10 @@ const [recordPayModal, setRecordPayModal] = useState(false);
     },1000)
     commonUpdateLedgers();
   })
+  }
+  const updateTransportersData =() =>{
+    getTransportersData();
+    paymentLedger(clickId,paymentHistoryData?.partyId)
   }
   const commonUpdateLedgers = () =>{
     var partyId = paymentHistoryData?.partyId;
@@ -146,10 +160,25 @@ const [recordPayModal, setRecordPayModal] = useState(false);
         } else{
         detailedLedgerByDate(clickId,partyId,fromDate,toDate)
         }
-      }
-    
-  
+      }  
   }
+  const getTransportersData = () => {
+    getTransporters(clickId).then((response) => {
+      dispatch(outstandingAmount(response.data.data));
+      dispatch(transpoLedgersInfo(response.data.data.ledgers));
+    });
+  };
+  const paymentLedger = (clickId, partyId) => {
+    getParticularTransporter(clickId, partyId)
+      .then((response) => {
+        console.log(response.data.data,'pay')
+        dispatch(paymentSummaryInfo(response.data.data.details));
+        dispatch(paymentTotals(response.data.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getALlLedgers = (data) => {
     dispatch(allLedgers(data));
   }
@@ -371,7 +400,7 @@ const [recordPayModal, setRecordPayModal] = useState(false);
             </div>
           </div>
         </div>
-        {recordPaymentActive?
+        {recordPaymentActive && !fromTranspo?
         <RecordPayment 
           LedgerData={paymentViewData?.paymentViewInfo}
           ledgerId={paymentViewData?.paymentViewInfo?.partyId}
@@ -379,7 +408,13 @@ const [recordPayModal, setRecordPayModal] = useState(false);
           closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
           fromPaymentHistory={recordPaymentActive}
           ledgers={getALlLedgers}
-          />:''}
+          />:fromTranspo && recordPaymentActive?
+          <TransportoRecord 
+          showRecordPayModal={recordPaymentModal}
+          closeRecordPayModal={()=> setRecordPaymentModal(false)}
+          editRecordStatus={editRecordPaymentStat}
+          />
+        :''}
       </div>
       <ToastContainer />
     </Modal>
