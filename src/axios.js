@@ -5,7 +5,7 @@ const clientId = isLocalAuth == "true" ? loginData.authKeys.clientId : "";
 const clientSecret =
   isLocalAuth == "true" ? loginData.authKeys.clientSecret : "";
 const instance = axios.create({
-  baseURL: "https://dev-api.onoark.com/v1/",
+  baseURL: "https://api.onoark.com/v1/",
 });
 instance.defaults.headers.common["Content-Type"] = "application/json";
 instance.defaults.headers.common["client-id"] = clientId;
