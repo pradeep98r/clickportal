@@ -50,7 +50,7 @@ const TransportoRecord = (props) => {
   };
   const [requiredCondition, setRequiredCondition] = useState("");
   let [paidsRcvd, setPaidsRcvd] = useState(editRecordStatus?viewInfo?.amount:0);
-  const [comments, setComments] = useState(editRecordStatus?viewInfo?.comments:" ");
+  const [comments, setComments] = useState(editRecordStatus?viewInfo?.comments:"");
   const getAmountVal = (e) => {
     setPaidsRcvd(
       e.target.value
@@ -90,19 +90,6 @@ const TransportoRecord = (props) => {
   };
   const [paymentMode, setPaymentMode] = useState(editRecordStatus?viewInfo?.paymentMode:"CASH");
   const addRecordPayment = async () => {
-    // const editRecordReq={
-    //   caId: clickId,
-    //   partyId: transId,
-    //   date: moment(selectDate).format("YYYY-MM-DD"),
-    //   comments: comments,
-    //   paidRcvd: paidsRcvd,
-    //   paymentMode: paymentMode,
-    //   billIds: [],
-    //   type: "TRANSPORTER",
-    //   discount: "",
-    //   mobile:transpoData?.mobile,
-    //   partyName:transpoData?.partyName
-    // }
     const addRecordData = {
       caId: clickId,
       partyId: transId,
@@ -135,13 +122,13 @@ const TransportoRecord = (props) => {
       await updateRecordPayment(updateRecordRequest).then(
         (res) => {
           toast.success(res.data.status.message, {
-            toastId: "errorr2",
+            toastId: "errorr1",
           });
           dispatch(paymentViewInfo(updateRecordRequest));
           // dispatch(fromRecordPayment(true));
           window.setTimeout(function () {
             props.closeRecordPayModal();
-          }, 1000);
+          }, 800);
         },
         (error) => {
           console.log(error.message);
@@ -151,20 +138,20 @@ const TransportoRecord = (props) => {
         }
       );
     } else {
-    await postRecordPayment(addRecordData).then(
+      await postRecordPayment(addRecordData).then(
       (response) => {
-        closePopup();
         toast.success(response.data.status.message, {
           toastId: "errorr2",
         });
         window.setTimeout(function () {
           props.closeRecordPayModal();
-        }, 1000);
+        }, 800);
+        closePopup();
         // dispatch(fromRecordPayment(true));
       },
       (error) => {
         toast.error(error.response.data.status.message, {
-          toastId: "error3",
+          toastId: "error4",
         });
       }
     );
@@ -306,13 +293,14 @@ const TransportoRecord = (props) => {
             </div>
             <div className="row align-items-center record_modal_row">
               <div className="" align="left">
+                {!editRecordStatus?
                 <div className="out-paybles p-0">
                   <p id="p-tag">Outstanding Paybles</p>
                   <p id="recieve-tag">
                     &#8377;
                     {outStandingBal ? outStandingBal.toFixed(2) : 0}
                   </p>
-                </div>
+                </div>:''}
               </div>
             </div>
             <div

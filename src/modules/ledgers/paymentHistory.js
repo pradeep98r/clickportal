@@ -34,9 +34,10 @@ const PaymentHistoryView = (props) => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const partyTypeVal = props.partyType;
   const dispatch = useDispatch();
-  var [paymentHistoryData, setPaymentHistoryData] = useState(
-   paymentViewData?.paymentViewInfo
-  );
+  const paymentHistoryData=paymentViewData?.paymentViewInfo
+  // var [paymentHistoryData, setPaymentHistoryData] = useState(
+  //  paymentViewData?.paymentViewInfo
+  // );
   console.log(paymentHistoryData,paymentViewData?.paymentViewInfo)
   var discountedAmount = 0;
   var discountPercentage = 0;
@@ -60,7 +61,7 @@ const PaymentHistoryView = (props) => {
       setfromAdvances(false);
     }
     
-    setPaymentHistoryData(paymentViewData.paymentViewInfo);
+    dispatch(paymentViewInfo(paymentViewData.paymentViewInfo));
   }, [props.showPaymentViewModal]);
 
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
