@@ -12,6 +12,7 @@ import {
 import SearchField from "../../components/searchField";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import "../../modules/ledgers/buyerLedger.scss";
+import "../../modules/transporto_ledger/transportoLedger.scss"
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {

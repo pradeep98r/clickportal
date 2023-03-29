@@ -105,13 +105,16 @@ input[type=radio]:checked+label {
     background: var(--ono-primary);
     font-weight: 500;
     font-size: 12px;
-    color: white;
+    color: #fff;
     cursor: pointer;
     .coloring, .address-tag, .mobilee-tag, .namedtl-tag,.paid-coloring{
-        color: white;
+        color: #fff;
     }
     td{
         padding: 10px;
+    }
+    h5, h6{
+      color: #fff;
     }
 }
 .tabRowSelected, .tr-tags{
@@ -691,4 +694,11 @@ max-width: 600px;
     .ledger_table_col .col-lg-3, .ledger_table_col .col-lg-1, .ledger_table_col .col-lg-4, .ledger_table_col .col-lg-6, .ledger_table_col .col-lg-2 {
         padding-right: 5px;
     }
-  }
+}
+.profile-img {
+    border-radius: 100%;
+    cursor: pointer;
+    height: 40px;
+    margin-right: 10px;
+    width: 40px;
+}

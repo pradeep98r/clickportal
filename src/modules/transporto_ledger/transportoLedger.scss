@@ -148,10 +148,13 @@ input[type=radio]:label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 255px);
+    height: calc(100vh - 308px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
+}
+.transporto_ledger_scroll{
+    height: calc(100vh - 260px)!important;  
 }
 .transporterDetailed{
     width: 100%;
@@ -637,5 +640,14 @@ input[type=radio].radioBtnValues{
     #singles-img{
         width: 30px;
         height: 30px;
+    }
+}
+.all_trans_head{
+    background-color: #D7F3DD;
+    padding: 10px;
+    p{
+        font-size: 13px;
+        color: #121212;
+        font-weight: 500;
     }
 }
