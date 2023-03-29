@@ -23,7 +23,6 @@ const SelectBillIds = (props) => {
   const dateChanged =moment(rdDateChange?.dates).format("DD-MMM-YY");
   const dateFromRecordPayment =rdDateChange?.dateInRP
   var dateValue = dateChanged + " to " + dateChanged
-  console.log(dateChanged,"changed")
   // const date = moment(props.selectedDateTo).format("DD-MMM-YY");
   // var [dateValue, setDateValue] = useState(date + " to " + date);
   const selectDate = moment(props.selectedDate).format("YYYY-MM-DD");
@@ -89,17 +88,18 @@ const SelectBillIds = (props) => {
       const selectedBillId = someIds[index]
         ? someIds[index]?.caBSeq
         : listOfIds[index]?.caBSeq;
-      console.log(listOfIds[index], index, selectedBillId, "idsgsa");
       if (dummyIds.includes(selectedBillId)) {
         setBillids(billIds.filter((id) => id !== selectedBillId));
         setBillIdsObject(
           billObject.filter((id) => id.caBSeq !== selectedBillId)
         );
       } else {
-        const selectBill = someIds[index] ? someIds[index] : listOfIds[index];
+        if(index != -1){
+          const selectBill = someIds[index] ? someIds[index] : listOfIds[index];
         billObject.push(selectBill);
         billIds.push(selectedBillId);
         dummyIds.push(selectedBillId);
+        }
       }
     }
   };
@@ -156,7 +156,7 @@ const SelectBillIds = (props) => {
     <Modal
       show={props.showBillIdsModal}
       close={props.billIdsCloseModal}
-      centered
+      
       className="record_payment_modal select_billID_popup"
     >
       <div className="modal-body partner_model_body">
@@ -178,7 +178,7 @@ const SelectBillIds = (props) => {
         <div className="row">
           <div className="d-flex bills-search mt-2 col-lg-6" role="search">
             <SearchField
-              placeholder="Search"
+              placeholder="Bill Id / Amount / date"
               // val={searchValue}
               onChange={(event) => {
                 handleSearch(event);
@@ -186,6 +186,7 @@ const SelectBillIds = (props) => {
             />
           </div>
           <div className="col-lg-6 mt-2 pl-3 pr-0">
+            <button className="select-bill-box" style={{'border':'none'}} onClick={openCustomDatePicker}>
             <div className="d-flex select-bill-box">
               <div className="date-icons">
                 <img src={cust_date} className="custom-date-icon" />
@@ -200,6 +201,7 @@ const SelectBillIds = (props) => {
                   : "Slect Date range"}
               </p>
             </div>
+            </button>
           </div>
         </div>
         {getBillids.length > 0 ? (
@@ -209,7 +211,7 @@ const SelectBillIds = (props) => {
                 <p>Bill Id</p>
               </div>
               <div className="col-lg-6">
-                <p>Total Amount</p>
+                <p>Total Bill Amount</p>
               </div>
             </div>
             <div className="border-bott"></div>
@@ -217,7 +219,7 @@ const SelectBillIds = (props) => {
               {getBillids.map((item, index) => {
                 const isSelected = billIds.includes(item.caBSeq);
                 return (
-                  <div
+                  <button
                     key={item.caBSeq}
                     className={
                       isSelected || selectedIndex == index
@@ -227,8 +229,9 @@ const SelectBillIds = (props) => {
                     onClick={() =>
                       handleSelectBillIds(item.caBSeq, item, index)
                     }
+                    style={{'width' : '100%'}}
                   >
-                    <div className="col-lg-5">
+                    <div className="col-lg-5 text-left">
                       <p>{item.caBSeq ? item.caBSeq : ""}</p>
                       <p className="date_text">{item.billDate ? moment(item.billDate).format('DD-MMM-YY') : ""}</p>
                     </div>
@@ -249,7 +252,8 @@ const SelectBillIds = (props) => {
                         )}
                       </div>
                     </div>
-                  </div>
+                  </button>
+
                 );
               })}
             </div>
@@ -282,7 +286,7 @@ const SelectBillIds = (props) => {
             props.billIdsCloseModal();
           }}
         >
-          CONTINUE
+          Next
         </button>
       </div>
       {showCustDate ? (

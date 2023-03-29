@@ -33,6 +33,7 @@ const PaymentHistoryView = (props) => {
   var [paymentHistoryData, setPaymentHistoryData] = useState(
     paymentViewData?.paymentViewInfo
   );
+  console.log(paymentHistoryData,paymentViewData?.paymentViewInfo)
   var discountedAmount = 0;
   var discountPercentage = 0;
   var amount = paymentViewData?.paymentViewInfo?.amount?
@@ -48,7 +49,7 @@ const PaymentHistoryView = (props) => {
   // var fromAdvances = false;
   const [fromAdvances, setfromAdvances] = useState(false);
   useEffect(() => {
-    if (paymentViewData.paymentViewInfo.refId?.includes("A")) {
+    if (paymentViewData?.paymentViewInfo?.refId?.includes("A")) {
       setfromAdvances(true);
     }
     else{
@@ -261,11 +262,11 @@ const [recordPayModal, setRecordPayModal] = useState(false);
                   <div className="col-lg-4 p-0">
                     <div className="d-flex align-items-center">
                       <img
-                        src={paymentHistoryData.profilePic}
+                        src={paymentHistoryData?.profilePic}
                         className="payment_profilepic"
                       />
                       <div>
-                        <h6>{paymentHistoryData.partyName}</h6>
+                        <h6>{paymentHistoryData?.partyName}</h6>
                         <p>
                           {(paymentHistoryData?.mobile)}
                           {/* {getMaskedMobileNumber(paymentHistoryData?.mobile)} */}
@@ -276,7 +277,7 @@ const [recordPayModal, setRecordPayModal] = useState(false);
                   <div className="col-lg-5 p-0"></div>
                   <div className="col-lg-3 p-0">
                     <h6>Date</h6>
-                    <h5>{moment(paymentViewData?.paymentViewInfo.date).format("DD-MMM-YY")
+                    <h5>{moment(paymentHistoryData?.date).format("DD-MMM-YY")
                     }</h5>
                   </div>
                 </div>
@@ -287,7 +288,7 @@ const [recordPayModal, setRecordPayModal] = useState(false);
                     <div>
                       <h6>Selected Bills</h6>
                       <div className="d-flex">
-                        <h5>{paymentHistoryData.billIds.join(" , ")}</h5>
+                        <h5>{'Bill IDs: ' + paymentHistoryData.billIds.join(" , ")}</h5>
                       {/* {.map((item, index) => {
                         return <h5>{item?.join(" , ")}</h5>
                       })} */}
@@ -301,7 +302,7 @@ const [recordPayModal, setRecordPayModal] = useState(false);
                 title2="Payment Mode"
                 title3="Status"
                 title1Data={amount}
-                title2Data={paymentViewData?.paymentViewInfo.paymentMode}
+                title2Data={paymentHistoryData?.paymentMode}
                 title3Data="-"
               />
               {discount > 0 ? (
@@ -320,7 +321,7 @@ const [recordPayModal, setRecordPayModal] = useState(false);
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <h6>Comment</h6>
-                    <h5>{paymentViewData?.paymentViewInfo?.comments}</h5>
+                    <h5>{paymentHistoryData?.comments}</h5>
                   </div>
                 </div>
               </div>
