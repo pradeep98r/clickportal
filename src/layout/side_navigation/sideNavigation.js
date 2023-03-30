@@ -21,6 +21,7 @@ import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import logout from "../../assets/images/logout.svg";
 import { getSystemSettings } from "../../actions/billCreationService";
+import { fromTranspoFeature, partnerType } from "../../reducers/partnerSlice";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -208,6 +209,8 @@ function SideNavigation(props) {
       localStorage.setItem("stepOneSingleBook", false);
     } else if (path === "/partner") {
       localStorage.setItem("partyType", "FARMER");
+      dispatch(fromTranspoFeature(false));
+      dispatch(partnerType('FARMER'))
     }
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);

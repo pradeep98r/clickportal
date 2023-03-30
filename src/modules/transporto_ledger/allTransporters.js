@@ -15,6 +15,10 @@ import {
 import ProfileCardWithoutIcon from "../../components/profileCardWithoutIcon";
 import { getPartnerData } from "../../actions/billCreationService";
 import { useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { fromTranspoFeature, isEditPartner, isFromTrader, partnerSingleObj, partnerType } from "../../reducers/partnerSlice";
+import PartnerModal from "../partners/partnerModal";
 const AllTransporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -25,10 +29,10 @@ const AllTransporters = (props) => {
   var transporter = transpoData?.allPartnersInfo;
   var partnerItem = transpoData?.singleTransporter;
   const location = useLocation();
-  console.log(partnerItem,transporter)
+  console.log(partnerItem, transporter);
   const [allData, setallData] = useState(transpoData?.transpoLedgersInfo);
   useLayoutEffect(() => {
-      console.log('use effect')
+    console.log("use effect");
     getTransportersData();
   }, [location]);
   const getTransportersData = () => {
@@ -37,8 +41,8 @@ const AllTransporters = (props) => {
         if (response.data.data != null) {
           setallData(response.data.data);
           dispatch(allPartnersInfo(response.data.data));
-          dispatch(transporterIdVal(response.data.data[0].partyId))
-        //   dispatch(singleTransporter(response.data.data[0]));
+          dispatch(transporterIdVal(response.data.data[0].partyId));
+          //   dispatch(singleTransporter(response.data.data[0]));
         } else {
           setallData([]);
           dispatch(allPartnersInfo([]));
@@ -50,7 +54,18 @@ const AllTransporters = (props) => {
     dispatch(transporterIdVal(id));
     dispatch(singleTransporter(item));
   };
-  
+  const [showPartnerModalStatus, setShowPartnerModalStatus] = useState(false);
+  const [showPartnerModal, setShowPartnerModal] = useState(false);
+  const editPartnerEvent = (type, traderval,item) => {
+    dispatch(isEditPartner(true));
+    dispatch(isFromTrader(traderval));
+    dispatch(partnerType(type));
+    setShowPartnerModalStatus(true);
+    setShowPartnerModal(true);
+    dispatch(partnerSingleObj(item));
+    dispatch(fromTranspoFeature(true));
+    // localStorage.setItem('partyType', 'TRANSPORTER')
+  };
   return (
     <div className="">
       {allData.length > 0 ? (
@@ -72,7 +87,7 @@ const AllTransporters = (props) => {
                 >
                   <table className="table table-fixed">
                     <div className="all_trans_head">
-                    <p>Transporter Name</p>
+                      <p>Transporter Name</p>
                     </div>
 
                     {transporter.map((partner, index) => {
@@ -157,10 +172,11 @@ const AllTransporters = (props) => {
                     <div className="d-flex align-items-center">
                       <h6>Personal Details</h6>
                     </div>
-                    <p className="edit_text">
+                    <button onClick={()=>editPartnerEvent('Transporter',false,partnerItem)}><p className="edit_text">
                       {/* <img src={edit} alt="edit-img" /> */}
                       <span className="edit_text">EDIT</span>
-                    </p>
+                    </p></button>
+                    
                   </div>
                 </div>
                 <div className="card_body">
@@ -262,6 +278,15 @@ const AllTransporters = (props) => {
           </div>
         </div>
       )}
+        {showPartnerModalStatus ? (
+        <PartnerModal
+          showModal={showPartnerModal}
+          closeModal={() => setShowPartnerModal(false)}
+        />
+      ) : (
+        ""
+      )}
+      <ToastContainer />
     </div>
   );
 };

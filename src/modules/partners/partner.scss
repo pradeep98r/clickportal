@@ -47,6 +47,11 @@
     padding: 0px 0px;
   }
 }
+.partner_modal{
+  .modal-dialog{
+    max-width: 600px;
+  }
+}
 .partner_model_body {
   padding: 20px 30px;
   .col-lg-6{
