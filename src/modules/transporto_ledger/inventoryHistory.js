@@ -10,10 +10,19 @@ import edit from "../../assets/images/edit_round.svg";
 import moment from "moment";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import AddRecordInventory from "./addRecordInventory";
-import { paymentViewInfo } from "../../reducers/paymentViewSlice";
-import { getInventory, getInventoryLedgers, getTransporters, updateRecordInventory } from "../../actions/transporterService";
-import { inventorySummaryInfo, inventoryTotals, inventoryUnitDetails, outstandingAmount, transpoLedgersInfo } from "../../reducers/transpoSlice";
-
+import {
+  getInventory,
+  getInventoryLedgers,
+  getTransporters,
+  updateRecordInventory,
+} from "../../actions/transporterService";
+import {
+  inventorySummaryInfo,
+  inventoryTotals,
+  inventoryUnitDetails,
+  outstandingAmount,
+  transpoLedgersInfo,
+} from "../../reducers/transpoSlice";
 
 const InventoryHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
@@ -21,66 +30,68 @@ const InventoryHistoryView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
   const paymentHistoryData = paymentViewData?.paymentViewInfo;
-  const [recordInventoryModalStatus, setRecordInventoryModalStatus] = useState(false);
+  const [recordInventoryModalStatus, setRecordInventoryModalStatus] =
+    useState(false);
   const [recordInventoryModal, setRecordInventoryModal] = useState(false);
   const [fromRecordInventoryHist, setFromRecordInventoryHist] = useState(false);
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
-  const transId=transpoData?.transporterIdVal
-  const editRecordInventory =()=>{
+  const transId = transpoData?.transporterIdVal;
+  const editRecordInventory = () => {
     setRecordInventoryModalStatus(true);
     setRecordInventoryModal(true);
     setFromRecordInventoryHist(true);
-  }
-  console.log(paymentHistoryData, paymentViewData?.paymentViewInfo);
-  const removerecordInventory =()=>{
-    const removeInventoryReq={
-      action:'DELETE',
+  };
+  const removerecordInventory = () => {
+    const removeInventoryReq = {
+      action: "DELETE",
       caId: clickId,
-      transId:transId,
-      comments:paymentHistoryData?.comments,
-      date:moment(paymentHistoryData?.date).format("YYYY-MM-DD"),
-      // type:paymentHistoryData?.tabs.toUpperCase(),
-      refId:paymentHistoryData?.refId,
-      inventory:
-        {
-          qty: parseInt(paymentHistoryData?.details?.qty),
-          unit: paymentHistoryData?.details?.unit,
-        },
-      writerId:writerId,
-      mobile:paymentHistoryData?.mobile,
-      partyName:paymentHistoryData?.partyName,
-    }
-    updateRecordInventory(removeInventoryReq).then(res=>{
-      toast.success(res.data.status.message, {
-        toastId: "errorr2",
+      transId: transId,
+      comments: paymentHistoryData?.comments,
+      date: moment(paymentHistoryData?.date).format("YYYY-MM-DD"),
+      refId: paymentHistoryData?.refId,
+      inventory: {
+        qty: parseInt(paymentHistoryData?.details?.qty),
+        unit: paymentHistoryData?.details?.unit,
+      },
+      writerId: writerId,
+      mobile: paymentHistoryData?.mobile,
+      partyName: paymentHistoryData?.partyName,
+    };
+    updateRecordInventory(removeInventoryReq)
+      .then((res) => {
+        toast.success(res.data.status.message, {
+          toastId: "errorr2",
+        });
+        window.setTimeout(function () {
+          props.closeInvViewModal();
+        }, 1000);
+        if (transpoData?.transpoTabs == "inventoryledger") {
+          getTransportersData();
+          inventoryLedger(clickId, transId);
+          getInventoryRecord();
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.status.message, {
+          toastId: "error3",
+        });
       });
-      window.setTimeout(function(){
-        props.closeInvViewModal();;
-      },1000)
-      if (transpoData?.transpoTabs=='inventoryledger') {
-        getTransportersData()
-        inventoryLedger(clickId, transId);
-        getInventoryRecord()
-      }
-    })
-    .catch((error) => {
-      toast.error(error.response.data.status.message, {
-        toastId: "error3",
-      });
-    });
-  }
+  };
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-        console.log(response.data.data)
-      dispatch(outstandingAmount(response.data.data));
-      dispatch(transpoLedgersInfo(response.data.data.ledgers));
+      if (response.data.data != null) {
+        dispatch(outstandingAmount(response.data.data));
+        dispatch(transpoLedgersInfo(response.data.data.ledgers));
+      }
     });
   };
   const getInventoryRecord = () => {
     getInventory(clickId, transId)
       .then((response) => {
-        dispatch(inventoryUnitDetails(response.data.data));
+        if (response.data.data != null) {
+          dispatch(inventoryUnitDetails(response.data.data));
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -90,8 +101,10 @@ const InventoryHistoryView = (props) => {
   const inventoryLedger = (clickId, transId) => {
     getInventoryLedgers(clickId, transId)
       .then((response) => {
-        dispatch(inventorySummaryInfo(response.data.data.details));
-        dispatch(inventoryTotals(response.data.data));
+        if (response.data.data != null) {
+          dispatch(inventorySummaryInfo(response.data.data.details));
+          dispatch(inventoryTotals(response.data.data));
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -220,7 +233,9 @@ const InventoryHistoryView = (props) => {
           type={"TRANS"}
           fromInventoryHist={fromRecordInventoryHist}
         />
-      ):''}
+      ) : (
+        ""
+      )}
       <ToastContainer />
     </Modal>
   );

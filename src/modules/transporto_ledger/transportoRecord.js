@@ -3,14 +3,17 @@ import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import $ from "jquery";
 import { useState } from "react";
 import close from "../../assets/images/close.svg";
 import date_icon from "../../assets/images/date_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
-import { getOutstandingBal, postRecordPayment, updateRecordPayment } from "../../actions/ledgersService";
+import {
+  getOutstandingBal,
+  postRecordPayment,
+  updateRecordPayment,
+} from "../../actions/ledgersService";
 import moment from "moment";
 import {
   getInventorySummary,
@@ -29,16 +32,20 @@ const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  const editRecordStatus=props.editRecordStatus;
-  const viewInfo=paymentViewData?.paymentViewInfo
-  const ledgerData =editRecordStatus?viewInfo:transpoData?.singleTransporterObject;
+  const editRecordStatus = props.editRecordStatus;
+  const viewInfo = paymentViewData?.paymentViewInfo;
+  const ledgerData = editRecordStatus
+    ? viewInfo
+    : transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
-  const [selectDate, setSelectDate] = useState(editRecordStatus?new Date(viewInfo?.date):new Date());
+  const [selectDate, setSelectDate] = useState(
+    editRecordStatus ? new Date(viewInfo?.date) : new Date()
+  );
   const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  console.log(ledgerData,"data")
+  console.log(ledgerData, "data");
   var fromInventoryTab = transpoData?.fromInv;
   useEffect(() => {
     getOutstandingPaybles(clickId, transId);
@@ -51,8 +58,12 @@ const TransportoRecord = (props) => {
     });
   };
   const [requiredCondition, setRequiredCondition] = useState("");
-  let [paidsRcvd, setPaidsRcvd] = useState(editRecordStatus?viewInfo?.amount:0);
-  const [comments, setComments] = useState(editRecordStatus?viewInfo?.comments:"");
+  let [paidsRcvd, setPaidsRcvd] = useState(
+    editRecordStatus ? viewInfo?.amount : 0
+  );
+  const [comments, setComments] = useState(
+    editRecordStatus ? viewInfo?.comments : ""
+  );
   const getAmountVal = (e) => {
     setPaidsRcvd(
       e.target.value
@@ -90,7 +101,9 @@ const TransportoRecord = (props) => {
       );
     }
   };
-  const [paymentMode, setPaymentMode] = useState(editRecordStatus?viewInfo?.paymentMode:"CASH");
+  const [paymentMode, setPaymentMode] = useState(
+    editRecordStatus ? viewInfo?.paymentMode : "CASH"
+  );
   const addRecordPayment = async () => {
     const addRecordData = {
       caId: clickId,
@@ -110,15 +123,17 @@ const TransportoRecord = (props) => {
       date: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       paidRcvd: paidsRcvd,
-        paymentMode: paymentMode,
+      paymentMode: paymentMode,
       billIds: [],
       type: "TRANSPORTER",
       discount: "",
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
       mobile: ledgerData?.mobile,
-      partyName: fromInventoryTab ? ledgerData?.transporterName :ledgerData?.partyName,
-      amount:paidsRcvd
+      partyName: fromInventoryTab
+        ? ledgerData?.transporterName
+        : ledgerData?.partyName,
+      amount: paidsRcvd,
     };
     if (transpoData?.fromTransporter) {
       await updateRecordPayment(updateRecordRequest).then(
@@ -141,31 +156,33 @@ const TransportoRecord = (props) => {
       );
     } else {
       await postRecordPayment(addRecordData).then(
-      (response) => {
-        console.log(response)
-        toast.success(response.data.status.message, {
-          toastId: "errorr10",
-        });
-        window.setTimeout(function () {
-          props.closeRecordPayModal();
-          closePopup();
-        }, 800);
-        // dispatch(fromRecordPayment(true));
-      },
-      (error) => {
-        toast.error(error.response.data.status.message, {
-          toastId: "error4",
-        });
-      }
-    );
+        (response) => {
+          console.log(response);
+          toast.success(response.data.status.message, {
+            toastId: "errorr10",
+          });
+          window.setTimeout(function () {
+            props.closeRecordPayModal();
+            closePopup();
+          }, 800);
+          // dispatch(fromRecordPayment(true));
+        },
+        (error) => {
+          toast.error(error.response.data.status.message, {
+            toastId: "error4",
+          });
+        }
+      );
     }
     console.log(props.tabs, transpoData?.transporterMainTab);
-    if(transpoData?.transporterMainTab == 'inventoryLedgerSummary'){
+    if (transpoData?.transporterMainTab == "inventoryLedgerSummary") {
       getInventoryData();
       getOutstandingPaybles(clickId, transId);
       paymentLedger(clickId, transId);
-    }
-    else if (props.tabs == "paymentledger" || transpoData?.transpoTabs == 'paymentledger') {
+    } else if (
+      props.tabs == "paymentledger" ||
+      transpoData?.transpoTabs == "paymentledger"
+    ) {
       getTransportersData();
       getOutstandingPaybles(clickId, transId);
       paymentLedger(clickId, transId);
@@ -188,7 +205,7 @@ const TransportoRecord = (props) => {
   const paymentLedger = (clickId, partyId) => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
-        console.log(response.data.data,'pay')
+        console.log(response.data.data, "pay");
         dispatch(paymentSummaryInfo(response.data.data.details));
         dispatch(paymentTotals(response.data.data));
       })
@@ -210,29 +227,29 @@ const TransportoRecord = (props) => {
       name: "NEFT",
     },
     {
-        id: 4,
-        name: "RTGS",
-      },
-      {
-        id: 5,
-        name: "IMPS",
-      },
+      id: 4,
+      name: "RTGS",
+    },
+    {
+      id: 5,
+      name: "IMPS",
+    },
   ];
   const closePopup = () => {
-    if(editRecordStatus){
+    if (editRecordStatus) {
       setPaidsRcvd(viewInfo?.amount);
       setRequiredCondition("");
       setPaymentMode(viewInfo?.paymentMode);
       setComments(viewInfo?.comments);
       setSelectDate(new Date(viewInfo?.date));
-    } else{
+    } else {
       setPaidsRcvd(0);
       setRequiredCondition("");
       setPaymentMode("CASH");
       setComments("");
       setSelectDate(new Date());
-    }   
-  }
+    }
+  };
   return (
     <Modal
       show={props.showRecordPayModal}
@@ -244,7 +261,9 @@ const TransportoRecord = (props) => {
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-              {editRecordStatus?'Update Record Payment': 'Add Record Payment'}
+                {editRecordStatus
+                  ? "Update Record Payment"
+                  : "Add Record Payment"}
               </h5>
 
               <img
@@ -252,7 +271,7 @@ const TransportoRecord = (props) => {
                 alt="image"
                 className="close_icon"
                 onClick={() => {
-                    closePopup();
+                  closePopup();
                   props.closeRecordPayModal();
                 }}
               />
@@ -276,9 +295,12 @@ const TransportoRecord = (props) => {
                       )}
                     </div>
                     <div id="trans-dtl">
-                      <p className="namedtl-tag">{fromInventoryTab ? ledgerData?.transporterName :ledgerData?.partyName}</p>
+                      <p className="namedtl-tag">
+                        {fromInventoryTab
+                          ? ledgerData?.transporterName
+                          : ledgerData?.partyName}
+                      </p>
                       <p className="mobilee-tag">
-                        
                         {transId}&nbsp;|&nbsp;
                         {getMaskedMobileNumber(ledgerData?.mobile)}
                       </p>
@@ -290,7 +312,10 @@ const TransportoRecord = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex card-text record_payment_datepicker" id="date-tag">
+                <div
+                  className="d-flex card-text record_payment_datepicker"
+                  id="date-tag"
+                >
                   <img className="date_icon_in_modal" src={date_icon} />
                   <div className="d-flex date_popper">
                     <DatePicker
@@ -312,14 +337,17 @@ const TransportoRecord = (props) => {
             </div>
             <div className="row align-items-center record_modal_row">
               <div className="" align="left">
-                {!editRecordStatus?
-                <div className="out-paybles p-0">
-                  <p id="p-tag">Outstanding Paybles</p>
-                  <p id="recieve-tag">
-                    &#8377;
-                    {outStandingBal ? outStandingBal.toFixed(2) : 0}
-                  </p>
-                </div>:''}
+                {!editRecordStatus ? (
+                  <div className="out-paybles p-0">
+                    <p id="p-tag">Outstanding Paybles</p>
+                    <p id="recieve-tag">
+                      &#8377;
+                      {outStandingBal ? outStandingBal.toFixed(2) : 0}
+                    </p>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
             <div
@@ -382,7 +410,6 @@ const TransportoRecord = (props) => {
                 ></textarea>
               </div>
             </div>
-           
           </form>
         </div>
       </div>

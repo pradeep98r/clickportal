@@ -3,7 +3,11 @@ import NoDataAvailable from "../../components/noDataAvailable";
 import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { getAdvanceListById, getBuyBillId, getPaymentListById, getSellBillId } from "../../actions/ledgersService";
+import {
+  getAdvanceListById,
+  getBuyBillId,
+  getPaymentListById,
+} from "../../actions/ledgersService";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import BillView from "../buy_bill_book/billView";
@@ -31,11 +35,10 @@ const PaymentLedger = (props) => {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
-          dispatch(fromTransporter(true))
+          dispatch(fromTransporter(true));
         }
       });
-    } 
-   else if (bId?.includes("A")) {
+    } else if (bId?.includes("A")) {
       getAdvanceListById(clickId, bId, transporterId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
           dispatch(paymentViewInfo(res.data.data));
@@ -43,8 +46,7 @@ const PaymentLedger = (props) => {
           setShowPaymentModal(true);
         }
       });
-    } 
-    else {
+    } else {
       getBuyBillId(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
           Object.assign(res.data.data, { index: i, partyType: "FARMER" });
@@ -83,18 +85,17 @@ const PaymentLedger = (props) => {
                         <p id="p-common-sno">{index + 1}</p>
                       </td>
                       <td className="col-2">
-                      <button className="pl-0" onClick={() =>
+                        <button
+                          className="pl-0"
+                          onClick={() =>
                             billOnClickView(item.refId, index, item.partyId)
-                          }>
-                        <p
-                          style={{ color: "#0066FF" }}
-                          
-                        > 
-                        
-                          <div className="d-flex">
-                            <span>{item.refId}</span>
-                          </div>
-                        </p>
+                          }
+                        >
+                          <p style={{ color: "#0066FF" }}>
+                            <div className="d-flex">
+                              <span>{item.refId}</span>
+                            </div>
+                          </p>
                         </button>
                         <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
@@ -131,7 +132,7 @@ const PaymentLedger = (props) => {
       ) : (
         ""
       )}
-       {showBillModalStatus ? (
+      {showBillModalStatus ? (
         <BillView
           showBillViewModal={showBillModal}
           closeBillViewModal={() => setShowBillModal(false)}
@@ -145,7 +146,7 @@ const PaymentLedger = (props) => {
         <PaymentHistoryView
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
-          partyType = {'Transporter'}
+          partyType={"Transporter"}
         />
       ) : (
         ""

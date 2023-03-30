@@ -25,7 +25,6 @@ import {
   transpoLedgersInfo,
   inventoryUnitDetails,
   outstandingAmountInv,
-  fromInv,
 } from "../../reducers/transpoSlice";
 import { Modal } from "react-bootstrap";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
@@ -33,12 +32,10 @@ const AddRecordInventory = (props) => {
   const dispatch = useDispatch();  
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const transpoData = useSelector((state) => state.transpoInfo);
-  const fromInvEditStatus=props.fromInventoryHist
-  console.log(fromInvEditStatus, paymentViewData)
+  const fromInvEditStatus=props.fromInventoryHist;
   const viewInfo=paymentViewData?.paymentViewInfo;
   const ledgerData =fromInvEditStatus?viewInfo: transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
-  console.log(transId)
   const getInventor = transpoData?.inventoryUnitDetails;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -152,13 +149,12 @@ const AddRecordInventory = (props) => {
           props.closeRecordInventoryModal();
         },800)
         if(transpoData?.transporterMainTab == 'transporterLedger'){
-          console.log('here')
           getTransportersData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
         }
         else if (transpoData?.transpoTabs=='inventoryledger') {
-          // getTransportersData()
+          
           getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
@@ -180,7 +176,6 @@ const AddRecordInventory = (props) => {
           props.closeRecordInventoryModal();
         },800)
         closePopup();
-        console.log(props.tabs,transpoData?.transpoTabs)
         if(props.transporterMaintab == 'transporterLedger'){
            getTransportersData();
           inventoryLedger(clickId, transId);
@@ -208,22 +203,26 @@ const AddRecordInventory = (props) => {
   };
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-        console.log(response.data.data)
-      dispatch(outstandingAmount(response.data.data));
-      dispatch(transpoLedgersInfo(response.data.data.ledgers));
+      if(response.data.data != null){
+        dispatch(outstandingAmount(response.data.data));
+        dispatch(transpoLedgersInfo(response.data.data.ledgers));
+      }
     });
   };
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
-      console.log(response.data.data);
+        if(response.data.data != null){
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+        }
     });
   };
   const getInventoryRecord = () => {
     getInventory(clickId, transId)
       .then((response) => {
+        if(response.data.data != null){
         dispatch(inventoryUnitDetails(response.data.data));
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -233,8 +232,10 @@ const AddRecordInventory = (props) => {
   const inventoryLedger = (clickId, transId) => {
     getInventoryLedgers(clickId, transId)
       .then((response) => {
+        if(response.data.data != null){
         dispatch(inventorySummaryInfo(response.data.data.details));
         dispatch(inventoryTotals(response.data.data));
+        }
       })
       .catch((error) => {
         console.log(error);

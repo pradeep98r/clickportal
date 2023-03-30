@@ -31,10 +31,8 @@ const AllTransporters = (props) => {
   var transporter = partnerDataArray?.partnerDataInfo;
   var partnerItem = transpoData?.singleTransporter;
   const location = useLocation();
-  console.log(partnerItem, transporter);
   const [allData, setallData] = useState(transpoData?.transpoLedgersInfo);
   useLayoutEffect(() => {
-    console.log("use effect");
     getTransportersData();
   }, [location]);
   const getTransportersData = () => {
@@ -44,7 +42,6 @@ const AllTransporters = (props) => {
           setallData(response.data.data);
           dispatch(partnerDataInfo(response.data.data));
           dispatch(transporterIdVal(response.data.data[0].partyId));
-          //   dispatch(singleTransporter(response.data.data[0]));
         } else {
           setallData([]);
           dispatch(partnerDataInfo([]));
@@ -125,9 +122,7 @@ const AllTransporters = (props) => {
                           >
                             <div className="d-flex partner_card_flex justify-content-between align-items-center">
                               <div className="d-flex align-items-center">
-                                {/* {partner.profilePic} */}
                                 {partner.profilePic ? (
-                                  // <Image  source={{uri: partner.profilePic}}/>
                                   <img
                                     src={partner.profilePic}
                                     alt="profile_img"
@@ -192,7 +187,6 @@ const AllTransporters = (props) => {
                       <h6>Personal Details</h6>
                     </div>
                     <button onClick={()=>editPartnerEvent('Transporter',false,partnerItem)}><p className="edit_text">
-                      {/* <img src={edit} alt="edit-img" /> */}
                       <span className="edit_text">EDIT</span>
                     </p></button>
                     

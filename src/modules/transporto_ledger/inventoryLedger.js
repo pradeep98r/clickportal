@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import NoDataAvailable from "../../components/noDataAvailable";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { getAdvanceListById, getBuyBillId, getPaymentListById } from "../../actions/ledgersService";
+import { getBuyBillId } from "../../actions/ledgersService";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { fromTransporter } from "../../reducers/transpoSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
 import BillView from "../buy_bill_book/billView";
-import PaymentHistoryView from "../ledgers/paymentHistory";
 import InventoryHistoryView from "./inventoryHistory";
 import { getInventoryListById } from "../../actions/transporterService";
 const InventoryLedger = (props) => {
@@ -15,7 +14,6 @@ const InventoryLedger = (props) => {
   const clickId = loginData.caId;
   const transpoData = useSelector((state) => state.transpoInfo);
   const inventoryLedgerSummary = transpoData?.inventorySummaryInfo;
-  console.log(transpoData);
   const tabs = props.tabs;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);

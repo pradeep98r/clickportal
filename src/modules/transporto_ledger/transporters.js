@@ -40,8 +40,6 @@ import {
   transporterMainTab,
   fromTransporter,
 } from "../../reducers/transpoSlice";
-import add from "../../assets/images/add.svg";
-import AddRecordPayment from "./transportoRecord";
 import { getCropUnit } from "../../components/getCropUnitValue";
 import { getPartnerData } from "../../actions/billCreationService";
 import TransportoRecord from "./transportoRecord";
@@ -59,7 +57,7 @@ const Transporters = (props) => {
   var transData = transpoData?.singleTransporterObject;
   var fromInventoryTab = transpoData?.fromInv;
   var outstandingAmountInvData = transpoData?.outstandingAmountInv;
-  const transpotoTabValue=props.transPortoTabVal;
+  const transpotoTabValue = props.transPortoTabVal;
   const [tabs, setTabs] = useState(
     props.transPortoTabVal == "inventoryLedgerSummary"
       ? "inventoryledger"
@@ -68,17 +66,14 @@ const Transporters = (props) => {
   var payLedger = transpoData?.paymentTotals;
   var invLedger = transpoData?.inventoryTotals;
   useEffect(() => {
-    console.log("useeffectt");
     if (props.transPortoTabVal == "inventoryLedgerSummary") {
-      console.log(props.transPortoTabVal, "inv");
       setTabs("inventoryledger");
-      dispatch(transpoTabs("inventoryledger"))
+      dispatch(transpoTabs("inventoryledger"));
       getInventoryData();
     } else {
-      console.log(props.transPortoTabVal, "all");
       getTransportersData();
-      setTabs("paymentledger")
-      dispatch(transpoTabs("paymentledger"))
+      setTabs("paymentledger");
+      dispatch(transpoTabs("paymentledger"));
     }
     dispatch(transporterMainTab(props.transPortoTabVal));
   }, [props]);
@@ -100,14 +95,12 @@ const Transporters = (props) => {
   };
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
-      console.log(response.data.data);
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       dispatch(
         transporterIdVal(response.data.data.summaryInfo[0].transporterId)
       );
       dispatch(singleTransporterObject(response.data.data.summaryInfo[0]));
       setallData(response.data.data.summaryInfo);
-      console.log(response.data.data.summaryInfo, "inv");
       dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
       getOutstandingPaybles(
         clickId,
@@ -126,22 +119,33 @@ const Transporters = (props) => {
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
-    console.log(allData,"data")
     result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
         return data.mobile.search(value) != -1;
-      } else if (data?.partyName?.toLowerCase().includes(value)
-          || data?.transporterName?.toLowerCase().includes(value)) {
-        return (data?.partyName?.toLowerCase().search(value) != -1 ||
-         data?.transporterName?.toLowerCase().search(value) != -1);
-      } else if (data?.partyId?.toString().includes(value) ||
-        data?.transporterId?.toString().includes(value) ) {
-        return (data?.partyId?.toString().search(value) != -1 ||
-        data?.transporterId?.toString().search(value) != -1);
-      } else if (data?.partyAddress?.toLowerCase().includes(value) ||
-        data?.addressLine?.toLowerCase().includes(value)) {
-        return (data?.partyAddress?.toLowerCase().search(value) != -1 ||
-        data?.addressLine?.toLowerCase().search(value) != -1);
+      } else if (
+        data?.partyName?.toLowerCase().includes(value) ||
+        data?.transporterName?.toLowerCase().includes(value)
+      ) {
+        return (
+          data?.partyName?.toLowerCase().search(value) != -1 ||
+          data?.transporterName?.toLowerCase().search(value) != -1
+        );
+      } else if (
+        data?.partyId?.toString().includes(value) ||
+        data?.transporterId?.toString().includes(value)
+      ) {
+        return (
+          data?.partyId?.toString().search(value) != -1 ||
+          data?.transporterId?.toString().search(value) != -1
+        );
+      } else if (
+        data?.partyAddress?.toLowerCase().includes(value) ||
+        data?.addressLine?.toLowerCase().includes(value)
+      ) {
+        return (
+          data?.partyAddress?.toLowerCase().search(value) != -1 ||
+          data?.addressLine?.toLowerCase().search(value) != -1
+        );
       } else if (data.shortName.toLowerCase().includes(value)) {
         return data.shortName.toLowerCase().search(value) != -1;
       }
@@ -165,11 +169,14 @@ const Transporters = (props) => {
     dispatch(singleTransporterObject(item));
     getOutstandingPaybles(clickId, transporterId);
     getInventoryRecord(clickId, transporterId);
-    if(transpotoTabValue == 'inventoryLedgerSummary' && tabs =='inventoryledger'){
+    if (
+      transpotoTabValue == "inventoryLedgerSummary" &&
+      tabs == "inventoryledger"
+    ) {
       inventoryLedger(clickId, transporterId);
     }
     var transTabs = "";
-    if (tabs == "inventoryledger" && transpotoTabValue == 'transporterLedger') {
+    if (tabs == "inventoryledger" && transpotoTabValue == "transporterLedger") {
       setTabs("paymentledger");
       transTabs = "paymentledger";
     }
