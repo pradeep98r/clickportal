@@ -17,7 +17,6 @@ const PaymentLedger = (props) => {
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
   var transporterId = transpoData?.transporterIdVal;
-  console.log(paymentLedgerSummary)
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);

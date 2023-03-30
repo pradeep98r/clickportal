@@ -5,6 +5,9 @@ var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
 export function getTransporters(clickId) {
     return axiosCommon.get(`/click/ledgers/caId/${clickId}/type/TRANS?writerId=${writerId}`);
 }
+export function getInventorySummary(clickId) {
+    return axiosCommon.get(`/account/transporter/caId/${clickId}?writerId=${writerId}`);
+}
 //get Particular Transporter
 export function getParticularTransporter(clickId, partyId){
     return axiosCommon.get(`/reports/transporter-ledger/caId/${clickId}/partyId/${partyId}?writerId=${writerId}`);

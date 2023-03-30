@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import {
   getInventory,
   getInventoryLedgers,
+  getInventorySummary,
   getParticularTransporter,
   getTransporters,
 } from "../../actions/transporterService";
@@ -19,6 +20,7 @@ import InventoryLedger from "./inventoryLedger";
 import { getOutstandingBal } from "../../actions/ledgersService";
 import AddRecordInventory from "./addRecordInventory";
 import { useDispatch, useSelector } from "react-redux";
+import addbill_icon from "../../assets/images/addbill.svg";
 import {
   outstandingAmount,
   paymentSummaryInfo,
@@ -32,6 +34,8 @@ import {
   inventoryUnitDetails,
   allPartnersInfo,
   singleTransporter,
+  fromInv,
+  outstandingAmountInv,
   transpoTabs,
 } from "../../reducers/transpoSlice";
 import add from "../../assets/images/add.svg";
@@ -51,17 +55,30 @@ const Transporters = (props) => {
   var transporterId = transpoData?.transporterIdVal;
   var outStAmt = transpoData?.outstandingAmount;
   var transData = transpoData?.singleTransporterObject;
-  const [tabs, setTabs] = useState(props.transPortoTabVal == 'inventoryLedgerSummary' ? 'inventoryledger':"paymentledger");
-  console.log(props.transPortoTabVal,tabs)
+  var fromInventoryTab = transpoData?.fromInv;
+  var outstandingAmountInvData = transpoData?.outstandingAmountInv;
+  const [tabs, setTabs] = useState(
+    props.transPortoTabVal == "inventoryLedgerSummary"
+      ? "inventoryledger"
+      : "paymentledger"
+  );
   var payLedger = transpoData?.paymentTotals;
   var invLedger = transpoData?.inventoryTotals;
   useEffect(() => {
-    getTransportersData();
+    console.log("useeffectt");
+    if (props.transPortoTabVal == "inventoryLedgerSummary") {
+      console.log(props.transPortoTabVal, "inv");
+      getInventoryData();
+    } else {
+      console.log(props.transPortoTabVal, "all");
+      getTransportersData();
+    }
     dispatch(transpoTabs("paymentledger"))
-  }, []);
+  }, [props]);
 
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
+      dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
       dispatch(transporterIdVal(response.data.data.ledgers[0].partyId));
       dispatch(singleTransporterObject(response.data.data.ledgers[0]));
@@ -71,7 +88,32 @@ const Transporters = (props) => {
       paymentLedger(clickId, response.data.data.ledgers[0].partyId);
       inventoryLedger(clickId, response.data.data.ledgers[0].partyId);
       getInventoryRecord(clickId, response.data.data.ledgers[0].partyId);
-      getPartners(clickId)
+      getPartners(clickId);
+    });
+  };
+  const getInventoryData = () => {
+    getInventorySummary(clickId).then((response) => {
+      console.log(response.data.data);
+      dispatch(outstandingAmountInv(response.data.data.totalInventory));
+      dispatch(
+        transporterIdVal(response.data.data.summaryInfo[0].transporterId)
+      );
+      dispatch(singleTransporterObject(response.data.data.summaryInfo[0]));
+      setallData(response.data.data.summaryInfo);
+      console.log(response.data.data.summaryInfo, "inv");
+      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+      getOutstandingPaybles(
+        clickId,
+        response.data.data.summaryInfo[0].transporterId
+      );
+      paymentLedger(clickId, response.data.data.summaryInfo[0].transporterId);
+      inventoryLedger(clickId, response.data.data.summaryInfo[0].transporterId);
+      getInventoryRecord(
+        clickId,
+        response.data.data.summaryInfo[0].transporterId
+      );
+      getPartners(clickId);
+      dispatch(fromInv(true));
     });
   };
   const handleSearch = (event) => {
@@ -132,8 +174,12 @@ const Transporters = (props) => {
   const paymentLedger = (clickId, partyId) => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
-        dispatch(paymentTotals(response.data.data));
-        dispatch(paymentSummaryInfo(response.data.data.details));
+        if (response.data.data != null) {
+          dispatch(paymentTotals(response.data.data));
+          dispatch(paymentSummaryInfo(response.data.data.details));
+        } else {
+          dispatch(paymentTotals([]));
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -150,7 +196,7 @@ const Transporters = (props) => {
         console.log(error);
       });
   };
-  const getPartners = (clickId) =>{
+  const getPartners = (clickId) => {
     getPartnerData(clickId, "TRANSPORTER")
       .then((response) => {
         if (response.data.data != null) {
@@ -161,7 +207,7 @@ const Transporters = (props) => {
         }
       })
       .catch((error) => {});
-  } 
+  };
   //Get Outstanding balance
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
@@ -180,9 +226,6 @@ const Transporters = (props) => {
       });
   };
 
- 
-
- 
   const [recordInventoryModalStatus, setRecordInventoryModalStatus] =
     useState(false);
   const [recordInventoryModal, setRecordInventoryModal] = useState(false);
@@ -190,8 +233,7 @@ const Transporters = (props) => {
     setRecordInventoryModalStatus(true);
     setRecordInventoryModal(true);
   };
-  const [recordPayModalStatus, setRecordPayModalStatus] =
-    useState(false);
+  const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
   const onClickPaymentRecord = () => {
     setRecordPayModal(true);
@@ -213,37 +255,50 @@ const Transporters = (props) => {
             {transporter.length > 0 ? (
               <div>
                 <div
-                  className="table-scroll ledger-table transporto_ledger_scroll"
+                  className="table-scroll ledger-table transporto_ledger_scroll ledger_table_col"
                   id="scroll_style"
                 >
-                  <table className="table table-fixed">
-                    <thead className="theadr-tag">
-                      <tr>
-                        <th scope="col-4">#</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Transporter Name</th>
-                        <th scope="col">To Be Paid(&#8377;)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {transporter.map((item, index) => {
-                        return (
-                          <Fragment>
-                            <tr
-                              onClick={() =>
-                                particularTransporter(item.partyId, item)
-                              }
-                              className={
-                                transporterId == item.partyId
+                  <div className="row theadr-tag p-0">
+                    <th className="col-lg-1">#</th>
+                    <th className="col-lg-2">Date</th>
+                    <th class="col-lg-5">Transporter Name</th>
+                    <th class="col-lg-4">To Be Paid(&#8377;)</th>
+                  </div>
+                  <div>
+                    {transporter.map((item, index) => {
+                      return (
+                        <Fragment>
+                          <button
+                            onClick={() =>
+                              particularTransporter(
+                                fromInventoryTab
+                                  ? item.transporterId
+                                  : item.partyId,
+                                item
+                              )
+                            }
+                            className={
+                              fromInventoryTab
+                                ? transporterId == item.transporterId
                                   ? "tabRowSelected"
                                   : "tr-tags"
-                              }
-                            >
-                              <td scope="row">{index + 1}</td>
-                              <td key={item.date}>
-                                {moment(item.date).format("DD-MMM-YY")}
+                                : transporterId == item.partyId
+                                ? "tabRowSelected"
+                                : "tr-tags"
+                            }
+                          >
+                            <div className="row text-left align-items-center">
+                              <td className="col-lg-1">{index + 1}</td>
+                              <td className="col-lg-2" key={item.date}>
+                                <p className="date_ledger_val">
+                                  {" "}
+                                  {moment(item.date).format("DD-MMM-YY")}
+                                </p>
                               </td>
-                              <td key={item.partyName}>
+                              <td
+                                className="col-lg-5 text-left"
+                                key={item.partyName}
+                              >
                                 <div className="d-flex">
                                   <div className="c-img">
                                     {item.profilePic ? (
@@ -261,12 +316,17 @@ const Transporters = (props) => {
                                     )}
                                   </div>
                                   <div>
-                                    <p className="namedtl-tag">
-                                      {item.partyName}
+                                    <p className="namedtl-tag text-left">
+                                      {fromInventoryTab
+                                        ? item.transporterName
+                                        : item.partyName}
                                     </p>
                                     <div className="d-flex align-items-center">
                                       <p className="mobilee-tag">
-                                        {"Transporter"} - {item.partyId}
+                                        {fromInventoryTab
+                                          ? item.transporterId
+                                          : item.partyId}
+                                        &nbsp;
                                       </p>
                                       <p className="mobilee-tag desk_responsive">
                                         {" | " +
@@ -277,36 +337,76 @@ const Transporters = (props) => {
                                       {getMaskedMobileNumber(item.mobile)}
                                     </p>
                                     <p className="address-tag">
-                                      {item.partyAddress
+                                      {fromInventoryTab
+                                        ? item.addressLine
+                                        : item.partyAddress
                                         ? item.partyAddress
                                         : ""}
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td key={item.tobePaidRcvd}>
-                                <p className="coloring">
-                                  {item.tobePaidRcvd
-                                    ? getCurrencyNumberWithOutSymbol(
-                                        item.tobePaidRcvd
-                                      )
-                                    : 0}
-                                </p>
+                              <td className="col-lg-4" key={item.tobePaidRcvd}>
+                                {fromInventoryTab ? (
+                                  <p className="color_black coloring">
+                                    {item.inventory?.length > 0 &&
+                                      item.inventory?.map((itemVal, index) => {
+                                        return itemVal.qty
+                                          ? itemVal.qty.toFixed(1) +
+                                              " " +
+                                              getCropUnit(
+                                                itemVal.unit,
+                                                itemVal.qty
+                                              )
+                                          : "";
+                                      })}
+                                  </p>
+                                ) : (
+                                  <p className="color_red coloring">
+                                    {item.tobePaidRcvd
+                                      ? getCurrencyNumberWithOutSymbol(
+                                          item.tobePaidRcvd
+                                        )
+                                      : 0}
+                                  </p>
+                                )}
                               </td>
-                            </tr>
-                          </Fragment>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                            </div>
+                          </button>
+                        </Fragment>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="outstanding-pay d-flex align-items-center justify-content-between">
-                  <p className="pat-tag">Outstanding Paybles:</p>
-                  <p className="values-tag">
-                    {outStAmt?.totalOutStgAmt
-                      ? getCurrencyNumberWithSymbol(outStAmt?.totalOutStgAmt)
-                      : 0}
-                  </p>
+                <div className="outstanding-pay ">
+                  {fromInventoryTab ? (
+                    <div className="d-flex align-items-center justify-content-between">
+                      <p className="pat-tag"> Total Inventory Balance : </p>
+                      <p className="color_black coloring">
+                        {outstandingAmountInvData.length > 0 &&
+                          outstandingAmountInvData.map((itemVal, index) => {
+                            return itemVal.qty
+                              ? itemVal.qty.toFixed(1) +
+                                  " " +
+                                  getCropUnit(itemVal.unit, itemVal.qty)
+                              : "";
+                          })}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="values-tag color_red">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <p className="pat-tag">Outstanding Paybles:</p>
+                        <p>
+                          {outStAmt?.totalOutStgAmt
+                            ? getCurrencyNumberWithSymbol(
+                                outStAmt?.totalOutStgAmt
+                              )
+                            : 0}
+                        </p>
+                      </div>
+                    </p>
+                  )}
                 </div>
               </div>
             ) : (
@@ -346,9 +446,17 @@ const Transporters = (props) => {
                           )}
                         </div>
                         <div id="ptr-dtls">
-                          <p className="namedtl-tag">{transData.partyName}</p>
+                          <p className="namedtl-tag">
+                            {" "}
+                            {fromInventoryTab
+                              ? transData.transporterName
+                              : transData.partyName}
+                          </p>
                           <p className="mobilee-tag">
-                            {"Transporter"} - {transData.partyId}&nbsp;
+                            {fromInventoryTab
+                              ? transData.transporterId
+                              : transData.partyId}
+                            &nbsp;
                           </p>
                           <p className="mobilee-tag">
                             {getMaskedMobileNumber(transData?.mobile)}
@@ -363,7 +471,7 @@ const Transporters = (props) => {
                         <p className="card-text paid">
                           {langFullData.totalBusiness}{" "}
                           <p className="coloring color_black">
-                            {payLedger.totalToBePaid
+                            {payLedger?.totalToBePaid
                               ? getCurrencyNumberWithSymbol(
                                   payLedger.totalToBePaid
                                 )
@@ -450,7 +558,7 @@ const Transporters = (props) => {
                 </div>
               </div>
               <span id="horizontal-line-card"></span>
-              <div className="d-flex justify-content-between">
+              <div className="d-flex justify-content-between align-items-end">
                 <ul
                   className="nav nav-tabs ledger_tabs"
                   id="myTab"
@@ -476,45 +584,25 @@ const Transporters = (props) => {
                   })}
                 </ul>
                 {tabs == "paymentledger" ? (
-                  <div className="recordbtn-style">
                   <button
-                    className="add-record-btns"
+                    className="primary_btn add_bills_btn"
                     onClick={() => {
                       onClickPaymentRecord();
                     }}
                   >
-                    Record Payment
+                    <img src={addbill_icon} alt="image" className="mr-2" />
+                    Add Record
                   </button>
-                  <div className="add-pays-btn">
-                    <img src={add} id="addrecord-img" />
-                  </div>
-                </div>
-                  // <RecordPayment
-                  //   tabs={tabs}
-                  //   LedgerData={transData}
-                  //   ledgerId={transporterId}
-                  //   type={"TRANS"}
-                  //   // outStbal={paidRcvd}
-                  //   // setPaidRcvd={getPaidRcvd}
-                  //   // outStAmt={getOutstAmt}
-                  //   // transData={getTransData}
-                  //   // payledger={payLedgerData}
-                  //   // payledgersummary={getPayledgerSummary}
-                  // />
                 ) : tabs == "inventoryledger" ? (
-                  <div className="recordbtn-style">
-                    <button
-                      className="add-record-btns"
-                      onClick={() => {
-                        onClickInventoryRecord();
-                      }}
-                    >
-                      Record Inventory
-                    </button>
-                    <div className="add-pays-btn">
-                      <img src={add} id="addrecord-img" />
-                    </div>
-                  </div>
+                  <button
+                    className="primary_btn add_bills_btn"
+                    onClick={() => {
+                      onClickInventoryRecord();
+                    }}
+                  >
+                    <img src={addbill_icon} alt="image" className="mr-2" />
+                    Add Record
+                  </button>
                 ) : (
                   ""
                 )}
@@ -560,7 +648,6 @@ const Transporters = (props) => {
           closeRecordPayModal={() => setRecordPayModal(false)}
           tabs={tabs}
           type={"TRANS"}
-          
         />
       ) : (
         ""
