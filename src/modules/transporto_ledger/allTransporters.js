@@ -18,7 +18,7 @@ import { getPartnerData } from "../../actions/billCreationService";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { fromTranspoFeature, isEditPartner, isFromTrader, partnerSingleObj, partnerType } from "../../reducers/partnerSlice";
+import { fromTranspoFeature, isEditPartner, isFromTrader, partnerDataInfo, partnerSingleObj, partnerType } from "../../reducers/partnerSlice";
 import PartnerModal from "../partners/partnerModal";
 const AllTransporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
