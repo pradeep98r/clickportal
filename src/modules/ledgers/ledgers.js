@@ -722,20 +722,7 @@ const Ledgers = (props) => {
                               />
                              Add Record
                             </button>
-                      {/* <div className="recordbtn-style">
-                        <button
-                          className="add-record-btns"
-                         
-                          data-toggle="modal"
-                          data-target="#myModal"
-                        >
-                          
-                        </button>
-
-                        <div className="add-pays-btn">
-                          <img src={add} id="addrecord-img" />
-                        </div>
-                      </div> */}
+                    
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
                     <div className="my-2">
