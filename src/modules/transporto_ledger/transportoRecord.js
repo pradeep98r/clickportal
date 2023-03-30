@@ -13,11 +13,13 @@ import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import { getOutstandingBal, postRecordPayment, updateRecordPayment } from "../../actions/ledgersService";
 import moment from "moment";
 import {
+  getInventorySummary,
   getParticularTransporter,
   getTransporters,
 } from "../../actions/transporterService";
 import {
   outstandingAmount,
+  outstandingAmountInv,
   paymentSummaryInfo,
   paymentTotals,
   transpoLedgersInfo,
@@ -31,7 +33,7 @@ const TransportoRecord = (props) => {
   const viewInfo=paymentViewData?.paymentViewInfo
   const ledgerData =editRecordStatus?viewInfo:transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
-  const [selectDate, setSelectDate] = useState(new Date());
+  const [selectDate, setSelectDate] = useState(editRecordStatus?new Date(viewInfo?.date):new Date());
   const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -132,21 +134,22 @@ const TransportoRecord = (props) => {
         },
         (error) => {
           console.log(error.message);
-          toast.error(error.res.data.status.message, {
-            toastId: "error3",
+          toast.error(error.response.data.status.message, {
+            toastId: "error15",
           });
         }
       );
     } else {
       await postRecordPayment(addRecordData).then(
       (response) => {
+        console.log(response)
         toast.success(response.data.status.message, {
-          toastId: "errorr2",
+          toastId: "errorr10",
         });
         window.setTimeout(function () {
           props.closeRecordPayModal();
+          closePopup();
         }, 800);
-        closePopup();
         // dispatch(fromRecordPayment(true));
       },
       (error) => {
@@ -156,12 +159,24 @@ const TransportoRecord = (props) => {
       }
     );
     }
-    console.log(props.tabs);
-    if (props.tabs == "paymentledger" || transpoData?.transpoTabs == 'paymentledger') {
+    console.log(props.tabs, transpoData?.transporterMainTab);
+    if(transpoData?.transporterMainTab == 'inventoryLedgerSummary'){
+      getInventoryData();
+      getOutstandingPaybles(clickId, transId);
+      paymentLedger(clickId, transId);
+    }
+    else if (props.tabs == "paymentledger" || transpoData?.transpoTabs == 'paymentledger') {
       getTransportersData();
       getOutstandingPaybles(clickId, transId);
       paymentLedger(clickId, transId);
     }
+  };
+  const getInventoryData = () => {
+    getInventorySummary(clickId).then((response) => {
+      console.log(response.data.data);
+      dispatch(outstandingAmountInv(response.data.data.totalInventory));
+      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+    });
   };
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
@@ -229,7 +244,7 @@ const TransportoRecord = (props) => {
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                Add Record Payment
+              {editRecordStatus?'Update Record Payment': 'Add Record Payment'}
               </h5>
 
               <img
@@ -384,6 +399,7 @@ const TransportoRecord = (props) => {
           SUBMIT
         </button>
       </div>
+      <ToastContainer />
     </Modal>
   );
 };

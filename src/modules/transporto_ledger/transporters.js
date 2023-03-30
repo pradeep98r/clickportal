@@ -37,6 +37,8 @@ import {
   fromInv,
   outstandingAmountInv,
   transpoTabs,
+  transporterMainTab,
+  fromTransporter,
 } from "../../reducers/transpoSlice";
 import add from "../../assets/images/add.svg";
 import AddRecordPayment from "./transportoRecord";
@@ -57,6 +59,7 @@ const Transporters = (props) => {
   var transData = transpoData?.singleTransporterObject;
   var fromInventoryTab = transpoData?.fromInv;
   var outstandingAmountInvData = transpoData?.outstandingAmountInv;
+  const transpotoTabValue=props.transPortoTabVal;
   const [tabs, setTabs] = useState(
     props.transPortoTabVal == "inventoryLedgerSummary"
       ? "inventoryledger"
@@ -68,12 +71,16 @@ const Transporters = (props) => {
     console.log("useeffectt");
     if (props.transPortoTabVal == "inventoryLedgerSummary") {
       console.log(props.transPortoTabVal, "inv");
+      setTabs("inventoryledger");
+      dispatch(transpoTabs("inventoryledger"))
       getInventoryData();
     } else {
       console.log(props.transPortoTabVal, "all");
       getTransportersData();
+      setTabs("paymentledger")
+      dispatch(transpoTabs("paymentledger"))
     }
-    dispatch(transpoTabs("paymentledger"))
+    dispatch(transporterMainTab(props.transPortoTabVal));
   }, [props]);
 
   const getTransportersData = () => {
@@ -119,15 +126,22 @@ const Transporters = (props) => {
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
+    console.log(allData,"data")
     result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
         return data.mobile.search(value) != -1;
-      } else if (data.partyName.toLowerCase().includes(value)) {
-        return data.partyName.toLowerCase().search(value) != -1;
-      } else if (data.partyId.toString().includes(value)) {
-        return data.partyId.toString().search(value) != -1;
-      } else if (data.partyAddress.toLowerCase().includes(value)) {
-        return data.partyAddress.toLowerCase().search(value) != -1;
+      } else if (data?.partyName?.toLowerCase().includes(value)
+          || data?.transporterName?.toLowerCase().includes(value)) {
+        return (data?.partyName?.toLowerCase().search(value) != -1 ||
+         data?.transporterName?.toLowerCase().search(value) != -1);
+      } else if (data?.partyId?.toString().includes(value) ||
+        data?.transporterId?.toString().includes(value) ) {
+        return (data?.partyId?.toString().search(value) != -1 ||
+        data?.transporterId?.toString().search(value) != -1);
+      } else if (data?.partyAddress?.toLowerCase().includes(value) ||
+        data?.addressLine?.toLowerCase().includes(value)) {
+        return (data?.partyAddress?.toLowerCase().search(value) != -1 ||
+        data?.addressLine?.toLowerCase().search(value) != -1);
       } else if (data.shortName.toLowerCase().includes(value)) {
         return data.shortName.toLowerCase().search(value) != -1;
       }
@@ -151,8 +165,11 @@ const Transporters = (props) => {
     dispatch(singleTransporterObject(item));
     getOutstandingPaybles(clickId, transporterId);
     getInventoryRecord(clickId, transporterId);
+    if(transpotoTabValue == 'inventoryLedgerSummary' && tabs =='inventoryledger'){
+      inventoryLedger(clickId, transporterId);
+    }
     var transTabs = "";
-    if (tabs == "inventoryledger") {
+    if (tabs == "inventoryledger" && transpotoTabValue == 'transporterLedger') {
       setTabs("paymentledger");
       transTabs = "paymentledger";
     }
@@ -236,6 +253,7 @@ const Transporters = (props) => {
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
   const onClickPaymentRecord = () => {
+    dispatch(fromTransporter(false));
     setRecordPayModal(true);
     setRecordPayModalStatus(true);
   };
@@ -637,6 +655,7 @@ const Transporters = (props) => {
           showRecordInventoryModal={recordInventoryModal}
           closeRecordInventoryModal={() => setRecordInventoryModal(false)}
           tabs={tabs}
+          transporterMaintab={transpotoTabValue}
           type={"TRANS"}
         />
       ) : (
