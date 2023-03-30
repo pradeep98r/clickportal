@@ -24,9 +24,10 @@ const AllTransporters = (props) => {
   const clickId = loginData.caId;
   const transpoData = useSelector((state) => state.transpoInfo);
   var transporterId = transpoData?.transporterIdVal;
+  const partnerDataArray = useSelector((state) => state.partnerInfo);
   const dispatch = useDispatch();
   var outStAmt = transpoData?.outstandingAmount;
-  var transporter = transpoData?.allPartnersInfo;
+  var transporter = partnerDataArray?.partnerDataInfo;
   var partnerItem = transpoData?.singleTransporter;
   const location = useLocation();
   console.log(partnerItem, transporter);

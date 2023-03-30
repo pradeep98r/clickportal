@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import OutlineButton from "../../components/outlineButton";
 import "../partners/partner.scss";
 import {
   getPartnerData,
-  addPartner,
   deletePartnerId,
-  editPartnerItem,
 } from "../../actions/billCreationService";
 import $ from "jquery";
 import single_bill from "../../assets/images/bills/single_bill.svg";
@@ -13,16 +10,9 @@ import edit from "../../assets/images/edit_round.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import close from "../../assets/images/close.svg";
 import NoDataAvailable from "../../components/noDataAvailable";
-import InputField from "../../components/inputField";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
-import date_icon from "../../assets/images/date_icon.svg";
 import { Modal, Image } from "react-bootstrap";
 import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
-import { uploadProfilePic } from "../../actions/uploadProfile";
-import location_icon from "../../assets/images/location_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
@@ -36,6 +26,7 @@ import {
   isEditPartner,
   isFromTrader,
   partnerDataInfo,
+  partnersAllData,
   partnerSingleObj,
   partnerType,
 } from "../../reducers/partnerSlice";
@@ -44,10 +35,8 @@ const Partner = () => {
   const partnerDataArray = useSelector((state) => state.partnerInfo);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
-  const [allData, setAllData] = useState(partnerDataArray?.partnerDataInfo);
-  // const [partnerData, setPartnerData] = useState(allData);
   const partnerData = partnerDataArray?.partnerDataInfo;
+  const allData = partnerDataArray?.partnersAllData;
   const savetype = localStorage.getItem("partyType");
   const partyType = partnerDataArray?.partnerType;
   const [isOnline, setOnline] = useState(false);
@@ -57,9 +46,8 @@ const Partner = () => {
   const handleClose = () => setShow(false);
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-
+  console.log(partnerDataArray?.partnerDataInfo);
   const handleDelete = (partyId) => {
-    //   const deletePartner = (partyId) => {
     deletePartnerId(partyId, clickId).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -77,14 +65,12 @@ const Partner = () => {
     );
     setShow(false);
   };
-  //   };
   const handleShow = (partyid) => {
     setShow(true);
     setPartyIdVal(partyid);
   };
 
   useEffect(() => {
-    console.log(partyType,savetype,'partnnerrs page',partnerDataArray?.fromTranspoFeature)
     dispatch(partnerType(savetype !== null ? savetype : "FARMER"));
     tabEvent(partyType);
   }, []);
@@ -95,33 +81,13 @@ const Partner = () => {
     dispatch(isEditPartner(false));
     dispatch(isFromTrader(false));
     localStorage.setItem("partyType", type);
-    // setAadharNumber("");
-    // setCityVal("");
-    // setNameField("");
-    // setOpeningBalance("");
-    // setmobileNumber("");
-    // setStateVal("");
-    // setProfilePic("");
-    // setShortNameField("");
-    // setStreetVillage("");
-    // setProfilePic("");
-    // if (type.toUpperCase() === "FARMER") {
-    //   setradioValue("FARMER");
-    // } else if (type.toUpperCase() === "BUYER") {
-    //   setradioValue("BUYER");
-    // } else {
-    //   setradioValue(langFullData.trader);
-    // }
-    // setIsEdit(false);
-    // setPincode("");
-    // setCityVal("");
-    // setStateVal("");
     setSearchValue("");
     getPartnerData(clickId, type)
       .then((response) => {
-        setAllData(response.data.data);
-        dispatch(partnerDataInfo(response.data.data));
-        // setPartnerData(response.data.data);
+        if (response.data.data != null) {
+          dispatch(partnersAllData(response.data.data));
+          dispatch(partnerDataInfo(response.data.data));
+        }
         setIsLoading(false);
       })
       .catch((error) => {
@@ -155,44 +121,14 @@ const Partner = () => {
   const [showPartnerModalStatus, setShowPartnerModalStatus] = useState(false);
   const [showPartnerModal, setShowPartnerModal] = useState(false);
   const editPartner = (partner) => {
-    // setIsEdit(true);
-    // isEditPartner
     dispatch(isEditPartner(true));
     partnerData.map((item) => {
       if (item.partyId == partner.partyId) {
         setShowPartnerModalStatus(true);
         setShowPartnerModal(true);
         dispatch(partnerSingleObj(partner));
-        // setPartnerItem(item);
-        // setAadharNumber(partner.aadharNum);
-        // setmobileNumber(partner.mobile);
-        // setStreetVillage(partner.address.addressLine);
-        // setShortNameField(partner.shortName);
-        // setNameField(partner.partyName);
-        // setCityVal(partner.address.dist);
-        // setStateVal(partner.address.state);
-        // setUpdateProfilePic(partner.profilePic);
-        // console.log(partner);
-        // setPincode(partner.address.pincode);
-        // setVehicleNum(partner.vehicleInfo?.vehicleNum);
-        // setVehicleType(partner.vehicleInfo?.vehicleType);
-        // setOpeningBalance(partner.openingBal);
-        // if (
-        //   partner.partyType.toLowerCase() == "farmer" ||
-        //   partner.partyType.toLowerCase() == "buyer"
-        // ) {
-        //   if (partner.trader) {
-        //     setradioValue("TRADER");
-        //   } else {
-        //     setradioValue(partner.partyType.toUpperCase());
-        //   }
-        // }
-        // setAddeditText("Edit");
-        // setStartDate(new Date(partner.openingBalDate));
       }
     });
-
-    $("#Mymodal").modal("show");
   };
 
   const MybtnModal = (type, traderval) => {
@@ -200,6 +136,7 @@ const Partner = () => {
     dispatch(partnerType(type));
     setShowPartnerModalStatus(true);
     setShowPartnerModal(true);
+    dispatch(isEditPartner(false));
   };
 
   const [searchValue, setSearchValue] = useState("");
@@ -219,8 +156,9 @@ const Partner = () => {
         return data?.address?.addressLine.toLowerCase().search(value) != -1;
       }
     });
+
     dispatch(partnerDataInfo(result));
-    // setPartnerData(result);
+
     setSearchValue(value);
   };
 
@@ -380,7 +318,6 @@ const Partner = () => {
                               ""
                             )}
                           </div>
-                          {/* <OutlineButton text="Add Seller" /> */}
                         </div>
                       </div>
                     </div>

@@ -9,7 +9,8 @@ export const partnerSlice = createSlice({
     partnerSingleObj:null,
     isFromTrader:false,
     radioButtonVal:'FARMER',
-    fromTranspoFeature:false
+    fromTranspoFeature:false,
+    partnersAllData:[]
   },
   reducers: {
     partnerDataInfo: (state, action) => {
@@ -33,9 +34,12 @@ export const partnerSlice = createSlice({
       fromTranspoFeature: (state, action) => {
         state.fromTranspoFeature = action.payload;
       }, 
+      partnersAllData: (state, action) => {
+        state.partnersAllData = action.payload;
+      }, 
   },
 });
 
-export const { partnerDataInfo,partnerType,isEditPartner,partnerSingleObj,fromTranspoFeature,isFromTrader,radioButtonVal} = partnerSlice.actions;
+export const { partnerDataInfo,partnerType,isEditPartner,partnerSingleObj,fromTranspoFeature,isFromTrader,radioButtonVal,partnersAllData} = partnerSlice.actions;
 
 export default partnerSlice.reducer;

@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getPartnerData,
   addPartner,
-  deletePartnerId,
   editPartnerItem,
 } from "../../actions/billCreationService";
 import $ from "jquery";
@@ -15,7 +14,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import date_icon from "../../assets/images/date_icon.svg";
-import SearchField from "../../components/searchField";
 import { getText } from "../../components/getText";
 import { uploadProfilePic } from "../../actions/uploadProfile";
 import location_icon from "../../assets/images/location_icon.svg";
@@ -23,6 +21,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   partnerDataInfo,
+  partnersAllData,
   partnerType,
   radioButtonVal,
 } from "../../reducers/partnerSlice";
@@ -59,7 +58,6 @@ const PartnerModal = (props) => {
   };
 
   useEffect(() => {
-    console.log(partnerDataArray,isEdit,selectedPartnerObj, "useffect");
     if (isEdit) {
       setAadharNumber(selectedPartnerObj.aadharNum);
       setmobileNumber(selectedPartnerObj.mobile);
@@ -88,12 +86,10 @@ const PartnerModal = (props) => {
       showModalEvent();
     }
 
-    if(partnerDataArray?.fromTranspoFeature){
-          console.log(partyType,savetype,partnerDataArray?.fromTranspoFeature)
-        dispatch(partnerType(partyType.toUpperCase()));
-    }
-    else{
-        dispatch(partnerType(savetype !== null ? savetype : partyType));
+    if (partnerDataArray?.fromTranspoFeature) {
+      dispatch(partnerType(partyType.toUpperCase()));
+    } else {
+      dispatch(partnerType(savetype !== null ? savetype : partyType));
     }
     dispatch(radioButtonVal(getPartyVal()));
   }, [props.showModal]);
@@ -193,7 +189,6 @@ const PartnerModal = (props) => {
       output.onload = function () {
         URL.revokeObjectURL(output.src);
       };
-      console.log("came to edit");
       var req = {
         file: e.target.files[0],
         type: partyType,
@@ -285,7 +280,7 @@ const PartnerModal = (props) => {
       nameField.trim().length !== 1 &&
       nameField.trim().length < 30 &&
       mobileNumber.trim().length !== 0 &&
-      //aadharNumber.trim().length >0 ? true:false &&
+      mobileNumber.trim().length >= 10 &&
       (partyType === "TRANSPORTER" || partyType == "COOLIE"
         ? true
         : shortNameField.trim().length !== 0 &&
@@ -301,6 +296,8 @@ const PartnerModal = (props) => {
       localStorage.setItem("partyType", partyType);
     } else if (mobileNumber.trim().length === 0) {
       setRequiredNumberField(langFullData.enterYourMobileNumber);
+    } else if (mobileNumber.trim().length < 10) {
+      setRequiredNumberField("Minimum mobile number length should be 10");
     } else if (shortNameField.trim().length === 0) {
       setRequiredshortNameField("Please Enter Short Name");
     } else if (nameField.trim().length === 0) {
@@ -328,44 +325,42 @@ const PartnerModal = (props) => {
             props.closeModal();
             getPartnerData(clickId, partyType)
               .then((response) => {
+                dispatch(partnersAllData(response.data.data));
                 dispatch(partnerDataInfo(response.data.data));
               })
               .catch((error) => {});
-            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr2",
           });
-          // handleRefreshClick();
         }
       );
     } else {
       addPartner(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
-            // tabEvent(partyType);
             toast.success(response.data.status.message, {
               toastId: "success2",
             });
 
             getPartnerData(clickId, partyType)
               .then((response) => {
-                dispatch(partnerDataInfo(response.data.data));
-                // setIsLoading(false);
+                if (response.data.data != null) {
+                  dispatch(partnersAllData(response.data.data));
+                  dispatch(partnerDataInfo(response.data.data));
+                  console.log(response.data.data);
+                }
               })
               .catch((error) => {});
             props.closeModal();
-            // window.location.reload();
-            // handleRefreshClick();
           }
         },
         (error) => {
           toast.error(error.response.data.status.message, {
             toastId: "errorr3",
           });
-          // handleRefreshClick();
         }
       );
     }
@@ -545,7 +540,11 @@ const PartnerModal = (props) => {
     getPartyVal();
   };
   return (
-    <Modal show={props.showModal} close={props.closeModal} className="partner_modal">
+    <Modal
+      show={props.showModal}
+      close={props.closeModal}
+      className="partner_modal"
+    >
       <div className="modal-body partner_model_body">
         <form>
           <div className="d-flex align-items-center justify-content-between modal_common_header">
@@ -577,7 +576,6 @@ const PartnerModal = (props) => {
                   <div onChange={onChangeValue}>
                     <input
                       type="radio"
-                      //className="custom-control-input"
                       value={partyType.toLowerCase()}
                       name="radioValue1"
                       id={partyType.toLowerCase()}
@@ -593,7 +591,6 @@ const PartnerModal = (props) => {
                       id="trader"
                       name="radioValue2"
                       checked={radioValue.toLowerCase() === "trader"}
-                      //className="custom-control-input"
                       className="radioBtnVal"
                     />{" "}
                     {langFullData.trader}
@@ -890,22 +887,12 @@ const PartnerModal = (props) => {
                                         : single_bill
                                     }
                                     id="output"
-                                    // src={
-                                    //   file
-                                    //     ? URL.createObjectURL(file)
-                                    //     : single_bill
-                                    // }
                                     alt=""
                                   />
                                 ) : (
                                   <img
                                     src={profilePic ? profilePic : single_bill}
                                     id="output"
-                                    // src={
-                                    //   file
-                                    //     ? URL.createObjectURL(file)
-                                    //     : single_bill
-                                    // }
                                     alt=""
                                   />
                                 )}
@@ -915,7 +902,6 @@ const PartnerModal = (props) => {
                                   type="file"
                                   id="file"
                                   name="file"
-                                  //onChange={(e) => setFile(e.target.files[0])}
                                   onChange={(e) => {
                                     handleProfilePic(e);
                                   }}
@@ -1150,9 +1136,10 @@ const PartnerModal = (props) => {
               <button
                 type="button"
                 className="secondary_btn mr-2"
-                // id="close_modal"
-                onClick={closeAddModal}
-                data-bs-dismiss="modal"
+                onClick={() => {
+                  closeAddModal();
+                  props.closeModal();
+                }}
               >
                 Cancel
               </button>
@@ -1160,8 +1147,6 @@ const PartnerModal = (props) => {
                 type="button"
                 className="primary_btn"
                 onClick={() => onSubmit()}
-                // id="close_modal"
-                data-bs-dismiss="modal"
               >
                 save
               </button>
@@ -1169,6 +1154,7 @@ const PartnerModal = (props) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </Modal>
   );
 };
