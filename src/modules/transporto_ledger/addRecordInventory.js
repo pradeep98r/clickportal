@@ -13,6 +13,7 @@ import {
   addRecordInventory,
   getInventory,
   getInventoryLedgers,
+  getInventorySummary,
   getTransporters,
   updateRecordInventory,
 } from "../../actions/transporterService";
@@ -23,6 +24,8 @@ import {
   outstandingAmount,
   transpoLedgersInfo,
   inventoryUnitDetails,
+  outstandingAmountInv,
+  fromInv,
 } from "../../reducers/transpoSlice";
 import { Modal } from "react-bootstrap";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
@@ -35,6 +38,7 @@ const AddRecordInventory = (props) => {
   const viewInfo=paymentViewData?.paymentViewInfo;
   const ledgerData =fromInvEditStatus?viewInfo: transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
+  console.log(transId)
   const getInventor = transpoData?.inventoryUnitDetails;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -46,6 +50,7 @@ const AddRecordInventory = (props) => {
   const [unit, setUnit] = useState(fromInvEditStatus?viewInfo?.details?.unit:"CRATES");
   const [qty, setQty] = useState(fromInvEditStatus?viewInfo?.details?.qty:0);
   const [tabs, setTabs] = useState(fromInvEditStatus?viewInfo?.type =='GIVEN'?'Given':'Collected':"Given");
+  var fromInventoryTab = transpoData?.fromInv;
   const [requiredCondition, setRequiredCondition] = useState("");
 
   const links = [
@@ -146,6 +151,7 @@ const AddRecordInventory = (props) => {
         },800)
         if (transpoData?.transpoTabs=='inventoryledger') {
           getTransportersData()
+          getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
         }
@@ -167,7 +173,8 @@ const AddRecordInventory = (props) => {
         },800)
         closePopup();
         if (props.tabs === "inventoryledger" || transpoData?.transpoTabs=='inventoryledger') {
-          getTransportersData()
+          getTransportersData();
+          getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
         }
@@ -191,6 +198,13 @@ const AddRecordInventory = (props) => {
         console.log(response.data.data)
       dispatch(outstandingAmount(response.data.data));
       dispatch(transpoLedgersInfo(response.data.data.ledgers));
+    });
+  };
+  const getInventoryData = () => {
+    getInventorySummary(clickId).then((response) => {
+      console.log(response.data.data);
+      dispatch(outstandingAmountInv(response.data.data.totalInventory));
+      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
     });
   };
   const getInventoryRecord = () => {
@@ -263,12 +277,12 @@ const AddRecordInventory = (props) => {
                 })}
               </ul>
             </div>
-            <div className="d-flex justify-content-between card">
+            <div className="d-flex justify-content-between card record_modal_row">
             <div
-                className="d-flex justify-content-between card-body"
+                className="d-flex justify-content-between align-items-center card-body mb-0"
                 id="details-tag"
               >
-                <div className="profile-details" key={ledgerData?.partyId}>
+                <div className="profile-details" key={transId}>
                   <div className="d-flex">
                     <div>
                       {ledgerData?.profilePic ? (
@@ -282,16 +296,10 @@ const AddRecordInventory = (props) => {
                       )}
                     </div>
                     <div id="trans-dtl">
-                      <p className="namedtl-tag">{ledgerData?.partyName}</p>
+                      <p className="namedtl-tag">{fromInventoryTab ? ledgerData?.transporterName :ledgerData?.partyName}</p>
                       <p className="mobilee-tag">
-                        {!ledgerData?.trader
-                          ? props.partyType == "BUYER"
-                            ? "Buyer"
-                            : props.type == "TRANS"
-                            ? "Transporter"
-                            : "Seller"
-                          : "Trader"}{" "}
-                        - {ledgerData?.partyId}&nbsp;|&nbsp;
+                        {
+                    transId }&nbsp;|&nbsp;
                         {getMaskedMobileNumber(ledgerData?.mobile)}
                       </p>
                       <p className="addres-tag">
@@ -302,7 +310,7 @@ const AddRecordInventory = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex card-text" id="date-tag">
+                <div className="d-flex card-text record_payment_datepicker" id="date-tag">
                   <img className="date_icon_in_modal" src={date_icon} />
                   <div className="d-flex date_popper">
                     <DatePicker
@@ -313,6 +321,10 @@ const AddRecordInventory = (props) => {
                       dateFormat="dd-MMM-yy"
                       maxDate={new Date()}
                       placeholder="Date"
+                      required
+                      onKeyDown={(e) => {
+                        e.preventDefault();
+                      }}
                     ></DatePicker>
                   </div>
                 </div>

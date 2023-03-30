@@ -36,13 +36,13 @@ const TransportoRecord = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  console.log(paymentViewData,"data")
+  console.log(ledgerData,"data")
+  var fromInventoryTab = transpoData?.fromInv;
   useEffect(() => {
     getOutstandingPaybles(clickId, transId);
   }, [props.showRecordPayModal]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
-      console.log(response);
       if (response.data.data != null) {
         setOutStandingBal(response.data.data);
       }
@@ -115,7 +115,7 @@ const TransportoRecord = (props) => {
       refId: ledgerData?.refId,
       toBePaidRcvd: 0,
       mobile: ledgerData?.mobile,
-      partyName:ledgerData?.partyName,
+      partyName: fromInventoryTab ? ledgerData?.transporterName :ledgerData?.partyName,
       amount:paidsRcvd
     };
     if (transpoData?.fromTransporter) {
@@ -242,12 +242,12 @@ const TransportoRecord = (props) => {
                 }}
               />
             </div>
-            <div className="d-flex justify-content-between card">
+            <div className="d-flex justify-content-between card record_modal_row">
               <div
-                className="d-flex justify-content-between card-body"
+                className="d-flex justify-content-between align-items-center card-body mb-0"
                 id="details-tag"
               >
-                <div className="profile-details" key={ledgerData?.partyId}>
+                <div className="profile-details" key={transId}>
                   <div className="d-flex">
                     <div>
                       {ledgerData?.profilePic ? (
@@ -261,10 +261,10 @@ const TransportoRecord = (props) => {
                       )}
                     </div>
                     <div id="trans-dtl">
-                      <p className="namedtl-tag">{ledgerData?.partyName}</p>
+                      <p className="namedtl-tag">{fromInventoryTab ? ledgerData?.transporterName :ledgerData?.partyName}</p>
                       <p className="mobilee-tag">
-                        {props.type == "TRANS" ? "Transporter" : "Seller"} -{" "}
-                        {ledgerData?.partyId}&nbsp;|&nbsp;
+                        
+                        {transId}&nbsp;|&nbsp;
                         {getMaskedMobileNumber(ledgerData?.mobile)}
                       </p>
                       <p className="addres-tag">
@@ -275,7 +275,7 @@ const TransportoRecord = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex card-text" id="date-tag">
+                <div className="d-flex card-text record_payment_datepicker" id="date-tag">
                   <img className="date_icon_in_modal" src={date_icon} />
                   <div className="d-flex date_popper">
                     <DatePicker
@@ -286,6 +286,10 @@ const TransportoRecord = (props) => {
                       dateFormat="dd-MMM-yy"
                       maxDate={new Date()}
                       placeholder="Date"
+                      required
+                      onKeyDown={(e) => {
+                        e.preventDefault();
+                      }}
                     ></DatePicker>
                   </div>
                 </div>

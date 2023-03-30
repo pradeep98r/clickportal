@@ -349,8 +349,8 @@ const Transporters = (props) => {
                               <td className="col-lg-4" key={item.tobePaidRcvd}>
                                 {fromInventoryTab ? (
                                   <p className="color_black coloring">
-                                    {item.inventory.length > 0 &&
-                                      item.inventory.map((itemVal, index) => {
+                                    {item.inventory?.length > 0 &&
+                                      item.inventory?.map((itemVal, index) => {
                                         return itemVal.qty
                                           ? itemVal.qty.toFixed(1) +
                                               " " +
