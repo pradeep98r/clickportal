@@ -45,7 +45,7 @@ const AddRecordInventory = (props) => {
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  const [selectDate, setSelectDate] = useState(new Date());
+  const [selectDate, setSelectDate] = useState(fromInvEditStatus?(new Date(viewInfo?.date)):new Date());
   const [comments, setComments] = useState(fromInvEditStatus?viewInfo?.comments:" ");
   const [unit, setUnit] = useState(fromInvEditStatus?viewInfo?.details?.unit:"CRATES");
   const [qty, setQty] = useState(fromInvEditStatus?viewInfo?.details?.qty:0);
@@ -78,6 +78,8 @@ const AddRecordInventory = (props) => {
       setSelectDate(new Date(viewInfo?.date))
     } else{
       setQty(0);
+      setUnit('CRATES');
+      setTabs('Given');
       setRequiredCondition("");
       setComments("");
       setSelectDate(new Date());
@@ -149,8 +151,14 @@ const AddRecordInventory = (props) => {
         window.setTimeout(function(){
           props.closeRecordInventoryModal();
         },800)
-        if (transpoData?.transpoTabs=='inventoryledger') {
-          getTransportersData()
+        if(transpoData?.transporterMainTab == 'transporterLedger'){
+          console.log('here')
+          getTransportersData();
+          inventoryLedger(clickId, transId);
+          getInventoryRecord()
+        }
+        else if (transpoData?.transpoTabs=='inventoryledger') {
+          // getTransportersData()
           getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
@@ -172,8 +180,13 @@ const AddRecordInventory = (props) => {
           props.closeRecordInventoryModal();
         },800)
         closePopup();
-        if (props.tabs === "inventoryledger" || transpoData?.transpoTabs=='inventoryledger') {
-          getTransportersData();
+        console.log(props.tabs,transpoData?.transpoTabs)
+        if(props.transporterMaintab == 'transporterLedger'){
+           getTransportersData();
+          inventoryLedger(clickId, transId);
+          getInventoryRecord()
+        }
+        else if (props.tabs === "inventoryledger" || transpoData?.transpoTabs=='inventoryledger') {
           getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
