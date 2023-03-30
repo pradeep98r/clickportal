@@ -317,6 +317,7 @@ input[type=radio]:label {
 #p-tag{
     font-weight: 500;
     font-size: 13px;
+    // margin-bottom: 10px
 }
 // #horizontal-line-tag{
 //     position: absolute;
@@ -385,8 +386,8 @@ input[type=radio]:label {
     top:0;
     justify-content: center;
 }
-#radios_in_modal{
-    // margin: auto;
+.radios{
+    margin-bottom: 20px;
     //padding-top: 10px;
     // padding-left: 40px;
 }
@@ -416,16 +417,18 @@ input[type=radio]:label {
 .select-tag{
     font-weight: 500;
     font-size: 13px;
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
+}
+.form-gro{
+    margin-bottom:20px;
 }
 #comments-tag{
-    margin-top: 10px;
     font-weight: 500;
     font-size: 13px;
     color: #1C1C1C;
 }
 #count-tag{
-    padding-top: 15px;
+    // padding-top: 15px;
     font-size: 12px;
     font-weight: 500;
     font-size: 13px;
@@ -443,7 +446,7 @@ input[type=radio]:label {
     position: relative;
     border-bottom: 1px solid #dee2e6;
     margin-bottom: 20px;
-    padding: 15px 50px 0px;
+    // padding: 15px 50px 0px;
 }
 #nodata-svg{
     width: 100%;
@@ -544,6 +547,7 @@ input[type=radio]:label {
     font-weight: 600;
     font-size: 13px;
     line-height: 18px;
+    
 }
 #trans-details{
     padding-top: 3px;
@@ -611,11 +615,9 @@ input[type=radio]:label {
     font-size: 12px;
     color:#121212;
 }
-#cbbk-tag{
-    padding-bottom: 10px;
-}
+
 #out-paybles, #input_in_modal, #radios_in_modal, #comment_in_modal, #details-tag{
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 #radios_in_modal .form-check{
     margin-right: 30px;
