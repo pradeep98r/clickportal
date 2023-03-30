@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   allPartnersInfo,
   singleTransporter,
+  transpoLedgersInfo,
   transporterIdVal,
 } from "../../reducers/transpoSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
@@ -41,12 +42,12 @@ const AllTransporters = (props) => {
       .then((response) => {
         if (response.data.data != null) {
           setallData(response.data.data);
-          dispatch(allPartnersInfo(response.data.data));
+          dispatch(partnerDataInfo(response.data.data));
           dispatch(transporterIdVal(response.data.data[0].partyId));
           //   dispatch(singleTransporter(response.data.data[0]));
         } else {
           setallData([]);
-          dispatch(allPartnersInfo([]));
+          dispatch(partnerDataInfo([]));
         }
       })
       .catch((error) => {});
@@ -64,8 +65,25 @@ const AllTransporters = (props) => {
     setShowPartnerModalStatus(true);
     setShowPartnerModal(true);
     dispatch(partnerSingleObj(item));
-    dispatch(fromTranspoFeature(true));
-    // localStorage.setItem('partyType', 'TRANSPORTER')
+    dispatch(fromTranspoFeature(true));}
+
+  const handleSearch = (event) => {
+    let value = event.target.value.toLowerCase();
+    let result = [];
+    result = allData.filter((data) => {
+      if (data.mobile.includes(value)) {
+        return data.mobile.search(value) != -1;
+      } else if (data.partyName.toLowerCase().includes(value)) {
+        return data.partyName.toLowerCase().search(value) != -1;
+      } else if (data.partyId.toString().includes(value)) {
+        return data.partyId.toString().search(value) != -1;
+      } else if (data?.address?.partyAddress?.addressLine.toLowerCase().includes(value)) {
+        return data.address?.partyAddress?.addressLine.toLowerCase().search(value) != -1;
+      } else if (data.shortName.toLowerCase().includes(value)) {
+        return data.shortName.toLowerCase().search(value) != -1;
+      }
+    });
+    dispatch(partnerDataInfo(result));
   };
   return (
     <div className="">
@@ -76,7 +94,7 @@ const AllTransporters = (props) => {
               <SearchField
                 placeholder="Search by Name / Short Code"
                 onChange={(event) => {
-                  //   handleSearch(event);
+                    handleSearch(event);
                 }}
               />
             </div>
