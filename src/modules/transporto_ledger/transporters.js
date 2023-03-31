@@ -63,14 +63,17 @@ const Transporters = (props) => {
       ? "inventoryledger"
       : "paymentledger"
   );
-  var payLedger = transpoData?.paymentTotals;
-  var invLedger = transpoData?.inventoryTotals;
+  var payLedger = transpoData?.paymentTotals != null ? transpoData?.paymentTotals : null;
+  var invLedger = transpoData?.inventoryTotals != null ? transpoData?.inventoryTotals : null;
+  
   useEffect(() => {
+    console.log(transporter,'useeffect')
     if (props.transPortoTabVal == "inventoryLedgerSummary") {
       setTabs("inventoryledger");
       dispatch(transpoTabs("inventoryledger"));
       getInventoryData();
     } else {
+      console.log('trans')
       getTransportersData();
       setTabs("paymentledger");
       dispatch(transpoTabs("paymentledger"));
@@ -80,8 +83,10 @@ const Transporters = (props) => {
 
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
+      console.log(response.data.data,'respoo')
       dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
+      if(response.data.data.ledgers.length > 0){
       dispatch(transporterIdVal(response.data.data.ledgers[0].partyId));
       dispatch(singleTransporterObject(response.data.data.ledgers[0]));
       setallData(response.data.data.ledgers);
@@ -90,11 +95,17 @@ const Transporters = (props) => {
       paymentLedger(clickId, response.data.data.ledgers[0].partyId);
       inventoryLedger(clickId, response.data.data.ledgers[0].partyId);
       getInventoryRecord(clickId, response.data.data.ledgers[0].partyId);
+      }
+      else{
+        dispatch(transpoLedgersInfo([]));
+        setallData([]);
+      }
       getPartners(clickId);
     });
   };
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
+      console.log(response.data.data)
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       dispatch(
         transporterIdVal(response.data.data.summaryInfo[0].transporterId)
@@ -203,6 +214,7 @@ const Transporters = (props) => {
           dispatch(paymentSummaryInfo(response.data.data.details));
         } else {
           dispatch(paymentTotals([]));
+          dispatch(paymentSummaryInfo([]));
         }
       })
       .catch((error) => {
@@ -213,8 +225,14 @@ const Transporters = (props) => {
   const inventoryLedger = (clickId, transId) => {
     getInventoryLedgers(clickId, transId)
       .then((response) => {
-        dispatch(inventoryTotals(response.data.data));
+        if(response.data.data != null){
+          dispatch(inventoryTotals(response.data.data));
         dispatch(inventorySummaryInfo(response.data.data.details));
+        }
+        else{
+          dispatch(inventoryTotals([]));
+        dispatch(inventorySummaryInfo([]));
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -489,7 +507,7 @@ const Transporters = (props) => {
                         </p>
                     </div>
                   </div>
-                  {tabs === "paymentledger" && (
+                  {(tabs === "paymentledger" && payLedger != null) && (
                     <>
                       <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                         <p className="card-text paid">
@@ -527,7 +545,7 @@ const Transporters = (props) => {
                       </div>
                     </>
                   )}
-                  {tabs === "inventoryledger" && (
+                  {(tabs === "inventoryledger" && invLedger != null) && (
                     <>
                       <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                         <p className="card-text paid">

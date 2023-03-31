@@ -25,6 +25,7 @@ import {
   partnerType,
   radioButtonVal,
 } from "../../reducers/partnerSlice";
+import { singleTransporter } from "../../reducers/transpoSlice";
 const PartnerModal = (props) => {
   const dispatch = useDispatch();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -45,6 +46,7 @@ const PartnerModal = (props) => {
   const fromTrader = partnerDataArray?.isFromTrader;
   const isEdit = partnerDataArray?.isEditPartner;
   const selectedPartnerObj = partnerDataArray?.partnerSingleObj;
+  const transpoData = useSelector((state) => state.transpoInfo);
   const getPartyVal = () => {
     var val;
     if (partyType.toUpperCase() === "FARMER" && !fromTrader) {
@@ -325,8 +327,15 @@ const PartnerModal = (props) => {
             props.closeModal();
             getPartnerData(clickId, partyType)
               .then((response) => {
+                if(response.data.data != null){
                 dispatch(partnersAllData(response.data.data));
                 dispatch(partnerDataInfo(response.data.data));
+               var index = response.data.data.findIndex((obj) => obj.partyId == transpoData?.singleTransporter?.partyId);
+                if(index != -1){
+                  dispatch(singleTransporter(response.data.data[index]));
+                }
+                
+                }
               })
               .catch((error) => {});
           }

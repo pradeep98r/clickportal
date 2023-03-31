@@ -25,7 +25,6 @@ import { fromTranspoFeature, partnerType } from "../../reducers/partnerSlice";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-console.log(loginData);
 function SideNavigation(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -131,7 +130,6 @@ function SideNavigation(props) {
   };
   const [logoutStatus, setLogoutStatus] = useState(false);
   useLayoutEffect(() => {
-    console.log('useeffect')
     if (loginData.useStatus == "WRITER") {
       for (var i = 0; i < links.length; i++) {
         if (links[i].name == langFullData.myProfile) {
@@ -143,7 +141,6 @@ function SideNavigation(props) {
       setLinksData(links);
     }
     getSystemSettings(loginData?.clickId).then((response) => {
-      console.log(response);
       localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
     })
     .catch((error) => {
