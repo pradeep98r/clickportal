@@ -33,7 +33,6 @@ const AddRecordInventory = (props) => {
   const dispatch = useDispatch();  
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const transpoData = useSelector((state) => state.transpoInfo);
-  console.log(paymentViewData,transpoData,"kk")
   const fromInvEditStatus=props.fromInventoryHist;
   const viewInfo=paymentViewData?.paymentViewInfo;
   const ledgerData =fromInvEditStatus?viewInfo: transpoData?.singleTransporterObject;
