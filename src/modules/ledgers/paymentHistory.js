@@ -39,11 +39,13 @@ import TransportoRecord from "../transporto_ledger/transportoRecord";
 import {
   fromTransporter,
   outstandingAmount,
+  outstandingAmountInv,
   paymentSummaryInfo,
   paymentTotals,
   transpoLedgersInfo,
 } from "../../reducers/transpoSlice";
 import {
+  getInventorySummary,
   getParticularTransporter,
   getTransporters,
 } from "../../actions/transporterService";
@@ -165,8 +167,21 @@ const PaymentHistoryView = (props) => {
     });
   };
   const updateTransportersData = () => {
-    getTransportersData();
-    paymentLedger(clickId, paymentHistoryData?.partyId);
+    if (transpoData?.transporterMainTab == "inventoryLedgerSummary") {
+      getInventoryData();
+      paymentLedger(clickId, paymentHistoryData?.partyId);
+    } else{
+      getTransportersData();
+      paymentLedger(clickId, paymentHistoryData?.partyId);
+    }
+  };
+
+  const getInventoryData = () => {
+    getInventorySummary(clickId).then((response) => {
+      console.log(response.data.data);
+      dispatch(outstandingAmountInv(response.data.data.totalInventory));
+      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+    });
   };
   const commonUpdateLedgers = () => {
     var partyId = paymentHistoryData?.partyId;
