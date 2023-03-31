@@ -16,7 +16,7 @@ import { getPartnerData } from "../../actions/billCreationService";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { fromTranspoFeature, isEditPartner, isFromTrader, partnerDataInfo, partnerSingleObj, partnerType } from "../../reducers/partnerSlice";
+import { fromTranspoFeature, isEditPartner, isFromTrader, partnerDataInfo, partnersAllData, partnerSingleObj, partnerType } from "../../reducers/partnerSlice";
 import PartnerModal from "../partners/partnerModal";
 import edit from "../../assets/images/edit.svg";
 const AllTransporters = (props) => {
@@ -30,7 +30,8 @@ const AllTransporters = (props) => {
   var transporter = partnerDataArray?.partnerDataInfo;
   var partnerItem = transpoData?.singleTransporter;
   const location = useLocation();
-  const [allData, setallData] = useState(transpoData?.transpoLedgersInfo);
+  const allData = partnerDataArray?.partnersAllData;
+  console.log(allData,partnerDataArray?.partnerDataInfo)
   useLayoutEffect(() => {
     getTransportersData();
   }, [location]);
@@ -38,11 +39,11 @@ const AllTransporters = (props) => {
     getPartnerData(clickId, "TRANSPORTER")
       .then((response) => {
         if (response.data.data != null) {
-          setallData(response.data.data);
+          dispatch(partnersAllData(response.data.data))
           dispatch(partnerDataInfo(response.data.data));
           dispatch(transporterIdVal(response.data.data[0].partyId));
         } else {
-          setallData([]);
+          dispatch(partnersAllData([]))
           dispatch(partnerDataInfo([]));
         }
       })
@@ -150,14 +151,7 @@ const AllTransporters = (props) => {
                     })}
                   </table>
                 </div>
-                <div className="outstanding-pay d-flex align-items-center justify-content-between">
-                  <p className="pat-tag">Outstanding Paybles:</p>
-                  <p className="values-tag">
-                    {outStAmt?.totalOutStgAmt
-                      ? getCurrencyNumberWithSymbol(outStAmt?.totalOutStgAmt)
-                      : 0}
-                  </p>
-                </div>
+              
               </div>
             ) : (
               <div className="table-scroll nodata_scroll">

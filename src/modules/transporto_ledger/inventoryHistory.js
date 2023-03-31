@@ -13,6 +13,7 @@ import AddRecordInventory from "./addRecordInventory";
 import {
   getInventory,
   getInventoryLedgers,
+  getInventorySummary,
   getTransporters,
   updateRecordInventory,
 } from "../../actions/transporterService";
@@ -21,6 +22,7 @@ import {
   inventoryTotals,
   inventoryUnitDetails,
   outstandingAmount,
+  outstandingAmountInv,
   transpoLedgersInfo,
 } from "../../reducers/transpoSlice";
 
@@ -66,17 +68,30 @@ const InventoryHistoryView = (props) => {
         window.setTimeout(function () {
           props.closeInvViewModal();
         }, 1000);
-        if (transpoData?.transpoTabs == "inventoryledger") {
-          getTransportersData();
-          inventoryLedger(clickId, transId);
-          getInventoryRecord();
-        }
+        if(transpoData?.transporterMainTab == 'transporterLedger'){
+            getTransportersData();
+           inventoryLedger(clickId, transId);
+           getInventoryRecord()
+         }
+         else if (transpoData?.transpoTabs === "inventoryledger" || transpoData?.transpoTabs=='inventoryledger') {
+           getInventoryData();
+           inventoryLedger(clickId, transId);
+           getInventoryRecord()
+         }
       })
       .catch((error) => {
         toast.error(error.response.data.status.message, {
           toastId: "error3",
         });
       });
+  };
+  const getInventoryData = () => {
+    getInventorySummary(clickId).then((response) => {
+        if(response.data.data != null){
+      dispatch(outstandingAmountInv(response.data.data.totalInventory));
+      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+        }
+    });
   };
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
