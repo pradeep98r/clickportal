@@ -40,7 +40,7 @@ import {
   transporterMainTab,
   fromTransporter,
 } from "../../reducers/transpoSlice";
-import { getCropUnit } from "../../components/getCropUnitValue";
+import { formatInvLedger, getCropUnit } from "../../components/getCropUnitValue";
 import { getPartnerData } from "../../actions/billCreationService";
 import TransportoRecord from "./transportoRecord";
 const Transporters = (props) => {
@@ -374,7 +374,8 @@ const Transporters = (props) => {
                               <td className="col-lg-4" key={item.tobePaidRcvd}>
                                 {fromInventoryTab ? (
                                   <p className="color_black coloring">
-                                    {item.inventory?.length > 0 &&
+                                    {formatInvLedger(item?.inventory?item.inventory:[])}
+                                    {/* {item.inventory?.length > 0 &&
                                       item.inventory?.map((itemVal, index) => {
                                         return itemVal.qty
                                           ? itemVal.qty.toFixed(1) +
@@ -384,7 +385,7 @@ const Transporters = (props) => {
                                                 itemVal.qty
                                               )
                                           : "";
-                                      })}
+                                      })} */}
                                   </p>
                                 ) : (
                                   <p className="color_red coloring">
@@ -408,14 +409,15 @@ const Transporters = (props) => {
                     <div className="d-flex align-items-center justify-content-between">
                       <p className="pat-tag"> Total Inventory Balance : </p>
                       <p className="color_black coloring">
-                        {outstandingAmountInvData.length > 0 &&
+                      {formatInvLedger(outstandingAmountInvData?outstandingAmountInvData:[])}
+                        {/* {outstandingAmountInvData.length > 0 &&
                           outstandingAmountInvData.map((itemVal, index) => {
                             return itemVal.qty
                               ? itemVal.qty.toFixed(1) +
                                   " " +
                                   getCropUnit(itemVal.unit, itemVal.qty)
                               : "";
-                          })}
+                          })} */}
                       </p>
                     </div>
                   ) : (
@@ -531,7 +533,9 @@ const Transporters = (props) => {
                         <p className="card-text paid">
                           Total Given{" "}
                           <p className="coloring color_black">
-                            {invLedger.totalGiven.length > 0
+                            {invLedger?.totalGiven.length>0?
+                            formatInvLedger(invLedger?.totalGiven?invLedger.totalGiven:[]):0}
+                            {/* {invLedger.totalGiven
                               ? invLedger.totalGiven.map((item) => {
                                   return item.qty > 0
                                     ? item.qty.toFixed(1) +
@@ -539,7 +543,7 @@ const Transporters = (props) => {
                                         getCropUnit(item.unit, item.qty)
                                     : "";
                                 })
-                              : 0}
+                              : 0} */}
                           </p>
                         </p>
                       </div>
@@ -547,7 +551,9 @@ const Transporters = (props) => {
                         <p className="total-paid">
                           Total Collected
                           <p className="coloring color_black">
-                            {invLedger.totalCollected.length > 0
+                            {invLedger?.totalCollected.length> 0?
+                            formatInvLedger(invLedger?.totalCollected?invLedger?.totalCollected:[]):0}
+                            {/* {invLedger.totalCollected
                               ? invLedger.totalCollected.map((item) => {
                                   return item.qty > 0
                                     ? item.qty.toFixed(1) +
@@ -555,7 +561,7 @@ const Transporters = (props) => {
                                         getCropUnit(item.unit, item.qty)
                                     : "";
                                 })
-                              : 0}
+                              : 0} */}
                           </p>{" "}
                         </p>
                       </div>
@@ -563,7 +569,9 @@ const Transporters = (props) => {
                         <p className="out-standing">
                           Total Balance
                           <p className="coloring color_black">
-                            {invLedger.balance.length > 0
+                            {invLedger?.balance.length>0?
+                            formatInvLedger(invLedger?.balance?invLedger?.balance:[]):0}
+                            {/* {invLedger.balance
                               ? invLedger.balance.map((item) => {
                                   return item.qty
                                     ? item.qty.toFixed(1) +
@@ -571,7 +579,7 @@ const Transporters = (props) => {
                                         getCropUnit(item.unit, item.qty)
                                     : "";
                                 })
-                              : 0}
+                              : 0} */}
                           </p>
                         </p>
                       </div>
