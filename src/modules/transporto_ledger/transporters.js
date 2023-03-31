@@ -456,10 +456,10 @@ const Transporters = (props) => {
             <div className="card details-tag">
               <div className="card-body" id="card-details">
                 <div className="row">
-                  <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
-                    <div className="profilers-details" key={transData.partyId}>
-                      <div className="d-flex">
-                        <div>
+              
+                  <div className="col-lg-3 d-flex align-items-center pl-0" id="verticalLines">
+                    <div className="pl-0 d-flex" key={transData.partyId}>
+                   
                           {transData.profilePic ? (
                             <img
                               id="singles-img"
@@ -469,10 +469,8 @@ const Transporters = (props) => {
                           ) : (
                             <img id="singles-img" src={single_bill} alt="img" />
                           )}
-                        </div>
-                        <div id="ptr-dtls">
+                        <p id="card-text">
                           <p className="namedtl-tag">
-                            {" "}
                             {fromInventoryTab
                               ? transData.transporterName
                               : transData.partyName}
@@ -486,8 +484,7 @@ const Transporters = (props) => {
                           <p className="mobilee-tag">
                             {getMaskedMobileNumber(transData?.mobile)}
                           </p>
-                        </div>
-                      </div>
+                        </p>
                     </div>
                   </div>
                   {tabs === "paymentledger" && (
@@ -534,7 +531,7 @@ const Transporters = (props) => {
                         <p className="card-text paid">
                           Total Given{" "}
                           <p className="coloring color_black">
-                            {invLedger.totalGiven
+                            {invLedger.totalGiven.length > 0
                               ? invLedger.totalGiven.map((item) => {
                                   return item.qty > 0
                                     ? item.qty.toFixed(1) +
@@ -550,7 +547,7 @@ const Transporters = (props) => {
                         <p className="total-paid">
                           Total Collected
                           <p className="coloring color_black">
-                            {invLedger.totalCollected
+                            {invLedger.totalCollected.length > 0
                               ? invLedger.totalCollected.map((item) => {
                                   return item.qty > 0
                                     ? item.qty.toFixed(1) +
@@ -566,7 +563,7 @@ const Transporters = (props) => {
                         <p className="out-standing">
                           Total Balance
                           <p className="coloring color_black">
-                            {invLedger.balance
+                            {invLedger.balance.length > 0
                               ? invLedger.balance.map((item) => {
                                   return item.qty
                                     ? item.qty.toFixed(1) +

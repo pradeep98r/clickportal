@@ -48,7 +48,7 @@ const TransportoLedger = () => {
             );
           })}
         </ul>
-        <div className="tab-content main_div_padding px-0">
+        <div className="tab-content main_div_padding px-0 pb-0">
           <div
             className="tab-pane active"
             id={transPortoTabVal}

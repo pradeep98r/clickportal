@@ -313,7 +313,7 @@ const TransportoRecord = (props) => {
                   </div>
                 </div>
                 <div
-                  className="d-flex card-text record_payment_datepicker"
+                  className="d-flex card-text date_field record_payment_datepicker"
                   id="date-tag"
                 >
                   <img className="date_icon_in_modal" src={date_icon} />
