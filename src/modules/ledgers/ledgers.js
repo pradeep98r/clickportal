@@ -12,6 +12,7 @@ import {
 import SearchField from "../../components/searchField";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import "../../modules/ledgers/buyerLedger.scss";
+import "../../modules/transporto_ledger/transportoLedger.scss"
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
@@ -721,20 +722,7 @@ const Ledgers = (props) => {
                               />
                              Add Record
                             </button>
-                      {/* <div className="recordbtn-style">
-                        <button
-                          className="add-record-btns"
-                         
-                          data-toggle="modal"
-                          data-target="#myModal"
-                        >
-                          
-                        </button>
-
-                        <div className="add-pays-btn">
-                          <img src={add} id="addrecord-img" />
-                        </div>
-                      </div> */}
+                    
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
                     <div className="my-2">

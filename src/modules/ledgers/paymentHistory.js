@@ -11,31 +11,69 @@ import cancel from "../../assets/images/cancel.svg";
 import edit from "../../assets/images/edit_round.svg";
 import RecordPayment from "./recordPayment";
 import moment from "moment";
-import { updateRecordPayment, getBillHistoryListById, getLedgers, getLedgerSummary, getOutstandingBal, getSellerDetailedLedger
-  ,getBuyerDetailedLedger,getDetailedLedgerByDate,getSellerDetailedLedgerByDate,getLedgerSummaryByDate, deleteAdvancePayment } from "../../actions/ledgersService";
-import { allLedgers, businessValues, detaildLedgerInfo, fromRecordPayment, ledgerSummaryInfo, outStandingBal, totalRecivables, trhoughRecordPayment } from "../../reducers/ledgerSummarySlice";
+import {
+  updateRecordPayment,
+  getBillHistoryListById,
+  getLedgers,
+  getLedgerSummary,
+  getOutstandingBal,
+  getSellerDetailedLedger,
+  getBuyerDetailedLedger,
+  getDetailedLedgerByDate,
+  getSellerDetailedLedgerByDate,
+  getLedgerSummaryByDate,
+  deleteAdvancePayment,
+} from "../../actions/ledgersService";
+import {
+  allLedgers,
+  businessValues,
+  detaildLedgerInfo,
+  fromRecordPayment,
+  ledgerSummaryInfo,
+  outStandingBal,
+  totalRecivables,
+  trhoughRecordPayment,
+} from "../../reducers/ledgerSummarySlice";
 import Ledgers from "./ledgers";
+import TransportoRecord from "../transporto_ledger/transportoRecord";
+import {
+  fromTransporter,
+  outstandingAmount,
+  paymentSummaryInfo,
+  paymentTotals,
+  transpoLedgersInfo,
+} from "../../reducers/transpoSlice";
+import {
+  getParticularTransporter,
+  getTransporters,
+} from "../../actions/transporterService";
+import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  const transpoData = useSelector((state) => state.transpoInfo);
+  const fromTranspo = transpoData?.fromTransporter;
+  const transporterTabs = transpoData?.transpoTabs;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
-  const allCustomTab=tabClick?.allCustomTabs;
-  const ledgerTabs=tabClick?.partnerTabs;
+  const allCustomTab = tabClick?.allCustomTabs;
+  const ledgerTabs = tabClick?.partnerTabs;
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const partyTypeVal = props.partyType;
   const dispatch = useDispatch();
-  var [paymentHistoryData, setPaymentHistoryData] = useState(
-    paymentViewData?.paymentViewInfo
-  );
-  console.log(paymentHistoryData,paymentViewData?.paymentViewInfo)
+  const paymentHistoryData = paymentViewData?.paymentViewInfo;
+  // var [paymentHistoryData, setPaymentHistoryData] = useState(
+  //  paymentViewData?.paymentViewInfo
+  // );
+  console.log(paymentHistoryData, paymentViewData?.paymentViewInfo);
   var discountedAmount = 0;
   var discountPercentage = 0;
-  var amount = paymentViewData?.paymentViewInfo?.amount?
-  paymentViewData?.paymentViewInfo?.amount:paymentViewData?.paymentViewInfo?.paidRcvd;
+  var amount = paymentViewData?.paymentViewInfo?.amount
+    ? paymentViewData?.paymentViewInfo?.amount
+    : paymentViewData?.paymentViewInfo?.paidRcvd;
   var discount = paymentViewData?.paymentViewInfo?.discount;
   discount = Math.abs(discount);
   if (discount > 0) {
@@ -49,116 +87,147 @@ const PaymentHistoryView = (props) => {
   useEffect(() => {
     if (paymentViewData?.paymentViewInfo?.refId?.includes("A")) {
       setfromAdvances(true);
-    }
-    else{
+    } else {
       setfromAdvances(false);
     }
-    
-    setPaymentHistoryData(paymentViewData.paymentViewInfo);
+
+    dispatch(paymentViewInfo(paymentViewData.paymentViewInfo));
   }, [props.showPaymentViewModal]);
 
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
-  const editRecordPayment =()=>{
-    console.log(paymentViewData.paymentViewInfo)
+  const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
+  const [recordPayModal, setRecordPayModal] = useState(false);
+  const [editRecordPaymentStat, setRecordPaymentStat] = useState(false);
+  const editRecordPayment = () => {
     dispatch(trhoughRecordPayment(false));
-    setRecordPaymentActive(true);
-    setRecordPaymentModal(true);
-  }
-  var partyDetails=paymentViewData.paymentViewInfo
-  const deleteRecordPayment ={
-    action:'DELETE',
+    if (fromTranspo) {
+      setRecordPaymentStat(true);
+      setRecordPaymentActive(true);
+      setRecordPaymentModal(true);
+    } else {
+      setRecordPayModalStatus(true);
+      setRecordPayModal(true);
+    }
+  };
+  var partyDetails = paymentViewData.paymentViewInfo;
+  const deleteRecordPayment = {
+    action: "DELETE",
     caId: clickId,
     partyId: partyDetails?.partyId,
     date: moment(partyDetails?.date).format("YYYY-MM-DD"),
-    comments:partyDetails?.comments,
+    comments: partyDetails?.comments,
     paidRcvd: partyDetails?.amount,
-    paymentMode:partyDetails?.paymentMode,
-    billIds:partyDetails?.billIds,
+    paymentMode: partyDetails?.paymentMode,
+    billIds: partyDetails?.billIds,
     type: partyDetails?.type,
     discount: partyDetails?.balance,
-    refId:partyDetails?.refId,
-    toBePaidRcvd:0,
-    writerId:writerId
-  }
-  const removeRecordPayment =()=>{
-    updateRecordPayment(deleteRecordPayment).then(res=>{
+    refId: partyDetails?.refId,
+    toBePaidRcvd: 0,
+    writerId: writerId,
+  };
+  const removeRecordPayment = () => {
+    updateRecordPayment(deleteRecordPayment).then((res) => {
       toast.success(res.data.status.message, {
         toastId: "errorr2",
-    })
-    window.setTimeout(function(){
-      props.closePaymentViewModal();
-    },1000)
-    commonUpdateLedgers();
-    })
-  }
+      });
+      window.setTimeout(function () {
+        props.closePaymentViewModal();
+      }, 1000);
+      if (fromTranspo) {
+        updateTransportersData();
+      } else {
+        commonUpdateLedgers();
+      }
+    });
+  };
   const advanceDeleteObject = {
     action: "DELETE",
     caId: clickId,
     paidRcvd: partyDetails?.amount,
     partyId: partyDetails?.partyId,
     refId: partyDetails?.refId,
-    writerId:writerId
-  }
-  const advanceDelete = () =>{
-    deleteAdvancePayment(advanceDeleteObject).then(res=>{
+    writerId: writerId,
+  };
+  const advanceDelete = () => {
+    deleteAdvancePayment(advanceDeleteObject).then((res) => {
       toast.success(res.data.status.message, {
         toastId: "errorr3",
-    })
-    window.setTimeout(function(){
-      props.closePaymentViewModal();
-    },1000)
-    commonUpdateLedgers();
-  })
-  }
-  const commonUpdateLedgers = () =>{
+      });
+      window.setTimeout(function () {
+        props.closePaymentViewModal();
+      }, 1000);
+      if (fromTranspo) {
+        updateTransportersData();
+      } else {
+        commonUpdateLedgers();
+      }
+    });
+  };
+  const updateTransportersData = () => {
+    getTransportersData();
+    paymentLedger(clickId, paymentHistoryData?.partyId);
+  };
+  const commonUpdateLedgers = () => {
     var partyId = paymentHistoryData?.partyId;
-    var partyType=partyTypeVal =='FARMER'?'SELLER':partyTypeVal
-   
-      dispatch(fromRecordPayment(true));
-      fetchLedgers();
-      summaryData(clickId,partyId);
-      if(allCustomTab =='all' && ledgerTabs =='detailedledger'){
-        if(partyType == 'SELLER'){
-          sellerDetailed(clickId,partyId);
-        }
-        else{
-          geyDetailedLedger(clickId,partyId);
-        }
+    var partyType = partyTypeVal == "FARMER" ? "SELLER" : partyTypeVal;
+
+    dispatch(fromRecordPayment(true));
+    fetchLedgers();
+    summaryData(clickId, partyId);
+    if (allCustomTab == "all" && ledgerTabs == "detailedledger") {
+      if (partyType == "SELLER") {
+        sellerDetailed(clickId, partyId);
+      } else {
+        geyDetailedLedger(clickId, partyId);
       }
-      if(allCustomTab =='custom' && ledgerTabs =='ledgersummary'){
-        ledgerSummaryByDate(clickId,partyId,fromDate,toDate)
-      } else if(allCustomTab =='custom' && ledgerTabs =='detailedledger'){
-        if(partyType == 'SELLER'){
-          sellerDetailedByDate(clickId,partyId,fromDate,toDate)
-        } else{
-        detailedLedgerByDate(clickId,partyId,fromDate,toDate)
-        }
+    }
+    if (allCustomTab == "custom" && ledgerTabs == "ledgersummary") {
+      ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+    } else if (allCustomTab == "custom" && ledgerTabs == "detailedledger") {
+      if (partyType == "SELLER") {
+        sellerDetailedByDate(clickId, partyId, fromDate, toDate);
+      } else {
+        detailedLedgerByDate(clickId, partyId, fromDate, toDate);
       }
-    
-  
-  }
+    }
+  };
+  const getTransportersData = () => {
+    getTransporters(clickId).then((response) => {
+      dispatch(outstandingAmount(response.data.data));
+      dispatch(transpoLedgersInfo(response.data.data.ledgers));
+    });
+  };
+  const paymentLedger = (clickId, partyId) => {
+    getParticularTransporter(clickId, partyId)
+      .then((response) => {
+        console.log(response.data.data, "pay");
+        dispatch(paymentSummaryInfo(response.data.data.details));
+        dispatch(paymentTotals(response.data.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const getALlLedgers = (data) => {
     dispatch(allLedgers(data));
-  }
+  };
   const fetchLedgers = () => {
-    var partyType=partyTypeVal =='FARMER'?'SELLER':partyTypeVal
-    getLedgers(clickId, partyType).then(
-      (res) => {
-        if (res.data.status.type === "SUCCESS") {
-            dispatch(allLedgers(res.data.data.ledgers));
-            dispatch(outStandingBal(res.data.data));
-        } else {
-        }
+    var partyType = partyTypeVal == "FARMER" ? "SELLER" : partyTypeVal;
+    getLedgers(clickId, partyType).then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        dispatch(allLedgers(res.data.data.ledgers));
+        dispatch(outStandingBal(res.data.data));
+      } else {
       }
-    );
+    });
   };
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-            dispatch(businessValues(res.data.data));
-            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          dispatch(businessValues(res.data.data));
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
         }
       })
       .catch((error) => console.log(error));
@@ -167,9 +236,9 @@ const PaymentHistoryView = (props) => {
     getBuyerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
-          }
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -178,8 +247,8 @@ const PaymentHistoryView = (props) => {
     getSellerDetailedLedger(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         }
       })
       .catch((error) => console.log(error));
@@ -188,9 +257,9 @@ const PaymentHistoryView = (props) => {
     getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-            dispatch(businessValues(res.data.data));
-            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
-          }
+          dispatch(businessValues(res.data.data));
+          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -199,8 +268,8 @@ const PaymentHistoryView = (props) => {
     getDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         }
       })
       .catch((error) => console.log(error));
@@ -211,14 +280,13 @@ const PaymentHistoryView = (props) => {
     getSellerDetailedLedgerByDate(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.data !== null) {
-            dispatch(totalRecivables(res.data.data))
-            dispatch(detaildLedgerInfo(res.data.data.details));
+          dispatch(totalRecivables(res.data.data));
+          dispatch(detaildLedgerInfo(res.data.data.details));
         }
       })
       .catch((error) => console.log(error));
   };
- 
- 
+
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -256,7 +324,7 @@ const PaymentHistoryView = (props) => {
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
                         <p>
-                          {(paymentHistoryData?.mobile)}
+                          {paymentHistoryData?.mobile}
                           {/* {getMaskedMobileNumber(paymentHistoryData?.mobile)} */}
                         </p>
                       </div>
@@ -265,8 +333,9 @@ const PaymentHistoryView = (props) => {
                   <div className="col-lg-5 p-0"></div>
                   <div className="col-lg-3 p-0">
                     <h6>Date</h6>
-                    <h5>{moment(paymentHistoryData?.date).format("DD-MMM-YY")
-                    }</h5>
+                    <h5>
+                      {moment(paymentHistoryData?.date).format("DD-MMM-YY")}
+                    </h5>
                   </div>
                 </div>
               </div>
@@ -276,8 +345,11 @@ const PaymentHistoryView = (props) => {
                     <div>
                       <h6>Selected Bills</h6>
                       <div className="d-flex">
-                        <h5>{'Bill IDs: ' + paymentHistoryData.billIds.join(" , ")}</h5>
-                      {/* {.map((item, index) => {
+                        <h5>
+                          {"Bill IDs: " +
+                            paymentHistoryData.billIds.join(" , ")}
+                        </h5>
+                        {/* {.map((item, index) => {
                         return <h5>{item?.join(" , ")}</h5>
                       })} */}
                       </div>
@@ -323,13 +395,13 @@ const PaymentHistoryView = (props) => {
                 <div>
                   <p className="more-p-tag">Actions</p>
                   {fromAdvances ? (
-                     <div className="action_icons">
-                    <div className="items_div">
-                      <button onClick={()=>advanceDelete()}>
-                        <img src={cancel} alt="img" className="" />
-                      </button>
-                      <p>Delete</p>
-                    </div>
+                    <div className="action_icons">
+                      <div className="items_div">
+                        <button onClick={() => advanceDelete()}>
+                          <img src={cancel} alt="img" className="" />
+                        </button>
+                        <p>Delete</p>
+                      </div>
                     </div>
                   ) : (
                     <div>
@@ -338,16 +410,23 @@ const PaymentHistoryView = (props) => {
                           ""
                         ) : (
                           <div className="items_div">
-                            <button onClick={()=>{editRecordPayment()}}>
+                            <button
+                              onClick={() => {
+                                editRecordPayment();
+                              }}
+                            >
                               <img src={edit} alt="img" className="" />
                             </button>
-                            <p>
-                              Edit</p>
+                            <p>Edit</p>
                           </div>
                         )}
                         <div className="items_div">
-                          <button onClick={()=>{removeRecordPayment()}}>
-                            <img src={cancel} alt="img" className=""/>
+                          <button
+                            onClick={() => {
+                              removeRecordPayment();
+                            }}
+                          >
+                            <img src={cancel} alt="img" className="" />
                           </button>
                           <p>Delete</p>
                         </div>
@@ -359,15 +438,24 @@ const PaymentHistoryView = (props) => {
             </div>
           </div>
         </div>
-        {recordPaymentActive?
-        <RecordPayment 
-          LedgerData={paymentViewData?.paymentViewInfo}
-          ledgerId={paymentViewData?.paymentViewInfo?.partyId}
-          showRecordPaymentModal={recordPaymentModal}
-          closeRecordPaymentModal={()=> setRecordPaymentModal(false)}
-          fromPaymentHistory={recordPaymentActive}
-          ledgers={getALlLedgers}
-          />:''}
+        {recordPaymentActive && !fromTranspo ? (
+          <RecordPayment
+            LedgerData={paymentViewData?.paymentViewInfo}
+            ledgerId={paymentViewData?.paymentViewInfo?.partyId}
+            showRecordPaymentModal={recordPaymentModal}
+            closeRecordPaymentModal={() => setRecordPaymentModal(false)}
+            fromPaymentHistory={recordPaymentActive}
+            ledgers={getALlLedgers}
+          />
+        ) : fromTranspo && recordPaymentActive ? (
+          <TransportoRecord
+            showRecordPayModal={recordPaymentModal}
+            closeRecordPayModal={() => setRecordPaymentModal(false)}
+            editRecordStatus={editRecordPaymentStat}
+          />
+        ) : (
+          ""
+        )}
       </div>
       <ToastContainer />
     </Modal>

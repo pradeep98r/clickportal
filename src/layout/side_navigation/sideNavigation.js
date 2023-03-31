@@ -21,10 +21,10 @@ import { authActions } from "../../reducers/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import logout from "../../assets/images/logout.svg";
 import { getSystemSettings } from "../../actions/billCreationService";
+import { fromTranspoFeature, partnerType } from "../../reducers/partnerSlice";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-console.log(loginData);
 function SideNavigation(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ function SideNavigation(props) {
       img: reports,
     },
     // {
-    //   id: 10,
+    //   id: 10
     //   name: "System Settings",
     //   to: "/cms",
     //   className: "side_nav_item",
@@ -130,7 +130,6 @@ function SideNavigation(props) {
   };
   const [logoutStatus, setLogoutStatus] = useState(false);
   useLayoutEffect(() => {
-    console.log('useeffect')
     if (loginData.useStatus == "WRITER") {
       for (var i = 0; i < links.length; i++) {
         if (links[i].name == langFullData.myProfile) {
@@ -142,7 +141,6 @@ function SideNavigation(props) {
       setLinksData(links);
     }
     getSystemSettings(loginData?.clickId).then((response) => {
-      console.log(response);
       localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
     })
     .catch((error) => {
@@ -208,6 +206,8 @@ function SideNavigation(props) {
       localStorage.setItem("stepOneSingleBook", false);
     } else if (path === "/partner") {
       localStorage.setItem("partyType", "FARMER");
+      dispatch(fromTranspoFeature(false));
+      dispatch(partnerType('FARMER'))
     }
     localStorage.setItem("LinkId", id);
     localStorage.setItem("LinkPath", path);

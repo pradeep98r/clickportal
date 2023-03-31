@@ -1,6 +1,7 @@
 import React from "react";
 
 const ProfileCard = ({ title, subTitle, imageTag }) => (
+  
   <div className="profileCard d-flex">
       <img src={imageTag} alt="image"/>
     <div>
