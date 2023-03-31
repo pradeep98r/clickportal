@@ -292,10 +292,10 @@ const AddRecordInventory = (props) => {
               </ul>
             </div>
             <div className="d-flex justify-content-between card record_modal_row">
-            <div
+              <div
                 className="d-flex justify-content-between align-items-center card-body mb-0"
                 id="details-tag"
-              >
+                >
                 <div className="profile-details" key={transId}>
                   <div className="d-flex">
                     <div>
@@ -346,8 +346,7 @@ const AddRecordInventory = (props) => {
             </div>
             <div id="out-paybles">
               <p id="p-tag">{langFullData.inventoryBalance}</p>  
-            </div>
-            <div id="cbbk-tag">
+              <div id="cbbk-tag">
               {props.tabs === "inventoryledger" &&
                 getInventor.map((item) => {
                   return (
@@ -358,7 +357,9 @@ const AddRecordInventory = (props) => {
                   );
                 })}
             </div>
+            </div>
             <div id="radios_in_modal">
+              <div className="radios">
               {tabs === "Given" ? (
                 <p className="select-tag">Select Given Type</p>
               ) : (
@@ -441,6 +442,7 @@ const AddRecordInventory = (props) => {
                   BAGS
                 </label>
               </div>
+              </div>
               <div className="form-gro">
                 <label hmtlFor="amtRecieved" id="count-tag">
                   {langFullData.numberOf} {getText(unit)}
@@ -460,7 +462,7 @@ const AddRecordInventory = (props) => {
                 <p className="text-valid">{requiredCondition}</p>
               </div>
 
-              <div className="mb-3">
+              <div className="mb-3 comments-tag">
                 <label
                   for="exampleFormControlTextarea1"
                   className="form-label"

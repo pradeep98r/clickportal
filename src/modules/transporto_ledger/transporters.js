@@ -456,7 +456,7 @@ const Transporters = (props) => {
             <div className="card details-tag">
               <div className="card-body" id="card-details">
                 <div className="row">
-                  <div className="col-lg-3" id="verticalLines">
+                  <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                     <div className="profilers-details" key={transData.partyId}>
                       <div className="d-flex">
                         <div>
@@ -492,7 +492,7 @@ const Transporters = (props) => {
                   </div>
                   {tabs === "paymentledger" && (
                     <>
-                      <div className="col-lg-3" id="verticalLines">
+                      <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                         <p className="card-text paid">
                           {langFullData.totalBusiness}{" "}
                           <p className="coloring color_black">
@@ -504,7 +504,7 @@ const Transporters = (props) => {
                           </p>
                         </p>
                       </div>
-                      <div className="col-lg-3" id="verticalLines">
+                      <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                         <p className="total-paid">
                           {langFullData.totalPaid}
                           <p className="coloring color_black">
@@ -530,7 +530,7 @@ const Transporters = (props) => {
                   )}
                   {tabs === "inventoryledger" && (
                     <>
-                      <div className="col-lg-3" id="verticalLines">
+                      <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                         <p className="card-text paid">
                           Total Given{" "}
                           <p className="coloring color_black">
@@ -546,7 +546,7 @@ const Transporters = (props) => {
                           </p>
                         </p>
                       </div>
-                      <div className="col-lg-3" id="verticalLines">
+                      <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
                         <p className="total-paid">
                           Total Collected
                           <p className="coloring color_black">
@@ -562,7 +562,7 @@ const Transporters = (props) => {
                           </p>{" "}
                         </p>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col-lg-3 d-flex align-items-center">
                         <p className="out-standing">
                           Total Balance
                           <p className="coloring color_black">
