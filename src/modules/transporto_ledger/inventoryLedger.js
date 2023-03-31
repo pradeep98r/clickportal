@@ -26,7 +26,7 @@ const InventoryLedger = (props) => {
   const [showInvModal, setShowInvModal] = useState(false);
  
   const billOnClickView = (billId, type, i, partyId) => {
-    var bId = billId.replace("-", " ").replace("C", "").replace("U", "");
+    var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("T")) {
       getInventoryListById(clickId,transporterId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {

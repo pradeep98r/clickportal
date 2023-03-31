@@ -325,7 +325,7 @@ const AddRecordInventory = (props) => {
                     </div>
                   </div>
                 </div>
-                <div className="d-flex card-text record_payment_datepicker" id="date-tag">
+                <div className="d-flex card-text date_field record_payment_datepicker" id="date-tag">
                   <img className="date_icon_in_modal" src={date_icon} />
                   <div className="d-flex date_popper">
                     <DatePicker

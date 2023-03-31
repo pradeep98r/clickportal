@@ -1,9 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  allPartnersInfo,
   singleTransporter,
-  transpoLedgersInfo,
   transporterIdVal,
 } from "../../reducers/transpoSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
@@ -20,6 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fromTranspoFeature, isEditPartner, isFromTrader, partnerDataInfo, partnerSingleObj, partnerType } from "../../reducers/partnerSlice";
 import PartnerModal from "../partners/partnerModal";
+import edit from "../../assets/images/edit.svg";
 const AllTransporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -109,7 +108,7 @@ const AllTransporters = (props) => {
                     {transporter.map((partner, index) => {
                       return (
                         <div>
-                          <div
+                          <button
                             onClick={() =>
                               particularTransporter(partner.partyId, partner)
                             }
@@ -120,7 +119,7 @@ const AllTransporters = (props) => {
                             }
                             key={index}
                           >
-                            <div className="d-flex partner_card_flex justify-content-between align-items-center">
+                            <div className="d-flex text-left partner_card_flex trans_partner_card justify-content-between align-items-center">
                               <div className="d-flex align-items-center">
                                 {partner.profilePic ? (
                                   <img
@@ -145,7 +144,7 @@ const AllTransporters = (props) => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </button>
                         </div>
                       );
                     })}
@@ -187,6 +186,7 @@ const AllTransporters = (props) => {
                       <h6>Personal Details</h6>
                     </div>
                     <button onClick={()=>editPartnerEvent('Transporter',false,partnerItem)}><p className="edit_text">
+                    <img src={edit} alt="edit-img" />
                       <span className="edit_text">EDIT</span>
                     </p></button>
                     

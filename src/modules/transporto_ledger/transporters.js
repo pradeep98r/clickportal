@@ -458,10 +458,10 @@ const Transporters = (props) => {
             <div className="card details-tag">
               <div className="card-body" id="card-details">
                 <div className="row">
-                  <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
-                    <div className="profilers-details" key={transData.partyId}>
-                      <div className="d-flex">
-                        <div>
+              
+                  <div className="col-lg-3 d-flex align-items-center pl-0" id="verticalLines">
+                    <div className="pl-0 d-flex" key={transData.partyId}>
+                   
                           {transData.profilePic ? (
                             <img
                               id="singles-img"
@@ -471,10 +471,8 @@ const Transporters = (props) => {
                           ) : (
                             <img id="singles-img" src={single_bill} alt="img" />
                           )}
-                        </div>
-                        <div id="ptr-dtls">
+                        <p id="card-text">
                           <p className="namedtl-tag">
-                            {" "}
                             {fromInventoryTab
                               ? transData.transporterName
                               : transData.partyName}
@@ -488,8 +486,7 @@ const Transporters = (props) => {
                           <p className="mobilee-tag">
                             {getMaskedMobileNumber(transData?.mobile)}
                           </p>
-                        </div>
-                      </div>
+                        </p>
                     </div>
                   </div>
                   {tabs === "paymentledger" && (
