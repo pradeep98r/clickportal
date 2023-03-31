@@ -28,6 +28,7 @@ import {
 } from "../../reducers/transpoSlice";
 import { Modal } from "react-bootstrap";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { formatInvLedger } from "../../components/getCropUnitValue";
 const AddRecordInventory = (props) => {
   const dispatch = useDispatch();  
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
@@ -344,10 +345,16 @@ const AddRecordInventory = (props) => {
                 </div>
               </div>
             </div>
+            {getInventor.length>0?
             <div id="out-paybles">
-              <p id="p-tag">{langFullData.inventoryBalance}</p>  
               <div id="cbbk-tag">
-              {props.tabs === "inventoryledger" &&
+              <p id="p-tag">{langFullData.inventoryBalance}</p> 
+                {props.tabs == "inventoryledger" &&
+                <p id="cbbsk-tag">
+                  {formatInvLedger(getInventor?getInventor:[])}
+                </p>
+                }
+              {/* {props.tabs === "inventoryledger" &&
                 getInventor.map((item) => {
                   return (
                     <p id="cbbsk-tag">
@@ -355,9 +362,10 @@ const AddRecordInventory = (props) => {
                       <span>&nbsp;|&nbsp;</span>
                     </p>
                   );
-                })}
+                })} */}
             </div>
             </div>
+            :''}
             <div id="radios_in_modal">
               <div className="radios">
               {tabs === "Given" ? (
