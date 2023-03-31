@@ -107,6 +107,7 @@ input[type=radio]:checked+label {
     font-size: 12px;
     color: #fff;
     cursor: pointer;
+    border-radius: 0px;
     .coloring, .address-tag, .mobilee-tag, .namedtl-tag,.paid-coloring{
         color: #fff!important;
     }
