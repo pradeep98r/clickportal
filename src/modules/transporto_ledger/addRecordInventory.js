@@ -155,7 +155,6 @@ const AddRecordInventory = (props) => {
           getInventoryRecord()
         }
         else if (transpoData?.transpoTabs=='inventoryledger') {
-          
           getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
@@ -175,8 +174,8 @@ const AddRecordInventory = (props) => {
         });
         window.setTimeout(function(){
           props.closeRecordInventoryModal();
+          closePopup();
         },800)
-        closePopup();
         if(props.transporterMaintab == 'transporterLedger'){
            getTransportersData();
           inventoryLedger(clickId, transId);
@@ -311,7 +310,7 @@ const AddRecordInventory = (props) => {
                       )}
                     </div>
                     <div id="trans-dtl">
-                      <p className="namedtl-tag">{fromInventoryTab ? ledgerData?.transporterName :ledgerData?.partyName}</p>
+                      <p className="namedtl-tag">{fromInventoryTab && !fromInvEditStatus ? ledgerData?.transporterName :ledgerData?.partyName}</p>
                       <p className="mobilee-tag">
                         {
                     transId }&nbsp;|&nbsp;
@@ -349,11 +348,11 @@ const AddRecordInventory = (props) => {
             <div id="out-paybles">
               <div id="cbbk-tag">
               <p id="p-tag">{langFullData.inventoryBalance}</p> 
-                {props.tabs == "inventoryledger" &&
+                {props.tabs == "inventoryledger" || fromInvEditStatus?
                 <p id="cbbsk-tag">
                   {formatInvLedger(getInventor?getInventor:[])}
                 </p>
-                }
+                :''}
               {/* {props.tabs === "inventoryledger" &&
                 getInventor.map((item) => {
                   return (
