@@ -1,25 +1,22 @@
-export function getCropUnit (unit, qty){
-    var unitType = "";
-    switch (unit.toUpperCase()) {
-      case "CRATES":
-        unitType = "C";
-        break;
-      case "BOXES":
-        unitType = "BX";
-        break;
-      case "BAGS":
-        unitType = "Bg";
-        break;
-      case "SACS":
-        unitType = "S";
-        break;
-      case "LOADS":
-        unitType = "L";
-        break;
-      case "PIECES":
-        unitType = "P";
-        break;
-    }
-    return qty ? unitType + " | " : "";
+export function getCropUnit(unit, qty) {
+  const unitTypes = {
+    "CRATES": "C",
+    "BOXES": "Bx",
+    "BAGS": "Bg",
+    "SACS": "S",
+    "LOADS": "L",
+    "PIECES": "P",
   };
-  export default {getCropUnit}
+  const abbreviation = unitTypes[unit.toUpperCase()] || "";
+  return qty? qty.toFixed(1) + abbreviation : "";
+}
+
+export function formatInvLedger(array) {
+  const items = array?array:[];
+  const formattedItems = items
+    .map((item) => getCropUnit(item.unit, item.qty))
+    .filter((cropUnit) => cropUnit !== "");
+  return formattedItems.join(" | ");
+}
+
+export default { getCropUnit, formatInvLedger };
