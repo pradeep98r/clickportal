@@ -258,7 +258,7 @@ const RecordPayment = (props) => {
           toast.success(res.data.status.message, {
             toastId: "errorr2",
           });
-          // dispatch(paymentViewInfo(updateRecordRequest));
+          dispatch(paymentViewInfo(updateRecordRequest));
           dispatch(fromRecordPayment(true));
           window.setTimeout(function () {
             props.closeRecordPaymentModal();
@@ -617,8 +617,6 @@ const RecordPayment = (props) => {
       setPaymentMode("CASH");
       setComments("");
       setSelectDate(new Date());
-      dispatch(dateInRP(new Date()));
-      dispatch(dates(new Date()));
       setBillIds([]);
       setDiscountRs(0);
       setBillAmount(0);
@@ -1130,7 +1128,7 @@ const RecordPayment = (props) => {
                   // id="close_modal"
                   data-bs-dismiss="modal"
                 >
-                  SUBMIT
+               {props.fromPaymentHistory ? fromBillViewPopup ? 'SUBMIT' : 'UPDATE' : 'SUBMIT' }   
                 </button>
               </div>
             </div>

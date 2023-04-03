@@ -12,6 +12,7 @@ import {
 import SearchField from "../../components/searchField";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import "../../modules/ledgers/buyerLedger.scss";
+import "../../modules/transporto_ledger/transportoLedger.scss"
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
@@ -141,21 +142,25 @@ const Ledgers = (props) => {
   const fetchLedgers = () => {
     getLedgers(clickId, ledgerType)
       .then((res) => {
-        if (res.data.status.type === "SUCCESS") {
-          setAllData(res.data.data.ledgers);
-          dispatch(outStandingBal(res.data.data));
-          dispatch(allLedgers(res.data.data.ledgers));
-          setPartyId(res.data.data.ledgers[0].partyId);
-          summaryData(clickId, res.data.data.ledgers[0].partyId);
-          getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
-          setLedgerData(res.data.data.ledgers[0]);
-          if (ledgerType == "BUYER") {
-            geyDetailedLedger(clickId, res.data.data.ledgers[0].partyId);
+        console.log(res.data.data,"result")
+        if (res.data.status.type === "SUCCESS" ) {
+          if(res.data.data !== null){
+            console.log(res.data.data)
+            setAllData(res.data.data.ledgers);
+            dispatch(outStandingBal(res.data.data));
+            dispatch(allLedgers(res.data.data.ledgers));
+            setPartyId(res.data.data.ledgers[0].partyId);
+            summaryData(clickId, res.data.data.ledgers[0].partyId);
+            getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
+            setLedgerData(res.data.data.ledgers[0]);
+            if (ledgerType == "BUYER") {
+              geyDetailedLedger(clickId, res.data.data.ledgers[0].partyId);
+            } else {
+              sellerDetailed(clickId, res.data.data.ledgers[0].partyId);
+            }
           } else {
-            sellerDetailed(clickId, res.data.data.ledgers[0].partyId);
+            dispatch(allLedgers([]));
           }
-        } else {
-          dispatch(allLedgers([]));
         }
         setLoading(false);
       })
@@ -663,7 +668,7 @@ const Ledgers = (props) => {
                           {ledgerType == "BUYER" ? (
                             <p className="pat-tag">Outstanding Recievables:</p>
                           ) : (
-                            <p className="pat-tag">Outstanding Paybles:</p>
+                            <p className="pat-tag">Outstanding Payables:</p>
                           )}
                           <p
                             className={
