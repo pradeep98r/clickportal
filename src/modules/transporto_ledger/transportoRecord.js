@@ -9,6 +9,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import loading from "../../assets/images/loading.gif";
 import {
   getOutstandingBal,
   postRecordPayment,
@@ -46,8 +47,10 @@ const TransportoRecord = (props) => {
   const clickId = loginData.caId;
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   var fromInventoryTab = transpoData?.fromInv;
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     getOutstandingPaybles(clickId, transId);
+    setLoading(false)
   }, [props.showRecordPayModal]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
@@ -104,6 +107,7 @@ const TransportoRecord = (props) => {
     editRecordStatus ? viewInfo?.paymentMode : "CASH"
   );
   const addRecordPayment = async () => {
+    setLoading(true)
     const addRecordData = {
       caId: clickId,
       partyId: transId,
@@ -251,6 +255,11 @@ const TransportoRecord = (props) => {
       close={props.closeRecordPayModal}
       className="record_payment_modal"
     >
+       {isLoading ? (
+            <div className="loading_styles">
+              <img src={loading} alt="my-gif" className="gif_img" />
+            </div>
+          ) : '' }
       <div className="modal-body partner_model_body" id="scroll_style">
         <div>
           <form>
