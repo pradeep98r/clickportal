@@ -69,7 +69,7 @@ const PaymentLedger = (props) => {
                   <th className="col-1" id="sno">
                     #
                   </th>
-                  <th className="col-2">{langFullData.refId}</th>
+                  <th className="col-2">Ref ID</th>
                   <th className="col-3">{langFullData.paid}(&#8377;)</th>
                   <th className="col-3">{langFullData.toBePaid}(&#8377;)</th>
                   <th className="col-3">

@@ -305,7 +305,8 @@ const Transporters = (props) => {
                     <th className="col-lg-1">#</th>
                     <th className="col-lg-2">Date</th>
                     <th class="col-lg-5">Transporter Name</th>
-                    <th class="col-lg-4">To Be Paid(&#8377;)</th>
+                    {fromInventoryTab?<th class="col-lg-4">Total Balance(&#8377;)</th>:
+                    <th class="col-lg-4">To Be Paid(&#8377;)</th>}
                   </div>
                   <div>
                     {transporter.map((item, index) => {
@@ -439,10 +440,10 @@ const Transporters = (props) => {
                       </p>
                     </div>
                   ) : (
-                    <p className="values-tag color_red">
+                    <p className="valu-tag">
                       <div className="d-flex align-items-center justify-content-between">
                         <p className="pat-tag">Outstanding Paybles:</p>
-                        <p>
+                        <p className="paid-coloring">
                           {outStAmt?.totalOutStgAmt
                             ? getCurrencyNumberWithSymbol(
                                 outStAmt?.totalOutStgAmt
@@ -495,13 +496,18 @@ const Transporters = (props) => {
                               ? transData.transporterName
                               : transData.partyName}
                           </p>
+                          <div className="d-flex align-items-center">
                           <p className="mobilee-tag">
                             {fromInventoryTab
                               ? transData.transporterId
-                              : transData.partyId}
-                            &nbsp;
+                              : transData.partyId} 
                           </p>
-                          <p className="mobilee-tag">
+                          <span className="px-1 desk_responsive">|</span>
+                            <span className="mobilee-tag desk_responsive"> 
+                            {getMaskedMobileNumber(transData?.mobile)}
+                          </span>
+                          </div>
+                          <p className="mobilee-tag mobile_responsive"> 
                             {getMaskedMobileNumber(transData?.mobile)}
                           </p>
                         </p>

@@ -30,12 +30,12 @@ import { Modal } from "react-bootstrap";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { formatInvLedger } from "../../components/getCropUnitValue";
 const AddRecordInventory = (props) => {
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const transpoData = useSelector((state) => state.transpoInfo);
-  const fromInvEditStatus=props.fromInventoryHist;
-  const viewInfo=paymentViewData?.paymentViewInfo;
-  const ledgerData =fromInvEditStatus?viewInfo: transpoData?.singleTransporterObject;
+  const fromInvEditStatus = props.fromInventoryHist;
+  const viewInfo = paymentViewData?.paymentViewInfo;
+  const ledgerData = fromInvEditStatus ? viewInfo : transpoData?.singleTransporterObject;
   const transId = transpoData?.transporterIdVal;
   const getInventor = transpoData?.inventoryUnitDetails;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -43,11 +43,11 @@ const AddRecordInventory = (props) => {
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const langData = localStorage.getItem("languageData");
   const langFullData = JSON.parse(langData);
-  const [selectDate, setSelectDate] = useState(fromInvEditStatus?(new Date(viewInfo?.date)):new Date());
-  const [comments, setComments] = useState(fromInvEditStatus?viewInfo?.comments:" ");
-  const [unit, setUnit] = useState(fromInvEditStatus?viewInfo?.details?.unit:"CRATES");
-  const [qty, setQty] = useState(fromInvEditStatus?viewInfo?.details?.qty:0);
-  const [tabs, setTabs] = useState(fromInvEditStatus?viewInfo?.type =='GIVEN'?'Given':'Collected':"Given");
+  const [selectDate, setSelectDate] = useState(fromInvEditStatus ? (new Date(viewInfo?.date)) : new Date());
+  const [comments, setComments] = useState(fromInvEditStatus ? viewInfo?.comments : " ");
+  const [unit, setUnit] = useState(fromInvEditStatus ? viewInfo?.details?.unit : "CRATES");
+  const [qty, setQty] = useState(fromInvEditStatus ? viewInfo?.details?.qty : 0);
+  const [tabs, setTabs] = useState(fromInvEditStatus ? viewInfo?.type == 'GIVEN' ? 'Given' : 'Collected' : "Given");
   var fromInventoryTab = transpoData?.fromInv;
   const [requiredCondition, setRequiredCondition] = useState("");
 
@@ -67,14 +67,14 @@ const AddRecordInventory = (props) => {
     setTabs(type);
   };
   const closePopup = () => {
-    if(fromInvEditStatus){
+    if (fromInvEditStatus) {
       setComments(viewInfo?.comments);
       setUnit(viewInfo?.details?.unit);
       setQty(viewInfo?.details?.qty);
-      setTabs(viewInfo?.type =='GIVEN'?'Given':'Collected');
+      setTabs(viewInfo?.type == 'GIVEN' ? 'Given' : 'Collected');
       setRequiredCondition("");
       setSelectDate(new Date(viewInfo?.date))
-    } else{
+    } else {
       setQty(0);
       setUnit('CRATES');
       setTabs('Given');
@@ -83,7 +83,7 @@ const AddRecordInventory = (props) => {
       setSelectDate(new Date());
       $("#myModal").modal("hide");
     }
-    
+
   };
   // Convert standard date time to normal date
   function convert(str) {
@@ -117,84 +117,84 @@ const AddRecordInventory = (props) => {
           unit: unit,
         },
       ],
-      writerId:writerId
+      writerId: writerId
     };
-    const updateInventoryReq={
-      action:'UPDATE',
+    const updateInventoryReq = {
+      action: 'UPDATE',
       caId: clickId,
       transId: transId,
       comments: comments,
       date: convert(selectDate),
       type: tabs.toUpperCase(),
-      refId:viewInfo?.refId,
+      refId: viewInfo?.refId,
       inventory:
-        {
-          qty: parseInt(qty),
-          unit: unit,
-        },
-      writerId:writerId,
-      mobile:viewInfo?.mobile,
-      partyName:viewInfo?.partyName,
-      details:{
+      {
+        qty: parseInt(qty),
+        unit: unit,
+      },
+      writerId: writerId,
+      mobile: viewInfo?.mobile,
+      partyName: viewInfo?.partyName,
+      details: {
         qty: parseInt(qty),
         unit: unit,
       }
     }
-    if(fromInvEditStatus){
-      updateRecordInventory(updateInventoryReq).then(res=>{
+    if (fromInvEditStatus) {
+      updateRecordInventory(updateInventoryReq).then(res => {
         toast.success(res.data.status.message, {
           toastId: "errorr2",
         });
         dispatch(paymentViewInfo(updateInventoryReq));
-        window.setTimeout(function(){
+        window.setTimeout(function () {
           props.closeRecordInventoryModal();
-        },800)
-        if(transpoData?.transporterMainTab == 'transporterLedger'){
+        }, 800)
+        if (transpoData?.transporterMainTab == 'transporterLedger') {
           getTransportersData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
         }
-        else if (transpoData?.transpoTabs=='inventoryledger') {
+        else if (transpoData?.transpoTabs == 'inventoryledger') {
           getInventoryData();
           inventoryLedger(clickId, transId);
           getInventoryRecord()
         }
       })
-      .catch((error) => {
-        toast.error(error.response.data.status.message, {
-          toastId: "error3",
+        .catch((error) => {
+          toast.error(error.response.data.status.message, {
+            toastId: "error3",
+          });
+          console.log(error.message);
         });
-        console.log(error.message);
-      });
-    } else{
+    } else {
       addRecordInventory(inventoryRequest)
-      .then((response) => {
-        toast.success(response.data.status.message, {
-          toastId: "errorr2",
+        .then((response) => {
+          toast.success(response.data.status.message, {
+            toastId: "errorr2",
+          });
+          window.setTimeout(function () {
+            props.closeRecordInventoryModal();
+            closePopup();
+          }, 800)
+          if (props.transporterMaintab == 'transporterLedger') {
+            getTransportersData();
+            inventoryLedger(clickId, transId);
+            getInventoryRecord()
+          }
+          else if (props.tabs === "inventoryledger" || transpoData?.transpoTabs == 'inventoryledger') {
+            getInventoryData();
+            inventoryLedger(clickId, transId);
+            getInventoryRecord()
+          }
+        })
+        .catch((error) => {
+          toast.error(error.response.data.status.message, {
+            toastId: "error3",
+          });
+          console.log(error.message);
         });
-        window.setTimeout(function(){
-          props.closeRecordInventoryModal();
-          closePopup();
-        },800)
-        if(props.transporterMaintab == 'transporterLedger'){
-           getTransportersData();
-          inventoryLedger(clickId, transId);
-          getInventoryRecord()
-        }
-        else if (props.tabs === "inventoryledger" || transpoData?.transpoTabs=='inventoryledger') {
-          getInventoryData();
-          inventoryLedger(clickId, transId);
-          getInventoryRecord()
-        }
-      })
-      .catch((error) => {
-        toast.error(error.response.data.status.message, {
-          toastId: "error3",
-        });
-        console.log(error.message);
-      });
     }
-    
+
   };
   const resetInput = (e) => {
     if (e.target.value == 0) {
@@ -203,7 +203,7 @@ const AddRecordInventory = (props) => {
   };
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-      if(response.data.data != null){
+      if (response.data.data != null) {
         dispatch(outstandingAmount(response.data.data));
         dispatch(transpoLedgersInfo(response.data.data.ledgers));
       }
@@ -211,17 +211,17 @@ const AddRecordInventory = (props) => {
   };
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
-        if(response.data.data != null){
-      dispatch(outstandingAmountInv(response.data.data.totalInventory));
-      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
-        }
+      if (response.data.data != null) {
+        dispatch(outstandingAmountInv(response.data.data.totalInventory));
+        dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+      }
     });
   };
   const getInventoryRecord = () => {
     getInventory(clickId, transId)
       .then((response) => {
-        if(response.data.data != null){
-        dispatch(inventoryUnitDetails(response.data.data));
+        if (response.data.data != null) {
+          dispatch(inventoryUnitDetails(response.data.data));
         }
       })
       .catch((error) => {
@@ -232,9 +232,9 @@ const AddRecordInventory = (props) => {
   const inventoryLedger = (clickId, transId) => {
     getInventoryLedgers(clickId, transId)
       .then((response) => {
-        if(response.data.data != null){
-        dispatch(inventorySummaryInfo(response.data.data.details));
-        dispatch(inventoryTotals(response.data.data));
+        if (response.data.data != null) {
+          dispatch(inventorySummaryInfo(response.data.data.details));
+          dispatch(inventoryTotals(response.data.data));
         }
       })
       .catch((error) => {
@@ -252,7 +252,7 @@ const AddRecordInventory = (props) => {
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {fromInvEditStatus?'Update Record Inventory': 'Add Record Inventory'}
+                {fromInvEditStatus ? 'Update Record Inventory' : 'Add Record Inventory'}
               </h5>
               <img
                 src={close}
@@ -295,7 +295,7 @@ const AddRecordInventory = (props) => {
               <div
                 className="d-flex justify-content-between align-items-center card-body mb-0"
                 id="details-tag"
-                >
+              >
                 <div className="profile-details" key={transId}>
                   <div className="d-flex">
                     <div>
@@ -310,10 +310,10 @@ const AddRecordInventory = (props) => {
                       )}
                     </div>
                     <div id="trans-dtl">
-                      <p className="namedtl-tag">{fromInventoryTab && !fromInvEditStatus ? ledgerData?.transporterName :ledgerData?.partyName}</p>
+                      <p className="namedtl-tag">{fromInventoryTab && !fromInvEditStatus ? ledgerData?.transporterName : ledgerData?.partyName}</p>
                       <p className="mobilee-tag">
                         {
-                    transId }&nbsp;|&nbsp;
+                          transId}&nbsp;|&nbsp;
                         {getMaskedMobileNumber(ledgerData?.mobile)}
                       </p>
                       <p className="addres-tag">
@@ -344,16 +344,16 @@ const AddRecordInventory = (props) => {
                 </div>
               </div>
             </div>
-            {getInventor.length>0?
-            <div id="out-paybles">
-              <div id="cbbk-tag">
-              <p id="p-tag">{langFullData.inventoryBalance}</p> 
-                {props.tabs == "inventoryledger" || fromInvEditStatus?
-                <p id="cbbsk-tag">
-                  {formatInvLedger(getInventor?getInventor:[])}
-                </p>
-                :''}
-              {/* {props.tabs === "inventoryledger" &&
+            {getInventor.length > 0 ?
+              <div id="out-paybles">
+                <div id="cbbk-tag">
+                  <p id="p-tag">{langFullData.inventoryBalance}</p>
+                  {props.tabs == "inventoryledger" || fromInvEditStatus ?
+                    <p id="cbbsk-tag">
+                      {formatInvLedger(getInventor ? getInventor : [])}
+                    </p>
+                    : ''}
+                  {/* {props.tabs === "inventoryledger" &&
                 getInventor.map((item) => {
                   return (
                     <p id="cbbsk-tag">
@@ -362,93 +362,93 @@ const AddRecordInventory = (props) => {
                     </p>
                   );
                 })} */}
-            </div>
-            </div>
-            :''}
+                </div>
+              </div>
+              : ''}
             <div id="radios_in_modal">
               <div className="radios">
-              {tabs === "Given" ? (
-                <p className="select-tag">Select Given Type</p>
-              ) : (
-                <p className="select-tag">{langFullData.selectCollectedType}</p>
-              )}
+                {tabs === "Given" ? (
+                  <p className="select-tag">Select Given Type</p>
+                ) : (
+                  <p className="select-tag">{langFullData.selectCollectedType}</p>
+                )}
 
-              <div className="form-check form-check-inline">
-                <input
-                  className="form-check-input radioBtnValues"
-                  type="radio"
-                  name="radio"
-                  id="inlineRadio1"
-                  value="CRATES"
-                  onChange={(e) => setUnit(e.target.value)}
-                  checked={unit === "CRATES"}
-                  required
-                />
-                <label
-                  className="form-check-label"
-                  for="inlineRadio1"
-                  id="crates"
-                >
-                  CRATES
-                </label>
-              </div>
-              <div className="form-check form-check-inline">
-                <input
-                  className="form-check-input radioBtnValues"
-                  type="radio"
-                  name="radio"
-                  id="inlineRadio2"
-                  value="SACS"
-                  onChange={(e) => setUnit(e.target.value)}
-                  checked={unit === "SACS"}
-                  required
-                />
-                <label
-                  className="form-check-label"
-                  for="inlineRadio2"
-                  id="sacs"
-                >
-                  SACS
-                </label>
-              </div>
-              <div className="form-check form-check-inline">
-                <input
-                  className="form-check-input radioBtnValues"
-                  type="radio"
-                  name="radio"
-                  id="inlineRadio3"
-                  value="BOXES"
-                  onChange={(e) => setUnit(e.target.value)}
-                  checked={unit === "BOXES"}
-                  required
-                />
-                <label
-                  className="form-check-label"
-                  for="inlineRadio3"
-                  id="boxes"
-                >
-                  BOXES
-                </label>
-              </div>
-              <div className="form-check form-check-inline radioBtnValues">
-                <input
-                  className="form-check-input radioBtnValues"
-                  type="radio"
-                  name="radio"
-                  id="inlineRadio4"
-                  value="BAGS"
-                  onChange={(e) => setUnit(e.target.value)}
-                  checked={unit === "BAGS"}
-                  required
-                />
-                <label
-                  className="form-check-label"
-                  for="inlineRadio4"
-                  id="bags"
-                >
-                  BAGS
-                </label>
-              </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input radioBtnValues"
+                    type="radio"
+                    name="radio"
+                    id="inlineRadio1"
+                    value="CRATES"
+                    onChange={(e) => setUnit(e.target.value)}
+                    checked={unit === "CRATES"}
+                    required
+                  />
+                  <label
+                    className="form-check-label"
+                    for="inlineRadio1"
+                    id="crates"
+                  >
+                    CRATES
+                  </label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input radioBtnValues"
+                    type="radio"
+                    name="radio"
+                    id="inlineRadio2"
+                    value="SACS"
+                    onChange={(e) => setUnit(e.target.value)}
+                    checked={unit === "SACS"}
+                    required
+                  />
+                  <label
+                    className="form-check-label"
+                    for="inlineRadio2"
+                    id="sacs"
+                  >
+                    SACS
+                  </label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input radioBtnValues"
+                    type="radio"
+                    name="radio"
+                    id="inlineRadio3"
+                    value="BOXES"
+                    onChange={(e) => setUnit(e.target.value)}
+                    checked={unit === "BOXES"}
+                    required
+                  />
+                  <label
+                    className="form-check-label"
+                    for="inlineRadio3"
+                    id="boxes"
+                  >
+                    BOXES
+                  </label>
+                </div>
+                <div className="form-check form-check-inline radioBtnValues">
+                  <input
+                    className="form-check-input radioBtnValues"
+                    type="radio"
+                    name="radio"
+                    id="inlineRadio4"
+                    value="BAGS"
+                    onChange={(e) => setUnit(e.target.value)}
+                    checked={unit === "BAGS"}
+                    required
+                  />
+                  <label
+                    className="form-check-label"
+                    for="inlineRadio4"
+                    id="bags"
+                  >
+                    BAGS
+                  </label>
+                </div>
               </div>
               <div className="form-gro">
                 <label hmtlFor="amtRecieved" id="count-tag">
@@ -489,7 +489,37 @@ const AddRecordInventory = (props) => {
           </form>
         </div>
       </div>
-      <div className="modal-footer" id="modal_footer">
+      <div className="modal-footer modal_common_footer">
+        <div className="row">
+          <div className="col-lg-6 pl-0"></div>
+          <div className="col-lg-6">
+            <div className="d-flex justify-content-end">
+              <button
+                type="button"
+                className="secondary_btn mr-2"
+                // id="close_modal"
+                onClick={(e) => {
+                  props.closeRecordInventoryModal();
+                  closePopup();
+                  e.preventDefault();
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="primary_btn w-100"
+                onClick={onSubmitRecordInventory}
+                // id="close_modal"
+                data-bs-dismiss="modal"
+              >
+                SUBMIT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="modal-footer" id="modal_footer">
         <button
           type="button"
           id="submit_btn_in_modal"
@@ -498,7 +528,7 @@ const AddRecordInventory = (props) => {
         >
           SUBMIT
         </button>
-      </div>
+      </div> */}
       <ToastContainer />
     </Modal>
   );

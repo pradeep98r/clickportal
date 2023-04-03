@@ -413,7 +413,39 @@ const TransportoRecord = (props) => {
           </form>
         </div>
       </div>
-      <div className="modal-footer" id="modal_footer">
+      <div className="modal-footer modal_common_footer">
+        <div className="row">
+          <div className="col-lg-6 pl-0"></div>
+          <div className="col-lg-6">
+            <div className="d-flex justify-content-end">
+              <button
+                type="button"
+                className="secondary_btn mr-2"
+                // id="close_modal"
+                onClick={(e) => {
+                  props.closeRecordPayModal();
+                  closePopup();
+                  e.preventDefault();
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="primary_btn w-100"
+                onClick={() => {
+                  onSubmitRecordPayment();
+                }}
+                // id="close_modal"
+                data-bs-dismiss="modal"
+              >
+                SUBMIT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="modal-footer" id="modal_footer">
         <button
           type="button"
           id="submit_btn_in_modal"
@@ -425,7 +457,7 @@ const TransportoRecord = (props) => {
         >
           SUBMIT
         </button>
-      </div>
+      </div> */}
       <ToastContainer />
     </Modal>
   );

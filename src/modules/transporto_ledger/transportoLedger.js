@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AllTransporters from "./allTransporters";
 import Transporters from "./transporters";
+import "../../modules/transporto_ledger/transportoLedger.scss"
 const TransportoLedger = () => {
   useEffect(() => {}, []);
 
@@ -28,7 +29,7 @@ const TransportoLedger = () => {
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
-        <ul className="nav nav-tabs" id="myTab" role="tablist">
+        <ul className="nav nav-tabs trans-tabs" id="myTab" role="tablist">
           {transPortoTabs.map((link) => {
             return (
               <li key={link.id} className="nav-item ">
