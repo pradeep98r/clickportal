@@ -47,6 +47,7 @@
     color: #121212;
     cursor: pointer;
     border-bottom: 1px solid #E4E4E4;
+    padding: 0px;
 }
 .trs-tags{
     font-weight: 500;
@@ -417,7 +418,7 @@ input[type=radio]:label {
 .select-tag{
     font-weight: 500;
     font-size: 13px;
-    // margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .form-gro{
     margin-bottom:20px;
@@ -429,7 +430,6 @@ input[type=radio]:label {
 }
 #count-tag{
     // padding-top: 15px;
-    font-size: 12px;
     font-weight: 500;
     font-size: 13px;
 }
@@ -448,10 +448,14 @@ input[type=radio]:label {
     margin-bottom: 20px;
     // padding: 15px 50px 0px;
 }
+.trans-tabs{
+    border-bottom: 1px solid #DEE2E6;
+}
 #nodata-svg{
     width: 100%;
     height: 100%;
 }
+
 .tabs {
     top: 0.5px;
     padding:0px 10px;
@@ -595,9 +599,9 @@ input[type=radio]:label {
     border-right:1px solid #E4E4E4;
 }
 #singles-img{
-    width: 50px;
-    height: 50px;
-    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
     border-radius: 100%;
 }
 .singles-img{
@@ -619,12 +623,18 @@ input[type=radio]:label {
 #out-paybles, #input_in_modal, #radios_in_modal, #comment_in_modal, #details-tag{
     margin-bottom: 20px;
 }
+.card-details{
+    margin-bottom: 20px;
+}
 #radios_in_modal .form-check{
     margin-right: 30px;
 }
-#amt-tag, .payment-tag, #comment-tag{
+#amt-tag, #comment-tag{
 padding-top: 0px;
 // margin-bottom: 2px;
+}
+.payment-tag{
+    margin-bottom: 10px;
 }
 input[type=radio].radioBtnValues{
     accent-color: #16A12C;
@@ -644,6 +654,10 @@ input[type=radio].radioBtnValues{
         height: 30px;
     }
 }
+.alltrans-name{
+    font-weight: 600;
+    font-size: 13px;
+}
 .all_trans_head{
     background-color: #D7F3DD;
     padding: 10px;
@@ -659,4 +673,8 @@ input[type=radio].radioBtnValues{
 .alltransporto_ledger_scroll {
     height: calc(100vh - 220px) !important;
     border-radius: 10px;
+}
+.trans_partner_card h5{
+    font-size:13px;
+
 }

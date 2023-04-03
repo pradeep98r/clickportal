@@ -10,6 +10,7 @@ import edit from "../../assets/images/edit_round.svg";
 import moment from "moment";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import AddRecordInventory from "./addRecordInventory";
+import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
   getInventory,
   getInventoryLedgers,
@@ -154,10 +155,15 @@ const InventoryHistoryView = (props) => {
                 <div className="row justify-content-between align-items-center">
                   <div className="col-lg-4 p-0">
                     <div className="d-flex align-items-center">
+                    {paymentHistoryData?.profilePic?
                       <img
                         src={paymentHistoryData?.profilePic}
                         className="payment_profilepic"
+                      />:<img
+                      src={single_bill}
+                      className="payment_profilepic"
                       />
+                      }
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
                         <p>

@@ -136,7 +136,7 @@ const AllTransporters = (props) => {
                                   />
                                 )}
                                 <div>
-                                  <h5>{partner.partyName}</h5>
+                                  <h5 className="alltrans-name">{partner.partyName}</h5>
                                   <h6>
                                     Transporter - {partner.partyId} |{" "}
                                     {getMaskedMobileNumber(partner.mobile)}

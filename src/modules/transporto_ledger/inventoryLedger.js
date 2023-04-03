@@ -65,7 +65,7 @@ const InventoryLedger = (props) => {
                   <th className="col-1" id="p-common-sno">
                     #
                   </th>
-                  <th className="col-2">{langFullData.refId}</th>
+                  <th className="col-2">Ref ID</th>
                   <th className="col-3">{langFullData.collected}</th>
                   <th className="col-3">{langFullData.given}</th>
                   <th className="col-3">{langFullData.balance}</th>
@@ -74,7 +74,7 @@ const InventoryLedger = (props) => {
               <tbody>
                 {inventoryLedgerSummary.map((item, index) => {
                   return (
-                    <tr className="trs-tags" key={item.partyId}>
+                    <tr className="tr-tags" key={item.partyId}>
                       <td className="col-1" id="p-common-sno">
                         {index + 1}
                       </td>

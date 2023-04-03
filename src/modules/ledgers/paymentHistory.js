@@ -11,6 +11,7 @@ import cancel from "../../assets/images/cancel.svg";
 import edit from "../../assets/images/edit_round.svg";
 import RecordPayment from "./recordPayment";
 import moment from "moment";
+import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
   updateRecordPayment,
   getBillHistoryListById,
@@ -332,10 +333,15 @@ const PaymentHistoryView = (props) => {
                 <div className="row justify-content-between align-items-center">
                   <div className="col-lg-4 p-0">
                     <div className="d-flex align-items-center">
+                    {paymentHistoryData?.profilePic?
                       <img
                         src={paymentHistoryData?.profilePic}
                         className="payment_profilepic"
+                      />:<img
+                      src={single_bill}
+                      className="payment_profilepic"
                       />
+                      }
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
                         <p>
