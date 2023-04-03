@@ -247,7 +247,7 @@ const DetailedLedger = (props) => {
                         {index + 1}
                       </td>
                       <td className="col-2">
-                        <button
+                        <button className="pl-0"
                           onClick={() =>
                             billOnClickView(
                               item.refId,
@@ -268,7 +268,7 @@ const DetailedLedger = (props) => {
                             </div>
                           </p>
                         </button>
-                        {moment(item.date).format("DD-MMM-YY")}
+                        <p>{moment(item.date).format("DD-MMM-YY")}</p>
                       </td>
                       <td className="col-2">
                         <p style={{ fontSize: "12px" }}>{item.itemName}</p>

@@ -151,16 +151,16 @@ const RecordPayment = (props) => {
   };
   var billidsArray = [];
   const onSubmitRecordPayment = () => {
-    if (billIds.length > 0) {
+    if (billIds.length > 0 && !fromBillViewPopup) {
       paidsRcvd = totalRecieved;
       setBillIds([]);
     } else {
       if (fromBillViewPopup) {
         billidsArray.push(ledgerData.billId);
         paidsRcvd = fromBillViewPopup
-          ? props.partyType == "BUYER"
+          ? (props.partyType == "BUYER"
             ? ledgerData?.actualReceivable
-            : ledgerData?.actualPaybles
+            : ledgerData?.actualPaybles)
           : totalRecieved;
         setBillIds(billidsArray);
       }

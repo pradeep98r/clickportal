@@ -83,7 +83,7 @@ const PaymentHistoryView = (props) => {
     // var amt=amount+discount
     // amount = amount + discount;
     discountedAmount = amount - discount;
-    discountPercentage = ((discount / discountedAmount) * 100).toPrecision(2);
+    discountPercentage = ((discount / amount) * 100).toPrecision(2);
   }
   // var fromAdvances = false;
   const [fromAdvances, setfromAdvances] = useState(false);
