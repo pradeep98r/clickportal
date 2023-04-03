@@ -98,7 +98,7 @@ const AllTransporters = (props) => {
             {transporter.length > 0 ? (
               <div>
                 <div
-                  className="table-scroll ledger-table transporto_ledger_scroll alltransporto_ledger_scroll"
+                  className="table-scroll ledger-table transporto_ledger_scroll"
                   id="scroll_style"
                 >
                   <table className="table table-fixed">
@@ -136,7 +136,7 @@ const AllTransporters = (props) => {
                                   />
                                 )}
                                 <div>
-                                  <h5>{partner.partyName}</h5>
+                                  <h5 className="alltrans-name">{partner.partyName}</h5>
                                   <h6>
                                     Transporter - {partner.partyId} |{" "}
                                     {getMaskedMobileNumber(partner.mobile)}
