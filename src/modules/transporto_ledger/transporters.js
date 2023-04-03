@@ -305,7 +305,7 @@ const Transporters = (props) => {
                     <th className="col-lg-1">#</th>
                     <th className="col-lg-2">Date</th>
                     <th class="col-lg-5">Transporter Name</th>
-                    {fromInventoryTab?<th class="col-lg-4">Total Balance(&#8377;)</th>:
+                    {fromInventoryTab?<th class="col-lg-4">Total Balance</th>:
                     <th class="col-lg-4">To Be Paid(&#8377;)</th>}
                   </div>
                   <div>
@@ -442,7 +442,7 @@ const Transporters = (props) => {
                   ) : (
                     <p className="valu-tag">
                       <div className="d-flex align-items-center justify-content-between">
-                        <p className="pat-tag">Outstanding Paybles:</p>
+                        <p className="pat-tag">Outstanding Payables:</p>
                         <p className="paid-coloring">
                           {outStAmt?.totalOutStgAmt
                             ? getCurrencyNumberWithSymbol(
@@ -645,7 +645,7 @@ const Transporters = (props) => {
                     }}
                   >
                     <img src={addbill_icon} alt="image" className="mr-2" />
-                    Add Record
+                    Record Payment
                   </button>
                 ) : tabs == "inventoryledger" ? (
                   <button
@@ -655,7 +655,7 @@ const Transporters = (props) => {
                     }}
                   >
                     <img src={addbill_icon} alt="image" className="mr-2" />
-                    Add Record
+                    Record Inventory
                   </button>
                 ) : (
                   ""

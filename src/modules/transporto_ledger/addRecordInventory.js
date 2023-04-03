@@ -252,17 +252,20 @@ const AddRecordInventory = (props) => {
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {fromInvEditStatus ? 'Update Record Inventory' : 'Add Record Inventory'}
+                {fromInvEditStatus ? 'Update Record Inventory' : 'Record Inventory'}
               </h5>
-              <img
+             <button onClick={(e) => {
+                  closePopup();
+                  props.closeRecordInventoryModal();
+                  e.preventDefault();
+                }}>
+             <img
                 src={close}
                 alt="image"
                 className="close_icon"
-                onClick={() => {
-                  closePopup();
-                  props.closeRecordInventoryModal();
-                }}
+                
               />
+             </button>
             </div>
             <div className="bloc-tab">
               <ul
@@ -513,7 +516,7 @@ const AddRecordInventory = (props) => {
                 // id="close_modal"
                 data-bs-dismiss="modal"
               >
-                SUBMIT
+               {fromInvEditStatus ? 'UPDATE' : 'SUBMIT'} 
               </button>
             </div>
           </div>

@@ -668,7 +668,7 @@ const Ledgers = (props) => {
                           {ledgerType == "BUYER" ? (
                             <p className="pat-tag">Outstanding Recievables:</p>
                           ) : (
-                            <p className="pat-tag">Outstanding Paybles:</p>
+                            <p className="pat-tag">Outstanding Payables:</p>
                           )}
                           <p
                             className={

@@ -68,10 +68,6 @@ const PaymentHistoryView = (props) => {
   const partyTypeVal = props.partyType;
   const dispatch = useDispatch();
   const paymentHistoryData = paymentViewData?.paymentViewInfo;
-  // var [paymentHistoryData, setPaymentHistoryData] = useState(
-  //  paymentViewData?.paymentViewInfo
-  // );
-  console.log(paymentHistoryData, paymentViewData?.paymentViewInfo);
   var discountedAmount = 0;
   var discountPercentage = 0;
   var amount = paymentViewData?.paymentViewInfo?.amount
@@ -111,6 +107,8 @@ const PaymentHistoryView = (props) => {
     } else {
       setRecordPayModalStatus(true);
       setRecordPayModal(true);
+      setRecordPaymentActive(true);
+      setRecordPaymentModal(true);
     }
   };
   var partyDetails = paymentViewData.paymentViewInfo;
@@ -179,7 +177,6 @@ const PaymentHistoryView = (props) => {
 
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
-      console.log(response.data.data);
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
     });
@@ -217,7 +214,6 @@ const PaymentHistoryView = (props) => {
   const paymentLedger = (clickId, partyId) => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
-        console.log(response.data.data, "pay");
         dispatch(paymentSummaryInfo(response.data.data.details));
         dispatch(paymentTotals(response.data.data));
       })
@@ -345,8 +341,7 @@ const PaymentHistoryView = (props) => {
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
                         <p>
-                          {paymentHistoryData?.mobile}
-                          {/* {getMaskedMobileNumber(paymentHistoryData?.mobile)} */}
+                          {getMaskedMobileNumber(paymentHistoryData?.mobile)}
                         </p>
                       </div>
                     </div>

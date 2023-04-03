@@ -44,6 +44,7 @@ const PaymentLedger = (props) => {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
+          dispatch(fromTransporter(true))
         }
       });
     } else {

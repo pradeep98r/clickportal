@@ -45,7 +45,6 @@ const TransportoRecord = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  console.log(ledgerData, "data");
   var fromInventoryTab = transpoData?.fromInv;
   useEffect(() => {
     getOutstandingPaybles(clickId, transId);
@@ -148,7 +147,6 @@ const TransportoRecord = (props) => {
           }, 800);
         },
         (error) => {
-          console.log(error.message);
           toast.error(error.response.data.status.message, {
             toastId: "error15",
           });
@@ -157,7 +155,6 @@ const TransportoRecord = (props) => {
     } else {
       await postRecordPayment(addRecordData).then(
         (response) => {
-          console.log(response);
           toast.success(response.data.status.message, {
             toastId: "errorr10",
           });
@@ -174,7 +171,6 @@ const TransportoRecord = (props) => {
         }
       );
     }
-    console.log(props.tabs, transpoData?.transporterMainTab);
     if (transpoData?.transporterMainTab == "inventoryLedgerSummary") {
       getInventoryData();
       getOutstandingPaybles(clickId, transId);
@@ -190,7 +186,6 @@ const TransportoRecord = (props) => {
   };
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
-      console.log(response.data.data);
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
     });
@@ -263,18 +258,20 @@ const TransportoRecord = (props) => {
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
                 {editRecordStatus
                   ? "Update Record Payment"
-                  : "Add Record Payment"}
+                  : "Record Payment"}
               </h5>
 
-              <img
+             <button  onClick={(e) => {
+                  closePopup();
+                  props.closeRecordPayModal();
+                  e.preventDefault();
+                }}>
+             <img
                 src={close}
                 alt="image"
                 className="close_icon"
-                onClick={() => {
-                  closePopup();
-                  props.closeRecordPayModal();
-                }}
               />
+             </button>
             </div>
             <div className="d-flex justify-content-between card record_modal_row">
               <div
@@ -355,7 +352,7 @@ const TransportoRecord = (props) => {
               id="input_in_modal"
             >
               <label hmtlFor="amtRecieved" id="amt-tag">
-                Amount Recieved
+                Amount 
               </label>
               <input
                 className="form-cont"
@@ -439,25 +436,13 @@ const TransportoRecord = (props) => {
                 // id="close_modal"
                 data-bs-dismiss="modal"
               >
-                SUBMIT
+               {editRecordStatus ? 'UPDATE' : 'SUBMIT'} 
               </button>
             </div>
           </div>
         </div>
       </div>
-      {/* <div className="modal-footer" id="modal_footer">
-        <button
-          type="button"
-          id="submit_btn_in_modal"
-          className="primary_btn cont_btn w-100"
-          onClick={() => {
-            onSubmitRecordPayment();
-          }}
-          data-bs-dismiss="modal"
-        >
-          SUBMIT
-        </button>
-      </div> */}
+     
       <ToastContainer />
     </Modal>
   );

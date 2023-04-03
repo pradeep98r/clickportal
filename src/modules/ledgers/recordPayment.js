@@ -1128,7 +1128,7 @@ const RecordPayment = (props) => {
                   // id="close_modal"
                   data-bs-dismiss="modal"
                 >
-                  SUBMIT
+               {props.fromPaymentHistory ? fromBillViewPopup ? 'SUBMIT' : 'UPDATE' : 'SUBMIT' }   
                 </button>
               </div>
             </div>

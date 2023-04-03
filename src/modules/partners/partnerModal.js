@@ -327,14 +327,16 @@ const PartnerModal = (props) => {
             props.closeModal();
             getPartnerData(clickId, partyType)
               .then((response) => {
-                if(response.data.data != null){
-                dispatch(partnersAllData(response.data.data));
-                dispatch(partnerDataInfo(response.data.data));
-               var index = response.data.data.findIndex((obj) => obj.partyId == transpoData?.singleTransporter?.partyId);
-                if(index != -1){
-                  dispatch(singleTransporter(response.data.data[index]));
-                }
-                
+                if (response.data.data != null) {
+                  dispatch(partnersAllData(response.data.data));
+                  dispatch(partnerDataInfo(response.data.data));
+                  var index = response.data.data.findIndex(
+                    (obj) =>
+                      obj.partyId == transpoData?.singleTransporter?.partyId
+                  );
+                  if (index != -1) {
+                    dispatch(singleTransporter(response.data.data[index]));
+                  }
                 }
               })
               .catch((error) => {});
@@ -558,20 +560,20 @@ const PartnerModal = (props) => {
         <form>
           <div className="d-flex align-items-center justify-content-between modal_common_header">
             <h5 className="modal-title header2_text" id="staticBackdropLabel">
-              {isEdit ? "Edit" : "Add"}
+              {isEdit ? "Edit " : "Add "}
               {partyType == langFullData.farmer.toUpperCase()
                 ? "Seller"
                 : getText(partyType)}
             </h5>
-            <img
-              src={close}
-              alt="image"
-              className="close_icon"
-              onClick={() => {
+            <button
+              onClick={(e) => {
                 closeAddModal();
                 props.closeModal();
+                e.preventDefault();
               }}
-            />
+            >
+              <img src={close} alt="image" className="close_icon" />
+            </button>
           </div>
           <div className="partner_model_scroll" id="scroll_style">
             <div className="row">
