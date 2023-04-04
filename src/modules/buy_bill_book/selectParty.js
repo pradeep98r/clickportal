@@ -150,7 +150,7 @@ const SelectPartner = (props) => {
                   <img src={single_bill} className="icon_user" />
                 )}
                 <div style={{ marginLeft: 5 }}>
-                  <div className="partner_card">
+                  <div className="-">
                     <h5>{getText(e.partyName) + " " + e.shortName}</h5>
                     <h6>
                       {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
