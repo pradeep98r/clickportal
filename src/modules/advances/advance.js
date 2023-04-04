@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAdvances, getAdvancesSummaryById } from "../../actions/advancesService";
+import { getAdvances, getAdvancesSummaryById,customDetailedAvances } from "../../actions/advancesService";
 import loading from "../../assets/images/loading.gif";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import SearchField from "../../components/searchField";
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
+import addbill_icon from "../../assets/images/addbill.svg";
+import date_icon from "../../assets/images/date_icon.svg";
+import DatePickerModel from "../smartboard/datePicker";
 import {
   advanceDataInfo,
   advanceSummaryById,
@@ -24,6 +27,8 @@ import { getText } from "../../components/getText";
 import SelectOptions from "./selectOptions";
 import "../../modules/advances/selectedOptions.scss";
 import AdvanceSummary from "./advanceSummary";
+import { allCustomTabs, beginDate } from "../../reducers/ledgerSummarySlice";
+import { closeDate } from "../../reducers/ledgersCustomDateSlice";
 const Advance = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -37,8 +42,29 @@ const Advance = () => {
   const advancesSummary = advancesData?.advanceSummaryById;
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
 
+  const tabs = [
+    {
+      id: 1,
+      name: "All",
+      to: "all",
+    },
+    {
+      id: 2,
+      name: "Custom",
+      to: "custom",
+    },
+  ];
+  const [allCustom, setAllCustom] = useState("all");
+  const [dateDisplay, setDateDisplay] = useState(false);
+  var date = moment(new Date()).format("YYYY-MM-DD");
+  var defaultDate = moment(new Date()).format("DD-MMM-YYYY");
+  var [dateValue, setDateValue] = useState(defaultDate + " to " + defaultDate);
+  const [showDatepickerModal, setShowDatepickerModal] = useState(false);
+  const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   useEffect(() => {
     getAllAdvances();
+    allCustomEvent("all");
+    setDateValue(defaultDate + " to " + defaultDate);
   }, []);
   const getAllAdvances = () => {
     getAdvances(clickId)
@@ -100,6 +126,46 @@ const Advance = () => {
       })
       .catch((error) => console.log(error));
   }
+  const allCustomEvent = (type) => {
+    dispatch(allCustomTabs(type));
+    if (type == "custom") {
+      setDateDisplay(true);
+    } else {
+      setDateDisplay(false);
+    }
+  
+    setAllCustom(type);
+  };
+  const onclickDate = () => {
+    setShowDatepickerModal1(true);
+    setShowDatepickerModal(true);
+  };
+  const callbackFunction = (startDate, endDate, dateTab) => {
+    dispatch(beginDate(startDate));
+    dispatch(closeDate(endDate));
+    var fromDate = moment(startDate).format("YYYY-MM-DD");
+    var toDate = moment(endDate).format("YYYY-MM-DD");
+    dateValue = fromDate;
+    if (dateTab === "Daily") {
+      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if (dateTab === "Weekly") {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    } else if (dateTab === "Monthly") {
+      setDateValue(moment(fromDate).format("MMM-YYYY"));
+    } else if (dateTab === "Yearly") {
+      setDateValue(moment(fromDate).format("YYYY"));
+    } else {
+      setDateValue(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    }
+  };
   return (
     <div className="main_div_padding">
       <div>
@@ -124,7 +190,7 @@ const Advance = () => {
                     <div className="col-lg-3 p-0">
                       <SelectOptions />
                     </div>
-                 </div>
+                  </div>
                   {advancesArray.length > 0 ? (
                     <div>
                       <div
@@ -214,8 +280,8 @@ const Advance = () => {
                                       <p className="paid-coloring">
                                         {item.amount != 0
                                           ? getCurrencyNumberWithOutSymbol(
-                                              item.amount
-                                            )
+                                            item.amount
+                                          )
                                           : 0}
                                       </p>
                                     </td>
@@ -253,17 +319,60 @@ const Advance = () => {
                     </div>
                   )}
                 </div>
-                <div className="col-lg-7">
-                 {advancesSummary.length > 0 ? <AdvanceSummary /> :  
-                 <div className="partner_no_data_widget">
-                    <div className="text-center">
-                      <img
-                        src={no_data_icon}
-                        alt="icon"
-                        className="d-flex mx-auto justify-content-center"
-                      />
+                <div className="col-lg-7 p-0">
+                  <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
+                    <ul
+                      className="nav nav-tabs mb-0"
+                      id="myTab"
+                      role="tablist"
+                    >
+                      {tabs.map((tab) => {
+                        return (
+                          <li key={tab.id} className="nav-item ">
+                            <a
+                              className={
+                                "nav-link" +
+                                (allCustom == tab.to ? " active" : "")
+                              }
+                              href={"#" + tab.name}
+                              role="tab"
+                              aria-controls="home"
+                              data-bs-toggle="tab"
+                              onClick={() => allCustomEvent(tab.to)}
+                            >
+                              {tab.name}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <button
+                      className="primary_btn add_bills_btn"
+                    // onClick={recordPaymentOnClickEvent}
+                    >
+                      <img src={addbill_icon} alt="image" className="mr-2" />
+                      Add Record
+                    </button>
+                  </div>
+                  <p className={dateDisplay ? "" : "padding_all"}></p>
+                  <div className="my-2">
+                    <div
+                      style={{ display: dateDisplay ? "flex" : "none" }}
+                      className="dateRangePicker justify-content-center"
+                    >
+                      <button onClick={onclickDate} className="color_blue">
+                        <div className="date_icon m-0">
+                          <img
+                            src={date_icon}
+                            alt="icon"
+                            className="mr-2 date_icon_in_custom"
+                          />
+                          {dateValue}
+                        </div>
+                      </button>
                     </div>
-                  </div>}
+                  </div>
+                  <AdvanceSummary />
                 </div>
               </div>
             ) : (
@@ -283,6 +392,15 @@ const Advance = () => {
             )}
           </div>
         )}
+        {showDatepickerModal1 ? (
+            <DatePickerModel
+              show={showDatepickerModal}
+              close={() => setShowDatepickerModal(false)}
+              parentCallback={callbackFunction}
+            />
+          ) : (
+            <p></p>
+          )}
       </div>
     </div>
   );

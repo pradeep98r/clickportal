@@ -11,4 +11,9 @@ export function getAdvancesSummaryById(clickId,id) {
       `payments/advances/ledger/caId/${clickId}/partyId/${id}?writerId=${writerId}`
     );
   }
-export default { getAdvances,getAdvancesSummaryById };
+export function customDetailedAvances(clickId, partyId, fromDate, toDate){
+  return axiosCommon.get(
+    `payments/advances/ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
+  )
+}
+export default { getAdvances,getAdvancesSummaryById,customDetailedAvances };

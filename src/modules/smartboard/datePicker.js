@@ -117,15 +117,15 @@ function DatePickerModel(props) {
   const link = localStorage.getItem("LinkPath");
   const [dateTabs, setDateTabs] = useState(
     link == "/buyerledger" ||
-      link == "/sellerledger" ||
-      props.ledgerTabs == "detailedledger"
+      link == "/sellerledger" || 
+      props.ledgerTabs == "detailedledger" || link == '/advance'
       ? "Custom"
       : "Daily"
   );
   const [selectedDate, setStartDate] = useState(props.prevNextDate?props.prevNextDate:new Date());
   const [handleTab, setHandleTabs] = useState(false);
   console.log(dateTabs,"tabs")
-  const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger") ?
+  const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger" || link == '/advance') ?
   dateTabs=='Weekly'?'Weekly':'Custom': 'Daily');
   console.log(dates,"Dates1")
   const [dialyDate, setDailyDate] = useState()
