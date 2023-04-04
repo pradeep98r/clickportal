@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAdvances, getAdvancesSummaryById,customDetailedAvances } from "../../actions/advancesService";
+import {
+  getAdvances,
+  getAdvancesSummaryById,
+  customDetailedAvances,
+} from "../../actions/advancesService";
 import loading from "../../assets/images/loading.gif";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import SearchField from "../../components/searchField";
@@ -29,6 +33,7 @@ import "../../modules/advances/selectedOptions.scss";
 import AdvanceSummary from "./advanceSummary";
 import { allCustomTabs, beginDate } from "../../reducers/ledgerSummarySlice";
 import { closeDate } from "../../reducers/ledgersCustomDateSlice";
+
 const Advance = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -39,8 +44,6 @@ const Advance = () => {
   const allData = advancesData.allAdvancesData;
   const totalAdvances = advancesData?.totalAdvancesVal;
   const selectedPartyId = advancesData?.selectedAdvanceId;
-  const advancesSummary = advancesData?.advanceSummaryById;
-  const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
 
   const tabs = [
     {
@@ -75,8 +78,8 @@ const Advance = () => {
             dispatch(advanceDataInfo(res.data.data.advances));
             if (res.data.data.advances.length > 0) {
               dispatch(selectedAdvanceId(res.data.data.advances[0].partyId));
-              getAdvanceSummary(res.data.data.advances[0].partyId)
-              dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]))
+              getAdvanceSummary(res.data.data.advances[0].partyId);
+              dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]));
             }
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
@@ -110,14 +113,14 @@ const Advance = () => {
     getAdvanceSummary(id);
     dispatch(selectedPartyByAdvanceId(item));
   };
-  const getAdvanceSummary = (id) =>{
-    getAdvancesSummaryById(clickId,id)
+  const getAdvanceSummary = (id) => {
+    getAdvancesSummaryById(clickId, id)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
-              console.log(res.data.data)
+            console.log(res.data.data);
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances))
+            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -125,7 +128,7 @@ const Advance = () => {
         setLoading(false);
       })
       .catch((error) => console.log(error));
-  }
+  };
   const allCustomEvent = (type) => {
     dispatch(allCustomTabs(type));
     if (type == "custom") {
@@ -133,7 +136,7 @@ const Advance = () => {
     } else {
       setDateDisplay(false);
     }
-  
+
     setAllCustom(type);
   };
   const onclickDate = () => {
@@ -178,14 +181,14 @@ const Advance = () => {
             {allData.length > 0 ? (
               <div className="row">
                 <div className="col-lg-5 pl-0">
-                 <div className="row">
+                  <div className="row">
                     <div className="col-lg-9 pl-0" id="search-field">
-                        <SearchField
-                          placeholder="Search by Name / Short Code"
-                            onChange={(event) => {
-                              handleSearch(event);
-                            }}
-                        />
+                      <SearchField
+                        placeholder="Search by Name / Short Code"
+                        onChange={(event) => {
+                          handleSearch(event);
+                        }}
+                      />
                     </div>
                     <div className="col-lg-3 p-0">
                       <SelectOptions />
@@ -280,8 +283,8 @@ const Advance = () => {
                                       <p className="paid-coloring">
                                         {item.amount != 0
                                           ? getCurrencyNumberWithOutSymbol(
-                                            item.amount
-                                          )
+                                              item.amount
+                                            )
                                           : 0}
                                       </p>
                                     </td>
@@ -321,11 +324,7 @@ const Advance = () => {
                 </div>
                 <div className="col-lg-7 p-0">
                   <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
-                    <ul
-                      className="nav nav-tabs mb-0"
-                      id="myTab"
-                      role="tablist"
-                    >
+                    <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
                       {tabs.map((tab) => {
                         return (
                           <li key={tab.id} className="nav-item ">
@@ -348,7 +347,7 @@ const Advance = () => {
                     </ul>
                     <button
                       className="primary_btn add_bills_btn"
-                    // onClick={recordPaymentOnClickEvent}
+                      // onClick={recordPaymentOnClickEvent}
                     >
                       <img src={addbill_icon} alt="image" className="mr-2" />
                       Add Record
@@ -393,14 +392,14 @@ const Advance = () => {
           </div>
         )}
         {showDatepickerModal1 ? (
-            <DatePickerModel
-              show={showDatepickerModal}
-              close={() => setShowDatepickerModal(false)}
-              parentCallback={callbackFunction}
-            />
-          ) : (
-            <p></p>
-          )}
+          <DatePickerModel
+            show={showDatepickerModal}
+            close={() => setShowDatepickerModal(false)}
+            parentCallback={callbackFunction}
+          />
+        ) : (
+          <p></p>
+        )}
       </div>
     </div>
   );
