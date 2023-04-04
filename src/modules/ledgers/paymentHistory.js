@@ -51,9 +51,12 @@ import {
   getTransporters,
 } from "../../actions/transporterService";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { customDetailedAvances, getAdvances, getAdvancesSummaryById } from "../../actions/advancesService";
+import { advanceDataInfo, advanceSummaryById, allAdvancesData, totalAdvancesVal, totalAdvancesValById } from "../../reducers/advanceSlice";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
-  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  const advancesData = useSelector((state) => state.advanceInfo);
+  const fromAdvanceFeatureVal = advancesData?.fromAdvanceFeature;
   const transpoData = useSelector((state) => state.transpoInfo);
   const fromTranspo = transpoData?.fromTransporter;
   const transporterTabs = transpoData?.transpoTabs;
@@ -82,7 +85,7 @@ const PaymentHistoryView = (props) => {
     discountPercentage = ((discount / amount) * 100).toPrecision(2);
   }
   // var fromAdvances = false;
-  const [fromAdvances, setfromAdvances] = useState(false);
+  const [fromAdvances, setfromAdvances] = useState(fromAdvanceFeatureVal ? true : false);
   useEffect(() => {
     if (paymentViewData?.paymentViewInfo?.refId?.includes("A")) {
       setfromAdvances(true);
@@ -160,7 +163,10 @@ const PaymentHistoryView = (props) => {
       }, 1000);
       if (fromTranspo) {
         updateTransportersData();
-      } else {
+      } else if(fromAdvanceFeatureVal){
+        updateAdvances();
+      }
+      else {
         commonUpdateLedgers();
       }
     });
@@ -298,7 +304,59 @@ const PaymentHistoryView = (props) => {
       })
       .catch((error) => console.log(error));
   };
-
+const updateAdvances = () =>{
+  getAllAdvances();
+  if(allCustomTab == 'all'){
+    getAdvanceSummary();
+  }
+  else{
+    getCustomDetailedAdvances(advancesData?.selectedAdvanceId,fromDate,toDate);
+  }
+}
+const getAllAdvances = () => {
+  getAdvances(clickId)
+    .then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        if (res.data.data != null) {
+          dispatch(allAdvancesData(res.data.data.advances));
+          dispatch(advanceDataInfo(res.data.data.advances));
+          if (res.data.data.totalAdvances != 0) {
+            dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+          }
+        } else {
+          dispatch(allAdvancesData([]));
+        }
+      }
+    })
+    .catch((error) => console.log(error));
+};
+const getAdvanceSummary = () => {
+  getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
+    .then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        if (res.data.data != null) {
+          dispatch(advanceSummaryById(res.data.data.advances));
+          dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+        } else {
+          dispatch(advanceSummaryById([]));
+        }
+      }
+    })
+    .catch((error) => console.log(error));
+}
+const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
+  customDetailedAvances(clickId,id, fromDate, toDate).then(res=>{
+    if(res.data.status.type == 'SUCCESS'){
+      if(res.data.data != null){
+        dispatch(advanceSummaryById(res.data.data.advances));
+        dispatch(totalAdvancesValById(res.data.data.totalAdvances))
+      } else{
+        dispatch(advanceSummaryById([]));
+      }
+    }
+  })
+  .catch((error) => console.log(error));
+}
   return (
     <Modal
       show={props.showPaymentViewModal}
