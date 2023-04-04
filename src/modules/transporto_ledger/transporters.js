@@ -83,7 +83,7 @@ const Transporters = (props) => {
 
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-      console.log(response.data.data,'respoo')
+      console.log(response.data.data,'respoo get transporters')
       dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
       if(response.data.data.ledgers.length > 0){
