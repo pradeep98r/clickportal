@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { customDetailedAvances, getAdvances } from "../../actions/advancesService";
+import { getAdvances, getAdvancesSummaryById,customDetailedAvances } from "../../actions/advancesService";
 import loading from "../../assets/images/loading.gif";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import SearchField from "../../components/searchField";
@@ -11,9 +11,12 @@ import date_icon from "../../assets/images/date_icon.svg";
 import DatePickerModel from "../smartboard/datePicker";
 import {
   advanceDataInfo,
+  advanceSummaryById,
   allAdvancesData,
   selectedAdvanceId,
+  selectedPartyByAdvanceId,
   totalAdvancesVal,
+  totalAdvancesValById,
 } from "../../reducers/advanceSlice";
 import {
   getCurrencyNumberWithOutSymbol,
@@ -23,6 +26,7 @@ import {
 import { getText } from "../../components/getText";
 import SelectOptions from "./selectOptions";
 import "../../modules/advances/selectedOptions.scss";
+import AdvanceSummary from "./advanceSummary";
 import { allCustomTabs, beginDate } from "../../reducers/ledgerSummarySlice";
 import { closeDate } from "../../reducers/ledgersCustomDateSlice";
 const Advance = () => {
@@ -35,6 +39,9 @@ const Advance = () => {
   const allData = advancesData.allAdvancesData;
   const totalAdvances = advancesData?.totalAdvancesVal;
   const selectedPartyId = advancesData?.selectedAdvanceId;
+  const advancesSummary = advancesData?.advanceSummaryById;
+  const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
+
   const tabs = [
     {
       id: 1,
@@ -68,6 +75,8 @@ const Advance = () => {
             dispatch(advanceDataInfo(res.data.data.advances));
             if (res.data.data.advances.length > 0) {
               dispatch(selectedAdvanceId(res.data.data.advances[0].partyId));
+              getAdvanceSummary(res.data.data.advances[0].partyId)
+              dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]))
             }
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
@@ -98,7 +107,25 @@ const Advance = () => {
   };
   const particularLedgerData = (id, item) => {
     dispatch(selectedAdvanceId(id));
+    getAdvanceSummary(id);
+    dispatch(selectedPartyByAdvanceId(item));
   };
+  const getAdvanceSummary = (id) =>{
+    getAdvancesSummaryById(clickId,id)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+              console.log(res.data.data)
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvances))
+          } else {
+            dispatch(advanceSummaryById([]));
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => console.log(error));
+  }
   const allCustomEvent = (type) => {
     dispatch(allCustomTabs(type));
     if (type == "custom") {
@@ -151,16 +178,16 @@ const Advance = () => {
             {allData.length > 0 ? (
               <div className="row">
                 <div className="col-lg-5 pl-0">
-                  <div className="row">
-                    <div className="col-lg-8 pl-0" id="search-field">
-                      <SearchField
-                        placeholder="Search by Name / Short Code"
-                        onChange={(event) => {
-                          handleSearch(event);
-                        }}
-                      />
+                 <div className="row">
+                    <div className="col-lg-9 pl-0" id="search-field">
+                        <SearchField
+                          placeholder="Search by Name / Short Code"
+                            onChange={(event) => {
+                              handleSearch(event);
+                            }}
+                        />
                     </div>
-                    <div className="col-lg-4 pl-0">
+                    <div className="col-lg-3 p-0">
                       <SelectOptions />
                     </div>
                   </div>
@@ -345,6 +372,7 @@ const Advance = () => {
                       </button>
                     </div>
                   </div>
+                  <AdvanceSummary />
                 </div>
               </div>
             ) : (
