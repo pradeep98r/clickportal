@@ -57,7 +57,9 @@ const Advance = () => {
       to: "custom",
     },
   ];
-  const [allCustom, setAllCustom] = useState("all");
+  // const [allCustom, setAllCustom] = useState("all");
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  const allCustom =ledgersSummary?.allCustomTabs;
   const [dateDisplay, setDateDisplay] = useState(false);
   var date = moment(new Date()).format("YYYY-MM-DD");
   var defaultDate = moment(new Date()).format("DD-MMM-YYYY");
@@ -66,7 +68,8 @@ const Advance = () => {
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   useEffect(() => {
     getAllAdvances();
-    allCustomEvent("all");
+    dispatch(allCustomTabs('all'));
+    // allCustomEvent("all");
     setDateValue(defaultDate + " to " + defaultDate);
   }, []);
   const getAllAdvances = () => {
@@ -109,6 +112,10 @@ const Advance = () => {
     dispatch(advanceDataInfo(result));
   };
   const particularLedgerData = (id, item) => {
+    if(allCustom =='custom'){
+      dispatch(allCustomTabs('all'))
+      setDateDisplay(false);
+    }
     dispatch(selectedAdvanceId(id));
     getAdvanceSummary(id);
     dispatch(selectedPartyByAdvanceId(item));
@@ -128,16 +135,31 @@ const Advance = () => {
         setLoading(false);
       })
       .catch((error) => console.log(error));
-  };
+  }
+  const getCustomDetailedAdvances =(partyId,fromDate,toDate)=>{
+    customDetailedAvances(clickId,partyId, fromDate, toDate).then(res=>{
+      if(res.data.status.type == 'SUCCESS'){
+        if(res.data.data != null){
+          console.log(res.data.data,"custom");
+          dispatch(advanceSummaryById(res.data.data.advances));
+          dispatch(totalAdvancesValById(res.data.data.totalAdvances))
+        } else{
+          dispatch(advanceSummaryById([]));
+        }
+      }
+      setLoading(false);
+    })
+    .catch((error) => console.log(error));
+  }
   const allCustomEvent = (type) => {
-    dispatch(allCustomTabs(type));
     if (type == "custom") {
       setDateDisplay(true);
+      getCustomDetailedAdvances(selectedPartyId,date,date);
     } else {
+      getAdvanceSummary(selectedPartyId);
       setDateDisplay(false);
     }
-
-    setAllCustom(type);
+    dispatch(allCustomTabs(type));
   };
   const onclickDate = () => {
     setShowDatepickerModal1(true);
@@ -168,6 +190,7 @@ const Advance = () => {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
+    getCustomDetailedAdvances(selectedPartyId,fromDate,toDate);
   };
   return (
     <div className="main_div_padding">
