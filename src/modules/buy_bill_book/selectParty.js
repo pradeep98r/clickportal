@@ -119,7 +119,7 @@ const SelectPartner = (props) => {
   return (
     <div>
       {partnerData.length > 0 ? (
-        <div className="">
+        <div className="partner_card">
           <Select
             defaultMenuIsOpen
             isSearchable={true}
