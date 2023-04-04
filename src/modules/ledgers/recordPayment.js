@@ -56,6 +56,7 @@ import {
   dates,
 } from "../../reducers/ledgersCustomDateSlice";
 import { useRef } from "react";
+import loading from "../../assets/images/loading.gif";
 const RecordPayment = (props) => {
   const ledgerData = props.LedgerData;
   const dispatch = useDispatch();
@@ -67,6 +68,7 @@ const RecordPayment = (props) => {
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [selectDate, setSelectDate] = useState(
     props.fromPaymentHistory
       ? fromBillViewPopup
@@ -130,7 +132,9 @@ const RecordPayment = (props) => {
   var startDate = tabClick.beginDate;
   var endDate = tabClick.closeDate;
   const recordPayment = tabClick?.trhoughRecordPayment;
-  useEffect(() => {}, [props.showRecordPaymentModal]);
+  useEffect(() => {
+    setLoading(false)
+  }, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
     setPaidsRcvd(
       e.target.value
@@ -151,6 +155,7 @@ const RecordPayment = (props) => {
   };
   var billidsArray = [];
   const onSubmitRecordPayment = () => {
+    
     if (billIds.length > 0 && !fromBillViewPopup) {
       paidsRcvd = totalRecieved;
       setBillIds([]);
@@ -158,9 +163,9 @@ const RecordPayment = (props) => {
       if (fromBillViewPopup) {
         billidsArray.push(ledgerData.billId);
         paidsRcvd = fromBillViewPopup
-          ? (props.partyType == "BUYER"
+          ? props.partyType == "BUYER"
             ? ledgerData?.actualReceivable
-            : ledgerData?.actualPaybles)
+            : ledgerData?.actualPaybles
           : totalRecieved;
         setBillIds(billidsArray);
       }
@@ -211,6 +216,7 @@ const RecordPayment = (props) => {
   };
 
   const addRecordPayment = async () => {
+    setLoading(true);
     var h = fromBillViewPopup
       ? billidsArray.map((item) => ledgerData.billId)
       : billIds;
@@ -586,10 +592,10 @@ const RecordPayment = (props) => {
   const showListOfBillIds = (id) => {
     setShowLisOfBillIdsPopUp(true);
     setShowBillIdsModal(true);
-    if(showBillIdsModal){
+    if (showBillIdsModal) {
       setBillIds([]);
       setCabSeq([]);
-    };
+    }
   };
 
   const billidsData = (data) => {
@@ -710,6 +716,11 @@ const RecordPayment = (props) => {
         close={props.closeRecordPaymentModal}
         className="record_payment_modal"
       >
+         {isLoading ? (
+            <div className="loading_styles">
+              <img src={loading} alt="my-gif" className="gif_img" />
+            </div>
+          ) : '' }
         <div className="modal-body partner_model_body">
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
@@ -1125,10 +1136,12 @@ const RecordPayment = (props) => {
                   onClick={() => {
                     onSubmitRecordPayment();
                   }}
-                  // id="close_modal"
-                  data-bs-dismiss="modal"
                 >
-               {props.fromPaymentHistory ? fromBillViewPopup ? 'SUBMIT' : 'UPDATE' : 'SUBMIT' }   
+                  {props.fromPaymentHistory
+                    ? fromBillViewPopup
+                      ? "SUBMIT"
+                      : "UPDATE"
+                    : "SUBMIT"}
                 </button>
               </div>
             </div>
