@@ -6,6 +6,7 @@ export const advanceSlice = createSlice({
     advanceDataInfo: [],
     allAdvancesData: [],
     totalAdvancesVal: 0,
+    selectedAdvanceId:0
   },
   reducers: {
     advanceDataInfo: (state, action) => {
@@ -17,10 +18,13 @@ export const advanceSlice = createSlice({
     totalAdvancesVal: (state, action) => {
       state.totalAdvancesVal = action.payload;
     },
+    selectedAdvanceId: (state,action) =>{
+        state.selectedAdvanceId = action.payload
+    }
   },
 });
 
-export const { advanceDataInfo, allAdvancesData, totalAdvancesVal } =
+export const { advanceDataInfo, allAdvancesData, totalAdvancesVal,selectedAdvanceId } =
   advanceSlice.actions;
 
 export default advanceSlice.reducer;
