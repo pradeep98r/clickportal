@@ -135,7 +135,6 @@ const Advance = () => {
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
-            console.log(res.data.data);
             dispatch(advanceSummaryById(res.data.data.advances));
             dispatch(totalAdvancesValById(res.data.data.totalAdvances));
           } else {
@@ -150,7 +149,6 @@ const Advance = () => {
     customDetailedAvances(clickId,partyId, fromDate, toDate).then(res=>{
       if(res.data.status.type == 'SUCCESS'){
         if(res.data.data != null){
-          console.log(res.data.data,"custom");
           dispatch(advanceSummaryById(res.data.data.advances));
           dispatch(totalAdvancesValById(res.data.data.totalAdvances))
         } else{
@@ -203,7 +201,6 @@ const Advance = () => {
     setStartDate(fromDate);
     setEndDate(toDate);
     dispatch(beginDate(fromDate));
-    console.log(toDate,"toDate")
     dispatch(closeDate(toDate));
     getCustomDetailedAdvances(selectedPartyId,fromDate,toDate);
   };

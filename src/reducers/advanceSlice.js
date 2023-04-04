@@ -10,7 +10,7 @@ export const advanceSlice = createSlice({
     advanceSummaryById:[],
     totalAdvancesValById:0,
     selectedPartyByAdvanceId:{},
-    fromAdvanceFeature:false
+    fromAdvanceFeature:false,
   },
   reducers: {
     advanceDataInfo: (state, action) => {

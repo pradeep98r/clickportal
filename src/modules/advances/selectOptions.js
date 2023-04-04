@@ -46,12 +46,11 @@ const SelectOptions = () => {
         { value: 'sellers', label: 'Sellers' },
         { value: 'transporters', label: 'Transporters' }
     ]
-    const [selectedOption, setSelectedOption] = useState(null)
+    const [selectedOption, setSelectedOption] = useState('All')
     const advancesData = useSelector((state) => state.advanceInfo);
     const advancesArray = advancesData?.advanceDataInfo;
     const [partnerArray, setPartnerArray] = useState(advancesArray);
     const dispatch = useDispatch();
-
     const getSelectedOption =(label)=>{
         if(label =='Sellers'){
             const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='FARMER');
@@ -65,7 +64,7 @@ const SelectOptions = () => {
     }
     function handleKeyDown(event) {
         if (event.key === "Enter") {
-          console.log(selectedOption?.label);
+          console.log(selectedOption,"val")
         }
       }
     
@@ -81,6 +80,7 @@ const SelectOptions = () => {
                 classNamePrefix="select"
                 styles={colourStyles}
                 options={options}
+                value={selectedOption}
                 onChange={handleChange}
                 hideSelectedOptions={false}
                 getOptionValue={(e) => e.value}

@@ -36,7 +36,6 @@ const TransportoRecord = (props) => {
   const transpoData = useSelector((state) => state.transpoInfo);
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
-  console.log(tabClick,"click")
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const allCustomTab = tabClick?.allCustomTabs;
@@ -45,7 +44,6 @@ const TransportoRecord = (props) => {
   const advancesData = useSelector((state) => state.advanceInfo);
   const fromAdvances = advancesData?.fromAdvanceFeature;
   const selectedPartnerFromAdv = advancesData?.selectedPartyByAdvanceId;
-  console.log(advancesData,fromAdvances,"data")
   const ledgerData = fromAdvances?selectedPartnerFromAdv:editRecordStatus
     ? viewInfo
     : transpoData?.singleTransporterObject;
