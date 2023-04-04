@@ -20,6 +20,7 @@ import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import BuyerLedgers from "../modules/ledgers/buyerLedgers";
 import SellerLedgers from "../modules/ledgers/sellerLedgers";
 import { getSystemSettings } from "../actions/billCreationService";
+import Advance from "../modules/advances/advance";
 const RoutesConfig = () => {
   function setSystemSettingsDetails(clickId){
     getSystemSettings(clickId).then((response) => {
@@ -97,6 +98,10 @@ const RoutesConfig = () => {
                       path="/transportoledger"
                       element={<TransportoLedger />}
                     />
+                    <Route
+                      path="/advance"
+                      element={<Advance />}
+                    />
                     {/* <Route
                       path="/transportoledger"
                       element={<TransportoLedger />}
@@ -143,6 +148,10 @@ const RoutesConfig = () => {
                   path="/transportoledger"
                   element={<TransportoLedger />}
                 />
+                 <Route
+                      path="/advance"
+                      element={<Advance />}
+                    />
                 {/* <Route
                   path="/transportoledger"
                   element={<TransportoLedger />}

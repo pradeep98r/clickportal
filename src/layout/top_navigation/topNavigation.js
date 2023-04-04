@@ -87,8 +87,9 @@ function TopNavigation() {
             {linkValue == 8 && langFullData.myProfile}
             {linkValue == 9 && "Reports"}
             {linkValue == 10 && langFullData.transporto}
+            {linkValue == 11 && "Advances"}
           </h2>
-          {linkValue == 11 && "Advances"}
+         
         </div>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav flex_class">
