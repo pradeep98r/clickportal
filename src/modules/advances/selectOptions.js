@@ -1,7 +1,9 @@
 import React from 'react'
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Select from "react-select";
-import "../../modules/reports/selectedOptions.scss";
+import "../../modules/advances/selectedOptions.scss";
+import { advanceDataInfo } from '../../reducers/advanceSlice';
 const colourStyles = {
     control: (provided) => ({
         ...provided,
@@ -45,8 +47,21 @@ const SelectOptions = () => {
         { value: 'transporters', label: 'Transporters' }
     ]
     const [selectedOption, setSelectedOption] = useState(null)
+    const advancesData = useSelector((state) => state.advanceInfo);
+    const advancesArray = advancesData?.advanceDataInfo;
+    const [partnerArray, setPartnerArray] = useState(advancesArray);
+    const dispatch = useDispatch();
+
     const getSelectedOption =(label)=>{
-        console.log(label,"label")
+        if(label =='Sellers'){
+            const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='FARMER');
+            dispatch(advanceDataInfo(filterArray));
+        } else if(label =='Transporters'){
+            const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='TRANSPORTER');
+            dispatch(advanceDataInfo(filterArray));
+        } else{
+            dispatch(advanceDataInfo(partnerArray));
+        }
     }
     function handleKeyDown(event) {
         if (event.key === "Enter") {

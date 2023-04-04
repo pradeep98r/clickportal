@@ -12,6 +12,8 @@ import {
   totalAdvancesVal,
 } from "../../reducers/advanceSlice";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import SelectOptions from "./selectOptions";
+import "../../modules/advances/selectedOptions.scss";
 const Advance = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -74,14 +76,17 @@ const Advance = () => {
               <div className="row">
                 <div className="col-lg-5 pl-0">
                  <div className="row">
-                 <div id="search-field">
-                    <SearchField
-                      placeholder="Search by Name / Short Code"
-                        onChange={(event) => {
-                          handleSearch(event);
-                        }}
-                    />
-                  </div>
+                    <div className="col-lg-8 pl-0" id="search-field">
+                        <SearchField
+                          placeholder="Search by Name / Short Code"
+                            onChange={(event) => {
+                              handleSearch(event);
+                            }}
+                        />
+                    </div>
+                    <div className="col-lg-4 pl-0">
+                      <SelectOptions />
+                    </div>
                  </div>
                   {advancesArray.length > 0 ? (
                   <div>
