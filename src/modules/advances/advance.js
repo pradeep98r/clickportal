@@ -17,6 +17,7 @@ import {
   advanceDataInfo,
   advanceSummaryById,
   allAdvancesData,
+  fromAdvanceFeature,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesVal,
@@ -31,9 +32,9 @@ import { getText } from "../../components/getText";
 import SelectOptions from "./selectOptions";
 import "../../modules/advances/selectedOptions.scss";
 import AdvanceSummary from "./advanceSummary";
-import { allCustomTabs, beginDate } from "../../reducers/ledgerSummarySlice";
-import { closeDate } from "../../reducers/ledgersCustomDateSlice";
+import { allCustomTabs, beginDate,closeDate } from "../../reducers/ledgerSummarySlice";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
+import TransportoRecord from "../transporto_ledger/transportoRecord";
 
 const Advance = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -70,6 +71,8 @@ const Advance = () => {
   const [startDate, setStartDate] = useState(date);
   const [endDate, setEndDate] = useState(date);
   const [datePickerCall, setDatePickerCall] = useState(false);
+  const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
+  const [recordPayModal, setRecordPayModal] = useState(false);
   useEffect(() => {
     getAllAdvances();
     dispatch(allCustomTabs('all'));
@@ -173,8 +176,8 @@ const Advance = () => {
     setShowDatepickerModal(true);
   };
   const callbackFunction = (startDate, endDate, dateTab) => {
-    dispatch(beginDate(startDate));
-    dispatch(closeDate(endDate));
+    // dispatch(beginDate(startDate));
+    // dispatch(closeDate(endDate));
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
@@ -199,8 +202,17 @@ const Advance = () => {
     }
     setStartDate(fromDate);
     setEndDate(toDate);
+    dispatch(beginDate(fromDate));
+    console.log(toDate,"toDate")
+    dispatch(closeDate(toDate));
     getCustomDetailedAdvances(selectedPartyId,fromDate,toDate);
   };
+
+  const recordPaymentOnClickEvent=()=>{
+    dispatch(fromAdvanceFeature(true));
+    setRecordPayModalStatus(true);
+    setRecordPayModal(true);
+  }
   return (
     <div className="main_div_padding">
       <div>
@@ -379,7 +391,7 @@ const Advance = () => {
                     </ul>
                     <button
                       className="primary_btn add_bills_btn"
-                      // onClick={recordPaymentOnClickEvent}
+                      onClick={recordPaymentOnClickEvent}
                     >
                       <img src={addbill_icon} alt="image" className="mr-2" />
                       Add Record
@@ -433,6 +445,16 @@ const Advance = () => {
         ) : (
           <p></p>
         )}
+        {recordPayModalStatus ? (
+        <TransportoRecord
+          showRecordPayModal={recordPayModal}
+          closeRecordPayModal={() => setRecordPayModal(false)}
+          // tabs={tabs}
+          // type={"TRANS"}
+        />
+      ) : (
+        ""
+      )}
       </div>
     </div>
   );
