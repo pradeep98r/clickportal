@@ -1,5 +1,13 @@
 .select-options{
-    width: 135px;
+    width: auto;
+    .css-1ny1ive-control{
+        border-color: #E4E4E4;
+        padding: 0px 8px;
+    }
+    .css-tlfecz-indicatorContainer, .select__dropdown-indicator{
+        padding-left: 0px;
+        padding-right: 0px;
+    }
 }
 .label_font{
     font-weight: 500;

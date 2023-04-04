@@ -6,4 +6,9 @@ export function getAdvances(clickId) {
     `payments/advances/ledger/caId/${clickId}?writerId=${writerId}`
   );
 }
-export default { getAdvances };
+export function getAdvancesSummaryById(clickId,id) {
+    return axiosCommon.get(
+      `payments/advances/ledger/caId/${clickId}/partyId/${id}?writerId=${writerId}`
+    );
+  }
+export default { getAdvances,getAdvancesSummaryById };
