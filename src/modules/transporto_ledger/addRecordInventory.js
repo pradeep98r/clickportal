@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { getText } from "../../components/getText";
 import DatePicker from "react-datepicker";
 import single_bill from "../../assets/images/bills/single_bill.svg";
@@ -9,6 +9,7 @@ import date_icon from "../../assets/images/date_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import loading from "../../assets/images/loading.gif";
 import {
   addRecordInventory,
   getInventory,
@@ -50,7 +51,7 @@ const AddRecordInventory = (props) => {
   const [tabs, setTabs] = useState(fromInvEditStatus ? viewInfo?.type == 'GIVEN' ? 'Given' : 'Collected' : "Given");
   var fromInventoryTab = transpoData?.fromInv;
   const [requiredCondition, setRequiredCondition] = useState("");
-
+  const [isLoading, setLoading] = useState(false);
   const links = [
     {
       id: 1,
@@ -63,6 +64,9 @@ const AddRecordInventory = (props) => {
       to: "Collected",
     },
   ];
+  useEffect(()=>{
+    setLoading(false)
+  },[props.showRecordInventoryModal])
   const tabEvent = (type) => {
     setTabs(type);
   };
@@ -105,6 +109,7 @@ const AddRecordInventory = (props) => {
   };
   //Add Record Inventory
   const postRecordInventory = () => {
+    setLoading(true);
     const inventoryRequest = {
       caId: clickId,
       transId: transId,
@@ -247,6 +252,11 @@ const AddRecordInventory = (props) => {
       close={props.closeRecordInventoryModal}
       className="record_payment_modal"
     >
+       {isLoading ? (
+            <div className="loading_styles">
+              <img src={loading} alt="my-gif" className="gif_img" />
+            </div>
+          ) : '' }
       <div className="modal-body partner_model_body" id="scroll_style">
         <div>
           <form>
