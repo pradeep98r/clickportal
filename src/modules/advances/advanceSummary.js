@@ -23,6 +23,8 @@ const AdvanceSummary = () => {
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
   const dispatch = useDispatch();
+  const tabClick = useSelector((state) => state.ledgerSummaryInfo);
+  const allCustomTab = tabClick?.allCustomTabs;
   console.log(advancesSummary, "Summary");
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -93,11 +95,11 @@ const AdvanceSummary = () => {
             </div>
           </div>
           <div
-            className="ledgerSummary advance_ledgerSummary"
+            className= {allCustomTab == 'all' ? 'ledgerSummary advance_ledgerSummary' : 'ledgerSummary advance_ledgerSummary_custom'}
             id="scroll_style"
           >
             {advancesSummary.length > 0 ? (
-              <table className="table table-bordered ledger-table">
+              <table className="table table-bordered advance_table_border ledger-table">
                 <thead className="thead-tag">
                   <tr>
                     <th className="col-1" id="sno">

@@ -4,3 +4,11 @@
 .advance_ledgerSummary{
     height: calc(100vh - 270px);
 }
+.advance_table_border{
+    tr td, thead th{
+        padding: 5px 20px;
+    }
+}
+.advance_ledgerSummary_custom{
+    height: calc(100vh - 289px);
+}

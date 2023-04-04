@@ -216,7 +216,7 @@ const Advance = () => {
                   <div className="row">
                     <div className="col-lg-9 pl-0" id="search-field">
                       <SearchField
-                        placeholder="Search by Name / Short Code"
+                        placeholder="Search by Name"
                         onChange={(event) => {
                           handleSearch(event);
                         }}
@@ -382,7 +382,7 @@ const Advance = () => {
                       // onClick={recordPaymentOnClickEvent}
                     >
                       <img src={addbill_icon} alt="image" className="mr-2" />
-                      Add Record
+                      Add Advance Record
                     </button>
                   </div>
                   <p className={dateDisplay ? "" : "padding_all"}></p>
