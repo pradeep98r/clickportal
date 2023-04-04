@@ -33,6 +33,7 @@ import "../../modules/advances/selectedOptions.scss";
 import AdvanceSummary from "./advanceSummary";
 import { allCustomTabs, beginDate } from "../../reducers/ledgerSummarySlice";
 import { closeDate } from "../../reducers/ledgersCustomDateSlice";
+import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 
 const Advance = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -66,6 +67,9 @@ const Advance = () => {
   var [dateValue, setDateValue] = useState(defaultDate + " to " + defaultDate);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
+  const [startDate, setStartDate] = useState(date);
+  const [endDate, setEndDate] = useState(date);
+  const [datePickerCall, setDatePickerCall] = useState(false);
   useEffect(() => {
     getAllAdvances();
     dispatch(allCustomTabs('all'));
@@ -116,9 +120,12 @@ const Advance = () => {
       dispatch(allCustomTabs('all'))
       setDateDisplay(false);
     }
+    dispatch(dateCustomStatus(true));
+    setDatePickerCall(true);
     dispatch(selectedAdvanceId(id));
     getAdvanceSummary(id);
     dispatch(selectedPartyByAdvanceId(item));
+    setDateValue(defaultDate + " to " + defaultDate);
   };
   const getAdvanceSummary = (id) => {
     getAdvancesSummaryById(clickId, id)
@@ -154,7 +161,7 @@ const Advance = () => {
   const allCustomEvent = (type) => {
     if (type == "custom") {
       setDateDisplay(true);
-      getCustomDetailedAdvances(selectedPartyId,date,date);
+      getCustomDetailedAdvances(selectedPartyId,startDate,endDate);
     } else {
       getAdvanceSummary(selectedPartyId);
       setDateDisplay(false);
@@ -190,6 +197,8 @@ const Advance = () => {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
+    setStartDate(fromDate);
+    setEndDate(toDate);
     getCustomDetailedAdvances(selectedPartyId,fromDate,toDate);
   };
   return (
@@ -419,6 +428,7 @@ const Advance = () => {
             show={showDatepickerModal}
             close={() => setShowDatepickerModal(false)}
             parentCallback={callbackFunction}
+            datePickerCall={datePickerCall}
           />
         ) : (
           <p></p>
