@@ -29,6 +29,8 @@ function DatePickerModel(props) {
   const [startDate, setStartsDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const dispatch = useDispatch();
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  const allCustom =ledgersSummary?.allCustomTabs;
   useEffect(() => {
     setStartDate(props.prevNextDate)
     localStorage.setItem("billViiewSttatus", false);
@@ -66,6 +68,15 @@ function DatePickerModel(props) {
     }
     else {
       datev = dateTabs
+    }
+    if(link == '/advance'){
+      if(billEditItemInfo?.dateCustom){
+        console.log('here')
+          datev = 'Custom';
+          setStartsDate(new Date());
+          setEndDate(new Date());
+      }
+      dispatch(dateCustomStatus(false));
     }
     setDateTabs(datev);
   }, [props.show]);
