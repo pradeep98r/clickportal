@@ -65,19 +65,22 @@ const Advance = () => {
   const [dateDisplay, setDateDisplay] = useState(false);
   var date = moment(new Date()).format("YYYY-MM-DD");
   var defaultDate = moment(new Date()).format("DD-MMM-YYYY");
-  var [dateValue, setDateValue] = useState(defaultDate + " to " + defaultDate);
+  const startDate = ledgersSummary?.beginDate
+  const endDate =ledgersSummary?.closeDate;
+  var [dateValue, setDateValue] = useState(startDate + " to " + endDate);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
-  const [startDate, setStartDate] = useState(date);
-  const [endDate, setEndDate] = useState(date);
+  
+  console.log(startDate,endDate)
   const [datePickerCall, setDatePickerCall] = useState(false);
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
   useEffect(() => {
     getAllAdvances();
     dispatch(allCustomTabs("all"));
-    // allCustomEvent("all");
-    setDateValue(defaultDate + " to " + defaultDate);
+    dispatch(beginDate(date));
+    dispatch(closeDate(date));
+    setDateValue(date + " to " + date);
   }, []);
   const getAllAdvances = () => {
     getAdvances(clickId)
@@ -123,12 +126,14 @@ const Advance = () => {
       dispatch(allCustomTabs("all"));
       setDateDisplay(false);
     }
+    dispatch(beginDate(date));
+    dispatch(closeDate(date));
     dispatch(dateCustomStatus(true));
     setDatePickerCall(true);
     dispatch(selectedAdvanceId(id));
     getAdvanceSummary(id);
     dispatch(selectedPartyByAdvanceId(item));
-    setDateValue(defaultDate + " to " + defaultDate);
+    setDateValue(date + " to " + date);
   };
   const getAdvanceSummary = (id) => {
     getAdvancesSummaryById(clickId, id)
@@ -197,8 +202,6 @@ const Advance = () => {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    setStartDate(fromDate);
-    setEndDate(toDate);
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
     getCustomDetailedAdvances(selectedPartyId,fromDate,toDate);
@@ -397,10 +400,11 @@ const Advance = () => {
                       Record Advance
                     </button>
                   </div>
-                  <p className={dateDisplay ? "" : "padding_all"}></p>
+                  <p className={dateDisplay && allCustom == 'custom' ? "" : "padding_all"}></p>
+                 
                   <div className="my-2">
                     <div
-                      style={{ display: dateDisplay ? "flex" : "none" }}
+                      style={{ display: dateDisplay && allCustom == 'custom' ? "flex" : "none" }}
                       className="dateRangePicker justify-content-center"
                     >
                       <button onClick={onclickDate} className="color_blue">
