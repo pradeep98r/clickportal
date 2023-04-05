@@ -7,7 +7,6 @@ import {
 } from "../../actions/advancesService";
 import loading from "../../assets/images/loading.gif";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
-import SearchField from "../../components/searchField";
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import addIcon from "../../assets/images/addIcon.svg";
@@ -21,6 +20,7 @@ import {
   dateFormat,
   fromAdvanceFeature,
   fromAdvanceSummary,
+  fromParentSelect,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesVal,
@@ -67,7 +67,6 @@ const Advance = () => {
       to: "custom",
     },
   ];
-  // const [allCustom, setAllCustom] = useState("all");
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   const allCustom = ledgersSummary?.allCustomTabs;
   const [dateDisplay, setDateDisplay] = useState(false);
@@ -80,8 +79,6 @@ const Advance = () => {
   var [datesValue, setDateValue] = useState(date + " to " + date);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
-  console.log(startDate,endDate,dateValue)
-  // const [datePickerCall, setDatePickerCall] = useState(false);
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
   useEffect(() => {
@@ -136,10 +133,7 @@ const Advance = () => {
       setDateDisplay(false);
     }
     callbackFunction(date,date, 'Custom')
-    // dispatch(beginDate(date));
-    // dispatch(closeDate(date));
     dispatch(dateCustomStatus(true));
-    // setDatePickerCall(true);
     dispatch(selectedAdvanceId(id));
     getAdvanceSummary(id);
     dispatch(selectedPartyByAdvanceId(item));
@@ -194,38 +188,23 @@ const Advance = () => {
     setShowDatepickerModal(true);
   };
   const callbackFunction = (startDate, endDate, dateTab) => {
-    // dispatch(beginDate(startDate));
-    // dispatch(closeDate(endDate));
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
       dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY")));
-      // setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
       dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY") +
       " to " +
       moment(toDate).format("DD-MMM-YYYY")));
-      // setDateValue(
-      //   moment(fromDate).format("DD-MMM-YYYY") +
-      //     " to " +
-      //     moment(toDate).format("DD-MMM-YYYY")
-      // );
     } else if (dateTab === "Monthly") {
-      dispatch(dateFormat(moment(fromDate).format("MMM")));
-      // setDateValue(moment(fromDate).format("MMM-YYYY"));
+      dispatch(dateFormat(moment(fromDate).format("MMM-yyy")));
     } else if (dateTab === "Yearly") {
       dispatch(dateFormat(moment(fromDate).format("YYYY")));
-      // setDateValue(moment(fromDate).format("YYYY"));
     } else {
       dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY") +
       " to " +
       moment(toDate).format("DD-MMM-YYYY")));
-      // setDateValue(
-      //   moment(fromDate).format("DD-MMM-YYYY") +
-      //     " to " +
-      //     moment(toDate).format("DD-MMM-YYYY")
-      // );
     }
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
@@ -243,6 +222,7 @@ const Advance = () => {
     setRecordPayModalStatus(true);
     setRecordPayModal(true);
     dispatch(fromAdvanceSummary(true));
+    dispatch(fromParentSelect(true))
   };
   return (
     <div className="main_div_padding advance_empty_div">

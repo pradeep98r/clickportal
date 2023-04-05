@@ -25,7 +25,6 @@ const AdvanceSummary = () => {
   const dispatch = useDispatch();
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
   const allCustomTab = tabClick?.allCustomTabs;
-  console.log(advancesSummary, "Summary");
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const billOnClickView = (billId, partyId) => {

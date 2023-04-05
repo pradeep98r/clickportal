@@ -30,7 +30,40 @@ position: absolute;
 bottom: 30px;
 right: 0;
 }
+.partner_card{
+    position: relative;
+    
+}
 .advance_add_btn{
     border-radius: 50% 0px 0px 50%;
     padding:8px 10px!important;
+}
+.record_popup_select{
+    .select__control{
+        height: auto!important;
+        border: none!important;
+        padding: 0px!important;
+        width: 280px;
+    }
+    .select__control:hover{
+        cursor: pointer;
+    }
+    .css-1hb7zxy-IndicatorsContainer{
+      display: none;
+    }
+    .css-1pahdxg-control{
+        box-shadow: none!important;
+    }
+}
+.a_icon{
+    position: absolute;
+    right: 180px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.a_icon_selected{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
 }

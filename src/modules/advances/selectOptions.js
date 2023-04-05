@@ -10,6 +10,7 @@ import "../../modules/advances/selectedOptions.scss";
 import {
   advanceDataInfo,
   advanceSummaryById,
+  allAdvancesData,
   dateFormat,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
@@ -108,6 +109,7 @@ const SelectOptions = () => {
     }
   };
   const getDetails = (array) => {
+    dispatch(allAdvancesData(array))
     dispatch(advanceDataInfo(array));
     dispatch(selectedAdvanceId(array[0].partyId));
     dispatch(selectedPartyByAdvanceId(array[0]));
