@@ -21,6 +21,7 @@ import {
   fromAdvanceFeature,
   fromAdvanceSummary,
   fromParentSelect,
+  partyOutstandingBal,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesVal,
@@ -54,7 +55,7 @@ const Advance = () => {
   const allData = advancesData.allAdvancesData;
   const totalAdvances = advancesData?.totalAdvancesVal;
   const selectedPartyId = advancesData?.selectedAdvanceId;
-
+  const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const tabs = [
     {
       id: 1,
@@ -87,7 +88,7 @@ const Advance = () => {
     dispatch(beginDate(date));
     dispatch(closeDate(date));
     callbackFunction(date, date,'Custom')
-  }, []);
+  }, [fromAdvSummary]);
   const getAllAdvances = () => {
     getAdvances(clickId)
       .then((res) => {
@@ -103,6 +104,7 @@ const Advance = () => {
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
             }
+            dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
           } else {
             dispatch(allAdvancesData([]));
           }

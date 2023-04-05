@@ -39,6 +39,7 @@ import {
   advanceDataInfo,
   advanceSummaryById,
   allAdvancesData,
+  partyOutstandingBal,
   totalAdvancesVal,
   totalAdvancesValById,
 } from "../../reducers/advanceSlice";
@@ -63,12 +64,14 @@ const TransportoRecord = (props) => {
     ? viewInfo
     : transpoData?.singleTransporterObject;
   const transId = fromAdvances
-    ? selectedPartnerFromAdv?.partyId
+    ? fromAdvSummary ? selectedPartnerFromAdv?.partyId : selectedPartnerFromAdv?.partyId
     : transpoData?.transporterIdVal;
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
-  const [outStandingBal, setOutStandingBal] = useState("");
+  console.log(transId)
+  const outStandingBal = advancesData?.partyOutstandingBal;
+  // const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
@@ -76,13 +79,18 @@ const TransportoRecord = (props) => {
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   useEffect(() => {
+    console.log(fromAdvSummary,outStandingBal,'useeffect')
+    if(!fromAdvSummary)
+   {
     getOutstandingPaybles(clickId, transId);
+   }
     setLoading(false);
   }, [props.showRecordPayModal]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        setOutStandingBal(response.data.data);
+        // setOutStandingBal(response.data.data);
+        dispatch(partyOutstandingBal(response.data.data))
       }
     });
   };
