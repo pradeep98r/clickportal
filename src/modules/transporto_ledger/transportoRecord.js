@@ -29,16 +29,25 @@ import {
   transpoLedgersInfo,
 } from "../../reducers/transpoSlice";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
+import { addAdvanceRecord, customDetailedAvances, getAdvances, getAdvancesSummaryById } from "../../actions/advancesService";
+import { advanceDataInfo, advanceSummaryById, allAdvancesData, totalAdvancesVal, totalAdvancesValById } from "../../reducers/advanceSlice";
 const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
+  const tabClick = useSelector((state) => state.ledgerSummaryInfo);
+  const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
+  const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
+  const allCustomTab = tabClick?.allCustomTabs;
   const editRecordStatus = props.editRecordStatus;
   const viewInfo = paymentViewData?.paymentViewInfo;
-  const ledgerData = editRecordStatus
+  const advancesData = useSelector((state) => state.advanceInfo);
+  const fromAdvances = advancesData?.fromAdvanceFeature;
+  const selectedPartnerFromAdv = advancesData?.selectedPartyByAdvanceId;
+  const ledgerData = fromAdvances?selectedPartnerFromAdv:editRecordStatus
     ? viewInfo
     : transpoData?.singleTransporterObject;
-  const transId = transpoData?.transporterIdVal;
+  const transId =fromAdvances?selectedPartnerFromAdv?.partyId :transpoData?.transporterIdVal;
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
@@ -48,6 +57,7 @@ const TransportoRecord = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   var fromInventoryTab = transpoData?.fromInv;
   const [isLoading, setLoading] = useState(false);
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   useEffect(() => {
     getOutstandingPaybles(clickId, transId);
     setLoading(false)
@@ -118,6 +128,7 @@ const TransportoRecord = (props) => {
       billIds: [],
       type: "TRANSPORTER",
       discount: "",
+      writerId: writerId
     };
     const updateRecordRequest = {
       action: "UPDATE",
@@ -137,8 +148,38 @@ const TransportoRecord = (props) => {
         ? ledgerData?.transporterName
         : ledgerData?.partyName,
       amount: paidsRcvd,
+      writerId: writerId
     };
-    if (transpoData?.fromTransporter) {
+
+    const addAdvanceReq = {
+      caId: clickId,
+      amount: paidsRcvd,
+      paymentMode: paymentMode,
+      partyId:transId,
+      date: moment(selectDate).format("YYYY-MM-DD"),
+      comments: comments,
+      writerId: writerId
+    }
+    if(fromAdvances){
+      await addAdvanceRecord(addAdvanceReq).then(
+        (res) =>{
+          toast.success(res.data.status.message, {
+            toastId: "errorr12",
+          });
+          updateAdvances();
+          window.setTimeout(function () {
+            props.closeRecordPayModal();
+            closePopup();
+          }, 800);
+        },
+        (error) => {
+          toast.error(error.response.data.status.message, {
+            toastId: "error15",
+          });
+        }
+      )
+    }
+    else if (transpoData?.fromTransporter) {
       await updateRecordPayment(updateRecordRequest).then(
         (res) => {
           toast.success(res.data.status.message, {
@@ -188,6 +229,60 @@ const TransportoRecord = (props) => {
       paymentLedger(clickId, transId);
     }
   };
+
+  const updateAdvances = () =>{
+    getAllAdvances();
+    if(allCustomTab == 'all'){
+      getAdvanceSummary();
+    }
+    else{
+      getCustomDetailedAdvances(advancesData?.selectedAdvanceId,fromDate,toDate);
+    }
+  }
+  const getAllAdvances = () => {
+    getAdvances(clickId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(allAdvancesData(res.data.data.advances));
+            dispatch(advanceDataInfo(res.data.data.advances));
+            if (res.data.data.totalAdvances != 0) {
+              dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+            }
+          } else {
+            dispatch(allAdvancesData([]));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const getAdvanceSummary = () => {
+    getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+          } else {
+            dispatch(advanceSummaryById([]));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+  const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
+    customDetailedAvances(clickId,id, fromDate, toDate).then(res=>{
+      if(res.data.status.type == 'SUCCESS'){
+        if(res.data.data != null){
+          dispatch(advanceSummaryById(res.data.data.advances));
+          dispatch(totalAdvancesValById(res.data.data.totalAdvances))
+        } else{
+          dispatch(advanceSummaryById([]));
+        }
+      }
+    })
+    .catch((error) => console.log(error));
+  }
   const getInventoryData = () => {
     getInventorySummary(clickId).then((response) => {
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
@@ -265,7 +360,7 @@ const TransportoRecord = (props) => {
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
               <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {editRecordStatus
+                {fromAdvances?'Record Advance': editRecordStatus
                   ? "Update Record Payment"
                   : "Record Payment"}
               </h5>

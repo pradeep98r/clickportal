@@ -16,4 +16,10 @@ export function customDetailedAvances(clickId, partyId, fromDate, toDate){
     `payments/advances/ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   )
 }
+
+export function addAdvanceRecord(advanceRecordReq){
+  return axiosCommon.post(
+    `payments/advances/record`,advanceRecordReq
+  )
+}
 export default { getAdvances,getAdvancesSummaryById,customDetailedAvances };

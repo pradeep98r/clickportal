@@ -41,17 +41,17 @@ const colourStyles = {
     }),
 };
 const SelectOptions = () => {
+    
     const options = [
         { value: 'all', label: 'All' },
         { value: 'sellers', label: 'Sellers' },
         { value: 'transporters', label: 'Transporters' }
     ]
-    const [selectedOption, setSelectedOption] = useState(null)
+
     const advancesData = useSelector((state) => state.advanceInfo);
     const advancesArray = advancesData?.advanceDataInfo;
     const [partnerArray, setPartnerArray] = useState(advancesArray);
     const dispatch = useDispatch();
-
     const getSelectedOption =(label)=>{
         if(label =='Sellers'){
             const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='FARMER');
@@ -63,14 +63,17 @@ const SelectOptions = () => {
             dispatch(advanceDataInfo(partnerArray));
         }
     }
-    function handleKeyDown(event) {
-        if (event.key === "Enter") {
-          console.log(selectedOption?.label);
-        }
-      }
     
     function handleChange(option) {
-        setSelectedOption(option);
+        if(option.label =='Sellers'){
+            const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='FARMER');
+            dispatch(advanceDataInfo(filterArray));
+        } else if(option.label =='Transporters'){
+            const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='TRANSPORTER');
+            dispatch(advanceDataInfo(filterArray));
+        } else{
+            dispatch(advanceDataInfo(partnerArray));
+        }
     }
     return (
         <div className="">
@@ -90,7 +93,6 @@ const SelectOptions = () => {
                         <span className='label_font'>{e.label}</span>
                     </div>
                 )}
-                onKeyDown={handleKeyDown}
             />
         </div>
     )
