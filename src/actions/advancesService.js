@@ -22,4 +22,9 @@ export function addAdvanceRecord(advanceRecordReq){
     `payments/advances/record`,advanceRecordReq
   )
 }
-export default { getAdvances,getAdvancesSummaryById,customDetailedAvances };
+export function getAllPartnersByTypes(clickId,obj){
+    return axiosCommon.put(
+      `account/partners/caId/${clickId}`,obj
+    )
+  }
+export default { getAdvances,getAdvancesSummaryById,customDetailedAvances,getAllPartnersByTypes };

@@ -42,6 +42,7 @@ import {
   totalAdvancesVal,
   totalAdvancesValById,
 } from "../../reducers/advanceSlice";
+import SelectedPartner from "../advances/selectedPartner";
 const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
@@ -405,7 +406,7 @@ const TransportoRecord = (props) => {
               >
                 <div className="profile-details" key={transId}>
                   {fromAdvSummary ? (
-                    "Select Party"
+                    <SelectedPartner />
                   ) : (
                     <div className="d-flex">
                       <div>
