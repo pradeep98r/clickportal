@@ -66,9 +66,12 @@ const AdvanceSummary = () => {
                       <p className="namedtl-tag">{selectedParty.partyName}</p>
                       <div className="d-flex align-items-center">
                         <p className="mobilee-tag">
-                          {getText(selectedParty.partyType) +
-                            " - " +
-                            selectedParty.partyId}
+                          {!selectedParty.trader
+                            ? selectedParty.partyType == "FARMER"
+                              ? "Farmer"
+                              : getText(selectedParty.partyType)
+                            : "Trader"}{" "}
+                          - {selectedParty.partyId}
                         </p>
                         <span className="px-1 desk_responsive">|</span>
                         <span className="mobilee-tag desk_responsive">
@@ -95,7 +98,11 @@ const AdvanceSummary = () => {
             </div>
           </div>
           <div
-            className= {allCustomTab == 'all' ? 'ledgerSummary advance_ledgerSummary' : 'ledgerSummary advance_ledgerSummary_custom'}
+            className={
+              allCustomTab == "all"
+                ? "ledgerSummary advance_ledgerSummary"
+                : "ledgerSummary advance_ledgerSummary_custom"
+            }
             id="scroll_style"
           >
             {advancesSummary.length > 0 ? (

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from "react-select";
 import "../../modules/advances/selectedOptions.scss";
-import { advanceDataInfo } from '../../reducers/advanceSlice';
+import { advanceDataInfo, selectedAdvanceId, selectedPartyByAdvanceId } from '../../reducers/advanceSlice';
 const colourStyles = {
     control: (provided) => ({
         ...provided,
@@ -56,6 +56,9 @@ const SelectOptions = () => {
         if(label =='Sellers'){
             const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='FARMER');
             dispatch(advanceDataInfo(filterArray));
+            dispatch(selectedAdvanceId(filterArray[0].partyId));
+            //   getAdvanceSummary(res.data.data.advances[0].partyId);
+              dispatch(selectedPartyByAdvanceId(filterArray[0]));
         } else if(label =='Transporters'){
             const filterArray=partnerArray.filter(item => item?.partyType?.toUpperCase() =='TRANSPORTER');
             dispatch(advanceDataInfo(filterArray));
