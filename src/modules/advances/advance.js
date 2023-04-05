@@ -18,6 +18,7 @@ import {
   advanceDataInfo,
   advanceSummaryById,
   allAdvancesData,
+  dateFormat,
   fromAdvanceFeature,
   fromAdvanceSummary,
   selectedAdvanceId,
@@ -48,6 +49,7 @@ const Advance = () => {
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(true);
   const advancesData = useSelector((state) => state.advanceInfo);
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const advancesArray = advancesData?.advanceDataInfo;
   const allData = advancesData.allAdvancesData;
   const totalAdvances = advancesData?.totalAdvancesVal;
@@ -69,16 +71,17 @@ const Advance = () => {
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   const allCustom = ledgersSummary?.allCustomTabs;
   const [dateDisplay, setDateDisplay] = useState(false);
+  var newDate =moment(new Date()).format("YYYY-MM-DD")
   var date = moment(new Date()).format("YYYY-MM-DD");
   var defaultDate = moment(new Date()).format("DD-MMM-YYYY");
-  const startDate = ledgersSummary?.beginDate;
-  const endDate = ledgersSummary?.closeDate;
-  var [dateValue, setDateValue] = useState(startDate + " to " + endDate);
+  const startDate = ledgersSummary?.beginDate
+  const endDate =ledgersSummary?.closeDate;
+  var dateValue = advancesData?.dateFormat;
+  var [datesValue, setDateValue] = useState(date + " to " + date);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
-
-  console.log(startDate, endDate);
-  const [datePickerCall, setDatePickerCall] = useState(false);
+  console.log(startDate,endDate,dateValue)
+  // const [datePickerCall, setDatePickerCall] = useState(false);
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
   useEffect(() => {
@@ -86,7 +89,7 @@ const Advance = () => {
     dispatch(allCustomTabs("all"));
     dispatch(beginDate(date));
     dispatch(closeDate(date));
-    setDateValue(date + " to " + date);
+    callbackFunction(date, date,'Custom')
   }, []);
   const getAllAdvances = () => {
     getAdvances(clickId)
@@ -132,14 +135,14 @@ const Advance = () => {
       dispatch(allCustomTabs("all"));
       setDateDisplay(false);
     }
-    dispatch(beginDate(date));
-    dispatch(closeDate(date));
+    callbackFunction(date,date, 'Custom')
+    // dispatch(beginDate(date));
+    // dispatch(closeDate(date));
     dispatch(dateCustomStatus(true));
-    setDatePickerCall(true);
+    // setDatePickerCall(true);
     dispatch(selectedAdvanceId(id));
     getAdvanceSummary(id);
     dispatch(selectedPartyByAdvanceId(item));
-    setDateValue(date + " to " + date);
   };
   const getAdvanceSummary = (id) => {
     getAdvancesSummaryById(clickId, id)
@@ -174,7 +177,12 @@ const Advance = () => {
   const allCustomEvent = (type) => {
     if (type == "custom") {
       setDateDisplay(true);
-      getCustomDetailedAdvances(selectedPartyId, startDate, endDate);
+      if(billEditItemInfo?.dateCustom){
+        callbackFunction(newDate, newDate, 'Custom');
+      }
+      else{
+        getCustomDetailedAdvances(selectedPartyId, startDate, endDate);
+      }  
     } else {
       getAdvanceSummary(selectedPartyId);
       setDateDisplay(false);
@@ -192,23 +200,32 @@ const Advance = () => {
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
-      setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
+      dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY")));
+      // setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
-      setDateValue(
-        moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
-      );
+      dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY") +
+      " to " +
+      moment(toDate).format("DD-MMM-YYYY")));
+      // setDateValue(
+      //   moment(fromDate).format("DD-MMM-YYYY") +
+      //     " to " +
+      //     moment(toDate).format("DD-MMM-YYYY")
+      // );
     } else if (dateTab === "Monthly") {
-      setDateValue(moment(fromDate).format("MMM-YYYY"));
+      dispatch(dateFormat(moment(fromDate).format("MMM")));
+      // setDateValue(moment(fromDate).format("MMM-YYYY"));
     } else if (dateTab === "Yearly") {
-      setDateValue(moment(fromDate).format("YYYY"));
+      dispatch(dateFormat(moment(fromDate).format("YYYY")));
+      // setDateValue(moment(fromDate).format("YYYY"));
     } else {
-      setDateValue(
-        moment(fromDate).format("DD-MMM-YYYY") +
-          " to " +
-          moment(toDate).format("DD-MMM-YYYY")
-      );
+      dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY") +
+      " to " +
+      moment(toDate).format("DD-MMM-YYYY")));
+      // setDateValue(
+      //   moment(fromDate).format("DD-MMM-YYYY") +
+      //     " to " +
+      //     moment(toDate).format("DD-MMM-YYYY")
+      // );
     }
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
@@ -468,7 +485,7 @@ const Advance = () => {
             show={showDatepickerModal}
             close={() => setShowDatepickerModal(false)}
             parentCallback={callbackFunction}
-            datePickerCall={datePickerCall}
+            // datePickerCall={datePickerCall}
           />
         ) : (
           <p></p>

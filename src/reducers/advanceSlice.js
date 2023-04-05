@@ -11,7 +11,8 @@ export const advanceSlice = createSlice({
     totalAdvancesValById:0,
     selectedPartyByAdvanceId:{},
     fromAdvanceFeature:false,
-    fromAdvanceSummary:false
+    fromAdvanceSummary:false,
+    dateFormat:null
   },
   reducers: {
     advanceDataInfo: (state, action) => {
@@ -40,11 +41,14 @@ export const advanceSlice = createSlice({
     },
     fromAdvanceSummary:(state,action) =>{
         state.fromAdvanceSummary = action.payload
+    },
+    dateFormat: (state, action) =>{
+      state.dateFormat = action.payload
     }
   },
 });
 
-export const { advanceDataInfo, allAdvancesData, totalAdvancesVal,selectedAdvanceId,advanceSummaryById,totalAdvancesValById,selectedPartyByAdvanceId,fromAdvanceFeature,fromAdvanceSummary } =
+export const { advanceDataInfo, allAdvancesData, totalAdvancesVal,selectedAdvanceId,advanceSummaryById,totalAdvancesValById,selectedPartyByAdvanceId,fromAdvanceFeature,fromAdvanceSummary,dateFormat } =
   advanceSlice.actions;
 
 export default advanceSlice.reducer;
