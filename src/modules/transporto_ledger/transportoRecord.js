@@ -69,7 +69,6 @@ const TransportoRecord = (props) => {
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
-  console.log(transId)
   const outStandingBal = advancesData?.partyOutstandingBal;
   // const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -79,7 +78,6 @@ const TransportoRecord = (props) => {
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   useEffect(() => {
-    console.log(fromAdvSummary,outStandingBal,'useeffect')
     if(!fromAdvSummary)
    {
     getOutstandingPaybles(clickId, transId);
@@ -89,7 +87,6 @@ const TransportoRecord = (props) => {
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        // setOutStandingBal(response.data.data);
         dispatch(partyOutstandingBal(response.data.data))
       }
     });
@@ -125,7 +122,18 @@ const TransportoRecord = (props) => {
       setRequiredCondition("Amount Received cannot be empty");
     } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
-    } else if (
+    } 
+    else if(fromAdvances){
+     if(!fromAdvSummary || !advancesData?.fromParentSelect ){
+      addRecordPayment();
+     }
+     else{
+      toast.error('Please Select Partner', {
+        toastId: "error16",
+      });
+     }
+    }
+    else if (
       paidsRcvd.toString().trim().length !== 0 &&
       paidsRcvd != 0 &&
       paidsRcvd <= outStandingBal &&
@@ -327,7 +335,6 @@ const TransportoRecord = (props) => {
   const paymentLedger = (clickId, partyId) => {
     getParticularTransporter(clickId, partyId)
       .then((response) => {
-        console.log(response.data.data, "pay");
         dispatch(paymentSummaryInfo(response.data.data.details));
         dispatch(paymentTotals(response.data.data));
       })

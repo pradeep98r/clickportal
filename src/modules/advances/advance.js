@@ -100,11 +100,15 @@ const Advance = () => {
               dispatch(selectedAdvanceId(res.data.data.advances[0].partyId));
               getAdvanceSummary(res.data.data.advances[0].partyId);
               dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]));
+              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
+            }
+            else{
+                dispatch(partyOutstandingBal(0))
             }
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
             }
-            dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
+            
           } else {
             dispatch(allAdvancesData([]));
           }
