@@ -10,6 +10,7 @@ import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import SearchField from "../../components/searchField";
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
+import addIcon from "../../assets/images/addIcon.svg";
 import addbill_icon from "../../assets/images/addbill.svg";
 import date_icon from "../../assets/images/date_icon.svg";
 import DatePickerModel from "../smartboard/datePicker";
@@ -19,6 +20,7 @@ import {
   allAdvancesData,
   dateFormat,
   fromAdvanceFeature,
+  fromAdvanceSummary,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesVal,
@@ -33,7 +35,11 @@ import { getText } from "../../components/getText";
 import SelectOptions from "./selectOptions";
 import "../../modules/advances/selectedOptions.scss";
 import AdvanceSummary from "./advanceSummary";
-import { allCustomTabs, beginDate,closeDate } from "../../reducers/ledgerSummarySlice";
+import {
+  allCustomTabs,
+  beginDate,
+  closeDate,
+} from "../../reducers/ledgerSummarySlice";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import TransportoRecord from "../transporto_ledger/transportoRecord";
 
@@ -152,18 +158,20 @@ const Advance = () => {
         setLoading(false);
       })
       .catch((error) => console.log(error));
-  }
-  const getCustomDetailedAdvances =(partyId,fromDate,toDate)=>{
-    customDetailedAvances(clickId,partyId, fromDate, toDate).then(res=>{
-      if(res.data.status.type == 'SUCCESS'){
-        if(res.data.data != null){
-          dispatch(advanceSummaryById(res.data.data.advances));
-          dispatch(totalAdvancesValById(res.data.data.totalAdvances))
-        } else{
-          dispatch(advanceSummaryById([]));
+  };
+  const getCustomDetailedAdvances = (partyId, fromDate, toDate) => {
+    customDetailedAvances(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.status.type == "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+          } else {
+            dispatch(advanceSummaryById([]));
+          }
+          setLoading(false);
         }
-        setLoading(false);
-      }})
+      })
       .catch((error) => console.log(error));
   };
   const allCustomEvent = (type) => {
@@ -221,16 +229,23 @@ const Advance = () => {
     }
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
-    getCustomDetailedAdvances(selectedPartyId,fromDate,toDate);
+    getCustomDetailedAdvances(selectedPartyId, fromDate, toDate);
   };
 
-  const recordPaymentOnClickEvent=()=>{
+  const recordPaymentOnClickEvent = () => {
     dispatch(fromAdvanceFeature(true));
     setRecordPayModalStatus(true);
     setRecordPayModal(true);
-  }
+    dispatch(fromAdvanceSummary(false));
+  };
+  const recordPaymentSummaryOnClickEvent = () => {
+    dispatch(fromAdvanceFeature(true));
+    setRecordPayModalStatus(true);
+    setRecordPayModal(true);
+    dispatch(fromAdvanceSummary(true));
+  };
   return (
-    <div className="main_div_padding">
+    <div className="main_div_padding advance_empty_div">
       <div>
         {isLoading ? (
           <div className="">
@@ -250,7 +265,7 @@ const Advance = () => {
                         <input
                           className="form-control"
                           id="searchbar"
-                          placeholder='Search by Name'
+                          placeholder="Search by Name"
                           onChange={(event) => {
                             handleSearch(event);
                           }}
@@ -417,11 +432,20 @@ const Advance = () => {
                       Record Advance
                     </button>
                   </div>
-                  <p className={dateDisplay && allCustom == 'custom' ? "" : "padding_all"}></p>
-                 
+                  <p
+                    className={
+                      dateDisplay && allCustom == "custom" ? "" : "padding_all"
+                    }
+                  ></p>
+
                   <div className="my-2">
                     <div
-                      style={{ display: dateDisplay && allCustom == 'custom' ? "flex" : "none" }}
+                      style={{
+                        display:
+                          dateDisplay && allCustom == "custom"
+                            ? "flex"
+                            : "none",
+                      }}
                       className="dateRangePicker justify-content-center"
                     >
                       <button onClick={onclickDate} className="color_blue">
@@ -467,15 +491,23 @@ const Advance = () => {
           <p></p>
         )}
         {recordPayModalStatus ? (
-        <TransportoRecord
-          showRecordPayModal={recordPayModal}
-          closeRecordPayModal={() => setRecordPayModal(false)}
-          // tabs={tabs}
-          // type={"TRANS"}
-        />
-      ) : (
-        ""
-      )}
+          <TransportoRecord
+            showRecordPayModal={recordPayModal}
+            closeRecordPayModal={() => setRecordPayModal(false)}
+            // tabs={tabs}
+            // type={"TRANS"}
+          />
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="addIcon_div">
+        <button
+          className="primary_btn add_bills_btn advance_add_btn"
+          onClick={recordPaymentSummaryOnClickEvent}
+        >
+          <img src={addIcon} alt="image" />
+        </button>
       </div>
     </div>
   );
