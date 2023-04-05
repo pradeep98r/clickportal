@@ -43,6 +43,7 @@ import {
 import { formatInvLedger, getCropUnit } from "../../components/getCropUnitValue";
 import { getPartnerData } from "../../actions/billCreationService";
 import TransportoRecord from "./transportoRecord";
+import { fromAdvanceFeature } from "../../reducers/advanceSlice";
 const Transporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -279,6 +280,7 @@ const Transporters = (props) => {
   const [recordPayModal, setRecordPayModal] = useState(false);
   const onClickPaymentRecord = () => {
     dispatch(fromTransporter(false));
+    dispatch(fromAdvanceFeature(false));
     setRecordPayModal(true);
     setRecordPayModalStatus(true);
   };
