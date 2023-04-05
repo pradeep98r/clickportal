@@ -10,8 +10,11 @@ import { getAllPartnersByTypes } from "../../actions/advancesService";
 import {
   allpartnerDataByTypes,
   fromParentSelect,
+  partyOutstandingBal,
+  selectedAdvanceId,
   selectedPartyByAdvanceId,
 } from "../../reducers/advanceSlice";
+import { getOutstandingBal } from "../../actions/billCreationService";
 const colourStyles = {
   menuList: (styles) => ({
     ...styles,
@@ -49,13 +52,14 @@ const SelectedPartner = (props) => {
   const fromParentSelectVal = advancesData?.fromParentSelect;
   const partnerData = advancesData?.allpartnerDataByTypes;
   const selectedParty = fromParentSelectVal ? null : advancesData?.selectedPartyByAdvanceId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   useEffect(() => {
     fetchPertnerData();
   }, []);
   const fetchPertnerData = () => {
     const obj = {
       types: ["TRANSPORTER", "FARMER"],
-      writerId: 0,
+      writerId: writerId,
     };
     getAllPartnersByTypes(clickId, obj)
       .then((response) => {
@@ -85,6 +89,15 @@ const SelectedPartner = (props) => {
   const partySelect = (item) => {
     dispatch(selectedPartyByAdvanceId(item));
     dispatch(fromParentSelect(false));
+    dispatch(selectedAdvanceId(item.partyId))
+    getOutstandingPaybles(clickId,item.partyId)
+  };
+  const getOutstandingPaybles = (clickId, transId) => {
+    getOutstandingBal(clickId, transId).then((response) => {
+      if (response.data.data != null) {
+       dispatch(partyOutstandingBal(response.data.data))
+      }
+    });
   };
   return (
     <div>
