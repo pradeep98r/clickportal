@@ -34,16 +34,13 @@ function DatePickerModel(props) {
   useEffect(() => {
     setStartDate(props.prevNextDate)
     localStorage.setItem("billViiewSttatus", false);
-    console.log(billEditItemInfo?.dateCustom, link, props.ledgerTabs)
     if (link == "/buyerledger" ||
       link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger") {
         if (billEditItemInfo?.dateCustom) {
           datev = 'Custom';
-          console.log(endDate, startDate)
           setStartsDate(new Date());
           setEndDate(new Date());
-          console.log('detailded')
         }
         else {
           datev = dateTabs
@@ -55,7 +52,6 @@ function DatePickerModel(props) {
             datev = 'Custom'
             setStartsDate(new Date());
             setEndDate(new Date());
-            console.log('summary')
           }
           else {
             datev = dateTabs
@@ -71,7 +67,6 @@ function DatePickerModel(props) {
     }
     if(link == '/advance'){
       if(billEditItemInfo?.dateCustom){
-        console.log('here')
           datev = 'Custom';
           setStartsDate(new Date());
           setEndDate(new Date());
@@ -96,13 +91,11 @@ function DatePickerModel(props) {
   const onChangeDate = (dates) => {
     dispatch(dateCustomStatus(false));
     const [start, end] = dates;
-    console.log(start, end, dates)
     if (dateTabs == 'Weekly') {
       const startOfWeek = new Date(start);
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(endOfWeek.getDate() + 6);
-      console.log(startOfWeek,endOfWeek,"weeks")
       setSelectedFromDate(startOfWeek);
       setWeekFromDate(startOfWeek)
       setSelectedToDate(endOfWeek);
@@ -135,10 +128,8 @@ function DatePickerModel(props) {
   );
   const [selectedDate, setStartDate] = useState(props.prevNextDate?props.prevNextDate:new Date());
   const [handleTab, setHandleTabs] = useState(false);
-  console.log(dateTabs,"tabs")
   const [dates, setDates] = useState((link == "/buyerledger" || link == "/sellerledger" || link == '/advance') ?
   dateTabs=='Weekly'?'Weekly':'Custom': 'Daily');
-  console.log(dates,"Dates1")
   const [dialyDate, setDailyDate] = useState()
   const [monthDate, setMonthDate] = useState(new Date());
   const [yearDate, setyearDate] = useState(new Date());
@@ -161,7 +152,6 @@ function DatePickerModel(props) {
   const setToDefaultDate = () => {
     if (link == "/buyerledger" || link == "/sellerledger") {
       if (props.ledgerTabs == "detailedledger" || props.ledgerTabs == "ledgersummary") {
-        console.log(dates,handleTab,"dates")
         if (dates == 'Daily' && handleTab) {
           setDateTabs("Daily");
           setStartDate(dialyDate)
@@ -183,12 +173,10 @@ function DatePickerModel(props) {
       }
     }
     else {
-      console.log("came here");
       commonDateFunction()
     }
   };
   const commonDateFunction = () => {
-    console.log('custommmm', dates, handleTab)
     if (dates == 'Daily' && handleTab) {
       setDateTabs("Daily");
       setStartDate(dialyDate)
@@ -258,18 +246,15 @@ function DatePickerModel(props) {
       setDateCustom(false);
       dispatch(dateCustomStatus(false));
     } else if (dateTabs == "Custom") {
-      console.log(dateTabs, endDate)
       if (endDate != null) {
         lastDate = moment(endDate).format("YYYY-MM-DD");
       }
       else {
         lastDate = moment(new Date()).format("YYYY-MM-DD");
         setEndDate(new Date());
-        console.log(lastDate, "else")
       }
       firstDate = moment(startDate).format("YYYY-MM-DD");
       dispatch(dateCustomStatus(false));
-      console.log(firstDate, lastDate)
       props.parentCallback(firstDate, lastDate, dateTabs);
       props.close();
       setDateTabs("Custom");
@@ -280,16 +265,13 @@ function DatePickerModel(props) {
   };
 
   const handleDateTabs = (e) => {
-    console.log(e.target.value, "value")
     setDateTabs(e.target.value);
     if (dateTabs == e.target.value) {
       setHandleTabs(false);
       setDateTabs(e.target.value);
     } else {
-      console.log("came to here1")
       setDateTabs(e.target.value);
       if (link == '/buy_bill_book' || link == "/sellbillbook") {
-        console.log("yes to here")
         setDates(dates);
         // setDates(e.target.value)
       } else {
