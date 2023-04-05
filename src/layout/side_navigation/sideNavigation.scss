@@ -60,10 +60,12 @@
   list-style: none;
   margin-top: 2px;
   width: 210px;
+  overflow-y: auto;
+  height: calc(100vh - 140px);
 }
 .sidebar-nav li a {
   display: block;
-  padding: 10px 40px 10px 15px;
+  padding: 10px 30px 10px 15px;
   text-decoration: none;
   font-size: var(--header3-text);
   color: var(--ono-subtext);

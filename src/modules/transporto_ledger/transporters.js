@@ -291,7 +291,7 @@ const Transporters = (props) => {
           <div className="col-lg-5 pl-0">
             <div id="search-field">
               <SearchField
-                placeholder="Search by Name / Short Code"
+                placeholder="Search by Name"
                 onChange={(event) => {
                   handleSearch(event);
                 }}

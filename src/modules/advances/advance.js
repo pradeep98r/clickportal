@@ -61,7 +61,7 @@ const Advance = () => {
   ];
   // const [allCustom, setAllCustom] = useState("all");
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
-  const allCustom =ledgersSummary?.allCustomTabs;
+  const allCustom = ledgersSummary?.allCustomTabs;
   const [dateDisplay, setDateDisplay] = useState(false);
   var date = moment(new Date()).format("YYYY-MM-DD");
   var defaultDate = moment(new Date()).format("DD-MMM-YYYY");
@@ -75,7 +75,7 @@ const Advance = () => {
   const [recordPayModal, setRecordPayModal] = useState(false);
   useEffect(() => {
     getAllAdvances();
-    dispatch(allCustomTabs('all'));
+    dispatch(allCustomTabs("all"));
     // allCustomEvent("all");
     setDateValue(defaultDate + " to " + defaultDate);
   }, []);
@@ -119,8 +119,8 @@ const Advance = () => {
     dispatch(advanceDataInfo(result));
   };
   const particularLedgerData = (id, item) => {
-    if(allCustom =='custom'){
-      dispatch(allCustomTabs('all'))
+    if (allCustom == "custom") {
+      dispatch(allCustomTabs("all"));
       setDateDisplay(false);
     }
     dispatch(dateCustomStatus(true));
@@ -154,15 +154,14 @@ const Advance = () => {
         } else{
           dispatch(advanceSummaryById([]));
         }
-      }
-      setLoading(false);
-    })
-    .catch((error) => console.log(error));
-  }
+        setLoading(false);
+      }})
+      .catch((error) => console.log(error));
+  };
   const allCustomEvent = (type) => {
     if (type == "custom") {
       setDateDisplay(true);
-      getCustomDetailedAdvances(selectedPartyId,startDate,endDate);
+      getCustomDetailedAdvances(selectedPartyId, startDate, endDate);
     } else {
       getAdvanceSummary(selectedPartyId);
       setDateDisplay(false);
@@ -223,16 +222,20 @@ const Advance = () => {
               <div className="row">
                 <div className="col-lg-5 pl-0">
                   <div className="row">
-                    <div className="col-lg-9 pl-0" id="search-field">
-                      <SearchField
-                        placeholder="Search by Name / Short Code"
-                        onChange={(event) => {
-                          handleSearch(event);
-                        }}
-                      />
-                    </div>
                     <div className="col-lg-3 p-0">
                       <SelectOptions />
+                    </div>
+                    <div className="col-lg-9 p-0" id="search-field">
+                      <div className="form-group has-search mb-0 bills_search advance_search">
+                        <input
+                          className="form-control"
+                          id="searchbar"
+                          placeholder='Search by Name'
+                          onChange={(event) => {
+                            handleSearch(event);
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   {advancesArray.length > 0 ? (
@@ -391,7 +394,7 @@ const Advance = () => {
                       onClick={recordPaymentOnClickEvent}
                     >
                       <img src={addbill_icon} alt="image" className="mr-2" />
-                      Add Record
+                      Record Advance
                     </button>
                   </div>
                   <p className={dateDisplay ? "" : "padding_all"}></p>

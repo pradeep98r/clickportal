@@ -273,7 +273,7 @@ function SideNavigation(props) {
       </nav>
       <div id="wrapper" className={isActive ? "toggled-2" : null}>
         <div id="sidebar-wrapper">
-          <ul className="sidebar-nav nav-pills nav-stacked" id="menu">
+          <ul className="sidebar-nav nav-pills nav-stacked" id="scroll_style">
             {linksData.map((link, i) => {
               return (
                 <li key={link.id}>
