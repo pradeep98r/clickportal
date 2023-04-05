@@ -10,6 +10,7 @@ import "../../modules/advances/selectedOptions.scss";
 import {
   advanceDataInfo,
   advanceSummaryById,
+  allAdvancesData,
   dateFormat,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
