@@ -88,7 +88,7 @@ const Advance = () => {
     dispatch(beginDate(date));
     dispatch(closeDate(date));
     callbackFunction(date, date,'Custom')
-  }, [fromAdvSummary]);
+  }, []);
   const getAllAdvances = () => {
     getAdvances(clickId)
       .then((res) => {
@@ -223,12 +223,30 @@ const Advance = () => {
     setRecordPayModal(true);
     dispatch(fromAdvanceSummary(false));
   };
+
+  const getAdvancesOutStbal =()=>{
+    getAdvances(clickId)
+    .then((res) => {
+      if (res.data.status.type === "SUCCESS") {
+        if (res.data.data != null) {
+          if (res.data.data.advances.length > 0) {
+            dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
+          }
+        else{
+            dispatch(partyOutstandingBal(0))
+        }
+        }
+      }
+    })
+    .catch((error) => console.log(error));
+  }
   const recordPaymentSummaryOnClickEvent = () => {
     dispatch(fromAdvanceFeature(true));
     setRecordPayModalStatus(true);
     setRecordPayModal(true);
     dispatch(fromAdvanceSummary(true));
     dispatch(fromParentSelect(true))
+    getAdvancesOutStbal();
   };
   return (
     <div className="main_div_padding advance_empty_div">
