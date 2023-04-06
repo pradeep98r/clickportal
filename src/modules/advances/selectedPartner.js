@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
-import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
+import a_icon from "../../assets/images/a_r.svg";
 import "../../modules/buy_bill_book/step1.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBuyer } from "../../reducers/buyerSlice";
-import { selectTrans } from "../../reducers/transSlice";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import { getPartnerType, getText } from "../../components/getText";
 import Select from "react-select";
+import { getAllPartnersByTypes } from "../../actions/advancesService";
+import {
+  allpartnerDataByTypes,
+  fromParentSelect,
+  partyOutstandingBal,
+  selectedAdvanceId,
+  selectedPartyByAdvanceId,
+} from "../../reducers/advanceSlice";
+import { getOutstandingBal } from "../../actions/billCreationService";
 const colourStyles = {
   menuList: (styles) => ({
     ...styles,
@@ -37,48 +44,39 @@ const colourStyles = {
     padding: "10px 0px",
   }),
 };
-const SelectPartner = (props) => {
+const SelectedPartner = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const users = useSelector((state) => state.buyerInfo);
-  const transusers = useSelector((state) => state.transInfo);
+  const advancesData = useSelector((state) => state.advanceInfo);
   const clickId = loginData.caId;
   const dispatch = useDispatch();
-  const [allData, setAllData] = useState([]);
-  let [partnerData, setpartnerData] = useState(allData);
-
+  const fromParentSelectVal = advancesData?.fromParentSelect;
+  const partnerData = advancesData?.allpartnerDataByTypes;
+  const selectedParty = fromParentSelectVal ? null : advancesData?.selectedPartyByAdvanceId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
+  useEffect(() => {
+    fetchPertnerData();
+  }, []);
   const fetchPertnerData = () => {
-    var partnerType = "";
-    if (props.partyType == "Seller") {
-      partnerType = "FARMER";
-    } else if (props.partyType == "Transporter") {
-      partnerType = "TRANSPORTER";
-    } else if (props.partyType == "Buyer") {
-      partnerType = "BUYER";
-    }
-    getPartnerData(clickId, partnerType)
+    const obj = {
+      types: ["TRANSPORTER", "FARMER"],
+      writerId: writerId,
+    };
+    getAllPartnersByTypes(clickId, obj)
       .then((response) => {
-        setAllData(response.data.data);
-        setpartnerData(response.data.data);
+        if (response.data.data != null) {
+          dispatch(allpartnerDataByTypes(response.data.data));
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  const [selectedPartner, setSelectedPartner] = useState(
-    props.partyType.toLowerCase() == "seller" ||
-      props.partyType.toLowerCase() == "buyer"
-      ? users.buyerInfo
-      : props.partyType.toLowerCase() === "transporter"
-      ? transusers.transInfo
-      : null
-  );
 
   const filterOption = (option, inputValue) => {
     const { partyName, mobile, shortName, partyId } = option.data;
     const addressLine = option.data.address?.addressLine;
     const searchValue = inputValue.toLowerCase();
-
     return (
       partyName.toLowerCase().includes(searchValue) ||
       mobile.toLowerCase().includes(searchValue) ||
@@ -87,59 +85,42 @@ const SelectPartner = (props) => {
       addressLine?.toLowerCase().includes(searchValue)
     );
   };
+
   const partySelect = (item) => {
-    Object.assign(item, { itemtype: "" }, { date: "" });
-    setSelectedPartner(item);
-    var itemtype;
-    if (props.partyType == "Seller") {
-      localStorage.setItem("selectBuyertype", "seller");
-      itemtype = localStorage.getItem("selectBuyertype");
-      props.parentCallback(item, itemtype, props.partyType);
-      item.itemtype = "seller";
-      item.partyType = props.partyType;
-      dispatch(selectBuyer(item));
-    } else if (props.partyType == "Transporter") {
-      localStorage.setItem("selectedTransporter", JSON.stringify(item));
-      Object.assign(item, { transporterId: item.partyId });
-      dispatch(selectTrans(item));
-    } else if (props.partyType == "Buyer") {
-      localStorage.setItem("selectBuyertype", "buyer");
-      itemtype = localStorage.getItem("selectBuyertype");
-      props.parentCallback(item, itemtype, props.partyType);
-      item.itemtype = "buyer";
-      item.partyType = props.partyType;
-      dispatch(selectBuyer(item));
-    }
+    dispatch(selectedPartyByAdvanceId(item));
+    dispatch(fromParentSelect(false));
+    dispatch(selectedAdvanceId(item.partyId))
+    getOutstandingPaybles(clickId,item.partyId)
   };
-
-  useEffect(() => {
-    fetchPertnerData();
-  }, [users.buyerInfo]);
-
+  const getOutstandingPaybles = (clickId, transId) => {
+    getOutstandingBal(clickId, transId).then((response) => {
+      if (response.data.data != null) {
+       dispatch(partyOutstandingBal(response.data.data))
+      }
+    });
+  };
   return (
     <div>
       {partnerData.length > 0 ? (
         <div className="partner_card">
+          <div className="d-flex align-items-center">
           <Select
-            defaultMenuIsOpen
             isSearchable={true}
-            className="basic-single"
+            className="basic-single record_popup_select"
             classNamePrefix="select"
             styles={colourStyles}
             name="partner"
             hideSelectedOptions={false}
             options={partnerData}
-            placeholder={
-              "Select " +
-              (props.partyType == "Seller" ? "Farmer" : props.partyType)
-            }
-            value={selectedPartner}
+            placeholder={"Select Party"}
+            value={selectedParty}
             onChange={partySelect}
             filterOption={filterOption}
             isClearable={false}
             noOptionsMessage={() => "No Data Available"}
             getOptionValue={(e) => e.partyId}
             getOptionLabel={(e) => (
+               
               <div
                 style={{ display: "flex", alignItems: "center" }}
                 className=""
@@ -151,7 +132,7 @@ const SelectPartner = (props) => {
                 )}
                 <div style={{ marginLeft: 5 }}>
                   <div className="-">
-                    <h5>{getText(e.partyName) + " " + e.shortName}</h5>
+                    <h5>{e.partyName}</h5>
                     <h6>
                       {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
                       {getMaskedMobileNumber(e.mobile)}
@@ -162,13 +143,16 @@ const SelectPartner = (props) => {
               </div>
             )}
           />
+          <img src={a_icon} alt="image" className={fromParentSelectVal ? "a_icon" : 'a_icon_selected' } />
+              </div>
         </div>
-      ) : (
+      ) : 
+      (
         <div>
-          <Select placeholder={"Select " + props.partyType} />
+          <Select placeholder={"Select Party"} />
         </div>
       )}
     </div>
   );
 };
-export default SelectPartner;
+export default SelectedPartner;

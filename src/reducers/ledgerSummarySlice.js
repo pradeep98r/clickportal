@@ -10,7 +10,9 @@ export const ledgerSummarySlice = createSlice({
     businessValues:[],
     allBuyBillsData:[],
     allSellBillsData:[],
-    trhoughRecordPayment:false
+    trhoughRecordPayment:false,
+    beginDate:null,
+    closeDate:null,
   },
   reducers: {
     ledgerSummaryInfo:(state,action) =>{

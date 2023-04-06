@@ -43,6 +43,7 @@ import {
 import { formatInvLedger, getCropUnit } from "../../components/getCropUnitValue";
 import { getPartnerData } from "../../actions/billCreationService";
 import TransportoRecord from "./transportoRecord";
+import { fromAdvanceFeature } from "../../reducers/advanceSlice";
 const Transporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -83,7 +84,7 @@ const Transporters = (props) => {
 
   const getTransportersData = () => {
     getTransporters(clickId).then((response) => {
-      console.log(response.data.data,'respoo')
+      console.log(response.data.data,'respoo get transporters')
       dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
       if(response.data.data.ledgers.length > 0){
@@ -279,6 +280,7 @@ const Transporters = (props) => {
   const [recordPayModal, setRecordPayModal] = useState(false);
   const onClickPaymentRecord = () => {
     dispatch(fromTransporter(false));
+    dispatch(fromAdvanceFeature(false));
     setRecordPayModal(true);
     setRecordPayModalStatus(true);
   };
@@ -289,7 +291,7 @@ const Transporters = (props) => {
           <div className="col-lg-5 pl-0">
             <div id="search-field">
               <SearchField
-                placeholder="Search by Name / Short Code"
+                placeholder="Search by Name"
                 onChange={(event) => {
                   handleSearch(event);
                 }}
