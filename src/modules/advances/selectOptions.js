@@ -12,6 +12,7 @@ import {
   advanceSummaryById,
   allAdvancesData,
   dateFormat,
+  selectPartnerOption,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesValById,
@@ -81,6 +82,7 @@ const SelectOptions = () => {
   function handleChange(option) {
     optionChangeStatus = true;
     onClickEvent(option.label);
+    dispatch(selectPartnerOption(option.label))
     dispatch(allCustomTabs('all'))
     console.log('handle channge',fromDate,toDate)
     dispatch(dateCustomStatus(true));
