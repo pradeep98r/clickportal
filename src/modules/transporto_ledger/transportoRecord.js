@@ -276,13 +276,28 @@ const TransportoRecord = (props) => {
       );
     }
   };
+  const label = advancesData.selectPartnerOption;
   const getAllAdvances = () => {
     getAdvances(clickId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
-            dispatch(allAdvancesData(res.data.data.advances));
-            dispatch(advanceDataInfo(res.data.data.advances));
+            if (label == "Sellers") {
+              const filterArray = res.data.data.advances.filter(
+                (item) => item?.partyType?.toUpperCase() == "FARMER"
+              );
+              dispatch(allAdvancesData(filterArray));
+              dispatch(advanceDataInfo(filterArray));
+            } else if(label == 'Transporters'){
+              const filterArray = res.data.data.advances.filter(
+                (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
+              );
+              dispatch(allAdvancesData(filterArray));
+              dispatch(advanceDataInfo(filterArray));
+            } else{
+              dispatch(allAdvancesData(res.data.data.advances));
+              dispatch(advanceDataInfo(res.data.data.advances));
+            }
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
             }
