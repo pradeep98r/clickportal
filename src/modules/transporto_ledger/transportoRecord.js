@@ -39,6 +39,7 @@ import {
   advanceDataInfo,
   advanceSummaryById,
   allAdvancesData,
+  fromParentSelect,
   partyOutstandingBal,
   totalAdvancesVal,
   totalAdvancesValById,
@@ -66,6 +67,7 @@ const TransportoRecord = (props) => {
   const transId = fromAdvances
     ? fromAdvSummary ? selectedPartnerFromAdv?.partyId : selectedPartnerFromAdv?.partyId
     : transpoData?.transporterIdVal;
+    console.log(transId,"id")
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
@@ -284,6 +286,11 @@ const TransportoRecord = (props) => {
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
             }
+            if (res.data.data.advances.length > 0) {
+              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
+            } else{
+              dispatch(partyOutstandingBal(0))
+            }
           } else {
             dispatch(allAdvancesData([]));
           }
@@ -378,7 +385,14 @@ const TransportoRecord = (props) => {
       setComments("");
       setSelectDate(new Date());
     }
+    if(advancesData?.fromParentSelect){
+      console.log("came to here", transId)
+      getOutstandingPaybles(clickId,transId)
+    } else{
+      getAllAdvances();
+    }
   };
+
   return (
     <Modal
       show={props.showRecordPayModal}
