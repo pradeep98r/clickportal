@@ -85,7 +85,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
-    console.log('useeffect setp3')
+    console.log("useeffect setp3");
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -138,7 +138,7 @@ const Step33 = (props) => {
         return object.billType === "BUY" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-     
+
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -160,10 +160,9 @@ const Step33 = (props) => {
               ) {
                 console.log("");
               } else {
-                
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
-                console.log(filteredArray,allGroups,'settings')
+                console.log(filteredArray, allGroups, "settings");
               }
 
               if (filteredArray[i].settingName === "OUT_ST_BALANCE")
@@ -783,7 +782,7 @@ const Step33 = (props) => {
     updatedOn: "",
     writerId: writerId,
     timeStamp: "",
-    source:'WEB'
+    source: "WEB",
   };
 
   const editBillRequestObj = {
@@ -842,7 +841,7 @@ const Step33 = (props) => {
     updatedBy: 0,
     updatedOn: "",
     writerId: writerId,
-    source:'WEB'
+    source: "WEB",
   };
   // post bill request api call
   const postbuybill = () => {
@@ -974,6 +973,7 @@ const Step33 = (props) => {
                 tab[tabIndex] = tabObje;
               }
             } else {
+              console.log(groupLiist[i]);
               tab.push({
                 comments: "",
                 fee: getTargetValue(e.target.value, groupLiist[i], i),
@@ -1357,7 +1357,7 @@ const Step33 = (props) => {
     var subString = "CUSTOM_FIELD";
     if (groupLiist.cstmName.includes(subString)) {
       // if (v != "") {
-        getcstmFieldVal(v);
+      getcstmFieldVal(v);
       // }
     }
   };
@@ -1590,7 +1590,16 @@ const Step33 = (props) => {
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                  {allGroups[index]?.settingName == null ? (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) : getText(allGroups[index]?.settingName)}
+                                    {allGroups[index]?.settingName == null
+                                      ? allGroups[index]?.cstmName != ""
+                                        ? allGroups[index]?.customFieldName !=
+                                          null
+                                          ? getText(
+                                              allGroups[index]?.customFieldName
+                                            )
+                                          : getText(allGroups[index]?.cstmName)
+                                        : getText(allGroups[index]?.cstmName)
+                                      : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1656,12 +1665,22 @@ const Step33 = (props) => {
                     } else if (allGroups[index].tableType == 1) {
                       return (
                         <div>
-                          <div className="comm_cards">
+                          {allGroups[index]?.settingName == null ? '' :  <div className="comm_cards">
                             <div className="card input_card">
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {allGroups[index]?.settingName == null ? (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) : getText(allGroups[index]?.settingName)}
+                                    {allGroups[index]?.settingName == null
+                                      ? ''
+                                      // allGroups[index]?.cstmName != ""
+                                      //   ? allGroups[index]?.customFieldName !=
+                                      //     null
+                                      //     ? getText(
+                                      //         allGroups[index]?.customFieldName
+                                      //       )
+                                      //     : getText(allGroups[index]?.cstmName)
+                                      //   : getText(allGroups[index]?.cstmName)
+                                      : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1678,7 +1697,8 @@ const Step33 = (props) => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div>}
+                         
                           {item?.comments ? (
                             <div className="comm_cards">
                               <div className="card input_card">
