@@ -1489,7 +1489,7 @@ const SellBillStep3 = (props) => {
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index].settingName)}
+                                  {allGroups[index]?.settingName == null ? (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1555,7 +1555,7 @@ const SellBillStep3 = (props) => {
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index].settingName)}
+                                  {allGroups[index]?.settingName == null ? (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">

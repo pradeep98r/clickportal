@@ -85,6 +85,7 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
+    console.log('useeffect setp3')
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -137,7 +138,7 @@ const Step33 = (props) => {
         return object.billType === "BUY" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-
+     
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -159,8 +160,10 @@ const Step33 = (props) => {
               ) {
                 console.log("");
               } else {
+                
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
+                console.log(filteredArray,allGroups,'settings')
               }
 
               if (filteredArray[i].settingName === "OUT_ST_BALANCE")
@@ -1587,7 +1590,7 @@ const Step33 = (props) => {
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index]?.settingName)}
+                                  {allGroups[index]?.settingName == null ? (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1658,7 +1661,7 @@ const Step33 = (props) => {
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index]?.settingName)}
+                                    {allGroups[index]?.settingName == null ? (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
