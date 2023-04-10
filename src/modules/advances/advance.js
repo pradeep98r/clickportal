@@ -87,7 +87,8 @@ const Advance = () => {
     dispatch(allCustomTabs("all"));
     dispatch(beginDate(date));
     dispatch(closeDate(date));
-    callbackFunction(date, date,'Custom')
+    callbackFunction(date, date,'Custom');
+    console.log(allData,'all data')
   }, []);
   const getAllAdvances = () => {
     getAdvances(clickId)
@@ -405,6 +406,7 @@ const Advance = () => {
                     </div>
                   )}
                 </div>
+                {advancesArray.length > 0 ? (
                 <div className="col-lg-7 p-0">
                   <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
                     <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
@@ -466,6 +468,19 @@ const Advance = () => {
                   </div>
                   <AdvanceSummary />
                 </div>
+                ) :
+                <div className="col-lg-7">
+                  <div className="partner_no_data_widget">
+                    <div className="text-center">
+                      <img
+                        src={no_data_icon}
+                        alt="icon"
+                        className="d-flex mx-auto justify-content-center"
+                      />
+                    </div>
+                  </div>
+                </div>
+               }
               </div>
             ) : (
               <div className="row partner_no_data_widget_rows">
