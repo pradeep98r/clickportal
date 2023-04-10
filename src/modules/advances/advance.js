@@ -138,8 +138,8 @@ const Advance = () => {
     if (allCustom == "custom") {
       dispatch(allCustomTabs("all"));
       setDateDisplay(false);
+      callbackFunction(date,date, 'Custom')
     }
-    callbackFunction(date,date, 'Custom')
     dispatch(dateCustomStatus(true));
     dispatch(selectedAdvanceId(id));
     getAdvanceSummary(id);
