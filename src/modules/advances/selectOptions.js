@@ -101,6 +101,7 @@ const SelectOptions = () => {
       const filterArray = partnerArray.filter(
         (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
       );
+      console.log(filterArray,'trans array after selectig')
       if (optionChangeStatus) {
       getDetails(filterArray);
       }
@@ -111,14 +112,17 @@ const SelectOptions = () => {
     }
   };
   const getDetails = (array) => {
-    dispatch(allAdvancesData(array))
+    // dispatch(allAdvancesData(array))
     dispatch(advanceDataInfo(array));
+    if(array.length > 0){
     dispatch(selectedAdvanceId(array[0].partyId));
     dispatch(selectedPartyByAdvanceId(array[0]));
+    console.log(array,allCustomTab,'get details')
     if (allCustomTab == "all") {
       getAdvanceSummary(array[0].partyId);
     } else {
       getCustomDetailedAdvances(array[0].partyId);
+    }
     }
   };
   const getAdvanceSummary = (id) => {
