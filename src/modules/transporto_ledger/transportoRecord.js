@@ -433,15 +433,16 @@ const TransportoRecord = (props) => {
                   : "Record Payment"}
               </h5>
 
-              <button
+              <a
                 onClick={(e) => {
                   closePopup();
                   props.closeRecordPayModal();
                   e.preventDefault();
                 }}
+                href=""
               >
                 <img src={close} alt="image" className="close_icon" />
-              </button>
+              </a>
             </div>
             <div className="d-flex justify-content-between card record_modal_row">
               <div
