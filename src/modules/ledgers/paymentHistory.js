@@ -242,11 +242,19 @@ const PaymentHistoryView = (props) => {
     });
   };
   const summaryData = (clickId, partyId) => {
+   
     getLedgerSummary(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          dispatch(businessValues(res.data.data));
+          console.log('summary',res.data.data)
+          if(res.data.data != null){
+            dispatch(businessValues(res.data.data));
           dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          }
+          else{
+            dispatch(businessValues([]))
+            dispatch(ledgerSummaryInfo([]))
+          }
         }
       })
       .catch((error) => console.log(error));
