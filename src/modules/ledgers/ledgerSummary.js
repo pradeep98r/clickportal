@@ -17,11 +17,13 @@ import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import tick from "../../assets/images/tick.svg";
+import { fromAdvanceFeature } from "../../reducers/advanceSlice";
 const LedgerSummary = (props) => {
   const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
   var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
   const ledgerSummary =partnerSummary;
+  console.log(ledgerSummary)
   const ledgerSummaryByDate =partnerSummary;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
@@ -52,6 +54,7 @@ const LedgerSummary = (props) => {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
+          dispatch(fromAdvanceFeature(false))
         }
       });
     } 

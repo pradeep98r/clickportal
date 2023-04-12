@@ -21,6 +21,7 @@ import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { detaildLedgerInfo } from "../../reducers/ledgerSummarySlice";
+import { fromAdvanceFeature } from "../../reducers/advanceSlice";
 const DetailedLedger = (props) => {
   var detailedLedgerSummary = useSelector((state) => state.ledgerSummaryInfo);
   var partnerDetailedLedger = detailedLedgerSummary?.detaildLedgerInfo;
@@ -60,6 +61,7 @@ const DetailedLedger = (props) => {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
+          dispatch(fromAdvanceFeature(false))
         }
       });
     } else {
