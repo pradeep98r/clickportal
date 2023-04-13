@@ -95,7 +95,6 @@ const SelectMultiPartner = () => {
       {partnerData.length > 0 ? (
         <div className="partner_card p-0">
           <Select
-            defaultMenuIsOpen
             isSearchable={true}
             isMulti
             className="basic-single"

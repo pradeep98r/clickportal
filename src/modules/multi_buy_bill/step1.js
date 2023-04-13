@@ -6,7 +6,7 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import "../multi_buy_bill/step1.scss";
 import { multiSelectPartners } from "../../reducers/multiBillSteps";
-const Step1 = () => {
+const Step1 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
@@ -16,18 +16,22 @@ const Step1 = () => {
     newArr.splice(index, 1);
     dispatch(multiSelectPartners(newArr));
   };
+  const cancelStep = () => {
+    dispatch(multiSelectPartners([]));
+    props.closeModal();
+  };
   return (
     <div>
       <div>
         <div className="main_div_padding">
-          <h5 className="head_modal">
-            Bill To*
-            {multiSelectPartnersArray.length > 0 &&
-              multiSelectPartnersArray.length}{" "}
-          </h5>
           <div className="container-fluid px-0">
             <div className="row">
               <div className="col-lg-4 p-0">
+                <h5 className="head_modal">
+                  Bill To*
+                  {multiSelectPartnersArray.length > 0 &&
+                    multiSelectPartnersArray.length}{" "}
+                </h5>
                 <SelectMultiPartner />
               </div>
               <div className="col-lg-4">
@@ -90,28 +94,18 @@ const Step1 = () => {
             </div>
           </div>
         </div>
-        {/* <div>
-          {partnerData != null &&
-          (partysType.toLowerCase() === "seller" ||
-          partysType.toLowerCase() === "buyer"
-            ? partType.toLowerCase() === "transporter"
-              ? true
-              : true
-            : true) ? (
+        <div>
+          {multiSelectPartnersArray.length > 0 && (
             <div className="bottom_div">
               <div className="d-flex align-items-center justify-content-between">
                 <button className="secondary_btn" onClick={cancelStep}>
                   cancel
                 </button>
-                <button className="primary_btn" onClick={addCropModal}>
-                  {langFullData.next}
-                </button>
+                <button className="primary_btn">Next</button>
               </div>
             </div>
-          ) : (
-            ""
           )}
-        </div> */}
+        </div>
       </div>
     </div>
   );

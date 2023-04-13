@@ -36,13 +36,18 @@ import {
   beginDate,
   closeDate,
 } from "../../reducers/ledgerSummarySlice";
+import {
+  multiSelectPartyType,
+  multiStepsVal,
+} from "../../reducers/multiBillSteps";
+import MultiBillSteps from "../multi_buy_bill/steps";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const [allData, setAllData] = useState([]);
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   var sellBillData = ledgersSummary?.allSellBillsData;
-  console.log(sellBillData)
+  console.log(sellBillData);
   // const [sellBillData, setSellBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
@@ -219,6 +224,15 @@ const SellBillBook = (props) => {
       setCurrentDate(newDate);
     }
   };
+  const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
+    useState(false);
+  const [showMultiStepsModal, setShowMultiStepsModal] = useState(false);
+  const onclickMultibill = () => {
+    setShowMultiStepsModalStatus(true);
+    setShowMultiStepsModal(true);
+    dispatch(multiStepsVal("step1"));
+    dispatch(multiSelectPartyType("Buyer"));
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -297,9 +311,20 @@ const SellBillBook = (props) => {
                         handleSearch(event);
                       }}
                     /> */}
+
+                        <button
+                          className="primary_btn add_bills_btn mr-2"
+                          onClick={onclickMultibill}
+                        >
+                          <img
+                            src={addbill_icon}
+                            alt="image"
+                            className="mr-2"
+                          />
+                          Add Multi Bill
+                        </button>
                         <button
                           className="primary_btn add_bills_btn"
-                          // href="/sellbillstep1"
                           onClick={handleStep1Header}
                         >
                           <img
@@ -447,7 +472,9 @@ const SellBillBook = (props) => {
                                                     <div className="flex_class">
                                                       <div className="complete-dot"></div>
                                                       <div className="bill-name">
-                                                        {getText("Amount Received")}
+                                                        {getText(
+                                                          "Amount Received"
+                                                        )}
                                                       </div>
                                                     </div>
                                                   ) : (
@@ -614,6 +641,13 @@ const SellBillBook = (props) => {
                                       No bills available for today. <br></br>
                                       Add to create a new bill
                                     </p>
+
+                                    <button
+                                      className="primary_btn mr-2"
+                                      onClick={onclickMultibill}
+                                    >
+                                      Add Multi Bill
+                                    </button>
                                     <button
                                       className="primary_btn"
                                       onClick={handleStep1Header}
@@ -660,7 +694,15 @@ const SellBillBook = (props) => {
           closeBillViewModal={() => setShowBillModal(false)}
           allBillsData={sellBillData}
           fromLedger={false}
-          fromBillbookToRecordPayment= {true}
+          fromBillbookToRecordPayment={true}
+        />
+      ) : (
+        ""
+      )}
+        {showMultiStepsModalStatus ? (
+        <MultiBillSteps
+          showMultiStepsModal={showMultiStepsModal}
+          closeMultiStepsModal={() => setShowMultiStepsModal(false)}
         />
       ) : (
         ""
