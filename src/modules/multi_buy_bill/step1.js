@@ -5,7 +5,7 @@ import SelectMultiPartner from "./selectMultiPartner";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import delete_icon from "../../assets/images/delete.svg";
 import "../multi_buy_bill/step1.scss";
-import { multiSelectPartners } from "../../reducers/multiBillSteps";
+import { multiSelectPartners, multiStepsVal } from "../../reducers/multiBillSteps";
 const Step1 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
@@ -20,6 +20,9 @@ const Step1 = (props) => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
   };
+  const onClickStep2 = () =>{
+      dispatch(multiStepsVal('step2'));
+  }
   return (
     <div>
       <div>
@@ -101,7 +104,7 @@ const Step1 = (props) => {
                 <button className="secondary_btn" onClick={cancelStep}>
                   cancel
                 </button>
-                <button className="primary_btn">Next</button>
+                <button className="primary_btn" onClick={onClickStep2}>Next</button>
               </div>
             </div>
           )}
