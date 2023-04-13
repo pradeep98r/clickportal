@@ -34,14 +34,20 @@ import BillView from "./billView";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import prev_icon from "../../assets/images/prev_icon.svg";
 import next_icon from "../../assets/images/next_icon.svg";
-import { beginDate, closeDate,allBuyBillsData } from "../../reducers/ledgerSummarySlice";
+import {
+  beginDate,
+  closeDate,
+  allBuyBillsData,
+} from "../../reducers/ledgerSummarySlice";
+import { multiSelectPartyType, multiStepsVal } from "../../reducers/multiBillSteps";
+import MultiBillSteps from "../multi_buy_bill/steps";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   const [allData, setAllData] = useState([]);
   var buyBillData = ledgersSummary?.allBuyBillsData;
-  console.log(buyBillData,"buybills")
+  console.log(buyBillData, "buybills");
   // const [buyBillData, setBuyBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
@@ -50,58 +56,58 @@ function BuyBillBook() {
 
   const billData = useSelector((state) => state.billViewInfo);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [showPrevNext, setShowPrevNext] = useState(true)
+  const [showPrevNext, setShowPrevNext] = useState(true);
   const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
-    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));  
+    setDateValue(moment(new Date()).format("DD-MMM-YYYY"));
   }, []);
-  
+
   var [dateValue, setDateValue] = useState();
 
   const businessCreatedStatus =
     localStorage.getItem("businessCreatedStatus") != null
       ? localStorage.getItem("businessCreatedStatus")
       : loginData.useStatus == "WRITER"
-        ? "writer"
-        : "ca";
+      ? "writer"
+      : "ca";
 
   const callbackFunction = (startDate, endDate, dateTab) => {
     var fromDate = moment(startDate).format("YYYY-MM-DD");
     var toDate = moment(endDate).format("YYYY-MM-DD");
     dateValue = fromDate;
     if (dateTab === "Daily") {
-      setShowPrevNext(true)
+      setShowPrevNext(true);
       setLoading(true);
       setDateValue(moment(fromDate).format("DD-MMM-YYYY"));
       setCurrentDate(new Date(fromDate));
     } else if (dateTab === "Weekly") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
       setLoading(true);
-      setShowPrevNext(false)
+      setShowPrevNext(false);
     } else if (dateTab === "Monthly") {
       setDateValue(moment(fromDate).format("MMM-YYYY"));
       setLoading(true);
-      setShowPrevNext(false)
+      setShowPrevNext(false);
     } else if (dateTab === "Yearly") {
       setDateValue(moment(fromDate).format("YYYY"));
       setLoading(true);
-      setShowPrevNext(false)
-    } else if(dateTab == 'Custom'){
+      setShowPrevNext(false);
+    } else if (dateTab == "Custom") {
       setDateValue(
         moment(fromDate).format("DD-MMM-YYYY") +
-        " to " +
-        moment(toDate).format("DD-MMM-YYYY")
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
       );
       setLoading(true);
-      setShowPrevNext(false)
+      setShowPrevNext(false);
     }
     dispatch(beginDate(fromDate));
-    dispatch(closeDate(toDate))
+    dispatch(closeDate(toDate));
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
         if (response.data.data != null) {
@@ -109,11 +115,11 @@ function BuyBillBook() {
           // setBuyBillData(response.data.data.singleBills);
           response.data.data.singleBills.map((i, ind) => {
             Object.assign(i, { index: ind });
-          })
-          dispatch(allBuyBillsData(response.data.data.singleBills))
+          });
+          dispatch(allBuyBillsData(response.data.data.singleBills));
           // setBuyBillData(response.data.data.singleBills);
-          console.log(response.data.data.singleBills)
-          setOnline(false)
+          console.log(response.data.data.singleBills);
+          setOnline(false);
         } else {
           dispatch(allBuyBillsData([]));
           // setBuyBillData([]);
@@ -132,7 +138,6 @@ function BuyBillBook() {
   const [showBillModalStatus, setShowBillModalStatus] = useState(false);
   const [showBillModal, setShowBillModal] = useState(false);
   const billOnClick = (id, bill, i) => {
-    
     billViewStatus = true;
     localStorage.setItem("billViewStatus", billViewStatus);
     setShowBillModalStatus(true);
@@ -165,21 +170,6 @@ function BuyBillBook() {
     dispatch(fromBillbook(true));
   };
 
-  const handleSearch = (event) => {
-    let value = event.target.value.toLowerCase();
-    let result = [];
-    result = allData.singleBills.filter((data) => {
-      if (data.farmerName.toLowerCase().includes(value)) {
-        return data.farmerName.toLowerCase().search(value) != -1;
-      } else if (data.shortName.toLowerCase().includes(value)) {
-        return data.shortName.toLowerCase().search(value) != -1;
-      } else if (data.farmerId.toString().includes(value)) {
-        return data.farmerId.toString().search(value) != -1;
-      }
-    });
-    dispatch(allBuyBillsData(result))
-    // setBuyBillData(result);
-  };
   const totalBagsValue = (bags) => {
     var totalValue = 0;
     bags.map((item) => {
@@ -192,18 +182,27 @@ function BuyBillBook() {
     const newDate = new Date(currentDate.getTime());
     newDate.setDate(newDate.getDate() - 1);
     setLoading(true);
-    callbackFunction(newDate, newDate, 'Daily')
+    callbackFunction(newDate, newDate, "Daily");
     setCurrentDate(newDate);
-  }
+  };
   const onNextDate = () => {
     const newDate = new Date(currentDate.getTime());
     newDate.setDate(newDate.getDate() + 1);
     if (newDate < new Date()) {
       setLoading(true);
-      callbackFunction(newDate, newDate, 'Daily')
+      callbackFunction(newDate, newDate, "Daily");
       setCurrentDate(newDate);
     }
-  }
+  };
+  const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] = useState(false);
+  const [showMultiStepsModal, setShowMultiStepsModal] = useState(false);
+  const onclickMultibill = () => {
+    setShowMultiStepsModalStatus(true);
+    setShowMultiStepsModal(true);
+    dispatch(multiStepsVal("step1"));
+    dispatch(multiSelectPartyType('Seller'))
+  };
+
   return (
     <div>
       <div className="main_div_padding">
@@ -234,8 +233,7 @@ function BuyBillBook() {
                     <div>
                       <div>
                         <div className="d-flex justify-content-center bills_div">
-                          
-                            {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
+                          {/* <ul className="nav nav-tabs bills_div_tabs" id="myTab" role="tablist">
                           <li className="nav-item active">
                             <a
                               className="nav-link active"
@@ -249,13 +247,19 @@ function BuyBillBook() {
                           </li>
                         </ul> */}
                           <div className="d-flex align-items-center color_blue">
-                            {showPrevNext?
-                            <button onClick={onPrevDate} className="p-0">
-                              <span className="" onClick={onPrevDate}>
-                                <img src={prev_icon} alt="icon" className="mr-3" />
-                              </span>
-                            </button>
-                            :''}
+                            {showPrevNext ? (
+                              <button onClick={onPrevDate} className="p-0">
+                                <span className="" onClick={onPrevDate}>
+                                  <img
+                                    src={prev_icon}
+                                    alt="icon"
+                                    className="mr-3"
+                                  />
+                                </span>
+                              </button>
+                            ) : (
+                              ""
+                            )}
                             <button onClick={onclickDate} className="p-0">
                               <span className="date_icon m-0 d-flex color_blue">
                                 <img
@@ -266,13 +270,19 @@ function BuyBillBook() {
                                 {dateValue}
                               </span>
                             </button>
-                            {showPrevNext?
-                            <button onClick={onNextDate}>
-                              <span className="" onClick={onNextDate}>
-                                <img src={next_icon} alt="icon" className="ml-3" />
-                              </span>
-                            </button>
-                            :''}
+                            {showPrevNext ? (
+                              <button onClick={onNextDate}>
+                                <span className="" onClick={onNextDate}>
+                                  <img
+                                    src={next_icon}
+                                    alt="icon"
+                                    className="ml-3"
+                                  />
+                                </span>
+                              </button>
+                            ) : (
+                              ""
+                            )}
                           </div>
                           {/* <button onClick={onclickDate} className="color_blue">
                             <div className="d-flex align-items-center">
@@ -293,7 +303,18 @@ function BuyBillBook() {
                             handleSearch(event);
                           }}
                         /> */}
-
+                           
+                            <button
+                              className="primary_btn add_bills_btn mr-2"
+                              onClick={onclickMultibill}
+                            >
+                              <img
+                                src={addbill_icon}
+                                alt="image"
+                                className="mr-2"
+                              />
+                              Add Multi Bill
+                            </button>
                             <button
                               className="primary_btn add_bills_btn"
                               onClick={handleStep1Header}
@@ -438,35 +459,36 @@ function BuyBillBook() {
                                                       style={{
                                                         color:
                                                           bill.billStatus ==
-                                                            "CANCELLED"
+                                                          "CANCELLED"
                                                             ? "#d43939"
                                                             : "#1C1C1C",
                                                       }}
                                                     >
                                                       <div className="flex_class p-0">
-                                                        {bill?.paid == true ? 
-                                                       <div className="flex_class">
-                                                          <div className="complete-dot"></div>
-                                                        <div className="bill-name">
-                                                          {getText(
-                                                            'Amount Paid'
-                                                          )}
-                                                        </div> 
-                                                       </div> 
-                                                        : <div className="flex_class">
-                                                          {bill.billStatus ==
-                                                          "CANCELLED" ? (
-                                                          <div className="complete-dot cancel_dot"></div>
+                                                        {bill?.paid == true ? (
+                                                          <div className="flex_class">
+                                                            <div className="complete-dot"></div>
+                                                            <div className="bill-name">
+                                                              {getText(
+                                                                "Amount Paid"
+                                                              )}
+                                                            </div>
+                                                          </div>
                                                         ) : (
-                                                          <div className="complete-dot"></div>
+                                                          <div className="flex_class">
+                                                            {bill.billStatus ==
+                                                            "CANCELLED" ? (
+                                                              <div className="complete-dot cancel_dot"></div>
+                                                            ) : (
+                                                              <div className="complete-dot"></div>
+                                                            )}
+                                                            <div className="bill-name">
+                                                              {getText(
+                                                                bill.billStatus
+                                                              )}
+                                                            </div>
+                                                          </div>
                                                         )}
-                                                        <div className="bill-name">
-                                                          {getText(
-                                                            bill.billStatus
-                                                          )}
-                                                        </div>
-                                                        </div> }
-                                                        
                                                       </div>
                                                     </p>
                                                   </div>
@@ -508,7 +530,7 @@ function BuyBillBook() {
                                                           )}
                                                         </div>
                                                         {crop.bags !== null &&
-                                                          crop.bags.length > 0 ? (
+                                                        crop.bags.length > 0 ? (
                                                           <div className="flex_class">
                                                             <input
                                                               type="checkbox"
@@ -528,7 +550,7 @@ function BuyBillBook() {
                                                                           <span>
                                                                             {item.weight
                                                                               ? item.weight +
-                                                                              " "
+                                                                                " "
                                                                               : ""}
                                                                           </span>
                                                                           <span className="wastsge_color">
@@ -622,6 +644,12 @@ function BuyBillBook() {
                                           Add to create a new bill
                                         </p>
                                         <button
+                                          className="primary_btn mr-2"
+                                          onClick={onclickMultibill}
+                                        >
+                                          Add Multi Bill
+                                        </button>
+                                        <button
                                           className="primary_btn"
                                           onClick={handleStep1Header}
                                         >
@@ -663,13 +691,21 @@ function BuyBillBook() {
       ) : (
         ""
       )}
+       {showMultiStepsModalStatus ? (
+        <MultiBillSteps
+          showMultiStepsModal={showMultiStepsModal}
+          closeMultiStepsModal={() => setShowMultiStepsModal(false)}
+        />
+      ) : (
+        ""
+      )}
       {showBillModalStatus ? (
         <BillView
           showBillViewModal={showBillModal}
           closeBillViewModal={() => setShowBillModal(false)}
           allBillsData={buyBillData}
           fromLedger={false}
-          fromBillbookToRecordPayment= {true}
+          fromBillbookToRecordPayment={true}
         />
       ) : (
         ""
