@@ -39,7 +39,7 @@ import {
   closeDate,
   allBuyBillsData,
 } from "../../reducers/ledgerSummarySlice";
-import { multiSelectPartyType, multiStepsVal } from "../../reducers/multiBillSteps";
+import { multiSelectPartners, multiSelectPartyType, multiStepsVal } from "../../reducers/multiBillSteps";
 import MultiBillSteps from "../multi_buy_bill/steps";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -201,6 +201,7 @@ function BuyBillBook() {
     setShowMultiStepsModal(true);
     dispatch(multiStepsVal("step1"));
     dispatch(multiSelectPartyType('Seller'))
+    dispatch(multiSelectPartners([]))
   };
 
   return (
