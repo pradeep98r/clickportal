@@ -38,6 +38,7 @@ const colourStyles = {
   }),
 };
 const SelectPartner = (props) => {
+  console.log(props.partyType)
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const users = useSelector((state) => state.buyerInfo);
   const transusers = useSelector((state) => state.transInfo);
@@ -57,6 +58,7 @@ const SelectPartner = (props) => {
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
+        console.log(response.data.data)
         setAllData(response.data.data);
         setpartnerData(response.data.data);
       })
@@ -103,6 +105,7 @@ const SelectPartner = (props) => {
       localStorage.setItem("selectedTransporter", JSON.stringify(item));
       Object.assign(item, { transporterId: item.partyId });
       dispatch(selectTrans(item));
+      props.parentCallback(item, itemtype, props.partyType);
     } else if (props.partyType == "Buyer") {
       localStorage.setItem("selectBuyertype", "buyer");
       itemtype = localStorage.getItem("selectBuyertype");
