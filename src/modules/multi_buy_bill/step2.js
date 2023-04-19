@@ -29,11 +29,11 @@ const Step2 = (props) => {
   const onclickDate = (date) => {
     setStartDate(date);
   };
-  const callbackFunction = (childData, party, type) => {};
+  const callbackFunction = (childData, party, type) => { };
   return (
     <div>
       <div className="main_div_padding">
-      {multiSelectPartnersArray.length > 0 && (
+        {multiSelectPartnersArray.length > 0 && (
           <div className="crop_table_multi">
             <div class="row head_row flex-row flex-nowrap">
               <div class="col-lg-2">Seller</div>
@@ -114,120 +114,174 @@ const Step2 = (props) => {
           </div>
         )}
 
-        {/* <table className="table-bordered">
-          <tr className="">
-            <td className="col-2 empty_col">hheyy jkkkkkkkkkkkkkkkk</td>
-            <td className="col-2">
-              It has survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged.
-            </td>
-            <td className="col-1">
-              {" "}
-              Lorem Ipsum is simply dummy text of the printing and
-            </td>
-            <td className="col-1">
-              {" "}
-              Lorem Ipsum is simply dummy text of the printing and
-            </td>
-            <td className="col-1">
-              {" "}
-              Lorem Ipsum is simply dummy text of the printing and
-            </td>
-            <td className="col-1">
-              {" "}
-              Lorem Ipsum is simply dummy text of the printing and
-            </td>
-            <td className="col-1">link</td>
-            <td className="col-1">jk</td>
-            <td className="col-5">
-              <div className="delete_copy_div d-flex justify-content-end">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
+        <div style={{ width: "100%", overflowX: "auto" }}>
+          <table className="table-bordered">
+            <tr className="">
+              <td className="col-2 empty_col">hheyy jkkkkkkkkkkkkkkkk</td>
+              <td className="col-2">
+                It has survived not only five centuries, but also the leap into
                 electronic typesetting, remaining essentially unchanged.
-              </div>
-            </td>
-            <td className="col-1">
-              {" "}
-              Lorem Ipsum is simply dummy text of the printing and
-            </td>
-            <td className="col-2">lkkkk</td>
-            <td className="col-1">nmm</td>
-            <td className="col-1">lkkkkk</td>
-            <td className="col-5">
-              <div className="delete_copy_div d-flex justify-content-end">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged.
-              </div>
-            </td>
+              </td>
+              <td className="col-1">
+                {" "}
+                Lorem Ipsum is simply dummy text of the printing and
+              </td>
+              <td className="col-1">
+                {" "}
+                Lorem Ipsum is simply dummy text of the printing and
+              </td>
+              <td className="col-1">
+                {" "}
+                Lorem Ipsum is simply dummy text of the printing and
+              </td>
+              <td className="col-1">
+                {" "}
+                Lorem Ipsum is simply dummy text of the printing and
+              </td>
+              <td className="col-1">link</td>
+              <td className="col-1">jk</td>
+              <td className="col-5">
+                <div className="delete_copy_div d-flex justify-content-end">
+                  Lorem Ipsum is simply dummy text of the printing and typesetting
+                  industry. Lorem Ipsum has been the industry's standard dummy .
+                </div>
+              </td>
+              <td className="col-1">
+                {" "}
+                Lorem Ipsum is simply dummy text of the printing and
+              </td>
+              <td className="col-2">lkkkk</td>
+              <td className="col-1">nmm</td>
+              <td className="col-1">lkkkkk</td>
+              <td className="col-5">
+                <div className="delete_copy_div d-flex justify-content-end">
+                  Lorem Ipsum is simply dummy text of the printing and typesetting.
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        {/* <table className="table-bordered" style={{ width: "100%" }}>
+          <tr>
+            <td style={{ width: "50%" }}>Select transporter with partner as well</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+          </tr>
+          <tr>
+            <td style={{ width: "40%" }}>Partner Selected Successfully</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
+            <td style={{ width: "6.66%" }}>adfasdf</td>
+            <td style={{ width: "6.66%" }}>asdf</td>
+            <td style={{ width: "6.66%" }}>asdfasdf</td>
           </tr>
         </table> */}
-         {/* <table className="table-bordered" width="100%">
-    <tr>
-      <td width="40%">Select transporter</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-    </tr>
-    <tr>
-      <td width="40%">adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-      <td>adfasdf</td>
-      <td>asdf</td>
-      <td>asdfasdf</td>
-    </tr>
-  </table> */}
+
+        {/* <table className="table-bordered" style={{width:"100%"}}>
+          <tr>
+            <td style={{width: "40%"}}>Select transporter</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+          </tr>
+          <tr>
+            <td style={{width: "40%"}}>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+            <td>adfasdf</td>
+            <td>asdf</td>
+            <td>asdfasdf</td>
+          </tr>
+        </table> */}
       </div>
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
