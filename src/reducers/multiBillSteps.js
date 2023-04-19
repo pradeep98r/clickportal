@@ -6,6 +6,10 @@ export const multiBillStepsSlice = createSlice({
         multiStepsVal: null,
         multiSelectPartyType:'',
         multiSelectPartners:[],
+        multiBillSelectDate: new Date(),
+        transportersData:[],
+        selectedTransporter:[],
+        selectedDates:[]
         
     },
     reducers: {
@@ -18,9 +22,22 @@ export const multiBillStepsSlice = createSlice({
         multiSelectPartners: (state, action) => {
             state.multiSelectPartners = action.payload;
         },
+        multiBillSelectDate:(state, action) =>{
+            state.multiBillSelectDate = action.payload;
+        },
+        transportersData:(state, action) =>{
+            state.transportersData = action.payload;
+        },
+        selectedTransporter:(state, action) =>{
+            state.selectedTransporter = action.payload
+        },
+        selectedDates:(state, action) =>{
+            state.selectedDates = action.payload;
+        }
     },
 });
  
-export const { multiStepsVal,multiSelectPartyType,multiSelectPartners } = multiBillStepsSlice.actions;
+export const { multiStepsVal,multiSelectPartyType,multiSelectPartners, multiBillSelectDate, transportersData,
+selectedTransporter, selectedDates} = multiBillStepsSlice.actions;
 
 export default multiBillStepsSlice.reducer;

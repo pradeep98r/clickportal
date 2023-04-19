@@ -10,12 +10,21 @@ import "../multi_buy_bill/step2.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import date_icon from "../../assets/images/date_icon.svg";
 import { useState } from "react";
+import DateSelection from "./dateSelection";
+import { getPartnerType, getText } from "../../components/getText";
+import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import single_bill from "../../assets/images/bills/single_bill.svg";
+import "../multi_buy_bill/step1.scss";
+import SelectSinglePartner from "./selectSinglePartner";
+import down_arrow from "../../assets/images/down_arrow.svg"
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
   const [selectedDate, setStartDate] = useState(new Date());
-  console.log(multiSelectPartnersArray);
+  const allTransporters = selectedStep?.selectedTransporter;
+  const allDates = selectedStep?.selectedDates;
+  console.log(allDates, "trans")
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -29,6 +38,16 @@ const Step2 = (props) => {
   const onclickDate = (date) => {
     setStartDate(date);
   };
+
+  const [active, setActive] = useState(false);
+  const [activeTrans, setActiveTrans] = useState(false)
+  const activateSelect = () => {
+    setActive(true);
+  }
+  const activeTransporter = () => {
+    setActiveTrans(true);
+  }
+  console.log(multiSelectPartnersArray, "array")
   return (
     <div>
       <div className="main_div_padding">
@@ -48,26 +67,66 @@ const Step2 = (props) => {
               <th className="col_1">Rate (₹)</th>
               <th className="col_3">Total (₹)</th>
             </tr>
-            {multiSelectPartnersArray.map((item, index) => {
-              return (
-                <tr>
-                  <td className="col_2">
-                    Select transporter Select transporter
-                  </td>
-                  <td className="col_2">asdf</td>
-                  <td className="col_1">asdfasdf</td>
-                  <td className="col_2">adfasdf</td>
-                  <td className="col_1">asdf</td>
-                  <td className="col_1">asdfasdf</td>
-                  <td className="col_1">adfasdf</td>
-                  <td className="col_1">asdf</td>
-                  <td className="col_1">asdfasdf</td>
-                  <td className="col_1">adfasdf</td>
-                  <td className="col_1">asdf</td>
-                  <td className="col_3">asdfasdf</td>
-                </tr>
-              );
-            })}
+            <div
+              className="selectedPartner_scroll"
+              id="scroll_style"
+            >
+              {multiSelectPartnersArray.map((item, index) => {
+                return (
+                  <tr>
+                    <td className="col_2">
+                      <div
+                        id="scroll_style" onClick={activateSelect}>
+                        {active ? <SelectSinglePartner indexVal={index} /> :
+
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                            className="justify-content-between"
+                          >
+                            <div className="d-flex">
+                              {item.profilePic !== "" ? (
+                                <img
+                                  src={item.profilePic}
+                                  className="icon_user"
+                                />
+                              ) : (
+                                <img src={single_bill} className="icon_user" />
+                              )}
+                              <div style={{ marginLeft: 5, alignItems: 'center' }}>
+                                <div className="d-flex user_name">
+                                  <h5 className="party_name">
+                                    {getText(item.partyName)}
+                                  </h5>
+                                  <img src={down_arrow} alt="down_arrow" style={{ padding: "0px 10px" }} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </td>
+                    <td className="col_2">
+                      {activeTrans ? <SelectSinglePartner indexVal={index} fromTrans={true} /> :
+                        <div className="d-flex">
+                          <p onClick={activeTransporter}>Select transporter</p>
+                          <img src={down_arrow} alt="down_arrow" style={{ padding: "0px 10px" }} />
+                        </div>
+                      }
+                    </td>
+                    <td className="col_1"><DateSelection indexVal={index} /></td>
+                    <td className="col_2">adfasdf</td>
+                    <td className="col_1">asdf</td>
+                    <td className="col_1">asdfasdf</td>
+                    <td className="col_1">adfasdf</td>
+                    <td className="col_1">asdf</td>
+                    <td className="col_1">asdfasdf</td>
+                    <td className="col_1">adfasdf</td>
+                    <td className="col_1">asdf</td>
+                    <td className="col_3">asdfasdf</td>
+                  </tr>
+                );
+              })}
+            </div>
           </table>
         )}
       </div>
