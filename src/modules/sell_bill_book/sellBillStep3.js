@@ -211,6 +211,7 @@ const SellBillStep3 = (props) => {
                   }
                   listSettings(response[i].name, response, i);
                   allGroups.push(response[i]);
+                  console.log(allGroups)
                 }
                 if (response[i].name === "OUT_ST_BALANCE")
                   setOutBalformStatusvalue(true);
@@ -949,6 +950,7 @@ const SellBillStep3 = (props) => {
                 tab[tabIndex] = tabObje;
               }
             } else {
+              console.log(groupLiist[i])
               tab.push({
                 comments: "",
                 fee: getTargetValue(e.target.value, groupLiist[i], i),
@@ -1484,12 +1486,14 @@ const SellBillStep3 = (props) => {
                     } else if (allGroups[index].tableType == 3) {
                       return tableChangeStatus ? (
                         <div>
-                          <div className="comm_cards">
+                          {allGroups[index]?.settingName == null ? '' :  <div className="comm_cards">
                             <div className="card input_card">
                               <div className="row">
                                 <div className="col-lg-3 title_bg">
                                   <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index].settingName)}
+                                  {allGroups[index]?.settingName == null ? ''
+                                  //  (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) 
+                                   : getText(allGroups[index]?.settingName)}
                                   </h5>
                                 </div>
                                 <div className="col-lg-9 col-sm-12 col_left_border">
@@ -1506,7 +1510,8 @@ const SellBillStep3 = (props) => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div>}
+                         
                           {item?.comments ? (
                             <div className="comm_cards">
                               <div className="card input_card">
@@ -1550,29 +1555,33 @@ const SellBillStep3 = (props) => {
                     } else if (allGroups[index].tableType == 1) {
                       return (
                         <div>
-                          <div className="comm_cards">
-                            <div className="card input_card">
-                              <div className="row">
-                                <div className="col-lg-3 title_bg">
-                                  <h5 className="comm_card_title mb-0">
-                                    {getText(allGroups[index].settingName)}
-                                  </h5>
-                                </div>
-                                <div className="col-lg-9 col-sm-12 col_left_border">
-                                  <input
-                                    type="text"
-                                    placeholder=""
-                                    onFocus={(e) => resetInput(e)}
-                                    value={allGroups[index].value}
-                                    onChange={advLevOnchangeEvent(
-                                      allGroups,
-                                      index
-                                    )}
-                                  />
-                                </div>
+                          {allGroups[index]?.settingName == null ? ''
+                         
+                          :  <div className="comm_cards">
+                          <div className="card input_card">
+                            <div className="row">
+                              <div className="col-lg-3 title_bg">
+                                <h5 className="comm_card_title mb-0">
+                                {allGroups[index]?.settingName == null ? ''
+                                // (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) ) 
+                                : getText(allGroups[index]?.settingName)}
+                                </h5>
+                              </div>
+                              <div className="col-lg-9 col-sm-12 col_left_border">
+                                <input
+                                  type="text"
+                                  placeholder=""
+                                  onFocus={(e) => resetInput(e)}
+                                  value={allGroups[index].value}
+                                  onChange={advLevOnchangeEvent(
+                                    allGroups,
+                                    index
+                                  )}
+                                />
                               </div>
                             </div>
                           </div>
+                        </div>}
                           {item?.comments ? (
                             <div className="comm_cards">
                               <div className="card input_card">

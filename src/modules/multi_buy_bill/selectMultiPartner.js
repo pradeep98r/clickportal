@@ -3,11 +3,11 @@ import { getPartnerData } from "../../actions/billCreationService";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import "../../modules/buy_bill_book/step1.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { selectBuyer } from "../../reducers/buyerSlice";
-import { selectTrans } from "../../reducers/transSlice";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import { getPartnerType, getText } from "../../components/getText";
 import Select from "react-select";
+import { multiSelectPartners } from "../../reducers/multiBillSteps";
+import { partnerDataInfo, partnersAllData } from "../../reducers/partnerSlice";
 const colourStyles = {
   menuList: (styles) => ({
     ...styles,
@@ -37,42 +37,37 @@ const colourStyles = {
     padding: "10px 0px",
   }),
 };
-const SelectPartner = (props) => {
+const SelectMultiPartner = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const users = useSelector((state) => state.buyerInfo);
-  const transusers = useSelector((state) => state.transInfo);
+  const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const partyType = selectedStep?.multiSelectPartyType;
+  const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
   const clickId = loginData.caId;
   const dispatch = useDispatch();
-  const [allData, setAllData] = useState([]);
-  let [partnerData, setpartnerData] = useState(allData);
+  const partnerDataArray = useSelector((state) => state.partnerInfo);
+  const partnerData = partnerDataArray?.partnerDataInfo;
 
   const fetchPertnerData = () => {
     var partnerType = "";
-    if (props.partyType == "Seller") {
+    if (partyType == "Seller") {
       partnerType = "FARMER";
-    } else if (props.partyType == "Transporter") {
-      partnerType = "TRANSPORTER";
-    } else if (props.partyType == "Buyer") {
+    } else if (partyType == "Buyer") {
       partnerType = "BUYER";
     }
     getPartnerData(clickId, partnerType)
       .then((response) => {
-        setAllData(response.data.data);
-        setpartnerData(response.data.data);
+        if (response.data.data != null) {
+          dispatch(partnersAllData(response.data.data));
+          dispatch(partnerDataInfo(response.data.data));
+        } else {
+          dispatch(partnersAllData([]));
+          dispatch(partnerDataInfo([]));
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
-  const [selectedPartner, setSelectedPartner] = useState(
-    props.partyType.toLowerCase() == "seller" ||
-      props.partyType.toLowerCase() == "buyer"
-      ? users.buyerInfo
-      : props.partyType.toLowerCase() === "transporter"
-      ? transusers.transInfo
-      : null
-  );
 
   const filterOption = (option, inputValue) => {
     const { partyName, mobile, shortName, partyId } = option.data;
@@ -88,53 +83,31 @@ const SelectPartner = (props) => {
     );
   };
   const partySelect = (item) => {
-    console.log(item,'party select')
-    Object.assign(item, { itemtype: "" }, { date: "" });
-    setSelectedPartner(item);
-    var itemtype;
-    if (props.partyType == "Seller") {
-      localStorage.setItem("selectBuyertype", "seller");
-      itemtype = localStorage.getItem("selectBuyertype");
-      props.parentCallback(item, itemtype, props.partyType);
-      item.itemtype = "seller";
-      item.partyType = props.partyType;
-      dispatch(selectBuyer(item));
-    } else if (props.partyType == "Transporter") {
-      localStorage.setItem("selectedTransporter", JSON.stringify(item));
-      Object.assign(item, { transporterId: item.partyId });
-      dispatch(selectTrans(item));
-    } else if (props.partyType == "Buyer") {
-      localStorage.setItem("selectBuyertype", "buyer");
-      itemtype = localStorage.getItem("selectBuyertype");
-      props.parentCallback(item, itemtype, props.partyType);
-      item.itemtype = "buyer";
-      item.partyType = props.partyType;
-      dispatch(selectBuyer(item));
-    }
+    dispatch(multiSelectPartners(item));
   };
 
   useEffect(() => {
     fetchPertnerData();
-  }, [users.buyerInfo]);
+  }, [multiSelectPartnersArray]);
 
   return (
     <div>
       {partnerData.length > 0 ? (
-        <div className="partner_card">
+        <div className="partner_card p-0">
           <Select
-            defaultMenuIsOpen
             isSearchable={true}
+            isMulti
             className="basic-single"
             classNamePrefix="select"
             styles={colourStyles}
+            controlShouldRenderValue={false}
             name="partner"
             hideSelectedOptions={false}
             options={partnerData}
             placeholder={
-              "Select " +
-              (props.partyType == "Seller" ? "Farmer" : props.partyType)
+              "Select " + (partyType == "Seller" ? "Farmer" : partyType)
             }
-            value={selectedPartner}
+            value={multiSelectPartnersArray}
             onChange={partySelect}
             filterOption={filterOption}
             isClearable={false}
@@ -143,7 +116,7 @@ const SelectPartner = (props) => {
             getOptionLabel={(e) => (
               <div
                 style={{ display: "flex", alignItems: "center" }}
-                className=""
+                className="select_party_card"
               >
                 {e.profilePic !== "" ? (
                   <img src={e.profilePic} className="icon_user" />
@@ -166,10 +139,10 @@ const SelectPartner = (props) => {
         </div>
       ) : (
         <div>
-          <Select placeholder={"Select " + props.partyType} />
+          <Select placeholder={"Select " + partyType} />
         </div>
       )}
     </div>
   );
 };
-export default SelectPartner;
+export default SelectMultiPartner;
