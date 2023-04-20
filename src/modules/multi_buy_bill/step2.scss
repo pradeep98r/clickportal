@@ -20,9 +20,21 @@
         color: #121212;
         font-size: 13px;
     }
-    td{padding: 5px 10px!important}
+    td{padding: 5px 10px}
     td, th{
         border: 1px solid #737373;
     }
-    
+    .extra_border{
+        border: none;
+        th{
+            border-bottom: none;
+        }
+    }
+    .extra_border_padding{
+        padding: 0px!important;
+        td{
+            border: none;
+            border-right: 1px solid #737373;
+        }
+    }
   }

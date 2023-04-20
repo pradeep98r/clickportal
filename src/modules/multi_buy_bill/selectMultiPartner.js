@@ -46,6 +46,7 @@ const SelectMultiPartner = () => {
   const dispatch = useDispatch();
   const partnerDataArray = useSelector((state) => state.partnerInfo);
   const partnerData = partnerDataArray?.partnerDataInfo;
+  const cropInfoByLineItemArray = selectedStep?.cropInfoByLineItem;
 
   const fetchPertnerData = () => {
     var partnerType = "";
@@ -83,6 +84,12 @@ const SelectMultiPartner = () => {
     );
   };
   const partySelect = (item) => {
+
+    item?.map((party, index) => {
+      let clonedObject = { ...item[index] };
+      Object.assign(clonedObject,{lineItems : cropInfoByLineItemArray});
+     item[index] = clonedObject;
+    })
     dispatch(multiSelectPartners(item));
   };
 
