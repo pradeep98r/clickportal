@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const multiBillStepsSlice = createSlice({
     name: 'multiStepsInfo',
@@ -9,7 +9,8 @@ export const multiBillStepsSlice = createSlice({
         multiBillSelectDate: new Date(),
         transportersData:[],
         selectedTransporter:[],
-        selectedDates:[]
+        selectedDates:[],
+        cropInfoByLineItem: [{'index':'0'}],
         
     },
     reducers: {
@@ -33,11 +34,16 @@ export const multiBillStepsSlice = createSlice({
         },
         selectedDates:(state, action) =>{
             state.selectedDates = action.payload;
-        }
+        },
+        cropInfoByLineItem: (state, action) => {
+            state.cropInfoByLineItem = action.payload;
+          },
     },
 });
  
 export const { multiStepsVal,multiSelectPartyType,multiSelectPartners, multiBillSelectDate, transportersData,
-selectedTransporter, selectedDates} = multiBillStepsSlice.actions;
+selectedTransporter, selectedDates,cropInfoByLineItem} = multiBillStepsSlice.actions;
+
+
 
 export default multiBillStepsSlice.reducer;
