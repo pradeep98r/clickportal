@@ -8,6 +8,7 @@ import { getPartnerType, getText } from "../../components/getText";
 import Select from "react-select";
 import { multiSelectPartners } from "../../reducers/multiBillSteps";
 import { partnerDataInfo, partnersAllData } from "../../reducers/partnerSlice";
+import { useRef } from "react";
 const colourStyles = {
   menuList: (styles) => ({
     ...styles,
@@ -46,6 +47,7 @@ const SelectMultiPartner = () => {
   const dispatch = useDispatch();
   const partnerDataArray = useSelector((state) => state.partnerInfo);
   const partnerData = partnerDataArray?.partnerDataInfo;
+  const selectRef = useRef(null);
   const cropInfoByLineItemArray = selectedStep?.cropInfoByLineItem;
 
   const fetchPertnerData = () => {
@@ -97,6 +99,13 @@ const SelectMultiPartner = () => {
     fetchPertnerData();
   }, [multiSelectPartnersArray]);
 
+  const handleKeyDown = (e) => {
+    const inputValue = selectRef.current.state.inputValue;
+    const selectedItems = selectRef.current.state.value;
+    if (e.keyCode === 8 && !inputValue && 		selectedItems.length === 0) {
+      e.preventDefault();
+    }
+  };
   return (
     <div>
       {partnerData.length > 0 ? (
@@ -118,6 +127,8 @@ const SelectMultiPartner = () => {
             onChange={partySelect}
             filterOption={filterOption}
             isClearable={false}
+            ref={selectRef}
+            onKeyDown={handleKeyDown}
             noOptionsMessage={() => "No Data Available"}
             getOptionValue={(e) => e.partyId}
             getOptionLabel={(e) => (
