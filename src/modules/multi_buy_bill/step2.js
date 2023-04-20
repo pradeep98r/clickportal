@@ -21,7 +21,8 @@ import down_arrow from "../../assets/images/down_arrow.svg"
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
-  const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
+  const partnersArray = selectedStep?.multiSelectPartners;
+  const[multiSelectPartnersArray, setMultiSelectPartnersArray] = useState(partnersArray);
   const [selectedDate, setStartDate] = useState(new Date());
   const allTransporters = selectedStep?.selectedTransporter;
   const allDates = selectedStep?.selectedDates;
@@ -70,31 +71,20 @@ const Step2 = (props) => {
   const [status, setStatus] = useState(false);
   var cropArraynew = [];
   const addCrop = (item,id) => {
+    console.log(item,id)
     var crpObject = {};
     var i = multiSelectPartnersArray.findIndex((obj) => obj.partyId == id);
    
     if( i != -1){
-      let clonedObject = { ...multiSelectPartnersArray[i] };
-      // Object.assign(
-      //   clonedObject,
-      //   {
-      //     lineItems:cropInfoByLineItemArray
-      //   }
-      // )
-      clonedObject.lineItems.push(crpObject);
-// var a = [...multiSelectPartnersArray[i].lineItems, crpObject];
-      // multiSelectPartnersArray[i].lineItems.push(crpObject);
-      // var list = multiSelectPartnersArray[i].lineItems
-      // list = clonedObject.lineItems.concat(cropArraynew);
-      
-      // clonedObject.lineItems = a;
-     
-      // dispatch(cropInfoByLineItem(newArray));
-      multiSelectPartnersArray[i].lineItems = clonedObject;
-      console.log(multiSelectPartnersArray);
-      // console.log(multiSelectPartnersArray,list,'after');
+      let clonedArray = [...multiSelectPartnersArray];
+      let clonedObject = { ...clonedArray[i] };
+
+      let updatedLineItems = [...clonedObject.lineItems, crpObject];
+      clonedObject = { ...clonedObject, lineItems: updatedLineItems };
+      clonedArray[i] = clonedObject;
+      setMultiSelectPartnersArray(clonedArray);
     }
-    // cropResponseData([...cropData, ...cropArraynew]);
+
   };
 
   const [active, setActive] = useState(false);
