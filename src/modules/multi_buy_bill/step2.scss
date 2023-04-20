@@ -1,0 +1,53 @@
+
+.step2_table {
+    overflow-x: auto;
+    display: block;
+    width: 1280px;
+    border: none;
+    
+    .col_2{
+        min-width: 150px;
+    }
+    .col_1{
+        min-width: 100px;
+    }
+    .col_3{
+        min-width: 250px;
+    }
+    th{
+        background-color: #E7F8EB;
+        padding: 10px 10px;
+        color: #121212;
+        font-size: 13px;
+    }
+    td{padding: 5px 10px}
+    td, th{
+        border: 1px solid #737373;
+    }
+    
+  }
+  .party_name{
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+  }
+  .icon_user{
+    width: 30px;
+    height: 30px;
+  }
+  .user_name{
+    padding: 10px 0px;
+    .extra_border{
+        border: none;
+        th{
+            border-bottom: none;
+        }
+    }
+    .extra_border_padding{
+        padding: 0px!important;
+        td{
+            border: none;
+            border-right: 1px solid #737373;
+        }
+    }
+  }
