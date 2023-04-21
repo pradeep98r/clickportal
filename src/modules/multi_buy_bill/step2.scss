@@ -4,6 +4,8 @@
     display: block;
     width: 1280px;
     border: none;
+    overflow-y: auto;
+    height: calc(100vh - 280px);
     
     .col_2{
         min-width: 150px;
@@ -54,3 +56,71 @@
         }
     }
   
+    ::-webkit-scrollbar{
+        height: 4px;
+        width: 4px;
+        background: gray;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+     
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: var(--ono-primary); 
+    }
+    
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+    
+    ::-webkit-scrollbar-thumb:horizontal{
+        background: #000;
+        border-radius: 10px;
+    }
+    .table_view{
+        tr{
+            position: relative;
+        }
+   input {
+    // position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    border: none;
+    padding: 10px;
+    // box-sizing: border-box;
+  }
+   .input_date{
+      position: initial;
+  }
+   .checkbox_t{
+    width: auto;
+    height: auto;
+    position:initial;
+  }
+}
+.step2_table{
+    .extra_border{
+       
+        td{
+            border-top: none;
+            border-bottom: none;
+            border-left: none;
+        }
+        td:last-child, th:last-child{
+            border-right: 0px;
+        }
+    }
+   
+}
+.add_crop_text2{
+    font-size: 12px;
+    color: #0066FF;
+}
