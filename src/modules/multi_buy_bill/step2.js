@@ -23,7 +23,8 @@ import { getAllCrops } from "../../actions/billCreationService";
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
-  const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
+  const partnersArray = selectedStep?.multiSelectPartners;
+  const[multiSelectPartnersArray, setMultiSelectPartnersArray] = useState(partnersArray);
   const [selectedDate, setStartDate] = useState(new Date());
   const allTransporters = selectedStep?.selectedTransporter;
   const allDates = selectedStep?.selectedDates;
@@ -108,22 +109,21 @@ const Step2 = (props) => {
   };
   const [status, setStatus] = useState(false);
   var cropArraynew = [];
-  const addCrop = (item, id) => {
+  const addCrop = (item,id) => {
+    console.log(item,id)
     var crpObject = {};
     var i = multiSelectPartnersArray.findIndex((obj) => obj.partyId == id);
+   
+    if( i != -1){
+      let clonedArray = [...multiSelectPartnersArray];
+      let clonedObject = { ...clonedArray[i] };
 
-    if (i != -1) {
-      let clonedObject = { ...multiSelectPartnersArray[i] };
-      // let objects={...clonedObject};
-      // objects.lineItems=[...objects.lineItems, crpObject]
-      // console.log(multiSelectPartnersArray,objects);
-      let updatedLineItems =[...clonedObject.lineItems,crpObject];
-      clonedObject={...clonedObject, lineItems:updatedLineItems};
-      console.log(clonedObject,"obj")
-      multiSelectPartnersArray[i] = clonedObject;
-      console.log(multiSelectPartnersArray);
+      let updatedLineItems = [...clonedObject.lineItems, crpObject];
+      clonedObject = { ...clonedObject, lineItems: updatedLineItems };
+      clonedArray[i] = clonedObject;
+      setMultiSelectPartnersArray(clonedArray);
     }
-    // cropResponseData([...cropData, ...cropArraynew]);
+
   };
   const addCropToEmptyRow = (crop, i) => {
     console.log(crop)

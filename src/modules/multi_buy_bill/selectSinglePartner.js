@@ -45,6 +45,7 @@ const SelectSinglePartner = ({indexVal, fromTrans}) => {
     const multiSelectPartnersArray = fromTrans?selectedTrans: selectedStep?.multiSelectPartners;
     const partnerDataArray = fromTrans?allTransporters: allPartners?.partnerDataInfo;
     const partyType = selectedStep?.multiSelectPartyType;
+    const cropInfoByLineItemArray = selectedStep?.cropInfoByLineItem;
     const dispatch = useDispatch();
     const loginData = JSON.parse(localStorage.getItem("loginResponse"));
     const clickId = loginData.caId;
@@ -70,7 +71,9 @@ const SelectSinglePartner = ({indexVal, fromTrans}) => {
             dispatch(selectedTransporter(selectTransporter))
         } else{
             const updatedPartners = [...multiSelectPartnersArray];
-            updatedPartners[indexVal] = item;
+            const updatedItem = { ...item };
+            updatedItem.lineItems = cropInfoByLineItemArray;
+            updatedPartners[indexVal] = updatedItem;
             dispatch(multiSelectPartners(updatedPartners));
         }
         
