@@ -913,6 +913,7 @@ const Step2 = (props) => {
                               <td className="col_3">
                                 <button
                                   onClick={() => addCrop(item, item.partyId)}
+                                  className="add_crop_text2"
                                 >
                                   Add crop
                                 </button>
