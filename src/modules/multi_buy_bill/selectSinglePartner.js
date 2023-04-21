@@ -13,7 +13,7 @@ const colourStyles = {
         // borderColor: "#9e9e9e",
         borderStyle: 'none', 
         height: "38px",
-        padding: "0px 10px",
+        padding: "0px 0px",
         alignItems: "center",
       }),
       menuPortal: (base) => ({
