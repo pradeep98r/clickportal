@@ -10,7 +10,7 @@ export const multiBillStepsSlice = createSlice({
         transportersData:[],
         selectedTransporter:[],
         selectedDates:[],
-        cropInfoByLineItem: [{'index':'0'}],
+        cropInfoByLineItem: [{'cropName':''}],
         
     },
     reducers: {

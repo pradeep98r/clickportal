@@ -1162,6 +1162,7 @@ const Step22 = (props) => {
   const addCropToEmptyRow = (crop, i) => {
     var c = cropData;
     let updatedItem3 = c.map((item, j) => {
+      console.log(c)
       if (j == i) {
         setSelectedCropItem(crop);
         setcropDeletedList([...cropDeletedList, onFocusCrop]);
@@ -1173,6 +1174,7 @@ const Step22 = (props) => {
         } else {
           cIndex = -1;
         }
+        console.log(c[j],j,i,'if')
         return {
           ...c[j],
           cropName: crop.cropName,
@@ -1198,7 +1200,9 @@ const Step22 = (props) => {
           status: 1,
           activeSearch: true,
         };
-      } else {
+      } 
+      else {
+        console.log(c[j],'else')
         cropResponseData([...c]);
         return { ...c[j] };
       }

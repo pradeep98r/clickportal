@@ -29,7 +29,7 @@ const DateSelection = ({indexVal}) => {
                 dateFormat="dd-MMM-yyyy"
                 selected={selectedDate}
                 onChange={(date) => dateSelected(date)}
-                className="form-control"
+                className="form-control input_date"
                 placeholder="Date"
                 maxDate={new Date()}
                 onKeyDown={(e) => {
