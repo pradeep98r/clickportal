@@ -12,7 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import date_icon from "../../assets/images/date_icon.svg";
 import { useEffect, useState } from "react";
 import DateSelection from "./dateSelection";
-import { getPartnerType, getText, getUnitVal } from "../../components/getText";
+import { getPartnerType, getQuantityUnit, getText, getUnitVal } from "../../components/getText";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import "../multi_buy_bill/step1.scss";
@@ -28,12 +28,12 @@ const Step2 = (props) => {
   const [selectedDate, setStartDate] = useState(new Date());
   const allTransporters = selectedStep?.selectedTransporter;
   const allDates = selectedStep?.selectedDates;
-  console.log(allDates, "trans");
   const cropInfoByLineItemArray = selectedStep?.cropInfoByLineItem;
-  console.log(multiSelectPartnersArray);
+  // console.log(multiSelectPartnersArray);
   const [allData, setAllData] = useState([]);
   const [cropsData, setCropsData] = useState(allData);
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
+  const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
   const colourStyles = {
     menuList: (styles) => ({
       ...styles,
@@ -75,6 +75,34 @@ const Step2 = (props) => {
   };
   useEffect(() => {
     fetchCropData();
+    var party = selectedStep?.multiSelectPartyType;
+  for (var i = 0; i < settingsData.billSetting.length; i++) {
+    if (party.toLowerCase() == "buyer") {
+      if (
+        settingsData.billSetting[i].billType == "SELL" &&
+        settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
+      ) {
+
+        if (settingsData.billSetting[i].value == 0) {
+          setDefaultUnitTypeVal("unit_kg");
+        } else {
+          setDefaultUnitTypeVal("unit_other");
+        }
+      }
+    } else {
+      if (
+        settingsData.billSetting[i].billType == "BUY" &&
+        settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
+      ) {
+        if (settingsData.billSetting[i].value == 0) {
+          setDefaultUnitTypeVal("unit_kg");
+        } else {
+          setDefaultUnitTypeVal("unit_other");
+        }
+      }
+    }
+  }
+
   },[]);
    const filterOption = (option, inputValue) => {
     const { cropName } = option.data;
@@ -95,29 +123,25 @@ const Step2 = (props) => {
         Object.assign(item, {
           cropSelect: "",
           qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
-          rateType:"kgs"
-            // defaultUnitTypeVal == "unit_kg"
-            //   ? "kgs"
-            //   : cIndex != -1
-            //   ? getUnitVal(qSetting, cIndex)
-            //   : "crates",
+          rateType:
+            defaultUnitTypeVal == "unit_kg"
+              ? "kgs"
+              : cIndex != -1
+              ? getUnitVal(qSetting, cIndex)
+              : "crates",
         });
       });
       setCropsData(response.data.data);
       setAllData(response.data.data);
     });
   };
-  const [status, setStatus] = useState(false);
-  var cropArraynew = [];
   const addCrop = (item,id) => {
-    console.log(item,id)
     var crpObject = {};
     var i = multiSelectPartnersArray.findIndex((obj) => obj.partyId == id);
    
     if( i != -1){
       let clonedArray = [...multiSelectPartnersArray];
       let clonedObject = { ...clonedArray[i] };
-
       let updatedLineItems = [...clonedObject.lineItems, crpObject];
       clonedObject = { ...clonedObject, lineItems: updatedLineItems };
       clonedArray[i] = clonedObject;
@@ -125,10 +149,10 @@ const Step2 = (props) => {
     }
 
   };
-  const addCropToEmptyRow = (crop, i) => {
-    console.log(crop)
-    var c = cropInfoByLineItemArray;
+  const addCropToEmptyRow = (crop, i,data) => {
+    var c = data;
     let updatedItem3 = c.map((item, j) => {
+      console.log(c,j,i)
       if (j == i) {
         // setSelectedCropItem(crop);
         // setcropDeletedList([...cropDeletedList, onFocusCrop]);
@@ -177,8 +201,12 @@ const Step2 = (props) => {
       const new_obj = { ...crop, cropActive: true };
       // updatedItem4.push(new_obj);
     }
-   
-  console.log(updatedItem3,'crops')
+    let clonedArray = [...multiSelectPartnersArray];
+      let clonedObject = { ...clonedArray[i] };
+      clonedObject = { ...clonedObject, lineItems: updatedItem3 };
+      clonedArray[i] = clonedObject;
+      setMultiSelectPartnersArray(clonedArray);
+      console.log(clonedArray)
   // multiSelectPartnersArray[i].lineItems = updatedItem3;
     // setAddCropStatus(false);
     // cropResponseData([...updatedItem3]);
@@ -197,7 +225,83 @@ const Step2 = (props) => {
   const activeTransporter = () => {
     setActiveTrans(true);
   };
-  console.log(multiSelectPartnersArray, "array");
+  var arr1 = [];
+  const getQuantity = (cropData, index1, crop) => (e) => {
+    // cropData[index1].rateType = "kgs";
+    let clonedArray = [...multiSelectPartnersArray];
+    var cIndex = 0;
+    var qSetting = settingsData.qtySetting;
+    if (qSetting.length > 0) {
+      cIndex = qSetting.findIndex((obj) => obj.cropId == crop.cropId);
+      if(cIndex != -1){
+        qSetting[cIndex].qtyUnit = e.target.value
+      }
+    } else {
+      cIndex = -1;
+    }
+    console.log(cropData,index1)
+    let updatedItemList = cropData.map((item, i) => {
+      if (i == index1) {
+        console.log('selected')
+        arr1.push({ ...cropData[i], qtyUnit: e.target.value });
+        return { ...cropData[i], qtyUnit: e.target.value,rateType:
+          defaultUnitTypeVal == "unit_kg"
+            ? "kgs"
+            : (cIndex != -1
+            ? getQuantityUnit(qSetting, cIndex)
+            : e.target.value), };
+      } else {
+        console.log('other')
+        let clonedObject = { ...clonedArray[i] };
+        clonedObject = { ...clonedObject, lineItems: cropData };
+        clonedArray[i] = clonedObject;
+        // setMultiSelectPartnersArray(clonedArray);
+        setMultiSelectPartnersArray([...clonedArray]);
+        return { ...cropData[i] };
+      }
+    });
+    console.log(clonedArray,updatedItemList,index1)
+    let clonedObject1 = { ...clonedArray[index1] };
+        clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
+        clonedArray[index1] = clonedObject1;
+    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray([...updatedItemList]);
+    // setUpdatedItemList([...updatedItemList]);
+  };
+
+  // getting table based on unit type
+  const setQuantityBasedtable = (unitType) => {
+    var t = false;
+    if (
+      unitType?.toLowerCase() == "kgs" ||
+      unitType?.toLowerCase() == "loads" ||
+      unitType == "pieces"
+    ) {
+      t = true;
+    }
+    return t;
+  };
+  // rate change event
+  const getRateType = (cropData, index) => (e) => {
+    // cropData[index].rateType = e.target.value;
+    let clonedArray = [...multiSelectPartnersArray];
+    let updatedItemListRateType = cropData.map((item, i) => {
+      if (i == index) {
+        arr1.push({ ...cropData[i], rateType: e.target.value });
+        return { ...cropData[i], rateType: e.target.value, weight: 0 };
+      } else {
+        // cropResponseData([...cropData]);
+        return { ...cropData[i] };
+      }
+    });
+    console.log(updatedItemListRateType);
+    let clonedObject1 = { ...clonedArray[index] };
+        clonedObject1 = { ...clonedObject1, lineItems: updatedItemListRateType };
+        clonedArray[index] = clonedObject1;
+    setMultiSelectPartnersArray(clonedArray);
+    // cropResponseData([...updatedItemListRateType]);
+    // setUpdatedItemList([...updatedItemListRateType]);
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -286,7 +390,7 @@ const Step2 = (props) => {
                             multiSelectPartnersArray[index].lineItems[i]
                           ).length != 0 ? (
                             <tr className="extra_border">
-                              <td className="col_2">
+                              <td className="col_2 ">
                                 <Select
                                     isSearchable={true}
                                     className="basic-single crop_select"
@@ -298,7 +402,7 @@ const Step2 = (props) => {
                                     placeholder={"Click here and add Crop"}
                                     // value={selectedCropItem}
                                     onChange={(event) =>
-                                      addCropToEmptyRow(event, index)
+                                      addCropToEmptyRow(event, index, multiSelectPartnersArray[index].lineItems)
                                     }
                                     filterOption={filterOption}
                                     isClearable={false}
@@ -307,7 +411,7 @@ const Step2 = (props) => {
                                     getOptionLabel={(e) => (
                                       <div
                                         contenteditable="true"
-                                        className="flex_class mr-0"
+                                        className="table_crop_div flex_class mr-0"
                                       >
                                         <img
                                           src={e.imageUrl}
@@ -318,8 +422,45 @@ const Step2 = (props) => {
                                     )}
                                   />
                               </td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
+                              <td className="col_1">
+                              <select
+                                    className="form-control qty_dropdown dropdown"
+                                    value={ multiSelectPartnersArray[index].lineItems[i].qtyUnit}
+                                    onChange={getQuantity(
+                                      multiSelectPartnersArray[index].lineItems,
+                                      i,
+                                      crop
+                                    )}
+                                  >
+                                    <option value="Crates">Crates</option>
+                                    <option value="Bags">Bags</option>
+                                    <option value="Sacs">Sacs </option>
+                                    <option value="Boxes">Boxes </option>
+                                    <option value="kgs">Kgs </option>
+                                    <option value="loads">Loads </option>
+                                    <option value="pieces">Pieces </option>
+                                  </select>
+                              </td>
+                              {!setQuantityBasedtable(
+                                  multiSelectPartnersArray[index].lineItems[i].qtyUnit
+                                ) ? (
+                                  <td className="col_1">
+                                    <select
+                                      className="form-control qty_dropdown dropdown pl-0 m-0"
+                                      value={multiSelectPartnersArray[index].lineItems[i].rateType}
+                                      onChange={getRateType(multiSelectPartnersArray[index].lineItems, index)}
+                                    >
+                                      <option
+                                        value={multiSelectPartnersArray[index].lineItems[i].qtyUnit?.toLowerCase()}
+                                      >
+                                        {multiSelectPartnersArray[index].lineItems[i].qtyUnit}{" "}
+                                      </option>
+                                      <option value="kgs"> Kg </option>
+                                    </select>
+                                  </td>
+                                ) : (
+                                  <td className="col-1 fadeOut_col">-</td>
+                                )}
                               <td className="col_1"></td>
                               <td className="col_1"></td>
                               <td className="col_1"></td>
