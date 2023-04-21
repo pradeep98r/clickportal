@@ -8,6 +8,19 @@ import '../multi_buy_bill/selectSinglePartner.scss'
 import { useEffect } from 'react';
 import { getPartnerData } from '../../actions/billCreationService';
 const colourStyles = {
+    control: (provided) => ({
+        ...provided,
+        // borderColor: "#9e9e9e",
+        borderStyle: 'none', 
+        height: "38px",
+        padding: "0px 10px",
+        alignItems: "center",
+      }),
+      menuPortal: (base) => ({
+        ...base,
+        zIndex: 9999, // Set the z-index to a higher value to make sure it appears outside the table
+      }),
+
     menuList: (styles) => ({
         ...styles,
         background: "white",
@@ -100,6 +113,7 @@ const SelectSinglePartner = ({indexVal, fromTrans}) => {
             {partnerDataArray.length > 0 ? (
                 <div className="partner_cards p-0">
                     <Select
+                        menuPortalTarget={document.body}
                         isSearchable={true}
                         className="basic-single select-basic-single"
                         classNamePrefix="select select-prefix" 
