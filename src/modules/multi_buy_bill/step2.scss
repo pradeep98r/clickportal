@@ -37,10 +37,13 @@
   }
   .user_name{
     padding: 10px 0px;
+  }
     .extra_border{
         border: none;
         th{
             border-bottom: none;
+    border-top: none;
+    border-left: none;
         }
     }
     .extra_border_padding{
@@ -50,4 +53,4 @@
             border-right: 1px solid #737373;
         }
     }
-  }
+  

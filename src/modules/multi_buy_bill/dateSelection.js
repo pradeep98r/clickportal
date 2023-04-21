@@ -11,7 +11,6 @@ const DateSelection = ({indexVal}) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const listOfDates = useSelector((state)=> state.multiStepsInfo);
     const allDates = listOfDates?.selectedDates;
-    console.log(allDates);
     const dispatch = useDispatch();
     var datesArray=[];
     const dateSelected =(date)=>{
