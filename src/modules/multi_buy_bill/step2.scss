@@ -108,18 +108,22 @@
 }
 .step2_table{
     .extra_border{
-       
         td{
-            border-top: none;
-            // border-bottom: none;
+            // border-top: none;
+            border-bottom: none;
             border-left: none;
         }
         td:last-child, th:last-child{
             border-right: 0px;
         }
+        // td{
+        //     border-bottom: 1px solid #737373;   
+        // }
     }
-    .extra_border:last-child{
-        border-bottom: none;
+    .extra_border:first-child{
+        td{
+            border-top:none
+        }
     }
    
 }
