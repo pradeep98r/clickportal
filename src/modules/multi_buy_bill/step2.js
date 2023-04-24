@@ -7,11 +7,7 @@ import "../multi_buy_bill/step2.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from "react";
 import DateSelection from "./dateSelection";
-import {
-  getQuantityUnit,
-  getText,
-  getUnitVal,
-} from "../../components/getText";
+import { getQuantityUnit, getText, getUnitVal } from "../../components/getText";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import "../multi_buy_bill/step1.scss";
 import SelectSinglePartner from "./selectSinglePartner";
@@ -19,6 +15,8 @@ import down_arrow from "../../assets/images/down_arrow.svg";
 import Select from "react-select";
 import { getAllCrops } from "../../actions/billCreationService";
 import SelectBags from "../buy_bill_book/bags";
+import delete_icon from "../../assets/images/delete.svg";
+import copy_icon from "../../assets/images/copy.svg";
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
@@ -141,7 +139,7 @@ const Step2 = (props) => {
       setMultiSelectPartnersArray(clonedArray);
     }
   };
-  // add crop from allcrops dropdown 
+  // add crop from allcrops dropdown
   const addCropToEmptyRow = (crop, i, ind, data) => {
     var c = data;
     let updatedItem3 = c.map((item, j) => {
@@ -153,7 +151,6 @@ const Step2 = (props) => {
         } else {
           cIndex = -1;
         }
-        console.log(c[j], "if");
         return {
           ...c[j],
           cropName: crop.cropName,
@@ -213,7 +210,6 @@ const Step2 = (props) => {
     }
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
-        console.log("selected");
         arr1.push({ ...cropData[i], qtyUnit: e.target.value });
         if (cropData[i].cropName != "") {
           return {
@@ -239,7 +235,6 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
-    console.log(clonedArray, updatedItemList, clonedObject1, mIndex);
     setMultiSelectPartnersArray(clonedArray);
   };
 
@@ -318,7 +313,7 @@ const Step2 = (props) => {
     clonedArray[mIndex] = clonedObject1;
     setMultiSelectPartnersArray(clonedArray);
   };
-   // get wastage value
+  // get wastage value
   const getWastageValue = (id, index, mIndex, cropitem) => (e) => {
     let clonedArray = [...multiSelectPartnersArray];
     if (
@@ -346,7 +341,7 @@ const Step2 = (props) => {
     clonedArray[mIndex] = clonedObject1;
     setMultiSelectPartnersArray(clonedArray);
   };
-   // get rate value
+  // get rate value
   const getRateValue = (id, index, mIndex, cropitem) => (e) => {
     let clonedArray = [...multiSelectPartnersArray];
     var val = e.target.value
@@ -396,36 +391,111 @@ const Step2 = (props) => {
       setEditBagsStatus(true);
     }
   };
-    //   gettinng inndividual bags data
-    const callbackFunction = (childData, invArr) => {
-      let clonedArray = [...multiSelectPartnersArray];
-      console.log(childData)
-      // let updatedItems = cropData.map((item, i) => {
-      //   if (i == arIndex) {
-      //     item = childData[0];
-      //     return {
-      //       ...cropData[i],
-      //       qty: parseInt(item.qty),
-      //       wastage: item.wastage,
-      //       weight: item.weight,
-      //       bags: invArr,
-      //     };
-      //   } else {
-      //     // cropResponseData([...cropData]);
-      //     return { ...cropData[i] };
-      //   }
-      // });
-      // let clonedObject1 = { ...clonedArray[mIndex] };
-      // clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
-      // clonedArray[mIndex] = clonedObject1;
-      // setMultiSelectPartnersArray(clonedArray);
+  //   gettinng inndividual bags data
+  const callbackFunction = (childData, invArr) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    // let updatedItems = cropData.map((item, i) => {
+    //   if (i == arIndex) {
+    //     item = childData[0];
+    //     return {
+    //       ...cropData[i],
+    //       qty: parseInt(item.qty),
+    //       wastage: item.wastage,
+    //       weight: item.weight,
+    //       bags: invArr,
+    //     };
+    //   } else {
+    //     // cropResponseData([...cropData]);
+    //     return { ...cropData[i] };
+    //   }
+    // });
+    // let clonedObject1 = { ...clonedArray[mIndex] };
+    // clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
+    // clonedArray[mIndex] = clonedObject1;
+    // setMultiSelectPartnersArray(clonedArray);
+  };
+  var dummyList = [];
+  var arrylist = [];
+  // var cropDeletedList = [];
+  const [cropDeletedList, setcropDeletedList] = useState([]);
+  // delete crop
+  const deleteCrop = (crop, cropArray, indexVal, cropInd) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    var index = cropArray.indexOf(crop);
+    console.log(index, cropInd, "index");
+    if (index != -1) {
+      let data = cropArray.map((item, i) => {
+        if (Object.keys(cropArray[i]).length != 0) {
+          if (i == cropInd) {
+            console.log("if", cropArray[i]);
+            {
+              return {
+                ...cropArray[i],
+                cropDelete: true,
+                status: 0,
+                index: i,
+              };
+            }
+          } else {
+            // cropResponseData([...cropArray]);
+            return { ...cropArray[i] };
+          }
+        }
+      });
+      console.log(cropArray, index, "array");
+      if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
+        if (Object.keys(cropArray[index]).length != 0) {
+          console.log("hey", cropArray[index]);
+          setcropDeletedList([...cropDeletedList, cropArray[index]]);
+          cropDeletedList.push(cropArray[index]);
+        }
+      }
+      cropArray.splice(index, 1);
+    }
+    // }
+
+    // setUpdatedItemList([...cropArray, ...cropDeletedList]);
+    let clonedObject1 = { ...clonedArray[indexVal] };
+    clonedObject1 = {
+      ...clonedObject1,
+      lineItems: cropArray.length > 0 ? cropArray : [{ cropName: "" }],
     };
+    clonedArray[indexVal] = clonedObject1;
+    setMultiSelectPartnersArray(clonedArray);
+    console.log(cropDeletedList, cropArray, clonedArray, "list");
+    // cropResponseData([...cropArray]);
+    // cropResponseData([...cropArray]);
+    if (cropDeletedList?.length > 0) {
+      // setAllDeletedCrops(cropDeletedList);
+    }
+  };
+  //   clone crop (copy crop) function
+  const cloneCrop = (crop, cropsData, k, cropInd) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    const updatedCropsData = [
+      ...cropsData.slice(0, cropInd + 1),
+      crop,
+      ...cropsData.slice(cropInd + 1),
+    ];
+    console.log(updatedCropsData, "clone");
+    let clonedObject1 = { ...clonedArray[k] };
+    clonedObject1 = {
+      ...clonedObject1,
+      lineItems: updatedCropsData,
+    };
+    clonedArray[k] = clonedObject1;
+    setMultiSelectPartnersArray(clonedArray);
+    // cropResponseData(updatedCropsData);
+    // cropResponseData([...cropData, crop]);
+  };
   return (
     <div>
       <div className="main_div_padding">
         {multiSelectPartnersArray.length > 0 && (
-         
-          <table className="table-bordered step2_table table_view" id="scroll_style">
+          <table
+            className="table-bordered step2_table table_view"
+            id="scroll_style"
+          >
             <tr>
               <th className="col_2">Seller</th>
               <th className="col_2">Transporter</th>
@@ -855,6 +925,42 @@ const Step2 = (props) => {
                                             .lineItems[i].rate
                                         ).toFixed(2)}
                                   </p>
+                                  <div className="d-flex">
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={cloneCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={copy_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={deleteCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={delete_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                  </div>
                                   <button
                                     onClick={() => addCrop(item, item.partyId)}
                                     className="add_crop_text2"
@@ -911,12 +1017,50 @@ const Step2 = (props) => {
                               <td className="col_1"></td>
                               <td className="col_1"></td>
                               <td className="col_3">
-                                <button
-                                  onClick={() => addCrop(item, item.partyId)}
-                                  className="add_crop_text2"
-                                >
-                                  Add crop
-                                </button>
+                                <div className="d-flex align-items-center justify-content-between">
+                                <div className="d-flex">
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={cloneCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={copy_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={deleteCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={delete_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                  </div>
+                                  <button
+                                    onClick={() => addCrop(item, item.partyId)}
+                                    className="add_crop_text2"
+                                  >
+                                    +Add crop
+                                  </button>
+                                </div>
                               </td>
                             </tr>
                           );
@@ -927,7 +1071,6 @@ const Step2 = (props) => {
               );
             })}
           </table>
-         
         )}
       </div>
       <div className="bottom_div">
@@ -949,17 +1092,17 @@ const Step2 = (props) => {
         </div>
       </div>
       {showBagsModalStatus ? (
-          <SelectBags
-            show={showBagsModal}
-            closeBagsModal={() => setShowBagsModal(false)}
-            cropsArray={ar}
-            parentCallback={callbackFunction}
-            cropIndex={arIndex}
-            editBagsStatus={editBagsStatus}
-          />
-        ) : (
-          ""
-        )}
+        <SelectBags
+          show={showBagsModal}
+          closeBagsModal={() => setShowBagsModal(false)}
+          cropsArray={ar}
+          parentCallback={callbackFunction}
+          cropIndex={arIndex}
+          editBagsStatus={editBagsStatus}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };
