@@ -488,6 +488,40 @@ const Step2 = (props) => {
     // cropResponseData(updatedCropsData);
     // cropResponseData([...cropData, crop]);
   };
+  const [addCropStatus, setAddCropStatus] = useState(false);
+  const [addCropsIndex, setAddCropsIndex] = useState(0);
+  const activeSearchCrop = (c, i, mainInd) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    // setSelectedCropItem(null);
+    setAddCropStatus(true);
+    setAddCropsIndex(i);
+    let updatedItem3 = c.map((item, j) => {
+      if (j == i) {
+        console.log(c[j]);
+        return {
+          ...c[j],
+          cropActive: false,
+          displayStat: false,
+          activeSearch: true,
+          cropName: "",
+        };
+      } else {
+        // cropResponseData([...c]);
+        return { ...c[j] };
+      }
+    });
+    // cropResponseData([...updatedItem3]);
+    let clonedObject1 = { ...clonedArray[mainInd] };
+    clonedObject1 = {
+      ...clonedObject1,
+      lineItems: updatedItem3,
+    };
+    clonedArray[mainInd] = clonedObject1;
+    setMultiSelectPartnersArray(clonedArray);
+    console.log(c[i]);
+    Object.assign(c[i], { status: 0, cropDelete: true });
+    // setOnFocusCrop(c[i]);
+  };
   return (
     <div>
       <div className="main_div_padding">
@@ -582,41 +616,77 @@ const Step2 = (props) => {
                               .cropName != "" ? (
                             <tr className="extra_border">
                               <td className="col_2 ">
-                                <Select
-                                  isSearchable={true}
-                                  className="basic-single crop_select"
-                                  classNamePrefix="select"
-                                  styles={colourStyles}
-                                  name="partner"
-                                  hideSelectedOptions={false}
-                                  options={cropsData}
-                                  placeholder={"Click here and add Crop"}
-                                  // value={selectedCropItem}
-                                  onChange={(event) =>
-                                    addCropToEmptyRow(
-                                      event,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index].lineItems
-                                    )
-                                  }
-                                  filterOption={filterOption}
-                                  isClearable={false}
-                                  noOptionsMessage={() => "No Data Available"}
-                                  getOptionValue={(e) => e.cropId}
-                                  getOptionLabel={(e) => (
-                                    <div
-                                      contenteditable="true"
-                                      className="table_crop_div flex_class mr-0"
-                                    >
-                                      <img
-                                        src={e.imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">{e.cropName}</p>
-                                    </div>
-                                  )}
-                                />
+                                {!multiSelectPartnersArray[index].lineItems[i]
+                                  .activeSearch ||
+                                multiSelectPartnersArray[index].lineItems[i]
+                                  .displayStat ? (
+                                  // !activeSearch || displayStat?
+
+                                  <div
+                                    className="table_crop_div flex_class mr-0"
+                                    onClick={() => {
+                                      activeSearchCrop(
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        i,
+                                        index
+                                      );
+                                    }}
+                                  >
+                                    <img
+                                      src={
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].imageUrl
+                                      }
+                                      className="flex_class mr-2"
+                                    />
+                                    <p className="m-0">
+                                      {
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].cropName
+                                      }
+                                    </p>
+                                  </div>
+                                ) : addCropsIndex == index && addCropStatus ? (
+                                  <Select
+                                    isSearchable={true}
+                                    className="basic-single crop_select"
+                                    classNamePrefix="select"
+                                    styles={colourStyles}
+                                    name="partner"
+                                    hideSelectedOptions={false}
+                                    options={cropsData}
+                                    placeholder={"Click here and add Crop"}
+                                    // value={selectedCropItem}
+                                    onChange={(event) =>
+                                      addCropToEmptyRow(
+                                        event,
+                                        i,
+                                        index,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems
+                                      )
+                                    }
+                                    filterOption={filterOption}
+                                    isClearable={false}
+                                    noOptionsMessage={() => "No Data Available"}
+                                    getOptionValue={(e) => e.cropId}
+                                    getOptionLabel={(e) => (
+                                      <div
+                                        contenteditable="true"
+                                        className="table_crop_div flex_class mr-0"
+                                      >
+                                        <img
+                                          src={e.imageUrl}
+                                          className="flex_class mr-2"
+                                        />
+                                        <p className="m-0">{e.cropName}</p>
+                                      </div>
+                                    )}
+                                  />
+                                ) : (
+                                  ""
+                                )}
                               </td>
                               <td className="col_1">
                                 <select
@@ -1018,7 +1088,7 @@ const Step2 = (props) => {
                               <td className="col_1"></td>
                               <td className="col_3">
                                 <div className="d-flex align-items-center justify-content-between">
-                                <div className="d-flex">
+                                  <div className="d-flex">
                                     <button
                                       className="flex_class mr-0 sub_icons_div"
                                       onClick={cloneCrop.bind(
