@@ -1,0 +1,18 @@
+.step3_card_party {
+  padding: 20px;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 0px;
+  .border_line {
+    border-bottom: 1px solid #e4e4e4;
+    margin: 10px 0px;
+  }
+  .crops_info{
+      padding-bottom: 20px;
+  }
+}
+.bill_step3_scroll{
+    height: calc(100vh - 300px);
+    overflow-y: auto;
+}

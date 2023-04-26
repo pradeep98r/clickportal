@@ -4,6 +4,7 @@ import clo from "../../assets/images/close.svg";
 import { multiSelectPartners } from "../../reducers/multiBillSteps";
 import Step1 from "./step1";
 import Step2 from "./step2";
+import Step3 from "./step3";
 const MultiBillSteps = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const MultiBillSteps = (props) => {
   const clearData = () => {
     dispatch(multiSelectPartners([]));
   };
+  
   return (
     <Modal
       show={props.showMultiStepsModal}
@@ -86,7 +88,7 @@ const MultiBillSteps = (props) => {
             // case partyType.toUpperCase() === "SELLER" && "step3":
             //   return "buy bill step3";
             case "step3":
-              return "sell bill step3";
+              return <Step3 closeModal={props.closeMultiStepsModal} />;
           }
         })()}
       </div>
