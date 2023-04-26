@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import date_icon from "../../assets/images/date_icon.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,14 +11,27 @@ import {
   selectedDates,
 } from "../../reducers/multiBillSteps";
 import moment from "moment";
-const DateSelection = ({ indexVal }) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+const DateSelection = ({ indexVal,fromStep3BillDate }) => {
   const listOfDates = useSelector((state) => state.multiStepsInfo);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const multiSelectPartnersArray = listOfDates?.multiSelectPartners;
   const allDates = listOfDates?.selectedDates;
   const dispatch = useDispatch();
-  var datesArray = [];
-  var arr = [];
+  useEffect(()=>{
+    let clonedArray = [...multiSelectPartnersArray];
+    let clonedObject = { ...multiSelectPartnersArray[indexVal] };
+    if(!fromStep3BillDate){
+      Object.assign(clonedObject, {
+        selectedDate: moment(new Date()).format("YYYY-MM-DD"),
+      });
+    }
+    else{
+      setSelectedDate(new Date(multiSelectPartnersArray[indexVal].selectedDate));
+    console.log(multiSelectPartnersArray[indexVal],multiSelectPartnersArray[indexVal].selectedDate,'else')
+    }
+    clonedArray[indexVal] = clonedObject;
+    dispatch(multiSelectPartners(clonedArray))
+  },[])
   const dateSelected = (date) => {
     const updateDates = [...allDates];
     updateDates[indexVal] = moment(date).format("YYYY-MM-DD");

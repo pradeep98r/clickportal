@@ -4,8 +4,12 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import "./step3.scss";
 import { qtyValues } from "../../components/qtyValues";
-import { multiSelectPartners } from "../../reducers/multiBillSteps";
-import CommonCard from "../../components/card";
+import {
+  multiSelectPartners,
+  multiStepsVal,
+} from "../../reducers/multiBillSteps";
+import edit from "../../assets/images/edit_round.svg";
+import DateSelection from "./dateSelection";
 const Step3 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
@@ -15,13 +19,24 @@ const Step3 = (props) => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
   };
+  const previousStep = () => {
+    dispatch(multiStepsVal("step2"));
+  };
+  const editCropInfo = () => {
+    dispatch(multiStepsVal("step2"));
+  };
   return (
     <div>
       <div className="main_div_padding">
         <div className="container-fluid px-0">
           <div className="row">
             <div className="col-lg-8">
-              <h5 className="head_modal">Bill Information</h5>
+              <div className="d-flex justify-content-between">
+                <h5 className="head_modal">Bill Information</h5>
+                <button onClick={() => editCropInfo()}>
+                  <img src={edit} alt="img" className="head_modal editIcon" />
+                </button>
+              </div>
               <div className="bill_step3_scroll" id="scroll_style">
                 {multiSelectPartnersArray.map((item, index) => {
                   return (
@@ -84,13 +99,16 @@ const Step3 = (props) => {
                         </div>
                         <div className="col-lg-4">
                           <div className="partner_card">
-                            <p>{item.selectedDate}</p>
+                            <DateSelection
+                              indexVal={index}
+                              fromStep3BillDate={true}
+                            />
                           </div>
                         </div>
                       </div>
                       <div className="border_line"></div>
                       <div className="row align-items-center">
-                        <div className="col-lg-6">
+                        <div className="col-lg-4">
                           {multiSelectPartnersArray[index].lineItems.length >
                             0 &&
                             multiSelectPartnersArray[index].lineItems.map(
@@ -133,12 +151,11 @@ const Step3 = (props) => {
                               }
                             )}
                         </div>
-                        <div className="col-lg-6">
+                        <div className="col-lg-4"></div>
+                        <div className="col-lg-4">
                           <div>
                             <p className="crops-color">Gross Total(₹)</p>
-                            <p className="crops-color">
-                              0
-                            </p>
+                            <p className="crops-color">2000</p>
                           </div>
                         </div>
                       </div>
@@ -150,7 +167,107 @@ const Step3 = (props) => {
             <div className="col-lg-4">
               <h5 className="head_modal">Over All Expenses</h5>
               <div className="card step3_card_party">
-            
+                <div className="comm_cards">
+                  <div className="row">
+                    <div className="col-lg-4 col-sm-12 ps-0">
+                      <h5 className="comm_card_sub_title">Transportation</h5>
+                    </div>
+                    <div className="col-lg-4 col-sm-12">
+                      <h5 className="comm_card_sub_title">Coolie</h5>
+                    </div>
+                    <div className="col-lg-4 col-sm-12">
+                      <h5 className="comm_card_sub_title">Rent</h5>
+                    </div>
+                  </div>
+                  <div className="card input_card">
+                    <div className="row">
+                      <div className="col-lg-4 col-sm-12">
+                        <input
+                          type="text"
+                          placeholder=""
+                          //   onChange={onChange}
+                          //   onFocus={(e) => resetInput(e)}
+                          //   value={inputValue}
+                        />
+                      </div>
+                      <div className="col-lg-4 col-sm-12 col_left_border">
+                        <input
+                          type="text"
+                          placeholder=""
+                          //   onChange={onChange}
+                          //   onFocus={(e) => resetInput(e)}
+                          //   value={inputValue}
+                        />
+                      </div>
+                      <div className="col-lg-4 col-sm-12 col_left_border">
+                        <input
+                          type="text"
+                          placeholder=""
+                          //   onChange={totalOnChange}
+                          //   onFocus={(e) => resetInput(e)}
+                          //   value={inputText}
+                        />
+                        {/* <p className="text-center">{inputText ? inputText : 0.0}</p> */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="comm_cards">
+                  <div className="row">
+                    <div className="col-sm-12 ps-0">
+                      <h5 className="comm_card_sub_title">Other Fee</h5>
+                    </div>
+                  </div>
+                  <div className="card input_card">
+                    <div className="row">
+                      <div className="col-sm-12">
+                        <input type="text" placeholder="" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="comm_cards">
+                  <div className="row">
+                    <div className="col-sm-12 ps-0">
+                      <h5 className="comm_card_sub_title">Comment</h5>
+                    </div>
+                  </div>
+                  <div className="card input_card">
+                    <div className="row">
+                      <div className="col-sm-12">
+                        <input type="text" placeholder="" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h5 className="total_expences_head">Total Expenses</h5>
+                  <p className="total_expences_para">
+                    Transportation | Coolie | Rent | Other
+                  </p>
+                  <div className="comm_cards">
+                    <div className="card input_card">
+                      <div className="row">
+                        <div className="col-sm-12">
+                          <input type="text" placeholder="" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="row gross_exp_totals">
+                <div className="col-lg-2"></div>
+                <div className="col-lg-10 p-0">
+                  <div className="row">
+                    <div className="col-lg-6 pr-0">
+                      <p>Total Expenses : </p>
+                    </div>
+                    <div className="col-lg-6 p-0">
+                      <p>12,34,56,789.00</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -164,7 +281,7 @@ const Step3 = (props) => {
           <div className="d-flex align-items-center">
             <button
               className="secondary_btn no_delete_btn"
-              //   onClick={() => previousStep()}
+              onClick={() => previousStep()}
             >
               Previous
             </button>

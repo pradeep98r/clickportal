@@ -61,7 +61,7 @@ const Step2 = (props) => {
     props.closeModal();
   };
   const onClickStep2 = (array) => {
-    console.log(array,multiSelectPartnersArray,'step2 next')
+    console.log(array, multiSelectPartnersArray, "step2 next");
     dispatch(multiStepsVal("step3"));
     dispatch(multiSelectPartners(array));
   };
@@ -139,7 +139,7 @@ const Step2 = (props) => {
       clonedObject = { ...clonedObject, lineItems: updatedLineItems };
       clonedArray[i] = clonedObject;
       // setMultiSelectPartnersArray(clonedArray);
-      dispatch(multiSelectPartners(clonedArray))
+      dispatch(multiSelectPartners(clonedArray));
     }
   };
   // add crop from allcrops dropdown
@@ -188,7 +188,7 @@ const Step2 = (props) => {
     clonedObject = { ...clonedObject, lineItems: updatedItem3 };
     clonedArray[ind] = clonedObject;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
   const [active, setActive] = useState(false);
   const [activeTrans, setActiveTrans] = useState(false);
@@ -240,7 +240,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
 
   // getting table based on unit type
@@ -270,7 +270,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemListRateType };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
   // reset input value to 0
   const resetInput = (e) => {
@@ -298,7 +298,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
   // get weight value
   const getWeightValue = (id, index, mIndex, cropitem) => (e) => {
@@ -319,7 +319,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem1 };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
   // get wastage value
   const getWastageValue = (id, index, mIndex, cropitem) => (e) => {
@@ -348,7 +348,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem2 };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
   // get rate value
   const getRateValue = (id, index, mIndex, cropitem) => (e) => {
@@ -370,7 +370,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
   };
   // handle check event for bags and sacs
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
@@ -395,7 +395,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
     setshowBagsModalStatus(true);
     setShowBagsModal(true);
     if (crd[ink].bags.length > 0) {
@@ -430,6 +430,8 @@ const Step2 = (props) => {
   const deleteCrop = (crop, cropArray, indexVal, cropInd) => {
     let clonedArray = [...multiSelectPartnersArray];
     var index = cropArray.indexOf(crop);
+    const newArr = [...cropArray];
+
     console.log(index, cropInd, "index");
     if (index != -1) {
       let data = cropArray.map((item, i) => {
@@ -458,7 +460,9 @@ const Step2 = (props) => {
           cropDeletedList.push(cropArray[index]);
         }
       }
-      cropArray.splice(index, 1);
+      console.log(cropArray, "array2");
+      newArr.splice(index, 1);
+      // cropArray.splice(index, 1);
     }
     // }
 
@@ -466,12 +470,12 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[indexVal] };
     clonedObject1 = {
       ...clonedObject1,
-      lineItems: cropArray.length > 0 ? cropArray : [{ cropName: "" }],
+      lineItems: newArr.length > 0 ? newArr : [{ cropName: "" }],
     };
     clonedArray[indexVal] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
-    console.log(cropDeletedList, cropArray, clonedArray, "list");
+    dispatch(multiSelectPartners(clonedArray));
+    console.log(cropDeletedList, newArr, clonedArray, "list");
     // cropResponseData([...cropArray]);
     // cropResponseData([...cropArray]);
     if (cropDeletedList?.length > 0) {
@@ -494,7 +498,7 @@ const Step2 = (props) => {
     };
     clonedArray[k] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
     // cropResponseData(updatedCropsData);
     // cropResponseData([...cropData, crop]);
   };
@@ -528,7 +532,7 @@ const Step2 = (props) => {
     };
     clonedArray[mainInd] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(clonedArray));
     console.log(c[i]);
     Object.assign(c[i], { status: 0, cropDelete: true });
     // setOnFocusCrop(c[i]);
@@ -1166,7 +1170,10 @@ const Step2 = (props) => {
             >
               Previous
             </button>
-            <button className="primary_btn" onClick={() => onClickStep2(multiSelectPartnersArray)}>
+            <button
+              className="primary_btn"
+              onClick={() => onClickStep2(multiSelectPartnersArray)}
+            >
               Next
             </button>
           </div>

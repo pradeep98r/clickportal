@@ -88,16 +88,16 @@ const SelectSinglePartner = ({ indexVal, fromTrans }) => {
       const selectTransporter = [...multiSelectPartnersArray];
       selectTransporter[indexVal] = item;
       dispatch(selectedTransporter(selectTransporter));
-      console.log(selectTransporter)
+      console.log(selectTransporter);
       let clonedArray = [...selectedStep?.multiSelectPartners];
       let clonedObject = { ...clonedArray[indexVal] };
       Object.assign(clonedObject, {
         transporterId: item.partyId,
         transporterName: item.partyName,
-        transporterMobile:item.mobile
+        transporterMobile: item.mobile,
       });
       clonedArray[indexVal] = clonedObject;
-      dispatch(multiSelectPartners(clonedArray))
+      dispatch(multiSelectPartners(clonedArray));
     } else {
       const updatedPartners = [...multiSelectPartnersArray];
       const updatedItem = { ...item };
@@ -112,7 +112,7 @@ const SelectSinglePartner = ({ indexVal, fromTrans }) => {
       clonedObject.mobile = updatedItem.mobile;
       clonedObject.trader = updatedItem.trader;
       clonedArray[indexVal] = clonedObject;
-      dispatch(multiSelectPartners(clonedArray))
+      dispatch(multiSelectPartners(clonedArray));
     }
   };
   const fetchPertnerData = () => {

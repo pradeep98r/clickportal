@@ -8,11 +8,33 @@
     border-bottom: 1px solid #e4e4e4;
     margin: 10px 0px;
   }
-  .crops_info{
-      padding-bottom: 20px;
+  .crops_info {
+    padding-bottom: 20px;
+  }
+  .comm_cards {
+    margin-bottom: 10px;
+  }
+  .col-sm-12 {
+    padding: 5px 10px;
   }
 }
-.bill_step3_scroll{
-    height: calc(100vh - 300px);
-    overflow-y: auto;
+.bill_step3_scroll {
+  height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+.total_expences_head {
+  font-size: 13px;
+  color: #1c1c1c;
+  font-weight: normal;
+  margin-top: 10px;
+}
+.total_expences_para {
+  font-size: 12px;
+  color: var(--ono-subtext);
+}
+.gross_exp_totals{
+    p{
+        font-size: 15px;
+        text-align: right;
+    }
 }
