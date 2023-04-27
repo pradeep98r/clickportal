@@ -6,9 +6,23 @@ import {
   getDefaultSystemSettings,
   getSystemSettings,
 } from "../../actions/billCreationService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import { getText } from "../../components/getText";
+import {
+  allGroupsSettings,
+  groupFourSettings,
+  groupOneSettings,
+  groupThreeSettings,
+  groupTwoSettings,
+  groupOneTotals,
+  groupTwoTotals,
+  groupThreeTotals,
+  groupFourTotals,
+  filtereArray,
+  allSettings,
+  selectedTotalBillAmount,
+} from "../../reducers/billViewDisplaySlice";
 
 const GroupTotals = (props) => {
   var groupOneTotal = 0;
@@ -17,9 +31,10 @@ const GroupTotals = (props) => {
   var groupFourTotal = 0;
 
   var allGroupsTotal = 0;
-
+  const dispatch = useDispatch();
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  const billSettings = useSelector((state) => state.mandiDetails);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
@@ -45,6 +60,7 @@ const GroupTotals = (props) => {
   const [isShown, setisShown] = useState(false);
   var ldsValue = false;
   const [lpk, setLPK] = useState(false);
+  var filterArray = billSettings?.filtereArray;
   useEffect(() => {
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -68,14 +84,28 @@ const GroupTotals = (props) => {
       ldsValue = false;
       setLPK(false);
     }
+    groupSettingsToJson();
   }, [props]);
-
   const getBuyBillsById = () => {
     var res;
+    var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       if (res.data.data.billSetting.length > 0) {
         //res=response.data.data.billSetting;
         billSettingData(res.data.data.billSetting);
+        if (
+          billData?.partyType.toUpperCase() === "FARMER" ||
+          billData?.partyType.toUpperCase() === "SELLER"
+        ) {
+          billType = "BUY";
+        } else {
+          billType = "SELL";
+        }
+        var filteredArray = res.data.data.billSetting.filter((object) => {
+          return object.billType === billType && object.formStatus === 1;
+        });
+        filteredArray.sort((a, b) => a.groupId - b.groupId);
+        dispatch(filtereArray(filteredArray));
         for (var i = 0; i < res.data.data.billSetting.length; i++) {
           if (
             billData?.partyType.toUpperCase() === "FARMER" ||
@@ -86,6 +116,8 @@ const GroupTotals = (props) => {
               res.data.data.billSetting[i].billType === "BUY" &&
               res.data.data.billSetting[i].formStatus === 1
             ) {
+              // filteredArray = res.data.data.billSetting;
+              // setFilterArray([...filterArray,res.data.data.billSetting[i]])
               if (res.data.data.billSetting[i].settingName === "COMMISSION") {
                 setIncludeComm(
                   res.data.data.billSetting[i].includeInLedger == 1
@@ -116,6 +148,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupOne = [res.data.data.billSetting[i], ...groupOne];
+              dispatch(groupOneSettings(groupOne));
               setGroupOne([groupone, ...groupOne]);
             } else if (
               res.data.data.billSetting[i].groupId === 2 &&
@@ -152,6 +185,7 @@ const GroupTotals = (props) => {
                 );
               }
               grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+              dispatch(groupTwoSettings(grouptwo));
               setGroupTwo([groupTwo, ...grouptwo]);
             } else if (
               res.data.data.billSetting[i].groupId === 3 &&
@@ -188,6 +222,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupthree = [res.data.data.billSetting[i], ...groupthree];
+              dispatch(groupThreeSettings(groupthree));
               setGroupThree([groupThree, ...groupthree]);
             } else if (
               res.data.data.billSetting[i].groupId === 4 &&
@@ -224,6 +259,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupfour = [res.data.data.billSetting[i], ...groupfour];
+              dispatch(groupFourSettings(groupfour));
               setGroupFour([groupFour, ...groupfour]);
             }
           } else {
@@ -262,6 +298,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupOne = [res.data.data.billSetting[i], ...groupOne];
+              dispatch(groupOneSettings(groupOne));
               setGroupOne([groupone, ...groupOne]);
             } else if (
               res.data.data.billSetting[i].groupId === 2 &&
@@ -295,6 +332,7 @@ const GroupTotals = (props) => {
                 );
               }
               grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+              dispatch(groupTwoSettings(grouptwo));
               setGroupTwo([groupTwo, ...grouptwo]);
             } else if (
               res.data.data.billSetting[i].groupId === 3 &&
@@ -328,6 +366,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupthree = [res.data.data.billSetting[i], ...groupthree];
+              dispatch(groupThreeSettings(groupthree));
               setGroupThree([groupThree, ...groupthree]);
             } else if (
               res.data.data.billSetting[i].groupId === 4 &&
@@ -361,6 +400,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupfour = [res.data.data.billSetting[i], ...groupfour];
+              dispatch(groupFourSettings(groupfour));
               setGroupFour([groupFour, ...groupfour]);
             }
           }
@@ -374,6 +414,7 @@ const GroupTotals = (props) => {
       }
     });
   };
+
   var groupTotals = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
@@ -393,6 +434,7 @@ const GroupTotals = (props) => {
           }
           groupTotals.push(res.data.data[i]);
           groupTotals = groupTotals.sort((a, b) => a.id - b.id);
+          dispatch(allGroupsSettings(groupTotals));
           setAllGroups([...allGroups, ...groupTotals]);
         }
       } else {
@@ -408,6 +450,7 @@ const GroupTotals = (props) => {
           }
           groupTotals.push(res.data.data[i]);
           groupTotals = groupTotals.sort((a, b) => a.id - b.id);
+          dispatch(allGroupsSettings(groupTotals));
           setAllGroups([...allGroups, ...groupTotals]);
         }
       }
@@ -620,6 +663,206 @@ const GroupTotals = (props) => {
     return value;
   };
 
+  var obj = {
+    groupId: 0,
+    settingName: "",
+    value: 0,
+    signIndication: "",
+  };
+  var allFilteredSettings = [];
+  const groupSettingsToJson = () => {
+    var indication = "";
+    for (var i = 0; i < filterArray.length; i++) {
+      var setting = filterArray[i];
+      var substring = "CUSTOM_FIELD";
+      if (setting.settingName?.includes(substring)) {
+        substring = setting.settingName;
+      } else if (
+        setting.settingName === "ADVANCES" &&
+        !(billData?.partyType.toUpperCase() === "FARMER")
+      ) {
+        setting.settingName = "";
+      }
+      switch (setting.settingName) {
+        case "COMMISSION":
+          if (billData?.comm) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.comm ? billData?.comm : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "RETURN_COMMISSION":
+          var assign = "";
+          if (
+            billData?.partyType.toUpperCase() === "FARMER" &&
+            billData?.less
+          ) {
+            assign = "-";
+          } else {
+            assign =
+              billData?.partyType.toUpperCase() === "BUYER" && billData?.less
+                ? "-"
+                : "+";
+          }
+          if (billData?.rtComm) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.rtComm ? billData?.rtComm : 0,
+              signIndication: assign,
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "TRANSPORTATION":
+          if (billData?.transportation) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.transportation ? billData?.transportation : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "LABOUR_CHARGES":
+          if (billData?.labourCharges) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.labourCharges ? billData?.labourCharges : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "RENT":
+          if (billData?.rent) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.rent ? billData?.rent : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "MANDI_FEE":
+          if (billData?.mandiFee) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.mandiFee ? billData?.mandiFee : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "OTHER_FEE":
+          if (billData?.mandiFee) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value:
+                billData?.partyType.toUpperCase() === "FARMER"
+                  ? billData?.misc
+                  : billData?.otherFee,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "GOVT_LEVIES":
+          if (billData?.govtLevies) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.govtLevies ? billData?.govtLevies : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "ADVANCES":
+          if (billData?.advance) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.advance ? billData?.advance : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ||
+                billData?.partyType.toUpperCase() === "SELLER"
+                  ? "-"
+                  : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+        case substring:
+          var value = 0;
+          if (billData?.partyType.toUpperCase() === "FARMER") {
+            billData?.customFields.map((item) => {
+              if (item.fee != 0) {
+                if (item.field === setting.settingName) {
+                  if (item.less) {
+                    value = -item.fee;
+                    indication = "-";
+                  } else {
+                    value = item.fee;
+                    indication = "+";
+                  }
+                  value = value == null ? 0 : value;
+                  obj = {
+                    groupId: setting?.groupId,
+                    settingName: setting?.settingName,
+                    value: value ? value : 0,
+                    signIndication: indication,
+                  };
+                }
+              }
+            });
+            allFilteredSettings.push(obj);
+          } else if (billData?.partyType.toUpperCase() === "BUYER") {
+            billData?.customFields.map((item) => {
+              if (item.fee != 0) {
+                if (item.field === setting.settingName) {
+                  if (item.less) {
+                    value = -item.fee;
+                    indication = "-";
+                  } else {
+                    value = item.fee;
+                    indication = "+";
+                  }
+                  value = value == null ? 0 : value;
+                  obj = {
+                    groupId: setting?.groupId,
+                    settingName: setting?.settingName,
+                    value: value ? value : 0,
+                    signIndication: indication,
+                  };
+                  return value;
+                }
+              }
+            });
+            allFilteredSettings.push(obj);
+          }
+          break;
+      }
+    }
+    dispatch(allSettings(allFilteredSettings));
+    // console.log(allFilteredSettings, "obj")
+    localStorage.setItem("groupPdfTotals", JSON.stringify(allFilteredSettings));
+  };
   allGroups.map((item) => {
     var substring = "CUSTOM_FIELD";
     // var str = "ADVANCES";
@@ -633,6 +876,7 @@ const GroupTotals = (props) => {
     allGroupsTotal += handleGroupNames(item.name);
     return allGroupsTotal;
   });
+
   groupone
     .slice()
     .reverse()
@@ -822,6 +1066,27 @@ const GroupTotals = (props) => {
     });
     return totalQty;
   };
+  var totalBillAmount =
+    billData?.grossTotal +
+      (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal) ===
+      0 ||
+    billData?.grossTotal +
+      (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal) ===
+      null
+      ? " "
+      : (
+          billData?.grossTotal +
+          (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal)
+        ).toLocaleString("en-IN", {
+          maximumFractionDigits: 2,
+          style: "currency",
+          currency: "INR",
+        });
+  try {
+    localStorage.setItem("totalSelectedBillAmount", totalBillAmount);
+  } catch (error) {
+    console.log(error);
+  }
   return (
     <div className="group_totals_div">
       <div>
@@ -2920,30 +3185,7 @@ const GroupTotals = (props) => {
                           : "groups_values color_green"
                       }
                     >
-                      {billData?.grossTotal +
-                        (groupFourTotal +
-                          groupThreeTotal +
-                          groupTwoTotal +
-                          groupOneTotal) ===
-                        0 ||
-                      billData?.grossTotal +
-                        (groupFourTotal +
-                          groupThreeTotal +
-                          groupTwoTotal +
-                          groupOneTotal) ===
-                        null
-                        ? " "
-                        : (
-                            billData?.grossTotal +
-                            (groupFourTotal +
-                              groupThreeTotal +
-                              groupTwoTotal +
-                              groupOneTotal)
-                          ).toLocaleString("en-IN", {
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: "INR",
-                          })}
+                      {totalBillAmount}
                     </p>
                   </div>
                 </div>

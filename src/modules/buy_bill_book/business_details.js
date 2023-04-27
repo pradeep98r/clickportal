@@ -6,11 +6,14 @@ import {
 } from "../../actions/billCreationService";
 import moment from "moment/moment";
 import { useSelector } from "react-redux";
+
 export const BusinessDetails = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const [mandiData, setMandiData] = useState({});
+  var businessDetails = JSON.parse(localStorage.getItem("businessDetails"));
+  var personalDetails = JSON.parse(localStorage.getItem("personalDetails"));
   const [mandiLogoData, setMandiLogoData] = useState({});
+  const [mandiData, setMandiData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   useEffect(() => {
@@ -91,17 +94,17 @@ export const BusinessDetails = (props) => {
           </div>
         </div>
         <div className="col-lg-8 text-center p-0">
-          <h2 className="large_text">{mandiData.businessDtls?.businessName}</h2>
-          <p className="medium_text">{mandiData.businessDtls?.businessType}</p>
+          <h2 className="large_text">{businessDetails.businessName}</h2>
+          <p className="medium_text">{businessDetails.businessType}</p>
           <p className="small_text">
-            {mandiData.businessDtls?.businessAddress
-              ? mandiData.businessDtls?.businessAddress?.addressLine +
+            {businessDetails.businessAddress
+              ? businessDetails.businessAddress?.addressLine +
                 "," +
-                mandiData.businessDtls?.businessAddress?.dist +
+                businessDetails.businessAddress?.dist +
                 ",Pincode-" +
-                mandiData.businessDtls?.businessAddress?.pincode +
+                businessDetails.businessAddress?.pincode +
                 "," +
-                mandiData.businessDtls?.businessAddress?.state
+                businessDetails.businessAddress?.state
               : ""}
           </p>
         </div>

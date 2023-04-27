@@ -19,19 +19,58 @@ import PreferredCrops from "../modules/registration/preferredCrops";
 import SubscriptionPlans from "../modules/registration/subscriptionPlans";
 import BuyerLedgers from "../modules/ledgers/buyerLedgers";
 import SellerLedgers from "../modules/ledgers/sellerLedgers";
-import { getSystemSettings } from "../actions/billCreationService";
+import {
+  getMandiDetails,
+  getMandiLogoDetails,
+  getSystemSettings,
+} from "../actions/billCreationService";
 import Advance from "../modules/advances/advance";
 const RoutesConfig = () => {
-  function setSystemSettingsDetails(clickId){
-    getSystemSettings(clickId).then((response) => {
-      localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+  function setSystemSettingsDetails(clickId) {
+    getSystemSettings(clickId)
+      .then((response) => {
+        localStorage.setItem(
+          "systemSettingsData",
+          JSON.stringify(response.data.data)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function setSettingsDetails(clickId) {
+    getMandiLogoDetails(clickId)
+      .then((response) => {
+        console.log(response);
+        localStorage.setItem(
+          "settingsData",
+          JSON.stringify(response.data.data)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function setMandiDetails(clickId) {
+    getMandiDetails(clickId)
+      .then((response) => {
+        console.log(response);
+        var businessDetails = response.data.data.businessDtls;
+        var personalDetails = response.data.data.personalDtls;
+        localStorage.setItem(
+          "businessDetails",
+          JSON.stringify(businessDetails)
+        );
+        localStorage.setItem(
+          "personalDetails",
+          JSON.stringify(personalDetails)
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   const isLocalAuth = localStorage.getItem("isauth");
-
   if (isLocalAuth == null) {
     return (
       <BrowserRouter>
@@ -54,7 +93,6 @@ const RoutesConfig = () => {
             : localStorage.getItem("registerData");
         // console.log(loginData.clickId, id, "login data before registration");
         if (id !== loginData.clickId.toString()) {
-          setSystemSettingsDetails(loginData.clickId)
           return (
             <BrowserRouter>
               <Routes>
@@ -63,7 +101,9 @@ const RoutesConfig = () => {
             </BrowserRouter>
           );
         } else if (id === loginData.clickId.toString()) {
-          setSystemSettingsDetails(loginData.clickId)
+          setMandiDetails(loginData.clickId);
+          setSettingsDetails(loginData.clickId);
+          setSystemSettingsDetails(loginData.clickId);
           // console.log(loginData, localStorage.getItem("status"));
           /*const savePref =
             localStorage.getItem("status") == null
@@ -84,7 +124,6 @@ const RoutesConfig = () => {
                     <Route path="/buy_bill_book" element={<BuyBillBook />} />
                     <Route path="/bill_view/:billId" element={<BillView />} />
                     <Route path="buyerledger" element={<BuyerLedgers />} />
-
                     <Route
                       path="sellerledger"
                       element={<SellerLedgers />}
@@ -98,10 +137,7 @@ const RoutesConfig = () => {
                       path="/transportoledger"
                       element={<TransportoLedger />}
                     />
-                    <Route
-                      path="/advance"
-                      element={<Advance />}
-                    />
+                    <Route path="/advance" element={<Advance />} />
                     {/* <Route
                       path="/transportoledger"
                       element={<TransportoLedger />}
@@ -118,10 +154,11 @@ const RoutesConfig = () => {
           );
         }
       } else {
-        setSystemSettingsDetails(loginData.clickId)
+        setSystemSettingsDetails(loginData.clickId);
+        setMandiDetails(loginData.clickId);
+        setSettingsDetails(loginData.clickId);
         // console.log(loginData, "login data after succesful registration");
         // console.log(localStorage.getItem("registerData"), "aftter data");
-
         return (
           <BrowserRouter>
             <Layout>
@@ -135,23 +172,17 @@ const RoutesConfig = () => {
                 <Route path="/bill_view/:billId" element={<BillView />} />
                 {/* <Route path="/sell_bill_view/:billId" element={<SellBillView />} /> */}
                 <Route path="buyerledger" element={<BuyerLedgers />} />
-
                 <Route path="sellerledger" element={<SellerLedgers />}></Route>
-
                 <Route path="/partner" element={<Partner />} />
                 <Route path="/myprofile" element={<MyProfile />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/sellbillbook" element={<SellBillBook />} />
                 <Route path="/smartchart" element={<SmartChart />} />
-
                 <Route
                   path="/transportoledger"
                   element={<TransportoLedger />}
                 />
-                 <Route
-                      path="/advance"
-                      element={<Advance />}
-                    />
+                <Route path="/advance" element={<Advance />} />
                 {/* <Route
                   path="/transportoledger"
                   element={<TransportoLedger />}
@@ -175,5 +206,4 @@ const RoutesConfig = () => {
     }
   }
 };
-
 export default RoutesConfig;

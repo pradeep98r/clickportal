@@ -5,6 +5,7 @@ import received_stamp from "../../assets/images/received_stamp.svg";
 import paid_stamp from "../../assets/images/paid_stamp.svg";
 import history_icon from "../../assets/images/history_icon.svg";
 import pay_icon from "../../assets/images/pay_icon.svg";
+import print from "../../assets/images/print_bill.svg";
 import { useNavigate } from "react-router-dom";
 import { editbuybillApi } from "../../actions/billCreationService";
 import { ToastContainer, toast } from "react-toastify";
@@ -24,6 +25,7 @@ import { selectSteps } from "../../reducers/stepsSlice";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import Steps from "./steps";
+import { Buffer } from "buffer";
 import {
   selectBill,
   editStatus,
@@ -58,13 +60,16 @@ import {
   outStandingBal,
   totalRecivables,
 } from "../../reducers/ledgerSummarySlice";
+import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
+import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
+import { getSingleBillPdf } from "../../actions/pdfservice/singleBillPdf";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
   // const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const billData = billViewData?.billViewInfo
+  const billData = billViewData?.billViewInfo;
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
   var billPaid = (billPaid =
     billViewData.billViewInfo != null
@@ -87,7 +92,7 @@ const BillView = (props) => {
   useEffect(() => {
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
-    dispatch(billViewInfo(billViewData.billViewInfo))
+    dispatch(billViewInfo(billViewData.billViewInfo));
     if (billViewData?.billViewInfo?.billStatus == "COMPLETED") {
       setDisplayCancel(false);
     } else {
@@ -128,8 +133,8 @@ const BillView = (props) => {
       retCommPercenttage: getCommRetCommPercentages(billData?.rtComm),
       mandiFeePercentage: getCommRetCommPercentages(billData?.mandiFee),
       transVal: getTransRentPercentage(billData?.transportation),
-      labourChargesVal:getTransRentPercentage(billData?.labourCharges),
-      rentUnitVal:getTransRentPercentage(billData?.rent)
+      labourChargesVal: getTransRentPercentage(billData?.labourCharges),
+      rentUnitVal: getTransRentPercentage(billData?.rent),
     });
     var arr = [];
     arr.push(clonedObject);
@@ -141,8 +146,8 @@ const BillView = (props) => {
     dispatch(selectSteps("step3"));
     setShowStepsModalStatus(true);
     setShowStepsModal(true);
-      dispatch(selectBill(arr[0]));
-    
+    dispatch(selectBill(arr[0]));
+
     dispatch(editStatus(true));
     dispatch(tableEditStatus(false));
     dispatch(billDate(new Date(billData.billDate)));
@@ -209,7 +214,7 @@ const BillView = (props) => {
     updatedBy: 0,
     updatedOn: "",
     writerId: writerId,
-    source:'WEB'
+    source: "WEB",
   };
 
   const cancelbillApiCall = () => {
@@ -270,7 +275,7 @@ const BillView = (props) => {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
       // setBillViewData(allBillsArray[index1]);
-      dispatch(billViewInfo(allBillsArray[index1]))
+      dispatch(billViewInfo(allBillsArray[index1]));
       setPrevNextStatus(true);
       setPrevNextDisable(false);
       setNextDisable(false);
@@ -290,7 +295,7 @@ const BillView = (props) => {
       dispatch(billViewInfo(allBillsArray[index1]));
       localStorage.setItem("billData", JSON.stringify(allBillsArray[index1]));
       // setBillViewData(allBillsArray[index1]);
-      dispatch(billViewInfo(allBillsArray[index1]))
+      dispatch(billViewInfo(allBillsArray[index1]));
       setPrevNextStatus(true);
       setNextDisable(false);
       setPrevNextDisable(false);
@@ -366,7 +371,7 @@ const BillView = (props) => {
     setRecordPaymentModal(true);
     setFromBillViewPopup(true);
     // setBillViewData(data);
-    dispatch(billViewInfo(data))
+    dispatch(billViewInfo(data));
     dispatch(fromRecordPayment(true));
   };
 
@@ -445,256 +450,304 @@ const BillView = (props) => {
       })
       .catch((error) => console.log(error));
   };
+  async function getPrintPdf() {
+    var billViewPdfJson = getBillPdfJson(billData, {});
+    console.log(billViewPdfJson);
+    var pdfResponse = await getSingleBillPdf(billViewPdfJson);
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+    }
+  }
   return (
     <div>
       <Modal
-      show={props.showBillViewModal}
-      close={props.closeBillViewModal}
-      className="cropmodal_poopup steps_modal billView_modal right"
-    >
-      <div className="modal-header date_modal_header smartboard_modal_header">
-        <h5
-          className="modal-title d-flex align-items-center header2_text"
-          id="staticBackdropLabel"
-        >
-          <p className="b-name">
-            {billData?.partyType.toUpperCase() === "FARMER" ||
-            billData?.partyType.toUpperCase() === "SELLER"
-              ? getText(billData.farmerName)
-              : getText(billData?.buyerName)}
-            -
-          </p>
-          <p className="b-name">{billData?.caBSeq}</p>
-        </h5>
-        <button
-          onClick={(e) => {
-            clearModal();
-            props.closeBillViewModal();
-          }}
-        >
-          <img alt="image" src={clo} className="cloose" />
-        </button>
-      </div>
-      <div className="modal-body py-0">
-        <div className="row">
-          <div className="col-lg-10 col_left bill_col bill_col_border">
-            <div className="bill_view_card buy_bills_view" id="scroll_style">
-              {prevNextStatus ? (
-                <BusinessDetails prevNextStatus1={prevNextStatus} />
-              ) : (
-                <BusinessDetails />
-              )}
-
-              <div className="bill_crop_details" id="scroll_style1">
+        show={props.showBillViewModal}
+        close={props.closeBillViewModal}
+        className="cropmodal_poopup steps_modal billView_modal right"
+      >
+        <div className="modal-header date_modal_header smartboard_modal_header">
+          <h5
+            className="modal-title d-flex align-items-center header2_text"
+            id="staticBackdropLabel"
+          >
+            <p className="b-name">
+              {billData?.partyType.toUpperCase() === "FARMER" ||
+              billData?.partyType.toUpperCase() === "SELLER"
+                ? getText(billData.farmerName)
+                : getText(billData?.buyerName)}
+              -
+            </p>
+            <p className="b-name">{billData?.caBSeq}</p>
+          </h5>
+          <button
+            onClick={(e) => {
+              clearModal();
+              props.closeBillViewModal();
+            }}
+          >
+            <img alt="image" src={clo} className="cloose" />
+          </button>
+        </div>
+        <div className="modal-body py-0">
+          <div className="row">
+            <div className="col-lg-10 col_left bill_col bill_col_border">
+              <div className="bill_view_card buy_bills_view" id="scroll_style">
                 {prevNextStatus ? (
-                  <CropDetails prevNextStatus1={prevNextStatus} />
+                  <BusinessDetails prevNextStatus1={prevNextStatus} />
                 ) : (
-                  <CropDetails />
+                  <BusinessDetails />
                 )}
 
-                <div className="stamp_img">
-                  {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
-                  displayCancel ? (
-                    <img src={cancel_bill_stamp} alt="stammp_img" />
-                  ) : billPaid ? (
-                    billData?.partyType.toUpperCase() === "FARMER" ||
-                    billData?.partyType.toUpperCase() === "SELLER" ? (
-                      <img src={paid_stamp} alt="stammp_img" />
-                    ) : (
-                      <img src={received_stamp} alt="stammp_img" />
-                    )
+                <div className="bill_crop_details" id="scroll_style1">
+                  {prevNextStatus ? (
+                    <CropDetails prevNextStatus1={prevNextStatus} />
                   ) : (
-                    ""
+                    <CropDetails />
+                  )}
+
+                  <div className="stamp_img">
+                    {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
+                    displayCancel ? (
+                      <img src={cancel_bill_stamp} alt="stammp_img" />
+                    ) : billPaid ? (
+                      billData?.partyType.toUpperCase() === "FARMER" ||
+                      billData?.partyType.toUpperCase() === "SELLER" ? (
+                        <img src={paid_stamp} alt="stammp_img" />
+                      ) : (
+                        <img src={received_stamp} alt="stammp_img" />
+                      )
+                    ) : (
+                      ""
+                    )}
+                  </div>
+
+                  {prevNextStatus ? (
+                    <GroupTotals prevNextStatus1={prevNextStatus} />
+                  ) : (
+                    <GroupTotals />
+                  )}
+                  {prevNextStatus ? (
+                    <BillViewFooter prevNextStatus1={prevNextStatus} />
+                  ) : (
+                    <BillViewFooter />
                   )}
                 </div>
-
-                {prevNextStatus ? (
-                  <GroupTotals prevNextStatus1={prevNextStatus} />
-                ) : (
-                  <GroupTotals />
-                )}
-                {prevNextStatus ? (
-                  <BillViewFooter prevNextStatus1={prevNextStatus} />
-                ) : (
-                  <BillViewFooter />
-                )}
               </div>
             </div>
-          </div>
-          <div className="col-lg-2 p-0 ">
-            <div className="bill_col pr-0">
-              {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
-              displayCancel ? (
-                ""
-              ) : billPaid ? (
-                <div>
-                  <p className="more-p-tag">Actions</p>
-                  <div className="action_icons">
-                    <div className="items_div">
-                      <button
-                        onClick={() =>
-                          historyData(billData?.billId, billData?.partyType)
-                        }
-                      >
-                        <img src={history_icon} alt="img" />
-                      </button>
-                      <p>History</p>
+            <div className="col-lg-2 p-0 ">
+              <div className="bill_col pr-0">
+                {billData?.billStatus?.toUpperCase() == "CANCELLED" ||
+                displayCancel ? (
+                  ""
+                ) : billPaid ? (
+                  <div>
+                    <p className="more-p-tag">Actions</p>
+                    <div className="action_icons">
+                      <div className="items_div">
+                        <button
+                          onClick={() => {
+                            getPrintPdf().then();
+                          }}
+                        >
+                          <img src={print} alt="img" />
+                        </button>
+                        <p>Print</p>
+                      </div>
+                      <div className="items_div">
+                        <button
+                          onClick={() =>
+                            historyData(billData?.billId, billData?.partyType)
+                          }
+                        >
+                          <img src={history_icon} alt="img" />
+                        </button>
+                        <p>History</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                props.fromTransporter ? '' : <div>
-                <p className="more-p-tag">Actions</p>
-                <div className="action_icons">
-                  <div className="items_div">
-                    <button
-                      onClick={() =>
-                        historyData(billData?.billId, billData?.partyType)
-                      }
-                    >
-                      <img src={history_icon} alt="img" />
-                    </button>
-                    <p>History</p>
+                ) : props.fromTransporter ? (
+                  ""
+                ) : (
+                  <div>
+                    <p className="more-p-tag">Actions</p>
+                    <div className="action_icons">
+                      <div className="items_div">
+                        <button
+                          onClick={() =>
+                            historyData(billData?.billId, billData?.partyType)
+                          }
+                        >
+                          <img src={history_icon} alt="img" />
+                        </button>
+                        <p>History</p>
+                      </div>
+                      <div className="items_div">
+                        <button
+                          onClick={() => {
+                            recordPaymentOnClickEvent(billData);
+                          }}
+                        >
+                          <img src={pay_icon} alt="img" />
+                        </button>
+                        <p>Pay</p>
+                      </div>
+                      <div className="items_div">
+                        <button onClick={() => editBill(billData)}>
+                          <img src={edit} alt="img" />
+                        </button>
+                        <p>Edit</p>
+                      </div>
+                      <div className="items_div">
+                        <button
+                          onClick={() => {
+                            getPrintPdf().then();
+                          }}
+                        >
+                          <img src={print} alt="img" />
+                        </button>
+                        <p>Print</p>
+                      </div>
+                      <div className="items_div">
+                        <button onClick={() => handleCheckEvent()}>
+                          <img src={cancel} alt="img" className="" />
+                        </button>
+                        <p>Cancel</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="items_div">
-                    <button onClick={()=>{recordPaymentOnClickEvent(billData)}}>
-                      <img src={pay_icon} alt="img" />
-                    </button>
-                    <p>Pay</p>
-                  </div>
-                  <div className="items_div">
-                    <button onClick={() => editBill(billData)}>
-                      <img src={edit} alt="img" />
-                    </button>
-                    <p>Edit</p>
-                  </div>
-                  <div className="items_div">
-                    <button onClick={() => handleCheckEvent()}>
-                      <img src={cancel} alt="img" className="" />
-                    </button>
-                    <p>Cancel</p>
-                  </div>
-                </div>
-              </div> 
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-      {props.fromLedger ? (
-        ""
-      ) : (
-        <div className="modal-footer bill_footer d-flex justify-content-center">
-          <div className="row" style={{ width: "100%" }}>
-            <div className="col-lg-10 p-0 ">
-              <div className="d-flex justify-content-center align-items-center">
-                <button
-                  onClick={() => {
-                    previousBill(billData?.index + 1);
-                  }}
-                >
-                  <img
-                    src={prev_icon}
-                    className={
-                      prevNextDisable ? "prev_disable" : "prev_next_icon"
-                    }
-                    alt="image"
-                  />
-                </button>
-                <p className="b-name">{billData?.caBSeq}</p>
-                <button
-                  onClick={() => {
-                    nextBill(billData?.index - 1);
-                  }}
-                >
-                  <img
-                    src={next_icon}
-                    className={nextDisable ? "prev_disable" : "prev_next_icon"}
-                    alt="image"
-                  />
-                </button>
+                )}
               </div>
             </div>
-            <div className="col-lg-2"></div>
           </div>
         </div>
-      )}
-      {showStepsModalStatus ? (
-        <Steps
-          showStepsModal={showStepsModal}
-          closeStepsModal={() => setShowStepsModal(false)}
-          fromLedger={props.fromLedger}
-        />
-      ) : (
-        ""
-      )}
-      <ToastContainer />
-      <div className="modal cancelModal fade" id="cancelBill">
-        <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header date_modal_header smartboard_modal_header">
-              <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                Cancel Bill
-              </h5>
-              <img
-                src={close}
-                alt="image"
-                className="close_icon"
-                onClick={closePopup}
-              />
+        {props.fromLedger ? (
+          ""
+        ) : (
+          <div className="modal-footer bill_footer d-flex justify-content-center">
+            <div className="row" style={{ width: "100%" }}>
+              <div className="col-lg-10 p-0 ">
+                <div className="d-flex justify-content-center align-items-center">
+                  <button
+                    onClick={() => {
+                      previousBill(billData?.index + 1);
+                    }}
+                  >
+                    <img
+                      src={prev_icon}
+                      className={
+                        prevNextDisable ? "prev_disable" : "prev_next_icon"
+                      }
+                      alt="image"
+                    />
+                  </button>
+                  <p className="b-name">{billData?.caBSeq}</p>
+                  <button
+                    onClick={() => {
+                      nextBill(billData?.index - 1);
+                    }}
+                  >
+                    <img
+                      src={next_icon}
+                      className={
+                        nextDisable ? "prev_disable" : "prev_next_icon"
+                      }
+                      alt="image"
+                    />
+                  </button>
+                </div>
+              </div>
+              <div className="col-lg-2"></div>
             </div>
-            <div className="modal-body text-center">
-              <div className="row terms_popup ">
-                <div className="col-lg-12">
-                  <div className="cancel_img">
-                    <img src={cancel} alt="img" className="" />
+          </div>
+        )}
+        {showStepsModalStatus ? (
+          <Steps
+            showStepsModal={showStepsModal}
+            closeStepsModal={() => setShowStepsModal(false)}
+            fromLedger={props.fromLedger}
+          />
+        ) : (
+          ""
+        )}
+        <ToastContainer />
+        <div className="modal cancelModal fade" id="cancelBill">
+          <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header smartboard_modal_header">
+                <h5
+                  className="modal-title header2_text"
+                  id="staticBackdropLabel"
+                >
+                  Cancel Bill
+                </h5>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  onClick={closePopup}
+                />
+              </div>
+              <div className="modal-body text-center">
+                <div className="row terms_popup ">
+                  <div className="col-lg-12">
+                    <div className="cancel_img">
+                      <img src={cancel} alt="img" className="" />
+                    </div>
+                    <div className="cancel_bill">
+                      <p className="cancel_billp">
+                        Are you sure you want to cancel the bill
+                      </p>
+                    </div>
+                    <div className="col-lg-2"></div>
                   </div>
-                  <div className="cancel_bill">
-                    <p className="cancel_billp">
-                      Are you sure you want to cancel the bill
+                </div>
+                <div className="row">
+                  <div className="col-lg-12">
+                    <p className="desc-tag">
+                      Please note that cancellation of bill result in ledger
+                      adjustments (roll back) and you will see an adjustment
+                      record in ledger for the same bill
                     </p>
                   </div>
-                  <div className="col-lg-2"></div>
+                  <div className="col-lg-1"></div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-lg-12">
-                  <p className="desc-tag">
-                    Please note that cancellation of bill result in ledger
-                    adjustments (roll back) and you will see an adjustment
-                    record in ledger for the same bill
-                  </p>
+              <div className="modal-footer p-3">
+                <div className="d-flex">
+                  <button
+                    type="button"
+                    className="secondary_btn mr-2"
+                    onClick={closePopup}
+                    data-bs-dismiss="modal"
+                  >
+                    NO
+                  </button>
+                  <button
+                    type="button"
+                    className="primary_btn"
+                    onClick={() => cancelBill(billData)}
+                    data-bs-dismiss="modal"
+                  >
+                    YES
+                  </button>
                 </div>
-                <div className="col-lg-1"></div>
-              </div>
-            </div>
-            <div className="modal-footer p-3">
-              <div className="d-flex">
-                <button
-                  type="button"
-                  className="secondary_btn mr-2"
-                  onClick={closePopup}
-                  data-bs-dismiss="modal"
-                >
-                  NO
-                </button>
-                <button
-                  type="button"
-                  className="primary_btn"
-                  onClick={() => cancelBill(billData)}
-                  data-bs-dismiss="modal"
-                >
-                  YES
-                </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    
-    
-    </Modal>
-    {showBillHistoryModalStatus ? (
+      </Modal>
+      {showBillHistoryModalStatus ? (
         <EditPaymentHistoryView
           showBillHistoryViewModal={showBillHistoryModal}
           closeBillHistoryViewModal={() => setShowBillHistoryModal(false)}
@@ -704,7 +757,7 @@ const BillView = (props) => {
       ) : (
         ""
       )}
-    {recordPaymentModalStatus ? (
+      {recordPaymentModalStatus ? (
         <RecordPayment
           showRecordPaymentModal={recordPaymentModal}
           closeRecordPaymentModal={() => setRecordPaymentModal(false)}

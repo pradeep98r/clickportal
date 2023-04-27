@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  getCurrencyNumberWithOutSymbol,
-} from "../../components/getCurrencyNumber";
+import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
 import { getText } from "../../components/getText";
@@ -55,14 +53,16 @@ const CropDetails = (props) => {
               <div className="d-flex align-items-center">
                 <h6>
                   {billData?.partyType === "FARMER"
-                    ? billData.farmerName + (billData.shortName ? (' - ' + billData.shortName) : '')
-                    : billData?.buyerName + (billData.shortName ? (' - ' + billData.shortName) : '')}
+                    ? billData.farmerName +
+                      (billData.shortName ? " - " + billData.shortName : "")
+                    : billData?.buyerName +
+                      (billData.shortName ? " - " + billData.shortName : "")}
                 </h6>
               </div>
             </div>
           </div>
         </div>
-        {(billData?.partyType === "FARMER" && billData?.farmerAddress != "") ? (
+        {billData?.partyType === "FARMER" && billData?.farmerAddress != "" ? (
           <div className="col-lg-3">
             <div className="partner_info">
               <p className="small_text">Address: </p>
@@ -152,7 +152,13 @@ const CropDetails = (props) => {
                   <td className="col-2">
                     {getCurrencyNumberWithOutSymbol(item.rate)}
                   </td>
-                  <td className={ billData?.partyType === "FARMER" ? "col-2 color_red" :  "col-2 color_green"}>
+                  <td
+                    className={
+                      billData?.partyType === "FARMER"
+                        ? "col-2 color_red"
+                        : "col-2 color_green"
+                    }
+                  >
                     {getCurrencyNumberWithOutSymbol(item.total)}
                     {/* color_green */}
                   </td>
