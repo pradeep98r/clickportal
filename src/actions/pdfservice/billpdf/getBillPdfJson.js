@@ -216,11 +216,21 @@ function renameTheObjectKey(objectData, oldKey, newKeyName) {
   ];
 }
 function clean(objectList) {
-  objectList.map((value) => {
-    if (value.settingsName) {
-      return value;
+  var newObjectList = [];
+  objectList.forEach((value) => {
+    if (value.settingsName !== "") {
+      var str = value.settingsName.replace(/_/g, " ");
+      let words = str.split(" ");
+      words = words.map(
+        (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      ); // capitalize first letter of each word
+      let result = words.join(" ");
+      console.log(words, result);
+      value.settingsName = result;
+      newObjectList.push(value);
     }
   });
+  return newObjectList;
 }
 function getGroupSettingsList() {
   const groupTotals = localStorage.getItem("groupPdfTotals");
