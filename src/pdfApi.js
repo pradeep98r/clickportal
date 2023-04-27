@@ -1,6 +1,6 @@
 import axios from "axios";
 const instance = axios.create({
-  baseURL: "http://192.168.219.81:9001/v1/pdfgen/",
+  baseURL: "http://54.86.67.9:9000/v1/pdfgen/",
 });
 instance.defaults.headers.common["Content-Type"] =
   "application/json;charset=UTF-8";
