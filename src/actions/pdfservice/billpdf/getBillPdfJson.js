@@ -447,7 +447,7 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
       return {
         imageUrl: item.imageUrl,
         cropName: item.cropName,
-        lotId: item.lotId,
+        lotId: item.lotId != null ? item.lotId : '-' ,
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),
         qtyTotal: "",

@@ -26,6 +26,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import Steps from "./steps";
 import { Buffer } from "buffer";
+import download_icon from "../../assets/images/dwnld.svg";
 import {
   selectBill,
   editStatus,
@@ -63,6 +64,7 @@ import {
 import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
 import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
 import { getSingleBillPdf } from "../../actions/pdfservice/singleBillPdf";
+import loading from "../../assets/images/loading.gif";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -88,7 +90,7 @@ const BillView = (props) => {
   const ledgerTabs = tabClick?.partnerTabs;
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
-
+  const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
@@ -451,6 +453,7 @@ const BillView = (props) => {
       .catch((error) => console.log(error));
   };
   async function getPrintPdf() {
+    setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     console.log(billViewPdfJson);
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
@@ -458,6 +461,7 @@ const BillView = (props) => {
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
+      setLoading(false);
       return;
     } else {
       toast.success("Pdf generated SuccessFully", {
@@ -466,7 +470,46 @@ const BillView = (props) => {
       var bufferData = Buffer.from(pdfResponse.data);
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
+      setLoading(false);
       window.open(blobUrl, "_blank");
+    }
+  }
+  async function getDownloadPdf() {
+    setLoading(true);
+    var billViewPdfJson = getBillPdfJson(billData, {});
+    console.log(billViewPdfJson, billData);
+    var pdfResponse = await getSingleBillPdf(billViewPdfJson);
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setLoading(false);
+      return;
+    } else {
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      // link.setAttribute("download",'bill.pdf');
+      if(billData?.partyType == 'BUYER'){
+        link.setAttribute(
+          "download",
+          `SELL_${billData?.caId}_${billData?.buyerId}_${billData?.caBSeq}.pdf`
+        ); //or any other extension
+      }
+      else{
+        link.setAttribute(
+          "download",
+          `BUY_${billData?.caId}_${billData?.farmerId}_${billData?.caBSeq}.pdf`
+        ); //or any other extension
+      }
+      document.body.appendChild(link);
+      link.click();
+      setLoading(false);
     }
   }
   return (
@@ -566,6 +609,16 @@ const BillView = (props) => {
                       </div>
                       <div className="items_div">
                         <button
+                          onClick={() => {
+                            getDownloadPdf().then();
+                          }}
+                        >
+                          <img src={download_icon} alt="img" />
+                        </button>
+                        <p>Download</p>
+                      </div>
+                      <div className="items_div">
+                        <button
                           onClick={() =>
                             historyData(billData?.billId, billData?.partyType)
                           }
@@ -617,6 +670,16 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
+                      </div>
+                      <div className="items_div">
+                        <button
+                          onClick={() => {
+                            getDownloadPdf().then();
+                          }}
+                        >
+                          <img src={download_icon} alt="img" />
+                        </button>
+                        <p>Download</p>
                       </div>
                       <div className="items_div">
                         <button onClick={() => handleCheckEvent()}>
@@ -746,6 +809,13 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
+        {isLoading ? (
+        <div className="loading_styles">
+          <img src={loading} alt="my-gif" className="gif_img" />
+        </div>
+      ) : (
+        ""
+      )}
       </Modal>
       {showBillHistoryModalStatus ? (
         <EditPaymentHistoryView
@@ -776,6 +846,7 @@ const BillView = (props) => {
       ) : (
         ""
       )}
+      
     </div>
   );
 };

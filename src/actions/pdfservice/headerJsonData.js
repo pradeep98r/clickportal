@@ -41,7 +41,8 @@ export default function getPdfHeaderData({
     altNumber: userBusinessData.altNumber,
     heading: pdfThemeInfo.heading.toUpperCase(),
     logoUrl: pdfThemeInfo.logoUrl,
-    languageId: "te",
+    // need to add dynnamic lang selection
+    languageId: "en",
     userLabel: pdfThemeInfo.userLabel.toUpperCase(),
     isBillView: isBillView,
     isPaymentReceipt: isPaymentReceipt,
