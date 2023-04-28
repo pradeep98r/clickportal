@@ -109,6 +109,11 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   var isNotTrader =
     billData.partyType.toUpperCase() === "FARMER" ||
     billData.partyType.toUpperCase() === "SELLER";
+  var systemSettingsData = JSON.parse(
+    localStorage.getItem("systemSettingsData")
+  );
+  billSettingsData =
+    billSettingsData != null ? billSettingsData : systemSettingsData.billSetting;
   billSettingsData.forEach((value) => {
     if (value.settingName === "COMMISSION") {
       includeComm = value.includeInLedger === 1 ? true : false;
@@ -248,8 +253,8 @@ function getGroupSettingsList() {
 function getCashValue(billData, isFarmer) {
   return isFarmer
     ? billData?.cashPaid === 0 || billData?.cashPaid === null
-      ? " "
-      : "-" + getCurrencyNumberWithSymbol(billData?.cashPaid)
+      ? ""
+      : " -" + getCurrencyNumberWithSymbol(billData?.cashPaid)
     : billData?.cashRcvd === 0 || billData?.cashRcvd === null
     ? ""
     : "-" + getCurrencyNumberWithSymbol(billData?.cashRcvd);
