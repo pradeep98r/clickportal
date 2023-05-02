@@ -12,7 +12,7 @@ import {
 import SearchField from "../../components/searchField";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import "../../modules/ledgers/buyerLedger.scss";
-import "../../modules/transporto_ledger/transportoLedger.scss"
+import "../../modules/transporto_ledger/transportoLedger.scss";
 import moment from "moment";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
@@ -20,6 +20,7 @@ import {
   getCurrencyNumberWithSymbol,
   getCurrencyNumberWithOneDigit,
   getMaskedMobileNumber,
+  getMaskedMobileNumber1,
 } from "../../components/getCurrencyNumber";
 import { getDetailedLedgerByDate } from "../../actions/billCreationService";
 import DatePickerModel from "../smartboard/datePicker";
@@ -142,10 +143,9 @@ const Ledgers = (props) => {
   const fetchLedgers = () => {
     getLedgers(clickId, ledgerType)
       .then((res) => {
-        console.log(res.data.data,"result")
-        if (res.data.status.type === "SUCCESS" ) {
-          if(res.data.data !== null){
-            console.log(res.data.data)
+        if (res.data.status.type === "SUCCESS") {
+          setLoading(false);
+          if (res.data.data !== null) {
             setAllData(res.data.data.ledgers);
             dispatch(outStandingBal(res.data.data));
             dispatch(allLedgers(res.data.data.ledgers));
@@ -153,6 +153,7 @@ const Ledgers = (props) => {
             summaryData(clickId, res.data.data.ledgers[0].partyId);
             getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
             setLedgerData(res.data.data.ledgers[0]);
+
             if (ledgerType == "BUYER") {
               geyDetailedLedger(clickId, res.data.data.ledgers[0].partyId);
             } else {
@@ -160,9 +161,9 @@ const Ledgers = (props) => {
             }
           } else {
             dispatch(allLedgers([]));
+            dispatch(setLedgerData(null));
           }
         }
-        setLoading(false);
       })
       .catch((error) => {
         // if (error.toJSON().message === "Network Error") {
@@ -215,7 +216,6 @@ const Ledgers = (props) => {
   const summaryData = (clickId, partyId) => {
     getLedgerSummary(clickId, partyId)
       .then((res) => {
-        console.log(res, "response");
         if (res.data.data !== null) {
           if (res.data.status.type === "SUCCESS") {
             dispatch(businessValues(res.data.data));
@@ -738,7 +738,6 @@ const Ledgers = (props) => {
                         {ledgerType == "BUYER"
                           ? "Record Receivable"
                           : "Record Payment"}
-                        
                       </button>
                     </div>
                     <p className={dateDisplay ? "" : "padding_all"}></p>
@@ -763,44 +762,50 @@ const Ledgers = (props) => {
                       <div className="card-body" id="card-details">
                         <div className="row">
                           <div className="col-lg-3" id="verticalLines">
-                            <div
-                              className="profilers-details"
-                              key={ledgerData.partyId}
-                            >
-                              <div className="d-flex">
-                                <div>
-                                  {ledgerData.profilePic ? (
-                                    <img
-                                      id="singles-img"
-                                      src={ledgerData.profilePic}
-                                      alt="buy-img"
-                                    />
-                                  ) : (
-                                    <img
-                                      id="singles-img"
-                                      src={single_bill}
-                                      alt="img"
-                                    />
-                                  )}
-                                </div>
-                                <div id="ptr-dtls">
-                                  <p className="namedtl-tag">
-                                    {ledgerData.partyName}
-                                  </p>
-                                  <p className="mobilee-tag">
-                                    {!ledgerData.trader
-                                      ? props.type == "BUYER"
-                                        ? "Buyer"
-                                        : "Farmer"
-                                      : "Trader"}{" "}
-                                    - {ledgerData.partyId}&nbsp;
-                                  </p>
-                                  <p className="mobilee-tag">
-                                    {getMaskedMobileNumber(ledgerData.mobile)}
-                                  </p>
+                            {ledgerData != null ? (
+                              <div
+                                className="profilers-details"
+                                key={ledgerData.partyId}
+                              >
+                                <div className="d-flex">
+                                  <div>
+                                    {ledgerData.profilePic ? (
+                                      <img
+                                        id="singles-img"
+                                        src={ledgerData.profilePic}
+                                        alt="buy-img"
+                                      />
+                                    ) : (
+                                      <img
+                                        id="singles-img"
+                                        src={single_bill}
+                                        alt="img"
+                                      />
+                                    )}
+                                  </div>
+                                  <div id="ptr-dtls">
+                                    <p className="namedtl-tag">
+                                      {ledgerData.partyName}
+                                    </p>
+                                    <p className="mobilee-tag">
+                                      {!ledgerData.trader
+                                        ? props.type == "BUYER"
+                                          ? "Buyer"
+                                          : "Farmer"
+                                        : "Trader"}{" "}
+                                      - {ledgerData.partyId}&nbsp;
+                                    </p>
+                                    <p className="mobilee-tag">
+                                      {ledgerData.mobile}
+                                      {/* {ledgerData?.mobile != '' ?
+                                    getMaskedMobileNumber(ledgerData?.mobile) : ''} */}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            ) : (
+                              ""
+                            )}
                           </div>
                           <div
                             className="col-lg-3 d-flex align-items-center"

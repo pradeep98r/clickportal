@@ -92,6 +92,7 @@ const GroupTotals = (props) => {
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       if (res.data.data.billSetting.length > 0) {
         //res=response.data.data.billSetting;
+        
         billSettingData(res.data.data.billSetting);
         if (
           billData?.partyType.toUpperCase() === "FARMER" ||
@@ -410,6 +411,20 @@ const GroupTotals = (props) => {
           res = response.data.data;
           groupWiseTotals(response);
           billSettingData(response.data.data);
+          for (var i = 0; i < response.data.data.length; i++) {
+           if(response.data.data[i].name == "COMM_INCLUDE" && response.data.data[i].status == 1){
+            
+            setIncludeComm(
+              true
+            );
+            setisShown(true);
+           }
+           if(response.data.data[i].name== "RETURN_COMMISSION" && response.data.data[i].status == 1){
+            setIncludeRetComm(true)
+           }
+          }
+          
+         
         });
       }
     });
@@ -997,6 +1012,7 @@ const GroupTotals = (props) => {
         }
       }
     } else {
+   
       if (includeComm) {
         if (isShown) {
           finalVal = finalVal + billData.comm;
