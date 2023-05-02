@@ -1,7 +1,6 @@
 function getBusinessDetailsModel() {
   var userBusinessData = JSON.parse(localStorage.getItem("businessDetails"));
   var personalData = JSON.parse(localStorage.getItem("personalDetails"));
-  console.log(userBusinessData, "mainheader");
   var address =
     userBusinessData.businessAddress.addressLine +
     "," +
@@ -42,7 +41,6 @@ export default function getPdfHeaderData({
   isPaymentReceipt = false,
 }) {
   var userBusinessData = getBusinessDetailsModel();
-  console.log(userBusinessData, "header");
   var pdfThemeInfo = getPdfThemeInfo();
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),

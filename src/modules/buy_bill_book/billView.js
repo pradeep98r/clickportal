@@ -95,7 +95,7 @@ const BillView = (props) => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
   var settingsDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const [lightColorVal, setLightColorVal] = useState('');
+  const [lightColorVal, setLightColorVal] = useState("");
   useEffect(() => {
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
@@ -116,7 +116,7 @@ const BillView = (props) => {
         settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
       var lightColor = colorAdjustBill(primaryColor, 180);
       var darkerColor = colorAdjustBill(primaryColor, -30);
-      setLightColorVal(lightColor)
+      setLightColorVal(lightColor);
       return {
         primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
         lightColor: lightColor !== "" ? lightColor : "#12B82E",
@@ -524,6 +524,7 @@ const BillView = (props) => {
       }
       document.body.appendChild(link);
       link.click();
+      console.log(link.href);
       setLoading(false);
     }
   }
@@ -552,17 +553,30 @@ const BillView = (props) => {
     $("#shareBill").modal("hide");
   };
   function getsharePdf() {
-    navigator.clipboard.writeText(shareUrl).then(
-      function () {
-        toast.success("Pdf Link Copied SuccessFully", {
-          toastId: "errorr2",
-        });
-        closeSharePopup();
-      },
-      function (err) {
-        console.error("something went wrong ", err);
-      }
-    );
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = "blob";
+    xhr.onload = function () {
+      var recoveredBlob = xhr.response;
+      var reader = new FileReader();
+      reader.onload = function () {
+        var blobAsDataUrl = reader.result;
+        navigator.clipboard.writeText(blobAsDataUrl).then(
+          function () {
+            toast.success("Pdf Link Copied SuccessFully", {
+              toastId: "errorr2",
+            });
+            closeSharePopup();
+          },
+          function (err) {
+            console.error("something went wrong ", err);
+          }
+        );
+      };
+      reader.readAsDataURL(recoveredBlob);
+    };
+    xhr.open("GET", shareUrl);
+    xhr.send();
+   
   }
 
   return (
@@ -600,9 +614,12 @@ const BillView = (props) => {
             <div className="col-lg-10 col_left bill_col bill_col_border">
               <div className="bill_view_card buy_bills_view" id="scroll_style">
                 {prevNextStatus ? (
-                  <BusinessDetails prevNextStatus1={prevNextStatus} ligh={lightColorVal} />
+                  <BusinessDetails
+                    prevNextStatus1={prevNextStatus}
+                    ligh={lightColorVal}
+                  />
                 ) : (
-                  <BusinessDetails ligh={lightColorVal}/>
+                  <BusinessDetails ligh={lightColorVal} />
                 )}
 
                 <div className="bill_crop_details" id="scroll_style1">
@@ -967,3 +984,9 @@ const BillView = (props) => {
   );
 };
 export default BillView;
+
+
+
+
+
+

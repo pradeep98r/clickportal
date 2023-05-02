@@ -874,7 +874,6 @@ const GroupTotals = (props) => {
           break;
       }
     }
-    console.log(filterArray,allFilteredSettings,'arrray')
     dispatch(allSettings(allFilteredSettings));
     // console.log(allFilteredSettings, "obj")
     localStorage.setItem("groupPdfTotals", JSON.stringify(allFilteredSettings));

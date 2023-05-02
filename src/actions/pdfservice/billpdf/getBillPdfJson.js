@@ -246,7 +246,6 @@ function getGroupSettingsList() {
     "settingsName"
   );
   const cleanedName = clean(renamedObjectValues);
-  console.log(cleanedName,'grpsett')
   return cleanedName !== undefined ? cleanedName : [];
 }
 
@@ -407,12 +406,10 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     groupId: 0,
     billNumber: billData.billId.toString(),
   };
-  console.log(billData.farmerAddress)
   headerData["billDate"] = moment(billData.billDate).format("DD-MMM-YYYY");
   var isFarmer = billData.partyType === "FARMER";
   var billType = isFarmer ? "BUYBILL" : "SELLBILL";
   var billSettingsData = JSON.parse(localStorage.getItem("BillSettingData"));
-  console.log(getGroupSettingsList(),'grp')
   return {
     primaryColor: colorThemeInfo.primaryColor,
     lightColor: colorThemeInfo.lightColor,
