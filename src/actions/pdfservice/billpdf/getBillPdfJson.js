@@ -230,7 +230,6 @@ function clean(objectList) {
         (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
       ); // capitalize first letter of each word
       let result = words.join(" ");
-      console.log(words, result);
       value.settingsName = result;
       newObjectList.push(value);
     }
@@ -247,6 +246,7 @@ function getGroupSettingsList() {
     "settingsName"
   );
   const cleanedName = clean(renamedObjectValues);
+  console.log(cleanedName,'grpsett')
   return cleanedName !== undefined ? cleanedName : [];
 }
 
@@ -397,7 +397,6 @@ function getCashValue(billData, isFarmer) {
 // }
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
-  console.log("billData", billData);
   var colorThemeInfo = getPdfThemeInfo();
   var headerData = getPdfHeaderData({
     isBillView: true,
@@ -408,10 +407,12 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     groupId: 0,
     billNumber: billData.billId.toString(),
   };
-  headerData["billDate"] = billData.billDate.toUpperCase();
+  console.log(billData.farmerAddress)
+  headerData["billDate"] = moment(billData.billDate).format("DD-MMM-YYYY");
   var isFarmer = billData.partyType === "FARMER";
   var billType = isFarmer ? "BUYBILL" : "SELLBILL";
   var billSettingsData = JSON.parse(localStorage.getItem("BillSettingData"));
+  console.log(getGroupSettingsList(),'grp')
   return {
     primaryColor: colorThemeInfo.primaryColor,
     lightColor: colorThemeInfo.lightColor,

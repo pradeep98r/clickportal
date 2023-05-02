@@ -41,7 +41,6 @@ const RoutesConfig = () => {
   function setSettingsDetails(clickId) {
     getMandiLogoDetails(clickId)
       .then((response) => {
-        console.log(response);
         localStorage.setItem(
           "settingsData",
           JSON.stringify(response.data.data)
@@ -54,7 +53,6 @@ const RoutesConfig = () => {
   function setMandiDetails(clickId) {
     getMandiDetails(clickId)
       .then((response) => {
-        console.log(response);
         var businessDetails = response.data.data.businessDtls;
         var personalDetails = response.data.data.personalDtls;
         localStorage.setItem(
@@ -113,7 +111,6 @@ const RoutesConfig = () => {
             localStorage.getItem("statusPlan") == "FAILURE"
               ? ""
               : localStorage.getItem("statusPlan");
-          console.log(planStatus);
           return (
             <BrowserRouter>
               {planStatus === "SUCCESS" ? (

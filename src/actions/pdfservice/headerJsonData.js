@@ -1,7 +1,16 @@
 function getBusinessDetailsModel() {
   var userBusinessData = JSON.parse(localStorage.getItem("businessDetails"));
   var personalData = JSON.parse(localStorage.getItem("personalDetails"));
-  var address = userBusinessData.businessAddress.addressLine;
+  console.log(userBusinessData, "mainheader");
+  var address =
+    userBusinessData.businessAddress.addressLine +
+    "," +
+    userBusinessData.businessAddress.dist +
+    "," +
+    "pincode - " +
+    userBusinessData.businessAddress.pincode +
+    "," +
+    userBusinessData.businessAddress.state;
   return {
     propriterName: personalData.ownerName.toUpperCase(),
     mandiName: userBusinessData.businessName.toUpperCase(),
@@ -15,12 +24,17 @@ function getBusinessDetailsModel() {
 }
 function getPdfThemeInfo() {
   // default shade in app is 80 per
-  var settingsData = JSON.parse(localStorage.getItem("settingsData"))[0];
-  return {
-    heading: settingsData.header.billTypeLabel.toUpperCase(),
-    userLabel: settingsData.header.userLabel.toUpperCase(),
-    logoUrl: settingsData.logoUrl,
-  };
+  var settingData = JSON.parse(localStorage.getItem("settingsData"));
+  if (settingData != null) {
+    var settingsData = settingData[0];
+    return {
+      heading: settingsData.header.billTypeLabel.toUpperCase(),
+      userLabel: settingsData.header.userLabel.toUpperCase(),
+      logoUrl: settingsData.logoUrl,
+    };
+  } else {
+    return null;
+  }
 }
 
 export default function getPdfHeaderData({
@@ -28,8 +42,8 @@ export default function getPdfHeaderData({
   isPaymentReceipt = false,
 }) {
   var userBusinessData = getBusinessDetailsModel();
+  console.log(userBusinessData, "header");
   var pdfThemeInfo = getPdfThemeInfo();
-  //   console.log(pdfThemeInfo);
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),
     mandiName: userBusinessData.mandiName.toUpperCase(),
@@ -39,11 +53,14 @@ export default function getPdfHeaderData({
     shortCode: userBusinessData.shortCode.toUpperCase(),
     number: userBusinessData.number,
     altNumber: userBusinessData.altNumber,
-    heading: pdfThemeInfo.heading.toUpperCase(),
-    logoUrl: pdfThemeInfo.logoUrl,
+    heading: pdfThemeInfo != null ? pdfThemeInfo.heading.toUpperCase() : "",
+    logoUrl: pdfThemeInfo != null ? pdfThemeInfo.logoUrl : "",
     // need to add dynnamic lang selection
     languageId: "en",
-    userLabel: pdfThemeInfo.userLabel.toUpperCase(),
+    userLabel:
+      pdfThemeInfo != null
+        ? pdfThemeInfo.userLabel.toUpperCase()
+        : "Proprietor".toUpperCase(),
     isBillView: isBillView,
     isPaymentReceipt: isPaymentReceipt,
     isSingleBillView: true,

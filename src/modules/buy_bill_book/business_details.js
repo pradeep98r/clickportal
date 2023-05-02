@@ -37,7 +37,7 @@ export const BusinessDetails = (props) => {
       });
   };
   return (
-    <div className="bill_view_header">
+    <div className="bill_view_header" style={{'backgroundColor' : props.light}}>
       <div className="bill_view_top_header px-0">
         <div className="row justify-content-between">
           <div className="text-left">

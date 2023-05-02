@@ -15,17 +15,30 @@ function colorAdjust(color, amount) {
 }
 export default function getPdfThemeInfo() {
   // default shade in app is 80 per
-  var settingsData = JSON.parse(localStorage.getItem("settingsData"))[0];
-  console.log(settingsData, "settingsData");
-  var primaryColor =
-    settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
-  var lightColor = colorAdjust(primaryColor, 40);
-  var darkerColor = colorAdjust(primaryColor, -40);
-  return {
-    primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
-    lightColor: lightColor !== "" ? lightColor : "#12B82E",
-    darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
-    mandiName: settingsData.mandiName,
-    signatureUrl: settingsData.drawnSign ? settingsData.signatureUrl : "",
-  };
+  var settingsDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  if (settingsDataArray != null) {
+    var settingsData = settingsDataArray[0];
+    var primaryColor =
+      settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
+    var lightColor = colorAdjust(primaryColor, 180);
+    var darkerColor = colorAdjust(primaryColor, -30);
+    return {
+      primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
+      lightColor: lightColor !== "" ? lightColor : "#12B82E",
+      darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
+      mandiName: settingsData.mandiName,
+      signatureUrl: settingsData.drawnSign ? settingsData.signatureUrl : "",
+    };
+  } else {
+    var primaryColor = "#16A12B";
+    var lightColor = colorAdjust(primaryColor, 180);
+    var darkerColor = colorAdjust(primaryColor, -30);
+    return {
+      primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
+      lightColor: lightColor !== "" ? lightColor : "#12B82E",
+      darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
+      mandiName: "",
+      signatureUrl: "",
+    };
+  }
 }

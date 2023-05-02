@@ -27,6 +27,8 @@ import moment from "moment";
 import Steps from "./steps";
 import { Buffer } from "buffer";
 import download_icon from "../../assets/images/dwnld.svg";
+import share_icon from "../../assets/images/share_icon.svg";
+import copy_icon from "../../assets/images/copy_link.svg";
 import {
   selectBill,
   editStatus,
@@ -65,6 +67,7 @@ import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
 import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
 import { getSingleBillPdf } from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
+import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -91,6 +94,8 @@ const BillView = (props) => {
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
+  var settingsDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const [lightColorVal, setLightColorVal] = useState('');
   useEffect(() => {
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
@@ -105,6 +110,19 @@ const BillView = (props) => {
         setoutBal(response.data.data);
       }
     });
+    if (settingsDataArray != null) {
+      var settingsData = settingsDataArray[0];
+      var primaryColor =
+        settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
+      var lightColor = colorAdjustBill(primaryColor, 180);
+      var darkerColor = colorAdjustBill(primaryColor, -30);
+      setLightColorVal(lightColor)
+      return {
+        primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
+        lightColor: lightColor !== "" ? lightColor : "#12B82E",
+        darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
+      };
+    }
   }, [props]);
 
   const dispatch = useDispatch();
@@ -140,7 +158,6 @@ const BillView = (props) => {
     });
     var arr = [];
     arr.push(clonedObject);
-    console.log(valArr, clonedObject);
     if (!props.fromLedger) {
       $(".billView_modal").hide();
       $(".modal-backdrop").remove();
@@ -455,7 +472,6 @@ const BillView = (props) => {
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
-    console.log(billViewPdfJson);
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
@@ -477,7 +493,6 @@ const BillView = (props) => {
   async function getDownloadPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
-    console.log(billViewPdfJson, billData);
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
@@ -492,19 +507,19 @@ const BillView = (props) => {
       var bufferData = Buffer.from(pdfResponse.data);
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
+      console.log(blobUrl, "blob");
       const link = document.createElement("a");
       link.href = blobUrl;
       // link.setAttribute("download",'bill.pdf');
-      if(billData?.partyType == 'BUYER'){
+      if (billData?.partyType == "BUYER") {
         link.setAttribute(
           "download",
-          `SELL_${billData?.caId}_${billData?.buyerId}_${billData?.caBSeq}.pdf`
+          `SELL_${clickId}_${billData?.buyerId}_${billData?.caBSeq}.pdf`
         ); //or any other extension
-      }
-      else{
+      } else {
         link.setAttribute(
           "download",
-          `BUY_${billData?.caId}_${billData?.farmerId}_${billData?.caBSeq}.pdf`
+          `BUY_${clickId}_${billData?.farmerId}_${billData?.caBSeq}.pdf`
         ); //or any other extension
       }
       document.body.appendChild(link);
@@ -512,6 +527,44 @@ const BillView = (props) => {
       setLoading(false);
     }
   }
+  const [shareUrl, setShareUrl] = useState("");
+  async function getShareModal() {
+    setLoading(true);
+    var billViewPdfJson = getBillPdfJson(billData, {});
+    var pdfResponse = await getSingleBillPdf(billViewPdfJson);
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setLoading(false);
+      return;
+    } else {
+      setLoading(false);
+      $("#shareBill").modal("show");
+
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setShareUrl(blobUrl);
+    }
+  }
+  const closeSharePopup = () => {
+    $("#shareBill").modal("hide");
+  };
+  function getsharePdf() {
+    navigator.clipboard.writeText(shareUrl).then(
+      function () {
+        toast.success("Pdf Link Copied SuccessFully", {
+          toastId: "errorr2",
+        });
+        closeSharePopup();
+      },
+      function (err) {
+        console.error("something went wrong ", err);
+      }
+    );
+  }
+
   return (
     <div>
       <Modal
@@ -547,9 +600,9 @@ const BillView = (props) => {
             <div className="col-lg-10 col_left bill_col bill_col_border">
               <div className="bill_view_card buy_bills_view" id="scroll_style">
                 {prevNextStatus ? (
-                  <BusinessDetails prevNextStatus1={prevNextStatus} />
+                  <BusinessDetails prevNextStatus1={prevNextStatus} ligh={lightColorVal} />
                 ) : (
-                  <BusinessDetails />
+                  <BusinessDetails ligh={lightColorVal}/>
                 )}
 
                 <div className="bill_crop_details" id="scroll_style1">
@@ -606,6 +659,16 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
+                      </div>
+                      <div className="items_div">
+                        <button
+                          onClick={() => {
+                            getShareModal().then();
+                          }}
+                        >
+                          <img src={share_icon} alt="img" />
+                        </button>
+                        <p>Share</p>
                       </div>
                       <div className="items_div">
                         <button
@@ -670,6 +733,16 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
+                      </div>
+                      <div className="items_div">
+                        <button
+                          onClick={() => {
+                            getShareModal().then();
+                          }}
+                        >
+                          <img src={share_icon} alt="img" />
+                        </button>
+                        <p>Share</p>
                       </div>
                       <div className="items_div">
                         <button
@@ -809,13 +882,57 @@ const BillView = (props) => {
             </div>
           </div>
         </div>
-        {isLoading ? (
-        <div className="loading_styles">
-          <img src={loading} alt="my-gif" className="gif_img" />
+        <div className="modal cancelModal shareModal fade" id="shareBill">
+          <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header date_modal_header smartboard_modal_header">
+                <div className="d-flex">
+                  <img src={copy_icon} alt="image" />
+                  <h5
+                    className="modal-title ml-2 header2_text"
+                    id="staticBackdropLabel"
+                  >
+                    Get Link
+                  </h5>
+                </div>
+                <img
+                  src={close}
+                  alt="image"
+                  className="close_icon"
+                  onClick={closeSharePopup}
+                />
+              </div>
+              <div className="modal-body text-center">
+                <div className="row terms_popup ">
+                  <div className="col-lg-9 p-0">
+                    <input
+                      type="text"
+                      value={shareUrl}
+                      className="form-control mb-0"
+                    />
+                  </div>
+                  <div className="col-lg-3 p-0">
+                    <button
+                      className="primary_btn"
+                      onClick={() => {
+                        getsharePdf();
+                      }}
+                    >
+                      Copy Link
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      ) : (
-        ""
-      )}
+        {isLoading ? (
+          <div className="loading_styles">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
       </Modal>
       {showBillHistoryModalStatus ? (
         <EditPaymentHistoryView
@@ -846,7 +963,6 @@ const BillView = (props) => {
       ) : (
         ""
       )}
-      
     </div>
   );
 };
