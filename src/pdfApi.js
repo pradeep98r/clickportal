@@ -8,4 +8,5 @@ instance.defaults.headers.common["Content-Type"] =
   "application/json;charset=UTF-8";
 instance.defaults.headers.common["Charset"] = "utf-8";
 instance.defaults.headers.common["Accept"] = "application/pdf";
+instance.defaults.headers.common["Access-Control-Allow-Origin"] = "*"
 export default instance;
