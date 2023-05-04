@@ -3,11 +3,13 @@ import { useSelector } from "react-redux";
 import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
-import { getText } from "../../components/getText";
+import { colorAdjustBg, getText } from "../../components/getText";
 const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-
+  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const colorThemeVal =
+    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
@@ -18,6 +20,7 @@ const CropDetails = (props) => {
     });
     return totalValue;
   };
+
   return (
     <div>
       <div className="row partner_info_padding pb-0">
@@ -94,11 +97,36 @@ const CropDetails = (props) => {
         <table className="table table-bordered bill_view mb-0">
           <thead>
             <tr>
-              <th className="col-1 text-center">#</th>
-              <th className="col-4">Particulars</th>
-              <th className="col-3">Qty. </th>
-              <th className="col-2">Rate (₹)</th>
-              <th className="col-2">Total (₹)</th>
+              <th
+                className="col-1 text-center"
+                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+              >
+                #
+              </th>
+              <th
+                className="col-4"
+                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+              >
+                Particulars
+              </th>
+              <th
+                className="col-3"
+                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+              >
+                Qty.{" "}
+              </th>
+              <th
+                className="col-2"
+                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+              >
+                Rate (₹)
+              </th>
+              <th
+                className="col-2"
+                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+              >
+                Total (₹)
+              </th>
             </tr>
           </thead>
           <tbody className="crop-tbl">
@@ -167,7 +195,10 @@ const CropDetails = (props) => {
             })}
           </tbody>
         </table>
-        <div className="row gross_profit">
+        <div
+          className="row gross_profit"
+          style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+        >
           <div className="col-lg-2"></div>
           <div className="col-lg-4"></div>
           <div className="col-lg-6 p-0 ">

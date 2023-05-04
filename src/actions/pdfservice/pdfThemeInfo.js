@@ -17,7 +17,7 @@ export default function getPdfThemeInfo() {
   // default shade in app is 80 per
   var settingsDataArray = JSON.parse(localStorage.getItem("settingsData"));
   if (settingsDataArray != null) {
-    var settingsData = settingsDataArray[0];
+    var settingsData = settingsDataArray;
     var primaryColor =
       settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
     var lightColor = colorAdjust(primaryColor, 180);

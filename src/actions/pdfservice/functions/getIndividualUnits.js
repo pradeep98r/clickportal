@@ -18,15 +18,14 @@ export default function getIndividualTotalUnits(lineItemsList) {
   var totalPcs = 0;
   lineItemsList.forEach((item) => {
     // eslint-disable-next-line default-case
-    switch (item.qtyUnit) {
+    switch (item.qtyUnit.toUpperCase()) {
       case "CRATES":
         if (item.rateType === "RATE_PER_KG") {
           totalKgs += isIncludeWastage({
             showInPdf: true,
             wastage: item.wastage,
-            weight: item.totalWeight,
+            weight: item.weight,
           });
-
           totalCrates += item.qty;
         } else {
           totalCrates += isIncludeWastage({
@@ -41,7 +40,7 @@ export default function getIndividualTotalUnits(lineItemsList) {
           totalKgs += isIncludeWastage({
             showInPdf: true,
             wastage: item.wastage,
-            weight: item.totalWeight,
+            weight: item.weight,
           });
           totalSacs += item.qty;
         } else {
@@ -57,7 +56,7 @@ export default function getIndividualTotalUnits(lineItemsList) {
           totalKgs += isIncludeWastage({
             showInPdf: true,
             wastage: item.wastage,
-            weight: item.totalWeight,
+            weight: item.weight,
           });
           totalBoxes += item.qty;
         } else {
@@ -73,7 +72,7 @@ export default function getIndividualTotalUnits(lineItemsList) {
           totalKgs += isIncludeWastage({
             showInPdf: true,
             wastage: item.wastage,
-            weight: item.totalWeight,
+            weight: item.weight,
           });
           totalBags += item.qty;
         } else {
@@ -88,21 +87,21 @@ export default function getIndividualTotalUnits(lineItemsList) {
         totalKgs += isIncludeWastage({
           showInPdf: true,
           wastage: item.wastage,
-          weight: item.totalWeight,
+          weight: item.weight,
         });
         break;
       case "LOADS":
         totalLds += isIncludeWastage({
           showInPdf: true,
           wastage: item.wastage,
-          weight: item.totalWeight,
+          weight: item.weight,
         });
         break;
       case "PIECES":
         totalPcs += isIncludeWastage({
           showInPdf: true,
           wastage: item.wastage,
-          weight: item.totalWeight,
+          weight: item.weight,
         });
         break;
       default:
@@ -133,6 +132,5 @@ export default function getIndividualTotalUnits(lineItemsList) {
   }
   var finalResult =
     result.length > 0 ? result.substring(0, result.length - 1) : result;
-  console.log(finalResult, "finalResult");
   return finalResult;
 }

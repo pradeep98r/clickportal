@@ -67,9 +67,73 @@ function getQuantityData(qty, qtyUnit, weight) {
   };
   return qtyData;
 }
+// function getTotalBalance() {
+//   var crates = 0;
+//   var bags = 0;
+//   var kgs = 0;
+//   var sacs = 0;
+//   var boxes = 0;
+//   var loads = 0;
+//   var pieces = 0;
+//   forEach((element) =>{
+//     switch (toQuantityType[element.unitType]) {
+//       case QuantityType.crates:
+//         crates += element.quantity;
+//         break;
+//       case QuantityType.sacs:
+//         sacs += element.quantity;
+//         break;
+//       case QuantityType.boxes:
+//         boxes += element.quantity;
+//         break;
+//       case QuantityType.bags:
+//         bags += element.quantity;
+//         break;
+//       case QuantityType.kgs:
+//         kgs += element.quantity;
+//         break;
+//       case QuantityType.loads:
+//         loads += element.quantity;
+//         break;
+//       case QuantityType.pieces:
+//         pieces += element.quantity;
+//         break;
+//       default:
+//         break;
+//     }
+//   });
+
+//   var value = '';
+//   if (boxes != 0) {
+//     value += `${boxes} BX |`;
+//   }
+//   if (crates != 0) {
+//     value += ` ${crates} C |`;
+//   }
+//   if (sacs != 0) {
+//     value += ` ${sacs} S |`;
+//   }
+//   if (bags != 0) {
+//     value += ` ${bags} BG |`;
+//   }
+//   if (kgs != 0) {
+//     value += ` ${kgs} KGS |`;
+//   }
+//   if (loads != 0) {
+//     value += ` ${loads} LDS |`;
+//   }
+//   if (pieces != 0) {
+//     value += ` ${pieces} PCS |`;
+//   }
+//   if (value.isEmpty) {
+//     return value = '0.0';
+//   }
+//   console.log(value,'string');
+//   return value.removeLast();
+// }
 function getWastage(wastage, qtyUnit, rateType) {
   return `${
-    wastage !== "0"
+    wastage !== 0
       ? wastage !== null
         ? " - " +
           getCurrencyNumberWithOneDigit(wastage) +
@@ -113,7 +177,9 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
     localStorage.getItem("systemSettingsData")
   );
   billSettingsData =
-    billSettingsData != null ? billSettingsData : systemSettingsData.billSetting;
+    billSettingsData != null
+      ? billSettingsData
+      : systemSettingsData.billSetting;
   billSettingsData.forEach((value) => {
     if (value.settingName === "COMMISSION") {
       includeComm = value.includeInLedger === 1 ? true : false;
@@ -239,14 +305,15 @@ function clean(objectList) {
 function getGroupSettingsList() {
   const groupTotals = localStorage.getItem("groupPdfTotals");
   const groupTotalsList = JSON.parse(groupTotals);
-  const filteredList = getUniqueListBy(groupTotalsList, "settingName");
+  // const filteredList = getUniqueListBy(groupTotalsList, "settingName");
+  // console.log(groupTotalsList,'totals')
   const renamedObjectValues = renameTheObjectKey(
-    filteredList,
+    groupTotalsList,
     "settingName",
     "settingsName"
   );
-  const cleanedName = clean(renamedObjectValues);
-  return cleanedName !== undefined ? cleanedName : [];
+  // const cleanedName = clean(renamedObjectValues);
+  return groupTotalsList !== undefined ? groupTotalsList : [];
 }
 
 function getCashValue(billData, isFarmer) {
@@ -445,7 +512,7 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
       return {
         imageUrl: item.imageUrl,
         cropName: item.cropName,
-        lotId: item.lotId != null ? item.lotId : '-' ,
+        lotId: item.lotId != null ? item.lotId : "-",
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),
         qtyTotal: "",

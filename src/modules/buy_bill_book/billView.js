@@ -39,7 +39,7 @@ import {
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
 import { billViewInfo } from "../../reducers/billViewSlice";
-import { getText } from "../../components/getText";
+import { colorAdjustBg, getText } from "../../components/getText";
 import {
   getBillHistoryListById,
   getLedgers,
@@ -70,6 +70,9 @@ import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const colorThemeVal =
+    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
@@ -94,8 +97,6 @@ const BillView = (props) => {
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
-  var settingsDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const [lightColorVal, setLightColorVal] = useState("");
   useEffect(() => {
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
@@ -110,19 +111,19 @@ const BillView = (props) => {
         setoutBal(response.data.data);
       }
     });
-    if (settingsDataArray != null) {
-      var settingsData = settingsDataArray[0];
-      var primaryColor =
-        settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
-      var lightColor = colorAdjustBill(primaryColor, 180);
-      var darkerColor = colorAdjustBill(primaryColor, -30);
-      setLightColorVal(lightColor);
-      return {
-        primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
-        lightColor: lightColor !== "" ? lightColor : "#12B82E",
-        darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
-      };
-    }
+    // if (settingsDataArray != null) {
+    //   var settingsData = settingsDataArray[0];
+    //   var primaryColor =
+    //     settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
+    //   var lightColor = colorAdjustBill(primaryColor, 180);
+    //   var darkerColor = colorAdjustBill(primaryColor, -30);
+    //   setLightColorVal(lightColor);
+    //   return {
+    //     primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
+    //     lightColor: lightColor !== "" ? lightColor : "#12B82E",
+    //     darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
+    //   };
+    // }
   }, [props]);
 
   const dispatch = useDispatch();
@@ -472,7 +473,9 @@ const BillView = (props) => {
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
+    console.log(billViewPdfJson,'pdfres1');
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
+    console.log(pdfResponse,'pdfres2');
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -507,7 +510,6 @@ const BillView = (props) => {
       var bufferData = Buffer.from(pdfResponse.data);
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
-      console.log(blobUrl, "blob");
       const link = document.createElement("a");
       link.href = blobUrl;
       // link.setAttribute("download",'bill.pdf');
@@ -524,7 +526,6 @@ const BillView = (props) => {
       }
       document.body.appendChild(link);
       link.click();
-      console.log(link.href);
       setLoading(false);
     }
   }
@@ -547,6 +548,10 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
+      const pdf = new File([blobUrl], "hello.pdf", { type: "application/pdf" });
+      const files = [pdf];
+      // Share PDF file if supported.
+      if (navigator.canShare({ files })) await navigator.share({ files });
     }
   }
   const closeSharePopup = () => {
@@ -576,7 +581,6 @@ const BillView = (props) => {
     };
     xhr.open("GET", shareUrl);
     xhr.send();
-   
   }
 
   return (
@@ -614,15 +618,16 @@ const BillView = (props) => {
             <div className="col-lg-10 col_left bill_col bill_col_border">
               <div className="bill_view_card buy_bills_view" id="scroll_style">
                 {prevNextStatus ? (
-                  <BusinessDetails
-                    prevNextStatus1={prevNextStatus}
-                    ligh={lightColorVal}
-                  />
+                  <BusinessDetails prevNextStatus1={prevNextStatus} />
                 ) : (
-                  <BusinessDetails ligh={lightColorVal} />
+                  <BusinessDetails />
                 )}
 
-                <div className="bill_crop_details" id="scroll_style1">
+                <div
+                  className="bill_crop_details"
+                  style={{ border: "2px solid" + colorThemeVal }}
+                  id="scroll_style1"
+                >
                   {prevNextStatus ? (
                     <CropDetails prevNextStatus1={prevNextStatus} />
                   ) : (
@@ -677,7 +682,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -686,7 +691,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -751,7 +756,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -760,7 +765,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -984,9 +989,3 @@ const BillView = (props) => {
   );
 };
 export default BillView;
-
-
-
-
-
-

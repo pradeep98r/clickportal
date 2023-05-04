@@ -25,7 +25,7 @@ function getPdfThemeInfo() {
   // default shade in app is 80 per
   var settingData = JSON.parse(localStorage.getItem("settingsData"));
   if (settingData != null) {
-    var settingsData = settingData[0];
+    var settingsData = settingData;
     return {
       heading: settingsData.header.billTypeLabel.toUpperCase(),
       userLabel: settingsData.header.userLabel.toUpperCase(),

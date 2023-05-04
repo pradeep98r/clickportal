@@ -8,7 +8,7 @@ import {
 } from "../../actions/billCreationService";
 import { useDispatch, useSelector } from "react-redux";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
-import { getText } from "../../components/getText";
+import { colorAdjustBg, getText } from "../../components/getText";
 import {
   allGroupsSettings,
   groupFourSettings,
@@ -23,6 +23,7 @@ import {
   allSettings,
   selectedTotalBillAmount,
 } from "../../reducers/billViewDisplaySlice";
+import { map } from "jquery";
 
 const GroupTotals = (props) => {
   var groupOneTotal = 0;
@@ -40,7 +41,9 @@ const GroupTotals = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
-
+  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const colorThemeVal =
+    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -878,9 +881,10 @@ const GroupTotals = (props) => {
           break;
       }
     }
-    dispatch(allSettings(allFilteredSettings));
-    localStorage.setItem("groupPdfTotals", JSON.stringify(allFilteredSettings));
+
+    getGrp(allFilteredSettings);
   };
+
   allGroups.map((item) => {
     var substring = "CUSTOM_FIELD";
     // var str = "ADVANCES";
@@ -922,7 +926,84 @@ const GroupTotals = (props) => {
     .map((item) => {
       return (groupFourTotal += handleGroupNames(item.settingName));
     });
+  const getGrp = (array) => {
+    const grouped = Object.values(
+      array.reduce((acc, item) => {
+        // Append the item to the array for each country
+        acc[item.groupId] = [...(acc[item.groupId] || []), item];
+        return acc;
+      }, {})
+    );
 
+    grouped.map((item) => {
+      item.map((grpItem) => {
+        if (grpItem.groupId == 1) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal + groupOneTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        } else if (grpItem.groupId == 2) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal + groupOneTotal + groupTwoTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        } else if (grpItem.groupId == 3) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal +
+                groupOneTotal +
+                groupTwoTotal +
+                groupThreeTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        } else if (grpItem.groupId == 4) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal +
+                groupOneTotal +
+                groupTwoTotal +
+                groupThreeTotal +
+                groupFourTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        }
+      });
+    });
+
+    const newArr = grouped.flat();
+    const unique2 = newArr.filter((obj, index) => {
+      return (
+        index ===
+        newArr.findIndex(
+          (o) => obj.groupId == o.groupId && obj.settingName == o.settingName
+        )
+      );
+    });
+    dispatch(allSettings(unique2));
+    localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
+  };
   const handleSettingName = (item, list) => {
     var substring = "CUSTOM_FIELD";
     if (item?.includes(substring)) {
@@ -1391,7 +1472,10 @@ const GroupTotals = (props) => {
               {allGroupsTotal === 0 || allGroupsTotal === null ? (
                 ""
               ) : (
-                <div className="row group-one-total">
+                <div
+                  className="row group-one-total"
+                  style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                >
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4 p-0">
                     <p className="groups_values">
@@ -1915,7 +1999,10 @@ const GroupTotals = (props) => {
                 {groupOneTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -2326,7 +2413,10 @@ const GroupTotals = (props) => {
                 {groupTwoTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -2745,7 +2835,10 @@ const GroupTotals = (props) => {
                 {groupThreeTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -3152,7 +3245,10 @@ const GroupTotals = (props) => {
                 {groupFourTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -3285,7 +3381,10 @@ const GroupTotals = (props) => {
           )}
         </div>
         {!status && allGroups.length == 0 ? (
-          <div className="row out-st-bal align-items-center">
+          <div
+            className="row out-st-bal align-items-center"
+            style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+          >
             <div className="col-lg-2">
               <div className="d-flex footer-img">
                 <img src={ono_connect_click} alt="ono_connect" />
@@ -3355,7 +3454,10 @@ const GroupTotals = (props) => {
             )}
           </div>
         ) : (
-          <div className="row out-st-bal align-items-center">
+          <div
+            className="row out-st-bal align-items-center"
+            style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+          >
             <div className="col-lg-2">
               <div className="d-flex footer-img">
                 <img src={ono_connect_click} alt="ono_connect" />
