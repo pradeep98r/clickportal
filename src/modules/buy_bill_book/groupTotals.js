@@ -410,6 +410,7 @@ const GroupTotals = (props) => {
           }
         }
       } else {
+        console.log('default')
         getDefaultSystemSettings().then((response) => {
           res = response.data.data;
           groupWiseTotals(response);
@@ -434,7 +435,7 @@ const GroupTotals = (props) => {
     });
   };
 
-  var groupTotals = [];
+  var totalgrp = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
       if (
@@ -451,10 +452,11 @@ const GroupTotals = (props) => {
               isShown: true,
             });
           }
-          groupTotals.push(res.data.data[i]);
-          groupTotals = groupTotals.sort((a, b) => a.id - b.id);
-          dispatch(allGroupsSettings(groupTotals));
-          setAllGroups([...allGroups, ...groupTotals]);
+          let clonedObject = { ...res.data.data[i] };
+          totalgrp = [...totalgrp, clonedObject];
+          totalgrp = totalgrp.sort((a, b) => a.id - b.id);
+          dispatch(allGroupsSettings(totalgrp));
+          setAllGroups([...totalgrp]);
         }
       } else {
         if (
@@ -467,10 +469,11 @@ const GroupTotals = (props) => {
               isShown: true,
             });
           }
-          groupTotals.push(res.data.data[i]);
-          groupTotals = groupTotals.sort((a, b) => a.id - b.id);
-          dispatch(allGroupsSettings(groupTotals));
-          setAllGroups([...allGroups, ...groupTotals]);
+          let clonedObject = { ...res.data.data[i] };
+          totalgrp = [...totalgrp, clonedObject];
+          totalgrp = totalgrp.sort((a, b) => a.id - b.id);
+          dispatch(allGroupsSettings(totalgrp));
+          setAllGroups([...totalgrp]);
         }
       }
     }
@@ -853,9 +856,9 @@ const GroupTotals = (props) => {
                 }
               }
             });
-           if(billData?.customFields.length > 0){
-            allFilteredSettings.push(obj);
-           }
+            if (billData?.customFields.length > 0) {
+              allFilteredSettings.push(obj);
+            }
           } else if (billData?.partyType.toUpperCase() === "BUYER") {
             billData?.customFields.map((item) => {
               if (item.fee != 0) {
@@ -878,9 +881,9 @@ const GroupTotals = (props) => {
                 }
               }
             });
-            if(billData?.customFields.length > 0){
+            if (billData?.customFields.length > 0) {
               allFilteredSettings.push(obj);
-             }
+            }
           }
           break;
       }
@@ -892,7 +895,10 @@ const GroupTotals = (props) => {
     var substring = "CUSTOM_FIELD";
     // var str = "ADVANCES";
     if (item?.name.includes(substring)) {
-      item.name = "";
+      let cObject = {...item};
+      cObject.name = "";
+      item = cObject;
+      // item.name = "";
       substring = "";
     }
     // else if (item?.name.includes(str)) {
@@ -1226,6 +1232,7 @@ const GroupTotals = (props) => {
                                   </p>
                                 )}
                                 <p className="fee-perc">
+                                  
                                   {item.name == "COMMISSION" ? (
                                     billData?.comm ? (
                                       <span className="fee-percentage">
@@ -1476,7 +1483,14 @@ const GroupTotals = (props) => {
               ) : (
                 <div
                   className="row group-one-total"
-                  style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
                 >
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4 p-0">
@@ -2003,7 +2017,14 @@ const GroupTotals = (props) => {
                 ) : (
                   <div
                     className="row group-one-total"
-                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
                   >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
@@ -2417,7 +2438,14 @@ const GroupTotals = (props) => {
                 ) : (
                   <div
                     className="row group-one-total"
-                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
                   >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
@@ -2839,7 +2867,14 @@ const GroupTotals = (props) => {
                 ) : (
                   <div
                     className="row group-one-total"
-                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
                   >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
@@ -3249,7 +3284,14 @@ const GroupTotals = (props) => {
                 ) : (
                   <div
                     className="row group-one-total"
-                    style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
                   >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
@@ -3385,7 +3427,14 @@ const GroupTotals = (props) => {
         {!status && allGroups.length == 0 ? (
           <div
             className="row out-st-bal align-items-center"
-            style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+            style={{
+              backgroundColor:
+                pdfThemeData != null
+                  ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                    ? colorThemeVal
+                    : colorAdjustBg(colorThemeVal, 180)
+                  : "#D7F3DD",
+            }}
           >
             <div className="col-lg-2">
               <div className="d-flex footer-img">
@@ -3458,7 +3507,14 @@ const GroupTotals = (props) => {
         ) : (
           <div
             className="row out-st-bal align-items-center"
-            style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+            style={{
+              backgroundColor:
+                pdfThemeData != null
+                  ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                    ? colorThemeVal
+                    : colorAdjustBg(colorThemeVal, 180)
+                  : "#D7F3DD",
+            }}
           >
             <div className="col-lg-2">
               <div className="d-flex footer-img">

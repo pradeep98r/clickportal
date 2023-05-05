@@ -127,6 +127,7 @@ const Step22 = (props) => {
         } else {
           cIndex = -1;
         }
+        console.log(cIndex,defaultUnitTypeVal,'fetchcrop');
         Object.assign(item, {
           cropSelect: "",
           qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
@@ -135,7 +136,7 @@ const Step22 = (props) => {
               ? "kgs"
               : cIndex != -1
               ? getUnitVal(qSetting, cIndex)
-              : "crates",
+              : "kgs",
         });
       });
       setCropsData(response.data.data);
@@ -320,6 +321,7 @@ const Step22 = (props) => {
     var party = billEditStatus
       ? billEditItemInfo.selectedPartyType
       : users.buyerInfo.partyType;
+      console.log(settingsData,'set')
     for (var i = 0; i < settingsData.billSetting.length; i++) {
       if (party.toLowerCase() == "buyer") {
         if (
@@ -349,7 +351,9 @@ const Step22 = (props) => {
         }
       }
     }
-
+    if(settingsData.qtySetting.length == 0){
+      setDefaultUnitTypeVal('unit_kg');
+    }
     dispatch(cropEditStatus(billEditStatus ? true : false));
 
     cropObjectArr = billEditStatus
@@ -451,7 +455,7 @@ const Step22 = (props) => {
                   ? "kgs"
                   : cIndex != -1
                   ? getUnitVal(qSetting, cIndex)
-                  : "crates",
+                  : "kgs",
             },
             { weight: 0 },
             { rate: 0 },
