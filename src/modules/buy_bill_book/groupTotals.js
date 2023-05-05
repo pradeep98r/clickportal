@@ -853,7 +853,9 @@ const GroupTotals = (props) => {
                 }
               }
             });
+           if(billData?.customFields.length > 0){
             allFilteredSettings.push(obj);
+           }
           } else if (billData?.partyType.toUpperCase() === "BUYER") {
             billData?.customFields.map((item) => {
               if (item.fee != 0) {
@@ -876,12 +878,13 @@ const GroupTotals = (props) => {
                 }
               }
             });
-            allFilteredSettings.push(obj);
+            if(billData?.customFields.length > 0){
+              allFilteredSettings.push(obj);
+             }
           }
           break;
       }
     }
-
     getGrp(allFilteredSettings);
   };
 
@@ -934,7 +937,6 @@ const GroupTotals = (props) => {
         return acc;
       }, {})
     );
-
     grouped.map((item) => {
       item.map((grpItem) => {
         if (grpItem.groupId == 1) {

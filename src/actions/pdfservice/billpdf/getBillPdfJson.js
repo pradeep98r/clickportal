@@ -463,6 +463,7 @@ function getCashValue(billData, isFarmer) {
 // }
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
+  console.log(billData,'data')
   var colorThemeInfo = getPdfThemeInfo();
   var headerData = getPdfHeaderData({
     isBillView: true,
@@ -535,8 +536,8 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     totalBillAmount: localStorage.getItem("totalSelectedBillAmount").toString(),
     groupSettings: getGroupSettingsList(),
     cashValue: getCashValue(billData, isFarmer),
-    cashValueComment:
-      billData.cashPaidCmnt === null ? "" : billData.cashPaidCmnt,
+    cashValueComment:''
+      // billData.cashPaidCmnt === null ? "" : billData.cashPaidCmnt,
   };
 
   /*
