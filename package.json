@@ -46,7 +46,6 @@
     "toastr": "^2.1.4",
     "web-vitals": "^2.1.4"
   },
-  "proxy": "http://54.86.67.9:9000/v1/pdfgen/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
