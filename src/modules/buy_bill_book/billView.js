@@ -65,7 +65,7 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
 import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
-import { getSingleBillPdf } from "../../actions/pdfservice/singleBillPdf";
+import { getSingleBillPdf, getSingleBillPdfHelth } from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
@@ -474,6 +474,8 @@ const BillView = (props) => {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     console.log(billViewPdfJson,'pdfres1');
+    var hi = await getSingleBillPdfHelth();
+    console.log(hi,'hi')
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     console.log(pdfResponse,'pdfres2');
     if (pdfResponse.status !== 200) {
