@@ -65,16 +65,23 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import getPdColors from "../../actions/pdfservice/pdfThemeInfo";
 import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
-import { getSingleBillPdf, getSingleBillPdfHelth } from "../../actions/pdfservice/singleBillPdf";
+import {
+  getSingleBillPdf,
+  getSingleBillPdfHelth,
+} from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  console.log(pdfThemeDataArray)
-  const pdfThemeData = pdfThemeDataArray[0];
+  console.log(pdfThemeDataArray);
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
   const colorThemeVal =
-    pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
+    pdfThemeData != null
+      ? pdfThemeData?.colorTheme != ""
+        ? pdfThemeData?.colorTheme
+        : "#16a12c"
+      : "#16a12c";
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
@@ -476,9 +483,9 @@ const BillView = (props) => {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     var hi = await getSingleBillPdfHelth();
-    console.log(hi,'hi')
+    console.log(hi, "hi");
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
-    console.log(pdfResponse,'pdfres2');
+    console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -581,17 +588,17 @@ const BillView = (props) => {
     xhr.open("GET", shareUrl);
     xhr.send();
   }
-//   const obj = {};
-//   const urlShortener = (longURL = '') => {
-//     let shortURL = "short.ly/" + longURL.replace(/[^a-z]/g,'').slice(-4);
-//     if(!obj[shortURL]){
-//        obj[shortURL] = longURL;
-//     };
-//     return shortURL;
-//     }
-//     const urlRedirector = (shortURL = '') => {
-//     return obj[shortURL];
-//  };
+  //   const obj = {};
+  //   const urlShortener = (longURL = '') => {
+  //     let shortURL = "short.ly/" + longURL.replace(/[^a-z]/g,'').slice(-4);
+  //     if(!obj[shortURL]){
+  //        obj[shortURL] = longURL;
+  //     };
+  //     return shortURL;
+  //     }
+  //     const urlRedirector = (shortURL = '') => {
+  //     return obj[shortURL];
+  //  };
   return (
     <div>
       <Modal

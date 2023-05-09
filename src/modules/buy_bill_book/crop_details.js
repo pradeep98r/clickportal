@@ -8,7 +8,7 @@ const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray[0];
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
   const colorThemeVal =pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -173,9 +173,7 @@ const CropDetails = (props) => {
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
                       <p className="crop-name">
-                        {item.cropSufx != null
-                          ? item.cropName + " " + `(${item.cropSufx})`
-                          : item.cropName}
+                      {(item.cropSufx != null) ? ( item.cropSufx != '' ? (item.cropName + ' ' + `(${(item.cropSufx)})`) : item.cropName) : item.cropName}
                       </p>
                     </div>
                   </td>
