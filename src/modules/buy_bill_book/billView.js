@@ -681,7 +681,7 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -690,8 +690,8 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div>
-                      <div className="items_div">
+                      </div> */}
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -700,8 +700,8 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div>
-                      <div className="items_div">
+                      </div> */}
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -710,7 +710,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button
                           onClick={() =>
@@ -755,7 +755,7 @@ const BillView = (props) => {
                         </button>
                         <p>Edit</p>
                       </div>
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -764,8 +764,8 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div>
-                      <div className="items_div">
+                      </div> */}
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -774,8 +774,8 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div>
-                      <div className="items_div">
+                      </div> */}
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -784,7 +784,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button onClick={() => handleCheckEvent()}>
                           <img src={cancel} alt="img" className="" />

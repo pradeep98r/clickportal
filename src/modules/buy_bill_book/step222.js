@@ -921,7 +921,7 @@ const Step22 = (props) => {
     setCropId(id);
   };
   const getCropSuffix = (id, index, cropitem) => (e) => {
-    var val = e.target.value.replace(/[^A-Za-z]/g, "");
+    var val = e.target.value.replace(/[^A-Za-z]/g, " ");
     if (e.target.value.length > 30) {
       toast.error("Suffix should be max 30 characters", {
         toastId: "error10",
