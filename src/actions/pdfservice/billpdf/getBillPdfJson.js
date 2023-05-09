@@ -512,7 +512,7 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     billData: billData.lineItems.map((item, key) => {
       return {
         imageUrl: item.imageUrl,
-        cropName: item.cropName,
+        cropName: item.cropName + '\n'+`(${(item.cropSufx)})`,
         lotId: item.lotId != null ? item.lotId : "-",
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),
@@ -520,6 +520,7 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
         rate: getCurrencyNumberWithOutSymbol(item.rate),
         total: getCurrencyNumberWithOutSymbol(item.total),
         individualBags: getIndividualBags(item.bags),
+        // cropSufx:item.cropSufx
       };
     }),
 

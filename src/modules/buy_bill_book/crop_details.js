@@ -7,9 +7,9 @@ import { colorAdjustBg, getText } from "../../components/getText";
 const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
-  const colorThemeVal =
-    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray[0];
+  const colorThemeVal =pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
@@ -99,31 +99,66 @@ const CropDetails = (props) => {
             <tr>
               <th
                 className="col-1 text-center"
-                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
               >
                 #
               </th>
               <th
                 className="col-4"
-                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
               >
                 Particulars
               </th>
               <th
                 className="col-3"
-                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
               >
                 Qty.{" "}
               </th>
               <th
                 className="col-2"
-                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
               >
                 Rate (₹)
               </th>
               <th
                 className="col-2"
-                style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
               >
                 Total (₹)
               </th>
@@ -137,7 +172,11 @@ const CropDetails = (props) => {
                   <td className="col-4">
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
-                      <p className="crop-name"> {item.cropName}</p>
+                      <p className="crop-name">
+                        {item.cropSufx != null
+                          ? item.cropName + " " + `(${item.cropSufx})`
+                          : item.cropName}
+                      </p>
                     </div>
                   </td>
                   <td className="col-3">
@@ -197,7 +236,14 @@ const CropDetails = (props) => {
         </table>
         <div
           className="row gross_profit"
-          style={{ backgroundColor: pdfThemeData != null ? (colorAdjustBg(colorThemeVal, 180) ==='#ffffff' ? colorThemeVal : colorAdjustBg(colorThemeVal, 180)):'#D7F3DD' }}
+          style={{
+            backgroundColor:
+              pdfThemeData != null
+                ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                  ? colorThemeVal
+                  : colorAdjustBg(colorThemeVal, 180)
+                : "#D7F3DD",
+          }}
         >
           <div className="col-lg-2"></div>
           <div className="col-lg-4"></div>

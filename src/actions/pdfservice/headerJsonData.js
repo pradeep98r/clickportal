@@ -23,7 +23,8 @@ function getBusinessDetailsModel() {
 }
 function getPdfThemeInfo() {
   // default shade in app is 80 per
-  var settingData = JSON.parse(localStorage.getItem("settingsData"));
+  var settArray = JSON.parse(localStorage.getItem("settingsData"));
+  var settingData = settArray[0];
   if (settingData != null) {
     var settingsData = settingData;
     return {

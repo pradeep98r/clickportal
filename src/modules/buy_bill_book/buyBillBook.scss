@@ -465,6 +465,16 @@ option[value=""][disabled] {
     border-top: 0px solid currentColor;
   }
 }
+.inpu_suffix{
+  position: initial!important;
+  border: 1px solid #C9C9C9!important;
+  margin-top: 5px!important;
+  border-radius: 4px;
+}
+.inpu_suffix::placeholder{
+  text-align: left;
+  padding-left: 0px;
+}
 // addition/deduction css
 .comm_cards {
   .col-sm-12{

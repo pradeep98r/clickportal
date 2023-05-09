@@ -70,9 +70,11 @@ import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  console.log(pdfThemeDataArray)
+  const pdfThemeData = pdfThemeDataArray[0];
   const colorThemeVal =
-    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
+    pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
@@ -473,7 +475,6 @@ const BillView = (props) => {
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
-    console.log(billViewPdfJson,'pdfres1');
     var hi = await getSingleBillPdfHelth();
     console.log(hi,'hi')
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
@@ -550,10 +551,6 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
-      const pdf = new File([blobUrl], "hello.pdf", { type: "application/pdf" });
-      const files = [pdf];
-      // Share PDF file if supported.
-      if (navigator.canShare({ files })) await navigator.share({ files });
     }
   }
   const closeSharePopup = () => {
@@ -584,7 +581,17 @@ const BillView = (props) => {
     xhr.open("GET", shareUrl);
     xhr.send();
   }
-
+//   const obj = {};
+//   const urlShortener = (longURL = '') => {
+//     let shortURL = "short.ly/" + longURL.replace(/[^a-z]/g,'').slice(-4);
+//     if(!obj[shortURL]){
+//        obj[shortURL] = longURL;
+//     };
+//     return shortURL;
+//     }
+//     const urlRedirector = (shortURL = '') => {
+//     return obj[shortURL];
+//  };
   return (
     <div>
       <Modal
@@ -674,7 +681,7 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -683,7 +690,7 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div>
+                      </div> */}
                       {/* <div className="items_div">
                         <button
                           onClick={() => {
@@ -694,7 +701,7 @@ const BillView = (props) => {
                         </button>
                         <p>Share</p>
                       </div> */}
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -703,7 +710,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button
                           onClick={() =>
@@ -748,7 +755,7 @@ const BillView = (props) => {
                         </button>
                         <p>Edit</p>
                       </div>
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -757,7 +764,7 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div>
+                      </div> */}
                       {/* <div className="items_div">
                         <button
                           onClick={() => {
@@ -768,7 +775,7 @@ const BillView = (props) => {
                         </button>
                         <p>Share</p>
                       </div> */}
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -777,7 +784,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button onClick={() => handleCheckEvent()}>
                           <img src={cancel} alt="img" className="" />

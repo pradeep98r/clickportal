@@ -643,7 +643,7 @@ const Step3PartySelect = (props) => {
                               />
                             </div>
                             <div>
-                              <p className="crops-color">{item.cropName}</p>
+                              <p className="crops-color"> {item.cropSufx != null ? item.cropName + ' ' + `(${(item.cropSufx)})` : item.cropName}</p>
                               <p className="crops-color">
                                 {qtyValues(
                                   parseFloat(item.qty),
