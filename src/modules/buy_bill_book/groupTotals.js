@@ -41,7 +41,8 @@ const GroupTotals = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
-  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray[0];
   const colorThemeVal =
     pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
   var groupOne = [];
@@ -410,7 +411,6 @@ const GroupTotals = (props) => {
           }
         }
       } else {
-        console.log('default')
         getDefaultSystemSettings().then((response) => {
           res = response.data.data;
           groupWiseTotals(response);
@@ -895,7 +895,7 @@ const GroupTotals = (props) => {
     var substring = "CUSTOM_FIELD";
     // var str = "ADVANCES";
     if (item?.name.includes(substring)) {
-      let cObject = {...item};
+      let cObject = { ...item };
       cObject.name = "";
       item = cObject;
       // item.name = "";
@@ -1232,7 +1232,6 @@ const GroupTotals = (props) => {
                                   </p>
                                 )}
                                 <p className="fee-perc">
-                                  
                                   {item.name == "COMMISSION" ? (
                                     billData?.comm ? (
                                       <span className="fee-percentage">

@@ -17,7 +17,8 @@ export const BusinessDetails = (props) => {
   const [mandiData, setMandiData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray[0];
   const colorThemeVal =
     pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
   useEffect(() => {

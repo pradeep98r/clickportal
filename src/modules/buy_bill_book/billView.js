@@ -70,7 +70,8 @@ import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const pdfThemeData = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray[0];
   const colorThemeVal =
     pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
   const clickId = loginData.caId;
@@ -473,7 +474,6 @@ const BillView = (props) => {
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
-    console.log(billViewPdfJson,'pdfres1');
     var hi = await getSingleBillPdfHelth();
     console.log(hi,'hi')
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
@@ -550,10 +550,6 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
-      const pdf = new File([blobUrl], "hello.pdf", { type: "application/pdf" });
-      const files = [pdf];
-      // Share PDF file if supported.
-      if (navigator.canShare({ files })) await navigator.share({ files });
     }
   }
   const closeSharePopup = () => {
@@ -584,7 +580,17 @@ const BillView = (props) => {
     xhr.open("GET", shareUrl);
     xhr.send();
   }
-
+//   const obj = {};
+//   const urlShortener = (longURL = '') => {
+//     let shortURL = "short.ly/" + longURL.replace(/[^a-z]/g,'').slice(-4);
+//     if(!obj[shortURL]){
+//        obj[shortURL] = longURL;
+//     };
+//     return shortURL;
+//     }
+//     const urlRedirector = (shortURL = '') => {
+//     return obj[shortURL];
+//  };
   return (
     <div>
       <Modal
@@ -684,7 +690,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -693,7 +699,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -758,7 +764,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -767,7 +773,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button
                           onClick={() => {
