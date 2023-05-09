@@ -698,6 +698,7 @@ const SellBillStep3 = (props) => {
       rateType:
         cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
       bags: cropArray[i].bags,
+      cropSufx: cropArray[i].cropSufx,
     });
   }
   const getActualRcvd = () => {

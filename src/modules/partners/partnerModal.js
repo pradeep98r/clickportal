@@ -144,7 +144,8 @@ const PartnerModal = (props) => {
       } else if (type == "shortName") {
         setShortNameError(string2);
       }
-    } else {
+    } 
+    else {
       if (type == "name") {
         setNameError("");
       } else if (type == "shortName") {

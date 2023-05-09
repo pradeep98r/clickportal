@@ -44,7 +44,7 @@ const GroupTotals = (props) => {
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeData = pdfThemeDataArray[0];
   const colorThemeVal =
-    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
+  pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];

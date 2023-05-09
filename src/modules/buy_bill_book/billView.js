@@ -71,9 +71,10 @@ import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  console.log(pdfThemeDataArray)
   const pdfThemeData = pdfThemeDataArray[0];
   const colorThemeVal =
-    pdfThemeData != null ? pdfThemeData?.colorTheme : "#16a12c";
+    pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);

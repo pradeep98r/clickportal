@@ -485,7 +485,7 @@ function BuyBillBook() {
                                                         src={crop.imageUrl}
                                                         className="crop_image"
                                                       />
-                                                      {crop.cropName}
+                                                      {crop.cropSufx != null ? crop.cropName + ' ' + `(${(crop.cropSufx)})` : crop.cropName}
                                                     </p>
                                                   </div>
                                                   <div className="col-lg-4 col-sm-12 col">

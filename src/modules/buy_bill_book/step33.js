@@ -730,6 +730,7 @@ const Step33 = (props) => {
       partyId: cropArray[i].farmerId,
       status: cropArray[i].status,
       bags: cropArray[i].bags,
+      cropSufx: cropArray[i].cropSufx,
     });
   }
   // }
