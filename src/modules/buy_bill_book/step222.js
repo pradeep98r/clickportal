@@ -184,6 +184,7 @@ const Step22 = (props) => {
   //   click on particular crop function
   var newArray = [];
   const cropOnclick = (crop, id, index2, preferedCrops) => {
+    console.log(cropSufixStatus,'status')
     var cIndex = 0;
     var qSetting = settingsData.qtySetting;
     console.log(qSetting, settingsData);
@@ -336,7 +337,6 @@ const Step22 = (props) => {
           settingsData.billSetting[i].billType == "SELL" &&
           settingsData.billSetting[i].settingName === "DEFAULT_RATE_TYPE"
         ) {
-          console.log("sell", settingsData.billSetting[i].value);
 
           if (settingsData.billSetting[i].value == 0) {
             setDefaultUnitTypeVal("unit_kg");
@@ -351,9 +351,6 @@ const Step22 = (props) => {
          
           setCropSufixStatus(true)
         }
-        else{
-          setCropSufixStatus(false)
-        }
       } else {
         if (
           settingsData.billSetting[i].billType == "BUY" &&
@@ -367,11 +364,7 @@ const Step22 = (props) => {
          
         }
         if( settingsData.billSetting[i].billType == "BUY" && settingsData.billSetting[i].settingName=="CROP_SUFFIX" && settingsData.billSetting[i].formStatus==1 ){
-         
           setCropSufixStatus(true)
-        }
-        else{
-          setCropSufixStatus(false)
         }
       }
     }
