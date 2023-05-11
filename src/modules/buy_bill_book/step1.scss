@@ -277,3 +277,12 @@
     border-bottom: 20px solid transparent;
   }
   
+  .shareModal {
+    .modal-dialog{
+        width: 650px!important;
+    }
+    .form-control{
+        height: 45px;
+        font-size: 14px;
+    }
+  }

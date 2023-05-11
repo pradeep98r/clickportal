@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  getCurrencyNumberWithOutSymbol,
-} from "../../components/getCurrencyNumber";
+import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
-import { getText } from "../../components/getText";
+import { colorAdjustBg, getText } from "../../components/getText";
 const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const colorThemeVal =pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
@@ -20,6 +20,7 @@ const CropDetails = (props) => {
     });
     return totalValue;
   };
+
   return (
     <div>
       <div className="row partner_info_padding pb-0">
@@ -55,14 +56,16 @@ const CropDetails = (props) => {
               <div className="d-flex align-items-center">
                 <h6>
                   {billData?.partyType === "FARMER"
-                    ? billData.farmerName + (billData.shortName ? (' - ' + billData.shortName) : '')
-                    : billData?.buyerName + (billData.shortName ? (' - ' + billData.shortName) : '')}
+                    ? billData.farmerName +
+                      (billData.shortName ? " - " + billData.shortName : "")
+                    : billData?.buyerName +
+                      (billData.shortName ? " - " + billData.shortName : "")}
                 </h6>
               </div>
             </div>
           </div>
         </div>
-        {(billData?.partyType === "FARMER" && billData?.farmerAddress != "") ? (
+        {billData?.partyType === "FARMER" && billData?.farmerAddress != "" ? (
           <div className="col-lg-3">
             <div className="partner_info">
               <p className="small_text">Address: </p>
@@ -94,11 +97,71 @@ const CropDetails = (props) => {
         <table className="table table-bordered bill_view mb-0">
           <thead>
             <tr>
-              <th className="col-1 text-center">#</th>
-              <th className="col-4">Particulars</th>
-              <th className="col-3">Qty. </th>
-              <th className="col-2">Rate (₹)</th>
-              <th className="col-2">Total (₹)</th>
+              <th
+                className="col-1 text-center"
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
+              >
+                #
+              </th>
+              <th
+                className="col-4"
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
+              >
+                Particulars
+              </th>
+              <th
+                className="col-3"
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
+              >
+                Qty.{" "}
+              </th>
+              <th
+                className="col-2"
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
+              >
+                Rate (₹)
+              </th>
+              <th
+                className="col-2"
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorThemeVal
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
+              >
+                Total (₹)
+              </th>
             </tr>
           </thead>
           <tbody className="crop-tbl">
@@ -109,7 +172,9 @@ const CropDetails = (props) => {
                   <td className="col-4">
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
-                      <p className="crop-name"> {item.cropName}</p>
+                      <p className="crop-name">
+                      {(item.cropSufx != null) ? ( item.cropSufx != '' ? (item.cropName + ' ' + `(${(item.cropSufx)})`) : item.cropName) : item.cropName}
+                      </p>
                     </div>
                   </td>
                   <td className="col-3">
@@ -152,7 +217,13 @@ const CropDetails = (props) => {
                   <td className="col-2">
                     {getCurrencyNumberWithOutSymbol(item.rate)}
                   </td>
-                  <td className={ billData?.partyType === "FARMER" ? "col-2 color_red" :  "col-2 color_green"}>
+                  <td
+                    className={
+                      billData?.partyType === "FARMER"
+                        ? "col-2 color_red"
+                        : "col-2 color_green"
+                    }
+                  >
                     {getCurrencyNumberWithOutSymbol(item.total)}
                     {/* color_green */}
                   </td>
@@ -161,7 +232,17 @@ const CropDetails = (props) => {
             })}
           </tbody>
         </table>
-        <div className="row gross_profit">
+        <div
+          className="row gross_profit"
+          style={{
+            backgroundColor:
+              pdfThemeData != null
+                ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                  ? colorThemeVal
+                  : colorAdjustBg(colorThemeVal, 180)
+                : "#D7F3DD",
+          }}
+        >
           <div className="col-lg-2"></div>
           <div className="col-lg-4"></div>
           <div className="col-lg-6 p-0 ">

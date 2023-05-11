@@ -47,7 +47,6 @@ function BuyBillBook() {
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   const [allData, setAllData] = useState([]);
   var buyBillData = ledgersSummary?.allBuyBillsData;
-  console.log(buyBillData, "buybills");
   // const [buyBillData, setBuyBillData] = useState(allData);
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
@@ -118,8 +117,7 @@ function BuyBillBook() {
           });
           dispatch(allBuyBillsData(response.data.data.singleBills));
           // setBuyBillData(response.data.data.singleBills);
-          console.log(response.data.data.singleBills);
-          setOnline(false);
+          setOnline(false)
         } else {
           dispatch(allBuyBillsData([]));
           // setBuyBillData([]);
@@ -510,7 +508,7 @@ function BuyBillBook() {
                                                         src={crop.imageUrl}
                                                         className="crop_image"
                                                       />
-                                                      {crop.cropName}
+                                                      {(crop.cropSufx != null) ? ( crop.cropSufx != '' ? (crop.cropName + ' ' + `(${(crop.cropSufx)})`) : crop.cropName) : crop.cropName}
                                                     </p>
                                                   </div>
                                                   <div className="col-lg-4 col-sm-12 col">

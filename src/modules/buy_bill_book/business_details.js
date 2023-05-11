@@ -6,13 +6,21 @@ import {
 } from "../../actions/billCreationService";
 import moment from "moment/moment";
 import { useSelector } from "react-redux";
+import { colorAdjustBg } from "../../components/getText";
+
 export const BusinessDetails = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const [mandiData, setMandiData] = useState({});
+  var businessDetails = JSON.parse(localStorage.getItem("businessDetails"));
+  var personalDetails = JSON.parse(localStorage.getItem("personalDetails"));
   const [mandiLogoData, setMandiLogoData] = useState({});
+  const [mandiData, setMandiData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const colorThemeVal =
+  pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   useEffect(() => {
     getBusinessDetails();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -34,13 +42,16 @@ export const BusinessDetails = (props) => {
       });
   };
   return (
-    <div className="bill_view_header">
+    <div
+      className="bill_view_header"
+      style={{ backgroundColor: colorThemeVal }}
+    >
       <div className="bill_view_top_header px-0">
         <div className="row justify-content-between">
           <div className="text-left">
-            <p className="small_text proprietor_name">Proprietor</p>
+            <p className="small_text proprietor_name">{pdfThemeData != null ? pdfThemeData?.header?.userLabel : 'Proprietor'}</p>
           </div>
-          <div className="p-0 text-center credit_bill">Cash / Credit Bill</div>
+          <div className="p-0 text-center credit_bill">{pdfThemeData != null ? pdfThemeData?.header?.billTypeLabel : 'Cash / Credit Bill'}</div>
           <div className="text-right phone_num_space">
             <p className="small_text">Phone</p>
           </div>
@@ -74,47 +85,59 @@ export const BusinessDetails = (props) => {
       </div>
       <div className="row mandi_details_header px-0 align_items_center">
         <div className="col-lg-2">
-          {mandiLogoData?.logoUrl ? (
+          {mandiLogoData?.logoUrl || pdfThemeData?.logoUrl ? (
             <div className="mandi_logo_image d-flex align-items-center">
-              <img src={mandiLogoData?.logoUrl} />
+              <img src={pdfThemeData?.logoUrl} />
             </div>
           ) : (
-            <div className="mandi_circle flex_class">
+            <div
+              className="mandi_circle flex_class"
+              style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, 180):'#FFF536',color:pdfThemeData != null ? colorThemeVal :'#16A12C' }}
+            >
               <p className="mandi_logo">{mandiData.businessDtls?.shortCode}</p>
             </div>
           )}
 
-          <div className="billid_date_bg">
+          <div
+            className="billid_date_bg"
+            style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, -40):'#0C7A1E' }}
+          >
             <p className="small_text text-center">
               Bill ID : {billData?.caBSeq !== null ? billData?.caBSeq : ""}
             </p>
           </div>
         </div>
         <div className="col-lg-8 text-center p-0">
-          <h2 className="large_text">{mandiData.businessDtls?.businessName}</h2>
-          <p className="medium_text">{mandiData.businessDtls?.businessType}</p>
+          <h2 className="large_text">{businessDetails.businessName}</h2>
+          <p className="medium_text">{businessDetails.businessType}</p>
           <p className="small_text">
-            {mandiData.businessDtls?.businessAddress
-              ? mandiData.businessDtls?.businessAddress?.addressLine +
+            {businessDetails.businessAddress
+              ? businessDetails.businessAddress?.addressLine +
                 "," +
-                mandiData.businessDtls?.businessAddress?.dist +
+                businessDetails.businessAddress?.dist +
                 ",Pincode-" +
-                mandiData.businessDtls?.businessAddress?.pincode +
+                businessDetails.businessAddress?.pincode +
                 "," +
-                mandiData.businessDtls?.businessAddress?.state
+                businessDetails.businessAddress?.state
               : ""}
           </p>
         </div>
         <div className="col-lg-2 text-center">
           <div className="d-flex justify-content-center">
-            <div className="mandi_circle shop_no">
+            <div
+              className="mandi_circle shop_no"
+              style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, 180):'#FFF536',color:pdfThemeData != null ? colorThemeVal :'#16A12C' }}
+            >
               <span className="small_text">Shop No</span>
               <p className="mandi_logo shop_number">
                 {mandiData.businessDtls?.shopNum}
               </p>
             </div>
           </div>
-          <div className="billid_date_bg">
+          <div
+            className="billid_date_bg"
+            style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, -40):'#0C7A1E' }}
+          >
             <p className="small_text text-center">
               {moment(billData?.billDate).format("DD-MMM-YY")}
             </p>

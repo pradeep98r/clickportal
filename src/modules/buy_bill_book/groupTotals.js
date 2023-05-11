@@ -6,9 +6,24 @@ import {
   getDefaultSystemSettings,
   getSystemSettings,
 } from "../../actions/billCreationService";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
-import { getText } from "../../components/getText";
+import { colorAdjustBg, getText } from "../../components/getText";
+import {
+  allGroupsSettings,
+  groupFourSettings,
+  groupOneSettings,
+  groupThreeSettings,
+  groupTwoSettings,
+  groupOneTotals,
+  groupTwoTotals,
+  groupThreeTotals,
+  groupFourTotals,
+  filtereArray,
+  allSettings,
+  selectedTotalBillAmount,
+} from "../../reducers/billViewDisplaySlice";
+import { map } from "jquery";
 
 const GroupTotals = (props) => {
   var groupOneTotal = 0;
@@ -17,15 +32,19 @@ const GroupTotals = (props) => {
   var groupFourTotal = 0;
 
   var allGroupsTotal = 0;
-
+  const dispatch = useDispatch();
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  const billSettings = useSelector((state) => state.mandiDetails);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
-
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const colorThemeVal =
+  pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -45,6 +64,7 @@ const GroupTotals = (props) => {
   const [isShown, setisShown] = useState(false);
   var ldsValue = false;
   const [lpk, setLPK] = useState(false);
+  var filterArray = billSettings?.filtereArray;
   useEffect(() => {
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -68,14 +88,27 @@ const GroupTotals = (props) => {
       ldsValue = false;
       setLPK(false);
     }
+    groupSettingsToJson();
   }, [props]);
-
   const getBuyBillsById = () => {
     var res;
+    var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       if (res.data.data.billSetting.length > 0) {
-        //res=response.data.data.billSetting;
         billSettingData(res.data.data.billSetting);
+        if (
+          billData?.partyType.toUpperCase() === "FARMER" ||
+          billData?.partyType.toUpperCase() === "SELLER"
+        ) {
+          billType = "BUY";
+        } else {
+          billType = "SELL";
+        }
+        var filteredArray = res.data.data.billSetting.filter((object) => {
+          return object.billType === billType && object.formStatus === 1;
+        });
+        filteredArray.sort((a, b) => a.groupId - b.groupId);
+        dispatch(filtereArray(filteredArray));
         for (var i = 0; i < res.data.data.billSetting.length; i++) {
           if (
             billData?.partyType.toUpperCase() === "FARMER" ||
@@ -86,6 +119,8 @@ const GroupTotals = (props) => {
               res.data.data.billSetting[i].billType === "BUY" &&
               res.data.data.billSetting[i].formStatus === 1
             ) {
+              // filteredArray = res.data.data.billSetting;
+              // setFilterArray([...filterArray,res.data.data.billSetting[i]])
               if (res.data.data.billSetting[i].settingName === "COMMISSION") {
                 setIncludeComm(
                   res.data.data.billSetting[i].includeInLedger == 1
@@ -116,6 +151,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupOne = [res.data.data.billSetting[i], ...groupOne];
+              dispatch(groupOneSettings(groupOne));
               setGroupOne([groupone, ...groupOne]);
             } else if (
               res.data.data.billSetting[i].groupId === 2 &&
@@ -152,6 +188,7 @@ const GroupTotals = (props) => {
                 );
               }
               grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+              dispatch(groupTwoSettings(grouptwo));
               setGroupTwo([groupTwo, ...grouptwo]);
             } else if (
               res.data.data.billSetting[i].groupId === 3 &&
@@ -188,6 +225,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupthree = [res.data.data.billSetting[i], ...groupthree];
+              dispatch(groupThreeSettings(groupthree));
               setGroupThree([groupThree, ...groupthree]);
             } else if (
               res.data.data.billSetting[i].groupId === 4 &&
@@ -224,6 +262,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupfour = [res.data.data.billSetting[i], ...groupfour];
+              dispatch(groupFourSettings(groupfour));
               setGroupFour([groupFour, ...groupfour]);
             }
           } else {
@@ -262,6 +301,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupOne = [res.data.data.billSetting[i], ...groupOne];
+              dispatch(groupOneSettings(groupOne));
               setGroupOne([groupone, ...groupOne]);
             } else if (
               res.data.data.billSetting[i].groupId === 2 &&
@@ -295,6 +335,7 @@ const GroupTotals = (props) => {
                 );
               }
               grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+              dispatch(groupTwoSettings(grouptwo));
               setGroupTwo([groupTwo, ...grouptwo]);
             } else if (
               res.data.data.billSetting[i].groupId === 3 &&
@@ -328,6 +369,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupthree = [res.data.data.billSetting[i], ...groupthree];
+              dispatch(groupThreeSettings(groupthree));
               setGroupThree([groupThree, ...groupthree]);
             } else if (
               res.data.data.billSetting[i].groupId === 4 &&
@@ -361,6 +403,7 @@ const GroupTotals = (props) => {
                 );
               }
               groupfour = [res.data.data.billSetting[i], ...groupfour];
+              dispatch(groupFourSettings(groupfour));
               setGroupFour([groupFour, ...groupfour]);
             }
           }
@@ -370,11 +413,27 @@ const GroupTotals = (props) => {
           res = response.data.data;
           groupWiseTotals(response);
           billSettingData(response.data.data);
+          for (var i = 0; i < response.data.data.length; i++) {
+            if (
+              response.data.data[i].name == "COMM_INCLUDE" &&
+              response.data.data[i].status == 1
+            ) {
+              setIncludeComm(true);
+              setisShown(true);
+            }
+            if (
+              response.data.data[i].name == "RETURN_COMMISSION" &&
+              response.data.data[i].status == 1
+            ) {
+              setIncludeRetComm(true);
+            }
+          }
         });
       }
     });
   };
-  var groupTotals = [];
+
+  var totalgrp = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
       if (
@@ -391,9 +450,11 @@ const GroupTotals = (props) => {
               isShown: true,
             });
           }
-          groupTotals.push(res.data.data[i]);
-          groupTotals = groupTotals.sort((a, b) => a.id - b.id);
-          setAllGroups([...allGroups, ...groupTotals]);
+          let clonedObject = { ...res.data.data[i] };
+          totalgrp = [...totalgrp, clonedObject];
+          totalgrp = totalgrp.sort((a, b) => a.id - b.id);
+          dispatch(allGroupsSettings(totalgrp));
+          setAllGroups([...totalgrp]);
         }
       } else {
         if (
@@ -406,9 +467,11 @@ const GroupTotals = (props) => {
               isShown: true,
             });
           }
-          groupTotals.push(res.data.data[i]);
-          groupTotals = groupTotals.sort((a, b) => a.id - b.id);
-          setAllGroups([...allGroups, ...groupTotals]);
+          let clonedObject = { ...res.data.data[i] };
+          totalgrp = [...totalgrp, clonedObject];
+          totalgrp = totalgrp.sort((a, b) => a.id - b.id);
+          dispatch(allGroupsSettings(totalgrp));
+          setAllGroups([...totalgrp]);
         }
       }
     }
@@ -620,11 +683,220 @@ const GroupTotals = (props) => {
     return value;
   };
 
+  var obj = {
+    groupId: 0,
+    settingName: "",
+    value: 0,
+    signIndication: "",
+  };
+  var allFilteredSettings = [];
+  const groupSettingsToJson = () => {
+    var indication = "";
+    for (var i = 0; i < filterArray.length; i++) {
+      var setting = filterArray[i];
+      var substring = "CUSTOM_FIELD";
+      if (setting.settingName?.includes(substring)) {
+        substring = setting.settingName;
+      } else if (
+        setting.settingName === "ADVANCES" &&
+        !(billData?.partyType.toUpperCase() === "FARMER")
+      ) {
+        let clonedObject1 = { ...setting };
+        clonedObject1 = { ...clonedObject1, settingName: "" };
+        setting = clonedObject1;
+        // setting.settingName = "";
+      }
+      switch (setting.settingName) {
+        case "COMMISSION":
+          if (billData?.comm) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.comm ? billData?.comm : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "RETURN_COMMISSION":
+          var assign = "";
+          if (
+            billData?.partyType.toUpperCase() === "FARMER" &&
+            billData?.less
+          ) {
+            assign = "-";
+          } else {
+            assign =
+              billData?.partyType.toUpperCase() === "BUYER" && billData?.less
+                ? "-"
+                : "+";
+          }
+          if (billData?.rtComm) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.rtComm ? billData?.rtComm : 0,
+              signIndication: assign,
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "TRANSPORTATION":
+          if (billData?.transportation) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.transportation ? billData?.transportation : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "LABOUR_CHARGES":
+          if (billData?.labourCharges) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.labourCharges ? billData?.labourCharges : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "RENT":
+          if (billData?.rent) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.rent ? billData?.rent : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "MANDI_FEE":
+          if (billData?.mandiFee) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.mandiFee ? billData?.mandiFee : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "OTHER_FEE":
+          if (billData?.mandiFee) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value:
+                billData?.partyType.toUpperCase() === "FARMER"
+                  ? billData?.misc
+                  : billData?.otherFee,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "GOVT_LEVIES":
+          if (billData?.govtLevies) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.govtLevies ? billData?.govtLevies : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+          break;
+        case "ADVANCES":
+          if (billData?.advance) {
+            obj = {
+              groupId: setting?.groupId,
+              settingName: setting?.settingName,
+              value: billData?.advance ? billData?.advance : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ||
+                billData?.partyType.toUpperCase() === "SELLER"
+                  ? "-"
+                  : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
+        case substring:
+          var value = 0;
+          if (billData?.partyType.toUpperCase() === "FARMER") {
+            billData?.customFields.map((item) => {
+              if (item.fee != 0) {
+                if (item.field === setting.settingName) {
+                  if (item.less) {
+                    value = -item.fee;
+                    indication = "-";
+                  } else {
+                    value = item.fee;
+                    indication = "+";
+                  }
+                  value = value == null ? 0 : value;
+                  obj = {
+                    groupId: setting?.groupId,
+                    settingName: setting?.settingName,
+                    value: value ? value : 0,
+                    signIndication: indication,
+                  };
+                }
+              }
+            });
+            if (billData?.customFields.length > 0) {
+              allFilteredSettings.push(obj);
+            }
+          } else if (billData?.partyType.toUpperCase() === "BUYER") {
+            billData?.customFields.map((item) => {
+              if (item.fee != 0) {
+                if (item.field === setting.settingName) {
+                  if (item.less) {
+                    value = -item.fee;
+                    indication = "-";
+                  } else {
+                    value = item.fee;
+                    indication = "+";
+                  }
+                  value = value == null ? 0 : value;
+                  obj = {
+                    groupId: setting?.groupId,
+                    settingName: setting?.settingName,
+                    value: value ? value : 0,
+                    signIndication: indication,
+                  };
+                  return value;
+                }
+              }
+            });
+            if (billData?.customFields.length > 0) {
+              allFilteredSettings.push(obj);
+            }
+          }
+          break;
+      }
+    }
+    getGrp(allFilteredSettings);
+  };
+
   allGroups.map((item) => {
     var substring = "CUSTOM_FIELD";
     // var str = "ADVANCES";
     if (item?.name.includes(substring)) {
-      item.name = "";
+      let cObject = { ...item };
+      cObject.name = "";
+      item = cObject;
+      // item.name = "";
       substring = "";
     }
     // else if (item?.name.includes(str)) {
@@ -633,6 +905,7 @@ const GroupTotals = (props) => {
     allGroupsTotal += handleGroupNames(item.name);
     return allGroupsTotal;
   });
+
   groupone
     .slice()
     .reverse()
@@ -660,7 +933,83 @@ const GroupTotals = (props) => {
     .map((item) => {
       return (groupFourTotal += handleGroupNames(item.settingName));
     });
+  const getGrp = (array) => {
+    const grouped = Object.values(
+      array.reduce((acc, item) => {
+        // Append the item to the array for each country
+        acc[item.groupId] = [...(acc[item.groupId] || []), item];
+        return acc;
+      }, {})
+    );
+    grouped.map((item) => {
+      item.map((grpItem) => {
+        if (grpItem.groupId == 1) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal + groupOneTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        } else if (grpItem.groupId == 2) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal + groupOneTotal + groupTwoTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        } else if (grpItem.groupId == 3) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal +
+                groupOneTotal +
+                groupTwoTotal +
+                groupThreeTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        } else if (grpItem.groupId == 4) {
+          obj = {
+            settingName: "SUBTOTAL",
+            value: getCurrencyNumberWithSymbol(
+              billData?.grossTotal +
+                groupOneTotal +
+                groupTwoTotal +
+                groupThreeTotal +
+                groupFourTotal
+            ),
+            signIndication: "",
+            groupId: grpItem.groupId,
+          };
+          item.push(obj);
+          return item;
+        }
+      });
+    });
 
+    const newArr = grouped.flat();
+    const unique2 = newArr.filter((obj, index) => {
+      return (
+        index ===
+        newArr.findIndex(
+          (o) => obj.groupId == o.groupId && obj.settingName == o.settingName
+        )
+      );
+    });
+    dispatch(allSettings(unique2));
+    localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
+  };
   const handleSettingName = (item, list) => {
     var substring = "CUSTOM_FIELD";
     if (item?.includes(substring)) {
@@ -822,6 +1171,27 @@ const GroupTotals = (props) => {
     });
     return totalQty;
   };
+  var totalBillAmount =
+    billData?.grossTotal +
+      (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal) ===
+      0 ||
+    billData?.grossTotal +
+      (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal) ===
+      null
+      ? " "
+      : (
+          billData?.grossTotal +
+          (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal)
+        ).toLocaleString("en-IN", {
+          maximumFractionDigits: 2,
+          style: "currency",
+          currency: "INR",
+        });
+  try {
+    localStorage.setItem("totalSelectedBillAmount", totalBillAmount);
+  } catch (error) {
+    console.log(error);
+  }
   return (
     <div className="group_totals_div">
       <div>
@@ -1108,7 +1478,17 @@ const GroupTotals = (props) => {
               {allGroupsTotal === 0 || allGroupsTotal === null ? (
                 ""
               ) : (
-                <div className="row group-one-total">
+                <div
+                  className="row group-one-total"
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
+                >
                   <div className="pl-0 col-lg-7 pr-0"></div>
                   <div className="col-lg-4 p-0">
                     <p className="groups_values">
@@ -1632,7 +2012,17 @@ const GroupTotals = (props) => {
                 {groupOneTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -2043,7 +2433,17 @@ const GroupTotals = (props) => {
                 {groupTwoTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -2462,7 +2862,17 @@ const GroupTotals = (props) => {
                 {groupThreeTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -2869,7 +3279,17 @@ const GroupTotals = (props) => {
                 {groupFourTotal === 0 || null ? (
                   ""
                 ) : (
-                  <div className="row group-one-total">
+                  <div
+                    className="row group-one-total"
+                    style={{
+                      backgroundColor:
+                        pdfThemeData != null
+                          ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                            ? colorThemeVal
+                            : colorAdjustBg(colorThemeVal, 180)
+                          : "#D7F3DD",
+                    }}
+                  >
                     <div className="pl-0 col-lg-7 pr-0"></div>
                     <div className="col-lg-4 p-0">
                       <p className="groups_values">
@@ -2920,30 +3340,7 @@ const GroupTotals = (props) => {
                           : "groups_values color_green"
                       }
                     >
-                      {billData?.grossTotal +
-                        (groupFourTotal +
-                          groupThreeTotal +
-                          groupTwoTotal +
-                          groupOneTotal) ===
-                        0 ||
-                      billData?.grossTotal +
-                        (groupFourTotal +
-                          groupThreeTotal +
-                          groupTwoTotal +
-                          groupOneTotal) ===
-                        null
-                        ? " "
-                        : (
-                            billData?.grossTotal +
-                            (groupFourTotal +
-                              groupThreeTotal +
-                              groupTwoTotal +
-                              groupOneTotal)
-                          ).toLocaleString("en-IN", {
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: "INR",
-                          })}
+                      {totalBillAmount}
                     </p>
                   </div>
                 </div>
@@ -3025,7 +3422,17 @@ const GroupTotals = (props) => {
           )}
         </div>
         {!status && allGroups.length == 0 ? (
-          <div className="row out-st-bal align-items-center">
+          <div
+            className="row out-st-bal align-items-center"
+            style={{
+              backgroundColor:
+                pdfThemeData != null
+                  ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                    ? colorThemeVal
+                    : colorAdjustBg(colorThemeVal, 180)
+                  : "#D7F3DD",
+            }}
+          >
             <div className="col-lg-2">
               <div className="d-flex footer-img">
                 <img src={ono_connect_click} alt="ono_connect" />
@@ -3095,7 +3502,17 @@ const GroupTotals = (props) => {
             )}
           </div>
         ) : (
-          <div className="row out-st-bal align-items-center">
+          <div
+            className="row out-st-bal align-items-center"
+            style={{
+              backgroundColor:
+                pdfThemeData != null
+                  ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                    ? colorThemeVal
+                    : colorAdjustBg(colorThemeVal, 180)
+                  : "#D7F3DD",
+            }}
+          >
             <div className="col-lg-2">
               <div className="d-flex footer-img">
                 <img src={ono_connect_click} alt="ono_connect" />
