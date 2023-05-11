@@ -95,8 +95,6 @@ const GroupTotals = (props) => {
     var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
       if (res.data.data.billSetting.length > 0) {
-        //res=response.data.data.billSetting;
-
         billSettingData(res.data.data.billSetting);
         if (
           billData?.partyType.toUpperCase() === "FARMER" ||

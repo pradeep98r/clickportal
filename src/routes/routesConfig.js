@@ -27,8 +27,10 @@ import {
 import Advance from "../modules/advances/advance";
 const RoutesConfig = () => {
   function setSystemSettingsDetails(clickId) {
+    console.log(clickId,'id')
     getSystemSettings(clickId)
       .then((response) => {
+        console.log(response.data.data,'routes')
         localStorage.setItem(
           "systemSettingsData",
           JSON.stringify(response.data.data)
@@ -91,7 +93,7 @@ const RoutesConfig = () => {
             ? "0"
             : localStorage.getItem("registerData");
         // console.log(loginData.clickId, id, "login data before registration");
-        if (id !== loginData.clickId.toString()) {
+        if (id !== loginData.caId.toString()) {
           return (
             <BrowserRouter>
               <Routes>
@@ -99,10 +101,10 @@ const RoutesConfig = () => {
               </Routes>
             </BrowserRouter>
           );
-        } else if (id === loginData.clickId.toString()) {
-          setMandiDetails(loginData.clickId);
-          setSettingsDetails(loginData.clickId);
-          setSystemSettingsDetails(loginData.clickId);
+        } else if (id === loginData.caId.toString()) {
+          setMandiDetails(loginData.caId);
+          setSettingsDetails(loginData.caId);
+          setSystemSettingsDetails(loginData.caId);
           // console.log(loginData, localStorage.getItem("status"));
           /*const savePref =
             localStorage.getItem("status") == null
@@ -152,9 +154,9 @@ const RoutesConfig = () => {
           );
         }
       } else {
-        setSystemSettingsDetails(loginData.clickId);
-        setMandiDetails(loginData.clickId);
-        setSettingsDetails(loginData.clickId);
+        setSystemSettingsDetails(loginData.caId);
+        setMandiDetails(loginData.caId);
+        setSettingsDetails(loginData.caId);
         // console.log(loginData, "login data after succesful registration");
         // console.log(localStorage.getItem("registerData"), "aftter data");
         return (
