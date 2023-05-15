@@ -68,6 +68,7 @@ import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
 import {
   getSingleBillPdf,
   getSingleBillPdfHelth,
+  postSingleBillPdfHelth,
 } from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
@@ -479,11 +480,15 @@ const BillView = (props) => {
       })
       .catch((error) => console.log(error));
   };
+  const obj = {
+    name : "aparna"
+}
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     var hi = await getSingleBillPdfHelth();
-    console.log(hi, "hi");
+    var hey = await postSingleBillPdfHelth(obj);
+    console.log(hey,hi, "post req pdf");
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {
@@ -688,7 +693,7 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -697,7 +702,7 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div> */}
+                      </div>
                       {/* <div className="items_div">
                         <button
                           onClick={() => {
@@ -708,7 +713,7 @@ const BillView = (props) => {
                         </button>
                         <p>Share</p>
                       </div> */}
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -717,7 +722,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button
                           onClick={() =>
@@ -762,7 +767,7 @@ const BillView = (props) => {
                         </button>
                         <p>Edit</p>
                       </div>
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -771,7 +776,7 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div> */}
+                      </div>
                       {/* <div className="items_div">
                         <button
                           onClick={() => {
@@ -782,7 +787,7 @@ const BillView = (props) => {
                         </button>
                         <p>Share</p>
                       </div> */}
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -791,7 +796,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button onClick={() => handleCheckEvent()}>
                           <img src={cancel} alt="img" className="" />
