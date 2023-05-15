@@ -141,6 +141,7 @@ const Step3 = (props) => {
                                                   crop.rateType
                                                 )}
                                               </p>
+                                              <p>{crop.total}</p>
                                             </div>
                                           </div>
                                         </div>

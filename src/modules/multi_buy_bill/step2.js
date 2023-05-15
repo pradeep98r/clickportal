@@ -17,6 +17,8 @@ import { getAllCrops } from "../../actions/billCreationService";
 import SelectBags from "../buy_bill_book/bags";
 import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
@@ -60,11 +62,160 @@ const Step2 = (props) => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
   };
+  // const onClickStep2 = (array) => {
+  //   dispatch(multiStepsVal("step3"));
+  //   dispatch(multiSelectPartners(array));
+  // };
+  
+  // function to nevigate to step3 page
+  var arrays = [];
   const onClickStep2 = (array) => {
-    console.log(array, multiSelectPartnersArray, "step2 next");
-    dispatch(multiStepsVal("step3"));
-    dispatch(multiSelectPartners(array));
+    if (array.length > 0) {
+      for (var index = 0; index < array.length; index++) {
+        const data1 = array[index];
+        if(data1.lineItems.length > 0){
+          for(var cIndex = 0; cIndex < data1.lineItems.length; cIndex ++){
+            const data = data1.lineItems[cIndex];
+            if (Object.keys(data).length != 0) {
+              if (data.cropDelete) continue;
+              const qtyUnit = data.qtyUnit?.toLowerCase();
+              const rateType = data.rateType?.toLowerCase();
+              if (["loads", "pieces"].includes(qtyUnit)) {
+                if (data.weight == 0) {
+                  toast.error("Please enter weight", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (Object.is(data.weight, data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error3",
+                  });
+                  return null;
+                } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error3",
+                  });
+                  return null;
+                }
+              } else if (qtyUnit === "kgs") {
+                if (data.weight == 0) {
+                  toast.error("Please enter weight", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error3",
+                  });
+                  return null;
+                }
+              } else if (qtyUnit === rateType) {
+                if (data.qty == 0) {
+                  toast.error("Please enter Quantity", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
+                  toast.error("wastage is always less than quantity", {
+                    toastId: "error4",
+                  });
+                  return null;
+                }
+              } else if (
+                !setQuantityBasedtable(qtyUnit) &&
+                data.rateType?.toUpperCase() !== "RATE_PER_UNIT"
+              ) {
+                if (data.qty == 0) {
+                  toast.error("Please enter Quantity", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.weight == 0 ) {
+                  toast.error("Please enter weight", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error3",
+                  });
+                  return null;
+                } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error4",
+                  });
+                  return null;
+                }
+              } else if (
+                setQuantityBasedtable(data.qtyUnit) &&
+                data.weight != 0 &&
+                data.rate != 0
+              ) {
+                return data;
+              }
+            }
+          }
+        }
+        for (var k = 0; k < data1.lineItems.length; k++) {
+          if (Object.keys(data1.lineItems[k]).length != 0) {
+            if (data1.lineItems[k].cropName != "") {
+              arrays.push(data1.lineItems[k]);
+              let obj = { ...data1.lineItems[k] }
+              obj.total = getTotalValue(k,index,data1.lineItems);
+              // data1.lineItems[k] = obj;
+              console.log(data1,multiSelectPartnersArray)
+            }
+            if (data1.lineItems[k].wastage == "") {
+              data1.lineItems[k].wastage = 0;
+            }
+          }
+        }
+      }
+
+      if(array.length > 0){
+        dispatch(multiStepsVal("step3"));
+        dispatch(multiSelectPartners(multiSelectPartnersArray));
+      }
+      // if (arrays.length === cropData.length) {
+        // addStep3Modal();
+       
+        // props.parentcall(
+        //   dArray.length != 0 ? dArray : cropData,
+        //   billEditStatus
+        // );
+      // } else {
+      //   for (var j = 0; j < cropData.length; j++) {
+      //     if (
+      //       Object.keys(cropData[j]).length == 0 ||
+      //       cropData[j].cropName == ""
+      //     ) {
+      //       toast.error("Please add crop", {
+      //         toastId: "error6",
+      //       });
+      //     }
+      //   }
+      // }
+    }
   };
+
+
+
+  // previous step
   const previousStep = () => {
     dispatch(multiStepsVal("step1"));
   };
@@ -371,7 +522,45 @@ const Step2 = (props) => {
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
+    // getTotalValue(index,mIndex,cropitem)
   };
+  const getTotalValue = (index, mIndex, cropitem) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    var val =0;
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "kgs" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "loads" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "pieces"
+      ? (
+        val=  ((multiSelectPartnersArray[mIndex].lineItems[index].weight -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate
+        ).toFixed(2)  
+      )
+      : (
+        val= ((multiSelectPartnersArray[mIndex].lineItems[index].qty -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate
+        ).toFixed(2));
+    let updatedItem3 = cropitem.map((item, i) => {
+      if (i == index) {
+        return { ...cropitem[i], total: val };
+      } else {
+        return { ...cropitem[i] };
+      }
+    });
+    let clonedObject1 = { ...clonedArray[mIndex] };
+    clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
+    clonedArray[mIndex] = clonedObject1;
+   
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    console.log(clonedArray,multiSelectPartnersArray,'totals')
+    return val;
+  };
+
   // handle check event for bags and sacs
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
   const [showBagsModal, setShowBagsModal] = useState(false);
@@ -984,6 +1173,7 @@ const Step2 = (props) => {
                               <td className="col_3">
                                 <div className="d-flex align-items-center justify-content-between">
                                   <p className="totals">
+                                    
                                     {multiSelectPartnersArray[index].lineItems[
                                       i
                                     ].rateType.toLowerCase() == "kgs" ||
@@ -1191,6 +1381,7 @@ const Step2 = (props) => {
       ) : (
         ""
       )}
+      <ToastContainer />
     </div>
   );
 };
