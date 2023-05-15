@@ -68,6 +68,7 @@ import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
 import {
   getSingleBillPdf,
   getSingleBillPdfHelth,
+  postSingleBillPdfHelth,
 } from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
@@ -479,11 +480,15 @@ const BillView = (props) => {
       })
       .catch((error) => console.log(error));
   };
+  const obj = {
+    name : "aparna"
+}
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     var hi = await getSingleBillPdfHelth();
-    console.log(hi, "hi");
+    var hey = await postSingleBillPdfHelth(obj);
+    console.log(hey,hi, "post req pdf");
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {

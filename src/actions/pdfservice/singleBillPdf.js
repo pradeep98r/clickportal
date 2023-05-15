@@ -9,6 +9,11 @@ export function getSingleBillPdf(singleBillBody) {
 export function getSingleBillPdfHelth() {
   return pdfService.get(`health-check`);
 }
+export function postSingleBillPdfHelth(obj) {
+  return pdfService.post(`postCheck`,obj);
+}
 export default {
   getSingleBillPdf,
+  getSingleBillPdfHelth,
+  postSingleBillPdfHelth
 };
