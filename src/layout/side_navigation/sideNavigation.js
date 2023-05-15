@@ -140,14 +140,11 @@ function SideNavigation(props) {
     } else {
       setLinksData(links);
     }
-    getSystemSettings(loginData?.clickId).then((response) => {
+    getSystemSettings(loginData?.caId).then((response) => {
       localStorage.setItem("systemSettingsData", JSON.stringify(response.data.data));
     })
     .catch((error) => {
-      // console.log(error.toJSON().message,error.message,'frrom route');
-      // console.log(error.message,'from route no netwoork 401') 
       if (error.response) {
-        
         if(error.response.data.status.message == 'INVALID_CREDENTIALS'){
           setLogoutStatus(true)
           logOutFunction();
