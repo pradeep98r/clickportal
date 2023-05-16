@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  arrayObj,
   multiSelectPartners,
   multiStepsVal,
 } from "../../reducers/multiBillSteps";
@@ -66,15 +67,51 @@ const Step2 = (props) => {
   //   dispatch(multiStepsVal("step3"));
   //   dispatch(multiSelectPartners(array));
   // };
-  
+  const getTotalValue = (index, mIndex, cropitem) => {
+    console.log(cropitem)
+    let clonedArray = [...selectedStep?.multiSelectPartners];
+    var val = 0;
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "kgs" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "loads" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "pieces"
+      ? (val = (
+          (multiSelectPartnersArray[mIndex].lineItems[index].weight -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate
+        ))
+      : (val = (
+          (multiSelectPartnersArray[mIndex].lineItems[index].qty -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate
+        ));
+    let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map((item, i) => {
+      if (i == index) {
+        return { ...multiSelectPartnersArray[mIndex].lineItems[i], total: val };
+      } else {
+        return { ...multiSelectPartnersArray[mIndex].lineItems[i] };
+      }
+    });
+    let clonedObject1 = { ...clonedArray[mIndex] };
+    clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
+    clonedArray[mIndex] = clonedObject1;
+
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    dispatch(arrayObj(clonedArray))
+    console.log(clonedArray,val)
+    return val;
+  };
   // function to nevigate to step3 page
   var arrays = [];
   const onClickStep2 = (array) => {
     if (array.length > 0) {
       for (var index = 0; index < array.length; index++) {
         const data1 = array[index];
-        if(data1.lineItems.length > 0){
-          for(var cIndex = 0; cIndex < data1.lineItems.length; cIndex ++){
+        if (data1.lineItems.length > 0) {
+          for (var cIndex = 0; cIndex < data1.lineItems.length; cIndex++) {
             const data = data1.lineItems[cIndex];
             if (Object.keys(data).length != 0) {
               if (data.cropDelete) continue;
@@ -145,7 +182,7 @@ const Step2 = (props) => {
                     toastId: "error1",
                   });
                   return null;
-                } else if (data.weight == 0 ) {
+                } else if (data.weight == 0) {
                   toast.error("Please enter weight", {
                     toastId: "error2",
                   });
@@ -175,29 +212,31 @@ const Step2 = (props) => {
           if (Object.keys(data1.lineItems[k]).length != 0) {
             if (data1.lineItems[k].cropName != "") {
               arrays.push(data1.lineItems[k]);
-              let obj = { ...data1.lineItems[k] }
-              obj.total = getTotalValue(k,index,data1.lineItems);
+              let obj = { ...data1.lineItems[k] };
+              obj.total = getTotalValue(k, index, data1.lineItems);
               // data1.lineItems[k] = obj;
-              console.log(data1,multiSelectPartnersArray)
             }
             if (data1.lineItems[k].wastage == "") {
-              data1.lineItems[k].wastage = 0;
+              // data1.lineItems[k].wastage = 0;
             }
           }
         }
+        console.log(arrays,data1.lineItems,'crrops')
+        if (arrays.length === data1.lineItems.length) {
+          dispatch(multiStepsVal("step3"));
+          console.log(selectedStep?.arrayObj,'arrayonj');
+          dispatch(multiSelectPartners(selectedStep?.multiSelectPartners));
+        }
       }
 
-      if(array.length > 0){
-        dispatch(multiStepsVal("step3"));
-        dispatch(multiSelectPartners(multiSelectPartnersArray));
-      }
+      
       // if (arrays.length === cropData.length) {
-        // addStep3Modal();
-       
-        // props.parentcall(
-        //   dArray.length != 0 ? dArray : cropData,
-        //   billEditStatus
-        // );
+      // addStep3Modal();
+
+      // props.parentcall(
+      //   dArray.length != 0 ? dArray : cropData,
+      //   billEditStatus
+      // );
       // } else {
       //   for (var j = 0; j < cropData.length; j++) {
       //     if (
@@ -212,8 +251,6 @@ const Step2 = (props) => {
       // }
     }
   };
-
-
 
   // previous step
   const previousStep = () => {
@@ -524,42 +561,7 @@ const Step2 = (props) => {
     dispatch(multiSelectPartners(clonedArray));
     // getTotalValue(index,mIndex,cropitem)
   };
-  const getTotalValue = (index, mIndex, cropitem) => {
-    let clonedArray = [...multiSelectPartnersArray];
-    var val =0;
-    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
-      "kgs" ||
-    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
-      "loads" ||
-    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
-      "pieces"
-      ? (
-        val=  ((multiSelectPartnersArray[mIndex].lineItems[index].weight -
-            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
-          multiSelectPartnersArray[mIndex].lineItems[index].rate
-        ).toFixed(2)  
-      )
-      : (
-        val= ((multiSelectPartnersArray[mIndex].lineItems[index].qty -
-            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
-          multiSelectPartnersArray[mIndex].lineItems[index].rate
-        ).toFixed(2));
-    let updatedItem3 = cropitem.map((item, i) => {
-      if (i == index) {
-        return { ...cropitem[i], total: val };
-      } else {
-        return { ...cropitem[i] };
-      }
-    });
-    let clonedObject1 = { ...clonedArray[mIndex] };
-    clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
-    clonedArray[mIndex] = clonedObject1;
-   
-    // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray));
-    console.log(clonedArray,multiSelectPartnersArray,'totals')
-    return val;
-  };
+  
 
   // handle check event for bags and sacs
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
@@ -621,12 +623,10 @@ const Step2 = (props) => {
     var index = cropArray.indexOf(crop);
     const newArr = [...cropArray];
 
-    console.log(index, cropInd, "index");
     if (index != -1) {
       let data = cropArray.map((item, i) => {
         if (Object.keys(cropArray[i]).length != 0) {
           if (i == cropInd) {
-            console.log("if", cropArray[i]);
             {
               return {
                 ...cropArray[i],
@@ -641,15 +641,12 @@ const Step2 = (props) => {
           }
         }
       });
-      console.log(cropArray, index, "array");
       if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
         if (Object.keys(cropArray[index]).length != 0) {
-          console.log("hey", cropArray[index]);
           setcropDeletedList([...cropDeletedList, cropArray[index]]);
           cropDeletedList.push(cropArray[index]);
         }
       }
-      console.log(cropArray, "array2");
       newArr.splice(index, 1);
       // cropArray.splice(index, 1);
     }
@@ -664,7 +661,6 @@ const Step2 = (props) => {
     clonedArray[indexVal] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
-    console.log(cropDeletedList, newArr, clonedArray, "list");
     // cropResponseData([...cropArray]);
     // cropResponseData([...cropArray]);
     if (cropDeletedList?.length > 0) {
@@ -679,7 +675,6 @@ const Step2 = (props) => {
       crop,
       ...cropsData.slice(cropInd + 1),
     ];
-    console.log(updatedCropsData, "clone");
     let clonedObject1 = { ...clonedArray[k] };
     clonedObject1 = {
       ...clonedObject1,
@@ -700,7 +695,6 @@ const Step2 = (props) => {
     setAddCropsIndex(i);
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
-        console.log(c[j]);
         return {
           ...c[j],
           cropActive: false,
@@ -722,7 +716,6 @@ const Step2 = (props) => {
     clonedArray[mainInd] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
-    console.log(c[i]);
     Object.assign(c[i], { status: 0, cropDelete: true });
     // setOnFocusCrop(c[i]);
   };
@@ -1173,7 +1166,6 @@ const Step2 = (props) => {
                               <td className="col_3">
                                 <div className="d-flex align-items-center justify-content-between">
                                   <p className="totals">
-                                    
                                     {multiSelectPartnersArray[index].lineItems[
                                       i
                                     ].rateType.toLowerCase() == "kgs" ||

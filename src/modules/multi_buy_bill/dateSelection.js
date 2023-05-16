@@ -27,7 +27,6 @@ const DateSelection = ({ indexVal,fromStep3BillDate }) => {
     }
     else{
       setSelectedDate(new Date(multiSelectPartnersArray[indexVal].selectedDate));
-    console.log(multiSelectPartnersArray[indexVal],multiSelectPartnersArray[indexVal].selectedDate,'else')
     }
     clonedArray[indexVal] = clonedObject;
     dispatch(multiSelectPartners(clonedArray))
