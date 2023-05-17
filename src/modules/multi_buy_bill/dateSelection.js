@@ -22,11 +22,11 @@ const DateSelection = ({ indexVal,fromStep3BillDate }) => {
     let clonedObject = { ...multiSelectPartnersArray[indexVal] };
     if(!fromStep3BillDate){
       Object.assign(clonedObject, {
-        selectedDate: moment(new Date()).format("YYYY-MM-DD"),
+        billDate: moment(new Date()).format("YYYY-MM-DD"),
       });
     }
     else{
-      setSelectedDate(new Date(multiSelectPartnersArray[indexVal].selectedDate));
+      setSelectedDate(new Date(multiSelectPartnersArray[indexVal].billDate));
     }
     clonedArray[indexVal] = clonedObject;
     dispatch(multiSelectPartners(clonedArray))
@@ -40,7 +40,7 @@ const DateSelection = ({ indexVal,fromStep3BillDate }) => {
     let clonedArray = [...multiSelectPartnersArray];
     let clonedObject = { ...multiSelectPartnersArray[indexVal] };
     Object.assign(clonedObject, {
-      selectedDate: moment(date).format("YYYY-MM-DD"),
+      billDate: moment(date).format("YYYY-MM-DD"),
     });
     clonedArray[indexVal] = clonedObject;
     dispatch(multiSelectPartners(clonedArray))

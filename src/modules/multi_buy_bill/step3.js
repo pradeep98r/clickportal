@@ -53,17 +53,25 @@ const Step3 = (props) => {
       console.log(items[mIndex])
       let cObj = {...items[mIndex]}
       Object.assign(cObj,{grossTotal:total});
+      let o = {...items[mIndex].lineItems[i]};
+      Object.assign(o,{
+        buyerId: 0,
+        cropSufx: "string",
+        id: 0,
+        mnLotId: 0,
+        mnSubLotId: 0,
+      })
+      // clonedArray[mIndex].lineItems[i] = o;
       clonedArray[mIndex] = cObj;
       // setMultiSelectPartnersArray(clonedArray);
-      
+     
     console.log(gTotal,clonedArray,'gtotal')
     }
     Object.assign(clonedArray[mIndex], {
       actualPayble: 0,
       advance: 0,
-      billDate: "string",
       billId: 0,
-      billStatus: "string",
+      billStatus: "COMPLETED",
       caId: clickId,
       cashPaid: 0,
       cashPaidCmnt: "",
@@ -82,12 +90,11 @@ const Step3 = (props) => {
           less: true
         }
       ],
-      farmerId: 0,
+      farmerId: items[mIndex].partyId,
       govtLevies: 0,
       groupId: 0,
       labourCharges: 0,
       less: true,
-      
       mandiFee: 0,
       misc: 0,
       outStBal: 0,
@@ -99,11 +106,11 @@ const Step3 = (props) => {
       timeStamp: "",
       totalPayble: 0,
       transportation: 0,
-      transporterId: 0,
       updatedBy: 0,
       updatedOn: "",
-      writerId: writerId
+      writerId: writerId,
     })
+    console.log(clonedArray)
     dispatch(arrayObj(clonedArray));
   };
   const [transportationVal, setTransportationVal] = useState(0);
@@ -143,80 +150,8 @@ const Step3 = (props) => {
     }
   };
   const billRequestObj = {
-    buyBills: [
-      {
-        actualPayble: 0,
-        advance: 0,
-        billDate: "string",
-        billId: 0,
-        billStatus: "string",
-        caId: 0,
-        cashPaid: 0,
-        cashPaidCmnt: "string",
-        comm: 0,
-        commIncluded: true,
-        commShown: true,
-        comments: "string",
-        createdBy: 0,
-        customFields: [
-          {
-            comments: "string",
-            fee: 0,
-            field: "string",
-            fieldName: "string",
-            fieldType: "string",
-            less: true
-          }
-        ],
-        farmerId: 0,
-        govtLevies: 0,
-        grossTotal: 0,
-        groupId: 0,
-        labourCharges: 0,
-        less: true,
-        lineItems: [
-          {
-            bags: [
-              {
-                id: 0,
-                total: 0,
-                wastage: 0,
-                weight: 0
-              }
-            ],
-            buyerId:0,
-            cropId: 0,
-            cropSufx: "string",
-            id: 0,
-            mnLotId: 0,
-            mnSubLotId: 0,
-            pkgUnit: "string",
-            qty:0,
-            qtyUnit:"",
-            rate:0,
-            rateType:"tring",
-            total:0,
-            wastage:0,
-            weight: 0
-          }
-        ],
-        mandiFee: 0,
-        misc: 0,
-        outStBal: 0,
-        paidTo: 0,
-        rent: 0,
-        rtComm: 0,
-        rtCommIncluded: true,
-        source: "string",
-        timeStamp: "2023-05-15T17:13:03.502Z",
-        totalPayble: 0,
-        transportation: 0,
-        transporterId: 0,
-        updatedBy: 0,
-        updatedOn: "2023-05-15T17:13:03.502Z",
-        writerId: 0
-      }
-    ],
+    buyBills: 
+    multiSelectPartnersArray,
     caId: clickId,
     expenses: {
       advance: 0,
@@ -238,13 +173,14 @@ const Step3 = (props) => {
   }
    // post bill request api call
    const postbuybill = () => {
+     console.log(billRequestObj,'payload')
       postMultiBuyBill(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            
+            console.log(response.data,'success');
           }
         },
         (error) => {

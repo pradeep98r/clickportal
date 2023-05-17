@@ -91,6 +91,7 @@ const SelectSinglePartner = ({ indexVal, fromTrans }) => {
       console.log(selectTransporter);
       let clonedArray = [...selectedStep?.multiSelectPartners];
       let clonedObject = { ...clonedArray[indexVal] };
+      console.log(item)
       Object.assign(clonedObject, {
         transporterId: item.partyId,
         transporterName: item.partyName,
