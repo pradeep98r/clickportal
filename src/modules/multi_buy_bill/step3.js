@@ -1,7 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getPartnerType, getText } from "../../components/getText";
 import single_bill from "../../assets/images/bills/single_bill.svg";
-import { getCurrencyNumberWithSymbol, getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import {
+  getCurrencyNumberWithSymbol,
+  getMaskedMobileNumber,
+} from "../../components/getCurrencyNumber";
 import "./step3.scss";
 import { qtyValues } from "../../components/qtyValues";
 import {
@@ -16,14 +19,16 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import $ from "jquery";
 import { postMultiBuyBill } from "../../actions/multiBillService";
+import { useNavigate } from "react-router-dom";
 const Step3 = (props) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.arrayObj;
- console.log(multiSelectPartnersArray,selectedStep?.multiSelectPartners)
- const loginData = JSON.parse(localStorage.getItem("loginResponse"));
- const clickId = loginData.caId;
- var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
+  console.log(multiSelectPartnersArray, selectedStep?.multiSelectPartners);
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
+  var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -36,39 +41,40 @@ const Step3 = (props) => {
   };
   useEffect(() => {
     console.log(multiSelectPartnersArray, "array step3");
-    if(multiSelectPartnersArray.length > 0){
-      for(var i=0;  i<multiSelectPartnersArray.length; i++){
-        getGrossTotalValue(multiSelectPartnersArray,i);
+    if (multiSelectPartnersArray.length > 0) {
+      for (var i = 0; i < multiSelectPartnersArray.length; i++) {
+        getGrossTotalValue(multiSelectPartnersArray, i);
       }
     }
-   
-  },[]);
+  }, []);
   var gTotal = 0;
-  const getGrossTotalValue = (items,mIndex) => {
+  const [grossTotal, setGrossTotal] = useState(0);
+  const getGrossTotalValue = (items, mIndex) => {
     var total = 0;
-    var clonedArray = [...items]
+    var clonedArray = [...items];
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
       total += items[mIndex].lineItems[i].total;
       gTotal = total;
-      console.log(items[mIndex])
-      let cObj = {...items[mIndex]}
-      Object.assign(cObj,{grossTotal:total});
-      let o = {...items[mIndex].lineItems[i]};
-      Object.assign(o,{
+      setGrossTotal(total);
+      console.log(items[mIndex]);
+      let cObj = { ...items[mIndex] };
+      Object.assign(cObj, { grossTotal: total });
+      let o = { ...items[mIndex].lineItems[i] };
+      Object.assign(o, {
         buyerId: 0,
         cropSufx: "string",
         id: 0,
         mnLotId: 0,
         mnSubLotId: 0,
-      })
+      });
       // clonedArray[mIndex].lineItems[i] = o;
       clonedArray[mIndex] = cObj;
       // setMultiSelectPartnersArray(clonedArray);
-     
-    console.log(gTotal,clonedArray,'gtotal')
+
+      console.log(gTotal, clonedArray, "gtotal");
     }
     Object.assign(clonedArray[mIndex], {
-      actualPayble: 0,
+      actualPayble: gTotal,
       advance: 0,
       billId: 0,
       billStatus: "COMPLETED",
@@ -81,14 +87,14 @@ const Step3 = (props) => {
       comments: "",
       createdBy: 0,
       customFields: [
-        {
-          comments: "",
-          fee: 0,
-          field: "",
-          fieldName: "",
-          fieldType: "",
-          less: true
-        }
+        // {
+        //   comments: "",
+        //   fee: 0,
+        //   field: "",
+        //   fieldName: "",
+        //   fieldType: "",
+        //   less: true,
+        // },
       ],
       farmerId: items[mIndex].partyId,
       govtLevies: 0,
@@ -104,13 +110,14 @@ const Step3 = (props) => {
       rtCommIncluded: true,
       source: "WEB",
       timeStamp: "",
-      totalPayble: 0,
+      totalPayble: gTotal,
       transportation: 0,
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
-    })
-    console.log(clonedArray)
+    });
+    // delete clonedArray[mIndex]["partyName"];
+    console.log(clonedArray);
     dispatch(arrayObj(clonedArray));
   };
   const [transportationVal, setTransportationVal] = useState(0);
@@ -123,7 +130,7 @@ const Step3 = (props) => {
       .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2") // Allow only one dot and up to two digits after the dot
       .replace(/(\.\d{0,2})\d*/, "$1")
       .replace(/(\.\d*)\./, "$1");
-    getAdditionValues(type,val)
+    getAdditionValues(type, val);
   };
   const getAdditionValues = (name, v) => {
     if (name.toLowerCase() == "transportation") {
@@ -138,59 +145,71 @@ const Step3 = (props) => {
     if (name.toLowerCase() == "other_fee") {
       setOtherFeeVal(v);
     }
-  }
- const getTotalExpences = ()=>{
-   var expenses = (Number(transportationVal)+Number(coolieVal)+Number(rentVal)+Number(otherFeeVal));
-   return expenses;
- }
-   //   click on input to reset 0 to enter value
-   const resetInput = (e) => {
+  };
+  const getTotalExpences = () => {
+    var expenses =
+      Number(transportationVal) +
+      Number(coolieVal) +
+      Number(rentVal) +
+      Number(otherFeeVal);
+    return expenses;
+  };
+  //   click on input to reset 0 to enter value
+  const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
     }
   };
   const billRequestObj = {
-    buyBills: 
+    buyBills:
     multiSelectPartnersArray,
     caId: clickId,
     expenses: {
       advance: 0,
       comm: 0,
       govtLevies: 0,
-      labourCharges: coolieVal,
-      mandiFee: otherFeeVal,
+      labourCharges: parseFloat(coolieVal),
+      mandiFee: parseFloat(otherFeeVal),
       misc: 0,
       others: 0,
-      rent: rentVal,
+      rent: parseFloat(rentVal),
       rtComm: 0,
       total: getTotalExpences(),
-      transportation: transportationVal
+      transportation: parseFloat(transportationVal)
     },
     groupId: 0,
     reqId: 0,
     skipIndividualExpenses: true,
     writerId: writerId
   }
-   // post bill request api call
-   const postbuybill = () => {
-     console.log(billRequestObj,'payload')
-      postMultiBuyBill(billRequestObj).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
-            console.log(response.data,'success');
-          }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
+  // post bill request api call
+  const postbuybill = () => {
+    console.log(billRequestObj, "payload");
+    postMultiBuyBill(billRequestObj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.message, {
+            toastId: "success1",
           });
-          $("#disable").attr("disabled", false);
+          console.log(response.data, "success");
+          localStorage.setItem("LinkPath", "/buy_bill_book");
+
+          window.setTimeout(function () {
+            props.closeModal();
+          }, 800);
+          window.setTimeout(function () {
+            navigate("/buy_bill_book");
+            window.location.reload();
+          }, 1000);
         }
-      );
-    
+      },
+      (error) => {
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
+        $("#disable").attr("disabled", false);
+      }
+    );
   };
   return (
     <div>
@@ -240,7 +259,7 @@ const Step3 = (props) => {
                           </div>
                         </div>
                         <div className="col-lg-4 partner_card">
-                          <div
+                          {item.transporterId != '' ?    <div
                             style={{ display: "flex", alignItems: "center" }}
                             className=""
                           >
@@ -262,7 +281,8 @@ const Step3 = (props) => {
                                 </h6>
                               </div>
                             </div>
-                          </div>
+                          </div> : ''}
+                       
                         </div>
                         <div className="col-lg-4">
                           <div className="partner_card">
@@ -308,7 +328,7 @@ const Step3 = (props) => {
                                                   crop.rateType
                                                 )}
                                               </p>
-                                              </div>
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
@@ -352,27 +372,27 @@ const Step3 = (props) => {
                         <input
                           type="text"
                           placeholder=""
-                            onChange={advLevOnchangeEvent('Transportation')}
-                            onFocus={(e) => resetInput(e)}
-                            value={transportationVal}
+                          onChange={advLevOnchangeEvent("Transportation")}
+                          onFocus={(e) => resetInput(e)}
+                          value={transportationVal}
                         />
                       </div>
                       <div className="col-lg-4 col-sm-12 col_left_border">
                         <input
                           type="text"
                           placeholder=""
-                            onChange={advLevOnchangeEvent('Coolie')}
-                            onFocus={(e) => resetInput(e)}
-                            value={coolieVal}
+                          onChange={advLevOnchangeEvent("Coolie")}
+                          onFocus={(e) => resetInput(e)}
+                          value={coolieVal}
                         />
                       </div>
                       <div className="col-lg-4 col-sm-12 col_left_border">
                         <input
                           type="text"
                           placeholder=""
-                            onChange={advLevOnchangeEvent('Rent')}
-                            onFocus={(e) => resetInput(e)}
-                            value={rentVal}
+                          onChange={advLevOnchangeEvent("Rent")}
+                          onFocus={(e) => resetInput(e)}
+                          value={rentVal}
                         />
                         {/* <p className="text-center">{inputText ? inputText : 0.0}</p> */}
                       </div>
@@ -388,12 +408,12 @@ const Step3 = (props) => {
                   <div className="card input_card">
                     <div className="row">
                       <div className="col-sm-12">
-                      <input
+                        <input
                           type="text"
                           placeholder=""
-                            onChange={advLevOnchangeEvent('Other_fee')}
-                            onFocus={(e) => resetInput(e)}
-                            value={otherFeeVal}
+                          onChange={advLevOnchangeEvent("Other_fee")}
+                          onFocus={(e) => resetInput(e)}
+                          value={otherFeeVal}
                         />
                       </div>
                     </div>
@@ -422,7 +442,11 @@ const Step3 = (props) => {
                     <div className="card input_card">
                       <div className="row">
                         <div className="col-sm-12">
-                          <input type="text" placeholder="" value={getTotalExpences()} />
+                          <input
+                            type="text"
+                            placeholder=""
+                            value={getTotalExpences()}
+                          />
                         </div>
                       </div>
                     </div>
@@ -450,7 +474,7 @@ const Step3 = (props) => {
                       <p>Group Total : </p>
                     </div>
                     <div className="col-lg-6 p-0">
-                      <p>{getCurrencyNumberWithSymbol(gTotal)}</p>
+                      <p>{(grossTotal)}</p>
                     </div>
                   </div>
                 </div>
@@ -459,6 +483,7 @@ const Step3 = (props) => {
           </div>
         </div>
       </div>
+      <ToastContainer />
       <div className="bottom_div">
         <div className="d-flex align-items-center justify-content-between">
           <button className="secondary_btn" onClick={cancelStep}>

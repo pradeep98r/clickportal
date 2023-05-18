@@ -476,7 +476,7 @@ const Step2 = (props) => {
       .replace(/(\.\d*)\./, "$1");
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], qty: val };
+        return { ...cropitem[i], qty: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -498,7 +498,7 @@ const Step2 = (props) => {
       .replace(/(\.\d*)\./, "$1");
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], weight: val };
+        return { ...cropitem[i], weight: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -527,7 +527,7 @@ const Step2 = (props) => {
 
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], wastage: val };
+        return { ...cropitem[i], wastage: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -549,7 +549,7 @@ const Step2 = (props) => {
     // .replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], rate: val };
+        return { ...cropitem[i], rate: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
