@@ -29,6 +29,7 @@ const Step3 = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
+  var arr1 = [];
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -48,8 +49,10 @@ const Step3 = (props) => {
     }
   }, []);
   var gTotal = 0;
+  
   const [grossTotal, setGrossTotal] = useState(0);
   const getGrossTotalValue = (items, mIndex) => {
+    console.log(mIndex)
     var total = 0;
     var clonedArray = [...items];
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
@@ -116,9 +119,11 @@ const Step3 = (props) => {
       updatedOn: "",
       writerId: writerId,
     });
+    console.log(clonedArray[mIndex],'clonearray')
+    arr1.push(clonedArray[mIndex]);
     // delete clonedArray[mIndex]["partyName"];
-    console.log(clonedArray);
-    dispatch(arrayObj(clonedArray));
+    console.log(clonedArray,arr1);
+    dispatch(arrayObj(arr1));
   };
   const [transportationVal, setTransportationVal] = useState(0);
   const [coolieVal, setCoolieVal] = useState(0);
