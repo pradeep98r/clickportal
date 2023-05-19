@@ -47,6 +47,7 @@ import {
   selectedMultBillArray,
 } from "../../reducers/multiBillSteps";
 import MultiBillSteps from "../multi_buy_bill/steps";
+import MultiBillView from "../multi_buy_bill/multiBillView";
 function BuyBillBook() {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -784,6 +785,14 @@ function BuyBillBook() {
           allBillsData={buyBillData}
           fromLedger={false}
           fromBillbookToRecordPayment={true}
+        />
+      ) : (
+        ""
+      )}
+       {showMultiBillModalStatus ? (
+        <MultiBillView
+          showMultiBillViewModal={showMultiBillModal}
+          closeMultiBillViewModal={() => setMultiShowBillModal(false)}
         />
       ) : (
         ""

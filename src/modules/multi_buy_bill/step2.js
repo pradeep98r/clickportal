@@ -68,7 +68,6 @@ const Step2 = (props) => {
   //   dispatch(multiSelectPartners(array));
   // };
   const getTotalValue = (index, mIndex, cropitem) => {
-    console.log(cropitem)
     let clonedArray = [...selectedStep?.multiSelectPartners];
     var val = 0;
     multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
@@ -101,7 +100,6 @@ const Step2 = (props) => {
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
     dispatch(arrayObj(clonedArray))
-    console.log(clonedArray,val)
     return val;
   };
   // function to nevigate to step3 page
@@ -221,7 +219,6 @@ const Step2 = (props) => {
             }
           }
         }
-        console.log(arrays,data1.lineItems,'crrops')
         if (arrays.length === data1.lineItems.length) {
           dispatch(multiStepsVal("step3"));
           console.log(selectedStep?.arrayObj,'arrayonj');

@@ -25,11 +25,10 @@ const Step3 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.arrayObj;
-  console.log(multiSelectPartnersArray, selectedStep?.multiSelectPartners);
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
-  var arr1 = [];
+  var [arr1, setArr1] = useState([]);
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -40,26 +39,29 @@ const Step3 = (props) => {
   const editCropInfo = () => {
     dispatch(multiStepsVal("step2"));
   };
+  var totalGross = 0;
+  const [grossTotal, setGrossTotal] = useState(0);
   useEffect(() => {
     console.log(multiSelectPartnersArray, "array step3");
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
         getGrossTotalValue(multiSelectPartnersArray, i);
+       
       }
+      
     }
   }, []);
   var gTotal = 0;
-  
-  const [grossTotal, setGrossTotal] = useState(0);
+
   const getGrossTotalValue = (items, mIndex) => {
-    console.log(mIndex)
+    console.log(mIndex);
     var total = 0;
     var clonedArray = [...items];
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
-      total += items[mIndex].lineItems[i].total;
+      let obj = { ...items[mIndex].lineItems[i] };
+      obj.total = getTotalValue(i, mIndex);
+      total += obj.total;
       gTotal = total;
-      setGrossTotal(total);
-      console.log(items[mIndex]);
       let cObj = { ...items[mIndex] };
       Object.assign(cObj, { grossTotal: total });
       let o = { ...items[mIndex].lineItems[i] };
@@ -70,11 +72,7 @@ const Step3 = (props) => {
         mnLotId: 0,
         mnSubLotId: 0,
       });
-      // clonedArray[mIndex].lineItems[i] = o;
       clonedArray[mIndex] = cObj;
-      // setMultiSelectPartnersArray(clonedArray);
-
-      console.log(gTotal, clonedArray, "gtotal");
     }
     Object.assign(clonedArray[mIndex], {
       actualPayble: gTotal,
@@ -119,12 +117,48 @@ const Step3 = (props) => {
       updatedOn: "",
       writerId: writerId,
     });
-    console.log(clonedArray[mIndex],'clonearray')
-    arr1.push(clonedArray[mIndex]);
-    // delete clonedArray[mIndex]["partyName"];
-    console.log(clonedArray,arr1);
+    console.log(clonedArray, arr1, "before push");
+    totalGross += clonedArray[mIndex].grossTotal;
+    setGrossTotal(totalGross);
+    arr1 = [...arr1, clonedArray[mIndex]];
+    console.log(clonedArray, arr1);
     dispatch(arrayObj(arr1));
   };
+
+  const getTotalValue = (index, mIndex, cropitem) => {
+    let clonedArray = [...selectedStep?.multiSelectPartners];
+    var val = 0;
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "kgs" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "loads" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "pieces"
+      ? (val =
+          (multiSelectPartnersArray[mIndex].lineItems[index].weight -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate)
+      : (val =
+          (multiSelectPartnersArray[mIndex].lineItems[index].qty -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate);
+    // let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map((item, i) => {
+    //   if (i == index) {
+    //     return { ...multiSelectPartnersArray[mIndex].lineItems[i], total: val };
+    //   } else {
+    //     return { ...multiSelectPartnersArray[mIndex].lineItems[i] };
+    //   }
+    // });
+    // let clonedObject1 = { ...clonedArray[mIndex] };
+    // clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
+    // clonedArray[mIndex] = clonedObject1;
+
+    // // setMultiSelectPartnersArray(clonedArray);
+    // dispatch(multiSelectPartners(clonedArray));
+    // dispatch(arrayObj(clonedArray))
+    return val;
+  };
+
   const [transportationVal, setTransportationVal] = useState(0);
   const [coolieVal, setCoolieVal] = useState(0);
   const [rentVal, setRentVal] = useState(0);
@@ -166,8 +200,7 @@ const Step3 = (props) => {
     }
   };
   const billRequestObj = {
-    buyBills:
-    multiSelectPartnersArray,
+    buyBills: multiSelectPartnersArray,
     caId: clickId,
     expenses: {
       advance: 0,
@@ -180,13 +213,13 @@ const Step3 = (props) => {
       rent: parseFloat(rentVal),
       rtComm: 0,
       total: getTotalExpences(),
-      transportation: parseFloat(transportationVal)
+      transportation: parseFloat(transportationVal),
     },
     groupId: 0,
     reqId: 0,
     skipIndividualExpenses: true,
-    writerId: writerId
-  }
+    writerId: writerId,
+  };
   // post bill request api call
   const postbuybill = () => {
     console.log(billRequestObj, "payload");
@@ -264,30 +297,33 @@ const Step3 = (props) => {
                           </div>
                         </div>
                         <div className="col-lg-4 partner_card">
-                          {item.transporterId != '' ?    <div
-                            style={{ display: "flex", alignItems: "center" }}
-                            className=""
-                          >
-                            <img src={single_bill} className="icon_user" />
+                          {item.transporterId != "" ? (
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                              className=""
+                            >
+                              <img src={single_bill} className="icon_user" />
 
-                            <div style={{ marginLeft: 5 }}>
-                              <div className="-">
-                                <h5>
-                                  {item.transporterName != ""
-                                    ? getText(item.transporterName)
-                                    : ""}
-                                </h5>
-                                <h6>
-                                  {getPartnerType("TRANSPORTER")} -{" "}
-                                  {item.transporterId} |{" "}
-                                  {getMaskedMobileNumber(
-                                    item.transporterMobile
-                                  )}
-                                </h6>
+                              <div style={{ marginLeft: 5 }}>
+                                <div className="-">
+                                  <h5>
+                                    {item.transporterName != ""
+                                      ? getText(item.transporterName)
+                                      : ""}
+                                  </h5>
+                                  <h6>
+                                    {getPartnerType("TRANSPORTER")} -{" "}
+                                    {item.transporterId} |{" "}
+                                    {getMaskedMobileNumber(
+                                      item.transporterMobile
+                                    )}
+                                  </h6>
+                                </div>
                               </div>
                             </div>
-                          </div> : ''}
-                       
+                          ) : (
+                            ""
+                          )}
                         </div>
                         <div className="col-lg-4">
                           <div className="partner_card">
@@ -300,7 +336,7 @@ const Step3 = (props) => {
                       </div>
                       <div className="border_line"></div>
                       <div className="row align-items-center">
-                        <div className="col-lg-4">
+                        <div className="col-lg-5">
                           {multiSelectPartnersArray[index].lineItems.length >
                             0 &&
                             multiSelectPartnersArray[index].lineItems.map(
@@ -331,7 +367,13 @@ const Step3 = (props) => {
                                                   parseFloat(crop.weight),
                                                   crop.wastage,
                                                   crop.rateType
-                                                )}
+                                                )}{" "}
+                                                <span>
+                                                  |{" "}
+                                                  {getCurrencyNumberWithSymbol(
+                                                    crop.rate
+                                                  )}
+                                                </span>
                                               </p>
                                             </div>
                                           </div>
@@ -343,7 +385,7 @@ const Step3 = (props) => {
                               }
                             )}
                         </div>
-                        <div className="col-lg-4"></div>
+                        <div className="col-lg-3"></div>
                         <div className="col-lg-4">
                           <div>
                             <p className="crops-color">Gross Total(₹)</p>
@@ -479,7 +521,7 @@ const Step3 = (props) => {
                       <p>Group Total : </p>
                     </div>
                     <div className="col-lg-6 p-0">
-                      <p>{(grossTotal)}</p>
+                      <p>{getCurrencyNumberWithSymbol(grossTotal)}</p>
                     </div>
                   </div>
                 </div>
