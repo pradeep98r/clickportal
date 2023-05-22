@@ -235,10 +235,10 @@ const Step3 = (props) => {
           window.setTimeout(function () {
             props.closeModal();
           }, 800);
-          window.setTimeout(function () {
-            navigate("/buy_bill_book");
-            window.location.reload();
-          }, 1000);
+          // window.setTimeout(function () {
+          //   navigate("/buy_bill_book");
+          //   window.location.reload();
+          // }, 1000);
         }
       },
       (error) => {

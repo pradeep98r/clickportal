@@ -8,4 +8,10 @@ export function postMultiBuyBill(obj) {
     obj
   );
 }
-export default {postMultiBuyBill};
+export function editMultiBuyBill(obj) {
+  return axiosCommon.put(
+    `/click/bills/multi-sell-buy-bill`,
+    obj
+  );
+}
+export default {postMultiBuyBill,editMultiBuyBill};
