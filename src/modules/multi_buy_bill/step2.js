@@ -104,16 +104,19 @@ const Step2 = (props) => {
   // function to nevigate to step3 page
   var arrays = [];
   const onClickStep2 = (array) => {
+    let clonedArray = [...array];
     if (array.length > 0) {
       for (var index = 0; index < array.length; index++) {
         const data1 = array[index];
         if (data1.lineItems.length > 0) {
+          arrays = [];
           for (var cIndex = 0; cIndex < data1.lineItems.length; cIndex++) {
             var data = data1.lineItems[cIndex];
             if (Object.keys(data).length != 0) {
               let obj1 = { ...data };
               obj1.total = getTotalValue(cIndex, index);
               data = obj1;
+              console.log(data,arrays)
               arrays.push(data);
               if (data.cropDelete) continue;
               const qtyUnit = data.qtyUnit?.toLowerCase();
@@ -222,17 +225,17 @@ const Step2 = (props) => {
         //     }
         //   }
         // }
-        let clonedArray = [...array];
+        
         let clonedObject = { ...array[index] };
         clonedObject = { ...clonedObject, lineItems: arrays };
         clonedArray[index] = clonedObject;
-        if (arrays.length === data1.lineItems.length) {
-          dispatch(multiStepsVal("step3"));
-          console.log(clonedArray,'arrayonj');
-          dispatch(multiSelectPartners(clonedArray));
-        }
+        // if (arrays.length === data1.lineItems.length) {
+          
+        // }
       }
-
+      dispatch(multiStepsVal("step3"));
+      console.log(clonedArray,'arrayonj');
+      dispatch(multiSelectPartners(clonedArray));
            
       // if (arrays.length === cropData.length) {
       // addStep3Modal();

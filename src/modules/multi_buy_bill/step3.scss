@@ -40,4 +40,7 @@
 }
 .remove_border{
   border: none!important;
+  td:first-child, th:first-child{
+    border-left: none;
+  }
 }

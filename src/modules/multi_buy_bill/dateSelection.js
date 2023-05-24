@@ -20,17 +20,19 @@ const DateSelection = ({ indexVal,fromStep3BillDate }) => {
   var arr = [];
   useEffect(()=>{
     let clonedArray = [...multiSelectPartnersArray];
-    let clonedObject = { ...multiSelectPartnersArray[indexVal] };
+    for(var i=0; i<multiSelectPartnersArray.length; i++){
+      let clonedObject = { ...multiSelectPartnersArray[i] };
     if(!fromStep3BillDate){
       Object.assign(clonedObject, {
         billDate: moment(new Date()).format("YYYY-MM-DD"),
       });
     }
     else{
-      setSelectedDate(new Date(multiSelectPartnersArray[indexVal].billDate));
+      setSelectedDate(new Date(multiSelectPartnersArray[i].billDate));
     }
-    clonedArray[indexVal] = clonedObject;
-    arr.push(clonedArray[indexVal])
+    clonedArray[i] = clonedObject;
+    arr.push(clonedArray[i])
+    }
     console.log(arr,clonedArray,'date sel')
     dispatch(multiSelectPartners(clonedArray))
   },[])
@@ -47,7 +49,6 @@ const DateSelection = ({ indexVal,fromStep3BillDate }) => {
     });
     clonedArray[indexVal] = clonedObject;
     arr.push(clonedArray[indexVal])
-    console.log(arr,clonedArray,'date selcted')
     dispatch(multiSelectPartners(clonedArray))
   };
   return (

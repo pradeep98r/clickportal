@@ -487,7 +487,7 @@ const Step3 = (props) => {
                           <input
                             type="text"
                             placeholder=""
-                            value={getTotalExpences()}
+                            value={getTotalExpences() != 0 ? getCurrencyNumberWithSymbol(getTotalExpences()) : 0}
                           />
                         </div>
                       </div>

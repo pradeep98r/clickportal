@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getCurrencyNumberWithOutSymbol,getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
+import {
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithSymbol,
+} from "../../components/getCurrencyNumber";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
 import { colorAdjustBg, getText } from "../../components/getText";
@@ -9,7 +12,12 @@ const PaartyCropDetails = (props) => {
   const selectedBillData = selectedStep?.selectedMultBillArray;
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
+  const colorThemeVal =
+    pdfThemeData != null
+      ? pdfThemeData?.colorTheme != ""
+        ? pdfThemeData?.colorTheme
+        : "#16a12c"
+      : "#16a12c";
   useEffect(() => {
     // setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
@@ -23,8 +31,6 @@ const PaartyCropDetails = (props) => {
 
   return (
     <div>
-      
-     
       <div>
         <table className="table table-bordered bill_view mb-0">
           <thead>
@@ -55,59 +61,59 @@ const PaartyCropDetails = (props) => {
               >
                 Seller
               </th>
-              <th className="col-10 remove_border p-0">
-              <th
-                className="col-4"
-                style={{
-                  backgroundColor:
-                    pdfThemeData != null
-                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
-                        : colorAdjustBg(colorThemeVal, 180)
-                      : "#D7F3DD",
-                }}
-              >
-                Particulars
-              </th>
-              <th
-                className="col-3"
-                style={{
-                  backgroundColor:
-                    pdfThemeData != null
-                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
-                        : colorAdjustBg(colorThemeVal, 180)
-                      : "#D7F3DD",
-                }}
-              >
-                Qty.{" "}
-              </th>
-              <th
-                className="col-3"
-                style={{
-                  backgroundColor:
-                    pdfThemeData != null
-                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
-                        : colorAdjustBg(colorThemeVal, 180)
-                      : "#D7F3DD",
-                }}
-              >
-                Rate (₹)
-              </th>
-              <th
-                className="col-2"
-                style={{
-                  backgroundColor:
-                    pdfThemeData != null
-                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
-                        : colorAdjustBg(colorThemeVal, 180)
-                      : "#D7F3DD",
-                }}
-              >
-                Total (₹)
-              </th>
+              <th className="col-9 remove_border p-0">
+                <th
+                  className="col-4"
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
+                >
+                  Particulars
+                </th>
+                <th
+                  className="col-3 qty_col"
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
+                >
+                  Qty.{" "}
+                </th>
+                <th
+                  className="col-3"
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
+                >
+                  Rate (₹)
+                </th>
+                <th
+                  className="col-2"
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
+                >
+                  Total (₹)
+                </th>
               </th>
             </tr>
           </thead>
@@ -116,76 +122,86 @@ const PaartyCropDetails = (props) => {
               return (
                 <tr key={party}>
                   <td className="col-1 text-center">{key + 1}</td>
-                  <td className="col-2">
-                      {party.farmerName}
-                  </td>
-                 <td className="col-9 p-0 remove_border">
-                  {party.lineItems.map((item,key)=>{
+                  <td className="col-2">{party.farmerName}</td>
+                  <td className="col-9 p-0 remove_border">
+                    {party.lineItems.map((item, key) => {
                       return (
                         <div>
-                        <td className="col-4">
-                          <div className="flex_class crop_name">
-                            <img src={item.imageUrl} className="crop_image_bill" />
-                            <p className="crop-name">
-                            {(item.cropSufx != null) ? ( item.cropSufx != '' ? (item.cropName + ' ' + `(${(item.cropSufx)})`) : item.cropName) : item.cropName}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="col-3">
-                          <div>
-                            {" "}
-                            {qtyValues(
-                              item.qty,
-                              item.qtyUnit,
-                              item.weight,
-                              item.wastage,
-                              item.rateType
-                            )}
-                          </div>
-                          <div>
-                            {item.bags !== null ? (
-                              <div className="flex_class">
-                                <span>
+                          <td className="col-4">
+                            <div className="flex_class mr-0 crop_name">
+                              <img
+                                src={item.imageUrl}
+                                className="crop_image_bill"
+                              />
+                              <p className="crop-name">
+                                {item.cropSufx != null
+                                  ? item.cropSufx != ""
+                                    ? item.cropName + " " + `(${item.cropSufx})`
+                                    : item.cropName
+                                  : item.cropName}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="col-3">
+                            <div>
+                              {" "}
+                              {qtyValues(
+                                item.qty,
+                                item.qtyUnit,
+                                item.weight,
+                                item.wastage,
+                                item.rateType
+                              )}
+                            </div>
+                            <div>
+                              {item.bags !== null ? (
+                                <div className="flex_class">
                                   <span>
-                                    {item.bags.map((i) => {
-                                      return (
-                                        <span>
+                                    <span>
+                                      {item.bags.map((i) => {
+                                        return (
                                           <span>
-                                            {i.weight ? i.weight + " " : ""}
+                                            <span>
+                                              {i.weight ? i.weight + " " : ""}
+                                            </span>
+                                            <span>
+                                              {i.wastage ? " - " : ""}
+                                            </span>
+                                            <span>
+                                              {i.wastage ? i.wastage : ""}
+                                            </span>
+                                            <span>, </span>
                                           </span>
-                                          <span>{i.wastage ? " - " : ""}</span>
-                                          <span>{i.wastage ? i.wastage : ""}</span>
-                                          <span>, </span>
-                                        </span>
-                                      );
-                                    })}
-                                    <span>= {totalBagsValue(item.bags) + "KGS"}</span>
+                                        );
+                                      })}
+                                      <span>
+                                        = {totalBagsValue(item.bags) + "KGS"}
+                                      </span>
+                                    </span>
                                   </span>
-                                </span>
-                              </div>
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                        </td>
-                        <td className="col-3">
-                          {getCurrencyNumberWithOutSymbol(item.rate)}
-                        </td>
-                        <td
-                          className={
-                            // billData?.partyType === "FARMER"
-                               "col-2 color_red"
-                            //   : "col-2 color_green"
-                          }
-                        >
-                          {getCurrencyNumberWithOutSymbol(item.total)}
-                          {/* color_green */}
-                        </td>
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          </td>
+                          <td className="col-3">
+                            {getCurrencyNumberWithOutSymbol(item.rate)}
+                          </td>
+                          <td
+className={
+                              // billData?.partyType === "FARMER"
+                              "col-2 color_red"
+                              //   : "col-2 color_green"
+                            }
+                          >
+                            {getCurrencyNumberWithOutSymbol(item.total)}
+                            {/* color_green */}
+                          </td>
                         </div>
-                      )
-                  })}
-                 </td>
-                 
+                      );
+                    })}
+                  </td>
                 </tr>
               );
             })}
