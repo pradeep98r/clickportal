@@ -100,6 +100,7 @@ const Step2 = (props) => {
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
     dispatch(arrayObj(clonedArray))
+    console.log(clonedArray)
     return val;
   };
   // function to nevigate to step3 page
@@ -211,7 +212,7 @@ const Step2 = (props) => {
             if (data1.lineItems[k].cropName != "") {
               arrays.push(data1.lineItems[k]);
               let obj = { ...data1.lineItems[k] };
-              obj.total = getTotalValue(k, index, data1.lineItems);
+              // obj.total = getTotalValue(k, index, data1.lineItems);
               // data1.lineItems[k] = obj;
             }
             if (data1.lineItems[k].wastage == "") {

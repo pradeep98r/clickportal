@@ -117,7 +117,7 @@ const Step3 = (props) => {
       updatedOn: "",
       writerId: writerId,
     });
-    console.log(clonedArray, arr1, "before push");
+    console.log(clonedArray, items, "before push");
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
     arr1 = [...arr1, clonedArray[mIndex]];

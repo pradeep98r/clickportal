@@ -35,7 +35,6 @@ const MultiBillView = (props) => {
   const[objArray, setObjArrray] = useState([]);
   const handleCheckEvent = () => {
     if (!isPopupOpen) {
-      // check if popup is already open
       isPopupOpen = true; // set flag to true
       $("#cancelBill").modal("show"); // show popup
       setTimeout(() => {
@@ -244,9 +243,7 @@ const MultiBillView = (props) => {
             </div>
           </div>
         </div>
-      </Modal>
-      <ToastContainer />
-      <div className="modal cancelModal fade" id="cancelBill">
+        <div className="modal cancelModal fade" id="cancelBill">
           <div className="modal-dialog cancelBill_modal_popup modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header date_modal_header smartboard_modal_header">
@@ -311,6 +308,9 @@ const MultiBillView = (props) => {
             </div>
           </div>
         </div>
+      </Modal>
+      <ToastContainer />
+      
     </div>
   );
 };
