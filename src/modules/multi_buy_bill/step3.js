@@ -24,7 +24,7 @@ const Step3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
-  const multiSelectPartnersArray = selectedStep?.arrayObj;
+  const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
@@ -46,7 +46,6 @@ const Step3 = (props) => {
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
         getGrossTotalValue(multiSelectPartnersArray, i);
-       
       }
       
     }
@@ -54,12 +53,10 @@ const Step3 = (props) => {
   var gTotal = 0;
 
   const getGrossTotalValue = (items, mIndex) => {
-    console.log(mIndex);
     var total = 0;
     var clonedArray = [...items];
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
       let obj = { ...items[mIndex].lineItems[i] };
-      obj.total = getTotalValue(i, mIndex);
       total += obj.total;
       gTotal = total;
       let cObj = { ...items[mIndex] };
@@ -117,12 +114,10 @@ const Step3 = (props) => {
       updatedOn: "",
       writerId: writerId,
     });
-    console.log(clonedArray, items, "before push");
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
     arr1 = [...arr1, clonedArray[mIndex]];
-    console.log(clonedArray, arr1);
-    dispatch(arrayObj(arr1));
+    dispatch(multiSelectPartners(arr1));
   };
 
   const getTotalValue = (index, mIndex, cropitem) => {

@@ -9,7 +9,6 @@ const MultiBillSteps = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const dispatch = useDispatch();
   const selectedStepVal = selectedStep?.multiStepsVal;
-  console.log(selectedStepVal, "stepss");
   const linkPath = localStorage.getItem("LinkPath");
   const clearData = () => {
     dispatch(multiSelectPartners([]));

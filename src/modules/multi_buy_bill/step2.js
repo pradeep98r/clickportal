@@ -24,8 +24,6 @@ const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
-  // const [multiSelectPartnersArray, setMultiSelectPartnersArray] =
-  //   useState(partnersArray);
   const [allData, setAllData] = useState([]);
   const [cropsData, setCropsData] = useState(allData);
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
@@ -67,7 +65,7 @@ const Step2 = (props) => {
   //   dispatch(multiStepsVal("step3"));
   //   dispatch(multiSelectPartners(array));
   // };
-  const getTotalValue = (index, mIndex, cropitem) => {
+  const getTotalValue = (index, mIndex) => {
     let clonedArray = [...selectedStep?.multiSelectPartners];
     var val = 0;
     multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
@@ -111,8 +109,12 @@ const Step2 = (props) => {
         const data1 = array[index];
         if (data1.lineItems.length > 0) {
           for (var cIndex = 0; cIndex < data1.lineItems.length; cIndex++) {
-            const data = data1.lineItems[cIndex];
+            var data = data1.lineItems[cIndex];
             if (Object.keys(data).length != 0) {
+              let obj1 = { ...data };
+              obj1.total = getTotalValue(cIndex, index);
+              data = obj1;
+              arrays.push(data);
               if (data.cropDelete) continue;
               const qtyUnit = data.qtyUnit?.toLowerCase();
               const rateType = data.rateType?.toLowerCase();
@@ -207,27 +209,31 @@ const Step2 = (props) => {
             }
           }
         }
-        for (var k = 0; k < data1.lineItems.length; k++) {
-          if (Object.keys(data1.lineItems[k]).length != 0) {
-            if (data1.lineItems[k].cropName != "") {
-              arrays.push(data1.lineItems[k]);
-              let obj = { ...data1.lineItems[k] };
-              // obj.total = getTotalValue(k, index, data1.lineItems);
-              // data1.lineItems[k] = obj;
-            }
-            if (data1.lineItems[k].wastage == "") {
-              // data1.lineItems[k].wastage = 0;
-            }
-          }
-        }
+        // for (var k = 0; k < data1.lineItems.length; k++) {
+        //   if (Object.keys(data1.lineItems[k]).length != 0) {
+        //     if (data1.lineItems[k].cropName != "") {
+        //       // arrays.push(data1.lineItems[k]);
+        //       let obj = { ...data1.lineItems[k] };
+        //       // obj.total = getTotalValue(k, index, data1.lineItems);
+        //       // data1.lineItems[k] = obj;
+        //     }
+        //     if (data1.lineItems[k].wastage == "") {
+        //       // data1.lineItems[k].wastage = 0;
+        //     }
+        //   }
+        // }
+        let clonedArray = [...array];
+        let clonedObject = { ...array[index] };
+        clonedObject = { ...clonedObject, lineItems: arrays };
+        clonedArray[index] = clonedObject;
         if (arrays.length === data1.lineItems.length) {
           dispatch(multiStepsVal("step3"));
-          console.log(selectedStep?.arrayObj,'arrayonj');
-          dispatch(multiSelectPartners(selectedStep?.multiSelectPartners));
+          console.log(clonedArray,'arrayonj');
+          dispatch(multiSelectPartners(clonedArray));
         }
       }
 
-      
+           
       // if (arrays.length === cropData.length) {
       // addStep3Modal();
 
