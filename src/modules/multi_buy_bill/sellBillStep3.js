@@ -18,9 +18,9 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import $ from "jquery";
-import { postMultiBuyBill } from "../../actions/multiBillService";
+import { postMultiBuyBill, postMultiSellBill } from "../../actions/multiBillService";
 import { useNavigate } from "react-router-dom";
-const Step3 = (props) => {
+const SellMultiBillStep3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
@@ -71,29 +71,21 @@ const Step3 = (props) => {
       clonedArray[mIndex] = cObj;
     }
     Object.assign(clonedArray[mIndex], {
-      actualPayble: gTotal,
+      actualReceivable: gTotal,
       advance: 0,
       billId: 0,
       billStatus: "COMPLETED",
       caId: clickId,
-      cashPaid: 0,
-      cashPaidCmnt: "",
+      cashRcvd: 0,
+      cashRcvdCmnt: "",
       comm: 0,
       commIncluded: true,
       commShown: true,
       comments: "",
       createdBy: 0,
       customFields: [
-        // {
-        //   comments: "",
-        //   fee: 0,
-        //   field: "",
-        //   fieldName: "",
-        //   fieldType: "",
-        //   less: true,
-        // },
       ],
-      farmerId: items[mIndex].partyId,
+      buyerId: items[mIndex].partyId,
       govtLevies: 0,
       groupId: 0,
       labourCharges: 0,
@@ -107,7 +99,7 @@ const Step3 = (props) => {
       rtCommIncluded: true,
       source: "WEB",
       timeStamp: "",
-      totalPayble: gTotal,
+      totalReceivable: gTotal,
       transportation: 0,
       updatedBy: 0,
       updatedOn: "",
@@ -160,7 +152,7 @@ const Step3 = (props) => {
     }
   };
   const billRequestObj = {
-    buyBills: multiSelectPartnersArray,
+    sellBills: multiSelectPartnersArray,
     caId: clickId,
     expenses: {
       advance: 0,
@@ -183,22 +175,22 @@ const Step3 = (props) => {
   // post bill request api call
   const postbuybill = () => {
     console.log(billRequestObj, "payload");
-    postMultiBuyBill(billRequestObj).then(
+    postMultiSellBill(billRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.message, {
             toastId: "success1",
           });
           console.log(response.data, "success");
-          localStorage.setItem("LinkPath", "/buy_bill_book");
+          localStorage.setItem("LinkPath", "/sellbillbook");
 
           window.setTimeout(function () {
             props.closeModal();
           }, 800);
-          window.setTimeout(function () {
-            navigate("/buy_bill_book");
-            window.location.reload();
-          }, 1000);
+          // window.setTimeout(function () {
+          //   navigate("/buy_bill_book");
+          //   window.location.reload();
+          // }, 1000);
         }
       },
       (error) => {
@@ -522,4 +514,4 @@ const Step3 = (props) => {
     </div>
   );
 };
-export default Step3;
+export default SellMultiBillStep3;

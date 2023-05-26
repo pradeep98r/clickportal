@@ -12,6 +12,8 @@ const PaartyCropDetails = (props) => {
   const selectedBillData = selectedStep?.selectedMultBillArray;
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const partyType = selectedStep?.multiSelectPartyType;
+  console.log(partyType)
   const colorThemeVal =
     pdfThemeData != null
       ? pdfThemeData?.colorTheme != ""

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 const MultiBillView = (props) => {
   const navigate = useNavigate();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const partyType = selectedStep?.multiSelectPartyType;
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const selectedBillData = selectedStep?.selectedMultBillArray;
   console.log(selectedBillData,'buybill det');
@@ -141,20 +142,20 @@ const MultiBillView = (props) => {
           localStorage.setItem("billViewStatus", false);
           setDisplayCancel(true);
           // if (!props.fromLedger) {
-            // if (billData?.partyType.toUpperCase() === "FARMER") {
+            if (partyType.toUpperCase() === "FARMER") {
               window.setTimeout(function () {
                 props.closeBillViewModal();
                 navigate("/buy_bill_book");
                 window.location.reload();
               }, 1000);
-            // }
-          //    else {
-          //     window.setTimeout(function () {
-          //       props.closeBillViewModal();
-          //       navigate("/sellbillbook");
-          //       window.location.reload();
-          //     }, 1000);
-          //   }
+            }
+             else {
+              window.setTimeout(function () {
+                props.closeBillViewModal();
+                navigate("/sellbillbook");
+                window.location.reload();
+              }, 1000);
+            }
           // } else {
           // }
         }

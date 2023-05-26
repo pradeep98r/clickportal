@@ -2,18 +2,20 @@ import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import clo from "../../assets/images/close.svg";
 import { multiSelectPartners } from "../../reducers/multiBillSteps";
+import SellMultiBillStep3 from "./sellBillStep3";
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
 const MultiBillSteps = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const partyType = selectedStep?.multiSelectPartyType;
+  console.log(partyType);
   const dispatch = useDispatch();
   const selectedStepVal = selectedStep?.multiStepsVal;
   const linkPath = localStorage.getItem("LinkPath");
   const clearData = () => {
     dispatch(multiSelectPartners([]));
   };
-  
   return (
     <Modal
       show={props.showMultiStepsModal}
@@ -84,10 +86,10 @@ const MultiBillSteps = (props) => {
               return <Step1 closeModal={props.closeMultiStepsModal} />;
             case "step2":
               return <Step2 closeModal={props.closeMultiStepsModal} />;
-            // case partyType.toUpperCase() === "SELLER" && "step3":
-            //   return "buy bill step3";
-            case "step3":
+            case partyType.toUpperCase() === "SELLER" && "step3":
               return <Step3 closeModal={props.closeMultiStepsModal} />;
+              case partyType.toUpperCase() === "BUYER" && "step3":
+              return <SellMultiBillStep3 closeModal={props.closeMultiStepsModal} />;
           }
         })()}
       </div>
