@@ -178,6 +178,7 @@ function BuyBillBook() {
     setMultiShowBillModalStatus(true);
     setMultiShowBillModal(true);
     dispatch(selectedMultBillArray(bill));
+    dispatch(multiSelectPartyType("FARMER"));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -675,14 +676,12 @@ function BuyBillBook() {
                                             </div>
                                             <div className="totals_col_grp ">
                                               <div className="row">
-                                                <div className="col-lg-2">
-
-                                                </div>
+                                                <div className="col-lg-2"></div>
                                                 <div className="col-lg-3">
                                                   <div className="d-flex align-items-center billid_div_flex">
                                                     <div className="text-left">
                                                       <p className="biilid">
-                                                      Group ID :{" "}
+                                                        Group ID :{" "}
                                                         {bill.groupId}{" "}
                                                       </p>
 
@@ -695,43 +694,30 @@ function BuyBillBook() {
                                                           )}
                                                         </p>
                                                       </div>
-                                                      {/* <p
+                                                      <p
                                                         style={{
                                                           color:
-                                                            item.billStatus ==
+                                                            bill?.billInfo[0]
+                                                              .billStatus ==
                                                             "CANCELLED"
                                                               ? "#d43939"
                                                               : "#1C1C1C",
                                                         }}
                                                       >
-                                                        <div className="flex_class p-0">
-                                                          {item?.paid ==
-                                                          true ? (
-                                                            <div className="flex_class">
-                                                              <div className="complete-dot"></div>
-                                                              <div className="bill-name">
-                                                                {getText(
-                                                                  "Amount Paid"
-                                                                )}
-                                                              </div>
-                                                            </div>
+                                                        <div className="flex_class">
+                                                          {bill?.billInfo[0].billStatus ==
+                                                          "CANCELLED" ? (
+                                                            <div className="complete-dot cancel_dot"></div>
                                                           ) : (
-                                                            <div className="flex_class">
-                                                              {item.billStatus ==
-                                                              "CANCELLED" ? (
-                                                                <div className="complete-dot cancel_dot"></div>
-                                                              ) : (
-                                                                <div className="complete-dot"></div>
-                                                              )}
-                                                              <div className="bill-name">
-                                                                {getText(
-                                                                  item.billStatus
-                                                                )}
-                                                              </div>
-                                                            </div>
+                                                            <div className="complete-dot"></div>
                                                           )}
+                                                          <div className="bill-name">
+                                                            {getText(
+                                                              bill?.billInfo[0].billStatus
+                                                            )}
+                                                          </div>
                                                         </div>
-                                                      </p> */}
+                                                      </p>
                                                     </div>
                                                   </div>
                                                 </div>

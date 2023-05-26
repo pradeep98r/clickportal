@@ -17,10 +17,10 @@ import { useNavigate } from "react-router-dom";
 const MultiBillView = (props) => {
   const navigate = useNavigate();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
-  const partyType = selectedStep?.multiSelectPartyType;
   const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const partyType = selectedStep?.multiSelectPartyType;
   const selectedBillData = selectedStep?.selectedMultBillArray;
-  console.log(selectedBillData,'buybill det');
+  console.log(selectedBillData,partyType,'buybill det');
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
@@ -107,7 +107,7 @@ const MultiBillView = (props) => {
   };
   const billObj = {
     action: "CANCEL",
-    billType: "BUY",
+    billType: partyType == 'FARMER' ? "BUY" : "SELL" ,
     billsInfo: objArray,
     caId: clickId,
     expenses: {
@@ -140,6 +140,7 @@ const MultiBillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
+          console.log(partyType,'type')
           setDisplayCancel(true);
           // if (!props.fromLedger) {
             if (partyType.toUpperCase() === "FARMER") {
@@ -150,6 +151,7 @@ const MultiBillView = (props) => {
               }, 1000);
             }
              else {
+
               window.setTimeout(function () {
                 props.closeBillViewModal();
                 navigate("/sellbillbook");

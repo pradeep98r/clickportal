@@ -234,6 +234,7 @@ const SellBillBook = (props) => {
     setMultiShowBillModalStatus(true);
     setMultiShowBillModal(true);
     dispatch(selectedMultBillArray(bill));
+    dispatch(multiSelectPartyType("BUYER"));
   };
   return (
     <div>
@@ -665,43 +666,30 @@ const SellBillBook = (props) => {
                                                       )}
                                                     </p>
                                                   </div>
-                                                  {/* <p
+                                                  <p
                                                         style={{
                                                           color:
-                                                            item.billStatus ==
+                                                            bill?.billInfo[0]
+                                                              .billStatus ==
                                                             "CANCELLED"
                                                               ? "#d43939"
                                                               : "#1C1C1C",
                                                         }}
                                                       >
-                                                        <div className="flex_class p-0">
-                                                          {item?.paid ==
-                                                          true ? (
-                                                            <div className="flex_class">
-                                                              <div className="complete-dot"></div>
-                                                              <div className="bill-name">
-                                                                {getText(
-                                                                  "Amount Paid"
-                                                                )}
-                                                              </div>
-                                                            </div>
+                                                        <div className="flex_class">
+                                                          {bill?.billInfo[0].billStatus ==
+                                                          "CANCELLED" ? (
+                                                            <div className="complete-dot cancel_dot"></div>
                                                           ) : (
-                                                            <div className="flex_class">
-                                                              {item.billStatus ==
-                                                              "CANCELLED" ? (
-                                                                <div className="complete-dot cancel_dot"></div>
-                                                              ) : (
-                                                                <div className="complete-dot"></div>
-                                                              )}
-                                                              <div className="bill-name">
-                                                                {getText(
-                                                                  item.billStatus
-                                                                )}
-                                                              </div>
-                                                            </div>
+                                                            <div className="complete-dot"></div>
                                                           )}
+                                                          <div className="bill-name">
+                                                            {getText(
+                                                              bill?.billInfo[0].billStatus
+                                                            )}
+                                                          </div>
                                                         </div>
-                                                      </p> */}
+                                                      </p>
                                                 </div>
                                               </div>
                                             </div>

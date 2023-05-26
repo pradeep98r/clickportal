@@ -13,7 +13,7 @@ const PaartyCropDetails = (props) => {
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
   const partyType = selectedStep?.multiSelectPartyType;
-  console.log(partyType)
+  console.log(partyType);
   const colorThemeVal =
     pdfThemeData != null
       ? pdfThemeData?.colorTheme != ""
@@ -21,7 +21,6 @@ const PaartyCropDetails = (props) => {
         : "#16a12c"
       : "#16a12c";
   useEffect(() => {
-    // setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
   const totalBagsValue = (bags) => {
     var totalValue = 0;
@@ -61,7 +60,7 @@ const PaartyCropDetails = (props) => {
                       : "#D7F3DD",
                 }}
               >
-                Seller
+                {partyType == 'FARMER' ? 'Seller' : 'Buyer'}
               </th>
               <th className="col-9 remove_border p-0">
                 <th
@@ -124,7 +123,9 @@ const PaartyCropDetails = (props) => {
               return (
                 <tr key={party}>
                   <td className="col-1 text-center">{key + 1}</td>
-                  <td className="col-2">{party.farmerName}</td>
+                  <td className="col-2">
+                    {partyType == "FARMER" ? party.farmerName : party.buyerName}
+                  </td>
                   <td className="col-9 p-0 remove_border">
                     {party.lineItems.map((item, key) => {
                       return (
@@ -191,10 +192,10 @@ const PaartyCropDetails = (props) => {
                             {getCurrencyNumberWithOutSymbol(item.rate)}
                           </td>
                           <td
-className={
-                              // billData?.partyType === "FARMER"
+                            className={
+                              partyType === "FARMER" ?
                               "col-2 color_red"
-                              //   : "col-2 color_green"
+                                : "col-2 color_green"
                             }
                           >
                             {getCurrencyNumberWithOutSymbol(item.total)}
@@ -234,14 +235,15 @@ className={
               <p className="total_value">Total Expenses : </p>
               <p className="total_value text-left number_overflow">
                 &nbsp;&nbsp;
-                {getCurrencyNumberWithSymbol(selectedBillData?.totalExpenses)}
+                {selectedBillData?.totalExpenses != 0 ? getCurrencyNumberWithSymbol(selectedBillData?.totalExpenses) : 0}
               </p>
             </div>
             <div className="row justify-content-around">
               <p className="total_value">COGS : </p>
               <p className="total_value text-left number_overflow">
                 &nbsp;&nbsp;
-                {getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)}
+                {partyType == 'FARMER' ? getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)
+                 : getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
               </p>
             </div>
           </div>
