@@ -791,7 +791,9 @@ const GroupTotals = (props) => {
           }
           break;
         case "OTHER_FEE":
-          if (billData?.mandiFee) {
+          if (billData?.partyType.toUpperCase() === "FARMER"
+          ? billData?.misc
+          : billData?.otherFee) {
             obj = {
               groupId: setting?.groupId,
               settingName: setting?.settingName,
@@ -1008,6 +1010,7 @@ const GroupTotals = (props) => {
       );
     });
     dispatch(allSettings(unique2));
+    console.log(unique2,'grptotals')
     localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
   };
   const handleSettingName = (item, list) => {
