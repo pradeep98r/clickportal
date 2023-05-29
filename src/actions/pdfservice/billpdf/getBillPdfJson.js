@@ -304,6 +304,7 @@ function clean(objectList) {
 }
 function getGroupSettingsList() {
   const groupTotals = localStorage.getItem("groupPdfTotals");
+  console.log(groupTotals,'pdf')
   const groupTotalsList = JSON.parse(groupTotals);
   // const filteredList = getUniqueListBy(groupTotalsList, "settingName");
   // console.log(groupTotalsList,'totals')
@@ -512,7 +513,7 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     billData: billData.lineItems.map((item, key) => {
       return {
         imageUrl: item.imageUrl,
-        cropName: item.cropName + '\n'+`(${(item.cropSufx)})`,
+        cropName: item.cropName + (item.cropSufx != '' ? `(${(item.cropSufx)})`: ''),
         lotId: item.lotId != null ? item.lotId : "-",
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),

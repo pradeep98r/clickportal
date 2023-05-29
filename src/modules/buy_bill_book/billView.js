@@ -486,9 +486,6 @@ const BillView = (props) => {
   async function getPrintPdf() {
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
-    // var hi = await getSingleBillPdfHelth();
-    // var hey = await postSingleBillPdfHelth(obj);
-    // console.log(hey,hi, "post req pdf");
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {
