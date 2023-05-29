@@ -849,7 +849,7 @@ const GroupTotals = (props) => {
                   value = value == null ? 0 : value;
                   obj = {
                     groupId: setting?.groupId,
-                    settingName: setting?.settingName,
+                    settingName: setting?.customFieldName.toUpperCase(),
                     value: value ? value : 0,
                     signIndication: indication,
                   };
@@ -873,7 +873,7 @@ const GroupTotals = (props) => {
                   value = value == null ? 0 : value;
                   obj = {
                     groupId: setting?.groupId,
-                    settingName: setting?.settingName,
+                    settingName: setting?.customFieldName.toUpperCase(),
                     value: value ? value : 0,
                     signIndication: indication,
                   };
