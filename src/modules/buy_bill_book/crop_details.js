@@ -8,9 +8,43 @@ const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
+  const pdfThemeDataMain =
+    pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const [pdfThemeData, setPdfThemeDataMain] = useState(null);
+  const [colorThemeVal, setColorThemeVal] = useState("");
   useEffect(() => {
+    for (var i = 0; i < pdfThemeDataMain.length; i++) {
+      if (
+        pdfThemeDataMain[i].type == "BUY_BILL" &&
+        billData?.partyType == "FARMER"
+      ) {
+        console.log(
+          pdfThemeDataMain,
+          pdfThemeDataMain[i]?.colorTheme,
+          "themedata"
+        );
+        setColorThemeVal(
+          pdfThemeDataMain[i] != null
+            ? pdfThemeDataMain[i]?.colorTheme != ""
+              ? pdfThemeDataMain[i]?.colorTheme
+              : "#16a12c"
+            : "#16a12c"
+        );
+        setPdfThemeDataMain(pdfThemeDataMain[i]);
+      } else if (
+        pdfThemeDataMain[i].type == "SELL_BILL" &&
+        billData?.partyType == "BUYER"
+      ) {
+        setColorThemeVal(
+          pdfThemeDataMain[i] != null
+            ? pdfThemeDataMain[i]?.colorTheme != ""
+              ? pdfThemeDataMain[i]?.colorTheme
+              : "#16a12c"
+            : "#16a12c"
+        );
+        setPdfThemeDataMain(pdfThemeDataMain[i]);
+      }
+    }
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
   const totalBagsValue = (bags) => {
@@ -173,7 +207,11 @@ const CropDetails = (props) => {
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
                       <p className="crop-name">
-                      {(item.cropSufx != null) ? ( item.cropSufx != '' ? (item.cropName + ' ' + `(${(item.cropSufx)})`) : item.cropName) : item.cropName}
+                        {item.cropSufx != null
+                          ? item.cropSufx != ""
+                            ? item.cropName + " " + `(${item.cropSufx})`
+                            : item.cropName
+                          : item.cropName}
                       </p>
                     </div>
                   </td>

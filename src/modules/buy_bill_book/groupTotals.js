@@ -42,9 +42,10 @@ const GroupTotals = (props) => {
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =
-  pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
+  const pdfThemeDataMain =
+    pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const [pdfThemeData, setPdfThemeDataMain] = useState(null);
+  const [colorThemeVal, setColorThemeVal] = useState("");
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -66,6 +67,38 @@ const GroupTotals = (props) => {
   const [lpk, setLPK] = useState(false);
   var filterArray = billSettings?.filtereArray;
   useEffect(() => {
+    for (var i = 0; i < pdfThemeDataMain.length; i++) {
+      if (
+        pdfThemeDataMain[i].type == "BUY_BILL" &&
+        billData?.partyType == "FARMER"
+      ) {
+        console.log(
+          pdfThemeDataMain,
+          pdfThemeDataMain[i]?.colorTheme,
+          "themedata"
+        );
+        setColorThemeVal(
+          pdfThemeDataMain[i] != null
+            ? pdfThemeDataMain[i]?.colorTheme != ""
+              ? pdfThemeDataMain[i]?.colorTheme
+              : "#16a12c"
+            : "#16a12c"
+        );
+        setPdfThemeDataMain(pdfThemeDataMain[i]);
+      } else if (
+        pdfThemeDataMain[i].type == "SELL_BILL" &&
+        billData?.partyType == "BUYER"
+      ) {
+        setColorThemeVal(
+          pdfThemeDataMain[i] != null
+            ? pdfThemeDataMain[i]?.colorTheme != ""
+              ? pdfThemeDataMain[i]?.colorTheme
+              : "#16a12c"
+            : "#16a12c"
+        );
+        setPdfThemeDataMain(pdfThemeDataMain[i]);
+      }
+    }
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
     var h = [];
@@ -712,7 +745,7 @@ const GroupTotals = (props) => {
             obj = {
               groupId: setting?.groupId,
               settingName: setting?.settingName,
-              value: billData?.comm ? billData?.comm : 0,
+              value: billData?.comm ? billData?.comm.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -735,8 +768,8 @@ const GroupTotals = (props) => {
           if (billData?.rtComm) {
             obj = {
               groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.rtComm ? billData?.rtComm : 0,
+              settingName: (setting?.settingName).replaceAll("_", " "),
+              value: billData?.rtComm ? billData?.rtComm.toFixed(1) : 0,
               signIndication: assign,
             };
             allFilteredSettings.push(obj);
@@ -747,7 +780,9 @@ const GroupTotals = (props) => {
             obj = {
               groupId: setting?.groupId,
               settingName: setting?.settingName,
-              value: billData?.transportation ? billData?.transportation : 0,
+              value: billData?.transportation
+                ? billData?.transportation.toFixed(1)
+                : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -758,8 +793,10 @@ const GroupTotals = (props) => {
           if (billData?.labourCharges) {
             obj = {
               groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.labourCharges ? billData?.labourCharges : 0,
+              settingName: (setting?.settingName).replaceAll("_", " "),
+              value: billData?.labourCharges
+                ? billData?.labourCharges.toFixed(1)
+                : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -771,7 +808,7 @@ const GroupTotals = (props) => {
             obj = {
               groupId: setting?.groupId,
               settingName: setting?.settingName,
-              value: billData?.rent ? billData?.rent : 0,
+              value: billData?.rent ? billData?.rent.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -782,8 +819,8 @@ const GroupTotals = (props) => {
           if (billData?.mandiFee) {
             obj = {
               groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.mandiFee ? billData?.mandiFee : 0,
+              settingName: (setting?.settingName).replaceAll("_", " "),
+              value: billData?.mandiFee ? billData?.mandiFee.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -791,16 +828,18 @@ const GroupTotals = (props) => {
           }
           break;
         case "OTHER_FEE":
-          if (billData?.partyType.toUpperCase() === "FARMER"
-          ? billData?.misc
-          : billData?.otherFee) {
+          if (
+            billData?.partyType.toUpperCase() === "FARMER"
+              ? billData?.misc
+              : billData?.otherFee
+          ) {
             obj = {
               groupId: setting?.groupId,
-              settingName: setting?.settingName,
+              settingName: (setting?.settingName).replaceAll("_", " "),
               value:
                 billData?.partyType.toUpperCase() === "FARMER"
-                  ? billData?.misc
-                  : billData?.otherFee,
+                  ? billData?.misc.toFixed(1)
+                  : billData?.otherFee.toFixed(1),
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -811,8 +850,8 @@ const GroupTotals = (props) => {
           if (billData?.govtLevies) {
             obj = {
               groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.govtLevies ? billData?.govtLevies : 0,
+              settingName: (setting?.settingName).replaceAll("_", " "),
+              value: billData?.govtLevies ? billData?.govtLevies.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -824,7 +863,7 @@ const GroupTotals = (props) => {
             obj = {
               groupId: setting?.groupId,
               settingName: setting?.settingName,
-              value: billData?.advance ? billData?.advance : 0,
+              value: billData?.advance ? billData?.advance.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ||
                 billData?.partyType.toUpperCase() === "SELLER"
@@ -1010,7 +1049,7 @@ const GroupTotals = (props) => {
       );
     });
     dispatch(allSettings(unique2));
-    console.log(unique2,'grptotals')
+    console.log(unique2, "grptotals");
     localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
   };
   const handleSettingName = (item, list) => {
@@ -1980,9 +2019,7 @@ const GroupTotals = (props) => {
                                       : // ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       billData?.partyType.toUpperCase() ==
                                         "BUYER"
-                                      ? "+" +
-                                        handleGroupNames(
-                                          item.settingName)
+                                      ? "+" + handleGroupNames(item.settingName)
                                       : handleGroupNames(
                                           item.settingName
                                         ).toFixed(2)}

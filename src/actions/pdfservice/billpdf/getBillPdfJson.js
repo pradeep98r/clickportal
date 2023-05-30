@@ -47,7 +47,7 @@ function getQuantityData(qty, qtyUnit, weight) {
       qtyUnit.toLowerCase() === "pieces" ||
       qtyUnit.toLowerCase() === "kgs"
         ? ""
-        : getCropUnit(qtyUnit))
+        : ' ' + getCropUnit(qtyUnit))
     } ${
       qty === 0 || qty === null
         ? ""
@@ -63,7 +63,7 @@ function getQuantityData(qty, qtyUnit, weight) {
         ? getCropUnit(qtyUnit)
         : weight === 0 || weight === null
         ? ""
-        : "KGS"),
+        : " KGS"),
   };
   return qtyData;
 }
@@ -262,14 +262,14 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   }
   if (isNotTrader) {
     return (
-      (Number(finalVal) + billData.outStBal).toFixed(2) -
-      Number(billData.cashPaid)
-    ).toFixed(2);
+      getCurrencyNumberWithSymbol((Number(finalVal) + billData.outStBal).toFixed(2) -
+      Number(billData.cashPaid))
+    );
   } else {
     var cashRecieved = billData.cashRcvd === null ? 0 : billData.cashRcvd;
     return (
-      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved
-    ).toFixed(2);
+     getCurrencyNumberWithSymbol( (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved)
+    );
   }
 };
 function getUniqueListBy(arr, key) {
@@ -304,8 +304,9 @@ function clean(objectList) {
 }
 function getGroupSettingsList() {
   const groupTotals = localStorage.getItem("groupPdfTotals");
-  console.log(groupTotals,'pdf')
+  
   const groupTotalsList = JSON.parse(groupTotals);
+  console.log(groupTotalsList, "pdf");
   // const filteredList = getUniqueListBy(groupTotalsList, "settingName");
   // console.log(groupTotalsList,'totals')
   const renamedObjectValues = renameTheObjectKey(
@@ -464,8 +465,8 @@ function getCashValue(billData, isFarmer) {
 // }
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
-  console.log(billData,'data')
-  var colorThemeInfo = getPdfThemeInfo();
+  console.log(billData, "data");
+  var colorThemeInfo = getPdfThemeInfo(billData);
   var headerData = getPdfHeaderData({
     isBillView: true,
   });
@@ -473,7 +474,7 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
 
   headerData["billId"] = {
     groupId: 0,
-    billNumber: billData.billId.toString(),
+    billNumber: billData.caBSeq.toString(),
   };
   headerData["billDate"] = moment(billData.billDate).format("DD-MMM-YYYY");
   var isFarmer = billData.partyType === "FARMER";
@@ -488,9 +489,17 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     mandiName: colorThemeInfo.mandiName.toUpperCase(),
     signatureUrl: colorThemeInfo.signatureUrl,
     buyerName: isFarmer
-      ? billData.farmerName.toUpperCase()
-      : billData.buyerName.toUpperCase(),
-    userType: billData.partyType.toUpperCase(),
+      ? billData.farmerName.toUpperCase() +
+        " " +
+        (billData?.shortName != ""
+          ? " - " + billData?.shortName.toUpperCase()
+          : "")
+      : billData.buyerName.toUpperCase() +
+        " " +
+        (billData?.shortName != ""
+          ? " - " + billData?.shortName.toUpperCase()
+          : ""),
+    userType: `(${billData.partyType.toUpperCase()})`,
     address: isFarmer
       ? billData.farmerAddress.toUpperCase()
       : billData.buyerAddress.toUpperCase(),
@@ -513,7 +522,9 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     billData: billData.lineItems.map((item, key) => {
       return {
         imageUrl: item.imageUrl,
-        cropName: item.cropName + (item.cropSufx != '' ? `(${(item.cropSufx)})`: ''),
+        cropName:
+          item.cropName.toUpperCase() +
+          (item.cropSufx != "" ? `(${item.cropSufx.toUpperCase()})` : ""),
         lotId: item.lotId != null ? item.lotId : "-",
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),
@@ -525,11 +536,9 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
       };
     }),
 
-    finalLedgerBalance: getFinalLedgerBalance(
-      billData,
-      billSettingsData,
-      isFarmer
-    ),
+    finalLedgerBalance: 
+      getFinalLedgerBalance(billData, billSettingsData, isFarmer)
+    ,
     outStandingBal: billData.outStBal.toLocaleString("en-IN", {
       maximumFractionDigits: 2,
       style: "currency",
@@ -538,8 +547,8 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     totalBillAmount: localStorage.getItem("totalSelectedBillAmount").toString(),
     groupSettings: getGroupSettingsList(),
     cashValue: getCashValue(billData, isFarmer),
-    cashValueComment:''
-      // billData.cashPaidCmnt === null ? "" : billData.cashPaidCmnt,
+    cashValueComment: "",
+    // billData.cashPaidCmnt === null ? "" : billData.cashPaidCmnt,
   };
 
   /*
