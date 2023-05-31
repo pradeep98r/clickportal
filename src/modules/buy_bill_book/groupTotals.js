@@ -41,11 +41,12 @@ const GroupTotals = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
-  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeDataMain =
-    pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const [pdfThemeData, setPdfThemeDataMain] = useState(null);
-  const [colorThemeVal, setColorThemeVal] = useState("");
+  const theme = localStorage.getItem('pdftheme')
+  const pdfThemeData =
+  theme != null
+      ? theme
+      : null;
+  const colorThemeVal = billViewData?.colorthemeValue;
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -67,38 +68,7 @@ const GroupTotals = (props) => {
   const [lpk, setLPK] = useState(false);
   var filterArray = billSettings?.filtereArray;
   useEffect(() => {
-    for (var i = 0; i < pdfThemeDataMain.length; i++) {
-      if (
-        pdfThemeDataMain[i].type == "BUY_BILL" &&
-        billData?.partyType == "FARMER"
-      ) {
-        console.log(
-          pdfThemeDataMain,
-          pdfThemeDataMain[i]?.colorTheme,
-          "themedata"
-        );
-        setColorThemeVal(
-          pdfThemeDataMain[i] != null
-            ? pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c"
-            : "#16a12c"
-        );
-        setPdfThemeDataMain(pdfThemeDataMain[i]);
-      } else if (
-        pdfThemeDataMain[i].type == "SELL_BILL" &&
-        billData?.partyType == "BUYER"
-      ) {
-        setColorThemeVal(
-          pdfThemeDataMain[i] != null
-            ? pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c"
-            : "#16a12c"
-        );
-        setPdfThemeDataMain(pdfThemeDataMain[i]);
-      }
-    }
+    groupSettingsToJson();
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
     var h = [];
@@ -121,7 +91,7 @@ const GroupTotals = (props) => {
       ldsValue = false;
       setLPK(false);
     }
-    groupSettingsToJson();
+  
   }, [props]);
   const getBuyBillsById = () => {
     var res;
@@ -876,7 +846,7 @@ const GroupTotals = (props) => {
           var value = 0;
           if (billData?.partyType.toUpperCase() === "FARMER") {
             billData?.customFields.map((item) => {
-              if (item.fee != 0) {
+              if (item.fee != 0 || item.fee != null) {
                 if (item.field === setting.settingName) {
                   if (item.less) {
                     value = -item.fee;
@@ -886,12 +856,14 @@ const GroupTotals = (props) => {
                     indication = "+";
                   }
                   value = value == null ? 0 : value;
-                  obj = {
-                    groupId: setting?.groupId,
-                    settingName: setting?.customFieldName.toUpperCase(),
-                    value: value ? value : 0,
-                    signIndication: indication,
-                  };
+                  if(value != 0){
+                    obj = {
+                      groupId: setting?.groupId,
+                      settingName: setting?.customFieldName.toUpperCase(),
+                      value: value ? value : 0,
+                      signIndication: indication,
+                    };
+                  }
                 }
               }
             });
@@ -900,7 +872,7 @@ const GroupTotals = (props) => {
             }
           } else if (billData?.partyType.toUpperCase() === "BUYER") {
             billData?.customFields.map((item) => {
-              if (item.fee != 0) {
+              if (item.fee != 0 || item.fee != null) {
                 if (item.field === setting.settingName) {
                   if (item.less) {
                     value = -item.fee;
@@ -910,12 +882,14 @@ const GroupTotals = (props) => {
                     indication = "+";
                   }
                   value = value == null ? 0 : value;
+                  if(value != 0){
                   obj = {
                     groupId: setting?.groupId,
                     settingName: setting?.customFieldName.toUpperCase(),
                     value: value ? value : 0,
                     signIndication: indication,
                   };
+                }
                   return value;
                 }
               }

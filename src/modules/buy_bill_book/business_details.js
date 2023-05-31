@@ -24,7 +24,6 @@ export const BusinessDetails = (props) => {
   useEffect(() => {
     for(var i = 0; i<pdfThemeDataMain.length; i++){
       if(pdfThemeDataMain[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-        console.log(pdfThemeDataMain,pdfThemeDataMain[i]?.colorTheme,'themedata')
         setColorThemeVal(pdfThemeDataMain[i] != null
           ? (pdfThemeDataMain[i]?.colorTheme != ""
             ? pdfThemeDataMain[i]?.colorTheme

@@ -4,47 +4,17 @@ import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumb
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
 import { colorAdjustBg, getText } from "../../components/getText";
+import { faHillAvalanche } from "@fortawesome/free-solid-svg-icons";
 const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeDataMain =
-    pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const [pdfThemeData, setPdfThemeDataMain] = useState(null);
-  const [colorThemeVal, setColorThemeVal] = useState("");
+  const theme = localStorage.getItem('pdftheme')
+  const pdfThemeData =
+  theme != null
+      ? theme
+      : null;
+  const colorThemeVal = billViewData?.colorthemeValue;
   useEffect(() => {
-    for (var i = 0; i < pdfThemeDataMain.length; i++) {
-      if (
-        pdfThemeDataMain[i].type == "BUY_BILL" &&
-        billData?.partyType == "FARMER"
-      ) {
-        console.log(
-          pdfThemeDataMain,
-          pdfThemeDataMain[i]?.colorTheme,
-          "themedata"
-        );
-        setColorThemeVal(
-          pdfThemeDataMain[i] != null
-            ? pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c"
-            : "#16a12c"
-        );
-        setPdfThemeDataMain(pdfThemeDataMain[i]);
-      } else if (
-        pdfThemeDataMain[i].type == "SELL_BILL" &&
-        billData?.partyType == "BUYER"
-      ) {
-        setColorThemeVal(
-          pdfThemeDataMain[i] != null
-            ? pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c"
-            : "#16a12c"
-        );
-        setPdfThemeDataMain(pdfThemeDataMain[i]);
-      }
-    }
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
   const totalBagsValue = (bags) => {
