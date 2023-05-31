@@ -13,10 +13,18 @@ function colorAdjust(color, amount) {
       )
   );
 }
-export default function getPdfThemeInfo() {
+export default function getPdfThemeInfo(billData) {
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
-  var settingsDataArray = settArray[0];
+  var settingsDataArray;
+  for(var i = 0; i<settArray.length; i++){
+    if(settArray[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+      settingsDataArray = settArray[i];
+    }
+    else if(settArray[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+      settingsDataArray = settArray[i];
+    }
+  }
   if (settingsDataArray != null) {
     var settingsData = settingsDataArray;
     var primaryColor =
@@ -42,4 +50,6 @@ export default function getPdfThemeInfo() {
       signatureUrl: "",
     };
   }
+ 
 }
+
