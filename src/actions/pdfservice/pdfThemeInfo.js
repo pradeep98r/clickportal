@@ -29,7 +29,7 @@ export default function getPdfThemeInfo(billData) {
     var settingsData = settingsDataArray;
     var primaryColor =
       settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
-    var lightColor = colorAdjust(primaryColor, 180);
+    var lightColor = colorAdjust(primaryColor, 180) == "#ffffff" ? colorAdjust(primaryColor, 40) : colorAdjust(primaryColor, 180);
     var darkerColor = colorAdjust(primaryColor, -30);
     return {
       primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
@@ -40,7 +40,7 @@ export default function getPdfThemeInfo(billData) {
     };
   } else {
     var primaryColor = "#16A12B";
-    var lightColor = colorAdjust(primaryColor, 180);
+    var lightColor = colorAdjust(primaryColor, 180) == "#ffffff" ? colorAdjust(primaryColor, 40) : colorAdjust(primaryColor, 180);
     var darkerColor = colorAdjust(primaryColor, -30);
     return {
       primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
