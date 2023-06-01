@@ -3401,7 +3401,7 @@ const GroupTotals = (props) => {
                       )}
                     </div>
                     <div className="col-lg-4 p-0">
-                      <p className="groups_values">
+                      <p className="groups_values color_red">
                         {billData?.cashPaid === 0 || billData?.cashPaid === null
                           ? " "
                           : "-" +
@@ -3421,7 +3421,7 @@ const GroupTotals = (props) => {
                       )}
                     </div>
                     <div className="col-lg-4 p-0">
-                      <p className="groups_values ">
+                      <p className="groups_values color_red">
                         {billData?.cashRcvd === 0 || billData?.cashRcvd === null
                           ? ""
                           : "-" +
