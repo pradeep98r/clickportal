@@ -107,7 +107,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -120,7 +120,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -133,7 +133,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -146,7 +146,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -159,7 +159,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -246,7 +246,7 @@ const CropDetails = (props) => {
             backgroundColor:
               pdfThemeData != null
                 ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                  ? colorThemeVal
+                  ?  colorAdjustBg(colorThemeVal, 40)
                   : colorAdjustBg(colorThemeVal, 180)
                 : "#D7F3DD",
           }}
