@@ -17,12 +17,15 @@ export default function getPdfThemeInfo(billData) {
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
   var settingsDataArray;
-  for(var i = 0; i<settArray.length; i++){
-    if(settArray[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-      settingsDataArray = settArray[i];
-    }
-    else if(settArray[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-      settingsDataArray = settArray[i];
+  console.log(settArray)
+  if(settArray != null){
+    for(var i = 0; i<settArray.length; i++){
+      if(settArray[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+        settingsDataArray = settArray[i];
+      }
+      else if(settArray[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+        settingsDataArray = settArray[i];
+      }
     }
   }
   if (settingsDataArray != null) {
