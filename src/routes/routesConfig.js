@@ -27,10 +27,8 @@ import {
 import Advance from "../modules/advances/advance";
 const RoutesConfig = () => {
   function setSystemSettingsDetails(clickId) {
-    console.log(clickId,'id')
     getSystemSettings(clickId)
       .then((response) => {
-        console.log(response.data.data,'routes')
         localStorage.setItem(
           "systemSettingsData",
           JSON.stringify(response.data.data)

@@ -4,12 +4,16 @@ import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumb
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import { qtyValues } from "../../components/qtyValues";
 import { colorAdjustBg, getText } from "../../components/getText";
+import { faHillAvalanche } from "@fortawesome/free-solid-svg-icons";
 const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
+  const theme = localStorage.getItem('pdftheme')
+  const pdfThemeData =
+  theme != null
+      ? theme
+      : null;
+  const colorThemeVal = billViewData?.colorthemeValue;
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
@@ -103,7 +107,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -116,7 +120,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -129,7 +133,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -142,7 +146,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -155,7 +159,7 @@ const CropDetails = (props) => {
                   backgroundColor:
                     pdfThemeData != null
                       ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                        ? colorThemeVal
+                        ? colorAdjustBg(colorThemeVal, 40)
                         : colorAdjustBg(colorThemeVal, 180)
                       : "#D7F3DD",
                 }}
@@ -173,7 +177,11 @@ const CropDetails = (props) => {
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
                       <p className="crop-name">
-                      {(item.cropSufx != null) ? ( item.cropSufx != '' ? (item.cropName + ' ' + `(${(item.cropSufx)})`) : item.cropName) : item.cropName}
+                        {item.cropSufx != null
+                          ? item.cropSufx != ""
+                            ? item.cropName + " " + `(${item.cropSufx})`
+                            : item.cropName
+                          : item.cropName}
                       </p>
                     </div>
                   </td>
@@ -238,7 +246,7 @@ const CropDetails = (props) => {
             backgroundColor:
               pdfThemeData != null
                 ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                  ? colorThemeVal
+                  ?  colorAdjustBg(colorThemeVal, 40)
                   : colorAdjustBg(colorThemeVal, 180)
                 : "#D7F3DD",
           }}
