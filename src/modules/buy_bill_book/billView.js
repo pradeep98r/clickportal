@@ -725,7 +725,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -734,7 +734,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -799,7 +799,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      <div className="items_div">
+                      {/* <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -808,7 +808,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div>
+                      </div> */}
                       <div className="items_div">
                         <button
                           onClick={() => {
