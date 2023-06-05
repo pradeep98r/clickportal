@@ -41,11 +41,8 @@ const GroupTotals = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
-  const theme = localStorage.getItem('pdftheme')
-  const pdfThemeData =
-  theme != null
-      ? theme
-      : null;
+  const theme = localStorage.getItem("pdftheme");
+  const pdfThemeData = theme != null ? theme : null;
   const colorThemeVal = billViewData?.colorthemeValue;
   var groupOne = [];
   var grouptwo = [];
@@ -71,7 +68,7 @@ const GroupTotals = (props) => {
   useEffect(() => {
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
-    
+
     var h = [];
     for (var c = 0; c < billData.lineItems.length; c++) {
       var cropArrays = billData.lineItems;
@@ -92,7 +89,6 @@ const GroupTotals = (props) => {
       ldsValue = false;
       setLPK(false);
     }
-  
   }, [props]);
   const getBuyBillsById = () => {
     var res;
@@ -419,7 +415,7 @@ const GroupTotals = (props) => {
           groupWiseTotals(response);
           billSettingData(response.data.data);
           dispatch(filtereArray(response.data.data));
-          SetSysArray(response.data.data)
+          SetSysArray(response.data.data);
           groupSettingsToJson();
           for (var i = 0; i < response.data.data.length; i++) {
             if (
@@ -700,7 +696,7 @@ const GroupTotals = (props) => {
   var allFilteredSettings = [];
   const groupSettingsToJson = () => {
     var indication = "";
-    filterArray = filterArray.length != 0 ? filterArray : sArray ;
+    filterArray = filterArray.length != 0 ? filterArray : sArray;
     for (var i = 0; i < filterArray.length; i++) {
       var setting = filterArray[i];
       var substring = "CUSTOM_FIELD";
@@ -715,7 +711,7 @@ const GroupTotals = (props) => {
         setting = clonedObject1;
         // setting.settingName = "";
       }
-      
+
       switch (setting.settingName || setting.name) {
         case "COMMISSION":
           if (billData?.comm) {
@@ -745,7 +741,7 @@ const GroupTotals = (props) => {
           if (billData?.rtComm) {
             obj = {
               groupId: setting?.groupId || setting.status,
-              settingName: (setting?.settingName || setting?.name),
+              settingName: setting?.settingName || setting?.name,
               value: billData?.rtComm ? billData?.rtComm.toFixed(1) : 0,
               signIndication: assign,
             };
@@ -770,7 +766,7 @@ const GroupTotals = (props) => {
           if (billData?.labourCharges) {
             obj = {
               groupId: setting?.groupId || setting.status,
-              settingName: (setting?.settingName || setting?.name),
+              settingName: setting?.settingName || setting?.name,
               value: billData?.labourCharges
                 ? billData?.labourCharges.toFixed(1)
                 : 0,
@@ -796,7 +792,7 @@ const GroupTotals = (props) => {
           if (billData?.mandiFee) {
             obj = {
               groupId: setting?.groupId || setting.status,
-              settingName: (setting?.settingName || setting?.name),
+              settingName: setting?.settingName || setting?.name,
               value: billData?.mandiFee ? billData?.mandiFee.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
@@ -812,7 +808,7 @@ const GroupTotals = (props) => {
           ) {
             obj = {
               groupId: setting?.groupId || setting.status,
-              settingName: (setting?.settingName || setting?.name),
+              settingName: setting?.settingName || setting?.name,
               value:
                 billData?.partyType.toUpperCase() === "FARMER"
                   ? billData?.misc.toFixed(1)
@@ -827,7 +823,7 @@ const GroupTotals = (props) => {
           if (billData?.govtLevies) {
             obj = {
               groupId: setting?.groupId || setting.status,
-              settingName: (setting?.settingName || setting?.name),
+              settingName: setting?.settingName || setting?.name,
               value: billData?.govtLevies ? billData?.govtLevies.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
@@ -863,20 +859,20 @@ const GroupTotals = (props) => {
                     indication = "+";
                   }
                   value = value == null ? 0 : value;
-                  if(value != 0){
+                  if (value != 0) {
                     obj = {
                       groupId: setting?.groupId || setting.status,
                       settingName: setting?.customFieldName.toUpperCase(),
                       value: value ? value : 0,
                       signIndication: indication,
                     };
+                    if (billData?.customFields.length > 0) {
+                      allFilteredSettings.push(obj);
+                    }
                   }
                 }
               }
             });
-            if (billData?.customFields.length > 0) {
-              allFilteredSettings.push(obj);
-            }
           } else if (billData?.partyType.toUpperCase() === "BUYER") {
             billData?.customFields.map((item) => {
               if (item.fee != 0 || item.fee != null) {
@@ -889,21 +885,21 @@ const GroupTotals = (props) => {
                     indication = "+";
                   }
                   value = value == null ? 0 : value;
-                  if(value != 0){
-                  obj = {
-                    groupId: setting?.groupId || setting.status,
-                    settingName: setting?.customFieldName.toUpperCase(),
-                    value: value ? value : 0,
-                    signIndication: indication,
-                  };
-                }
+                  if (value != 0) {
+                    obj = {
+                      groupId: setting?.groupId || setting.status,
+                      settingName: setting?.customFieldName.toUpperCase(),
+                      value: value ? value : 0,
+                      signIndication: indication,
+                    };
+                    if (billData?.customFields.length > 0) {
+                      allFilteredSettings.push(obj);
+                    }
+                  }
                   return value;
                 }
               }
             });
-            if (billData?.customFields.length > 0) {
-              allFilteredSettings.push(obj);
-            }
           }
           break;
       }
@@ -1028,6 +1024,7 @@ const GroupTotals = (props) => {
       );
     });
     dispatch(allSettings(unique2));
+    console.log(unique2, "totals");
     localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
   };
   const handleSettingName = (item, list) => {
