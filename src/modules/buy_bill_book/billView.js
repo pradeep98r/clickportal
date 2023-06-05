@@ -103,34 +103,42 @@ const BillView = (props) => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    for(var i = 0; i<pdfThemeData.length; i++){
-      if(pdfThemeData[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-        setColorThemeVal(pdfThemeData[i] != null
-          ? (pdfThemeData[i]?.colorTheme != ""
-            ? pdfThemeData[i]?.colorTheme
-            : "#16a12c")
-          : "#16a12c");
-          dispatch(colorthemeValue(pdfThemeData[i] != null
+    if(pdfThemeData != null){
+      for(var i = 0; i<pdfThemeData.length; i++){
+        if(pdfThemeData[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+          setColorThemeVal(pdfThemeData[i] != null
             ? (pdfThemeData[i]?.colorTheme != ""
               ? pdfThemeData[i]?.colorTheme
               : "#16a12c")
-            : "#16a12c"));
-            localStorage.setItem('pdftheme',pdfThemeData[i])
-      }
-      else if(pdfThemeData[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-        setColorThemeVal(pdfThemeData[i] != null
-          ? (pdfThemeData[i]?.colorTheme != ""
-            ? pdfThemeData[i]?.colorTheme
-            : "#16a12c")
-          : "#16a12c");
-          dispatch(colorthemeValue(pdfThemeData[i] != null
+            : "#16a12c");
+            dispatch(colorthemeValue(pdfThemeData[i] != null
+              ? (pdfThemeData[i]?.colorTheme != ""
+                ? pdfThemeData[i]?.colorTheme
+                : "#16a12c")
+              : "#16a12c"));
+              localStorage.setItem('pdftheme',pdfThemeData[i])
+        }
+        else if(pdfThemeData[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+          setColorThemeVal(pdfThemeData[i] != null
             ? (pdfThemeData[i]?.colorTheme != ""
               ? pdfThemeData[i]?.colorTheme
               : "#16a12c")
-            : "#16a12c"));
-            localStorage.setItem('pdftheme',pdfThemeData[i])
+            : "#16a12c");
+            dispatch(colorthemeValue(pdfThemeData[i] != null
+              ? (pdfThemeData[i]?.colorTheme != ""
+                ? pdfThemeData[i]?.colorTheme
+                : "#16a12c")
+              : "#16a12c"));
+              localStorage.setItem('pdftheme',pdfThemeData[i])
+        }
       }
     }
+    else{
+      setColorThemeVal('#16a12c');
+        dispatch(colorthemeValue('#16a12c'));
+          localStorage.setItem('pdftheme',null)
+    }
+   
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
     dispatch(billViewInfo(billViewData.billViewInfo));

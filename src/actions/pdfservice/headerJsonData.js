@@ -25,13 +25,16 @@ function getPdfThemeInfo(billData) {
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
   var settingData;
-  for(var i = 0; i<settArray.length; i++){
-    if(settArray[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-     
-      settingData = settArray[i];
-    }
-    else if(settArray[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-      settingData = settArray[i];
+  if(settArray != null){
+    for (var i = 0; i < settArray.length; i++) {
+      if (settArray[i].type == "BUY_BILL" && billData?.partyType == "FARMER") {
+        settingData = settArray[i];
+      } else if (
+        settArray[i].type == "SELL_BILL" &&
+        billData?.partyType == "BUYER"
+      ) {
+        settingData = settArray[i];
+      }
     }
   }
   if (settingData != null) {
@@ -46,10 +49,10 @@ function getPdfThemeInfo(billData) {
   }
 }
 
-export default function getPdfHeaderData(billData,{
-  isBillView = false,
-  isPaymentReceipt = false,
-}) {
+export default function getPdfHeaderData(
+  billData,
+  { isBillView = false, isPaymentReceipt = false }
+) {
   var userBusinessData = getBusinessDetailsModel();
   var pdfThemeInfo = getPdfThemeInfo(billData);
   return {
