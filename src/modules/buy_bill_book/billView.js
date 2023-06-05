@@ -584,12 +584,15 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
+      console.log(blobUrl,'blob')
     }
+
   }
   const closeSharePopup = () => {
     $("#shareBill").modal("hide");
   };
   function getsharePdf() {
+    console.log(shareUrl,'share')
     var xhr = new XMLHttpRequest();
     xhr.responseType = "blob";
     xhr.onload = function () {
@@ -614,17 +617,7 @@ const BillView = (props) => {
     xhr.open("GET", shareUrl);
     xhr.send();
   }
-  //   const obj = {};
-  //   const urlShortener = (longURL = '') => {
-  //     let shortURL = "short.ly/" + longURL.replace(/[^a-z]/g,'').slice(-4);
-  //     if(!obj[shortURL]){
-  //        obj[shortURL] = longURL;
-  //     };
-  //     return shortURL;
-  //     }
-  //     const urlRedirector = (shortURL = '') => {
-  //     return obj[shortURL];
-  //  };
+
   return (
     <div>
       <Modal
@@ -724,7 +717,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -733,7 +726,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -798,7 +791,7 @@ const BillView = (props) => {
                         </button>
                         <p>Print</p>
                       </div>
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getShareModal().then();
@@ -807,7 +800,7 @@ const BillView = (props) => {
                           <img src={share_icon} alt="img" />
                         </button>
                         <p>Share</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button
                           onClick={() => {
