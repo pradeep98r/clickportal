@@ -38,7 +38,7 @@ import {
   selectedParty,
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
-import { billViewInfo } from "../../reducers/billViewSlice";
+import { billViewInfo, colorthemeValue, pdfSelectedThemeData } from "../../reducers/billViewSlice";
 import { colorAdjustBg, getText } from "../../components/getText";
 import {
   getBillHistoryListById,
@@ -68,23 +68,19 @@ import getBillPdfJson from "../../actions/pdfservice/billpdf/getBillPdfJson";
 import {
   getSingleBillPdf,
   getSingleBillPdfHelth,
+  postSingleBillPdfHelth,
 } from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  console.log(pdfThemeDataArray);
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =
-    pdfThemeData != null
-      ? pdfThemeData?.colorTheme != ""
-        ? pdfThemeData?.colorTheme
-        : "#16a12c"
-      : "#16a12c";
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray : null;
+  
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
+  const[colorThemeVal, setColorThemeVal] = useState('');
   // const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const billData = billViewData?.billViewInfo;
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
@@ -107,6 +103,42 @@ const BillView = (props) => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
+    if(pdfThemeData != null){
+      for(var i = 0; i<pdfThemeData.length; i++){
+        if(pdfThemeData[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+          setColorThemeVal(pdfThemeData[i] != null
+            ? (pdfThemeData[i]?.colorTheme != ""
+              ? pdfThemeData[i]?.colorTheme
+              : "#16a12c")
+            : "#16a12c");
+            dispatch(colorthemeValue(pdfThemeData[i] != null
+              ? (pdfThemeData[i]?.colorTheme != ""
+                ? pdfThemeData[i]?.colorTheme
+                : "#16a12c")
+              : "#16a12c"));
+              localStorage.setItem('pdftheme',pdfThemeData[i])
+        }
+        else if(pdfThemeData[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+          setColorThemeVal(pdfThemeData[i] != null
+            ? (pdfThemeData[i]?.colorTheme != ""
+              ? pdfThemeData[i]?.colorTheme
+              : "#16a12c")
+            : "#16a12c");
+            dispatch(colorthemeValue(pdfThemeData[i] != null
+              ? (pdfThemeData[i]?.colorTheme != ""
+                ? pdfThemeData[i]?.colorTheme
+                : "#16a12c")
+              : "#16a12c"));
+              localStorage.setItem('pdftheme',pdfThemeData[i])
+        }
+      }
+    }
+    else{
+      setColorThemeVal('#16a12c');
+        dispatch(colorthemeValue('#16a12c'));
+          localStorage.setItem('pdftheme',null)
+    }
+   
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
     dispatch(billViewInfo(billViewData.billViewInfo));
@@ -479,11 +511,13 @@ const BillView = (props) => {
       })
       .catch((error) => console.log(error));
   };
+  const obj = {
+    name : "aparna"
+}
   async function getPrintPdf() {
+    console.log('pdf coming')
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
-    var hi = await getSingleBillPdfHelth();
-    console.log(hi, "hi");
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
     console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {
@@ -558,12 +592,15 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
+      console.log(blobUrl,'blob')
     }
+
   }
   const closeSharePopup = () => {
     $("#shareBill").modal("hide");
   };
   function getsharePdf() {
+    console.log(shareUrl,'share')
     var xhr = new XMLHttpRequest();
     xhr.responseType = "blob";
     xhr.onload = function () {
@@ -588,17 +625,7 @@ const BillView = (props) => {
     xhr.open("GET", shareUrl);
     xhr.send();
   }
-  //   const obj = {};
-  //   const urlShortener = (longURL = '') => {
-  //     let shortURL = "short.ly/" + longURL.replace(/[^a-z]/g,'').slice(-4);
-  //     if(!obj[shortURL]){
-  //        obj[shortURL] = longURL;
-  //     };
-  //     return shortURL;
-  //     }
-  //     const urlRedirector = (shortURL = '') => {
-  //     return obj[shortURL];
-  //  };
+
   return (
     <div>
       <Modal
@@ -688,7 +715,7 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -697,7 +724,7 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div> */}
+                      </div>
                       {/* <div className="items_div">
                         <button
                           onClick={() => {
@@ -708,7 +735,7 @@ const BillView = (props) => {
                         </button>
                         <p>Share</p>
                       </div> */}
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -717,7 +744,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button
                           onClick={() =>
@@ -762,7 +789,7 @@ const BillView = (props) => {
                         </button>
                         <p>Edit</p>
                       </div>
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getPrintPdf().then();
@@ -771,7 +798,7 @@ const BillView = (props) => {
                           <img src={print} alt="img" />
                         </button>
                         <p>Print</p>
-                      </div> */}
+                      </div>
                       {/* <div className="items_div">
                         <button
                           onClick={() => {
@@ -782,7 +809,7 @@ const BillView = (props) => {
                         </button>
                         <p>Share</p>
                       </div> */}
-                      {/* <div className="items_div">
+                      <div className="items_div">
                         <button
                           onClick={() => {
                             getDownloadPdf().then();
@@ -791,7 +818,7 @@ const BillView = (props) => {
                           <img src={download_icon} alt="img" />
                         </button>
                         <p>Download</p>
-                      </div> */}
+                      </div>
                       <div className="items_div">
                         <button onClick={() => handleCheckEvent()}>
                           <img src={cancel} alt="img" className="" />

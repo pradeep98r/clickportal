@@ -41,10 +41,9 @@ const GroupTotals = (props) => {
   const clientId = loginData.authKeys.clientId;
   const clientSecret = loginData.authKeys.clientSecret;
   const [billSettingResponse, billSettingData] = useState([]);
-  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =
-  pdfThemeData != null ? (pdfThemeData?.colorTheme != '' ? pdfThemeData?.colorTheme :'#16a12c') : "#16a12c";
+  const theme = localStorage.getItem("pdftheme");
+  const pdfThemeData = theme != null ? theme : null;
+  const colorThemeVal = billViewData?.colorthemeValue;
   var groupOne = [];
   var grouptwo = [];
   var groupthree = [];
@@ -62,12 +61,14 @@ const GroupTotals = (props) => {
   const [addRetComm, setAddRetComm] = useState(false);
   const [status, setStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
+  const [sArray, SetSysArray] = useState([]);
   var ldsValue = false;
   const [lpk, setLPK] = useState(false);
   var filterArray = billSettings?.filtereArray;
   useEffect(() => {
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
+
     var h = [];
     for (var c = 0; c < billData.lineItems.length; c++) {
       var cropArrays = billData.lineItems;
@@ -88,7 +89,6 @@ const GroupTotals = (props) => {
       ldsValue = false;
       setLPK(false);
     }
-    groupSettingsToJson();
   }, [props]);
   const getBuyBillsById = () => {
     var res;
@@ -109,6 +109,7 @@ const GroupTotals = (props) => {
         });
         filteredArray.sort((a, b) => a.groupId - b.groupId);
         dispatch(filtereArray(filteredArray));
+        groupSettingsToJson();
         for (var i = 0; i < res.data.data.billSetting.length; i++) {
           if (
             billData?.partyType.toUpperCase() === "FARMER" ||
@@ -413,6 +414,9 @@ const GroupTotals = (props) => {
           res = response.data.data;
           groupWiseTotals(response);
           billSettingData(response.data.data);
+          dispatch(filtereArray(response.data.data));
+          SetSysArray(response.data.data);
+          groupSettingsToJson();
           for (var i = 0; i < response.data.data.length; i++) {
             if (
               response.data.data[i].name == "COMM_INCLUDE" &&
@@ -692,6 +696,7 @@ const GroupTotals = (props) => {
   var allFilteredSettings = [];
   const groupSettingsToJson = () => {
     var indication = "";
+    filterArray = filterArray.length != 0 ? filterArray : sArray;
     for (var i = 0; i < filterArray.length; i++) {
       var setting = filterArray[i];
       var substring = "CUSTOM_FIELD";
@@ -706,13 +711,14 @@ const GroupTotals = (props) => {
         setting = clonedObject1;
         // setting.settingName = "";
       }
-      switch (setting.settingName) {
+
+      switch (setting.settingName || setting.name) {
         case "COMMISSION":
           if (billData?.comm) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.comm ? billData?.comm : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.comm ? billData?.comm.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -734,9 +740,9 @@ const GroupTotals = (props) => {
           }
           if (billData?.rtComm) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.rtComm ? billData?.rtComm : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.rtComm ? billData?.rtComm.toFixed(1) : 0,
               signIndication: assign,
             };
             allFilteredSettings.push(obj);
@@ -745,9 +751,11 @@ const GroupTotals = (props) => {
         case "TRANSPORTATION":
           if (billData?.transportation) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.transportation ? billData?.transportation : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.transportation
+                ? billData?.transportation.toFixed(1)
+                : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -757,9 +765,11 @@ const GroupTotals = (props) => {
         case "LABOUR_CHARGES":
           if (billData?.labourCharges) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.labourCharges ? billData?.labourCharges : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.labourCharges
+                ? billData?.labourCharges.toFixed(1)
+                : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -769,9 +779,9 @@ const GroupTotals = (props) => {
         case "RENT":
           if (billData?.rent) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.rent ? billData?.rent : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.rent ? billData?.rent.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -781,9 +791,9 @@ const GroupTotals = (props) => {
         case "MANDI_FEE":
           if (billData?.mandiFee) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.mandiFee ? billData?.mandiFee : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.mandiFee ? billData?.mandiFee.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -791,14 +801,18 @@ const GroupTotals = (props) => {
           }
           break;
         case "OTHER_FEE":
-          if (billData?.mandiFee) {
+          if (
+            billData?.partyType.toUpperCase() === "FARMER"
+              ? billData?.misc
+              : billData?.otherFee
+          ) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
               value:
                 billData?.partyType.toUpperCase() === "FARMER"
-                  ? billData?.misc
-                  : billData?.otherFee,
+                  ? billData?.misc.toFixed(1)
+                  : billData?.otherFee.toFixed(1),
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -808,9 +822,9 @@ const GroupTotals = (props) => {
         case "GOVT_LEVIES":
           if (billData?.govtLevies) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.govtLevies ? billData?.govtLevies : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.govtLevies ? billData?.govtLevies.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ? "-" : "+",
             };
@@ -820,9 +834,9 @@ const GroupTotals = (props) => {
         case "ADVANCES":
           if (billData?.advance) {
             obj = {
-              groupId: setting?.groupId,
-              settingName: setting?.settingName,
-              value: billData?.advance ? billData?.advance : 0,
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.advance ? billData?.advance.toFixed(1) : 0,
               signIndication:
                 billData?.partyType.toUpperCase() === "FARMER" ||
                 billData?.partyType.toUpperCase() === "SELLER"
@@ -835,7 +849,7 @@ const GroupTotals = (props) => {
           var value = 0;
           if (billData?.partyType.toUpperCase() === "FARMER") {
             billData?.customFields.map((item) => {
-              if (item.fee != 0) {
+              if (item.fee != 0 || item.fee != null) {
                 if (item.field === setting.settingName) {
                   if (item.less) {
                     value = -item.fee;
@@ -845,21 +859,23 @@ const GroupTotals = (props) => {
                     indication = "+";
                   }
                   value = value == null ? 0 : value;
-                  obj = {
-                    groupId: setting?.groupId,
-                    settingName: setting?.settingName,
-                    value: value ? value : 0,
-                    signIndication: indication,
-                  };
+                  if (value != 0) {
+                    obj = {
+                      groupId: setting?.groupId || setting.status,
+                      settingName: setting?.customFieldName.toUpperCase(),
+                      value: value ? value : 0,
+                      signIndication: indication,
+                    };
+                    if (billData?.customFields.length > 0) {
+                      allFilteredSettings.push(obj);
+                    }
+                  }
                 }
               }
             });
-            if (billData?.customFields.length > 0) {
-              allFilteredSettings.push(obj);
-            }
           } else if (billData?.partyType.toUpperCase() === "BUYER") {
             billData?.customFields.map((item) => {
-              if (item.fee != 0) {
+              if (item.fee != 0 || item.fee != null) {
                 if (item.field === setting.settingName) {
                   if (item.less) {
                     value = -item.fee;
@@ -869,19 +885,21 @@ const GroupTotals = (props) => {
                     indication = "+";
                   }
                   value = value == null ? 0 : value;
-                  obj = {
-                    groupId: setting?.groupId,
-                    settingName: setting?.settingName,
-                    value: value ? value : 0,
-                    signIndication: indication,
-                  };
+                  if (value != 0) {
+                    obj = {
+                      groupId: setting?.groupId || setting.status,
+                      settingName: setting?.customFieldName.toUpperCase(),
+                      value: value ? value : 0,
+                      signIndication: indication,
+                    };
+                    if (billData?.customFields.length > 0) {
+                      allFilteredSettings.push(obj);
+                    }
+                  }
                   return value;
                 }
               }
             });
-            if (billData?.customFields.length > 0) {
-              allFilteredSettings.push(obj);
-            }
           }
           break;
       }
@@ -936,7 +954,6 @@ const GroupTotals = (props) => {
   const getGrp = (array) => {
     const grouped = Object.values(
       array.reduce((acc, item) => {
-        // Append the item to the array for each country
         acc[item.groupId] = [...(acc[item.groupId] || []), item];
         return acc;
       }, {})
@@ -997,7 +1014,6 @@ const GroupTotals = (props) => {
         }
       });
     });
-
     const newArr = grouped.flat();
     const unique2 = newArr.filter((obj, index) => {
       return (
@@ -1008,6 +1024,7 @@ const GroupTotals = (props) => {
       );
     });
     dispatch(allSettings(unique2));
+    console.log(unique2, "totals");
     localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
   };
   const handleSettingName = (item, list) => {
@@ -1484,7 +1501,7 @@ const GroupTotals = (props) => {
                     backgroundColor:
                       pdfThemeData != null
                         ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                          ? colorThemeVal
+                          ? colorAdjustBg(colorThemeVal, 40)
                           : colorAdjustBg(colorThemeVal, 180)
                         : "#D7F3DD",
                   }}
@@ -1977,10 +1994,7 @@ const GroupTotals = (props) => {
                                       : // ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       billData?.partyType.toUpperCase() ==
                                         "BUYER"
-                                      ? "+" +
-                                        handleGroupNames(
-                                          item.settingName
-                                        ).toFixed(2)
+                                      ? "+" + handleGroupNames(item.settingName)
                                       : handleGroupNames(
                                           item.settingName
                                         ).toFixed(2)}
@@ -2018,7 +2032,7 @@ const GroupTotals = (props) => {
                       backgroundColor:
                         pdfThemeData != null
                           ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                            ? colorThemeVal
+                            ? colorAdjustBg(colorThemeVal, 40)
                             : colorAdjustBg(colorThemeVal, 180)
                           : "#D7F3DD",
                     }}
@@ -2439,7 +2453,7 @@ const GroupTotals = (props) => {
                       backgroundColor:
                         pdfThemeData != null
                           ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                            ? colorThemeVal
+                            ? colorAdjustBg(colorThemeVal, 40)
                             : colorAdjustBg(colorThemeVal, 180)
                           : "#D7F3DD",
                     }}
@@ -2868,7 +2882,7 @@ const GroupTotals = (props) => {
                       backgroundColor:
                         pdfThemeData != null
                           ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                            ? colorThemeVal
+                            ? colorAdjustBg(colorThemeVal, 40)
                             : colorAdjustBg(colorThemeVal, 180)
                           : "#D7F3DD",
                     }}
@@ -3285,7 +3299,7 @@ const GroupTotals = (props) => {
                       backgroundColor:
                         pdfThemeData != null
                           ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                            ? colorThemeVal
+                            ? colorAdjustBg(colorThemeVal, 40)
                             : colorAdjustBg(colorThemeVal, 180)
                           : "#D7F3DD",
                     }}
@@ -3388,7 +3402,7 @@ const GroupTotals = (props) => {
                       )}
                     </div>
                     <div className="col-lg-4 p-0">
-                      <p className="groups_values">
+                      <p className="groups_values color_red">
                         {billData?.cashPaid === 0 || billData?.cashPaid === null
                           ? " "
                           : "-" +
@@ -3408,7 +3422,7 @@ const GroupTotals = (props) => {
                       )}
                     </div>
                     <div className="col-lg-4 p-0">
-                      <p className="groups_values ">
+                      <p className="groups_values color_red">
                         {billData?.cashRcvd === 0 || billData?.cashRcvd === null
                           ? ""
                           : "-" +
@@ -3428,7 +3442,7 @@ const GroupTotals = (props) => {
               backgroundColor:
                 pdfThemeData != null
                   ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                    ? colorThemeVal
+                    ? colorAdjustBg(colorThemeVal, 40)
                     : colorAdjustBg(colorThemeVal, 180)
                   : "#D7F3DD",
             }}
@@ -3508,7 +3522,7 @@ const GroupTotals = (props) => {
               backgroundColor:
                 pdfThemeData != null
                   ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                    ? colorThemeVal
+                    ? colorAdjustBg(colorThemeVal, 40)
                     : colorAdjustBg(colorThemeVal, 180)
                   : "#D7F3DD",
             }}

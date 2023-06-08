@@ -66,7 +66,6 @@ const Step33 = (props) => {
   const billEditItem = editStatus
     ? billEditItemInfo.selectedBillInfo
     : props.slectedCropsArray;
-  console.log(billEditItemInfo.selectedBillInfo, billEditItem);
   const [commValue, getCommInput] = useState(0);
   const [retcommValue, getRetCommInput] = useState(0);
   const [mandifeeValue, getMandiFeeInput] = useState(0);
@@ -85,7 +84,6 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   useEffect(() => {
-    console.log("useeffect setp3");
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -162,7 +160,6 @@ const Step33 = (props) => {
               } else {
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
-                console.log(filteredArray, allGroups, "settings");
               }
 
               if (filteredArray[i].settingName === "OUT_ST_BALANCE")
@@ -249,7 +246,6 @@ const Step33 = (props) => {
     }
   };
   const listSettings = (name, res, index) => {
-    console.log(billEditItem);
     var totalQty = 0;
     var item = editStatus
       ? step2CropEditStatus
@@ -846,7 +842,6 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
-    console.log(editBillRequestObj);
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -863,7 +858,6 @@ const Step33 = (props) => {
                 window.location.reload();
               }, 1000);
             } else {
-              console.log("from ledger step3", props.fromLedger);
               window.setTimeout(function () {
                 props.closem();
               }, 800);
@@ -974,7 +968,6 @@ const Step33 = (props) => {
                 tab[tabIndex] = tabObje;
               }
             } else {
-              console.log(groupLiist[i]);
               tab.push({
                 comments: "",
                 fee: getTargetValue(e.target.value, groupLiist[i], i),
