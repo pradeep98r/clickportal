@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import BillViewFooter from "../buy_bill_book/billViewFooter";
 import clo from "../../assets/images/close.svg";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BusinessDetails from "../buy_bill_book/business_details";
 import PaartyCropDetails from "./partyCropsTable";
 import edit from "../../assets/images/edit_round.svg";
@@ -14,8 +14,10 @@ import { editMultiBuyBill } from "../../actions/multiBillService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { colorthemeValue } from "../../reducers/billViewSlice";
 const MultiBillView = (props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const partyType = selectedStep?.multiSelectPartyType;
@@ -24,16 +26,48 @@ const MultiBillView = (props) => {
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
-  const colorThemeVal =
-    pdfThemeData != null
-      ? pdfThemeData?.colorTheme != ""
-        ? pdfThemeData?.colorTheme
-        : "#16a12c"
-      : "#16a12c";
+  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray : null;
+  const[colorThemeVal, setColorThemeVal] = useState('');
   console.log(selectedBillData, "selected bill");
   let isPopupOpen = false;
   const[objArray, setObjArrray] = useState([]);
+  useEffect(()=>{
+    if(pdfThemeData != null){
+      for(var i = 0; i<pdfThemeData.length; i++){
+        if(pdfThemeData[i].type == "BUY_BILL" && partyType == 'FARMER'){
+          setColorThemeVal(pdfThemeData[i] != null
+            ? (pdfThemeData[i]?.colorTheme != ""
+              ? pdfThemeData[i]?.colorTheme
+              : "#16a12c")
+            : "#16a12c");
+            dispatch(colorthemeValue(pdfThemeData[i] != null
+              ? (pdfThemeData[i]?.colorTheme != ""
+                ? pdfThemeData[i]?.colorTheme
+                : "#16a12c")
+              : "#16a12c"));
+              localStorage.setItem('pdftheme',pdfThemeData[i])
+        }
+        else if(pdfThemeData[i].type == "SELL_BILL" && partyType == 'BUYER'){
+          setColorThemeVal(pdfThemeData[i] != null
+            ? (pdfThemeData[i]?.colorTheme != ""
+              ? pdfThemeData[i]?.colorTheme
+              : "#16a12c")
+            : "#16a12c");
+            dispatch(colorthemeValue(pdfThemeData[i] != null
+              ? (pdfThemeData[i]?.colorTheme != ""
+                ? pdfThemeData[i]?.colorTheme
+                : "#16a12c")
+              : "#16a12c"));
+              localStorage.setItem('pdftheme',pdfThemeData[i])
+        }
+      }
+    }
+    else{
+      setColorThemeVal('#16a12c');
+        dispatch(colorthemeValue('#16a12c'));
+          localStorage.setItem('pdftheme',null)
+    }
+  },[])
   const handleCheckEvent = () => {
     if (!isPopupOpen) {
       isPopupOpen = true; // set flag to true
