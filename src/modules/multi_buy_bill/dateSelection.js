@@ -14,8 +14,9 @@ import moment from "moment";
 const DateSelection = ({ indexVal,fromStep3BillDate }) => {
   const listOfDates = useSelector((state) => state.multiStepsInfo);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const multiSelectPartnersArray = listOfDates?.multiSelectPartners;
-  const allDates = listOfDates?.selectedDates;
+  const multiSelectPartnersArray = listOfDates?.fromMultiBillView ? listOfDates?.multiSelectPartners : listOfDates?.multiSelectPartners;
+  const fromMultiBillViewStatus = listOfDates?.fromMultiBillView;
+  const allDates = listOfDates?.selectedDates;  
   const dispatch = useDispatch();
   var arr = [];
   useEffect(()=>{
@@ -33,7 +34,8 @@ const DateSelection = ({ indexVal,fromStep3BillDate }) => {
     clonedArray[i] = clonedObject;
     arr.push(clonedArray[i])
     }
-    console.log(arr,clonedArray,'date sel')
+    console.log(multiSelectPartnersArray,'date sel')
+
     dispatch(multiSelectPartners(clonedArray))
   },[])
   const dateSelected = (date) => {

@@ -24,10 +24,12 @@ const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
+  console.log(multiSelectPartnersArray,'ar2')
   const [allData, setAllData] = useState([]);
   const [cropsData, setCropsData] = useState(allData);
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
   const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
+  const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
   const colourStyles = {
     menuList: (styles) => ({
       ...styles,
@@ -114,6 +116,13 @@ const Step2 = (props) => {
             var data = data1.lineItems[cIndex];
             if (Object.keys(data).length != 0) {
               let obj1 = { ...data };
+              console.log(Object.keys(data).length,obj1,data);
+              if(data.cropName == ''){
+                toast.error("Please Enter crop detaiils", {
+                  toastId: "error1",
+                });
+                return null;
+              }
               obj1.total = getTotalValue(cIndex, index);
               data = obj1;
               console.log(data,arrays)
@@ -317,6 +326,7 @@ const Step2 = (props) => {
               : cIndex != -1
               ? getUnitVal(qSetting, cIndex)
               : "crates",
+              
         });
       });
       setCropsData(response.data.data);
@@ -778,7 +788,7 @@ const Step2 = (props) => {
                             >
                               <div className="d-flex user_name">
                                 <h5 className="party_name">
-                                  {getText(item.partyName)}
+                                  {fromMultiBillViewStatus ? getText(item.farmerName) :getText(item.partyName)}
                                 </h5>
                                 <img
                                   src={down_arrow}

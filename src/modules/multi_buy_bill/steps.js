@@ -9,12 +9,12 @@ import Step3 from "./step3";
 const MultiBillSteps = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const partyType = selectedStep?.multiSelectPartyType;
-  console.log(partyType);
   const dispatch = useDispatch();
   const selectedStepVal = selectedStep?.multiStepsVal;
   const linkPath = localStorage.getItem("LinkPath");
   const clearData = () => {
     dispatch(multiSelectPartners([]));
+    console.log('cleardata')
   };
   return (
     <Modal

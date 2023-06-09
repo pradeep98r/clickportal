@@ -17,34 +17,11 @@ export const BusinessDetails = (props) => {
   const [mandiData, setMandiData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeDataMain = pdfThemeDataArray != null ? pdfThemeDataArray : null;
-  const [pdfThemeData, setPdfThemeDataMain] = useState(null);
-  const[colorThemeVal, setColorThemeVal] = useState('');
+  const theme = localStorage.getItem("pdftheme");
+  const pdfThemeData = theme != null ? theme : null;
+  const colorThemeVal = billViewData?.colorthemeValue;
   useEffect(() => {
-    if(pdfThemeDataMain != null){
-      for(var i = 0; i<pdfThemeDataMain.length; i++){
-        if(pdfThemeDataMain[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-          setColorThemeVal(pdfThemeDataMain[i] != null
-            ? (pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
-            setPdfThemeDataMain(pdfThemeDataMain[i]);
-        }
-        else if(pdfThemeDataMain[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-          setColorThemeVal(pdfThemeDataMain[i] != null
-            ? (pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
-            setPdfThemeDataMain(pdfThemeDataMain[i]);
-        }
-      }
-    }
-    else{
-      setColorThemeVal('#16a12c');
-    }
+  
     getBusinessDetails();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);

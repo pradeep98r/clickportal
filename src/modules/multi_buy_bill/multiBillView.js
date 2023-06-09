@@ -15,6 +15,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { colorthemeValue } from "../../reducers/billViewSlice";
+import { fromMultiBillView, multiSelectPartners, multiSelectPartyType, multiStepsVal, totalEditedObject } from "../../reducers/multiBillSteps";
+import MultiBillSteps from "./steps";
 const MultiBillView = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,13 +24,11 @@ const MultiBillView = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const partyType = selectedStep?.multiSelectPartyType;
   const selectedBillData = selectedStep?.selectedMultBillArray;
-  console.log(selectedBillData,partyType,'buybill det');
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray : null;
   const[colorThemeVal, setColorThemeVal] = useState('');
-  console.log(selectedBillData, "selected bill");
   let isPopupOpen = false;
   const[objArray, setObjArrray] = useState([]);
   useEffect(()=>{
@@ -166,7 +166,6 @@ const MultiBillView = (props) => {
   }
   const [cancelDisplay, setDisplayCancel] = useState(false);
   const cancelbillApiCall = () => {
-    console.log(billObj,'req oobj put')
     editMultiBuyBill(billObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
@@ -174,12 +173,11 @@ const MultiBillView = (props) => {
             toastId: "success1",
           });
           localStorage.setItem("billViewStatus", false);
-          console.log(partyType,'type')
           setDisplayCancel(true);
           // if (!props.fromLedger) {
             if (partyType.toUpperCase() === "FARMER") {
               window.setTimeout(function () {
-                props.closeBillViewModal();
+                props.closeMultiBillViewModal();
                 navigate("/buy_bill_book");
                 window.location.reload();
               }, 1000);
@@ -187,7 +185,7 @@ const MultiBillView = (props) => {
              else {
 
               window.setTimeout(function () {
-                props.closeBillViewModal();
+                props.closeMultiBillViewModal();
                 navigate("/sellbillbook");
                 window.location.reload();
               }, 1000);
@@ -203,6 +201,19 @@ const MultiBillView = (props) => {
       }
     );
   };
+  const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
+  useState(false);
+const [showMultiStepsModal, setShowMultiStepsModal] = useState(false);
+const editBill = () => {
+  setShowMultiStepsModalStatus(true);
+  setShowMultiStepsModal(true);
+  dispatch(multiStepsVal("step3"));
+  dispatch(multiSelectPartyType(partyType == 'FARMER' ? 'Seller' : partyType));
+  console.log(selectedBillData,partyType,'selected billl array')
+  dispatch(multiSelectPartners(selectedBillData?.billInfo));
+  dispatch(fromMultiBillView(true));
+  dispatch(totalEditedObject(selectedBillData))
+};
   return (
     <div>
       <Modal
@@ -258,14 +269,14 @@ const MultiBillView = (props) => {
                       <div>
                       <p className="more-p-tag">Actions</p>
                       <div className="action_icons">
-                        <div className="items_div">
+                        {/* <div className="items_div">
                           <button
-                          // onClick={() => editBill(billData)}
+                          onClick={() => editBill()}
                           >
                             <img src={edit} alt="img" />
                           </button>
                           <p>Edit</p>
-                        </div>
+                        </div> */}
       
                         <div className="items_div">
                           <button onClick={() => handleCheckEvent()}>
@@ -347,7 +358,14 @@ const MultiBillView = (props) => {
         </div>
       </Modal>
       <ToastContainer />
-      
+      {showMultiStepsModalStatus ? (
+        <MultiBillSteps
+          showMultiStepsModal={showMultiStepsModal}
+          closeMultiStepsModal={() => setShowMultiStepsModal(false)}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -10,18 +10,12 @@ import { colorAdjustBg, getText } from "../../components/getText";
 const PaartyCropDetails = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const selectedBillData = selectedStep?.selectedMultBillArray;
-  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray[0] : null;
+  const billViewData = useSelector((state) => state.billViewInfo);
   const partyType = selectedStep?.multiSelectPartyType;
-  console.log(partyType);
-  const colorThemeVal =
-    pdfThemeData != null
-      ? pdfThemeData?.colorTheme != ""
-        ? pdfThemeData?.colorTheme
-        : "#16a12c"
-      : "#16a12c";
-  useEffect(() => {
-  }, [props]);
+  const theme = localStorage.getItem("pdftheme");
+  const pdfThemeData = theme != null ? theme : null;
+  const colorThemeVal = billViewData?.colorthemeValue;
+  useEffect(() => {}, [props]);
   const totalBagsValue = (bags) => {
     var totalValue = 0;
     bags.map((item) => {
@@ -60,7 +54,7 @@ const PaartyCropDetails = (props) => {
                       : "#D7F3DD",
                 }}
               >
-                {partyType == 'FARMER' ? 'Seller' : 'Buyer'}
+                {partyType == "FARMER" ? "Seller" : "Buyer"}
               </th>
               <th className="col-9 remove_border p-0">
                 <th
@@ -193,8 +187,8 @@ const PaartyCropDetails = (props) => {
                           </td>
                           <td
                             className={
-                              partyType === "FARMER" ?
-                              "col-2 color_red"
+                              partyType === "FARMER"
+                                ? "col-2 color_red"
                                 : "col-2 color_green"
                             }
                           >
@@ -235,15 +229,18 @@ const PaartyCropDetails = (props) => {
               <p className="total_value">Total Expenses : </p>
               <p className="total_value text-left number_overflow">
                 &nbsp;&nbsp;
-                {selectedBillData?.totalExpenses != 0 ? getCurrencyNumberWithSymbol(selectedBillData?.totalExpenses) : 0}
+                {selectedBillData?.totalExpenses != 0
+                  ? getCurrencyNumberWithSymbol(selectedBillData?.totalExpenses)
+                  : 0}
               </p>
             </div>
             <div className="row justify-content-around">
               <p className="total_value">COGS : </p>
               <p className="total_value text-left number_overflow">
                 &nbsp;&nbsp;
-                {partyType == 'FARMER' ? getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)
-                 : getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
+                {partyType == "FARMER"
+                  ? getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)
+                  : getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
               </p>
             </div>
           </div>
