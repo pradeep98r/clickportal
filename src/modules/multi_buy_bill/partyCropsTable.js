@@ -245,7 +245,9 @@ const PaartyCropDetails = (props) => {
             </div>
             <div className="row justify-content-around multi_totals">
             <div className="col-lg-6 pr-0">
-              <p className="total_value">COGS : </p>
+              {
+                partyType  == 'FARMER' ? <p className="total_value">COGS : </p> : <p className="total_value">Total Revenue : </p>
+              }
               </div>
               <div className="col-lg-6">
               <p className="total_value number_overflow">

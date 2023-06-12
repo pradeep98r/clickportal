@@ -51,6 +51,7 @@ const Step3 = (props) => {
   const [grossTotal, setGrossTotal] = useState(0);
   var obj = {};
   useEffect(() => {
+    $("#disable").attr("disabled", false);
     console.log(multiSelectPartnersArray,selectedStep, "array step3");
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
@@ -340,6 +341,9 @@ const Step3 = (props) => {
       );
     }
   };
+  $("#disable").on("click", function () {
+    $("#disable").attr("disabled", true);
+  });
   return (
     <div>
       <div className="main_div_padding">
