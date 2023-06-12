@@ -1211,7 +1211,8 @@ const Step22 = (props) => {
           activeSearch: true,
           cropSufx: "",
         };
-      } else {
+      } 
+      else {
         cropResponseData([...c]);
         return { ...c[j] };
       }

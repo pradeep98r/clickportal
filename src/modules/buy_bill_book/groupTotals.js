@@ -2838,7 +2838,7 @@ const GroupTotals = (props) => {
                                       ? "+" +
                                         handleGroupNames(
                                           item.settingName
-                                        ).toFixed(2)
+                                        )
                                       : handleGroupNames(
                                           item.settingName
                                         ).toFixed(2)}

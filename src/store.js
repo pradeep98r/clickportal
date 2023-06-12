@@ -16,6 +16,7 @@ import transpoReducer from './reducers/transpoSlice';
 import ledgersCustomDateReducer from './reducers/ledgersCustomDateSlice'
 import partnerReducer from './reducers/partnerSlice';
 import advanceReducer from './reducers/advanceSlice';
+import multiBillStepsReducer  from './reducers/multiBillSteps';
 import billViewDisplaySliceReducer from './reducers/billViewDisplaySlice';
 export default configureStore({
     reducer:{
@@ -36,6 +37,7 @@ export default configureStore({
         dates:ledgersCustomDateReducer,
         partnerInfo:partnerReducer,
         advanceInfo:advanceReducer,
+        multiStepsInfo:multiBillStepsReducer,
         mandiDetails:billViewDisplaySliceReducer
     }
 })

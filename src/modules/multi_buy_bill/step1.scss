@@ -1,0 +1,17 @@
+.selected_partner_card{
+    padding: 10px;
+    border: 1px solid #16A12C;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.selectedPartner_scroll{
+    overflow-y: auto;
+    height: 420px;
+}
+.select_party_card{
+    // border-bottom: 1px solid #E4E4E4;
+    // margin: 2px 0px;
+}
+.deleteIcon:hover{
+    cursor: pointer;
+}

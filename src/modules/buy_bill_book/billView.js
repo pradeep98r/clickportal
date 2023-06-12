@@ -76,7 +76,6 @@ const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray : null;
-  
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);

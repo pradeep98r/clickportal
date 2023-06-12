@@ -52,6 +52,8 @@
 .table_crop_div {
   img {
     width: 30px;
+    border-radius: 100%;
+    height: 30px;
   }
 }
 .wastage_val,
@@ -237,3 +239,16 @@ select,.dropdown:focus {
     max-width: 1440px;
   }
 }
+
+
+
+
+
+// th {
+//   padding: 30px;
+//   background: #666;
+// }
+// td {
+//   padding: 30px;
+//   background: #999;
+// }
