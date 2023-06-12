@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  arrayObj,
   multiSelectPartners,
   multiStepsVal,
 } from "../../reducers/multiBillSteps";
@@ -7,11 +8,7 @@ import "../multi_buy_bill/step2.scss";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from "react";
 import DateSelection from "./dateSelection";
-import {
-  getQuantityUnit,
-  getText,
-  getUnitVal,
-} from "../../components/getText";
+import { getQuantityUnit, getText, getUnitVal } from "../../components/getText";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import "../multi_buy_bill/step1.scss";
 import SelectSinglePartner from "./selectSinglePartner";
@@ -19,16 +16,20 @@ import down_arrow from "../../assets/images/down_arrow.svg";
 import Select from "react-select";
 import { getAllCrops } from "../../actions/billCreationService";
 import SelectBags from "../buy_bill_book/bags";
+import delete_icon from "../../assets/images/delete.svg";
+import copy_icon from "../../assets/images/copy.svg";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
-  const partnersArray = selectedStep?.multiSelectPartners;
-  const [multiSelectPartnersArray, setMultiSelectPartnersArray] =
-    useState(partnersArray);
+  const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
+  console.log(multiSelectPartnersArray,'ar2')
   const [allData, setAllData] = useState([]);
   const [cropsData, setCropsData] = useState(allData);
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
   const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
+  const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
   const colourStyles = {
     menuList: (styles) => ({
       ...styles,
@@ -62,9 +63,212 @@ const Step2 = (props) => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
   };
-  const onClickStep2 = () => {
-    dispatch(multiStepsVal("step2"));
+  // const onClickStep2 = (array) => {
+  //   dispatch(multiStepsVal("step3"));
+  //   dispatch(multiSelectPartners(array));
+  // };
+  const getTotalValue = (index, mIndex) => {
+    let clonedArray = [...selectedStep?.multiSelectPartners];
+    var val = 0;
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "kgs" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "loads" ||
+    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      "pieces"
+      ? (val = (
+          (multiSelectPartnersArray[mIndex].lineItems[index].weight -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate
+        ))
+      : (val = (
+          (multiSelectPartnersArray[mIndex].lineItems[index].qty -
+            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
+          multiSelectPartnersArray[mIndex].lineItems[index].rate
+        ));
+    let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map((item, i) => {
+      if (i == index) {
+        return { ...multiSelectPartnersArray[mIndex].lineItems[i], total: val };
+      } else {
+        return { ...multiSelectPartnersArray[mIndex].lineItems[i] };
+      }
+    });
+    let clonedObject1 = { ...clonedArray[mIndex] };
+    clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
+    clonedArray[mIndex] = clonedObject1;
+
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    dispatch(arrayObj(clonedArray))
+    console.log(clonedArray)
+    return val;
   };
+  // function to nevigate to step3 page
+  var arrays = [];
+  const onClickStep2 = (array) => {
+    let clonedArray = [...array];
+    if (array.length > 0) {
+      for (var index = 0; index < array.length; index++) {
+        const data1 = array[index];
+        if (data1.lineItems.length > 0) {
+          arrays = [];
+          for (var cIndex = 0; cIndex < data1.lineItems.length; cIndex++) {
+            var data = data1.lineItems[cIndex];
+            if (Object.keys(data).length != 0) {
+              let obj1 = { ...data };
+              console.log(Object.keys(data).length,obj1,data);
+              if(data.cropName == ''){
+                toast.error("Please Enter crop detaiils", {
+                  toastId: "error1",
+                });
+                return null;
+              }
+              obj1.total = getTotalValue(cIndex, index);
+              data = obj1;
+              console.log(data,arrays)
+              arrays.push(data);
+              if (data.cropDelete) continue;
+              const qtyUnit = data.qtyUnit?.toLowerCase();
+              const rateType = data.rateType?.toLowerCase();
+              if (["loads", "pieces"].includes(qtyUnit)) {
+                if (data.weight == 0) {
+                  toast.error("Please enter weight", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (Object.is(data.weight, data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error3",
+                  });
+                  return null;
+                } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error3",
+                  });
+                  return null;
+                }
+              } else if (qtyUnit === "kgs") {
+                if (data.weight == 0) {
+                  toast.error("Please enter weight", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error3",
+                  });
+                  return null;
+                }
+              } else if (qtyUnit === rateType) {
+                if (data.qty == 0) {
+                  toast.error("Please enter Quantity", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
+                  toast.error("wastage is always less than quantity", {
+                    toastId: "error4",
+                  });
+                  return null;
+                }
+              } else if (
+                !setQuantityBasedtable(qtyUnit) &&
+                data.rateType?.toUpperCase() !== "RATE_PER_UNIT"
+              ) {
+                if (data.qty == 0) {
+                  toast.error("Please enter Quantity", {
+                    toastId: "error1",
+                  });
+                  return null;
+                } else if (data.weight == 0) {
+                  toast.error("Please enter weight", {
+                    toastId: "error2",
+                  });
+                  return null;
+                } else if (data.rate == 0) {
+                  toast.error("Please enter rate", {
+                    toastId: "error3",
+                  });
+                  return null;
+                } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
+                  toast.error("wastage is always less than weight", {
+                    toastId: "error4",
+                  });
+                  return null;
+                }
+              } else if (
+                setQuantityBasedtable(data.qtyUnit) &&
+                data.weight != 0 &&
+                data.rate != 0
+              ) {
+                return data;
+              }
+            }
+          }
+        }
+        // for (var k = 0; k < data1.lineItems.length; k++) {
+        //   if (Object.keys(data1.lineItems[k]).length != 0) {
+        //     if (data1.lineItems[k].cropName != "") {
+        //       // arrays.push(data1.lineItems[k]);
+        //       let obj = { ...data1.lineItems[k] };
+        //       // obj.total = getTotalValue(k, index, data1.lineItems);
+        //       // data1.lineItems[k] = obj;
+        //     }
+        //     if (data1.lineItems[k].wastage == "") {
+        //       // data1.lineItems[k].wastage = 0;
+        //     }
+        //   }
+        // }
+        
+        let clonedObject = { ...array[index] };
+        clonedObject = { ...clonedObject, lineItems: arrays };
+        clonedArray[index] = clonedObject;
+        // if (arrays.length === data1.lineItems.length) {
+          
+        // }
+      }
+      dispatch(multiStepsVal("step3"));
+      console.log(clonedArray,'arrayonj');
+      dispatch(multiSelectPartners(clonedArray));
+           
+      // if (arrays.length === cropData.length) {
+      // addStep3Modal();
+
+      // props.parentcall(
+      //   dArray.length != 0 ? dArray : cropData,
+      //   billEditStatus
+      // );
+      // } else {
+      //   for (var j = 0; j < cropData.length; j++) {
+      //     if (
+      //       Object.keys(cropData[j]).length == 0 ||
+      //       cropData[j].cropName == ""
+      //     ) {
+      //       toast.error("Please add crop", {
+      //         toastId: "error6",
+      //       });
+      //     }
+      //   }
+      // }
+    }
+  };
+
+  // previous step
   const previousStep = () => {
     dispatch(multiStepsVal("step1"));
   };
@@ -122,6 +326,7 @@ const Step2 = (props) => {
               : cIndex != -1
               ? getUnitVal(qSetting, cIndex)
               : "crates",
+              
         });
       });
       setCropsData(response.data.data);
@@ -138,10 +343,11 @@ const Step2 = (props) => {
       let updatedLineItems = [...clonedObject.lineItems, crpObject];
       clonedObject = { ...clonedObject, lineItems: updatedLineItems };
       clonedArray[i] = clonedObject;
-      setMultiSelectPartnersArray(clonedArray);
+      // setMultiSelectPartnersArray(clonedArray);
+      dispatch(multiSelectPartners(clonedArray));
     }
   };
-  // add crop from allcrops dropdown 
+  // add crop from allcrops dropdown
   const addCropToEmptyRow = (crop, i, ind, data) => {
     var c = data;
     let updatedItem3 = c.map((item, j) => {
@@ -153,7 +359,6 @@ const Step2 = (props) => {
         } else {
           cIndex = -1;
         }
-        console.log(c[j], "if");
         return {
           ...c[j],
           cropName: crop.cropName,
@@ -187,7 +392,8 @@ const Step2 = (props) => {
     let clonedObject = { ...clonedArray[ind] };
     clonedObject = { ...clonedObject, lineItems: updatedItem3 };
     clonedArray[ind] = clonedObject;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
   };
   const [active, setActive] = useState(false);
   const [activeTrans, setActiveTrans] = useState(false);
@@ -213,7 +419,6 @@ const Step2 = (props) => {
     }
     let updatedItemList = cropData.map((item, i) => {
       if (i == index1) {
-        console.log("selected");
         arr1.push({ ...cropData[i], qtyUnit: e.target.value });
         if (cropData[i].cropName != "") {
           return {
@@ -239,8 +444,8 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
-    console.log(clonedArray, updatedItemList, clonedObject1, mIndex);
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
   };
 
   // getting table based on unit type
@@ -269,7 +474,8 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemListRateType };
     clonedArray[mIndex] = clonedObject1;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
   };
   // reset input value to 0
   const resetInput = (e) => {
@@ -287,7 +493,7 @@ const Step2 = (props) => {
       .replace(/(\.\d*)\./, "$1");
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], qty: val };
+        return { ...cropitem[i], qty: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -296,7 +502,8 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem };
     clonedArray[mIndex] = clonedObject1;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
   };
   // get weight value
   const getWeightValue = (id, index, mIndex, cropitem) => (e) => {
@@ -308,7 +515,7 @@ const Step2 = (props) => {
       .replace(/(\.\d*)\./, "$1");
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], weight: val };
+        return { ...cropitem[i], weight: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -316,9 +523,10 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem1 };
     clonedArray[mIndex] = clonedObject1;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
   };
-   // get wastage value
+  // get wastage value
   const getWastageValue = (id, index, mIndex, cropitem) => (e) => {
     let clonedArray = [...multiSelectPartnersArray];
     if (
@@ -336,7 +544,7 @@ const Step2 = (props) => {
 
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], wastage: val };
+        return { ...cropitem[i], wastage: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -344,9 +552,10 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem2 };
     clonedArray[mIndex] = clonedObject1;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
   };
-   // get rate value
+  // get rate value
   const getRateValue = (id, index, mIndex, cropitem) => (e) => {
     let clonedArray = [...multiSelectPartnersArray];
     var val = e.target.value
@@ -357,7 +566,7 @@ const Step2 = (props) => {
     // .replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], rate: val };
+        return { ...cropitem[i], rate: parseFloat(val) };
       } else {
         return { ...cropitem[i] };
       }
@@ -365,8 +574,12 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
     clonedArray[mIndex] = clonedObject1;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    // getTotalValue(index,mIndex,cropitem)
   };
+  
+
   // handle check event for bags and sacs
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
   const [showBagsModal, setShowBagsModal] = useState(false);
@@ -389,43 +602,148 @@ const Step2 = (props) => {
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem };
     clonedArray[mIndex] = clonedObject1;
-    setMultiSelectPartnersArray(clonedArray);
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
     setshowBagsModalStatus(true);
     setShowBagsModal(true);
     if (crd[ink].bags.length > 0) {
       setEditBagsStatus(true);
     }
   };
-    //   gettinng inndividual bags data
-    const callbackFunction = (childData, invArr) => {
-      let clonedArray = [...multiSelectPartnersArray];
-      console.log(childData)
-      // let updatedItems = cropData.map((item, i) => {
-      //   if (i == arIndex) {
-      //     item = childData[0];
-      //     return {
-      //       ...cropData[i],
-      //       qty: parseInt(item.qty),
-      //       wastage: item.wastage,
-      //       weight: item.weight,
-      //       bags: invArr,
-      //     };
-      //   } else {
-      //     // cropResponseData([...cropData]);
-      //     return { ...cropData[i] };
-      //   }
-      // });
-      // let clonedObject1 = { ...clonedArray[mIndex] };
-      // clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
-      // clonedArray[mIndex] = clonedObject1;
-      // setMultiSelectPartnersArray(clonedArray);
+  //   gettinng inndividual bags data
+  const callbackFunction = (childData, invArr) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    // let updatedItems = cropData.map((item, i) => {
+    //   if (i == arIndex) {
+    //     item = childData[0];
+    //     return {
+    //       ...cropData[i],
+    //       qty: parseInt(item.qty),
+    //       wastage: item.wastage,
+    //       weight: item.weight,
+    //       bags: invArr,
+    //     };
+    //   } else {
+    //     // cropResponseData([...cropData]);
+    //     return { ...cropData[i] };
+    //   }
+    // });
+    // let clonedObject1 = { ...clonedArray[mIndex] };
+    // clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
+    // clonedArray[mIndex] = clonedObject1;
+    // setMultiSelectPartnersArray(clonedArray);
+  };
+  const [cropDeletedList, setcropDeletedList] = useState([]);
+  // delete crop
+  const deleteCrop = (crop, cropArray, indexVal, cropInd) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    var index = cropArray.indexOf(crop);
+    const newArr = [...cropArray];
+
+    if (index != -1) {
+      let data = cropArray.map((item, i) => {
+        if (Object.keys(cropArray[i]).length != 0) {
+          if (i == cropInd) {
+            {
+              return {
+                ...cropArray[i],
+                cropDelete: true,
+                status: 0,
+                index: i,
+              };
+            }
+          } else {
+            // cropResponseData([...cropArray]);
+            return { ...cropArray[i] };
+          }
+        }
+      });
+      if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
+        if (Object.keys(cropArray[index]).length != 0) {
+          setcropDeletedList([...cropDeletedList, cropArray[index]]);
+          cropDeletedList.push(cropArray[index]);
+        }
+      }
+      newArr.splice(index, 1);
+      // cropArray.splice(index, 1);
+    }
+    // }
+
+    // setUpdatedItemList([...cropArray, ...cropDeletedList]);
+    let clonedObject1 = { ...clonedArray[indexVal] };
+    clonedObject1 = {
+      ...clonedObject1,
+      lineItems: newArr.length > 0 ? newArr : [{ cropName: "" }],
     };
+    clonedArray[indexVal] = clonedObject1;
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    // cropResponseData([...cropArray]);
+    // cropResponseData([...cropArray]);
+    if (cropDeletedList?.length > 0) {
+      // setAllDeletedCrops(cropDeletedList);
+    }
+  };
+  //   clone crop (copy crop) function
+  const cloneCrop = (crop, cropsData, k, cropInd) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    const updatedCropsData = [
+      ...cropsData.slice(0, cropInd + 1),
+      crop,
+      ...cropsData.slice(cropInd + 1),
+    ];
+    let clonedObject1 = { ...clonedArray[k] };
+    clonedObject1 = {
+      ...clonedObject1,
+      lineItems: updatedCropsData,
+    };
+    clonedArray[k] = clonedObject1;
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    // cropResponseData(updatedCropsData);
+    // cropResponseData([...cropData, crop]);
+  };
+  const [addCropStatus, setAddCropStatus] = useState(false);
+  const [addCropsIndex, setAddCropsIndex] = useState(0);
+  const activeSearchCrop = (c, i, mainInd) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    // setSelectedCropItem(null);
+    setAddCropStatus(true);
+    setAddCropsIndex(i);
+    let updatedItem3 = c.map((item, j) => {
+      if (j == i) {
+        return {
+          ...c[j],
+          cropActive: false,
+          displayStat: false,
+          activeSearch: true,
+          cropName: "",
+        };
+      } else {
+        // cropResponseData([...c]);
+        return { ...c[j] };
+      }
+    });
+    // cropResponseData([...updatedItem3]);
+    let clonedObject1 = { ...clonedArray[mainInd] };
+    clonedObject1 = {
+      ...clonedObject1,
+      lineItems: updatedItem3,
+    };
+    clonedArray[mainInd] = clonedObject1;
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+    Object.assign(c[i], { status: 0, cropDelete: true });
+    // setOnFocusCrop(c[i]);
+  };
   return (
     <div>
       <div className="main_div_padding">
         {multiSelectPartnersArray.length > 0 && (
-         
-          <table className="table-bordered step2_table table_view" id="scroll_style">
+          <table
+            className="table-bordered step2_table table_view"
+            id="scroll_style"
+          >
             <tr>
               <th className="col_2">Seller</th>
               <th className="col_2">Transporter</th>
@@ -470,7 +788,7 @@ const Step2 = (props) => {
                             >
                               <div className="d-flex user_name">
                                 <h5 className="party_name">
-                                  {getText(item.partyName)}
+                                  {fromMultiBillViewStatus ? getText(item.farmerName) :getText(item.partyName)}
                                 </h5>
                                 <img
                                   src={down_arrow}
@@ -512,41 +830,77 @@ const Step2 = (props) => {
                               .cropName != "" ? (
                             <tr className="extra_border">
                               <td className="col_2 ">
-                                <Select
-                                  isSearchable={true}
-                                  className="basic-single crop_select"
-                                  classNamePrefix="select"
-                                  styles={colourStyles}
-                                  name="partner"
-                                  hideSelectedOptions={false}
-                                  options={cropsData}
-                                  placeholder={"Click here and add Crop"}
-                                  // value={selectedCropItem}
-                                  onChange={(event) =>
-                                    addCropToEmptyRow(
-                                      event,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index].lineItems
-                                    )
-                                  }
-                                  filterOption={filterOption}
-                                  isClearable={false}
-                                  noOptionsMessage={() => "No Data Available"}
-                                  getOptionValue={(e) => e.cropId}
-                                  getOptionLabel={(e) => (
-                                    <div
-                                      contenteditable="true"
-                                      className="table_crop_div flex_class mr-0"
-                                    >
-                                      <img
-                                        src={e.imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">{e.cropName}</p>
-                                    </div>
-                                  )}
-                                />
+                                {!multiSelectPartnersArray[index].lineItems[i]
+                                  .activeSearch ||
+                                multiSelectPartnersArray[index].lineItems[i]
+                                  .displayStat ? (
+                                  // !activeSearch || displayStat?
+
+                                  <div
+                                    className="table_crop_div flex_class mr-0"
+                                    onClick={() => {
+                                      activeSearchCrop(
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        i,
+                                        index
+                                      );
+                                    }}
+                                  >
+                                    <img
+                                      src={
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].imageUrl
+                                      }
+                                      className="flex_class mr-2"
+                                    />
+                                    <p className="m-0">
+                                      {
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].cropName
+                                      }
+                                    </p>
+                                  </div>
+                                ) : addCropsIndex == index && addCropStatus ? (
+                                  <Select
+                                    isSearchable={true}
+                                    className="basic-single crop_select"
+                                    classNamePrefix="select"
+                                    styles={colourStyles}
+                                    name="partner"
+                                    hideSelectedOptions={false}
+                                    options={cropsData}
+                                    placeholder={"Click here and add Crop"}
+                                    // value={selectedCropItem}
+                                    onChange={(event) =>
+                                      addCropToEmptyRow(
+                                        event,
+                                        i,
+                                        index,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems
+                                      )
+                                    }
+                                    filterOption={filterOption}
+                                    isClearable={false}
+                                    noOptionsMessage={() => "No Data Available"}
+                                    getOptionValue={(e) => e.cropId}
+                                    getOptionLabel={(e) => (
+                                      <div
+                                        contenteditable="true"
+                                        className="table_crop_div flex_class mr-0"
+                                      >
+                                        <img
+                                          src={e.imageUrl}
+                                          className="flex_class mr-2"
+                                        />
+                                        <p className="m-0">{e.cropName}</p>
+                                      </div>
+                                    )}
+                                  />
+                                ) : (
+                                  ""
+                                )}
                               </td>
                               <td className="col_1">
                                 <select
@@ -855,6 +1209,42 @@ const Step2 = (props) => {
                                             .lineItems[i].rate
                                         ).toFixed(2)}
                                   </p>
+                                  <div className="d-flex">
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={cloneCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={copy_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={deleteCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={delete_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                  </div>
                                   <button
                                     onClick={() => addCrop(item, item.partyId)}
                                     className="add_crop_text2"
@@ -911,12 +1301,50 @@ const Step2 = (props) => {
                               <td className="col_1"></td>
                               <td className="col_1"></td>
                               <td className="col_3">
-                                <button
-                                  onClick={() => addCrop(item, item.partyId)}
-                                  className="add_crop_text2"
-                                >
-                                  Add crop
-                                </button>
+                                <div className="d-flex align-items-center justify-content-between">
+                                  <div className="d-flex">
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={cloneCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={copy_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                    <button
+                                      className="flex_class mr-0 sub_icons_div"
+                                      onClick={deleteCrop.bind(
+                                        this,
+                                        crop,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        index,
+                                        i
+                                      )}
+                                    >
+                                      <img
+                                        src={delete_icon}
+                                        className="sub_icons"
+                                        alt="image"
+                                      />
+                                    </button>
+                                  </div>
+                                  <button
+                                    onClick={() => addCrop(item, item.partyId)}
+                                    className="add_crop_text2"
+                                  >
+                                    +Add crop
+                                  </button>
+                                </div>
                               </td>
                             </tr>
                           );
@@ -927,7 +1355,6 @@ const Step2 = (props) => {
               );
             })}
           </table>
-         
         )}
       </div>
       <div className="bottom_div">
@@ -942,24 +1369,28 @@ const Step2 = (props) => {
             >
               Previous
             </button>
-            <button className="primary_btn" onClick={() => onClickStep2()}>
+            <button
+              className="primary_btn"
+              onClick={() => onClickStep2(multiSelectPartnersArray)}
+            >
               Next
             </button>
           </div>
         </div>
       </div>
       {showBagsModalStatus ? (
-          <SelectBags
-            show={showBagsModal}
-            closeBagsModal={() => setShowBagsModal(false)}
-            cropsArray={ar}
-            parentCallback={callbackFunction}
-            cropIndex={arIndex}
-            editBagsStatus={editBagsStatus}
-          />
-        ) : (
-          ""
-        )}
+        <SelectBags
+          show={showBagsModal}
+          closeBagsModal={() => setShowBagsModal(false)}
+          cropsArray={ar}
+          parentCallback={callbackFunction}
+          cropIndex={arIndex}
+          editBagsStatus={editBagsStatus}
+        />
+      ) : (
+        ""
+      )}
+      <ToastContainer />
     </div>
   );
 };

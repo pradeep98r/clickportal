@@ -17,6 +17,7 @@ import ledgersCustomDateReducer from './reducers/ledgersCustomDateSlice'
 import partnerReducer from './reducers/partnerSlice';
 import advanceReducer from './reducers/advanceSlice';
 import multiBillStepsReducer  from './reducers/multiBillSteps';
+import billViewDisplaySliceReducer from './reducers/billViewDisplaySlice';
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -37,5 +38,6 @@ export default configureStore({
         partnerInfo:partnerReducer,
         advanceInfo:advanceReducer,
         multiStepsInfo:multiBillStepsReducer,
+        mandiDetails:billViewDisplaySliceReducer
     }
 })

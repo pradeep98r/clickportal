@@ -89,10 +89,14 @@ const SelectMultiPartner = () => {
 
     item?.map((party, index) => {
       let clonedObject = { ...item[index] };
-      Object.assign(clonedObject,{lineItems : cropInfoByLineItemArray});
+      Object.assign(clonedObject,{lineItems : cropInfoByLineItemArray,
+        transporterId: '',
+        transporterName: '',
+        transporterMobile: '',});
      item[index] = clonedObject;
     })
     dispatch(multiSelectPartners(item));
+    
   };
 
   useEffect(() => {
