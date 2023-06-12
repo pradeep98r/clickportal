@@ -42,6 +42,7 @@ import {
   allMultiBuyBillsData,
 } from "../../reducers/ledgerSummarySlice";
 import {
+  fromMultiBillBook,
   multiSelectPartners,
   multiSelectPartyType,
   multiStepsVal,
@@ -170,6 +171,7 @@ function BuyBillBook() {
     Object.assign(object, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
+    dispatch(fromMultiBillBook(false))
   };
   const [showMultiBillModalStatus, setMultiShowBillModalStatus] =
     useState(false);
@@ -179,6 +181,7 @@ function BuyBillBook() {
     setMultiShowBillModal(true);
     dispatch(selectedMultBillArray(bill));
     dispatch(multiSelectPartyType("FARMER"));
+    dispatch(fromMultiBillBook(true))
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -687,11 +690,11 @@ function BuyBillBook() {
 
                                                       <div className="d-flex">
                                                         <p className="d-a-value">
-                                                          {moment(
-                                                            bill?.timeStamp
-                                                          ).format(
-                                                            "DD-MMM-YY | hh:mm:A"
-                                                          )}
+                                                        {moment(
+                                                              bill?.billInfo[0].timeStamp
+                                                            ).format(
+                                                              "DD-MMM-YY | hh:mm:A"
+                                                            )}
                                                         </p>
                                                       </div>
                                                       <p

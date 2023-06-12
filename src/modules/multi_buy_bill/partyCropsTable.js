@@ -218,30 +218,43 @@ const PaartyCropDetails = (props) => {
           <div className="col-lg-2"></div>
           <div className="col-lg-4"></div>
           <div className="col-lg-6 p-0 ">
-            <div className="row justify-content-around">
+            <div className="row justify-content-around multi_totals">
+              <div className="col-lg-6 pr-0">
               <p className="total_value">Gross Total : </p>
-              <p className="total_value text-left number_overflow">
+              
+              </div>
+              <div className="col-lg-6">
+              <p className="total_value number_overflow">
                 &nbsp;&nbsp;
                 {getCurrencyNumberWithSymbol(selectedBillData?.grossTotal)}
               </p>
+              </div>
             </div>
-            <div className="row justify-content-around">
+            <div className="row justify-content-around multi_totals">
+            <div className="col-lg-6 pr-0">
               <p className="total_value">Total Expenses : </p>
-              <p className="total_value text-left number_overflow">
+              </div>
+              <div className="col-lg-6">
+              <p className="total_value number_overflow">
                 &nbsp;&nbsp;
                 {selectedBillData?.totalExpenses != 0
                   ? getCurrencyNumberWithSymbol(selectedBillData?.totalExpenses)
                   : 0}
               </p>
+              </div>
             </div>
-            <div className="row justify-content-around">
+            <div className="row justify-content-around multi_totals">
+            <div className="col-lg-6 pr-0">
               <p className="total_value">COGS : </p>
-              <p className="total_value text-left number_overflow">
+              </div>
+              <div className="col-lg-6">
+              <p className="total_value number_overflow">
                 &nbsp;&nbsp;
                 {partyType == "FARMER"
                   ? getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)
                   : getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
               </p>
+              </div>
             </div>
           </div>
         </div>
