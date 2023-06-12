@@ -257,7 +257,7 @@ const editBill = () => {
                       ""
                     )}
                   </div>
-                  <BillViewFooter />
+                  {/* <MultiBillViewFooter /> */}
                 </div>
               </div>
             </div>
