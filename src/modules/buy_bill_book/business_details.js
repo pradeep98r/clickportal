@@ -23,6 +23,10 @@ export const BusinessDetails = (props) => {
   const [pdfThemeData, setPdfThemeDataMain] = useState(theme);
   console.log(pdfThemeData,'pdf')
   const colorThemeVal = billViewData?.colorthemeValue;
+  const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const fromMultiBillViewStatus = selectedStep?.fromMultiBillBook;
+  const selectedBillData = selectedStep?.selectedMultBillArray;
+  console.log(selectedBillData,fromMultiBillViewStatus)
   useEffect(() => {
    if(pdfThemeDataMain != null){
       for(var i = 0; i<pdfThemeDataMain.length; i++){
@@ -115,7 +119,10 @@ export const BusinessDetails = (props) => {
             style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, -40):'#0C7A1E' }}
           >
             <p className="small_text text-center">
-              Bill ID : {billData?.caBSeq !== null ? billData?.caBSeq : ""}
+              {
+                fromMultiBillViewStatus ? ('Group Id:'+selectedBillData?.groupId) :  ( billData?.caBSeq !== null ? 'Bill Id : ' +billData?.caBSeq : "")
+              }
+             
             </p>
           </div>
         </div>
