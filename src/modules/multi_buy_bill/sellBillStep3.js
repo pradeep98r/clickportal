@@ -311,7 +311,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
               props.closeModal();
             }, 800);
             window.setTimeout(function () {
-              navigate("/buy_bill_book");
+              navigate("/sellbillbook");
               window.location.reload();
             }, 1000);
           }

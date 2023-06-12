@@ -126,7 +126,7 @@ const Step3 = (props) => {
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
         buyerId: 0,
-        cropSufx: "string",
+        cropSufx: "",
         id: 0,
         mnLotId: 0,
         mnSubLotId: 0,
