@@ -9,6 +9,7 @@ import "./step3.scss";
 import { qtyValues } from "../../components/qtyValues";
 import {
   arrayObj,
+  fromPreviousStep3,
   multiSelectPartners,
   multiStepsVal,
 } from "../../reducers/multiBillSteps";
@@ -39,6 +40,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
   };
   const previousStep = () => {
     dispatch(multiStepsVal("step2"));
+    dispatch(fromPreviousStep3(true))
   };
   const editCropInfo = () => {
     dispatch(multiStepsVal("step2"));
@@ -588,7 +590,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
                       <p>Total Expenses : </p>
                     </div>
                     <div className="col-lg-6 p-0">
-                      <p>{getCurrencyNumberWithSymbol(getTotalExpences())}</p>
+                      <p> { getTotalExpences() != 0 ? getCurrencyNumberWithSymbol(getTotalExpences()) : ('₹' + 0)}</p>
                     </div>
                   </div>
                 </div>

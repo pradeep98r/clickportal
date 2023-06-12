@@ -272,7 +272,10 @@ const Step2 = (props) => {
   const previousStep = () => {
     dispatch(multiStepsVal("step1"));
   };
+  var lineitemsArray = [];
+
   useEffect(() => {
+    console.log(mainArray,'main')
     fetchCropData();
     var party = selectedStep?.multiSelectPartyType;
     for (var i = 0; i < settingsData.billSetting.length; i++) {
@@ -300,7 +303,29 @@ const Step2 = (props) => {
         }
       }
     }
+   
+    if(selectedStep?.fromPreviousStep3){
+      var mainArray = [];
+      for(var j=0; j<multiSelectPartnersArray.length; j++){
+        let cObj = { ...multiSelectPartnersArray[j] };
+        for(var k= 0; k<multiSelectPartnersArray[j].lineItems.length; k++){
+          let obj = { ...multiSelectPartnersArray[j].lineItems[k] };
+          if(obj.rateType == 'RATE_PER_KG'){
+            obj.rateType = 'kgs';
+          }
+          lineitemsArray = [...lineitemsArray, obj];
+          cObj.lineItems = lineitemsArray;
+         
+          // multiSelectPartnersArray[j] = cObj;
+        }
+        mainArray = [...mainArray, cObj];
+      }
+      dispatch(multiSelectPartners(mainArray))
+    console.log(multiSelectPartnersArray,mainArray,'arrrayyy');
+    }
+    
   }, []);
+
   const filterOption = (option, inputValue) => {
     const { cropName } = option.data;
     const searchValue1 = inputValue.toLowerCase();

@@ -9,6 +9,7 @@ import "./step3.scss";
 import { qtyValues } from "../../components/qtyValues";
 import {
   arrayObj,
+  fromPreviousStep3,
   multiSelectPartners,
   multiStepsVal,
 } from "../../reducers/multiBillSteps";
@@ -40,6 +41,7 @@ const Step3 = (props) => {
   };
   const previousStep = () => {
     dispatch(multiStepsVal("step2"));
+    dispatch(fromPreviousStep3(true))
   };
   const editCropInfo = () => {
     dispatch(multiStepsVal("step2"));
