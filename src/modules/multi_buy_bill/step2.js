@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   arrayObj,
+  fromPreviousStep3,
   multiSelectPartners,
   multiStepsVal,
 } from "../../reducers/multiBillSteps";
@@ -245,7 +246,7 @@ const Step2 = (props) => {
       dispatch(multiStepsVal("step3"));
       console.log(clonedArray,'arrayonj');
       dispatch(multiSelectPartners(clonedArray));
-           
+      dispatch(fromPreviousStep3(true))
       // if (arrays.length === cropData.length) {
       // addStep3Modal();
 
@@ -272,7 +273,6 @@ const Step2 = (props) => {
   const previousStep = () => {
     dispatch(multiStepsVal("step1"));
   };
-  var lineitemsArray = [];
 
   useEffect(() => {
     console.log(mainArray,'main')
@@ -308,6 +308,7 @@ const Step2 = (props) => {
       var mainArray = [];
       for(var j=0; j<multiSelectPartnersArray.length; j++){
         let cObj = { ...multiSelectPartnersArray[j] };
+        var lineitemsArray = [];
         for(var k= 0; k<multiSelectPartnersArray[j].lineItems.length; k++){
           let obj = { ...multiSelectPartnersArray[j].lineItems[k] };
           if(obj.rateType == 'RATE_PER_KG'){
@@ -518,7 +519,7 @@ const Step2 = (props) => {
       .replace(/(\.\d*)\./, "$1");
     let updatedItem = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], qty: parseFloat(val) };
+        return { ...cropitem[i], qty: val };
       } else {
         return { ...cropitem[i] };
       }
@@ -540,7 +541,7 @@ const Step2 = (props) => {
       .replace(/(\.\d*)\./, "$1");
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], weight: parseFloat(val) };
+        return { ...cropitem[i], weight: val };
       } else {
         return { ...cropitem[i] };
       }
@@ -569,7 +570,7 @@ const Step2 = (props) => {
 
     let updatedItem2 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], wastage: parseFloat(val) };
+        return { ...cropitem[i], wastage: val };
       } else {
         return { ...cropitem[i] };
       }
@@ -591,7 +592,7 @@ const Step2 = (props) => {
     // .replace(/\D/g, "");
     let updatedItem3 = cropitem.map((item, i) => {
       if (i == index) {
-        return { ...cropitem[i], rate: parseFloat(val) };
+        return { ...cropitem[i], rate: val };
       } else {
         return { ...cropitem[i] };
       }
@@ -842,7 +843,7 @@ const Step2 = (props) => {
                     )}
                   </td>
                   <td className="col_1">
-                    <DateSelection indexVal={index} />
+                    <DateSelection />
                   </td>
                   <td className="p-0 extra_border">
                     {multiSelectPartnersArray[index].lineItems.length > 0 &&

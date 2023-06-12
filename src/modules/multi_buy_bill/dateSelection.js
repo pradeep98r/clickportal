@@ -11,47 +11,44 @@ import {
   selectedDates,
 } from "../../reducers/multiBillSteps";
 import moment from "moment";
-const DateSelection = ({ indexVal,fromStep3BillDate }) => {
+const DateSelection = ({ fromStep3BillDate }) => {
   const listOfDates = useSelector((state) => state.multiStepsInfo);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const multiSelectPartnersArray = listOfDates?.fromMultiBillView ? listOfDates?.multiSelectPartners : listOfDates?.multiSelectPartners;
-  const fromMultiBillViewStatus = listOfDates?.fromMultiBillView;
-  const allDates = listOfDates?.selectedDates;  
+  const multiSelectPartnersArray = listOfDates?.fromMultiBillView
+    ? listOfDates?.multiSelectPartners
+    : listOfDates?.multiSelectPartners;
+  const fromPreviousStep3Status = listOfDates?.fromPreviousStep3;
+  const allDates = listOfDates?.selectedDates;
   const dispatch = useDispatch();
-  var arr = [];
-  useEffect(()=>{
-    let clonedArray = [...multiSelectPartnersArray];
-    for(var i=0; i<multiSelectPartnersArray.length; i++){
-      let clonedObject = { ...multiSelectPartnersArray[i] };
-    if(!fromStep3BillDate){
-      Object.assign(clonedObject, {
-        billDate: moment(new Date()).format("YYYY-MM-DD"),
-      });
-    }
-    else{
-      setSelectedDate(new Date(multiSelectPartnersArray[i].billDate));
-    }
-    clonedArray[i] = clonedObject;
-    arr.push(clonedArray[i])
-    }
-    console.log(multiSelectPartnersArray,'date sel')
 
-    dispatch(multiSelectPartners(clonedArray))
-  },[])
-  const dateSelected = (date) => {
-    const updateDates = [...allDates];
-    updateDates[indexVal] = moment(date).format("YYYY-MM-DD");
-    dispatch(selectedDates(updateDates));
-    setSelectedDate(date);
-    dispatch(multiBillSelectDate(indexVal, date));
+  var arr = [];
+  useEffect(() => {
+    console.log(fromPreviousStep3Status)
     let clonedArray = [...multiSelectPartnersArray];
-    let clonedObject = { ...multiSelectPartnersArray[indexVal] };
-    Object.assign(clonedObject, {
-      billDate: moment(date).format("YYYY-MM-DD"),
+    for (var i = 0; i < multiSelectPartnersArray.length; i++) {
+      let clonedObject = { ...multiSelectPartnersArray[i] };
+      if (!fromPreviousStep3Status) {
+        Object.assign(clonedObject, {
+          billDate: moment(new Date()).format("YYYY-MM-DD"),
+        });
+      } else {
+        setSelectedDate(new Date(multiSelectPartnersArray[i].billDate));
+      }
+      clonedArray[i] = clonedObject;
+      arr.push(clonedArray[i]);
+    }
+    dispatch(multiSelectPartners(clonedArray));
+  }, []);
+  var arrMain = [];
+  const dateSelected = (date) => {
+    multiSelectPartnersArray.map(function (entry) {
+      const objCopy = { ...entry };
+      objCopy.billDate = moment(date).format("YYYY-MM-DD");
+      setSelectedDate(new Date(objCopy.billDate));
+      arrMain.push(objCopy)
+      return entry;
     });
-    clonedArray[indexVal] = clonedObject;
-    arr.push(clonedArray[indexVal])
-    dispatch(multiSelectPartners(clonedArray))
+    dispatch(multiSelectPartners(arrMain))
   };
   return (
     <div className="d-flex align-items-center dateSelection">

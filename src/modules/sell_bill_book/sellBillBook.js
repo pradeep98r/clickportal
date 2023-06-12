@@ -725,7 +725,7 @@ const SellBillBook = (props) => {
                                               </div>
                                               <div className="row d-flex flex-end">
                                                 <div className="col-lg-4">
-                                                  <p>COGS :</p>
+                                                  <p>Total Revenue :</p>
                                                 </div>
                                                 <div className="col-lg-3">
                                                   <p className="payble_text color_green">
