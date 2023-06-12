@@ -139,7 +139,7 @@ const PaartyCropDetails = (props) => {
                               </p>
                             </div>
                           </td>
-                          <td className="col-3">
+                          <td className="col-3 qty_col">
                             <div>
                               {" "}
                               {qtyValues(

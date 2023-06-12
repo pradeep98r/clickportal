@@ -17,11 +17,23 @@ export const BusinessDetails = (props) => {
   const [mandiData, setMandiData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const theme = localStorage.getItem("pdftheme");
-  const pdfThemeData = theme != null ? theme : null;
+  const theme = JSON.stringify(localStorage.getItem("pdftheme"));
+  const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
+  const pdfThemeDataMain = pdfThemeDataArray != null ? pdfThemeDataArray : null;
+  const [pdfThemeData, setPdfThemeDataMain] = useState(theme);
+  console.log(pdfThemeData,'pdf')
   const colorThemeVal = billViewData?.colorthemeValue;
   useEffect(() => {
-  
+   if(pdfThemeDataMain != null){
+      for(var i = 0; i<pdfThemeDataMain.length; i++){
+        if(pdfThemeDataMain[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+            setPdfThemeDataMain(pdfThemeDataMain[i]);
+        }
+        else if(pdfThemeDataMain[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+            setPdfThemeDataMain(pdfThemeDataMain[i]);
+        }
+      }
+    }
     getBusinessDetails();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
   }, [props]);
