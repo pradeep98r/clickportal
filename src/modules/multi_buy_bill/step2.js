@@ -21,11 +21,11 @@ import delete_icon from "../../assets/images/delete.svg";
 import copy_icon from "../../assets/images/copy.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { inArray } from "jquery";
 const Step2 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
-  console.log(multiSelectPartnersArray,'ar2')
   const [allData, setAllData] = useState([]);
   const [cropsData, setCropsData] = useState(allData);
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
@@ -101,7 +101,6 @@ const Step2 = (props) => {
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
     dispatch(arrayObj(clonedArray))
-    console.log(clonedArray)
     return val;
   };
   // function to nevigate to step3 page
@@ -117,7 +116,6 @@ const Step2 = (props) => {
             var data = data1.lineItems[cIndex];
             if (Object.keys(data).length != 0) {
               let obj1 = { ...data };
-              console.log(Object.keys(data).length,obj1,data);
               if(data.cropName == ''){
                 toast.error("Please Enter crop detaiils", {
                   toastId: "error1",
@@ -612,17 +610,23 @@ const Step2 = (props) => {
   const arrobject = [];
   const [ar, setArray] = useState([]);
   const [arIndex, setarIndex] = useState(0);
+  const [arMainIndex, setarMainIndex] = useState(0);
   const [editBagsStatus, setEditBagsStatus] = useState(false);
   const handleCheckEvent = (crd, ink, mIndex, cr) => {
     let clonedArray = [...multiSelectPartnersArray];
+    console.log(mIndex,'bags')
     let updatedItem = crd.map((item, i) => {
+      let ob = {...crd[i]}
       if (i == ink) {
         setarIndex(ink);
-        arrobject.push(crd[i]);
+        setarMainIndex(mIndex)
+        Object.assign(ob,{unitValue : ''})
+        // crd[i] = ob;
+        arrobject.push(ob);
         setArray(arrobject);
-        return { ...crd[i], checked: true };
+        return { ...ob, checked: true };
       } else {
-        return { ...crd[i] };
+        return { ...ob };
       }
     });
     let clonedObject1 = { ...clonedArray[mIndex] };
@@ -637,27 +641,30 @@ const Step2 = (props) => {
     }
   };
   //   gettinng inndividual bags data
-  const callbackFunction = (childData, invArr) => {
+  const callbackFunction = (childData, invArr, mIndex) => {
     let clonedArray = [...multiSelectPartnersArray];
-    // let updatedItems = cropData.map((item, i) => {
-    //   if (i == arIndex) {
-    //     item = childData[0];
-    //     return {
-    //       ...cropData[i],
-    //       qty: parseInt(item.qty),
-    //       wastage: item.wastage,
-    //       weight: item.weight,
-    //       bags: invArr,
-    //     };
-    //   } else {
-    //     // cropResponseData([...cropData]);
-    //     return { ...cropData[i] };
-    //   }
-    // });
-    // let clonedObject1 = { ...clonedArray[mIndex] };
-    // clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
-    // clonedArray[mIndex] = clonedObject1;
-    // setMultiSelectPartnersArray(clonedArray);
+    let objectArray = [...multiSelectPartnersArray[mIndex].lineItems] 
+    let updatedItems = objectArray.map((item, i) => {
+      if (i == arIndex) {
+        item = childData[0];
+        return {
+          ...objectArray[i],
+          qty: parseInt(item.qty),
+          wastage: item.wastage,
+          weight: item.weight,
+          bags: invArr,
+        };
+      } else {
+        // cropResponseData([...cropData]);
+        return { ...objectArray[i] };
+      }
+    });
+    
+    let clonedObject1 = { ...clonedArray[mIndex] };
+    
+    clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
+    clonedArray[mIndex] = clonedObject1;
+    dispatch(multiSelectPartners(clonedArray));
   };
   const [cropDeletedList, setcropDeletedList] = useState([]);
   // delete crop
@@ -1095,9 +1102,10 @@ const Step2 = (props) => {
                                         onClick={() => {
                                           handleCheckEvent(
                                             multiSelectPartnersArray[index]
-                                              .lineItems,
-                                            index,
-                                            crop
+                                            .lineItems,
+                                          i,
+                                          index,
+                                          crop
                                           );
                                         }}
                                       >
@@ -1412,6 +1420,8 @@ const Step2 = (props) => {
           parentCallback={callbackFunction}
           cropIndex={arIndex}
           editBagsStatus={editBagsStatus}
+          partyIndex ={arMainIndex}
+          fromStep2MultiBags = {true}
         />
       ) : (
         ""

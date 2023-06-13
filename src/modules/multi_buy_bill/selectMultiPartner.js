@@ -96,7 +96,7 @@ const SelectMultiPartner = () => {
      item[index] = clonedObject;
     })
     dispatch(multiSelectPartners(item));
-    
+    console.log(item,'party')
   };
 
   useEffect(() => {
