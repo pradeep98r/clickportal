@@ -63,6 +63,7 @@ const Step3 = (props) => {
       Object.assign(obj, {
         action: "UPDATE",
         billAttributes: {
+          CashCmnt:'',
           actualPayRecieevable:gTotal,
           advance: multiSelectPartnersArray[i]?.advance,
           billDate: multiSelectPartnersArray[i]?.billDate,
@@ -70,6 +71,7 @@ const Step3 = (props) => {
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER" ? multiSelectPartnersArray[i]?.cashPaid : 0,
           cashRcvd:
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "BUYER" ? multiSelectPartnersArray[i]?.cashRcvd : 0,
+          customFields:[],
           comm: multiSelectPartnersArray[i]?.comm,
           commIncluded: multiSelectPartnersArray[i]?.commIncluded,
           comments: multiSelectPartnersArray[i]?.comments,
@@ -77,10 +79,10 @@ const Step3 = (props) => {
           grossTotal: gTotal,
           labourCharges: multiSelectPartnersArray[i]?.labourCharges,
           less: multiSelectPartnersArray[i]?.less,
-          mandiFee: multiSelectPartnersArray[i]?.mandiData,
+          mandiFee: multiSelectPartnersArray[i]?.mandiFee,
           misc:
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.otherFee
+              ? multiSelectPartnersArray[i]?.misc
               : multiSelectPartnersArray[i]?.misc,
           otherFee:
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
@@ -91,8 +93,8 @@ const Step3 = (props) => {
           paidTo: 0,
           partyId:
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.buyerId
-              : multiSelectPartnersArray[i]?.farmerId,
+              ? multiSelectPartnersArray[i]?.farmerId
+              : multiSelectPartnersArray[i]?.buyerId,
           rent: multiSelectPartnersArray[i]?.rent,
           rtComm: multiSelectPartnersArray[i]?.rtComm,
           rtCommIncluded: multiSelectPartnersArray[i]?.rtCommIncluded,
@@ -135,7 +137,7 @@ const Step3 = (props) => {
         mnSubLotId: 0,
         status: 1,
       });
-      if(o.rateType == 'kgs'){
+      if(o.rateType == 'kgs' || o.rateType == 'RATE_PER_KG' ){
         o.rateType = 'RATE_PER_KG';
       }
       else{
@@ -271,14 +273,14 @@ const Step3 = (props) => {
       advance: (billEditedObject?.expenses?.advance == null || billEditedObject?.expenses?.advance ==0) ? 0 : billEditedObject?.expenses?.advance,
       comm: (billEditedObject?.expenses?.comm == null || billEditedObject?.expenses?.comm ==0) ? 0 :billEditedObject?.expenses?.comm,
       govtLevies: (billEditedObject?.expenses?.govtLevies == null || billEditedObject?.expenses?.govtLevies ==0) ? 0 :billEditedObject?.expenses?.govtLevies,
-      labourCharges:coolieVal,
+      labourCharges:parseFloat(coolieVal),
       mandiFee: (billEditedObject?.expenses?.mandiFee == null || billEditedObject?.expenses?.mandiFee ==0) ? 0 :billEditedObject?.expenses?.mandiFee,
       misc: (billEditedObject?.expenses?.misc == null || billEditedObject?.expenses?.misc ==0) ? 0 :billEditedObject?.expenses?.misc,
-      others: otherFeeVal,
-      rent: rentVal,
+      others: parseFloat(otherFeeVal),
+      rent: parseFloat(rentVal),
       rtComm:(billEditedObject?.expenses?.rtComm == null || billEditedObject?.expenses?.rtComm ==0) ? 0 : billEditedObject?.expenses?.rtComm,
       total:getTotalExpences(),
-      transportation:transportationVal
+      transportation:parseFloat(transportationVal)
     },
     groupId: billEditedObject?.groupId,
     writerId: writerId

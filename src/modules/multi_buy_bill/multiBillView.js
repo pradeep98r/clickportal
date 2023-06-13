@@ -269,14 +269,14 @@ const editBill = () => {
                       <div>
                       <p className="more-p-tag">Actions</p>
                       <div className="action_icons">
-                        {/* <div className="items_div">
+                        <div className="items_div">
                           <button
                           onClick={() => editBill()}
                           >
                             <img src={edit} alt="img" />
                           </button>
                           <p>Edit</p>
-                        </div> */}
+                        </div>
       
                         <div className="items_div">
                           <button onClick={() => handleCheckEvent()}>
