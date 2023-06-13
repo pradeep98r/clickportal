@@ -23,7 +23,6 @@ const DateSelection = ({ fromStep3BillDate }) => {
 
   var arr = [];
   useEffect(() => {
-    console.log(fromPreviousStep3Status)
     let clonedArray = [...multiSelectPartnersArray];
     for (var i = 0; i < multiSelectPartnersArray.length; i++) {
       let clonedObject = { ...multiSelectPartnersArray[i] };

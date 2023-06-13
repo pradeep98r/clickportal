@@ -130,12 +130,9 @@ const Step3 = (props) => {
       Object.assign(cObj, { grossTotal: total });
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
-        buyerId: 0,
         cropSufx: "",
-        id: 0,
         mnLotId: 0,
         mnSubLotId: 0,
-        status: 1,
       });
       if(o.rateType == 'kgs' || o.rateType == 'RATE_PER_KG' ){
         o.rateType = 'RATE_PER_KG';
@@ -156,7 +153,7 @@ const Step3 = (props) => {
     Object.assign(clonedArray[mIndex], {
       actualPayble: gTotal,
       advance: 0,
-      billId: 0,
+      billId: fromMultiBillViewStatus ? items[mIndex].billId : 0,
       billStatus: "COMPLETED",
       caId: clickId,
       cashPaid: 0,
@@ -176,7 +173,7 @@ const Step3 = (props) => {
         //   less: true,
         // },
       ],
-      farmerId: items[mIndex].partyId,
+      farmerId: items[mIndex].partyId || items[mIndex].farmerId,
       govtLevies: 0,
       groupId: 0,
       labourCharges: 0,
@@ -287,7 +284,6 @@ const Step3 = (props) => {
   }
   // post bill request api call
   const postbuybill = () => {
-    console.log(billObj, "payload");
     if(fromMultiBillViewStatus){
       editMultiBuyBill(billObj).then(
         (response) => {

@@ -31,6 +31,7 @@ const Step2 = (props) => {
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
   const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
   const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
+  console.log(fromMultiBillViewStatus,multiSelectPartnersArray,'step2')
   const colourStyles = {
     menuList: (styles) => ({
       ...styles,
@@ -123,8 +124,62 @@ const Step2 = (props) => {
                 return null;
               }
               obj1.total = getTotalValue(cIndex, index);
+              if (fromMultiBillViewStatus) {
+                var index1 = data1.lineItems.findIndex(
+                  (obj) => obj.cropId == data1.lineItems[cIndex].cropId
+                );
+                if (index1 == cIndex) {
+                  if (data1.lineItems[cIndex]?.cropDelete) {
+                    console.log('delete1')
+                    obj1.status = 0;
+                  } else if (data1.lineItems[cIndex].id == 0) {
+                    console.log('nnew1')
+                    obj1.status = 1;
+                  }
+                  else {
+                    console.log('updated1')
+                    obj1.status = 2;
+                  }
+                  var arr = [];
+                  if (obj1?.bags != null) {
+                    if (obj1?.bags.length > 0) {
+                      obj1.bags.map((item, i) => {
+                        let clonedObject = { ...obj1.bags[i] };
+                        Object.assign(clonedObject, { status: 2 });
+                        arr.push(clonedObject);
+                      });
+                      obj1.bags = [...arr];
+                    }
+                  }
+                } else {
+                  if (index1 != -1) {
+                    if (!obj1.cropDelete) {
+                      if (obj1.id == 0) {
+                        console.log('nnew1')
+                        obj1.status = 1;
+                      }
+                      else {
+                        console.log('updated2')
+                        obj1.status = 2;
+                      }
+                    } else {
+                      console.log('delete1')
+                      obj1.status = 0;
+                    }
+                    // return null;
+                  } else {
+                    if (!obj1.cropDelete) {
+                      console.log('nnew1')
+                      obj1.status = 1;
+                    } else {
+                      console.log('delete1')
+                      obj1.status = 0;
+                    }
+                  }
+                }
+              }
               data = obj1;
-              console.log(data,arrays)
+              console.log(data,arrays,'cliick nnext')
               arrays.push(data);
               if (data.cropDelete) continue;
               const qtyUnit = data.qtyUnit?.toLowerCase();
@@ -407,6 +462,7 @@ const Step2 = (props) => {
           count: 1,
           status: 1,
           activeSearch: true,
+          id:0
         };
       } else {
         return { ...c[j] };
@@ -703,6 +759,7 @@ const Step2 = (props) => {
     // }
 
     // setUpdatedItemList([...cropArray, ...cropDeletedList]);
+    console.log(newArr,'deleted')
     let clonedObject1 = { ...clonedArray[indexVal] };
     clonedObject1 = {
       ...clonedObject1,
@@ -821,7 +878,7 @@ const Step2 = (props) => {
                             >
                               <div className="d-flex user_name">
                                 <h5 className="party_name">
-                                  {fromMultiBillViewStatus ? getText(item.farmerName) :getText(item.partyName)}
+                                  {fromMultiBillViewStatus ? getText(item.buyerName) :getText(item.partyName)}
                                 </h5>
                                 <img
                                   src={down_arrow}

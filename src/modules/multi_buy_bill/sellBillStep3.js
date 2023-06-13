@@ -72,6 +72,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
           comments: multiSelectPartnersArray[i]?.comments,
           govtLevies: multiSelectPartnersArray[i]?.govtLevies,
           grossTotal: gTotal,
+          customFields:[],
           labourCharges: multiSelectPartnersArray[i]?.labourCharges,
           less: multiSelectPartnersArray[i]?.less,
           mandiFee: multiSelectPartnersArray[i]?.mandiData,
@@ -82,14 +83,14 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
           otherFee:
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
               ? multiSelectPartnersArray[i]?.misc
-              :multiSelectPartnersArray[i]?.otherFee,
+              :multiSelectPartnersArray[i]?.misc,
     
           outStBal: multiSelectPartnersArray[i]?.outStBal,
           paidTo: 0,
           partyId:
           multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.buyerId
-              : multiSelectPartnersArray[i]?.farmerId,
+              ? multiSelectPartnersArray[i]?.farmerId
+              : multiSelectPartnersArray[i]?.buyerId,
           rent: multiSelectPartnersArray[i]?.rent,
           rtComm: multiSelectPartnersArray[i]?.rtComm,
           rtCommIncluded: multiSelectPartnersArray[i]?.rtCommIncluded,
@@ -124,11 +125,11 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
       Object.assign(cObj, { grossTotal: total });
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
-        buyerId: 0,
+        // buyerId: 0,
         cropSufx: "",
-        id: 0,
         mnLotId: 0,
         mnSubLotId: 0,
+        // status:1
       });
       if(o.rateType == 'kgs'){
         o.rateType = 'RATE_PER_KG';
@@ -148,7 +149,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
     Object.assign(clonedArray[mIndex], {
       actualReceivable: gTotal,
       advance: 0,
-      billId: 0,
+      billId: fromMultiBillViewStatus ? items[mIndex].billId : 0,
       billStatus: "COMPLETED",
       caId: clickId,
       cashRcvd: 0,
@@ -160,7 +161,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
       createdBy: 0,
       customFields: [
       ],
-      buyerId: items[mIndex].partyId,
+      buyerId: items[mIndex].partyId || items[mIndex].buyerId,
       govtLevies: 0,
       groupId: 0,
       labourCharges: 0,
@@ -257,22 +258,23 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
       advance: (billEditedObject?.expenses?.advance == null || billEditedObject?.expenses?.advance ==0) ? 0 : billEditedObject?.expenses?.advance,
       comm: (billEditedObject?.expenses?.comm == null || billEditedObject?.expenses?.comm ==0) ? 0 :billEditedObject?.expenses?.comm,
       govtLevies: (billEditedObject?.expenses?.govtLevies == null || billEditedObject?.expenses?.govtLevies ==0) ? 0 :billEditedObject?.expenses?.govtLevies,
-      labourCharges:coolieVal,
+      labourCharges:parseFloat(coolieVal),
       mandiFee: (billEditedObject?.expenses?.mandiFee == null || billEditedObject?.expenses?.mandiFee ==0) ? 0 :billEditedObject?.expenses?.mandiFee,
       misc: (billEditedObject?.expenses?.misc == null || billEditedObject?.expenses?.misc ==0) ? 0 :billEditedObject?.expenses?.misc,
-      others: otherFeeVal,
-      rent: rentVal,
+      others: parseFloat(otherFeeVal),
+      rent: parseFloat(rentVal),
       rtComm:(billEditedObject?.expenses?.rtComm == null || billEditedObject?.expenses?.rtComm ==0) ? 0 : billEditedObject?.expenses?.rtComm,
       total:getTotalExpences(),
-      transportation:transportationVal
+      transportation:parseFloat(transportationVal)
     },
     groupId: billEditedObject?.groupId,
     writerId: writerId
   }
   // post bill request api call
   const postbuybill = () => {
-    console.log(billRequestObj, "payload");
+   
     if(fromMultiBillViewStatus){
+      console.log(billObj, "payload");
       editMultiBuyBill(billObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -285,10 +287,10 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
             window.setTimeout(function () {
               props.closeModal();
             }, 800);
-            // window.setTimeout(function () {
-            //   navigate("/sellbillbook");
-            //   window.location.reload();
-            // }, 1000);
+            window.setTimeout(function () {
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 1000);
           }
         },
         (error) => {
