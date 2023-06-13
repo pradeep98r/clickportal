@@ -21,12 +21,10 @@ export const BusinessDetails = (props) => {
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeDataMain = pdfThemeDataArray != null ? pdfThemeDataArray : null;
   const [pdfThemeData, setPdfThemeDataMain] = useState(theme);
-  console.log(pdfThemeData,'pdf')
   const colorThemeVal = billViewData?.colorthemeValue;
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const fromMultiBillViewStatus = selectedStep?.fromMultiBillBook;
   const selectedBillData = selectedStep?.selectedMultBillArray;
-  console.log(selectedBillData,fromMultiBillViewStatus)
   useEffect(() => {
    if(pdfThemeDataMain != null){
       for(var i = 0; i<pdfThemeDataMain.length; i++){

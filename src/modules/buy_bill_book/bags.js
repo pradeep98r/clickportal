@@ -2,10 +2,13 @@ import { Modal } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import close from "../../assets/images/close.svg";
 import { ToastContainer, toast } from "react-toastify";
+import { useSelector } from "react-redux";
 const SelectBags = (props) => {
   const langData = localStorage.getItem("languageData");
   const [invArr, setInvArr] = useState([]);
   const [quantityVal, setQuantityVal] = useState(0);
+  const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
   // const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
   // console.log(settingsData,"Data");
   // const defaultWastage = settingsData?.wasteSetting?settingsData?.wasteSetting:[];
@@ -14,9 +17,9 @@ const SelectBags = (props) => {
   // const upTo100Kgs = 30;
   useEffect(() => {
     if (props.editBagsStatus) {
-      setQuantityVal(props.cropsArray[0].qty)
+      setQuantityVal(props.cropsArray[0].qty);
       setInvArr(props.cropsArray[0].bags);
-      setQuantityVal(props.cropsArray[0].qty)
+      setQuantityVal(props.cropsArray[0].qty);
     }
   }, [props.show]);
   var arr = [];
@@ -26,9 +29,10 @@ const SelectBags = (props) => {
       total: 0,
       wastage: 0,
       weight: 0,
-      status:props.editBagsStatus?2:1,
-      totalWeight:0
+      status: props.editBagsStatus ? 2 : 1,
+      totalWeight: 0,
     };
+    console.log(props.cropsArray[0].unitValue, props.cropsArray[0]);
     props.cropsArray[0].unitValue = e.target.value;
     var k = props.editBagsStatus
       ? e.target.value - props.cropsArray[0].bags.length
@@ -48,7 +52,7 @@ const SelectBags = (props) => {
   const getInvWeightValue = (a, i) => (e) => {
     setinvWeightVal(e.target.value);
     // var totalWeight = e.target.value;
-    var invWeight= e.target.value;
+    var invWeight = e.target.value;
     // var invWastage = 0;
 
     // if(defaultWastage.length > 0){
@@ -81,7 +85,7 @@ const SelectBags = (props) => {
     //       } else {
     //         // finalValue = value;
     //       }
-        
+
     //       // if(invWeight > kg25 && invWeight < kg50){
     //       //   invWeight = invWeight - kg25;
     //       //   invWastage = kg25
@@ -125,9 +129,9 @@ const SelectBags = (props) => {
     // var invWastage =e.target.value;;
     let updatedItem = a.map((item, index) => {
       if (i == index) {
-        console.log(a,item)
+        console.log(a, item);
         // a[index].weight = a[index].weight - e.target.value;
-        return { ...a[index], wastage: e.target.value};
+        return { ...a[index], wastage: e.target.value };
       } else {
         setInvArr([...a]);
         return { ...a[index] };
@@ -155,7 +159,6 @@ const SelectBags = (props) => {
   var wastageSum = 0;
   var totalw = 0;
   const addInvidualWeights = () => {
-
     if (quantityVal == 0 && props.cropsArray[0].qty == 0) {
       toast.error("Please Enter Number of " + props.cropsArray[0].qtyUnit, {
         toastId: "error1",
@@ -169,25 +172,24 @@ const SelectBags = (props) => {
         });
         return null;
       }
-      
-      if(invArr[l].status == 1 || props.cropsArray[0].status == 1){
-        invArr[l].status=1;
-      } else if(props.editBagsStatus){
-        invArr[l].status=2;
-      }
-      else{
-        invArr[l].status=2;
+
+      if (invArr[l].status == 1 || props.cropsArray[0].status == 1) {
+        invArr[l].status = 1;
+      } else if (props.editBagsStatus) {
+        invArr[l].status = 2;
+      } else {
+        invArr[l].status = 2;
       }
       wastageSum += parseInt(invArr[l].wastage);
       totalw += parseInt(invArr[l].weight);
     }
-    console.log(invArr,props.cropsArray,"arr");
+
     if (quantityVal !== 0 && totalVal !== 0) {
       props.cropsArray[0].wastage = wastageSum;
       props.cropsArray[0].weight = totalw;
       props.cropsArray[0].qty = quantityVal;
       props.cropsArray[0].checked = false;
-      props.parentCallback(props.cropsArray, invArr);
+        props.parentCallback(props.cropsArray, invArr, props.partyIndex);
       setInvArr([]);
       setQuantityVal(0);
       props.closeBagsModal();
@@ -201,7 +203,7 @@ const SelectBags = (props) => {
       total: 0,
       wastage: 0,
       weight: 0,
-      status:1,
+      status: 1,
     };
     arr1.push(addObj);
     if (props.editBagsStatus) {
@@ -275,7 +277,7 @@ const SelectBags = (props) => {
                       value={
                         // props.editBagsStatus
                         //   ? props.cropsArray[0].qty
-                           quantityVal
+                        quantityVal
                       }
                       // value={props.cropsArray[0].unitValue}
                       onChange={addInvQuantityValue(0)}
