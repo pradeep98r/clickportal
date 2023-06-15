@@ -25,7 +25,7 @@ const Step3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
-  const multiSelectPartnersArray = selectedStep?.fromMultiBillView
+  var multiSelectPartnersArray = selectedStep?.fromMultiBillView
     ? selectedStep?.multiSelectPartners
     : selectedStep?.multiSelectPartners;
   const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
@@ -33,8 +33,11 @@ const Step3 = (props) => {
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var [arr1, setArr1] = useState([]);
+  var [arr2, setArr2] = useState([]);
   const billEditedObject = selectedStep?.totalEditedObject;
   const partyType = selectedStep?.multiSelectPartyType;
+  const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
+  var multiSelectPartnersArray1 = [];
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -47,73 +50,82 @@ const Step3 = (props) => {
     dispatch(multiStepsVal("step2"));
   };
   var totalGross = 0;
-  const[objArray1, setObjArrray1] = useState([]);
+  var objArray1 = [];
+  const[objArray2, setObjArrray2] = useState([]);
   const [grossTotal, setGrossTotal] = useState(0);
-  var obj = {};
+
   useEffect(() => {
     $("#disable").attr("disabled", false);
-    console.log(multiSelectPartnersArray,selectedStep, "array step3");
+    console.log(multiSelectPartnersArray, "array step3");
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
         getGrossTotalValue(multiSelectPartnersArray, i);
       }
     }
-    
-    for(var i = 0; i<multiSelectPartnersArray.length; i++){
-      Object.assign(obj, {
-        action: "UPDATE",
-        billAttributes: {
-          CashCmnt:'',
-          actualPayRecieevable:gTotal,
-          advance: multiSelectPartnersArray[i]?.advance,
-          billDate: multiSelectPartnersArray[i]?.billDate,
-          cashPaid:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER" ? multiSelectPartnersArray[i]?.cashPaid : 0,
-          cashRcvd:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "BUYER" ? multiSelectPartnersArray[i]?.cashRcvd : 0,
-          customFields:[],
-          comm: multiSelectPartnersArray[i]?.comm,
-          commIncluded: multiSelectPartnersArray[i]?.commIncluded,
-          comments: multiSelectPartnersArray[i]?.comments,
-          govtLevies: multiSelectPartnersArray[i]?.govtLevies,
-          grossTotal: gTotal,
-          labourCharges: multiSelectPartnersArray[i]?.labourCharges,
-          less: multiSelectPartnersArray[i]?.less,
-          mandiFee: multiSelectPartnersArray[i]?.mandiFee,
-          misc:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.misc
-              : multiSelectPartnersArray[i]?.misc,
-          otherFee:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.misc
-              :multiSelectPartnersArray[i]?.otherFee,
-    
-          outStBal: multiSelectPartnersArray[i]?.outStBal,
-          paidTo: 0,
-          partyId:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.farmerId
-              : multiSelectPartnersArray[i]?.buyerId,
-          rent: multiSelectPartnersArray[i]?.rent,
-          rtComm: multiSelectPartnersArray[i]?.rtComm,
-          rtCommIncluded: multiSelectPartnersArray[i]?.rtCommIncluded,
-          totalPayRecieevable: gTotal,
-          transportation: multiSelectPartnersArray[i]?.transportation,
-          transporterId: multiSelectPartnersArray[i]?.transporterId,
-        },
-        billId: multiSelectPartnersArray[i]?.billId,
-        billType: multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER" ? "BUY" : "SELL",
-        caBSeq: multiSelectPartnersArray[i]?.caBSeq,
-        caId: clickId,
-        lineItems: multiSelectPartnersArray[i]?.lineItems,
-        updatedBy: 0,
-        updatedOn: "",
-        writerId: writerId,
-        source: "WEB",
-      })
-      setObjArrray1([...objArray1, obj])
-    }
+    if(fromMultiBillViewStatus){
+      console.log(multiSelectPartnersArray1,objArray1)
+       for(var i = 0; i<multiSelectPartnersArray1.length; i++){
+        var obj = {};
+        console.log(objArray2,'y')
+       Object.assign(obj, {
+         action: "UPDATE",
+         billAttributes: {
+           CashCmnt:'',
+           actualPayRecieevable:gTotal,
+           advance: multiSelectPartnersArray1[i]?.advance,
+           billDate: multiSelectPartnersArray1[i]?.billDate,
+           cashPaid:
+           multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER" ? multiSelectPartnersArray1[i]?.cashPaid : 0,
+           cashRcvd:
+           multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "BUYER" ? multiSelectPartnersArray1[i]?.cashRcvd : 0,
+           customFields:[],
+           comm: multiSelectPartnersArray1[i]?.comm,
+           commIncluded: multiSelectPartnersArray1[i]?.commIncluded,
+           comments: multiSelectPartnersArray1[i]?.comments,
+           govtLevies: multiSelectPartnersArray1[i]?.govtLevies,
+           grossTotal: gTotal,
+           labourCharges: multiSelectPartnersArray1[i]?.labourCharges,
+           less: multiSelectPartnersArray1[i]?.less,
+           mandiFee: multiSelectPartnersArray1[i]?.mandiFee,
+           misc:
+           multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+               ? multiSelectPartnersArray1[i]?.misc
+               : multiSelectPartnersArray1[i]?.misc,
+           otherFee:
+           multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+               ? multiSelectPartnersArray1[i]?.misc
+               :multiSelectPartnersArray1[i]?.otherFee,
+     
+           outStBal: multiSelectPartnersArray1[i]?.outStBal,
+           paidTo: 0,
+           partyId:
+           multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+               ? multiSelectPartnersArray1[i]?.farmerId
+               : multiSelectPartnersArray1[i]?.buyerId,
+           rent: multiSelectPartnersArray1[i]?.rent,
+           rtComm: multiSelectPartnersArray1[i]?.rtComm,
+           rtCommIncluded: multiSelectPartnersArray1[i]?.rtCommIncluded,
+           totalPayRecieevable: gTotal,
+           transportation: multiSelectPartnersArray1[i]?.transportation,
+           transporterId: multiSelectPartnersArray1[i]?.transporterId,
+         },
+         billId: multiSelectPartnersArray1[i]?.billId,
+         billType: multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER" ? "BUY" : "SELL",
+         caBSeq: multiSelectPartnersArray1[i]?.caBSeq,
+         caId: clickId,
+         lineItems: multiSelectPartnersArray1[i]?.lineItems,
+         updatedBy: 0,
+         updatedOn: "",
+         writerId: writerId,
+         source: "WEB",
+       })
+       objArray1 = [...objArray1, obj]
+      console.log(objArray1,obj,'after');
+      setObjArrray2([...objArray1])
+       
+     }
+     }
+   
   }, []);
   var gTotal = 0;
 
@@ -124,6 +136,9 @@ const Step3 = (props) => {
     var lineitemsArray = [];
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
       let obj = { ...items[mIndex].lineItems[i] };
+      if (obj.status == 0) {
+        obj.total = 0;
+      }
       total += obj.total;
       gTotal = total;
       let cObj = { ...items[mIndex] };
@@ -133,21 +148,26 @@ const Step3 = (props) => {
         cropSufx: "",
         mnLotId: 0,
         mnSubLotId: 0,
+        cropDelete: false,
+        status: (fromMultiBillViewStatus ? (fromPreviousStep3Status ? o.status : 2 ) : 1),
       });
       if(o.rateType == 'kgs' || o.rateType == 'RATE_PER_KG' ){
         o.rateType = 'RATE_PER_KG';
+        o.status = o.status;
       }
       else{
         o.rateType = 'RATE_PER_UNIT';
+        o.status = o.status;
       }
       let mergedObj = {
         ...cObj.lineItems[i],
         ...o
     };
-     lineitemsArray = [...lineitemsArray, mergedObj];
+    // if (o.status != 0) {
+      lineitemsArray = [...lineitemsArray, mergedObj];
+    // }
      cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
-      console.log(mergedObj,cObj)
     }
     
     Object.assign(clonedArray[mIndex], {
@@ -196,7 +216,10 @@ const Step3 = (props) => {
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
     arr1 = [...arr1, clonedArray[mIndex]];
+    console.log(arr1,mIndex,items)
       dispatch(multiSelectPartners(arr1));
+      multiSelectPartnersArray1 = arr1;
+  
   };
 
   const [transportationVal, setTransportationVal] = useState(fromMultiBillViewStatus ? (billEditedObject?.expenses.transportation != null ? billEditedObject?.expenses.transportation : 0) : 0);
@@ -214,6 +237,7 @@ const Step3 = (props) => {
   const getAdditionValues = (name, v) => {
     if (name.toLowerCase() == "transportation") {
       setTransportationVal(v);
+      console.log(objArray1,objArray2,'bills')
     }
     if (name.toLowerCase() == "coolie") {
       setCoolieVal(v);
@@ -264,7 +288,7 @@ const Step3 = (props) => {
   const billObj = {
     action: "UPDATE",
     billType:"BUY" ,
-    billsInfo: objArray1,
+    billsInfo: objArray2,
     caId: clickId,
     expenses: {
       advance: (billEditedObject?.expenses?.advance == null || billEditedObject?.expenses?.advance ==0) ? 0 : billEditedObject?.expenses?.advance,
@@ -284,6 +308,7 @@ const Step3 = (props) => {
   }
   // post bill request api call
   const postbuybill = () => {
+    console.log(billObj,'payload')
     if(fromMultiBillViewStatus){
       editMultiBuyBill(billObj).then(
         (response) => {
@@ -297,10 +322,10 @@ const Step3 = (props) => {
             window.setTimeout(function () {
               props.closeModal();
             }, 800);
-            // window.setTimeout(function () {
-            //   navigate("/buy_bill_book");
-            //   window.location.reload();
-            // }, 1000);
+            window.setTimeout(function () {
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 1000);
           }
         },
         (error) => {
@@ -443,43 +468,45 @@ const Step3 = (props) => {
                             multiSelectPartnersArray[index].lineItems.map(
                               (crop, i) => {
                                 return (
+                                 crop.status != 0 ? (
                                   <div className="">
-                                    <div className="crops_info">
-                                      <div
-                                        className="edit_crop_item_div p-0"
-                                        id="scroll_style"
-                                      >
-                                        <div className="d-flex align-items-center justify-content-between">
-                                          <div className="d-flex">
-                                            <div>
-                                              <img
-                                                src={crop.imageUrl}
-                                                className="edit_crop_item"
-                                              />
-                                            </div>
-                                            <div>
-                                              <p className="crops-color">
-                                                {crop.cropName}
-                                              </p>
-                                              <p className="crops-color d-flex">
-                                                {qtyValues(
-                                                  parseFloat(crop.qty),
-                                                  crop.qtyUnit,
-                                                  parseFloat(crop.weight),
-                                                  crop.wastage,
-                                                  crop.rateType
-                                                ) }
-                                                  &nbsp;|
-                                                  { ' ' + getCurrencyNumberWithSymbol(
-                                                    crop.rate
-                                                  )}
-                                              </p>
-                                            </div>
+                                  <div className="crops_info">
+                                    <div
+                                      className="edit_crop_item_div p-0"
+                                      id="scroll_style"
+                                    >
+                                      <div className="d-flex align-items-center justify-content-between">
+                                        <div className="d-flex">
+                                          <div>
+                                            <img
+                                              src={crop.imageUrl}
+                                              className="edit_crop_item"
+                                            />
+                                          </div>
+                                          <div>
+                                            <p className="crops-color">
+                                              {crop.cropName}
+                                            </p>
+                                            <p className="crops-color d-flex">
+                                              {qtyValues(
+                                                parseFloat(crop.qty),
+                                                crop.qtyUnit,
+                                                parseFloat(crop.weight),
+                                                crop.wastage,
+                                                crop.rateType
+                                              ) }
+                                                &nbsp;|
+                                                { ' ' + getCurrencyNumberWithSymbol(
+                                                  crop.rate
+                                                )}
+                                            </p>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
+                                </div>
+                                 ) : ''
                                 );
                               }
                             )}
