@@ -873,7 +873,8 @@ const Step2 = (props) => {
                       {active ? (
                         <SelectSinglePartner indexVal={index} />
                       ) : (
-                        <div
+                        <button >
+                          <div
                           style={{ display: "flex", alignItems: "center" }}
                           className="justify-content-between"
                         >
@@ -906,6 +907,7 @@ const Step2 = (props) => {
                             </div>
                           </div>
                         </div>
+                        </button>
                       )}
                     </div>
                   </td>
@@ -913,7 +915,8 @@ const Step2 = (props) => {
                     {activeTrans ? (
                       <SelectSinglePartner indexVal={index} fromTrans={true} />
                     ) : (
-                      <div className="d-flex">
+                     <button className="p-0">
+                        <div className="d-flex">
                         <p onClick={activeTransporter}>Select transporter</p>
                         <img
                           src={down_arrow}
@@ -921,6 +924,7 @@ const Step2 = (props) => {
                           style={{ padding: "0px 10px" }}
                         />
                       </div>
+                     </button>
                     )}
                   </td>
                   <td className="col_1">
