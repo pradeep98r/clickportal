@@ -19,36 +19,43 @@ import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import $ from "jquery";
-import { editMultiBuyBill, postMultiBuyBill, postMultiSellBill } from "../../actions/multiBillService";
+import {
+  editMultiBuyBill,
+  postMultiBuyBill,
+  postMultiSellBill,
+} from "../../actions/multiBillService";
 import { useNavigate } from "react-router-dom";
 const SellMultiBillStep3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
-  const multiSelectPartnersArray = selectedStep?.fromMultiBillView
-  ? selectedStep?.multiSelectPartners
-  : selectedStep?.multiSelectPartners;
-const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
+  var multiSelectPartnersArray = selectedStep?.fromMultiBillView
+    ? selectedStep?.multiSelectPartners
+    : selectedStep?.multiSelectPartners;
+  const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var [arr1, setArr1] = useState([]);
   const billEditedObject = selectedStep?.totalEditedObject;
+  const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
+  var multiSelectPartnersArray1 = [];
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
   };
   const previousStep = () => {
     dispatch(multiStepsVal("step2"));
-    dispatch(fromPreviousStep3(true))
+    dispatch(fromPreviousStep3(true));
   };
   const editCropInfo = () => {
     dispatch(multiStepsVal("step2"));
   };
   var totalGross = 0;
   const [grossTotal, setGrossTotal] = useState(0);
-  const[objArray1, setObjArrray1] = useState([]);
-  var obj = {};
+  var objArray1 = [];
+  const[objArray2, setObjArrray2] = useState([]);
+  
   useEffect(() => {
     console.log(multiSelectPartnersArray, "array step3");
     if (multiSelectPartnersArray.length > 0) {
@@ -56,58 +63,72 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
         getGrossTotalValue(multiSelectPartnersArray, i);
       }
     }
-    for(var i = 0; i<multiSelectPartnersArray.length; i++){
-      Object.assign(obj, {
-        action: "UPDATE",
-        billAttributes: {
-          actualPayRecieevable:gTotal,
-          advance: multiSelectPartnersArray[i]?.advance,
-          billDate: multiSelectPartnersArray[i]?.billDate,
-          cashPaid:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER" ? multiSelectPartnersArray[i]?.cashPaid : 0,
-          cashRcvd:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "BUYER" ? multiSelectPartnersArray[i]?.cashRcvd : 0,
-          comm: multiSelectPartnersArray[i]?.comm,
-          commIncluded: multiSelectPartnersArray[i]?.commIncluded,
-          comments: multiSelectPartnersArray[i]?.comments,
-          govtLevies: multiSelectPartnersArray[i]?.govtLevies,
-          grossTotal: gTotal,
-          labourCharges: multiSelectPartnersArray[i]?.labourCharges,
-          less: multiSelectPartnersArray[i]?.less,
-          mandiFee: multiSelectPartnersArray[i]?.mandiData,
-          misc:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.otherFee
-              : multiSelectPartnersArray[i]?.misc,
-          otherFee:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.misc
-              :multiSelectPartnersArray[i]?.otherFee,
     
-          outStBal: multiSelectPartnersArray[i]?.outStBal,
-          paidTo: 0,
-          partyId:
-          multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray[i]?.buyerId
-              : multiSelectPartnersArray[i]?.farmerId,
-          rent: multiSelectPartnersArray[i]?.rent,
-          rtComm: multiSelectPartnersArray[i]?.rtComm,
-          rtCommIncluded: multiSelectPartnersArray[i]?.rtCommIncluded,
-          totalPayRecieevable: gTotal,
-          transportation: multiSelectPartnersArray[i]?.transportation,
-          transporterId: multiSelectPartnersArray[i]?.transporterId,
-        },
-        billId: multiSelectPartnersArray[i]?.billId,
-        billType: multiSelectPartnersArray[i]?.partyType.toUpperCase() === "FARMER" ? "BUY" : "SELL",
-        caBSeq: multiSelectPartnersArray[i]?.caBSeq,
-        caId: clickId,
-        lineItems: multiSelectPartnersArray[i]?.lineItems,
-        updatedBy: 0,
-        updatedOn: "",
-        writerId: writerId,
-        source: "WEB",
-      })
-      setObjArrray1([...objArray1, obj])
+    if(fromMultiBillViewStatus){
+      for (var i = 0; i < multiSelectPartnersArray1.length; i++) {
+        var obj = {};
+        Object.assign(obj, {
+          action: "UPDATE",
+          billAttributes: {
+            actualPayRecieevable: gTotal,
+            advance: multiSelectPartnersArray1[i]?.advance,
+            billDate: multiSelectPartnersArray1[i]?.billDate,
+            cashPaid:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+                ? multiSelectPartnersArray1[i]?.cashPaid
+                : 0,
+            cashRcvd:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "BUYER"
+                ? multiSelectPartnersArray1[i]?.cashRcvd
+                : 0,
+            comm: multiSelectPartnersArray1[i]?.comm,
+            commIncluded: multiSelectPartnersArray1[i]?.commIncluded,
+            comments: multiSelectPartnersArray1[i]?.comments,
+            govtLevies: multiSelectPartnersArray1[i]?.govtLevies,
+            grossTotal: gTotal,
+            customFields: [],
+            labourCharges: multiSelectPartnersArray1[i]?.labourCharges,
+            less: multiSelectPartnersArray1[i]?.less,
+            mandiFee: multiSelectPartnersArray1[i]?.mandiData,
+            misc:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+                ? multiSelectPartnersArray1[i]?.otherFee
+                : multiSelectPartnersArray1[i]?.misc,
+            otherFee:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+                ? multiSelectPartnersArray1[i]?.misc
+                : multiSelectPartnersArray1[i]?.misc,
+  
+            outStBal: multiSelectPartnersArray1[i]?.outStBal,
+            paidTo: 0,
+            partyId:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+                ? multiSelectPartnersArray1[i]?.farmerId
+                : multiSelectPartnersArray1[i]?.buyerId,
+            rent: multiSelectPartnersArray1[i]?.rent,
+            rtComm: multiSelectPartnersArray1[i]?.rtComm,
+            rtCommIncluded: multiSelectPartnersArray1[i]?.rtCommIncluded,
+            totalPayRecieevable: gTotal,
+            transportation: multiSelectPartnersArray1[i]?.transportation,
+            transporterId: multiSelectPartnersArray1[i]?.transporterId,
+          },
+          billId: multiSelectPartnersArray1[i]?.billId,
+          billType:
+          multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              ? "BUY"
+              : "SELL",
+          caBSeq: multiSelectPartnersArray1[i]?.caBSeq,
+          caId: clickId,
+          lineItems: multiSelectPartnersArray1[i]?.lineItems,
+          updatedBy: 0,
+          updatedOn: "",
+          writerId: writerId,
+          source: "WEB",
+        });
+        objArray1 = [...objArray1, obj]
+        console.log(objArray1,obj,'after');
+        setObjArrray2([...objArray1])
+      }
     }
   }, []);
   var gTotal = 0;
@@ -116,39 +137,46 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
     var total = 0;
     var clonedArray = [...items];
     var lineitemsArray = [];
+    console.log(items, "grooss");
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
       let obj = { ...items[mIndex].lineItems[i] };
+      if (obj.status == 0) {
+        obj.total = 0;
+      }
       total += obj.total;
       gTotal = total;
       let cObj = { ...items[mIndex] };
       Object.assign(cObj, { grossTotal: total });
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
-        buyerId: 0,
+        // buyerId: 0,
         cropSufx: "",
-        id: 0,
         mnLotId: 0,
         mnSubLotId: 0,
+        cropDelete: false,
+        status: (fromMultiBillViewStatus ? (fromPreviousStep3Status ? o.status : 2 ) : 1),
       });
-      if(o.rateType == 'kgs'){
-        o.rateType = 'RATE_PER_KG';
-      }
-      else{
-        o.rateType = 'RATE_PER_UNIT';
+      if (o.rateType == "kgs" || o.rateType == "RATE_PER_KG") {
+        o.rateType = "RATE_PER_KG";
+        o.status = o.status;
+      } else {
+        o.rateType = "RATE_PER_UNIT";
+        o.status = o.status;
       }
       let mergedObj = {
         ...cObj.lineItems[i],
-        ...o
-    };
-    lineitemsArray = [...lineitemsArray, mergedObj];
-     cObj.lineItems = lineitemsArray;
+        ...o,
+      };
+      console.log(o, "stat");
+        lineitemsArray = [...lineitemsArray, mergedObj];
+      cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
-      console.log(mergedObj,cObj)
+      console.log(mergedObj, cObj);
     }
     Object.assign(clonedArray[mIndex], {
       actualReceivable: gTotal,
       advance: 0,
-      billId: 0,
+      billId: fromMultiBillViewStatus ? items[mIndex].billId : 0,
       billStatus: "COMPLETED",
       caId: clickId,
       cashRcvd: 0,
@@ -158,9 +186,8 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
       commShown: true,
       comments: "",
       createdBy: 0,
-      customFields: [
-      ],
-      buyerId: items[mIndex].partyId,
+      customFields: [],
+      buyerId: items[mIndex].partyId || items[mIndex].buyerId,
       govtLevies: 0,
       groupId: 0,
       labourCharges: 0,
@@ -184,12 +211,38 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
     setGrossTotal(totalGross);
     arr1 = [...arr1, clonedArray[mIndex]];
     dispatch(multiSelectPartners(arr1));
+    multiSelectPartnersArray1 = arr1;
+    
   };
 
-  const [transportationVal, setTransportationVal] = useState(fromMultiBillViewStatus ? (billEditedObject?.expenses.transportation != null ? billEditedObject?.expenses.transportation : 0) : 0);
-  const [coolieVal, setCoolieVal] = useState(fromMultiBillViewStatus ? (billEditedObject?.expenses.labourCharges != null ? billEditedObject?.expenses.labourCharges : 0) : 0);
-  const [rentVal, setRentVal] = useState(fromMultiBillViewStatus ? (billEditedObject?.expenses.rent != null ? billEditedObject?.expenses.rent : 0) : 0);
-  const [otherFeeVal, setOtherFeeVal] = useState(fromMultiBillViewStatus ? (billEditedObject?.expenses.others != null ? billEditedObject?.expenses.others : 0) : 0 );
+  const [transportationVal, setTransportationVal] = useState(
+    fromMultiBillViewStatus
+      ? billEditedObject?.expenses.transportation != null
+        ? billEditedObject?.expenses.transportation
+        : 0
+      : 0
+  );
+  const [coolieVal, setCoolieVal] = useState(
+    fromMultiBillViewStatus
+      ? billEditedObject?.expenses.labourCharges != null
+        ? billEditedObject?.expenses.labourCharges
+        : 0
+      : 0
+  );
+  const [rentVal, setRentVal] = useState(
+    fromMultiBillViewStatus
+      ? billEditedObject?.expenses.rent != null
+        ? billEditedObject?.expenses.rent
+        : 0
+      : 0
+  );
+  const [otherFeeVal, setOtherFeeVal] = useState(
+    fromMultiBillViewStatus
+      ? billEditedObject?.expenses.others != null
+        ? billEditedObject?.expenses.others
+        : 0
+      : 0
+  );
   const advLevOnchangeEvent = (type) => (e) => {
     var val = e.target.value
       .replace(/[^\d.]/g, "") // Remove all characters except digits and dots
@@ -247,32 +300,56 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
     skipIndividualExpenses: true,
     writerId: writerId,
   };
-   // update bill req obj
-   const billObj = {
+  // update bill req obj
+  const billObj = {
     action: "UPDATE",
-    billType:"SELL" ,
-    billsInfo: objArray1,
+    billType: "SELL",
+    billsInfo: objArray2,
     caId: clickId,
     expenses: {
-      advance: (billEditedObject?.expenses?.advance == null || billEditedObject?.expenses?.advance ==0) ? 0 : billEditedObject?.expenses?.advance,
-      comm: (billEditedObject?.expenses?.comm == null || billEditedObject?.expenses?.comm ==0) ? 0 :billEditedObject?.expenses?.comm,
-      govtLevies: (billEditedObject?.expenses?.govtLevies == null || billEditedObject?.expenses?.govtLevies ==0) ? 0 :billEditedObject?.expenses?.govtLevies,
-      labourCharges:coolieVal,
-      mandiFee: (billEditedObject?.expenses?.mandiFee == null || billEditedObject?.expenses?.mandiFee ==0) ? 0 :billEditedObject?.expenses?.mandiFee,
-      misc: (billEditedObject?.expenses?.misc == null || billEditedObject?.expenses?.misc ==0) ? 0 :billEditedObject?.expenses?.misc,
-      others: otherFeeVal,
-      rent: rentVal,
-      rtComm:(billEditedObject?.expenses?.rtComm == null || billEditedObject?.expenses?.rtComm ==0) ? 0 : billEditedObject?.expenses?.rtComm,
-      total:getTotalExpences(),
-      transportation:transportationVal
+      advance:
+        billEditedObject?.expenses?.advance == null ||
+        billEditedObject?.expenses?.advance == 0
+          ? 0
+          : billEditedObject?.expenses?.advance,
+      comm:
+        billEditedObject?.expenses?.comm == null ||
+        billEditedObject?.expenses?.comm == 0
+          ? 0
+          : billEditedObject?.expenses?.comm,
+      govtLevies:
+        billEditedObject?.expenses?.govtLevies == null ||
+        billEditedObject?.expenses?.govtLevies == 0
+          ? 0
+          : billEditedObject?.expenses?.govtLevies,
+      labourCharges: parseFloat(coolieVal),
+      mandiFee:
+        billEditedObject?.expenses?.mandiFee == null ||
+        billEditedObject?.expenses?.mandiFee == 0
+          ? 0
+          : billEditedObject?.expenses?.mandiFee,
+      misc:
+        billEditedObject?.expenses?.misc == null ||
+        billEditedObject?.expenses?.misc == 0
+          ? 0
+          : billEditedObject?.expenses?.misc,
+      others: parseFloat(otherFeeVal),
+      rent: parseFloat(rentVal),
+      rtComm:
+        billEditedObject?.expenses?.rtComm == null ||
+        billEditedObject?.expenses?.rtComm == 0
+          ? 0
+          : billEditedObject?.expenses?.rtComm,
+      total: getTotalExpences(),
+      transportation: parseFloat(transportationVal),
     },
     groupId: billEditedObject?.groupId,
-    writerId: writerId
-  }
+    writerId: writerId,
+  };
   // post bill request api call
   const postbuybill = () => {
-    console.log(billRequestObj, "payload");
-    if(fromMultiBillViewStatus){
+    if (fromMultiBillViewStatus) {
+      console.log(billObj, "payload");
       editMultiBuyBill(billObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -281,14 +358,14 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
             });
             console.log(response.data, "success");
             localStorage.setItem("LinkPath", "/sellbillbook");
-  
+
             window.setTimeout(function () {
               props.closeModal();
             }, 800);
-            // window.setTimeout(function () {
-            //   navigate("/sellbillbook");
-            //   window.location.reload();
-            // }, 1000);
+            window.setTimeout(function () {
+              navigate("/sellbillbook");
+              window.location.reload();
+            }, 1000);
           }
         },
         (error) => {
@@ -298,8 +375,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
           $("#disable").attr("disabled", false);
         }
       );
-    }
-    else{
+    } else {
       postMultiSellBill(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -308,7 +384,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
             });
             console.log(response.data, "success");
             localStorage.setItem("LinkPath", "/sellbillbook");
-  
+
             window.setTimeout(function () {
               props.closeModal();
             }, 800);
@@ -326,7 +402,6 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
         }
       );
     }
-   
   };
   return (
     <div>
@@ -361,7 +436,7 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
                             <div style={{ marginLeft: 5 }}>
                               <div className="-">
                                 <h5>
-                                {fromMultiBillViewStatus
+                                  {fromMultiBillViewStatus
                                     ? item.buyerName
                                     : getText(item.partyName) +
                                       " " +
@@ -369,8 +444,11 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
                                 </h5>
                                 <h6>
                                   {getPartnerType(item.partyType, item.trader)}{" "}
-                                  - {(fromMultiBillViewStatus ? item.buyerId : item.partyId)} |{" "}
-                                  {getMaskedMobileNumber(item.mobile)}
+                                  -{" "}
+                                  {fromMultiBillViewStatus
+                                    ? item.buyerId
+                                    : item.partyId}{" "}
+                                  | {getMaskedMobileNumber(item.mobile)}
                                 </h6>
                                 <p>{item.address?.addressLine}</p>
                               </div>
@@ -423,40 +501,40 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
                             multiSelectPartnersArray[index].lineItems.map(
                               (crop, i) => {
                                 return (
-                                    <div className="crops_info">
-                                      <div
-                                        className="edit_crop_item_div p-0"
-                                        id="scroll_style"
-                                      >
-                                        <div className="d-flex align-items-center">
-                                          
-                                            <div>
-                                              <img
-                                                src={crop.imageUrl}
-                                                className="edit_crop_item"
-                                              />
-                                            </div>
-                                            <div>
-                                              <p className="crops-color">
-                                                {crop.cropName}
-                                              </p>
-                                              <p className="crops-color d-flex">
-                                                {qtyValues(
-                                                  parseFloat(crop.qty),
-                                                  crop.qtyUnit,
-                                                  parseFloat(crop.weight),
-                                                  crop.wastage,
-                                                  crop.rateType
-                                                ) }
-                                                  &nbsp;|
-                                                  { ' ' + getCurrencyNumberWithSymbol(
-                                                    crop.rate
-                                                  )}
-                                              </p>
-                                            </div>
+                                  <div className="crops_info">
+                                    <div
+                                      className="edit_crop_item_div p-0"
+                                      id="scroll_style"
+                                    >
+                                      <div className="d-flex align-items-center">
+                                        <div>
+                                          <img
+                                            src={crop.imageUrl}
+                                            className="edit_crop_item"
+                                          />
+                                        </div>
+                                        <div>
+                                          <p className="crops-color">
+                                            {crop.cropName}
+                                          </p>
+                                          <p className="crops-color d-flex">
+                                            {qtyValues(
+                                              parseFloat(crop.qty),
+                                              crop.qtyUnit,
+                                              parseFloat(crop.weight),
+                                              crop.wastage,
+                                              crop.rateType
+                                            )}
+                                            &nbsp;|
+                                            {" " +
+                                              getCurrencyNumberWithSymbol(
+                                                crop.rate
+                                              )}
+                                          </p>
                                         </div>
                                       </div>
                                     </div>
+                                  </div>
                                 );
                               }
                             )}
@@ -590,7 +668,12 @@ const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
                       <p>Total Expenses : </p>
                     </div>
                     <div className="col-lg-6 p-0">
-                      <p> { getTotalExpences() != 0 ? getCurrencyNumberWithSymbol(getTotalExpences()) : ('₹' + 0)}</p>
+                      <p>
+                        {" "}
+                        {getTotalExpences() != 0
+                          ? getCurrencyNumberWithSymbol(getTotalExpences())
+                          : "₹" + 0}
+                      </p>
                     </div>
                   </div>
                 </div>

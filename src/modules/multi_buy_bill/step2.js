@@ -31,6 +31,8 @@ const Step2 = (props) => {
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
   const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
   const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
+  const partyType = selectedStep?.multiSelectPartyType;
+  console.log(fromMultiBillViewStatus, multiSelectPartnersArray, "step2");
   const colourStyles = {
     menuList: (styles) => ({
       ...styles,
@@ -68,63 +70,128 @@ const Step2 = (props) => {
   //   dispatch(multiStepsVal("step3"));
   //   dispatch(multiSelectPartners(array));
   // };
-  const getTotalValue = (index, mIndex) => {
+  const getTotalValue = (obj1,index, mIndex) => {
     let clonedArray = [...selectedStep?.multiSelectPartners];
     var val = 0;
-    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+    obj1.rateType.toLowerCase() ==
       "kgs" ||
-    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      obj1.rateType.toLowerCase() ==
       "loads" ||
-    multiSelectPartnersArray[mIndex].lineItems[index].rateType.toLowerCase() ==
+      obj1.rateType.toLowerCase() ==
       "pieces"
-      ? (val = (
-          (multiSelectPartnersArray[mIndex].lineItems[index].weight -
-            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
-          multiSelectPartnersArray[mIndex].lineItems[index].rate
-        ))
-      : (val = (
-          (multiSelectPartnersArray[mIndex].lineItems[index].qty -
-            multiSelectPartnersArray[mIndex].lineItems[index].wastage) *
-          multiSelectPartnersArray[mIndex].lineItems[index].rate
-        ));
-    let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map((item, i) => {
-      if (i == index) {
-        return { ...multiSelectPartnersArray[mIndex].lineItems[i], total: val };
-      } else {
-        return { ...multiSelectPartnersArray[mIndex].lineItems[i] };
+      ? (val =
+          (obj1.weight -
+            obj1.wastage) *
+            obj1.rate)
+      : (val =
+          (obj1.qty -
+            obj1.wastage) *
+            obj1.rate);
+    let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map(
+      (item, i) => {
+        if (i == index) {
+          return {
+            ...multiSelectPartnersArray[mIndex].lineItems[i],
+            total: val,
+          };
+        } else {
+          return { ...multiSelectPartnersArray[mIndex].lineItems[i] };
+        }
       }
-    });
+    );
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem3 };
     clonedArray[mIndex] = clonedObject1;
 
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
-    dispatch(arrayObj(clonedArray))
+    dispatch(arrayObj(clonedArray));
     return val;
   };
   // function to nevigate to step3 page
   var arrays = [];
+  const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const onClickStep2 = (array) => {
     let clonedArray = [...array];
     if (array.length > 0) {
       for (var index = 0; index < array.length; index++) {
         const data1 = array[index];
-        if (data1.lineItems.length > 0) {
+        const dataLineItems = fromMultiBillViewStatus
+          ? allDeletedCrops.concat(data1.lineItems)
+          : data1.lineItems;
+        console.log(dataLineItems, "line");
+        if (dataLineItems.length > 0) {
           arrays = [];
-          for (var cIndex = 0; cIndex < data1.lineItems.length; cIndex++) {
-            var data = data1.lineItems[cIndex];
+          for (var cIndex = 0; cIndex < dataLineItems.length; cIndex++) {
+            var data = dataLineItems[cIndex];
             if (Object.keys(data).length != 0) {
               let obj1 = { ...data };
-              if(data.cropName == ''){
+              if (data.cropName == "") {
                 toast.error("Please Enter crop detaiils", {
                   toastId: "error1",
                 });
                 return null;
               }
-              obj1.total = getTotalValue(cIndex, index);
+              console.log(obj1,'obj')
+              if(!obj1.cropDelete){
+              obj1.total = getTotalValue(obj1,cIndex, index);
+              }
+              if (fromMultiBillViewStatus) {
+                var index1 = dataLineItems.findIndex(
+                  (obj) => obj.cropId == dataLineItems[cIndex].cropId
+                );
+                if (index1 == cIndex) {
+                  if (dataLineItems[cIndex]?.cropDelete) {
+                    console.log("delete1");
+                    obj1.status = 0;
+                  } else if (dataLineItems[cIndex].id == 0) {
+                    console.log("nnew1");
+                    obj1.status = 1;
+                  } else {
+                    console.log("updated1");
+                    obj1.status = 2;
+                  }
+                  var arr = [];
+                  if (obj1?.bags != null) {
+                    if (obj1?.bags.length > 0) {
+                      obj1.bags.map((item, i) => {
+                        let clonedObject = { ...obj1.bags[i] };
+                        Object.assign(clonedObject, { status: 2 });
+                        arr.push(clonedObject);
+                      });
+                      obj1.bags = [...arr];
+                    }
+                  }
+                } else {
+                  if (index1 != -1) {
+                    if (!obj1.cropDelete) {
+                      if (obj1.id == 0) {
+                        console.log("nnew1");
+                        obj1.status = 1;
+                      } else {
+                        console.log("updated2");
+                        obj1.status = 2;
+                      }
+                    } else {
+                      console.log("delete1");
+                      obj1.status = 0;
+                    }
+                    // return null;
+                  } else {
+                    if (!obj1.cropDelete) {
+                      console.log("nnew1");
+                      obj1.status = 1;
+                    } else {
+                      console.log("delete1");
+                      obj1.status = 0;
+                    }
+                  }
+                }
+              } else {
+                obj1.status = 1;
+              }
               data = obj1;
-              console.log(data,arrays)
+              console.log(data, arrays, "cliick nnext");
               arrays.push(data);
               if (data.cropDelete) continue;
               const qtyUnit = data.qtyUnit?.toLowerCase();
@@ -233,18 +300,18 @@ const Step2 = (props) => {
         //     }
         //   }
         // }
-        
+
         let clonedObject = { ...array[index] };
         clonedObject = { ...clonedObject, lineItems: arrays };
         clonedArray[index] = clonedObject;
         // if (arrays.length === data1.lineItems.length) {
-          
+
         // }
       }
       dispatch(multiStepsVal("step3"));
-      console.log(clonedArray,'arrayonj');
+      console.log(clonedArray, "arrayonj");
       dispatch(multiSelectPartners(clonedArray));
-      dispatch(fromPreviousStep3(true))
+      dispatch(fromPreviousStep3(true));
       // if (arrays.length === cropData.length) {
       // addStep3Modal();
 
@@ -273,7 +340,7 @@ const Step2 = (props) => {
   };
 
   useEffect(() => {
-    console.log(mainArray,'main')
+    console.log(mainArray, "main");
     fetchCropData();
     var party = selectedStep?.multiSelectPartyType;
     for (var i = 0; i < settingsData.billSetting.length; i++) {
@@ -301,28 +368,27 @@ const Step2 = (props) => {
         }
       }
     }
-   
-    if(selectedStep?.fromPreviousStep3){
+
+    if (selectedStep?.fromPreviousStep3) {
       var mainArray = [];
-      for(var j=0; j<multiSelectPartnersArray.length; j++){
+      for (var j = 0; j < multiSelectPartnersArray.length; j++) {
         let cObj = { ...multiSelectPartnersArray[j] };
         var lineitemsArray = [];
-        for(var k= 0; k<multiSelectPartnersArray[j].lineItems.length; k++){
+        for (var k = 0; k < multiSelectPartnersArray[j].lineItems.length; k++) {
           let obj = { ...multiSelectPartnersArray[j].lineItems[k] };
-          if(obj.rateType == 'RATE_PER_KG'){
-            obj.rateType = 'kgs';
+          if (obj.rateType == "RATE_PER_KG") {
+            obj.rateType = "kgs";
           }
           lineitemsArray = [...lineitemsArray, obj];
           cObj.lineItems = lineitemsArray;
-         
+
           // multiSelectPartnersArray[j] = cObj;
         }
         mainArray = [...mainArray, cObj];
       }
-      dispatch(multiSelectPartners(mainArray))
-    console.log(multiSelectPartnersArray,mainArray,'arrrayyy');
+      dispatch(multiSelectPartners(mainArray));
+      console.log(multiSelectPartnersArray, mainArray, "arrrayyy");
     }
-    
   }, []);
 
   const filterOption = (option, inputValue) => {
@@ -350,7 +416,6 @@ const Step2 = (props) => {
               : cIndex != -1
               ? getUnitVal(qSetting, cIndex)
               : "crates",
-              
         });
       });
       setCropsData(response.data.data);
@@ -360,7 +425,8 @@ const Step2 = (props) => {
   // onclick button add crrop event
   const addCrop = (item, id) => {
     var crpObject = {};
-    var i = multiSelectPartnersArray.findIndex((obj) => obj.partyId == id);
+    var i = multiSelectPartnersArray.findIndex((obj) => (obj.partyId || obj.farmerId || obj.buyerId) == id);
+    console.log(id,i,'addc rrop')
     if (i != -1) {
       let clonedArray = [...multiSelectPartnersArray];
       let clonedObject = { ...clonedArray[i] };
@@ -407,6 +473,7 @@ const Step2 = (props) => {
           count: 1,
           status: 1,
           activeSearch: true,
+          id: 0,
         };
       } else {
         return { ...c[j] };
@@ -602,7 +669,6 @@ const Step2 = (props) => {
     dispatch(multiSelectPartners(clonedArray));
     // getTotalValue(index,mIndex,cropitem)
   };
-  
 
   // handle check event for bags and sacs
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
@@ -614,13 +680,13 @@ const Step2 = (props) => {
   const [editBagsStatus, setEditBagsStatus] = useState(false);
   const handleCheckEvent = (crd, ink, mIndex, cr) => {
     let clonedArray = [...multiSelectPartnersArray];
-    console.log(mIndex,'bags')
+    console.log(mIndex, "bags");
     let updatedItem = crd.map((item, i) => {
-      let ob = {...crd[i]}
+      let ob = { ...crd[i] };
       if (i == ink) {
         setarIndex(ink);
-        setarMainIndex(mIndex)
-        Object.assign(ob,{unitValue : ''})
+        setarMainIndex(mIndex);
+        Object.assign(ob, { unitValue: "" });
         // crd[i] = ob;
         arrobject.push(ob);
         setArray(arrobject);
@@ -643,7 +709,7 @@ const Step2 = (props) => {
   //   gettinng inndividual bags data
   const callbackFunction = (childData, invArr, mIndex) => {
     let clonedArray = [...multiSelectPartnersArray];
-    let objectArray = [...multiSelectPartnersArray[mIndex].lineItems] 
+    let objectArray = [...multiSelectPartnersArray[mIndex].lineItems];
     let updatedItems = objectArray.map((item, i) => {
       if (i == arIndex) {
         item = childData[0];
@@ -659,9 +725,9 @@ const Step2 = (props) => {
         return { ...objectArray[i] };
       }
     });
-    
+
     let clonedObject1 = { ...clonedArray[mIndex] };
-    
+
     clonedObject1 = { ...clonedObject1, lineItems: updatedItems };
     clonedArray[mIndex] = clonedObject1;
     dispatch(multiSelectPartners(clonedArray));
@@ -676,6 +742,7 @@ const Step2 = (props) => {
     if (index != -1) {
       let data = cropArray.map((item, i) => {
         if (Object.keys(cropArray[i]).length != 0) {
+          console.log(i, cropInd, "index");
           if (i == cropInd) {
             {
               return {
@@ -687,22 +754,24 @@ const Step2 = (props) => {
             }
           } else {
             // cropResponseData([...cropArray]);
-            return { ...cropArray[i] };
+            return { ...cropArray[i], cropDelete: false };
           }
         }
       });
-      if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
-        if (Object.keys(cropArray[index]).length != 0) {
-          setcropDeletedList([...cropDeletedList, cropArray[index]]);
-          cropDeletedList.push(cropArray[index]);
-        }
+      console.log(cropArray, data, "arra");
+      // if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
+      if (Object.keys(data[index]).length != 0) {
+        setcropDeletedList([...cropDeletedList, cropArray[index]]);
+        cropDeletedList.push(data[index]);
       }
+      // }
       newArr.splice(index, 1);
       // cropArray.splice(index, 1);
     }
     // }
 
     // setUpdatedItemList([...cropArray, ...cropDeletedList]);
+    console.log(newArr, "deleted");
     let clonedObject1 = { ...clonedArray[indexVal] };
     clonedObject1 = {
       ...clonedObject1,
@@ -713,8 +782,9 @@ const Step2 = (props) => {
     dispatch(multiSelectPartners(clonedArray));
     // cropResponseData([...cropArray]);
     // cropResponseData([...cropArray]);
+    console.log(cropDeletedList, "deleted list");
     if (cropDeletedList?.length > 0) {
-      // setAllDeletedCrops(cropDeletedList);
+      setAllDeletedCrops(cropDeletedList);
     }
   };
   //   clone crop (copy crop) function
@@ -821,7 +891,11 @@ const Step2 = (props) => {
                             >
                               <div className="d-flex user_name">
                                 <h5 className="party_name">
-                                  {fromMultiBillViewStatus ? getText(item.farmerName) :getText(item.partyName)}
+                                  {fromMultiBillViewStatus
+                                    ? partyType == "BUYER"
+                                      ? getText(item.buyerName)
+                                      : getText(item.farmerName)
+                                    : getText(item.partyName)}
                                 </h5>
                                 <img
                                   src={down_arrow}
@@ -1102,10 +1176,10 @@ const Step2 = (props) => {
                                         onClick={() => {
                                           handleCheckEvent(
                                             multiSelectPartnersArray[index]
-                                            .lineItems,
-                                          i,
-                                          index,
-                                          crop
+                                              .lineItems,
+                                            i,
+                                            index,
+                                            crop
                                           );
                                         }}
                                       >
@@ -1280,7 +1354,7 @@ const Step2 = (props) => {
                                     </button>
                                   </div>
                                   <button
-                                    onClick={() => addCrop(item, item.partyId)}
+                                    onClick={() => addCrop(item, (fromMultiBillViewStatus ? (partyType == 'BUYER' ? item.buyerId : item.farmerId) : item.partyId))}
                                     className="add_crop_text2"
                                   >
                                     +Add crop
@@ -1420,8 +1494,8 @@ const Step2 = (props) => {
           parentCallback={callbackFunction}
           cropIndex={arIndex}
           editBagsStatus={editBagsStatus}
-          partyIndex ={arMainIndex}
-          fromStep2MultiBags = {true}
+          partyIndex={arMainIndex}
+          fromStep2MultiBags={true}
         />
       ) : (
         ""
