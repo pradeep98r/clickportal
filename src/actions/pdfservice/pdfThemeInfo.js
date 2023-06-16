@@ -19,10 +19,10 @@ export default function getPdfThemeInfo(billData) {
   var settingsDataArray;
   if(settArray != null){
     for(var i = 0; i<settArray.length; i++){
-      if(settArray[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+      if(settArray[i].type == "BUY_BILL" && billData?.billInfo[0].partyType == 'FARMER'){
         settingsDataArray = settArray[i];
       }
-      else if(settArray[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+      else if(settArray[i].type == "SELL_BILL" && billData?.billInfo[0].partyType == 'BUYER'){
         settingsDataArray = settArray[i];
       }
     }
