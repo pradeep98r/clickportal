@@ -103,7 +103,7 @@ function getIndividualBags(bagsList) {
 }
 
 export default function getMultibillPdfData(billData, { isDuplicate = false }) {
-  var colorThemeInfo = getPdfThemeInfo(billData);
+  var colorThemeInfo = getPdfThemeInfo(billData, true);
   var headerData = getPdfHeaderData(billData, {
     isBillView: true,
   });
@@ -132,7 +132,10 @@ export default function getMultibillPdfData(billData, { isDuplicate = false }) {
     signatureUrl: colorThemeInfo.signatureUrl,
     billData: getData(billData),
     grossTotal: getCurrencyNumberWithSymbol(billData?.grossTotal),
-    totalCogs:billData?.billInfo[0].partyType == 'BUYER' ? getCurrencyNumberWithSymbol(billData?.totalCOGS) : getCurrencyNumberWithSymbol(billData?.totalRevenue),
+    totalCogs:
+      billData?.billInfo[0].partyType == "BUYER"
+        ? getCurrencyNumberWithSymbol(billData?.totalCOGS)
+        : getCurrencyNumberWithSymbol(billData?.totalRevenue),
     totalExpenses: getCurrencyNumberWithSymbol(billData?.totalExpenses),
     isMultiBill: true,
   };
@@ -142,7 +145,7 @@ const getData = (billData) => {
   let arr = billData?.billInfo.map((party, i) => {
     return party.lineItems.map((item, key) => {
       return {
-        name: party.partyType == 'BUYER' ? party.buyerName : party.farmerName,
+        name: party.partyType == "BUYER" ? party.buyerName : party.farmerName,
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         cropName:
           item.cropName.toUpperCase() +
@@ -153,7 +156,7 @@ const getData = (billData) => {
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),
         individualBags: getIndividualBags(item.bags),
         total: getCurrencyNumberWithOutSymbol(item.rate),
-        totalReceivables:getCurrencyNumberWithOutSymbol(item.total),
+        totalReceivables: getCurrencyNumberWithOutSymbol(item.total),
         // totalReceivables: party.partyType == 'BUYER' ? party.totalReceivable.toString() : party.totalPayables.toString(),
         isCropRepeat: false,
         isSubTotal: false,
