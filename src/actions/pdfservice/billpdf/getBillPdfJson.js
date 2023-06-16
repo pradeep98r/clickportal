@@ -47,7 +47,7 @@ function getQuantityData(qty, qtyUnit, weight) {
       qtyUnit.toLowerCase() === "pieces" ||
       qtyUnit.toLowerCase() === "kgs"
         ? ""
-        : ' ' + getCropUnit(qtyUnit))
+        : " " + getCropUnit(qtyUnit))
     } ${
       qty === 0 || qty === null
         ? ""
@@ -261,14 +261,14 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
     }
   }
   if (isNotTrader) {
-    return (
-      getCurrencyNumberWithSymbol((Number(finalVal) + billData.outStBal).toFixed(2) -
-      Number(billData.cashPaid))
+    return getCurrencyNumberWithSymbol(
+      (Number(finalVal) + billData.outStBal).toFixed(2) -
+        Number(billData.cashPaid)
     );
   } else {
     var cashRecieved = billData.cashRcvd === null ? 0 : billData.cashRcvd;
-    return (
-     getCurrencyNumberWithSymbol( (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved)
+    return getCurrencyNumberWithSymbol(
+      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved
     );
   }
 };
@@ -304,7 +304,7 @@ function clean(objectList) {
 }
 function getGroupSettingsList() {
   const groupTotals = localStorage.getItem("groupPdfTotals");
-  
+
   const groupTotalsList = JSON.parse(groupTotals);
   console.log(groupTotalsList, "pdf");
   // const filteredList = getUniqueListBy(groupTotalsList, "settingName");
@@ -465,10 +465,9 @@ function getCashValue(billData, isFarmer) {
 // }
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
-  var colorThemeInfo = getPdfThemeInfo(billData);
-  var headerData = getPdfHeaderData(billData,{
+  var colorThemeInfo = getPdfThemeInfo(billData,false);
+  var headerData = getPdfHeaderData(billData, {
     isBillView: true,
-    
   });
   headerData["groupId"] = 0;
 
@@ -536,9 +535,11 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
       };
     }),
 
-    finalLedgerBalance: 
-      getFinalLedgerBalance(billData, billSettingsData, isFarmer)
-    ,
+    finalLedgerBalance: getFinalLedgerBalance(
+      billData,
+      billSettingsData,
+      isFarmer
+    ),
     outStandingBal: billData.outStBal.toLocaleString("en-IN", {
       maximumFractionDigits: 2,
       style: "currency",
@@ -566,5 +567,3 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
       )}
   */
 }
-
-
