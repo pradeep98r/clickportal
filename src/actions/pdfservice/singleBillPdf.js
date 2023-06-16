@@ -12,8 +12,15 @@ export function getSingleBillPdfHelth() {
 export function postSingleBillPdfHelth(obj) {
   return pdfService.post(`postCheck`,obj);
 }
+export function getMultiBillPdf(singleBillBody) {
+  console.log(singleBillBody,'req body multii')
+  return pdfService.post(`getMultiBillPdf`, singleBillBody, {
+    responseType: "arraybuffer",
+  });
+}
 export default {
   getSingleBillPdf,
   getSingleBillPdfHelth,
-  postSingleBillPdfHelth
+  postSingleBillPdfHelth,
+  getMultiBillPdf
 };
