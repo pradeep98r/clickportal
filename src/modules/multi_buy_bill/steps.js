@@ -16,6 +16,7 @@ const MultiBillSteps = (props) => {
     dispatch(multiSelectPartners([]));
     console.log('cleardata')
     dispatch(selectedTransporter([]));
+    console.log(selectedStep,'close')
   };
   return (
     <Modal

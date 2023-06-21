@@ -119,7 +119,7 @@ const PaartyCropDetails = (props) => {
                 <tr key={party}>
                   <td className="col-1 text-center">{key + 1}</td>
                   <td className="col-2">
-                    {partyType == "FARMER" ? party.farmerName : party.buyerName}
+                    {(partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER') ? party.farmerName : party.buyerName}
                   </td>
                   <td className="col-9 p-0 remove_border">
                     {party.lineItems.map((item, key) => {
@@ -188,7 +188,7 @@ const PaartyCropDetails = (props) => {
                           </td>
                           <td
                             className={
-                              partyType === "FARMER"
+                              (partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER')
                                 ? "col-2 color_red"
                                 : "col-2 color_green"
                             }
@@ -247,13 +247,13 @@ const PaartyCropDetails = (props) => {
             <div className="row justify-content-around multi_totals">
             <div className="col-lg-6 pr-0">
               {
-                partyType  == 'FARMER' ? <p className="total_value">COGS : </p> : <p className="total_value">Total Revenue : </p>
+                (partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER') ? <p className="total_value">COGS : </p> : <p className="total_value">Total Revenue : </p>
               }
               </div>
               <div className="col-lg-6">
               <p className="total_value number_overflow">
                 &nbsp;&nbsp;
-                {partyType == "FARMER"
+                {(partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER')
                   ? getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)
                   : getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
               </p>
