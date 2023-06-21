@@ -424,7 +424,9 @@ const Step3 = (props) => {
         const objCopy = { ...entry };
         objCopy.comments = commentext;
         objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
-        objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        if(fromMultiBillViewStatus){
+          objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        }
         arrMain.push(objCopy);
         return entry;
       });
