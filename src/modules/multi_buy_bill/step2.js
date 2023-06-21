@@ -394,7 +394,6 @@ const Step2 = (props) => {
   };
   const fetchCropData = () => {
     getAllCrops().then((response) => {
-      
       response.data.data.map((item) => {
         var cIndex;
         var qSetting = settingsData.qtySetting;
@@ -403,7 +402,7 @@ const Step2 = (props) => {
         } else {
           cIndex = -1;
         }
-        console.log(response.data.data,cIndex,qSetting,'allcrrops')
+        console.log(response.data.data, cIndex, qSetting, "allcrrops");
         Object.assign(item, {
           cropSelect: "",
           qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
@@ -520,7 +519,16 @@ const Step2 = (props) => {
                 : cIndex != -1
                 ? getQuantityUnit(qSetting, cIndex)
                 : e.target.value,
-                qty: (e.target.value == 'loads' || e.target.value == 'kgs' || e.target.value == 'pieces') ? 0 : cropData[i].qty
+            qty:
+              e.target.value == "loads" ||
+              e.target.value == "kgs" ||
+              e.target.value == "pieces"
+                ? 0
+                : cropData[i].qty,
+            weight:
+            (cropData[i].rateType.toUpperCase() == 'RATE_PER_UNIT' || cropData[i].rateType.toUpperCase() == cropData[i].qtyUnit.toUpperCase())
+                ? 0
+                : cropData[i].weight,
           };
         } else {
           return {
@@ -531,12 +539,12 @@ const Step2 = (props) => {
         return { ...cropData[i] };
       }
     });
-    
+
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    console.log(clonedArray,updatedItemList,'clone')
+    console.log(clonedArray, updatedItemList, "clone");
     dispatch(multiSelectPartners(clonedArray));
   };
 
@@ -1170,86 +1178,84 @@ const Step2 = (props) => {
                               multiSelectPartnersArray[index].lineItems[
                                 i
                               ].qtyUnit?.toLowerCase() === "sacs" ? (
-                                (
-                                 (multiSelectPartnersArray[index].lineItems[
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit?.toLowerCase() !=
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].rateType.toLowerCase() ? (
+                                  multiSelectPartnersArray[index].lineItems[
                                     i
-                                  ].qtyUnit?.toLowerCase() !=
-                                  multiSelectPartnersArray[index].lineItems[i]
-                                    .rateType.toLowerCase()) ? (
-                                    multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].rateType.toUpperCase() !=
-                                    "RATE_PER_UNIT" ? (
-                                      <td className="col_1">
-                                        <div className="d-flex align-items-center justify-content-center">
-                                          <button
-                                            onClick={() => {
-                                              handleCheckEvent(
+                                  ].rateType.toUpperCase() !=
+                                  "RATE_PER_UNIT" ? (
+                                    <td className="col_1">
+                                      <div className="d-flex align-items-center justify-content-center">
+                                        <button
+                                          onClick={() => {
+                                            handleCheckEvent(
+                                              multiSelectPartnersArray[index]
+                                                .lineItems,
+                                              i,
+                                              index,
+                                              crop
+                                            );
+                                          }}
+                                        >
+                                          <div className="d-flex align-items-center justify-content-center">
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                // billEditStatus
+                                                //   ? cropData[index].bags !==
+                                                //       null &&
+                                                //     cropData[index].bags
+                                                //       .length > 0
+                                                //     ? true
+                                                //     : false
+                                                //   :
                                                 multiSelectPartnersArray[index]
-                                                  .lineItems,
-                                                i,
-                                                index,
-                                                crop
-                                              );
-                                            }}
-                                          >
-                                            <div className="d-flex align-items-center justify-content-center">
-                                              <input
-                                                type="checkbox"
-                                                checked={
-                                                  // billEditStatus
-                                                  //   ? cropData[index].bags !==
-                                                  //       null &&
-                                                  //     cropData[index].bags
-                                                  //       .length > 0
-                                                  //     ? true
-                                                  //     : false
-                                                  //   :
+                                                  .lineItems[i].checked
+                                              }
+                                              id="modal_checkbox"
+                                              value="my-value"
+                                              className="checkbox_t cursor_class"
+                                              onChange={() => {
+                                                handleCheckEvent(
                                                   multiSelectPartnersArray[
                                                     index
-                                                  ].lineItems[i].checked
-                                                }
-                                                id="modal_checkbox"
-                                                value="my-value"
-                                                className="checkbox_t cursor_class"
-                                                onChange={() => {
-                                                  handleCheckEvent(
-                                                    multiSelectPartnersArray[
-                                                      index
-                                                    ].lineItems,
-                                                    i,
-                                                    index,
-                                                    crop
-                                                  );
-                                                }}
-                                              />
-                                              <div>
-                                                {multiSelectPartnersArray[index]
-                                                  .lineItems[i].bags !== null &&
-                                                multiSelectPartnersArray[index]
-                                                  .lineItems[i].bags.length >
-                                                  0 ? (
-                                                  <span
-                                                    className="unit-type my-0 cursor_class"
-                                                    for="modal_checkbox"
-                                                  >
-                                                    Edit
-                                                  </span>
-                                                ) : (
-                                                  ""
-                                                )}{" "}
-                                              </div>
+                                                  ].lineItems,
+                                                  i,
+                                                  index,
+                                                  crop
+                                                );
+                                              }}
+                                            />
+                                            <div>
+                                              {multiSelectPartnersArray[index]
+                                                .lineItems[i].bags !== null &&
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].bags.length >
+                                                0 ? (
+                                                <span
+                                                  className="unit-type my-0 cursor_class"
+                                                  for="modal_checkbox"
+                                                >
+                                                  Edit
+                                                </span>
+                                              ) : (
+                                                ""
+                                              )}{" "}
                                             </div>
-                                          </button>
-                                        </div>
-                                      </td>
-                                    ) : (
-                                      <td className="col_1 fadeOut_col">-</td>
-                                    )
+                                          </div>
+                                        </button>
+                                      </div>
+                                    </td>
                                   ) : (
                                     <td className="col_1 fadeOut_col">-</td>
                                   )
-                                ) 
+                                ) : (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                )
                               ) : (
                                 <td className="col_1 fadeOut_col">-</td>
                               )}
