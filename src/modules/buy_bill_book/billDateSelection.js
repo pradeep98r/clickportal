@@ -44,6 +44,7 @@ const BillDateSelection = (props) => {
     } else {
       setStartDate(new Date(localStorage.getItem("setDate")));
     }
+    console.log(checked,localStorage.getItem("defaultDate"),'useeffect')
     dispatch(billDate(selectedDate));
   }, []);
 
@@ -72,7 +73,7 @@ const BillDateSelection = (props) => {
           className="custom-control-input"
           id="modal_checkbox"
           value="my-value"
-          onChange={handleCheckEvent}
+          onChange={()=>{handleCheckEvent()}}
         />
         <span className="custom-control-indicator"></span>
         <span className="custom-control-description">

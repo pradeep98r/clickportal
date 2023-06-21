@@ -20,7 +20,6 @@ const Steps = (props) => {
 
   const callbackfunction = (chaild, editStatus) => {
     setSelctedCrops(chaild);
-    console.log(chaild,"chaild") 
   };
   const linkPath = localStorage.getItem('LinkPath');
 
@@ -47,10 +46,9 @@ const Steps = (props) => {
   const clearData = (e) => {
     setMaintainCrops(true)
     localStorage.setItem("maintainCrops", true);
-    console.log(billViewEditStatus,"stat")
     dispatch(billDate(new Date()));
-    localStorage.removeItem("defaultDate");
-    localStorage.removeItem("setDate");
+    // localStorage.removeItem("defaultDate");
+    // localStorage.removeItem("setDate");
     dispatch(selectTrans(null));
     setcropEditObject([]);
     setslectedCropstableArray([]);
