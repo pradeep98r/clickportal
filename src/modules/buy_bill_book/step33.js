@@ -885,6 +885,7 @@ const Step33 = (props) => {
         }
       );
     } else {
+      console.log(billRequestObj,'obj')
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -912,19 +913,7 @@ const Step33 = (props) => {
       );
     }
   };
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () => {
-    if (!checked) {
-      setChecked(!checked);
-      localStorage.setItem("defaultDate", true);
-      setStartDate(selectedDate);
-    } else {
-      setChecked(!checked);
-      localStorage.removeItem("defaultDate");
-      setStartDate(new Date());
-    }
-  };
-
+ 
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value
       .replace(/[^\d.]/g, "") // Remove all characters except digits and dots
