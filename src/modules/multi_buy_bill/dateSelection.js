@@ -9,6 +9,7 @@ import {
   multiBillSelectDate,
   multiSelectPartners,
   selectedDates,
+  slectedBillDate,
 } from "../../reducers/multiBillSteps";
 import moment from "moment";
 const DateSelection = ({ fromStep3BillDate }) => {
@@ -18,7 +19,8 @@ const DateSelection = ({ fromStep3BillDate }) => {
     ? listOfDates?.multiSelectPartners
     : listOfDates?.multiSelectPartners;
   const fromPreviousStep3Status = listOfDates?.fromPreviousStep3;
-  const allDates = listOfDates?.selectedDates;
+  const slectedBillDateVal = listOfDates?.slectedBillDate != '' ? listOfDates?.slectedBillDate : new Date();
+  console.log(listOfDates?.slectedBillDate+'kl','bil date')
   const dispatch = useDispatch();
 
   var arr = [];
@@ -26,11 +28,13 @@ const DateSelection = ({ fromStep3BillDate }) => {
     let clonedArray = [...multiSelectPartnersArray];
     for (var i = 0; i < multiSelectPartnersArray.length; i++) {
       let clonedObject = { ...multiSelectPartnersArray[i] };
+      console.log(clonedObject, "obj date");
       if (!fromPreviousStep3Status) {
         Object.assign(clonedObject, {
           billDate: moment(new Date()).format("YYYY-MM-DD"),
         });
       } else {
+        dispatch(slectedBillDate(new Date(multiSelectPartnersArray[i].billDate)));
         setSelectedDate(new Date(multiSelectPartnersArray[i].billDate));
       }
       clonedArray[i] = clonedObject;
@@ -44,20 +48,24 @@ const DateSelection = ({ fromStep3BillDate }) => {
       const objCopy = { ...entry };
       objCopy.billDate = moment(date).format("YYYY-MM-DD");
       setSelectedDate(new Date(objCopy.billDate));
-      arrMain.push(objCopy)
+      dispatch(slectedBillDate(date));
+      console.log(objCopy.billDate,'date selected')
+      arrMain.push(objCopy);
       return entry;
     });
-    dispatch(multiSelectPartners(arrMain))
+    console.log(arrMain)
+    dispatch(multiSelectPartners(arrMain));
   };
   return (
-    <div className="d-flex align-items-center dateSelection">
+   <div>
+      <div className="d-flex align-items-center dateSelection">   
       <span className="date_icon m-0">
         <img src={date_icon} alt="icon" className="dateIcon" />
       </span>
       <div className="date_field date_step2_field partner_date">
         <DatePicker
           dateFormat="dd-MMM-yyyy"
-          selected={selectedDate}
+          selected={slectedBillDateVal}
           onChange={(date) => dateSelected(date)}
           className="form-control input_date"
           placeholder="Date"
@@ -68,6 +76,7 @@ const DateSelection = ({ fromStep3BillDate }) => {
         />
       </div>
     </div>
+   </div>
   );
 };
 

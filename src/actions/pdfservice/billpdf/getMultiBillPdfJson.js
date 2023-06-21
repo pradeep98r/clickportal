@@ -104,7 +104,7 @@ function getIndividualBags(bagsList) {
 
 export default function getMultibillPdfData(billData, { isDuplicate = false }) {
   var colorThemeInfo = getPdfThemeInfo(billData, true);
-  var headerData = getPdfHeaderData(billData, {
+  var headerData = getPdfHeaderData(billData,true, {
     isBillView: true,
   });
   headerData["groupId"] = billData?.groupId;

@@ -466,11 +466,10 @@ function getCashValue(billData, isFarmer) {
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
   var colorThemeInfo = getPdfThemeInfo(billData,false);
-  var headerData = getPdfHeaderData(billData, {
+  var headerData = getPdfHeaderData(billData,false, {
     isBillView: true,
   });
   headerData["groupId"] = 0;
-
   headerData["billId"] = {
     groupId: 0,
     billNumber: billData.caBSeq.toString(),

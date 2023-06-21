@@ -25,13 +25,14 @@ export const BusinessDetails = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const fromMultiBillViewStatus = selectedStep?.fromMultiBillBook;
   const selectedBillData = selectedStep?.selectedMultBillArray;
+  const partyType = fromMultiBillViewStatus ? selectedStep?.multiSelectPartyType : billData?.partyType
   useEffect(() => {
    if(pdfThemeDataMain != null){
       for(var i = 0; i<pdfThemeDataMain.length; i++){
-        if(pdfThemeDataMain[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+        if(pdfThemeDataMain[i].type == "BUY_BILL" && partyType == 'FARMER'){
             setPdfThemeDataMain(pdfThemeDataMain[i]);
         }
-        else if(pdfThemeDataMain[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+        else if(pdfThemeDataMain[i].type == "SELL_BILL" && partyType == 'BUYER'){
             setPdfThemeDataMain(pdfThemeDataMain[i]);
         }
       }
@@ -156,7 +157,7 @@ export const BusinessDetails = (props) => {
             style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, -40):'#0C7A1E' }}
           >
             <p className="small_text text-center">
-              {moment(billData?.billDate).format("DD-MMM-YY")}
+              {fromMultiBillViewStatus ? moment(selectedBillData?.billInfo[0].billDate).format("DD-MMM-YY") : moment(billData?.billDate).format("DD-MMM-YY")}
             </p>
           </div>
         </div>

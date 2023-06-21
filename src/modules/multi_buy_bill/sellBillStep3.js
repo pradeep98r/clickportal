@@ -25,6 +25,7 @@ import {
   postMultiSellBill,
 } from "../../actions/multiBillService";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 const SellMultiBillStep3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const SellMultiBillStep3 = (props) => {
   const billEditedObject = selectedStep?.totalEditedObject;
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
+  const slectedBillDateVal = selectedStep?.slectedBillDate;
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -50,12 +52,19 @@ const SellMultiBillStep3 = (props) => {
   };
   const editCropInfo = () => {
     dispatch(multiStepsVal("step2"));
+    dispatch(fromPreviousStep3(true));
+  };
+  const commentText = (e) => {
+    // var regEx = /^[a-z][a-z\s]*$/;
+    var val = e.target.value;
+    console.log(val,'comm')
+    setCommentFieldText(val);
   };
   var totalGross = 0;
   const [grossTotal, setGrossTotal] = useState(0);
   var objArray1 = [];
   const[objArray2, setObjArrray2] = useState([]);
-  
+  const [commentext, setCommentFieldText] = useState(fromMultiBillViewStatus ? (billEditedObject?.billInfo[0].comments) : '');
   useEffect(() => {
     console.log(multiSelectPartnersArray, "array step3");
     if (multiSelectPartnersArray.length > 0) {
@@ -70,7 +79,7 @@ const SellMultiBillStep3 = (props) => {
         Object.assign(obj, {
           action: "UPDATE",
           billAttributes: {
-            actualPayRecieevable: gTotal,
+            actualPayRecieevable: multiSelectPartnersArray1[i]?.actualReceivable,
             advance: multiSelectPartnersArray1[i]?.advance,
             billDate: multiSelectPartnersArray1[i]?.billDate,
             cashPaid:
@@ -85,7 +94,7 @@ const SellMultiBillStep3 = (props) => {
             commIncluded: multiSelectPartnersArray1[i]?.commIncluded,
             comments: multiSelectPartnersArray1[i]?.comments,
             govtLevies: multiSelectPartnersArray1[i]?.govtLevies,
-            grossTotal: gTotal,
+            grossTotal: multiSelectPartnersArray1[i]?.grossTotal,
             customFields: [],
             labourCharges: multiSelectPartnersArray1[i]?.labourCharges,
             less: multiSelectPartnersArray1[i]?.less,
@@ -108,7 +117,7 @@ const SellMultiBillStep3 = (props) => {
             rent: multiSelectPartnersArray1[i]?.rent,
             rtComm: multiSelectPartnersArray1[i]?.rtComm,
             rtCommIncluded: multiSelectPartnersArray1[i]?.rtCommIncluded,
-            totalPayRecieevable: gTotal,
+            totalPayRecieevable: multiSelectPartnersArray1[i]?.totalReceivable,
             transportation: multiSelectPartnersArray1[i]?.transportation,
             transporterId: multiSelectPartnersArray1[i]?.transporterId,
           },
@@ -348,9 +357,23 @@ const SellMultiBillStep3 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
+    var arrMain = [];
     if (fromMultiBillViewStatus) {
-      console.log(billObj, "payload");
-      editMultiBuyBill(billObj).then(
+      console.log(commentext,'comm')
+      billObj.billsInfo.map(function (entry) {
+        const objCopy = { ...entry };
+        console.log(objCopy)
+        objCopy.comments = commentext ;
+        objCopy.billAttributes.comments = commentext ;
+        objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        arrMain.push(objCopy)
+        return entry;
+      });
+      let clonedObject = { ...billObj };
+      clonedObject = { ...clonedObject, billsInfo: arrMain };
+      console.log(clonedObject,'payload')
+      editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
@@ -376,7 +399,17 @@ const SellMultiBillStep3 = (props) => {
         }
       );
     } else {
-      postMultiSellBill(billRequestObj).then(
+      billRequestObj.sellBills.map(function (entry) {
+        const objCopy = { ...entry };
+        objCopy.comments = commentext ;
+        objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        arrMain.push(objCopy)
+        return entry;
+      });
+      let clonedObject = { ...billRequestObj };
+      clonedObject = { ...clonedObject, sellBills: arrMain };
+      postMultiSellBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
@@ -473,9 +506,9 @@ const SellMultiBillStep3 = (props) => {
                                   <h6>
                                     {getPartnerType("TRANSPORTER")} -{" "}
                                     {item.transporterId} |{" "}
-                                    {getMaskedMobileNumber(
+                                    {fromMultiBillViewStatus ? '' : getMaskedMobileNumber(
                                       item.transporterMobile
-                                    )}
+                                    ) }
                                   </h6>
                                 </div>
                               </div>
@@ -629,7 +662,7 @@ const SellMultiBillStep3 = (props) => {
                   <div className="card input_card">
                     <div className="row">
                       <div className="col-sm-12">
-                        <input type="text" placeholder="" />
+                      <input type="text" placeholder="" onChange={(e)=> commentText(e)} value={commentext} />
                       </div>
                     </div>
                   </div>

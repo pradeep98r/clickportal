@@ -70,23 +70,18 @@ const Step2 = (props) => {
   //   dispatch(multiStepsVal("step3"));
   //   dispatch(multiSelectPartners(array));
   // };
-  const getTotalValue = (obj1,index, mIndex) => {
+  const getTotalValue = (obj1, index, mIndex) => {
     let clonedArray = [...selectedStep?.multiSelectPartners];
     var val = 0;
-    obj1.rateType.toLowerCase() ==
-      "kgs" ||
-      obj1.rateType.toLowerCase() ==
-      "loads" ||
-      obj1.rateType.toLowerCase() ==
-      "pieces"
-      ? (val =
-          (obj1.weight -
-            obj1.wastage) *
-            obj1.rate)
-      : (val =
-          (obj1.qty -
-            obj1.wastage) *
-            obj1.rate);
+    obj1.rateType.toLowerCase() == "kgs" ||
+    obj1.rateType.toLowerCase() == "loads" ||
+    obj1.rateType.toLowerCase() == "pieces" ||
+    (obj1.qtyUnit.toLowerCase() == "pieces" &&
+      obj1.rateType.toUpperCase() == "RATE_PER_UNIT") ||
+    (obj1.qtyUnit.toLowerCase() == "loads" &&
+      obj1.rateType.toUpperCase() == "RATE_PER_UNIT")
+      ? (val = (obj1.weight - obj1.wastage) * obj1.rate)
+      : (val = (obj1.qty - obj1.wastage) * obj1.rate);
     let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map(
       (item, i) => {
         if (i == index) {
@@ -132,9 +127,9 @@ const Step2 = (props) => {
                 });
                 return null;
               }
-              console.log(obj1,'obj')
-              if(!obj1.cropDelete){
-              obj1.total = getTotalValue(obj1,cIndex, index);
+              console.log(obj1, "obj");
+              if (!obj1.cropDelete) {
+                obj1.total = getTotalValue(obj1, cIndex, index);
               }
               if (fromMultiBillViewStatus) {
                 var index1 = dataLineItems.findIndex(
@@ -399,6 +394,7 @@ const Step2 = (props) => {
   };
   const fetchCropData = () => {
     getAllCrops().then((response) => {
+      
       response.data.data.map((item) => {
         var cIndex;
         var qSetting = settingsData.qtySetting;
@@ -407,6 +403,7 @@ const Step2 = (props) => {
         } else {
           cIndex = -1;
         }
+        console.log(response.data.data,cIndex,qSetting,'allcrrops')
         Object.assign(item, {
           cropSelect: "",
           qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
@@ -425,8 +422,10 @@ const Step2 = (props) => {
   // onclick button add crrop event
   const addCrop = (item, id) => {
     var crpObject = {};
-    var i = multiSelectPartnersArray.findIndex((obj) => (obj.partyId || obj.farmerId || obj.buyerId) == id);
-    console.log(id,i,'addc rrop')
+    var i = multiSelectPartnersArray.findIndex(
+      (obj) => (obj.partyId || obj.farmerId || obj.buyerId) == id
+    );
+    console.log(id, i, "addc rrop");
     if (i != -1) {
       let clonedArray = [...multiSelectPartnersArray];
       let clonedObject = { ...clonedArray[i] };
@@ -536,6 +535,7 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
+    console.log(clonedArray,'clone')
     dispatch(multiSelectPartners(clonedArray));
   };
 
@@ -873,40 +873,40 @@ const Step2 = (props) => {
                       {active ? (
                         <SelectSinglePartner indexVal={index} />
                       ) : (
-                        <button >
+                        <button>
                           <div
-                          style={{ display: "flex", alignItems: "center" }}
-                          className="justify-content-between"
-                        >
-                          <div className="d-flex">
-                            {item.profilePic !== "" ? (
-                              <img
-                                src={item.profilePic}
-                                className="icon_user"
-                              />
-                            ) : (
-                              <img src={single_bill} className="icon_user" />
-                            )}
-                            <div
-                              style={{ marginLeft: 5, alignItems: "center" }}
-                            >
-                              <div className="d-flex user_name">
-                                <h5 className="party_name">
-                                  {fromMultiBillViewStatus
-                                    ? partyType == "BUYER"
-                                      ? getText(item.buyerName)
-                                      : getText(item.farmerName)
-                                    : getText(item.partyName)}
-                                </h5>
+                            style={{ display: "flex", alignItems: "center" }}
+                            className="justify-content-between"
+                          >
+                            <div className="d-flex">
+                              {item.profilePic !== "" ? (
                                 <img
-                                  src={down_arrow}
-                                  alt="down_arrow"
-                                  style={{ padding: "0px 10px" }}
+                                  src={item.profilePic}
+                                  className="icon_user"
                                 />
+                              ) : (
+                                <img src={single_bill} className="icon_user" />
+                              )}
+                              <div
+                                style={{ marginLeft: 5, alignItems: "center" }}
+                              >
+                                <div className="d-flex user_name">
+                                  <h5 className="party_name">
+                                    {fromMultiBillViewStatus
+                                      ? partyType == "BUYER"
+                                        ? getText(item.buyerName)
+                                        : getText(item.farmerName)
+                                      : getText(item.partyName)}
+                                  </h5>
+                                  <img
+                                    src={down_arrow}
+                                    alt="down_arrow"
+                                    style={{ padding: "0px 10px" }}
+                                  />
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
                         </button>
                       )}
                     </div>
@@ -915,16 +915,16 @@ const Step2 = (props) => {
                     {activeTrans ? (
                       <SelectSinglePartner indexVal={index} fromTrans={true} />
                     ) : (
-                     <button className="p-0">
+                      <button className="p-0">
                         <div className="d-flex">
-                        <p onClick={activeTransporter}>Select transporter</p>
-                        <img
-                          src={down_arrow}
-                          alt="down_arrow"
-                          style={{ padding: "0px 10px" }}
-                        />
-                      </div>
-                     </button>
+                          <p onClick={activeTransporter}>Select transporter</p>
+                          <img
+                            src={down_arrow}
+                            alt="down_arrow"
+                            style={{ padding: "0px 10px" }}
+                          />
+                        </div>
+                      </button>
                     )}
                   </td>
                   <td className="col_1">
@@ -1169,43 +1169,20 @@ const Step2 = (props) => {
                               multiSelectPartnersArray[index].lineItems[
                                 i
                               ].qtyUnit?.toLowerCase() === "sacs" ? (
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].qtyUnit?.toLowerCase() !=
-                                multiSelectPartnersArray[index].lineItems[i]
-                                  .rateType ? (
-                                  <td className="col_1">
-                                    <div className="d-flex align-items-center justify-content-center">
-                                      <button
-                                        onClick={() => {
-                                          handleCheckEvent(
-                                            multiSelectPartnersArray[index]
-                                              .lineItems,
-                                            i,
-                                            index,
-                                            crop
-                                          );
-                                        }}
-                                      >
+                                (
+                                 (multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].qtyUnit?.toLowerCase() !=
+                                  multiSelectPartnersArray[index].lineItems[i]
+                                    .rateType.toLowerCase()) ? (
+                                    multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].rateType.toUpperCase() !=
+                                    "RATE_PER_UNIT" ? (
+                                      <td className="col_1">
                                         <div className="d-flex align-items-center justify-content-center">
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              // billEditStatus
-                                              //   ? cropData[index].bags !==
-                                              //       null &&
-                                              //     cropData[index].bags
-                                              //       .length > 0
-                                              //     ? true
-                                              //     : false
-                                              //   :
-                                              multiSelectPartnersArray[index]
-                                                .lineItems[i].checked
-                                            }
-                                            id="modal_checkbox"
-                                            value="my-value"
-                                            className="checkbox_t cursor_class"
-                                            onChange={() => {
+                                          <button
+                                            onClick={() => {
                                               handleCheckEvent(
                                                 multiSelectPartnersArray[index]
                                                   .lineItems,
@@ -1214,29 +1191,64 @@ const Step2 = (props) => {
                                                 crop
                                               );
                                             }}
-                                          />
-                                          <div>
-                                            {multiSelectPartnersArray[index]
-                                              .lineItems[i].bags !== null &&
-                                            multiSelectPartnersArray[index]
-                                              .lineItems[i].bags.length > 0 ? (
-                                              <span
-                                                className="unit-type my-0 cursor_class"
-                                                for="modal_checkbox"
-                                              >
-                                                Edit
-                                              </span>
-                                            ) : (
-                                              ""
-                                            )}{" "}
-                                          </div>
+                                          >
+                                            <div className="d-flex align-items-center justify-content-center">
+                                              <input
+                                                type="checkbox"
+                                                checked={
+                                                  // billEditStatus
+                                                  //   ? cropData[index].bags !==
+                                                  //       null &&
+                                                  //     cropData[index].bags
+                                                  //       .length > 0
+                                                  //     ? true
+                                                  //     : false
+                                                  //   :
+                                                  multiSelectPartnersArray[
+                                                    index
+                                                  ].lineItems[i].checked
+                                                }
+                                                id="modal_checkbox"
+                                                value="my-value"
+                                                className="checkbox_t cursor_class"
+                                                onChange={() => {
+                                                  handleCheckEvent(
+                                                    multiSelectPartnersArray[
+                                                      index
+                                                    ].lineItems,
+                                                    i,
+                                                    index,
+                                                    crop
+                                                  );
+                                                }}
+                                              />
+                                              <div>
+                                                {multiSelectPartnersArray[index]
+                                                  .lineItems[i].bags !== null &&
+                                                multiSelectPartnersArray[index]
+                                                  .lineItems[i].bags.length >
+                                                  0 ? (
+                                                  <span
+                                                    className="unit-type my-0 cursor_class"
+                                                    for="modal_checkbox"
+                                                  >
+                                                    Edit
+                                                  </span>
+                                                ) : (
+                                                  ""
+                                                )}{" "}
+                                              </div>
+                                            </div>
+                                          </button>
                                         </div>
-                                      </button>
-                                    </div>
-                                  </td>
-                                ) : (
-                                  <td className="col_1 fadeOut_col">-</td>
-                                )
+                                      </td>
+                                    ) : (
+                                      <td className="col_1 fadeOut_col">-</td>
+                                    )
+                                  ) : (
+                                    <td className="col_1 fadeOut_col">-</td>
+                                  )
+                                ) 
                               ) : (
                                 <td className="col_1 fadeOut_col">-</td>
                               )}
@@ -1303,7 +1315,21 @@ const Step2 = (props) => {
                                     ].rateType.toLowerCase() == "loads" ||
                                     multiSelectPartnersArray[index].lineItems[
                                       i
-                                    ].rateType.toLowerCase() == "pieces"
+                                    ].rateType.toLowerCase() == "pieces" ||
+                                    (multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].qtyUnit.toLowerCase() == "pieces" &&
+                                      multiSelectPartnersArray[index].lineItems[
+                                        i
+                                      ].rateType.toUpperCase() ==
+                                        "RATE_PER_UNIT") ||
+                                    (multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].qtyUnit.toLowerCase() == "loads" &&
+                                      multiSelectPartnersArray[index].lineItems[
+                                        i
+                                      ].rateType.toUpperCase() ==
+                                        "RATE_PER_UNIT")
                                       ? (
                                           (multiSelectPartnersArray[index]
                                             .lineItems[i].weight -
@@ -1358,7 +1384,16 @@ const Step2 = (props) => {
                                     </button>
                                   </div>
                                   <button
-                                    onClick={() => addCrop(item, (fromMultiBillViewStatus ? (partyType == 'BUYER' ? item.buyerId : item.farmerId) : item.partyId))}
+                                    onClick={() =>
+                                      addCrop(
+                                        item,
+                                        fromMultiBillViewStatus
+                                          ? partyType == "BUYER"
+                                            ? item.buyerId
+                                            : item.farmerId
+                                          : item.partyId
+                                      )
+                                    }
                                     className="add_crop_text2"
                                   >
                                     +Add crop

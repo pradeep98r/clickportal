@@ -23,6 +23,7 @@ import {
   multiSelectPartners,
   multiSelectPartyType,
   multiStepsVal,
+  slectedBillDate,
   totalEditedObject,
 } from "../../reducers/multiBillSteps";
 import MultiBillSteps from "./steps";
@@ -290,6 +291,7 @@ const MultiBillView = (props) => {
     dispatch(multiSelectPartners(selectedBillData?.billInfo));
     dispatch(fromMultiBillView(true));
     dispatch(totalEditedObject(selectedBillData));
+    dispatch(slectedBillDate(new Date(selectedBillData?.billInfo[0].billDate)))
   };
   async function getPrintPdf() {
     console.log("pdf coming", selectedBillData);
