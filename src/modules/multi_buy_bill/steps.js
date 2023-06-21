@@ -1,7 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import clo from "../../assets/images/close.svg";
-import { multiSelectPartners } from "../../reducers/multiBillSteps";
+import { multiSelectPartners, selectedTransporter } from "../../reducers/multiBillSteps";
 import SellMultiBillStep3 from "./sellBillStep3";
 import Step1 from "./step1";
 import Step2 from "./step2";
@@ -15,6 +15,7 @@ const MultiBillSteps = (props) => {
   const clearData = () => {
     dispatch(multiSelectPartners([]));
     console.log('cleardata')
+    dispatch(selectedTransporter([]));
   };
   return (
     <Modal

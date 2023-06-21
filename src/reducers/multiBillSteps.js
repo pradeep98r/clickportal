@@ -17,7 +17,8 @@ export const multiBillStepsSlice = createSlice({
     fromMultiBillView:false,
     totalEditedObject:{},
     fromPreviousStep3:false,
-    fromMultiBillBook:false
+    fromMultiBillBook:false,
+    slectedBillDate:''
   },
   reducers: {
     multiStepsVal: (state, action) => {
@@ -65,6 +66,9 @@ export const multiBillStepsSlice = createSlice({
     fromMultiBillBook: (state, action) => {
       state.fromMultiBillBook = action.payload;
     },
+    slectedBillDate: (state, action) => {
+      state.slectedBillDate = action.payload;
+    },
   },
 });
 
@@ -83,7 +87,8 @@ export const {
   fromMultiBillView,
   totalEditedObject,
   fromPreviousStep3,
-  fromMultiBillBook
+  fromMultiBillBook,
+  slectedBillDate
 } = multiBillStepsSlice.actions;
 
 export default multiBillStepsSlice.reducer;
