@@ -35,10 +35,11 @@ import {
   allSellBillsData,
   beginDate,
   closeDate,
-  allMultiSellBillsData
+  allMultiSellBillsData,
 } from "../../reducers/ledgerSummarySlice";
 import {
   fromMultiBillBook,
+  fromMultiBillView,
   multiSelectPartyType,
   multiStepsVal,
   selectedMultBillArray,
@@ -159,7 +160,7 @@ const SellBillBook = (props) => {
     Object.assign(object, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
-    dispatch(fromMultiBillBook(false))
+    dispatch(fromMultiBillBook(false));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -228,6 +229,7 @@ const SellBillBook = (props) => {
     setShowMultiStepsModal(true);
     dispatch(multiStepsVal("step1"));
     dispatch(multiSelectPartyType("Buyer"));
+    dispatch(fromMultiBillView(false));
   };
   const [showMultiBillModalStatus, setMultiShowBillModalStatus] =
     useState(false);
@@ -237,7 +239,8 @@ const SellBillBook = (props) => {
     setMultiShowBillModal(true);
     dispatch(selectedMultBillArray(bill));
     dispatch(multiSelectPartyType("BUYER"));
-    dispatch(fromMultiBillBook(true))
+    dispatch(fromMultiBillBook(true));
+    
   };
   return (
     <div>
@@ -663,36 +666,39 @@ const SellBillBook = (props) => {
                                                   <div className="d-flex">
                                                     <p className="d-a-value">
                                                       {moment(
-                                                        bill?.billInfo[0].timeStamp
+                                                        bill?.billInfo[0]
+                                                          .timeStamp
                                                       ).format(
                                                         "DD-MMM-YY | hh:mm:A"
                                                       )}
                                                     </p>
                                                   </div>
                                                   <p
-                                                        style={{
-                                                          color:
-                                                            bill?.billInfo[0]
-                                                              .billStatus ==
-                                                            "CANCELLED"
-                                                              ? "#d43939"
-                                                              : "#1C1C1C",
-                                                        }}
-                                                      >
-                                                        <div className="flex_class">
-                                                          {bill?.billInfo[0].billStatus ==
-                                                          "CANCELLED" ? (
-                                                            <div className="complete-dot cancel_dot"></div>
-                                                          ) : (
-                                                            <div className="complete-dot"></div>
-                                                          )}
-                                                          <div className="bill-name">
-                                                            {getText(
-                                                              bill?.billInfo[0].billStatus
-                                                            )}
-                                                          </div>
-                                                        </div>
-                                                      </p>
+                                                    style={{
+                                                      color:
+                                                        bill?.billInfo[0]
+                                                          .billStatus ==
+                                                        "CANCELLED"
+                                                          ? "#d43939"
+                                                          : "#1C1C1C",
+                                                    }}
+                                                  >
+                                                    <div className="flex_class">
+                                                      {bill?.billInfo[0]
+                                                        .billStatus ==
+                                                      "CANCELLED" ? (
+                                                        <div className="complete-dot cancel_dot"></div>
+                                                      ) : (
+                                                        <div className="complete-dot"></div>
+                                                      )}
+                                                      <div className="bill-name">
+                                                        {getText(
+                                                          bill?.billInfo[0]
+                                                            .billStatus
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                  </p>
                                                 </div>
                                               </div>
                                             </div>
@@ -744,259 +750,259 @@ const SellBillBook = (props) => {
                                   </div>
                                 </div>
                               )}
-                              {sellBillData.length > 0 && 
-                              <div className="" id="">
-                                {sellBillData.map((bill, index) => (
-                                  <button
-                                    onClick={() =>
-                                      billOnClick(bill.caBSeq, bill, index)
-                                    }
-                                    key={index}
-                                    className="billsDiv"
-                                  >
-                                    <div className="row bg_white bills_rows bottom_space">
-                                      <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
-                                        <div className="row full_width">
-                                          <div className="col-lg-7 col-sm-12 p-0 col">
-                                            <div className="bill_user_details flex_class mr-0">
-                                              {bill.profilePic ? (
-                                                <img
-                                                  src={bill.profilePic}
-                                                  className="user_icon"
-                                                  alt="icon"
-                                                />
-                                              ) : (
-                                                <img
-                                                  src={single_bill}
-                                                  className="user_icon"
-                                                  alt="icon"
-                                                />
-                                              )}
+                              {sellBillData.length > 0 && (
+                                <div className="" id="">
+                                  {sellBillData.map((bill, index) => (
+                                    <button
+                                      onClick={() =>
+                                        billOnClick(bill.caBSeq, bill, index)
+                                      }
+                                      key={index}
+                                      className="billsDiv"
+                                    >
+                                      <div className="row bg_white bills_rows bottom_space">
+                                        <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                          <div className="row full_width">
+                                            <div className="col-lg-7 col-sm-12 p-0 col">
+                                              <div className="bill_user_details flex_class mr-0">
+                                                {bill.profilePic ? (
+                                                  <img
+                                                    src={bill.profilePic}
+                                                    className="user_icon"
+                                                    alt="icon"
+                                                  />
+                                                ) : (
+                                                  <img
+                                                    src={single_bill}
+                                                    className="user_icon"
+                                                    alt="icon"
+                                                  />
+                                                )}
 
-                                              <div className="text-left">
-                                                <h6 className="userName">
-                                                  {bill.buyerName +
-                                                    "-" +
-                                                    bill.shortName}
-                                                </h6>
-                                                <div className="d-flex align-items-center">
-                                                  <h6 className="mobile">
-                                                    {getPartnerType(
-                                                      bill.partyType,
-                                                      bill.trader
-                                                    ) +
+                                                <div className="text-left">
+                                                  <h6 className="userName">
+                                                    {bill.buyerName +
                                                       "-" +
-                                                      bill.buyerId}
+                                                      bill.shortName}
                                                   </h6>
-                                                  <h6 className="mobile desk_responsive">
-                                                    &nbsp;
-                                                    {" |  " +
-                                                      getMaskedMobileNumber(
-                                                        bill.mobile
-                                                      )}
+                                                  <div className="d-flex align-items-center">
+                                                    <h6 className="mobile">
+                                                      {getPartnerType(
+                                                        bill.partyType,
+                                                        bill.trader
+                                                      ) +
+                                                        "-" +
+                                                        bill.buyerId}
+                                                    </h6>
+                                                    <h6 className="mobile desk_responsive">
+                                                      &nbsp;
+                                                      {" |  " +
+                                                        getMaskedMobileNumber(
+                                                          bill.mobile
+                                                        )}
+                                                    </h6>
+                                                  </div>
+                                                  <h6 className="mobile mobile_responsive">
+                                                    {getMaskedMobileNumber(
+                                                      bill.mobile
+                                                    )}
+                                                  </h6>
+                                                  <h6 className="address">
+                                                    {bill.buyerAddress}
                                                   </h6>
                                                 </div>
-                                                <h6 className="mobile mobile_responsive">
-                                                  {getMaskedMobileNumber(
-                                                    bill.mobile
-                                                  )}
-                                                </h6>
-                                                <h6 className="address">
-                                                  {bill.buyerAddress}
-                                                </h6>
                                               </div>
                                             </div>
-                                          </div>
-                                          <div className="col-lg-5 col-sm-12 billid_div">
-                                            <div className="d-flex align-items-center billid_div_flex">
-                                              <div className="text-left">
-                                                <p className="biilid">
-                                                  {langFullData.billNo} :{" "}
-                                                  {bill.caBSeq}{" "}
-                                                </p>
-                                                <div className="d-flex">
-                                                  <p className="d-a-value">
-                                                    {moment(
-                                                      bill?.timeStamp
-                                                    ).format(
-                                                      "DD-MMM-YY | hh:mm:A"
+                                            <div className="col-lg-5 col-sm-12 billid_div">
+                                              <div className="d-flex align-items-center billid_div_flex">
+                                                <div className="text-left">
+                                                  <p className="biilid">
+                                                    {langFullData.billNo} :{" "}
+                                                    {bill.caBSeq}{" "}
+                                                  </p>
+                                                  <div className="d-flex">
+                                                    <p className="d-a-value">
+                                                      {moment(
+                                                        bill?.timeStamp
+                                                      ).format(
+                                                        "DD-MMM-YY | hh:mm:A"
+                                                      )}
+                                                    </p>
+                                                  </div>
+                                                  <p
+                                                    style={{
+                                                      color:
+                                                        bill.billStatus ==
+                                                        "CANCELLED"
+                                                          ? "#d43939"
+                                                          : "#1C1C1C",
+                                                    }}
+                                                  >
+                                                    {bill?.paid == true ? (
+                                                      <div className="flex_class">
+                                                        <div className="complete-dot"></div>
+                                                        <div className="bill-name">
+                                                          {getText(
+                                                            "Amount Received"
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    ) : (
+                                                      <div className="flex_class p-0">
+                                                        {bill.billStatus ==
+                                                        "CANCELLED" ? (
+                                                          <div className="complete-dot cancel_dot"></div>
+                                                        ) : (
+                                                          <div className="complete-dot"></div>
+                                                        )}
+                                                        <div className="bill-name">
+                                                          {getText(
+                                                            bill.billStatus
+                                                          )}
+                                                        </div>
+                                                      </div>
                                                     )}
                                                   </p>
                                                 </div>
-                                                <p
-                                                  style={{
-                                                    color:
-                                                      bill.billStatus ==
-                                                      "CANCELLED"
-                                                        ? "#d43939"
-                                                        : "#1C1C1C",
-                                                  }}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="col-lg-6 p-0">
+                                          {bill.lineItems.map((crop, index) => (
+                                            <div
+                                              className="row crops_row_bills"
+                                              key={index}
+                                            >
+                                              <div className="col-lg-4 col-sm-12 col">
+                                                <p className="flex_class crop_name">
+                                                  <img
+                                                    src={crop.imageUrl}
+                                                    className="crop_image"
+                                                  />
+                                                  {crop.cropSufx != null
+                                                    ? crop.cropSufx != ""
+                                                      ? crop.cropName +
+                                                        " " +
+                                                        `(${crop.cropSufx})`
+                                                      : crop.cropName
+                                                    : crop.cropName}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-4 col-sm-12 col flex_class">
+                                                <div
+                                                  className="d-flex align-items-center"
+                                                  style={{ height: "100%" }}
                                                 >
-                                                  {bill?.paid == true ? (
-                                                    <div className="flex_class">
-                                                      <div className="complete-dot"></div>
-                                                      <div className="bill-name">
-                                                        {getText(
-                                                          "Amount Received"
-                                                        )}
-                                                      </div>
-                                                    </div>
-                                                  ) : (
-                                                    <div className="flex_class p-0">
-                                                      {bill.billStatus ==
-                                                      "CANCELLED" ? (
-                                                        <div className="complete-dot cancel_dot"></div>
-                                                      ) : (
-                                                        <div className="complete-dot"></div>
+                                                  <div>
+                                                    <div>
+                                                      {" "}
+                                                      {qtyValues(
+                                                        crop.qty,
+                                                        crop.qtyUnit,
+                                                        crop.weight,
+                                                        crop.wastage,
+                                                        crop.rateType
                                                       )}
-                                                      <div className="bill-name">
-                                                        {getText(
-                                                          bill.billStatus
-                                                        )}
-                                                      </div>
                                                     </div>
+                                                    {crop.bags !== null &&
+                                                    crop.bags.length > 0 ? (
+                                                      <div className="flex_class">
+                                                        <input
+                                                          type="checkbox"
+                                                          checked={true}
+                                                          id="modal_checkbox"
+                                                          value="my-value"
+                                                          className="checkbox_t"
+                                                        />
+                                                        <p className="inv-weight">
+                                                          Individual Weights
+                                                          <span className="bags-data">
+                                                            <div className="bags-values">
+                                                              {crop.bags.map(
+                                                                (item) => {
+                                                                  return (
+                                                                    <span>
+                                                                      <span>
+                                                                        {item.weight
+                                                                          ? item.weight +
+                                                                            " "
+                                                                          : ""}
+                                                                      </span>
+                                                                      <span className="wastsge_color">
+                                                                        {item.wastage
+                                                                          ? " - "
+                                                                          : ""}
+                                                                      </span>
+                                                                      <span className="wastsge_color">
+                                                                        {item.wastage
+                                                                          ? item.wastage
+                                                                          : ""}
+                                                                      </span>
+                                                                      <span>
+                                                                        ,{" "}
+                                                                      </span>
+                                                                    </span>
+                                                                  );
+                                                                }
+                                                              )}
+                                                            </div>
+                                                            <span>
+                                                              ={" "}
+                                                              {totalBagsValue(
+                                                                crop.bags
+                                                              ) + "KGS"}
+                                                            </span>
+                                                          </span>
+                                                        </p>
+                                                      </div>
+                                                    ) : (
+                                                      ""
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div className="col-lg-2 col-sm-12 col flex_class">
+                                                <p className="number_overflow crop_name">
+                                                  {getCurrencyNumberWithOutSymbol(
+                                                    crop.rate
+                                                  )}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-2 col-sm-12 col flex_class">
+                                                <p className="number_overflow crop_name">
+                                                  {getCurrencyNumberWithOutSymbol(
+                                                    crop.total
                                                   )}
                                                 </p>
                                               </div>
                                             </div>
-                                          </div>
+                                          ))}
                                         </div>
-                                      </div>
-                                      <div className="col-lg-6 p-0">
-                                        {bill.lineItems.map((crop, index) => (
+                                        <div className="col-lg-2 flex_class">
                                           <div
-                                            className="row crops_row_bills"
-                                            key={index}
+                                            className="row"
+                                            style={{ width: "100%" }}
                                           >
-                                            <div className="col-lg-4 col-sm-12 col">
-                                              <p className="flex_class crop_name">
-                                                <img
-                                                  src={crop.imageUrl}
-                                                  className="crop_image"
-                                                />
-                                                {crop.cropSufx != null
-                                                  ? crop.cropSufx != ""
-                                                    ? crop.cropName +
-                                                      " " +
-                                                      `(${crop.cropSufx})`
-                                                    : crop.cropName
-                                                  : crop.cropName}
-                                              </p>
-                                            </div>
-                                            <div className="col-lg-4 col-sm-12 col flex_class">
-                                              <div
-                                                className="d-flex align-items-center"
-                                                style={{ height: "100%" }}
-                                              >
-                                                <div>
-                                                  <div>
-                                                    {" "}
-                                                    {qtyValues(
-                                                      crop.qty,
-                                                      crop.qtyUnit,
-                                                      crop.weight,
-                                                      crop.wastage,
-                                                      crop.rateType
-                                                    )}
-                                                  </div>
-                                                  {crop.bags !== null &&
-                                                  crop.bags.length > 0 ? (
-                                                    <div className="flex_class">
-                                                      <input
-                                                        type="checkbox"
-                                                        checked={true}
-                                                        id="modal_checkbox"
-                                                        value="my-value"
-                                                        className="checkbox_t"
-                                                      />
-                                                      <p className="inv-weight">
-                                                        Individual Weights
-                                                        <span className="bags-data">
-                                                          <div className="bags-values">
-                                                            {crop.bags.map(
-                                                              (item) => {
-                                                                return (
-                                                                  <span>
-                                                                    <span>
-                                                                      {item.weight
-                                                                        ? item.weight +
-                                                                          " "
-                                                                        : ""}
-                                                                    </span>
-                                                                    <span className="wastsge_color">
-                                                                      {item.wastage
-                                                                        ? " - "
-                                                                        : ""}
-                                                                    </span>
-                                                                    <span className="wastsge_color">
-                                                                      {item.wastage
-                                                                        ? item.wastage
-                                                                        : ""}
-                                                                    </span>
-                                                                    <span>
-                                                                      ,{" "}
-                                                                    </span>
-                                                                  </span>
-                                                                );
-                                                              }
-                                                            )}
-                                                          </div>
-                                                          <span>
-                                                            ={" "}
-                                                            {totalBagsValue(
-                                                              crop.bags
-                                                            ) + "KGS"}
-                                                          </span>
-                                                        </span>
-                                                      </p>
-                                                    </div>
-                                                  ) : (
-                                                    ""
-                                                  )}
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="col-lg-2 col-sm-12 col flex_class">
-                                              <p className="number_overflow crop_name">
+                                            <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
+                                              <p className="crop_name payble_text color_green">
                                                 {getCurrencyNumberWithOutSymbol(
-                                                  crop.rate
+                                                  bill.totalReceivable
                                                 )}
                                               </p>
+                                              <img
+                                                src={left_arrow}
+                                                alt="left-arrow"
+                                                className="left-arrow-img"
+                                              />
                                             </div>
-                                            <div className="col-lg-2 col-sm-12 col flex_class">
-                                              <p className="number_overflow crop_name">
-                                                {getCurrencyNumberWithOutSymbol(
-                                                  crop.total
-                                                )}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                      <div className="col-lg-2 flex_class">
-                                        <div
-                                          className="row"
-                                          style={{ width: "100%" }}
-                                        >
-                                          <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
-                                            <p className="crop_name payble_text color_green">
-                                              {getCurrencyNumberWithOutSymbol(
-                                                bill.totalReceivable
-                                              )}
-                                            </p>
-                                            <img
-                                              src={left_arrow}
-                                              alt="left-arrow"
-                                              className="left-arrow-img"
-                                            />
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </button>
-                                ))}
-                              </div>
-}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>

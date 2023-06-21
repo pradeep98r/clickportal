@@ -113,7 +113,7 @@ export default function getMultibillPdfData(billData, { isDuplicate = false }) {
     groupId: billData?.groupId,
     billNumber: 0,
   };
-  headerData["billDate"] = moment(billData.billDate).format("DD-MMM-YYYY");
+  headerData["billDate"] = moment(billData?.billInfo[0].billDate).format("DD-MMM-YYYY");
   var isFarmer = billData?.billInfo[0].partyType === "FARMER";
   var billType = isFarmer ? "BUYBILL" : "SELLBILL";
   return {
