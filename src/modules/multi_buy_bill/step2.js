@@ -520,6 +520,7 @@ const Step2 = (props) => {
                 : cIndex != -1
                 ? getQuantityUnit(qSetting, cIndex)
                 : e.target.value,
+                qty: (e.target.value == 'loads' || e.target.value == 'kgs' || e.target.value == 'pieces') ? 0 : cropData[i].qty
           };
         } else {
           return {
@@ -530,12 +531,12 @@ const Step2 = (props) => {
         return { ...cropData[i] };
       }
     });
-
+    
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    console.log(clonedArray,'clone')
+    console.log(clonedArray,updatedItemList,'clone')
     dispatch(multiSelectPartners(clonedArray));
   };
 
