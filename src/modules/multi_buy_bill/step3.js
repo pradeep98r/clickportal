@@ -319,9 +319,9 @@ const Step3 = (props) => {
       comm: 0,
       govtLevies: 0,
       labourCharges: parseFloat(coolieVal),
-      mandiFee: parseFloat(otherFeeVal),
+      mandiFee: 0,
       misc: 0,
-      others: 0,
+      others: parseFloat(otherFeeVal),
       rent: parseFloat(rentVal),
       rtComm: 0,
       total: getTotalExpences(),
@@ -432,13 +432,13 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
+      console.log(clonedObject)
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(response.data, "success");
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
             window.setTimeout(function () {

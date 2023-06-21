@@ -43,6 +43,7 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import {
   fromMultiBillBook,
+  fromMultiBillView,
   multiSelectPartners,
   multiSelectPartyType,
   multiStepsVal,
@@ -171,7 +172,7 @@ function BuyBillBook() {
     Object.assign(object, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
-    dispatch(fromMultiBillBook(false))
+    dispatch(fromMultiBillBook(false));
   };
   const [showMultiBillModalStatus, setMultiShowBillModalStatus] =
     useState(false);
@@ -181,7 +182,7 @@ function BuyBillBook() {
     setMultiShowBillModal(true);
     dispatch(selectedMultBillArray(bill));
     dispatch(multiSelectPartyType("FARMER"));
-    dispatch(fromMultiBillBook(true))
+    dispatch(fromMultiBillBook(true));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -237,6 +238,7 @@ function BuyBillBook() {
     dispatch(multiStepsVal("step1"));
     dispatch(multiSelectPartyType("Seller"));
     dispatch(multiSelectPartners([]));
+    dispatch(fromMultiBillView(false));
   };
 
   return (
@@ -690,11 +692,12 @@ function BuyBillBook() {
 
                                                       <div className="d-flex">
                                                         <p className="d-a-value">
-                                                        {moment(
-                                                              bill?.billInfo[0].timeStamp
-                                                            ).format(
-                                                              "DD-MMM-YY | hh:mm:A"
-                                                            )}
+                                                          {moment(
+                                                            bill?.billInfo[0]
+                                                              .timeStamp
+                                                          ).format(
+                                                            "DD-MMM-YY | hh:mm:A"
+                                                          )}
                                                         </p>
                                                       </div>
                                                       <p
@@ -708,7 +711,8 @@ function BuyBillBook() {
                                                         }}
                                                       >
                                                         <div className="flex_class">
-                                                          {bill?.billInfo[0].billStatus ==
+                                                          {bill?.billInfo[0]
+                                                            .billStatus ==
                                                           "CANCELLED" ? (
                                                             <div className="complete-dot cancel_dot"></div>
                                                           ) : (
@@ -716,7 +720,8 @@ function BuyBillBook() {
                                                           )}
                                                           <div className="bill-name">
                                                             {getText(
-                                                              bill?.billInfo[0].billStatus
+                                                              bill?.billInfo[0]
+                                                                .billStatus
                                                             )}
                                                           </div>
                                                         </div>

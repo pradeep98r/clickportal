@@ -296,9 +296,9 @@ const SellMultiBillStep3 = (props) => {
       comm: 0,
       govtLevies: 0,
       labourCharges: parseFloat(coolieVal),
-      mandiFee: parseFloat(otherFeeVal),
+      mandiFee: 0,
       misc: 0,
-      others: 0,
+      others: parseFloat(otherFeeVal),
       rent: parseFloat(rentVal),
       rtComm: 0,
       total: getTotalExpences(),
@@ -411,6 +411,7 @@ const SellMultiBillStep3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, sellBills: arrMain };
+      console.log(clonedObject)
       postMultiSellBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
