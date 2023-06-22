@@ -13,6 +13,7 @@ import {
 } from "../../reducers/billEditItemSlice";
 import { selectTrans } from "../../reducers/transSlice";
 import { selectBuyer } from "../../reducers/buyerSlice";
+import SellBillDateSelection from "./sellBillDateSelection";
 const Step11 = (props) => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.buyerInfo);
@@ -85,10 +86,17 @@ const Step11 = (props) => {
                 />
               </div>
               <div className="col-lg-4 ">
-                <BillDateSelection
-                  parentCallbackDate={callbackFunctionDate}
-                  billDate={null} //{null}
-                />
+                {linkPath === "/sellbillbook" ? (
+                  <SellBillDateSelection
+                    parentCallbackDate={callbackFunctionDate}
+                    billDate={null} //{null}
+                  />
+                ) : (
+                  <BillDateSelection
+                    parentCallbackDate={callbackFunctionDate}
+                    billDate={null} //{null}
+                  />
+                )}
               </div>
               <div className="col-lg-4 p-0">
                 <SelectPartner

@@ -26,6 +26,7 @@ import { selectTrans } from "../../reducers/transSlice";
 import { qtyValues } from "../../components/qtyValues";
 import NoDataAvailable from "../../components/noDataAvailable";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import SellBillDateSelection from "./sellBillDateSelection";
 const colourStyles = {
   menuList: (styles) => ({
     ...styles,
@@ -454,10 +455,14 @@ const Step3PartySelect = (props) => {
         )}
 
         <div className="date_sec date_step3">
-          <BillDateSelection
+          {billEditItem.partyType == "FARMER" ? <BillDateSelection
             parentCallbackDate={callbackFunctionDate}
             billDate={selectedDate}
-          />
+          /> : <SellBillDateSelection
+          parentCallbackDate={callbackFunctionDate}
+          billDate={selectedDate}
+        />}
+          
         </div>
 
         {transpoSelectedData != null ? (

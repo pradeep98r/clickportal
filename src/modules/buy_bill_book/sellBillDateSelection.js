@@ -8,7 +8,7 @@ import { editStatus } from "../../reducers/billEditItemSlice";
 
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
-const BillDateSelection = (props) => {
+const SellBillDateSelection = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateselected = billEditItemInfo?.selectedBillDate;
   const [selectedDate, setStartDate] = useState(
@@ -17,22 +17,22 @@ const BillDateSelection = (props) => {
   const dispatch = useDispatch();
   const onclickDate = (date) => {
     setStartDate(date);
-    localStorage.setItem("setDate", date);
+    localStorage.setItem("setDate1", date);
     dispatch(billDate(date));
   };
   const [checked, setChecked] = useState(
-    localStorage.getItem("defaultDate") !== null ? true : false
+    localStorage.getItem("defaultDateSell") !== null ? true : false
   );
   const handleCheckEvent = () => {
     if (!checked) {
       setChecked(!checked);
-      localStorage.setItem("defaultDate", true);
+      localStorage.setItem("defaultDateSell", true);
       setStartDate(selectedDate);
       dispatch(billDate(selectedDate));
-      localStorage.setItem("setDate", selectedDate);
+      localStorage.setItem("setDate1", selectedDate);
     } else {
       setChecked(!checked);
-      localStorage.removeItem("defaultDate");
+      localStorage.removeItem("defaultDateSell");
       setStartDate(new Date());
       dispatch(billDate(new Date()));
     }
@@ -42,16 +42,15 @@ const BillDateSelection = (props) => {
       setStartDate(new Date(billDateselected));
       dispatch(billDate(new Date(billDateselected)));
     } else if (!checked) {
-      console.log(selectedDate,'else if')
+      console.log(selectedDate, "else if");
       setStartDate(selectedDate);
       dispatch(billDate(selectedDate));
     } else {
-      console.log(new Date(localStorage.getItem("setDate")),'else')
-      setStartDate(new Date(localStorage.getItem("setDate")));
-      dispatch(billDate(new Date(localStorage.getItem("setDate"))));
+      console.log(new Date(localStorage.getItem("setDate1")), "else");
+      setStartDate(new Date(localStorage.getItem("setDate1")));
+      dispatch(billDate(new Date(localStorage.getItem("setDate1"))));
     }
-    console.log(checked,localStorage.getItem("defaultDate"),'useeffect')
-   
+    console.log(checked, localStorage.getItem("defaultDateSell"), "useeffect");
   }, []);
 
   return (
@@ -75,11 +74,13 @@ const BillDateSelection = (props) => {
       <label className="custom-control custom-checkbox mb-0">
         <input
           type="checkbox"
-          checked={checked && localStorage.getItem("defaultDate")}
+          checked={checked && localStorage.getItem("defaultDateSell")}
           className="custom-control-input"
           id="modal_checkbox"
           value="my-value"
-          onChange={()=>{handleCheckEvent()}}
+          onChange={() => {
+            handleCheckEvent();
+          }}
         />
         <span className="custom-control-indicator"></span>
         <span className="custom-control-description">
@@ -90,4 +91,4 @@ const BillDateSelection = (props) => {
     </div>
   );
 };
-export default BillDateSelection;
+export default SellBillDateSelection;
