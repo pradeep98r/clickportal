@@ -29,23 +29,30 @@ const BillDateSelection = (props) => {
       setChecked(!checked);
       localStorage.setItem("defaultDate", true);
       setStartDate(selectedDate);
+      dispatch(billDate(selectedDate));
       localStorage.setItem("setDate", selectedDate);
     } else {
       setChecked(!checked);
       localStorage.removeItem("defaultDate");
       setStartDate(new Date());
+      dispatch(billDate(new Date()));
     }
   };
   useEffect(() => {
     if (billEditItemInfo.billEditStatus) {
       setStartDate(new Date(billDateselected));
+      dispatch(billDate(new Date(billDateselected)));
     } else if (!checked) {
+      console.log(selectedDate,'else if')
       setStartDate(selectedDate);
+      dispatch(billDate(selectedDate));
     } else {
+      console.log(new Date(localStorage.getItem("setDate")),'else')
       setStartDate(new Date(localStorage.getItem("setDate")));
+      dispatch(billDate(new Date(localStorage.getItem("setDate"))));
     }
     console.log(checked,localStorage.getItem("defaultDate"),'useeffect')
-    dispatch(billDate(selectedDate));
+   
   }, []);
 
   return (
