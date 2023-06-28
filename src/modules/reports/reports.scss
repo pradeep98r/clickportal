@@ -1,0 +1,36 @@
+.reports_nav .nav-link{
+  color: #0D0D0D;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #E4E4E4;
+  background-color: #D7F3DD;
+  margin-bottom: 10px;
+}
+
+.reports_nav .inner_link{
+    background-color: #fff;
+    border-radius: 0px;
+    border-top: 0px;
+    margin-bottom: 0px;
+}
+.reports_nav .flex_class{
+    display: flex;
+    justify-content: space-between;
+}
+.reports_nav .nav-link:hover, .reports_nav .nav-link.active_item{
+    background-color: var(--ono-primary);
+    color: #fff;
+  }
+  .reports_nav .sales{
+      margin-bottom: 0px;
+      border-radius: 10px 10px 0px 0px;
+  }
+  .reports_nav .sales:hover{
+      background-color: #D7F3DD;
+      color: #0D0D0D;
+  }
+  .sales_purchase_tabs{
+      margin-bottom: 10px;
+      border-radius: 0px 0px 10px 10px;
+  }

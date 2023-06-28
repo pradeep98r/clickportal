@@ -18,6 +18,7 @@ import partnerReducer from './reducers/partnerSlice';
 import advanceReducer from './reducers/advanceSlice';
 import multiBillStepsReducer  from './reducers/multiBillSteps';
 import billViewDisplaySliceReducer from './reducers/billViewDisplaySlice';
+import reportsReducer from './reducers/reportsSlice';
 export default configureStore({
     reducer:{
         user: userReduer,
@@ -38,6 +39,7 @@ export default configureStore({
         partnerInfo:partnerReducer,
         advanceInfo:advanceReducer,
         multiStepsInfo:multiBillStepsReducer,
-        mandiDetails:billViewDisplaySliceReducer
+        mandiDetails:billViewDisplaySliceReducer,
+        reportsInfo:reportsReducer
     }
 })
