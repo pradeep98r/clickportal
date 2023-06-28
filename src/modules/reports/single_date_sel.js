@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import date_icon from "../../assets/images/date_icon.svg";
 import prev_icon from "../../assets/images/prev_icon.svg";
 import next_icon from "../../assets/images/next_icon.svg";
@@ -8,20 +8,29 @@ import close from "../../assets/images/close.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
-import { dailySelectDate } from "../../reducers/reportsSlice";
+import { dailySelectDate, dailySummaryData } from "../../reducers/reportsSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getDailySummaryData } from "../../actions/reportsService";
 const SinleDate = () => {
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
   const [selectedDate, setStartDate] = useState(new Date());
   const [isLoading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const reportsData = useSelector((state) => state.reportsInfo);
   const selectedDateVal = reportsData?.dailySelectDate;
+  console.log(selectedDateVal, "selectedDateVal siingledate");
+  useEffect(() => {
+    if (selectedDateVal != null) {
+      var d = moment(selectedDateVal).format("YYYY-MM-DD");
+      dispatch(dailySelectDate(d));
+      getDailySummary(d);
+    }
+  }, []);
   const onPrevDate = () => {
     var currentDate = selectedDate;
     var yesterdayDate = currentDate.setDate(currentDate.getDate() - 1);
-    // var yDate = moment(+new Date(yesterdayDate)).format("YYYY-MM-DD");
     setStartDate(new Date(yesterdayDate));
     getDateValue(new Date(yesterdayDate));
   };
@@ -32,7 +41,6 @@ const SinleDate = () => {
       moment(new Date()).format("YYYY-MM-DD")
     ) {
       var yesterdayDate = currentDate.setDate(currentDate.getDate() + 1);
-      var yDate = moment(+new Date(yesterdayDate)).format("YYYY-MM-DD");
       setStartDate(new Date(yesterdayDate));
       getDateValue(new Date(yesterdayDate));
     }
@@ -45,32 +53,30 @@ const SinleDate = () => {
     $("#datePopupmodalPopup").modal("hide");
   };
   const getDateValue = async (dateValue) => {
-    console.log(dateValue);
-    var lastDay = new Date(
-      dateValue.getFullYear(),
-      dateValue.getMonth() + 1,
-      0
-    );
     var firstDate = moment(dateValue).format("YYYY-MM-DD");
-    var lastDate = moment(lastDay).format("YYYY-MM-DD");
-    lastDate = firstDate;
-    dispatch(dailySelectDate(lastDate));
-    console.log(lastDate,'date')
     closePopup();
     setLoading(true);
+    getDailySummary(firstDate);
+    dispatch(dailySelectDate(firstDate));
   };
   const dailyOnchange = (date, type) => {
     setStartDate(date);
     getDateValue(date);
-    getDailySummary();
   };
-  const getDailySummary = () => {
-    getDailySummaryData(selectedDateVal).then(
+  const getDailySummary = (date) => {
+    var d = moment(date).format("YYYY-MM-DD");
+    console.log(date, d, "click");
+    getDailySummaryData(d, clickId).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.message, {
             toastId: "success1",
           });
+          if (response.data.data != null) {
+            dispatch(dailySummaryData(response.data.data));
+          } else {
+            dispatch(dailySummaryData(null));
+          }
           console.log(response, "daily sum");
         }
       },
@@ -81,6 +87,7 @@ const SinleDate = () => {
       }
     );
   };
+
   return (
     <div>
       <div className="smartboard_date">

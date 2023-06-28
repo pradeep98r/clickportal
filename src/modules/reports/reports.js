@@ -92,7 +92,7 @@ const Reports = () => {
   useEffect(() => {
     // if (selectedTab == "dailySummary") {
     //   getDailySummary();
-    // } 
+    // }
   }, []);
   const getDailySummary = () => {
     getDailySummaryData(selectedDate).then(
@@ -101,7 +101,6 @@ const Reports = () => {
           toast.success(response.data.status.message, {
             toastId: "success1",
           });
-          console.log(response, "daily sum");
         }
       },
       (error) => {
@@ -221,6 +220,7 @@ const Reports = () => {
                     >
                       <div className="flex_class mr-0">
                         <span>{link.name} </span>
+                        <i class="fa fa-angle-right"></i>
                       </div>
                     </a>
                   </li>
