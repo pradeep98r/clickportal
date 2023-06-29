@@ -8,7 +8,7 @@ definitions:
     script: &commonScript
               echo "Setting up environment and required tools ...";
               pip3 install --upgrade pip && pip3 install awscli boto3;
-              apt-get update -y && apt-get install -y openjdk-11-jdk maven jq;
+              apt-get update -y && apt-get install -y openjdk-17-jdk maven jq;
               aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID};
               aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY};
               aws configure set default.region ap-south-1;
