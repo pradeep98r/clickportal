@@ -36,7 +36,13 @@ const CoolieRentSummary = (props) => {
                         </td>
 
                         <td className="col-3">
-                          <p className={props.fromComm ? 'color_green' : 'color_red'}>
+                          <p
+                            className={
+                              props.type == "BUYER"
+                                ? "color_green"
+                                : "color_red"
+                            }
+                          >
                             {getCurrencyNumberWithOutSymbol(item.amount)}
                           </p>
                         </td>
@@ -54,7 +60,7 @@ const CoolieRentSummary = (props) => {
                   <p>Total</p>
                 </div>
                 <div className="col-4">
-                <p className={props.fromComm ? 'color_green' : 'color_red'}>
+                  <p className={props.fromComm ? "color_green" : "color_red"}>
                     {getCurrencyNumberWithSymbol(dataObj.totalAmount)}
                   </p>
                 </div>

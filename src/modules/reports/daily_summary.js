@@ -73,13 +73,21 @@ const DailySummary = () => {
             </div>
             <div className="row row_top_margin">
               <div className="col-lg-6">
-                <p className="daily_sum_head">Purchase Commission Earned</p>
+                <p className="daily_sum_head">Sales Commission Earned</p>
                 <CoolieRentSummary
-                  summaryData={dailySummaryInfo?.commSummary}
+                  summaryData={dailySummaryInfo?.salesCommSummary}
                   fromComm = {true}
+                  type="BUYER"
                 />
               </div>
-            
+              <div className="col-lg-6">
+                <p className="daily_sum_head">Purchase Commission Earned</p>
+                <CoolieRentSummary
+                  summaryData={dailySummaryInfo?.purchaseCommSummary}
+                  fromComm = {true}
+                  type="SELLER"
+                />
+              </div>
             </div>
           </div>
         ) : (

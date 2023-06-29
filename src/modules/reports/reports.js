@@ -241,19 +241,19 @@ const Reports = () => {
                     case "dailySummary":
                       return <DailySummary />;
                     case "grossProfits":
-                      return "grossProfits";
+                      return <ComingSoon />;
                     case "salesSummary":
-                      return "salesSummary";
+                      return <ComingSoon />;
                     case "purchaseSummary":
-                      return "purchaseSummary";
+                      return <ComingSoon />;
                     case "bySeller":
-                      return "bySeller";
+                      return <ComingSoon />;
                     case "byCrop":
-                      return "byCrop";
+                      return <ComingSoon />;
                     case "byBuyer":
-                      return "byBuyer";
+                      return <ComingSoon />;
                     case "byCropPurchase":
-                      return "byCropPurchase";
+                      return <ComingSoon />;
                     case "stockReports":
                       return <ComingSoon />;
                     default:
