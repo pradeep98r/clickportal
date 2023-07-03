@@ -23,7 +23,7 @@ const GrossProfitTotals = (props) => {
 
               <th className="col-4">Total Expenses(₹)</th>
 
-              <th className="col-4">Total Revenue(₹)</th>
+              <th className="col-4">{partyType == "BUYER" ? "Total Revenue" : "Total COGS"}</th>
             </tr>
           </thead>
           <tbody>

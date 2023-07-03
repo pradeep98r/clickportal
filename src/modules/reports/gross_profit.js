@@ -4,6 +4,7 @@ import NoDataAvailable from "../../components/noDataAvailable";
 import GrossProfitTable from "./grossProfitTable";
 import $ from "jquery";
 import GrossProfitTotals from "./gross_profit_totals";
+import { getCurrencyNumberWithSymbol } from "../../components/getCurrencyNumber";
 const GrossProfit = () => {
   const reportsData = useSelector((state) => state.reportsInfo);
   const grossSummaryInfo = reportsData?.grossProfitSummaryData;
@@ -41,11 +42,18 @@ const GrossProfit = () => {
     links = updatedItemListRateType;
     setStatusArr([...updatedItemListRateType]);
   };
+  const getTotals = () =>{
+      var str = grossSummaryInfo?.totalRevenue - grossSummaryInfo?.totalCOGS;
+      return str != 0 ? getCurrencyNumberWithSymbol(str) : 0;
+  }
   return (
     <div className="main_div_padding p-0">
       <div className="container-fluid px-0">
         {grossSummaryInfo != null ? (
           <div>
+            <div className="total_gross">
+                <p>Gross Profit : {(grossSummaryInfo?.totalRevenue != 0 ? getCurrencyNumberWithSymbol(grossSummaryInfo?.totalRevenue) : 0) +  (' - ' + (grossSummaryInfo?.totalCOGS != 0 ? getCurrencyNumberWithSymbol(grossSummaryInfo?.totalCOGS) : 0))} = <span className="color_red">{getTotals()}</span> </p>
+                </div>
             {statusArr.map((link, i) => {
               return (
                 <div className="reports_nav reports_nav_g mb-3">
