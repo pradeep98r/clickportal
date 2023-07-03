@@ -6,3 +6,7 @@ export function getDailySummaryData(date,clickId) {
     console.log(date,'service')
   return axiosCommon.get(`reports/summary/caId/${clickId}?date=${date}&writerId=${writerId}`);
 }
+export function getGrossProfitData(date,clickId) {
+    console.log(date,'service')
+  return axiosCommon.get(`reports/detailed/${clickId}/caId?date=${date}&writerId=${writerId}`);
+}

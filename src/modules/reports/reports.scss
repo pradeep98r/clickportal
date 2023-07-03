@@ -79,3 +79,24 @@
     left: 0;
     top: 0;
 }
+.reports_nav_g .nav-link{
+    background-color: #ffffff;
+}
+.totals_g{
+    border-top: 1px solid #e4e4e4;
+}
+.totals_main_g{
+    border-top: 0px;
+    .row{
+        padding: 5px 0px;
+    }
+}
+.reports_nav_g{
+    position: initial;
+}
+.daily_summary_table_g{
+    border-radius: 0px;
+}
+.reports_nav_g .sales:hover{
+background-color: #fff;
+}

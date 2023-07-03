@@ -1,16 +1,30 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ComingSoon from "../../components/comingSoon";
 import "../reports/reports.scss";
 import DailySummary from "./daily_summary";
 import SinleDate from "./single_date_sel";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getDailySummaryData } from "../../actions/reportsService";
+import {
+  getDailySummaryData,
+  getGrossProfitData,
+} from "../../actions/reportsService";
+import {
+  dailySelectDate,
+  dailySummaryData,
+  grossProfitSummaryData,
+  reportType,
+} from "../../reducers/reportsSlice";
+import GrossProfit from "./gross_profit";
+import moment from "moment";
 const Reports = () => {
+  const loginData = JSON.parse(localStorage.getItem("loginResponse"));
+  const clickId = loginData.caId;
   const reportsData = useSelector((state) => state.reportsInfo);
   const selectedDate = reportsData?.dailySelectDate;
   const [selectedTab, setSelectedTab] = useState("dailySummary");
+  const dispatch = useDispatch();
   const links = [
     {
       id: 1,
@@ -45,9 +59,11 @@ const Reports = () => {
   ];
   const handleClick = (id, path) => {
     setSelectedTab(path);
-    if (path == "dailySummary") {
-      getDailySummary();
+    dispatch(reportType(path));
+    if (path == "grossProfits") {
+      getGrross(selectedDate);
     }
+    dispatch(dailySelectDate(moment(new Date()).format("YYYY-MM-DD")));
   };
   const Saleslinks = [
     {
@@ -90,22 +106,33 @@ const Reports = () => {
     },
   ];
   useEffect(() => {
+    dispatch(reportType("dailySummary"));
+
     // if (selectedTab == "dailySummary") {
     //   getDailySummary();
     // }
   }, []);
-  const getDailySummary = () => {
-    getDailySummaryData(selectedDate).then(
+
+  const getGrross = (date) => {
+    var d = moment(date).format("YYYY-MM-DD");
+    console.log(date, d, "click");
+    getGrossProfitData(d, clickId).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
           toast.success(response.data.status.message, {
-            toastId: "success1",
+            toastId: "success2",
           });
+          if (response.data.data != null) {
+            dispatch(grossProfitSummaryData(response.data.data));
+          } else {
+            dispatch(grossProfitSummaryData(null));
+          }
+          console.log(response, "gross sum");
         }
       },
       (error) => {
         toast.error(error.response.data.status.description, {
-          toastId: "error1",
+          toastId: "error2",
         });
       }
     );
@@ -241,7 +268,7 @@ const Reports = () => {
                     case "dailySummary":
                       return <DailySummary />;
                     case "grossProfits":
-                      return <ComingSoon />;
+                      return <GrossProfit />;
                     case "salesSummary":
                       return <ComingSoon />;
                     case "purchaseSummary":
