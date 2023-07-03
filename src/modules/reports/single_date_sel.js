@@ -8,10 +8,17 @@ import close from "../../assets/images/close.svg";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
-import { dailySelectDate, dailySummaryData } from "../../reducers/reportsSlice";
+import {
+  dailySelectDate,
+  dailySummaryData,
+  grossProfitSummaryData,
+} from "../../reducers/reportsSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getDailySummaryData } from "../../actions/reportsService";
+import {
+  getDailySummaryData,
+  getGrossProfitData,
+} from "../../actions/reportsService";
 const SinleDate = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -20,12 +27,20 @@ const SinleDate = () => {
   const dispatch = useDispatch();
   const reportsData = useSelector((state) => state.reportsInfo);
   const selectedDateVal = reportsData?.dailySelectDate;
-  console.log(selectedDateVal, "selectedDateVal siingledate");
+  const reportTypeVal = reportsData?.reportType;
+  console.log(selectedDateVal, reportTypeVal, "selectedDateVal siingledate");
   useEffect(() => {
+    var re = reportTypeVal != "" ? reportTypeVal : "dailySummary";
+    console.log(re, "val");
     if (selectedDateVal != null) {
       var d = moment(selectedDateVal).format("YYYY-MM-DD");
       dispatch(dailySelectDate(d));
-      getDailySummary(d);
+      if (re == "dailySummary") {
+        getDailySummary(d);
+      } else if (re == "grossProfits") {
+        console.log("grross");
+        getGrross(d);
+      }
     }
   }, []);
   const onPrevDate = () => {
@@ -56,7 +71,11 @@ const SinleDate = () => {
     var firstDate = moment(dateValue).format("YYYY-MM-DD");
     closePopup();
     setLoading(true);
-    getDailySummary(firstDate);
+    if (reportTypeVal == "dailySummary") {
+      getDailySummary(firstDate);
+    } else if (reportTypeVal == "grossProfits") {
+      getGrross(firstDate);
+    }
     dispatch(dailySelectDate(firstDate));
   };
   const dailyOnchange = (date, type) => {
@@ -87,7 +106,30 @@ const SinleDate = () => {
       }
     );
   };
-
+  const getGrross = (date) => {
+    var d = moment(date).format("YYYY-MM-DD");
+    console.log(date, d, "click");
+    getGrossProfitData(d, clickId).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.message, {
+            toastId: "success2",
+          });
+          if (response.data.data != null) {
+            dispatch(grossProfitSummaryData(response.data.data));
+          } else {
+            dispatch(grossProfitSummaryData(null));
+          }
+          console.log(response, "gross sum");
+        }
+      },
+      (error) => {
+        toast.error(error.response.data.status.description, {
+          toastId: "error2",
+        });
+      }
+    );
+  };
   return (
     <div>
       <div className="smartboard_date">

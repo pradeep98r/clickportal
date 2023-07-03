@@ -39,7 +39,7 @@ const CommonSummary = (props) => {
                           <p>{item.partyName}</p>
                         </td>
                         <td className="col-3">
-                          <p>{getIndividualTotalUnitsVal(item.qtyInfo)}</p>
+                          <p>{getIndividualTotalUnitsVal(item.qtyInfo,false)}</p>
                         </td>
                         <td className="col-3">
                           <p
@@ -61,7 +61,7 @@ const CommonSummary = (props) => {
                 <div className="col-1"></div>
                 <div className="col-1"></div>
                 <div className="col-6">
-                  <p>{getIndividualTotalUnitsVal(dataObj.totalQty)}</p>
+                  <p>{getIndividualTotalUnitsVal(dataObj.totalQty,false)}</p>
                 </div>
                 <div className="col-4">
                   <p

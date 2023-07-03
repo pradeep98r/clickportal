@@ -37,7 +37,7 @@ const TransporterSummary = (props) => {
                           <p>{item.transporterName}</p>
                         </td>
                         <td className="col-3">
-                          <p>{getIndividualTotalUnitsVal(item.collected)}</p>
+                          <p>{getIndividualTotalUnitsVal(item.collected,false)}</p>
                         </td>
                         <td className="col-3">
                           <p className="color_red">
@@ -55,7 +55,7 @@ const TransporterSummary = (props) => {
                 <div className="col-1"></div>
                 <div className="col-1"></div>
                 <div className="col-6">
-                  <p>{getIndividualTotalUnitsVal(dataObj.totalCollected)}</p>
+                  <p>{getIndividualTotalUnitsVal(dataObj.totalCollected,false)}</p>
                 </div>
                 <div className="col-4">
                   <p className="color_red">

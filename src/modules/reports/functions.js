@@ -1,4 +1,4 @@
-export default function getIndividualTotalUnitsVal(lineItemsList) {
+export default function getIndividualTotalUnitsVal(lineItemsList,fromGross) {
   var totalCrates = 0;
   var totalSacs = 0;
   var totalBoxes = 0;
@@ -8,7 +8,9 @@ export default function getIndividualTotalUnitsVal(lineItemsList) {
   var totalPcs = 0;
   lineItemsList.forEach((item) => {
     // eslint-disable-next-line default-case
-    switch (item.unit.toUpperCase()) {
+    
+    var unit = !fromGross ? item.unit.toUpperCase() : item.qtyType.toUpperCase();
+    switch (unit) {
       case "CRATES":
         totalCrates += item.qty;
 
@@ -27,12 +29,21 @@ export default function getIndividualTotalUnitsVal(lineItemsList) {
         break;
       case "KGS":
         totalKgs += item.qty;
+        if(item.qty == 0){
+            totalKgs += item.qtyWeight; 
+        }
         break;
       case "LOADS":
         totalLds += item.qty;
+        if(item.qty == 0){
+            totalLds += item.qtyWeight; 
+        }
         break;
       case "PIECES":
         totalPcs += item.qty;
+        if(item.qty == 0){
+            totalPcs += item.qtyWeight; 
+        }
         break;
       default:
         break;
