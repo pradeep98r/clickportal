@@ -21,7 +21,7 @@ const TransporterSummary = (props) => {
                     </th>
                     <th className="col-3">Name</th>
 
-                    <th className="col-3">Inventory Balance </th>
+                    <th className="col-3">Inventory Collection </th>
 
                     <th className="col-3">Paid(₹)</th>
                   </tr>
@@ -37,11 +37,20 @@ const TransporterSummary = (props) => {
                           <p>{item.transporterName}</p>
                         </td>
                         <td className="col-3">
-                          <p>{getIndividualTotalUnitsVal(item.collected,false)}</p>
+                          <p>
+                            {item.collected > 0
+                              ? getIndividualTotalUnitsVal(
+                                  item.collected,
+                                  false
+                                )
+                              : 0.0}
+                          </p>
                         </td>
                         <td className="col-3">
                           <p className="color_red">
-                            {item.paid != 0 ? getCurrencyNumberWithOutSymbol(item.paid) : 0}
+                            {item.paid != 0
+                              ? getCurrencyNumberWithOutSymbol(item.paid)
+                              : 0}
                           </p>
                         </td>
                       </tr>
@@ -53,13 +62,17 @@ const TransporterSummary = (props) => {
             <div className="totals">
               <div className="row">
                 <div className="col-1"></div>
-                <div className="col-1"></div>
-                <div className="col-6">
-                  <p>{getIndividualTotalUnitsVal(dataObj.totalCollected,false)}</p>
+                <div className="col-4"><p>Total</p></div>
+                <div className="col-3">
+                  <p>
+                    {dataObj.totalCollected > 0 ? getIndividualTotalUnitsVal(dataObj.totalCollected, false) : 0}
+                  </p>
                 </div>
                 <div className="col-4">
                   <p className="color_red">
-                    {dataObj.totalPaidRcvd != 0 ? getCurrencyNumberWithSymbol(dataObj.totalPaidRcvd) : 0}
+                    {dataObj.totalPaidRcvd != 0
+                      ? getCurrencyNumberWithSymbol(dataObj.totalPaidRcvd)
+                      : 0}
                   </p>
                 </div>
               </div>

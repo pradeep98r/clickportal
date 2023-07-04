@@ -64,7 +64,7 @@ const DailySummary = () => {
                 />
               </div>
               <div className="col-lg-6">
-                <p className="daily_sum_head">Rent ( Creats )</p>
+                <p className="daily_sum_head">Rent ( Crates )</p>
                 <CoolieRentSummary
                   summaryData={dailySummaryInfo?.rentSummary}
                   fromComm = {false}
