@@ -685,7 +685,7 @@ const SellBillStep3 = (props) => {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
       qty: parseFloat(cropArray[i].qty),
-      qtyUnit: cropArray[i].qtyUnit,
+      qtyUnit: cropArray[i].qtyUnit.toUpperCase(),
       rate: parseFloat(cropArray[i].rate),
       total: cropArray[i].total,
       wastage: cropArray[i].wastage,
@@ -696,9 +696,10 @@ const SellBillStep3 = (props) => {
       partyId: cropArray[i].buyerId,
       status: cropArray[i].status,
       rateType:
-        cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+      (cropArray[i].rateType == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].qtyUnit.toLowerCase() == "pieces") ? "RATE_PER_KG" : "RATE_PER_UNIT",
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
+      pkgUnit:''
     });
   }
   const getActualRcvd = () => {
