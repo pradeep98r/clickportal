@@ -141,7 +141,7 @@ const Reports = () => {
     <div className="main_div_padding">
       <div className="container-fluid px-0">
         <SinleDate />
-        <div class="row">
+        <div class="row reports_main_row" id = "scroll_style">
           <div class="col-md-2 mb-3 p-0">
             <ul
               className="nav nav-pills reports_nav flex-column"

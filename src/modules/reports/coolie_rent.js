@@ -32,17 +32,11 @@ const CoolieRentSummary = (props) => {
                           <p className="text-center">{index + 1}</p>
                         </td>
                         <td className="col-3">
-                          <p>{item.refId}</p>
+                          <p className="color_blue">{item.refId}</p>
                         </td>
 
                         <td className="col-3">
-                          <p
-                            className={
-                              props.type == "BUYER"
-                                ? "color_green"
-                                : "color_red"
-                            }
-                          >
+                          <p className={ props.partyType == "BUYER" ? "color_green" : "color_red"}>
                             {getCurrencyNumberWithOutSymbol(item.amount)}
                           </p>
                         </td>
@@ -55,12 +49,11 @@ const CoolieRentSummary = (props) => {
             <div className="totals">
               <div className="row">
                 <div className="col-1"></div>
-                <div className="col-2"></div>
-                <div className="col-5">
+                <div className="col-6">
                   <p>Total</p>
                 </div>
-                <div className="col-4">
-                  <p className={props.fromComm ? "color_green" : "color_red"}>
+                <div className="col-5">
+                <p className={props.fromComm ? 'color_green' : 'color_red'}>
                     {getCurrencyNumberWithSymbol(dataObj.totalAmount)}
                   </p>
                 </div>

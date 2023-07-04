@@ -132,7 +132,7 @@ const SinleDate = () => {
   };
   return (
     <div>
-      <div className="smartboard_date">
+      <div className="smartboard_date reports_date">
         <span className="" onClick={onPrevDate}>
           <img src={prev_icon} alt="icon" className="mr-3" />
         </span>

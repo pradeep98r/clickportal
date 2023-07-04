@@ -107,3 +107,10 @@ background-color: #fff;
     text-align: center;
     margin-bottom: 20px;
 }
+.color_blue{
+    color: var(--ono-blue);
+}
+.reports_main_row{
+    overflow-y: auto;
+    height: calc(100vh - 155px);
+}
