@@ -110,7 +110,7 @@ const GrossProfitTable = (props) => {
           <div className="col-1"></div>
           <div className="col-3"></div>
           <div className="col-3">
-            <p>Rent</p>
+            <p>Rent(Box/Crate/Bag/Sac)</p>
           </div>
           <div className="col-3">
             <p>
@@ -124,7 +124,7 @@ const GrossProfitTable = (props) => {
           <div className="col-1"></div>
           <div className="col-3"></div>
           <div className="col-3">
-            <p>Labour</p>
+            <p>Cooli</p>
           </div>
           <div className="col-3">
             <p>
