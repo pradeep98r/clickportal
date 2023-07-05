@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import getIndividualTotalUnitsVal from "./functions";
+import getIndividualTotalUnitsValgross from "./common_functions";
 const GrossProfitTotals = (props) => {
   const reportsData = useSelector((state) => state.reportsInfo);
   const grossSummaryInfo = reportsData?.grossProfitSummaryData;
@@ -30,7 +30,8 @@ const GrossProfitTotals = (props) => {
             <tr className="tr-tags" scope="row">
               <td className="col-1">
                 <p className="">
-                  {totalQtyInfo.length > 0 ? getIndividualTotalUnitsVal(totalQtyInfo, true) : 0}
+                  {totalQtyInfo.length > 0 ? getIndividualTotalUnitsValgross
+                  (totalQtyInfo, true) : 0}
                 </p>
               </td>
 
