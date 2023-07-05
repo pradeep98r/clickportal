@@ -6,7 +6,11 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
     var totalKgs = 0;
     var totalLds = 0;
     var totalPcs = 0;
-    var ratetype= ''
+    var ratetype= '';
+    var totalCratesWeiht = 0;
+    var totalSacsWeight = 0;
+    var totalBoxesWeight = 0;
+    var totalBagsWeight = 0;
     lineItemsList.forEach((item) => {
       // eslint-disable-next-line default-case
   
@@ -18,25 +22,29 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
         case "CRATES":
           totalCrates += item.qty;
            if(weight != 0 ){
-               ratetype = weight + ' KGS/PCS'
+               ratetype =' KGS/PCS'
+               totalCratesWeiht = weight;
            }
           break;
         case "SACS":
           totalSacs += item.qty;
           if(weight != 0 ){
-            ratetype = weight+' KGS/PCS'
+            ratetype = ' KGS/PCS';
+            totalSacsWeight = weight;
         }
           break;
         case "BOXES":
           totalBoxes += item.qty;
           if(weight != 0 ){
-            ratetype = weight+' KGS/PCS'
+            ratetype = ' KGS/PCS';
+            totalBoxesWeight = weight;
         }
           break;
         case "BAGS":
           totalBags += item.qty;
           if(weight != 0 ){
-            ratetype = weight+' KGS/PCS'
+            ratetype = ' KGS/PCS';
+            totalBagsWeight = weight;
         }
           break;
         case "KGS":
@@ -66,7 +74,7 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
     var result = ""; 
     if (totalBoxes !== 0) {
       if(ratetype != ''){
-        result += `${totalBoxes} BX | ${ratetype} |`;
+        result += `${totalBoxes} BX | ${totalBoxesWeight + ratetype} |`;
       }
       else{
         result += `${totalBoxes} BX | `;
@@ -74,7 +82,7 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
     }
     if (totalCrates !== 0) {
       if(ratetype != ''){
-        result += ` ${totalCrates} C | ${ratetype} |`;
+        result += ` ${totalCrates} C | ${totalCratesWeiht + ratetype} |`;
       }
       else{
         result += ` ${totalCrates} C | `;
@@ -83,7 +91,7 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
     if (totalSacs !== 0) {
       if(ratetype != '')
       {
-        result += ` ${totalSacs} S | ${ratetype} |`;
+        result += ` ${totalSacs} S | ${totalSacsWeight + ratetype} |`;
       }
       else{
         result += ` ${totalSacs} S |`;
@@ -91,7 +99,7 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
     }
     if (totalBags !== 0) {
      if(ratetype != ''){
-      result += ` ${totalBags} BG | ${ratetype} |`;
+      result += ` ${totalBags} BG | ${totalBagsWeight + ratetype} `;
      }
      else{
       result += ` ${totalBags} BG | `;
@@ -104,7 +112,7 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
       result += ` ${totalLds} LDS`;
     }
     if (totalPcs !== 0) {
-      result += ` ${totalPcs} PCS | `;
+      result += ` ${totalPcs} PCS  `;
     }
     var finalResult =
       result.length > 0 ? result.substring(0, result.length - 1) : result;
