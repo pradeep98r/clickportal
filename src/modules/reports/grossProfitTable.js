@@ -5,6 +5,7 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
+import getIndividualTotalUnitsValgross from "./common_functions";
 import getIndividualTotalUnitsVal from "./functions";
 const GrossProfitTable = (props) => {
   const reportsData = useSelector((state) => state.reportsInfo);
@@ -58,7 +59,7 @@ const GrossProfitTable = (props) => {
                           <div className="mb-1">
                             <p>{crop.cropName}</p>
                             <p>
-                              {getIndividualTotalUnitsVal(
+                              {getIndividualTotalUnitsValgross(
                                 crop.quantityDetails,
                                 true
                               )}
@@ -87,10 +88,10 @@ const GrossProfitTable = (props) => {
         <div className="row">
           <div className="col-1"></div>
           <div className="col-3"></div>
-          <div className="col-3">
-            <p>Total:{getIndividualTotalUnitsVal(totalQtyInfo, true)}</p>
+          <div className="col-5">
+            <p>Total:{getIndividualTotalUnitsValgross(totalQtyInfo, true)}</p>
           </div>
-          <div className="col-3"></div>
+          <div className="col-1"></div>
         </div>
         <div className="row totals_g">
           <div className="col-1"></div>
