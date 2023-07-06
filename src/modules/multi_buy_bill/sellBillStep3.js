@@ -165,12 +165,20 @@ const SellMultiBillStep3 = (props) => {
         cropDelete: false,
         status: (fromMultiBillViewStatus ? (fromPreviousStep3Status ? o.status : 2 ) : 1),
       });
-      if (o.rateType == "kgs" || o.rateType == "RATE_PER_KG") {
+      console.log(o.rateType,'rate')
+      if (o.rateType.toLowerCase() == "kgs" || o.rateType.toUpperCase() == "RATE_PER_KG") {
         o.rateType = "RATE_PER_KG";
         o.status = o.status;
+        o.qtyUnit = o.qtyUnit.toUpperCase();
       } else {
-        o.rateType = "RATE_PER_UNIT";
+        if(o.rateType.toLowerCase() == 'loads' || o.rateType.toLowerCase() == 'pieces'){
+          o.rateType = "RATE_PER_KG";
+        }
+        else{
+          o.rateType = "RATE_PER_UNIT";
+        }
         o.status = o.status;
+        o.qtyUnit = o.qtyUnit.toUpperCase();
       }
       let mergedObj = {
         ...cObj.lineItems[i],

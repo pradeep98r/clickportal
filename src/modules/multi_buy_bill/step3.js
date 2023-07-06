@@ -43,7 +43,7 @@ const Step3 = (props) => {
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
-  console.log(slectedBillDateVal,'date')
+  console.log(slectedBillDateVal, "date");
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -178,12 +178,18 @@ const Step3 = (props) => {
             : 2
           : 1,
       });
-      if (o.rateType == "kgs" || o.rateType == "RATE_PER_KG") {
+      console.log(o.rateType, "rate");
+      if (
+        o.rateType.toLowerCase() == "kgs" ||
+        o.rateType.toUpperCase() == "RATE_PER_KG"
+      ) {
         o.rateType = "RATE_PER_KG";
         o.status = o.status;
+        o.qtyUnit = o.qtyUnit.toUpperCase();
       } else {
         o.rateType = "RATE_PER_UNIT";
         o.status = o.status;
+        o.qtyUnit = o.qtyUnit.toUpperCase();
       }
       let mergedObj = {
         ...cObj.lineItems[i],
@@ -387,7 +393,8 @@ const Step3 = (props) => {
         const objCopy = { ...entry };
         objCopy.comments = commentext;
         objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
-        objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        objCopy.billAttributes.billDate =
+          moment(slectedBillDateVal).format("YYYY-MM-DD");
         arrMain.push(objCopy);
         return entry;
       });
@@ -424,15 +431,16 @@ const Step3 = (props) => {
         const objCopy = { ...entry };
         objCopy.comments = commentext;
         objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
-        if(fromMultiBillViewStatus){
-          objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        if (fromMultiBillViewStatus) {
+          objCopy.billAttributes.billDate =
+            moment(slectedBillDateVal).format("YYYY-MM-DD");
         }
         arrMain.push(objCopy);
         return entry;
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
-      console.log(clonedObject)
+      console.log(clonedObject);
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
