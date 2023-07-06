@@ -75,9 +75,9 @@ const Step2 = (props) => {
     var val = 0;
     obj1.rateType.toLowerCase() == "kgs" ||
     obj1.rateType.toLowerCase() == "loads" ||
-    obj1.rateType.toLowerCase() == "pieces" ||
-    (obj1.qtyUnit.toLowerCase() == "pieces" &&
-      obj1.rateType.toUpperCase() == "RATE_PER_UNIT") ||
+    // obj1.rateType.toLowerCase() == "pieces" ||
+    // (obj1.qtyUnit.toLowerCase() == "pieces" &&
+    //   obj1.rateType.toUpperCase() == "RATE_PER_UNIT") ||
     (obj1.qtyUnit.toLowerCase() == "loads" &&
       obj1.rateType.toUpperCase() == "RATE_PER_UNIT")
       ? (val = (obj1.weight - obj1.wastage) * obj1.rate)
@@ -191,11 +191,12 @@ const Step2 = (props) => {
               if (data.cropDelete) continue;
               const qtyUnit = data.qtyUnit?.toLowerCase();
               const rateType = data.rateType?.toLowerCase();
-              if (["loads", "pieces"].includes(qtyUnit)) {
+              if (["loads"].includes(qtyUnit)) {
                 if (data.weight == 0) {
                   toast.error("Please enter weight", {
                     toastId: "error1",
                   });
+                  console.log('we3')
                   return null;
                 } else if (data.rate == 0) {
                   toast.error("Please enter rate", {
@@ -218,6 +219,7 @@ const Step2 = (props) => {
                   toast.error("Please enter weight", {
                     toastId: "error1",
                   });
+                  console.log('we2')
                   return null;
                 } else if (data.rate == 0) {
                   toast.error("Please enter rate", {
@@ -230,7 +232,7 @@ const Step2 = (props) => {
                   });
                   return null;
                 }
-              } else if (qtyUnit === rateType) {
+              } else if (qtyUnit === rateType || data.qtyUnit.toLowerCase() == 'pieces') {
                 if (data.qty == 0) {
                   toast.error("Please enter Quantity", {
                     toastId: "error1",
@@ -257,9 +259,11 @@ const Step2 = (props) => {
                   });
                   return null;
                 } else if (data.weight == 0) {
+                 
                   toast.error("Please enter weight", {
                     toastId: "error2",
                   });
+                 console.log('we1')
                   return null;
                 } else if (data.rate == 0) {
                   toast.error("Please enter rate", {
@@ -405,7 +409,10 @@ const Step2 = (props) => {
         console.log(response.data.data, cIndex, qSetting, "allcrrops");
         Object.assign(item, {
           cropSelect: "",
-          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex).toUpperCase() : "CRATES",
+          qtyUnit:
+            cIndex != -1
+              ? getUnitVal(qSetting, cIndex).toUpperCase()
+              : "CRATES",
           rateType:
             defaultUnitTypeVal == "unit_kg"
               ? "KGS"
@@ -465,7 +472,10 @@ const Step2 = (props) => {
               : "CRATES",
           rate: 0,
           total: 0,
-          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex).toUpperCase() : "CRATES",
+          qtyUnit:
+            cIndex != -1
+              ? getUnitVal(qSetting, cIndex).toUpperCase()
+              : "CRATES",
           checked: false,
           bags: [],
           count: 1,
@@ -520,13 +530,15 @@ const Step2 = (props) => {
                 ? getQuantityUnit(qSetting, cIndex)
                 : e.target.value,
             qty:
-              e.target.value == "LOADS" ||
-              e.target.value == "KGS" ||
-              e.target.value == "PIECES"
-                ? 0
+              e.target.value == "LOADS" || e.target.value == "KGS"
+                ? // ||
+                  // e.target.value == "PIECES"
+                  0
                 : cropData[i].qty,
             weight:
-            (cropData[i].rateType.toUpperCase() == 'RATE_PER_UNIT' || cropData[i].rateType.toUpperCase() == cropData[i].qtyUnit.toUpperCase())
+              cropData[i].rateType.toUpperCase() == "RATE_PER_UNIT" ||
+              cropData[i].rateType.toUpperCase() ==
+                cropData[i].qtyUnit.toUpperCase()
                 ? 0
                 : cropData[i].weight,
           };
@@ -550,12 +562,12 @@ const Step2 = (props) => {
 
   // getting table based on unit type
   const setQuantityBasedtable = (unitType) => {
-    console.log(unitType,'unit')
+    console.log(unitType, "unit");
     var t = false;
     if (
       unitType?.toLowerCase() == "kgs" ||
-      unitType?.toLowerCase() == "loads" ||
-      unitType?.toLowerCase() == "pieces"
+      unitType?.toLowerCase() == "loads"
+      // unitType?.toLowerCase() == "pieces"
     ) {
       t = true;
     }
@@ -1046,38 +1058,45 @@ const Step2 = (props) => {
                                   <option value="PIECES">Pieces </option>
                                 </select>
                               </td>
-                              
+
                               {!setQuantityBasedtable(
                                 multiSelectPartnersArray[index].lineItems[i]
                                   .qtyUnit
                               ) ? (
-                                <td className="col_1">
-                                  <select
-                                    className="form-control qty_dropdown dropdown pl-0 m-0"
-                                    value={
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].rateType
-                                    }
-                                    onChange={getRateType(
-                                      multiSelectPartnersArray[index].lineItems,
-                                      i,
-                                      index
-                                    )}
-                                  >
-                                    <option
-                                      value={multiSelectPartnersArray[
-                                        index
-                                      ].lineItems[i].qtyUnit}
-                                    >
-                                      {
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit.toLowerCase() == "pieces" ? (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                ) : (
+                                  <td className="col_1">
+                                    <select
+                                      className="form-control qty_dropdown dropdown pl-0 m-0"
+                                      value={
                                         multiSelectPartnersArray[index]
-                                          .lineItems[i].qtyUnit
-                                      }{" "}
-                                    </option>
-                                    <option value="KGS"> Kg </option>
-                                  </select>
-                                </td>
+                                          .lineItems[i].rateType
+                                      }
+                                      onChange={getRateType(
+                                        multiSelectPartnersArray[index]
+                                          .lineItems,
+                                        i,
+                                        index
+                                      )}
+                                    >
+                                      <option
+                                        value={
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].qtyUnit
+                                        }
+                                      >
+                                        {
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].qtyUnit
+                                        }{" "}
+                                      </option>
+                                      <option value="KGS"> Kg </option>
+                                    </select>
+                                  </td>
+                                )
                               ) : (
                                 <td className="col_1 fadeOut_col">-</td>
                               )}
@@ -1125,52 +1144,57 @@ const Step2 = (props) => {
                                   ].qtyUnit?.toLowerCase()
                                 : multiSelectPartnersArray[index].lineItems[i]
                                     .rateType) ? (
-                                <td className="col_1">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="weight"
-                                    onFocus={(e) => resetInput(e)}
-                                    value={
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].weight
-                                    }
-                                    onChange={getWeightValue(
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].cropId,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index].lineItems
-                                    )}
-                                  />
-                                </td>
+                                (multiSelectPartnersArray[index].lineItems[i].qtyUnit.toLowerCase()=='pieces' ? <td className="col_1 fadeOut_col">-</td> : <td className="col_1">
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="weight"
+                                  onFocus={(e) => resetInput(e)}
+                                  value={
+                                    multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].weight
+                                  }
+                                  onChange={getWeightValue(
+                                    multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].cropId,
+                                    i,
+                                    index,
+                                    multiSelectPartnersArray[index].lineItems
+                                  )}
+                                />
+                              </td>)
                               ) : setQuantityBasedtable(
                                   multiSelectPartnersArray[index].lineItems[i]
                                     .qtyUnit
                                 ) ? (
-                                <td className="col_1">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="weight"
-                                    onFocus={(e) => resetInput(e)}
-                                    value={
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].weight
-                                    }
-                                    onChange={getWeightValue(
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].cropId,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index].lineItems
-                                    )}
-                                  />
-                                </td>
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit.toLowerCase() == "pieces" ? (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                ) : (
+                                  <td className="col_1">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="weight"
+                                      onFocus={(e) => resetInput(e)}
+                                      value={
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].weight
+                                      }
+                                      onChange={getWeightValue(
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].cropId,
+                                        i,
+                                        index,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems
+                                      )}
+                                    />
+                                  </td>
+                                )
                               ) : (
                                 <td className="col_1 fadeOut_col">-</td>
                               )}
@@ -1322,16 +1346,16 @@ const Step2 = (props) => {
                                     multiSelectPartnersArray[index].lineItems[
                                       i
                                     ].rateType.toLowerCase() == "loads" ||
-                                    multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].rateType.toLowerCase() == "pieces" ||
-                                    (multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].qtyUnit.toLowerCase() == "pieces" &&
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].rateType.toUpperCase() ==
-                                        "RATE_PER_UNIT") ||
+                                    // multiSelectPartnersArray[index].lineItems[
+                                    //   i
+                                    // ].rateType.toLowerCase() == "pieces" ||
+                                    // (multiSelectPartnersArray[index].lineItems[
+                                    //   i
+                                    // ].qtyUnit.toLowerCase() == "pieces" &&
+                                    //   multiSelectPartnersArray[index].lineItems[
+                                    //     i
+                                    //   ].rateType.toUpperCase() ==
+                                    //     "RATE_PER_UNIT") ||
                                     (multiSelectPartnersArray[index].lineItems[
                                       i
                                     ].qtyUnit.toLowerCase() == "loads" &&
@@ -1339,14 +1363,21 @@ const Step2 = (props) => {
                                         i
                                       ].rateType.toUpperCase() ==
                                         "RATE_PER_UNIT")
-                                      ? (
-                                          (multiSelectPartnersArray[index]
-                                            .lineItems[i].weight -
-                                            multiSelectPartnersArray[index]
-                                              .lineItems[i].wastage) *
+                                      ? (multiSelectPartnersArray[index].lineItems[i].qtyUnit.toLowerCase() == 'pieces' ? (
+                                        (multiSelectPartnersArray[index]
+                                          .lineItems[i].qty -
                                           multiSelectPartnersArray[index]
-                                            .lineItems[i].rate
-                                        ).toFixed(2)
+                                            .lineItems[i].wastage) *
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].rate
+                                      ).toFixed(2) : (
+                                        (multiSelectPartnersArray[index]
+                                          .lineItems[i].weight -
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].wastage) *
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].rate
+                                      ).toFixed(2) )
                                       : (
                                           (multiSelectPartnersArray[index]
                                             .lineItems[i].qty -

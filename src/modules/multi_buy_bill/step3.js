@@ -177,20 +177,24 @@ const Step3 = (props) => {
             ? o.status
             : 2
           : 1,
+        pkgUnit: "",
       });
       console.log(o.rateType, "rate");
       if (
         o.rateType.toLowerCase() == "kgs" ||
         o.rateType.toUpperCase() == "RATE_PER_KG"
       ) {
-        o.rateType = "RATE_PER_KG";
+        if (o.qtyUnit.toLowerCase() == "pieces") {
+          o.rateType = "RATE_PER_UNIT";
+        } else {
+          o.rateType = "RATE_PER_KG";
+        }
         o.status = o.status;
         o.qtyUnit = o.qtyUnit.toUpperCase();
       } else {
-         if(o.rateType.toLowerCase() == 'loads' || o.rateType.toLowerCase() == 'pieces'){
+        if (o.rateType.toLowerCase() == "loads") {
           o.rateType = "RATE_PER_KG";
-        }
-        else{
+        } else {
           o.rateType = "RATE_PER_UNIT";
         }
         o.status = o.status;
