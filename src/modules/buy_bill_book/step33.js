@@ -477,7 +477,7 @@ const Step33 = (props) => {
                 settingName: res[j].customFieldName,
                 cstmName: res[j].settingName,
                 tableType: 1,
-                value: trVa != 0 ? trVa.toFixed(2) : trVa,
+                value: trVa != 0 ? trVa : trVa,
                 commentText: commentTextFor,
               };
             }
