@@ -164,14 +164,19 @@ const SellMultiBillStep3 = (props) => {
         mnSubLotId: 0,
         cropDelete: false,
         status: (fromMultiBillViewStatus ? (fromPreviousStep3Status ? o.status : 2 ) : 1),
+        pkgUnit:''
       });
       console.log(o.rateType,'rate')
       if (o.rateType.toLowerCase() == "kgs" || o.rateType.toUpperCase() == "RATE_PER_KG") {
-        o.rateType = "RATE_PER_KG";
+        if (o.qtyUnit.toLowerCase() == "pieces") {
+          o.rateType = "RATE_PER_UNIT";
+        } else {
+          o.rateType = "RATE_PER_KG";
+        }
         o.status = o.status;
         o.qtyUnit = o.qtyUnit.toUpperCase();
       } else {
-        if(o.rateType.toLowerCase() == 'loads' || o.rateType.toLowerCase() == 'pieces'){
+        if(o.rateType.toLowerCase() == 'loads'){
           o.rateType = "RATE_PER_KG";
         }
         else{
