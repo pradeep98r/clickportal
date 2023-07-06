@@ -18,7 +18,7 @@ import prev_icon from "../../assets/images/prev_icon.svg";
 import next_icon from "../../assets/images/next_icon.svg";
 import {
   getCurrencyNumberWithOutSymbol,
-  getCurrencyNumberWithOneDigit,
+  getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
 import { useDispatch, useSelector } from "react-redux";
 import { billViewInfo } from "../../reducers/billViewSlice";
@@ -35,15 +35,24 @@ import {
   allSellBillsData,
   beginDate,
   closeDate,
+  allMultiSellBillsData,
 } from "../../reducers/ledgerSummarySlice";
+import {
+  fromMultiBillBook,
+  fromMultiBillView,
+  multiSelectPartyType,
+  multiStepsVal,
+  selectedMultBillArray,
+} from "../../reducers/multiBillSteps";
+import MultiBillSteps from "../multi_buy_bill/steps";
+import MultiBillView from "../multi_buy_bill/multiBillView";
 const SellBillBook = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
-  const [allData, setAllData] = useState([]);
+  const [allData, setAllDataStatus] = useState(false);
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   var sellBillData = ledgersSummary?.allSellBillsData;
-  console.log(sellBillData)
-  // const [sellBillData, setSellBillData] = useState(allData);
+  var sellMultiBillData = ledgersSummary?.allMultiSellBillsData;
   const [isLoading, setLoading] = useState(true);
   const [isOnline, setOnline] = useState(false);
   const langData = localStorage.getItem("languageData");
@@ -103,24 +112,33 @@ const SellBillBook = (props) => {
     dispatch(closeDate(toDate));
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
-        console.log(response.data.data);
         if (response.data.data != null) {
-          setAllData(response.data.data);
+          if (
+            response.data.data.singleBills.length != 0 ||
+            response.data.data.groupBills.length != 0
+          ) {
+            setAllDataStatus(true);
+          }
           response.data.data.singleBills.map((i, ind) => {
             Object.assign(i, { index: ind });
           });
+          console.log(response.data.data, "bills");
           dispatch(allSellBillsData(response.data.data.singleBills));
-          // setSellBillData(response.data.data.singleBills);
+          if (response.data.data.groupBills.length > 0) {
+            response.data.data.groupBills.map((i, ind) => {
+              Object.assign(i, { index: ind });
+            });
+            dispatch(allMultiSellBillsData(response.data.data.groupBills));
+          }
+          setOnline(false);
         } else {
           dispatch(allSellBillsData([]));
-          // setSellBillData([]);
+          dispatch(allMultiSellBillsData([]));
         }
+
         setLoading(false);
       })
       .catch((error) => {
-        if (error.toJSON().message === "Network Error") {
-          setOnline(true);
-        }
         console.log(error);
       });
   };
@@ -142,6 +160,7 @@ const SellBillBook = (props) => {
     Object.assign(object, { index: i });
     dispatch(billViewInfo(bill));
     localStorage.setItem("billData", JSON.stringify(bill));
+    dispatch(fromMultiBillBook(false));
   };
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -163,24 +182,7 @@ const SellBillBook = (props) => {
     dispatch(selectBuyer(null));
     dispatch(fromBillbook(true));
   };
-  const getCropUnit = (unit) => {
-    var unitType = "";
-    switch (unit.toUpperCase()) {
-      case "CRATES":
-        unitType = "C";
-        break;
-      case "BOXES":
-        unitType = "BX";
-        break;
-      case "BAGS":
-        unitType = "BG";
-        break;
-      case "SACS":
-        unitType = "S";
-        break;
-    }
-    return unitType;
-  };
+
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
     let result = [];
@@ -218,6 +220,27 @@ const SellBillBook = (props) => {
       callbackFunction(newDate, newDate, "Daily");
       setCurrentDate(newDate);
     }
+  };
+  const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
+    useState(false);
+  const [showMultiStepsModal, setShowMultiStepsModal] = useState(false);
+  const onclickMultibill = () => {
+    setShowMultiStepsModalStatus(true);
+    setShowMultiStepsModal(true);
+    dispatch(multiStepsVal("step1"));
+    dispatch(multiSelectPartyType("Buyer"));
+    dispatch(fromMultiBillView(false));
+  };
+  const [showMultiBillModalStatus, setMultiShowBillModalStatus] =
+    useState(false);
+  const [showMultiBillModal, setMultiShowBillModal] = useState(false);
+  const multiBillOnClick = (bill, i) => {
+    setMultiShowBillModalStatus(true);
+    setMultiShowBillModal(true);
+    dispatch(selectedMultBillArray(bill));
+    dispatch(multiSelectPartyType("BUYER"));
+    dispatch(fromMultiBillBook(true));
+    
   };
   return (
     <div>
@@ -297,9 +320,20 @@ const SellBillBook = (props) => {
                         handleSearch(event);
                       }}
                     /> */}
+
+                        <button
+                          className="primary_btn add_bills_btn mr-2"
+                          onClick={onclickMultibill}
+                        >
+                          <img
+                            src={addbill_icon}
+                            alt="image"
+                            className="mr-2"
+                          />
+                          Add Multi Bill
+                        </button>
                         <button
                           className="primary_btn add_bills_btn"
-                          // href="/sellbillstep1"
                           onClick={handleStep1Header}
                         >
                           <img
@@ -319,13 +353,44 @@ const SellBillBook = (props) => {
                           role="tabpanel"
                           aria-labelledby="home-tab"
                         >
-                          {sellBillData.length > 0 ? (
-                            <div>
+                          {!allData ? (
+                            <div className="row partner_no_data_widget_row">
+                              <div className="col-lg-5">
+                                <div className="partner_no_data_widget">
+                                  <div className="text-center">
+                                    <img
+                                      src={no_data_icon}
+                                      alt="icon"
+                                      className="d-flex mx-auto justify-content-center"
+                                    />
+                                    <p>
+                                      No bills available for today. <br></br>
+                                      Add to create a new bill
+                                    </p>
+
+                                    <button
+                                      className="primary_btn mr-2"
+                                      onClick={onclickMultibill}
+                                    >
+                                      Add Multi Bill
+                                    </button>
+                                    <button
+                                      className="primary_btn"
+                                      onClick={handleStep1Header}
+                                    >
+                                      Add single Bill
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="buy_bills" id="scroll_style">
                               <div className="row header_row">
                                 <div className="col-lg-4">
                                   <div className="row">
                                     <div className="col-lg-7 col-sm-12 p-0">
-                                      <p>{langFullData.buyer}</p>
+                                      <p>Buyer</p>
                                     </div>
                                     <div className="col-lg-5 col-sm-12">
                                       <p>{langFullData.billId}</p>
@@ -351,108 +416,276 @@ const SellBillBook = (props) => {
                                 <div className="col-lg-2 p-0">
                                   <div className="row">
                                     <div className="col-lg-12 col-sm-12">
-                                      <p>{langFullData.totalReceivables} (₹)</p>
+                                      <p>Total Receivables (₹)</p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              <div className="buy_bills" id="scroll_style">
-                                {sellBillData.map((bill, index) => (
-                                  <button
-                                    onClick={() =>
-                                      billOnClick(bill.caBSeq, bill, index)
-                                    }
-                                    key={index}
-                                    className="billsDiv"
-                                  >
-                                    <div className="row bg_white bills_rows bottom_space">
-                                      <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
-                                        <div className="row full_width">
-                                          <div className="col-lg-7 col-sm-12 p-0 col">
-                                            <div className="bill_user_details flex_class mr-0">
-                                              {bill.profilePic ? (
-                                                <img
-                                                  src={bill.profilePic}
-                                                  className="user_icon"
-                                                  alt="icon"
-                                                />
-                                              ) : (
-                                                <img
-                                                  src={single_bill}
-                                                  className="user_icon"
-                                                  alt="icon"
-                                                />
-                                              )}
-
-                                              <div className="text-left">
-                                                <h6 className="userName">
-                                                  {bill.buyerName +
-                                                    "-" +
-                                                    bill.shortName}
-                                                </h6>
-                                                <div className="d-flex align-items-center">
-                                                  <h6 className="mobile">
-                                                    {getPartnerType(
-                                                      bill.partyType,
-                                                      bill.trader
-                                                    ) +
-                                                      "-" +
-                                                      bill.buyerId}
-                                                  </h6>
-                                                  <h6 className="mobile desk_responsive">
-                                                    &nbsp;
-                                                    {" |  " +
-                                                      getMaskedMobileNumber(
-                                                        bill.mobile
-                                                      )}
-                                                  </h6>
-                                                </div>
-                                                <h6 className="mobile mobile_responsive">
-                                                  {getMaskedMobileNumber(
-                                                    bill.mobile
-                                                  )}
-                                                </h6>
-                                                <h6 className="address">
-                                                  {bill.buyerAddress}
-                                                </h6>
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div className="col-lg-5 col-sm-12 billid_div">
-                                            <div className="d-flex align-items-center billid_div_flex">
-                                              <div className="text-left">
-                                                <p className="biilid">
-                                                  {langFullData.billNo} :{" "}
-                                                  {bill.caBSeq}{" "}
-                                                </p>
-                                                <div className="d-flex">
-                                                  <p className="d-a-value">
-                                                    {moment(
-                                                      bill?.timeStamp
-                                                    ).format(
-                                                      "DD-MMM-YY | hh:mm:A"
+                              {sellMultiBillData.length > 0 && (
+                                <div>
+                                  <div className="" id="">
+                                    {sellMultiBillData.map((bill, index) => (
+                                      <button
+                                        onClick={() =>
+                                          multiBillOnClick(bill, index)
+                                        }
+                                        key={index}
+                                        className="billsDiv"
+                                      >
+                                        <div className="bills_rows p-0 multi_bill_row">
+                                          {bill?.billInfo.map(
+                                            (item, pIndex) => {
+                                              return (
+                                                <div className="row main_row mb-0 bg_white bottom_space">
+                                                  <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                                    <div className="row full_width">
+                                                      <div className="col-lg-7 col-sm-12 p-0 col">
+                                                        <div className="bill_user_details flex_class mr-0">
+                                                          {item.profilePic ? (
+                                                            <img
+                                                              src={
+                                                                item.profilePic
+                                                              }
+                                                              className="user_icon"
+                                                              alt="icon"
+                                                            />
+                                                          ) : (
+                                                            <img
+                                                              src={single_bill}
+                                                              className="user_icon"
+                                                              alt="icon"
+                                                            />
+                                                          )}
+                                                          <div className="text-left">
+                                                            <h6 className="userName">
+                                                              {item.buyerName +
+                                                                "" +
+                                                                "-" +
+                                                                item.shortName}
+                                                            </h6>
+                                                            <div className="d-flex align-items-center">
+                                                              <div>
+                                                                <h6 className="mobile">
+                                                                  {getPartnerType(
+                                                                    item.partyType,
+                                                                    item.trader
+                                                                  ) +
+                                                                    "-" +
+                                                                    item.buyerId}
+                                                                </h6>
+                                                              </div>
+                                                              <h6 className="mobile desk_responsive">
+                                                                &nbsp;
+                                                                {" |  " +
+                                                                  getMaskedMobileNumber(
+                                                                    item.mobile
+                                                                  )}
+                                                              </h6>
+                                                            </div>
+                                                            <h6 className="mobile mobile_responsive">
+                                                              {getMaskedMobileNumber(
+                                                                item.mobile
+                                                              )}
+                                                            </h6>
+                                                            <h6 className="address">
+                                                              {
+                                                                item.buyerAddress
+                                                              }
+                                                            </h6>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div className="col-lg-5 col-sm-12 billid_div"></div>
+                                                    </div>
+                                                  </div>
+                                                  <div className="col-lg-6 p-0">
+                                                    {item.lineItems.map(
+                                                      (crop, index) => (
+                                                        <div
+                                                          className="row crops_row_bills"
+                                                          key={index}
+                                                        >
+                                                          <div className="col-lg-4 col-sm-12 col">
+                                                            <p className="flex_class crop_name">
+                                                              <img
+                                                                src={
+                                                                  crop.imageUrl
+                                                                }
+                                                                className="crop_image"
+                                                              />
+                                                              {crop.cropSufx !=
+                                                              null
+                                                                ? crop.cropSufx !=
+                                                                  ""
+                                                                  ? crop.cropName +
+                                                                    " " +
+                                                                    `(${crop.cropSufx})`
+                                                                  : crop.cropName
+                                                                : crop.cropName}
+                                                            </p>
+                                                          </div>
+                                                          <div className="col-lg-4 col-sm-12 col">
+                                                            {/* {crop.qtyUnit+crop.qty} */}
+                                                            <div
+                                                              className="d-flex align-items-center"
+                                                              style={{
+                                                                height: "100%",
+                                                              }}
+                                                            >
+                                                              <div className="text-left">
+                                                                <div>
+                                                                  {" "}
+                                                                  {qtyValues(
+                                                                    crop.qty,
+                                                                    crop.qtyUnit,
+                                                                    crop.weight,
+                                                                    crop.wastage,
+                                                                    crop.rateType
+                                                                  )}
+                                                                </div>
+                                                                {crop.bags !==
+                                                                  null &&
+                                                                crop.bags
+                                                                  .length >
+                                                                  0 ? (
+                                                                  <div className="flex_class">
+                                                                    <input
+                                                                      type="checkbox"
+                                                                      checked={
+                                                                        true
+                                                                      }
+                                                                      id="modal_checkbox"
+                                                                      value="my-value"
+                                                                      className="checkbox_t"
+                                                                    />
+                                                                    <p className="inv-weight">
+                                                                      Individual
+                                                                      Weights
+                                                                      <span className="bags-data">
+                                                                        <div className="bags-values">
+                                                                          {crop.bags.map(
+                                                                            (
+                                                                              itemBag
+                                                                            ) => {
+                                                                              return (
+                                                                                <span>
+                                                                                  <span>
+                                                                                    {itemBag.weight
+                                                                                      ? itemBag.weight +
+                                                                                        " "
+                                                                                      : ""}
+                                                                                  </span>
+                                                                                  <span className="wastsge_color">
+                                                                                    {itemBag.wastage
+                                                                                      ? " - "
+                                                                                      : ""}
+                                                                                  </span>
+                                                                                  <span className="wastsge_color">
+                                                                                    {itemBag.wastage
+                                                                                      ? itemBag.wastage
+                                                                                      : ""}
+                                                                                  </span>
+                                                                                  <span>
+                                                                                    ,{" "}
+                                                                                  </span>
+                                                                                </span>
+                                                                              );
+                                                                            }
+                                                                          )}
+                                                                        </div>
+                                                                        <span>
+                                                                          ={" "}
+                                                                          {totalBagsValue(
+                                                                            crop.bags
+                                                                          ) +
+                                                                            "KGS"}
+                                                                        </span>
+                                                                      </span>
+                                                                    </p>
+                                                                  </div>
+                                                                ) : (
+                                                                  ""
+                                                                )}
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                          <div className="col-lg-2 col-sm-12 col flex_class">
+                                                            <p className="number_overflow crop_name">
+                                                              {getCurrencyNumberWithOutSymbol(
+                                                                crop.rate
+                                                              )}
+                                                            </p>
+                                                          </div>
+                                                          <div className="col-lg-2 col-sm-12 col flex_class">
+                                                            <p className="number_overflow crop_name">
+                                                              {getCurrencyNumberWithOutSymbol(
+                                                                crop.total
+                                                              )}
+                                                            </p>
+                                                          </div>
+                                                        </div>
+                                                      )
                                                     )}
-                                                  </p>
-                                                </div>
-                                                <p
-                                                  style={{
-                                                    color:
-                                                      bill.billStatus ==
-                                                      "CANCELLED"
-                                                        ? "#d43939"
-                                                        : "#1C1C1C",
-                                                  }}
-                                                >
-                                                  {bill?.paid == true ? (
-                                                    <div className="flex_class">
-                                                      <div className="complete-dot"></div>
-                                                      <div className="bill-name">
-                                                        {getText("Amount Received")}
+                                                  </div>
+                                                  <div className="col-lg-2 flex_class">
+                                                    <div
+                                                      className="row"
+                                                      style={{
+                                                        width: "100%",
+                                                      }}
+                                                    >
+                                                      <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
+                                                        <p className="crop_name payble_text color_green">
+                                                          {getCurrencyNumberWithOutSymbol(
+                                                            item.totalReceivable
+                                                          )}
+                                                        </p>
+                                                        <img
+                                                          src={left_arrow}
+                                                          alt="left-arrow"
+                                                          className="left-arrow-img"
+                                                        />
                                                       </div>
                                                     </div>
-                                                  ) : (
-                                                    <div className="flex_class p-0">
-                                                      {bill.billStatus ==
+                                                  </div>
+                                                </div>
+                                              );
+                                            }
+                                          )}
+                                        </div>
+                                        <div className="totals_col_grp ">
+                                          <div className="row">
+                                            <div className="col-lg-2"></div>
+                                            <div className="col-lg-3">
+                                              <div className="d-flex align-items-center billid_div_flex">
+                                                <div className="text-left">
+                                                  <p className="biilid">
+                                                    Group ID : {bill.groupId}{" "}
+                                                  </p>
+
+                                                  <div className="d-flex">
+                                                    <p className="d-a-value">
+                                                      {moment(
+                                                        bill?.billInfo[0]
+                                                          .timeStamp
+                                                      ).format(
+                                                        "DD-MMM-YY | hh:mm:A"
+                                                      )}
+                                                    </p>
+                                                  </div>
+                                                  <p
+                                                    style={{
+                                                      color:
+                                                        bill?.billInfo[0]
+                                                          .billStatus ==
+                                                        "CANCELLED"
+                                                          ? "#d43939"
+                                                          : "#1C1C1C",
+                                                    }}
+                                                  >
+                                                    <div className="flex_class">
+                                                      {bill?.billInfo[0]
+                                                        .billStatus ==
                                                       "CANCELLED" ? (
                                                         <div className="complete-dot cancel_dot"></div>
                                                       ) : (
@@ -460,169 +693,316 @@ const SellBillBook = (props) => {
                                                       )}
                                                       <div className="bill-name">
                                                         {getText(
-                                                          bill.billStatus
+                                                          bill?.billInfo[0]
+                                                            .billStatus
                                                         )}
                                                       </div>
                                                     </div>
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="col-lg-7">
+                                              <div className="row d-flex flex-end">
+                                                <div className="col-lg-4">
+                                                  <p>Group Total :</p>
+                                                </div>
+                                                <div className="col-lg-3">
+                                                  <p className="payble_text color_green">
+                                                    {getCurrencyNumberWithSymbol(
+                                                      bill?.grossTotal
+                                                    )}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="row d-flex flex-end">
+                                                <div className="col-lg-4">
+                                                  <p>Total Expenses :</p>
+                                                </div>
+                                                <div className="col-lg-3">
+                                                  <p className="payble_text color_green">
+                                                    {bill?.totalExpenses != 0
+                                                      ? getCurrencyNumberWithSymbol(
+                                                          bill?.totalExpenses
+                                                        )
+                                                      : 0}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              <div className="row d-flex flex-end">
+                                                <div className="col-lg-4">
+                                                  <p>Total Revenue :</p>
+                                                </div>
+                                                <div className="col-lg-3">
+                                                  <p className="payble_text color_green">
+                                                    {" "}
+                                                    {getCurrencyNumberWithSymbol(
+                                                      bill?.totalCOGS
+                                                    )}{" "}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </button>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {sellBillData.length > 0 && (
+                                <div className="" id="">
+                                  {sellBillData.map((bill, index) => (
+                                    <button
+                                      onClick={() =>
+                                        billOnClick(bill.caBSeq, bill, index)
+                                      }
+                                      key={index}
+                                      className="billsDiv"
+                                    >
+                                      <div className="row bg_white bills_rows bottom_space">
+                                        <div className="col-lg-4 col ps-0 flex_class p-0 mr-0">
+                                          <div className="row full_width">
+                                            <div className="col-lg-7 col-sm-12 p-0 col">
+                                              <div className="bill_user_details flex_class mr-0">
+                                                {bill.profilePic ? (
+                                                  <img
+                                                    src={bill.profilePic}
+                                                    className="user_icon"
+                                                    alt="icon"
+                                                  />
+                                                ) : (
+                                                  <img
+                                                    src={single_bill}
+                                                    className="user_icon"
+                                                    alt="icon"
+                                                  />
+                                                )}
+
+                                                <div className="text-left">
+                                                  <h6 className="userName">
+                                                    {bill.buyerName +
+                                                      "-" +
+                                                      bill.shortName}
+                                                  </h6>
+                                                  <div className="d-flex align-items-center">
+                                                    <h6 className="mobile">
+                                                      {getPartnerType(
+                                                        bill.partyType,
+                                                        bill.trader
+                                                      ) +
+                                                        "-" +
+                                                        bill.buyerId}
+                                                    </h6>
+                                                    <h6 className="mobile desk_responsive">
+                                                      &nbsp;
+                                                      {" |  " +
+                                                        getMaskedMobileNumber(
+                                                          bill.mobile
+                                                        )}
+                                                    </h6>
+                                                  </div>
+                                                  <h6 className="mobile mobile_responsive">
+                                                    {getMaskedMobileNumber(
+                                                      bill.mobile
+                                                    )}
+                                                  </h6>
+                                                  <h6 className="address">
+                                                    {bill.buyerAddress}
+                                                  </h6>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="col-lg-5 col-sm-12 billid_div">
+                                              <div className="d-flex align-items-center billid_div_flex">
+                                                <div className="text-left">
+                                                  <p className="biilid">
+                                                    {langFullData.billNo} :{" "}
+                                                    {bill.caBSeq}{" "}
+                                                  </p>
+                                                  <div className="d-flex">
+                                                    <p className="d-a-value">
+                                                      {moment(
+                                                        bill?.timeStamp
+                                                      ).format(
+                                                        "DD-MMM-YY | hh:mm:A"
+                                                      )}
+                                                    </p>
+                                                  </div>
+                                                  <p
+                                                    style={{
+                                                      color:
+                                                        bill.billStatus ==
+                                                        "CANCELLED"
+                                                          ? "#d43939"
+                                                          : "#1C1C1C",
+                                                    }}
+                                                  >
+                                                    {bill?.paid == true ? (
+                                                      <div className="flex_class">
+                                                        <div className="complete-dot"></div>
+                                                        <div className="bill-name">
+                                                          {getText(
+                                                            "Amount Received"
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    ) : (
+                                                      <div className="flex_class p-0">
+                                                        {bill.billStatus ==
+                                                        "CANCELLED" ? (
+                                                          <div className="complete-dot cancel_dot"></div>
+                                                        ) : (
+                                                          <div className="complete-dot"></div>
+                                                        )}
+                                                        <div className="bill-name">
+                                                          {getText(
+                                                            bill.billStatus
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    )}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="col-lg-6 p-0">
+                                          {bill.lineItems.map((crop, index) => (
+                                            <div
+                                              className="row crops_row_bills"
+                                              key={index}
+                                            >
+                                              <div className="col-lg-4 col-sm-12 col">
+                                                <p className="flex_class crop_name">
+                                                  <img
+                                                    src={crop.imageUrl}
+                                                    className="crop_image"
+                                                  />
+                                                  {crop.cropSufx != null
+                                                    ? crop.cropSufx != ""
+                                                      ? crop.cropName +
+                                                        " " +
+                                                        `(${crop.cropSufx})`
+                                                      : crop.cropName
+                                                    : crop.cropName}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-4 col-sm-12 col flex_class">
+                                                <div
+                                                  className="d-flex align-items-center"
+                                                  style={{ height: "100%" }}
+                                                >
+                                                  <div>
+                                                    <div>
+                                                      {" "}
+                                                      {qtyValues(
+                                                        crop.qty,
+                                                        crop.qtyUnit,
+                                                        crop.weight,
+                                                        crop.wastage,
+                                                        crop.rateType
+                                                      )}
+                                                    </div>
+                                                    {crop.bags !== null &&
+                                                    crop.bags.length > 0 ? (
+                                                      <div className="flex_class">
+                                                        <input
+                                                          type="checkbox"
+                                                          checked={true}
+                                                          id="modal_checkbox"
+                                                          value="my-value"
+                                                          className="checkbox_t"
+                                                        />
+                                                        <p className="inv-weight">
+                                                          Individual Weights
+                                                          <span className="bags-data">
+                                                            <div className="bags-values">
+                                                              {crop.bags.map(
+                                                                (item) => {
+                                                                  return (
+                                                                    <span>
+                                                                      <span>
+                                                                        {item.weight
+                                                                          ? item.weight +
+                                                                            " "
+                                                                          : ""}
+                                                                      </span>
+                                                                      <span className="wastsge_color">
+                                                                        {item.wastage
+                                                                          ? " - "
+                                                                          : ""}
+                                                                      </span>
+                                                                      <span className="wastsge_color">
+                                                                        {item.wastage
+                                                                          ? item.wastage
+                                                                          : ""}
+                                                                      </span>
+                                                                      <span>
+                                                                        ,{" "}
+                                                                      </span>
+                                                                    </span>
+                                                                  );
+                                                                }
+                                                              )}
+                                                            </div>
+                                                            <span>
+                                                              ={" "}
+                                                              {totalBagsValue(
+                                                                crop.bags
+                                                              ) + "KGS"}
+                                                            </span>
+                                                          </span>
+                                                        </p>
+                                                      </div>
+                                                    ) : (
+                                                      ""
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div className="col-lg-2 col-sm-12 col flex_class">
+                                                <p className="number_overflow crop_name">
+                                                  {getCurrencyNumberWithOutSymbol(
+                                                    crop.rate
+                                                  )}
+                                                </p>
+                                              </div>
+                                              <div className="col-lg-2 col-sm-12 col flex_class">
+                                                <p className="number_overflow crop_name">
+                                                  {getCurrencyNumberWithOutSymbol(
+                                                    crop.total
                                                   )}
                                                 </p>
                                               </div>
                                             </div>
-                                          </div>
+                                          ))}
                                         </div>
-                                      </div>
-                                      <div className="col-lg-6 p-0">
-                                        {bill.lineItems.map((crop, index) => (
+                                        <div className="col-lg-2 flex_class">
                                           <div
-                                            className="row crops_row_bills"
-                                            key={index}
+                                            className="row"
+                                            style={{ width: "100%" }}
                                           >
-                                            <div className="col-lg-4 col-sm-12 col">
-                                              <p className="flex_class crop_name">
-                                                <img
-                                                  src={crop.imageUrl}
-                                                  className="crop_image"
-                                                />
-                                             {(crop.cropSufx != null) ? ( crop.cropSufx != '' ? (crop.cropName + ' ' + `(${(crop.cropSufx)})`) : crop.cropName) : crop.cropName}
-                                              </p>
-                                            </div>
-                                            <div className="col-lg-4 col-sm-12 col flex_class">
-                                              <div
-                                                className="d-flex align-items-center"
-                                                style={{ height: "100%" }}
-                                              >
-                                                <div>
-                                                  <div>
-                                                    {" "}
-                                                    {qtyValues(
-                                                      crop.qty,
-                                                      crop.qtyUnit,
-                                                      crop.weight,
-                                                      crop.wastage,
-                                                      crop.rateType
-                                                    )}
-                                                  </div>
-                                                  {crop.bags !== null &&
-                                                  crop.bags.length > 0 ? (
-                                                    <div className="flex_class">
-                                                      <input
-                                                        type="checkbox"
-                                                        checked={true}
-                                                        id="modal_checkbox"
-                                                        value="my-value"
-                                                        className="checkbox_t"
-                                                      />
-                                                      <p className="inv-weight">
-                                                        Individual Weights
-                                                        <span className="bags-data">
-                                                          <div className="bags-values">
-                                                            {crop.bags.map(
-                                                              (item) => {
-                                                                return (
-                                                                  <span>
-                                                                    <span>
-                                                                      {item.weight
-                                                                        ? item.weight +
-                                                                          " "
-                                                                        : ""}
-                                                                    </span>
-                                                                    <span className="wastsge_color">
-                                                                      {item.wastage
-                                                                        ? " - "
-                                                                        : ""}
-                                                                    </span>
-                                                                    <span className="wastsge_color">
-                                                                      {item.wastage
-                                                                        ? item.wastage
-                                                                        : ""}
-                                                                    </span>
-                                                                    <span>
-                                                                      ,{" "}
-                                                                    </span>
-                                                                  </span>
-                                                                );
-                                                              }
-                                                            )}
-                                                          </div>
-                                                          <span>
-                                                            ={" "}
-                                                            {totalBagsValue(
-                                                              crop.bags
-                                                            ) + "KGS"}
-                                                          </span>
-                                                        </span>
-                                                      </p>
-                                                    </div>
-                                                  ) : (
-                                                    ""
-                                                  )}
-                                                </div>
-                                              </div>
-                                            </div>
-                                            <div className="col-lg-2 col-sm-12 col flex_class">
-                                              <p className="number_overflow crop_name">
+                                            <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
+                                              <p className="crop_name payble_text color_green">
                                                 {getCurrencyNumberWithOutSymbol(
-                                                  crop.rate
+                                                  bill.totalReceivable
                                                 )}
                                               </p>
+                                              <img
+                                                src={left_arrow}
+                                                alt="left-arrow"
+                                                className="left-arrow-img"
+                                              />
                                             </div>
-                                            <div className="col-lg-2 col-sm-12 col flex_class">
-                                              <p className="number_overflow crop_name">
-                                                {getCurrencyNumberWithOutSymbol(
-                                                  crop.total
-                                                )}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                      <div className="col-lg-2 flex_class">
-                                        <div
-                                          className="row"
-                                          style={{ width: "100%" }}
-                                        >
-                                          <div className="d-flex col-lg-12 col-sm-12 col last_col justify-content-between">
-                                            <p className="crop_name payble_text color_green">
-                                              {getCurrencyNumberWithOutSymbol(
-                                                bill.totalReceivable
-                                              )}
-                                            </p>
-                                            <img
-                                              src={left_arrow}
-                                              alt="left-arrow"
-                                              className="left-arrow-img"
-                                            />
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="row partner_no_data_widget_row">
-                              <div className="col-lg-5">
-                                <div className="partner_no_data_widget">
-                                  <div className="text-center">
-                                    <img
-                                      src={no_data_icon}
-                                      alt="icon"
-                                      className="d-flex mx-auto justify-content-center"
-                                    />
-                                    <p>
-                                      No bills available for today. <br></br>
-                                      Add to create a new bill
-                                    </p>
-                                    <button
-                                      className="primary_btn"
-                                      onClick={handleStep1Header}
-                                    >
-                                      Add single Bill
                                     </button>
-                                  </div>
+                                  ))}
                                 </div>
-                              </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -660,7 +1040,23 @@ const SellBillBook = (props) => {
           closeBillViewModal={() => setShowBillModal(false)}
           allBillsData={sellBillData}
           fromLedger={false}
-          fromBillbookToRecordPayment= {true}
+          fromBillbookToRecordPayment={true}
+        />
+      ) : (
+        ""
+      )}
+      {showMultiStepsModalStatus ? (
+        <MultiBillSteps
+          showMultiStepsModal={showMultiStepsModal}
+          closeMultiStepsModal={() => setShowMultiStepsModal(false)}
+        />
+      ) : (
+        ""
+      )}
+      {showMultiBillModalStatus ? (
+        <MultiBillView
+          showMultiBillViewModal={showMultiBillModal}
+          closeMultiBillViewModal={() => setMultiShowBillModal(false)}
         />
       ) : (
         ""

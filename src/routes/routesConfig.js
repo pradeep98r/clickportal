@@ -41,7 +41,6 @@ const RoutesConfig = () => {
   function setSettingsDetails(clickId) {
     getMandiLogoDetails(clickId)
       .then((response) => {
-        console.log(response,'pdf settings')
         localStorage.setItem(
           "settingsData",
           JSON.stringify(response.data.data)

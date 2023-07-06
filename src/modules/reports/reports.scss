@@ -1,0 +1,116 @@
+.reports_nav .nav-link {
+  color: #0d0d0d;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #e4e4e4;
+  background-color: #d7f3dd;
+  margin-bottom: 10px;
+}
+
+.reports_nav .inner_link {
+  background-color: #fff;
+  border-radius: 0px;
+  border-top: 0px;
+  margin-bottom: 0px;
+}
+.reports_nav .flex_class {
+  display: flex;
+  justify-content: space-between;
+}
+.reports_nav .nav-link:hover,
+.reports_nav .nav-link.active_item {
+  background-color: var(--ono-primary);
+  color: #fff;
+}
+.reports_nav .sales {
+  margin-bottom: 0px;
+  border-radius: 10px 10px 0px 0px;
+}
+.reports_nav .sales:hover {
+  background-color: #d7f3dd;
+  color: #0d0d0d;
+}
+.sales_purchase_tabs {
+  margin-bottom: 10px;
+  border-radius: 0px 0px 10px 10px;
+}
+.daily_sum_head {
+  font-size: 15px;
+  color: #121212;
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
+}
+.daily_summary_table {
+  height: 260px;
+  overflow-y: auto;
+  border-radius: 10px 10px 0px 0px;
+  td {
+    background-color: #fff;
+    font-size: 13px;
+    color: #121212;
+    padding: 5px 10px;
+  }
+}
+.totals {
+  padding: 5px 0px;
+  border-radius: 0px 0px 10px 10px;
+  border-top: 1px solid #e4e4e4;
+  p {
+    font-size: 13px;
+    color: #121212;
+  }
+}
+.daily_summary_table_nodata {
+  height: 310px;
+}
+.daily_summary_table_main {
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+  width: 100%;
+  border-radius: 10px 10px 10px 10px;
+}
+.row_top_margin{
+    margin-top: 25px;
+}
+.reports_nav{
+    position: sticky;
+    left: 0;
+    top: 0;
+}
+.reports_nav_g .nav-link{
+    background-color: #ffffff;
+}
+.totals_g{
+    border-top: 1px solid #e4e4e4;
+}
+.totals_main_g{
+    border-top: 0px;
+    .row{
+        padding: 5px 0px;
+    }
+}
+.reports_nav_g{
+    position: initial;
+}
+.daily_summary_table_g{
+    border-radius: 0px;
+}
+.reports_nav_g .sales:hover{
+background-color: #fff;
+}
+.total_gross{
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.color_blue{
+    color: var(--ono-blue);
+}
+.reports_main_row{
+    overflow-y: auto;
+    height: calc(100vh - 155px);
+}

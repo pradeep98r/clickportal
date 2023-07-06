@@ -316,7 +316,7 @@ const PartnerModal = (props) => {
     }
   };
   const addEditPartnerApiCall = () => {
-    console.log(isEdit, "edit");
+    console.log(obj, "edit");
     if (isEdit) {
       console.log(pincode, obj);
       editPartnerItem(obj).then(

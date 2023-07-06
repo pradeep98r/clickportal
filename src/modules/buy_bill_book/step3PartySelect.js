@@ -26,6 +26,7 @@ import { selectTrans } from "../../reducers/transSlice";
 import { qtyValues } from "../../components/qtyValues";
 import NoDataAvailable from "../../components/noDataAvailable";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import SellBillDateSelection from "./sellBillDateSelection";
 const colourStyles = {
   menuList: (styles) => ({
     ...styles,
@@ -454,10 +455,17 @@ const Step3PartySelect = (props) => {
         )}
 
         <div className="date_sec date_step3">
-          <BillDateSelection
-            parentCallbackDate={callbackFunctionDate}
-            billDate={selectedDate}
-          />
+          {selectedPartyType.toUpperCase() == "FARMER" || selectedPartyType.toUpperCase() == 'SELLER' ? (
+            <BillDateSelection
+              parentCallbackDate={callbackFunctionDate}
+              billDate={selectedDate}
+            />
+          ) : (
+            <SellBillDateSelection
+              parentCallbackDate={callbackFunctionDate}
+              billDate={selectedDate}
+            />
+          )}
         </div>
 
         {transpoSelectedData != null ? (
@@ -544,7 +552,9 @@ const Step3PartySelect = (props) => {
                               transpoSelectedData.partyId +
                               " | " +
                               getMaskedMobileNumber(transpoSelectedData.mobile)
-                            : getText("TRANSPORTER") + "-" + billEditItem.transporterId
+                            : getText("TRANSPORTER") +
+                              "-" +
+                              billEditItem.transporterId
                           : getText(transpoSelectedData.partyType) +
                             "-" +
                             transpoSelectedData.partyId +
@@ -616,12 +626,7 @@ const Step3PartySelect = (props) => {
         <div className="d-flex align-items-center justify-content-between">
           <h5 className="date_sec head_modal p-0">Crop Information </h5>
           <button onClick={() => editCropTable(billEditItem)}>
-          <img
-            src={edit}
-            alt="img"
-            className="head_modal editIcon"
-           
-          />
+            <img src={edit} alt="img" className="head_modal editIcon" />
           </button>
         </div>
         <div>
@@ -643,13 +648,20 @@ const Step3PartySelect = (props) => {
                               />
                             </div>
                             <div>
-                              <p className="crops-color"> {(item.cropSufx != null) ? ( item.cropSufx != '' ? (item.cropName + ' ' + `(${(item.cropSufx)})`) : item.cropName) : item.cropName}</p>
+                              <p className="crops-color">
+                                {" "}
+                                {item.cropSufx != null
+                                  ? item.cropSufx != ""
+                                    ? item.cropName + " " + `(${item.cropSufx})`
+                                    : item.cropName
+                                  : item.cropName}
+                              </p>
                               <p className="crops-color">
                                 {qtyValues(
                                   parseFloat(item.qty),
                                   item.qtyUnit,
                                   parseFloat(item.weight),
-                                  (item.wastage),
+                                  item.wastage,
                                   item.rateType
                                 )}
                               </p>

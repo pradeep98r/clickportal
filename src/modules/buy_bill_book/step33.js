@@ -715,18 +715,19 @@ const Step33 = (props) => {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
       qty: parseFloat(cropArray[i].qty),
-      qtyUnit: cropArray[i].qtyUnit,
+      qtyUnit: cropArray[i].qtyUnit.toUpperCase(),
       rate: parseFloat(cropArray[i].rate),
       total: cropArray[i].total,
       wastage: cropArray[i].wastage,
       weight: parseFloat(cropArray[i].weight),
       rateType:
-        cropArray[i].rateType == "kgs" ? "RATE_PER_KG" : "RATE_PER_UNIT",
+        (cropArray[i].rateType == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].qtyUnit.toLowerCase() == "pieces") ? "RATE_PER_KG" : "RATE_PER_UNIT",
       id: cropArray[i].id,
       partyId: cropArray[i].farmerId,
       status: cropArray[i].status,
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
+      pkgUnit:''
     });
   }
   // }
@@ -885,6 +886,7 @@ const Step33 = (props) => {
         }
       );
     } else {
+      console.log(billRequestObj,'obj')
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -912,19 +914,7 @@ const Step33 = (props) => {
       );
     }
   };
-  const [checked, setChecked] = useState(localStorage.getItem("defaultDate"));
-  const handleCheckEvent = () => {
-    if (!checked) {
-      setChecked(!checked);
-      localStorage.setItem("defaultDate", true);
-      setStartDate(selectedDate);
-    } else {
-      setChecked(!checked);
-      localStorage.removeItem("defaultDate");
-      setStartDate(new Date());
-    }
-  };
-
+ 
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value
       .replace(/[^\d.]/g, "") // Remove all characters except digits and dots

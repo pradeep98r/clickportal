@@ -13,17 +13,17 @@ function colorAdjust(color, amount) {
       )
   );
 }
-export default function getPdfThemeInfo(billData) {
+export default function getPdfThemeInfo(billData, fromMulti) {
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
+  var partyType = fromMulti ? billData?.billInfo[0].partyType : billData?.partyType;
   var settingsDataArray;
-  console.log(settArray)
   if(settArray != null){
     for(var i = 0; i<settArray.length; i++){
-      if(settArray[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
+      if(settArray[i].type == "BUY_BILL" && partyType == 'FARMER'){
         settingsDataArray = settArray[i];
       }
-      else if(settArray[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
+      else if(settArray[i].type == "SELL_BILL" && partyType == 'BUYER'){
         settingsDataArray = settArray[i];
       }
     }

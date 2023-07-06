@@ -3,7 +3,6 @@ import axiosCommon from "../axios";
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
 var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
 
-console.log(loginData, "crreation service file");
 export function addPartner(obj, clickId) {
   return axiosCommon.post(
     `/account/partners/caId/${clickId}`,

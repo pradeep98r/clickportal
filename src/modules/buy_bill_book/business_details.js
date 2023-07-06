@@ -17,33 +17,25 @@ export const BusinessDetails = (props) => {
   const [mandiData, setMandiData] = useState({});
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
+  const theme = JSON.stringify(localStorage.getItem("pdftheme"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
   const pdfThemeDataMain = pdfThemeDataArray != null ? pdfThemeDataArray : null;
-  const [pdfThemeData, setPdfThemeDataMain] = useState(null);
-  const[colorThemeVal, setColorThemeVal] = useState('');
+  const [pdfThemeData, setPdfThemeDataMain] = useState(theme);
+  const colorThemeVal = billViewData?.colorthemeValue;
+  const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const fromMultiBillViewStatus = selectedStep?.fromMultiBillBook;
+  const selectedBillData = selectedStep?.selectedMultBillArray;
+  const partyType = fromMultiBillViewStatus ? selectedStep?.multiSelectPartyType : billData?.partyType
   useEffect(() => {
-    if(pdfThemeDataMain != null){
+   if(pdfThemeDataMain != null){
       for(var i = 0; i<pdfThemeDataMain.length; i++){
-        if(pdfThemeDataMain[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-          setColorThemeVal(pdfThemeDataMain[i] != null
-            ? (pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
+        if(pdfThemeDataMain[i].type == "BUY_BILL" && partyType == 'FARMER'){
             setPdfThemeDataMain(pdfThemeDataMain[i]);
         }
-        else if(pdfThemeDataMain[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-          setColorThemeVal(pdfThemeDataMain[i] != null
-            ? (pdfThemeDataMain[i]?.colorTheme != ""
-              ? pdfThemeDataMain[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
+        else if(pdfThemeDataMain[i].type == "SELL_BILL" && partyType == 'BUYER'){
             setPdfThemeDataMain(pdfThemeDataMain[i]);
         }
       }
-    }
-    else{
-      setColorThemeVal('#16a12c');
     }
     getBusinessDetails();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -126,7 +118,10 @@ export const BusinessDetails = (props) => {
             style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, -40):'#0C7A1E' }}
           >
             <p className="small_text text-center">
-              Bill ID : {billData?.caBSeq !== null ? billData?.caBSeq : ""}
+              {
+                fromMultiBillViewStatus ? ('Group Id:'+selectedBillData?.groupId) :  ( billData?.caBSeq !== null ? 'Bill Id : ' +billData?.caBSeq : "")
+              }
+             
             </p>
           </div>
         </div>
@@ -162,7 +157,7 @@ export const BusinessDetails = (props) => {
             style={{ backgroundColor: pdfThemeData != null ? colorAdjustBg(colorThemeVal, -40):'#0C7A1E' }}
           >
             <p className="small_text text-center">
-              {moment(billData?.billDate).format("DD-MMM-YY")}
+              {fromMultiBillViewStatus ? moment(selectedBillData?.billInfo[0].billDate).format("DD-MMM-YY") : moment(billData?.billDate).format("DD-MMM-YY")}
             </p>
           </div>
         </div>

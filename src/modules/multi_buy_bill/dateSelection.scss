@@ -1,0 +1,11 @@
+// .dateSelection {
+//     position: absolute;
+//     top: 25%;
+//     left: 25%;
+//     z-index: 1;
+//   }
+.date_step2_field{
+    .react-datepicker-popper{
+        z-index: 999;
+    }
+}
