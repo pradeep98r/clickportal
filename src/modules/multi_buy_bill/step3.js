@@ -187,7 +187,12 @@ const Step3 = (props) => {
         o.status = o.status;
         o.qtyUnit = o.qtyUnit.toUpperCase();
       } else {
-        o.rateType = "RATE_PER_UNIT";
+         if(o.rateType.toLowerCase() == 'loads' || o.rateType.toLowerCase() == 'pieces'){
+          o.rateType = "RATE_PER_KG";
+        }
+        else{
+          o.rateType = "RATE_PER_UNIT";
+        }
         o.status = o.status;
         o.qtyUnit = o.qtyUnit.toUpperCase();
       }
