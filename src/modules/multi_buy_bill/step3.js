@@ -43,7 +43,6 @@ const Step3 = (props) => {
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
-  console.log(slectedBillDateVal, "date");
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -70,7 +69,6 @@ const Step3 = (props) => {
   );
   useEffect(() => {
     $("#disable").attr("disabled", false);
-    console.log(multiSelectPartnersArray, billEditedObject, "array step3");
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
         getGrossTotalValue(multiSelectPartnersArray, i);
@@ -145,7 +143,6 @@ const Step3 = (props) => {
           source: "WEB",
         });
         objArray1 = [...objArray1, obj];
-        console.log(objArray1, obj, "after");
         setObjArrray2([...objArray1]);
       }
     }
@@ -259,7 +256,6 @@ const Step3 = (props) => {
     arr1 = [...arr1, clonedArray[mIndex]];
     dispatch(multiSelectPartners(arr1));
     multiSelectPartnersArray1 = arr1;
-    console.log(arr1, "att");
   };
 
   const [transportationVal, setTransportationVal] = useState(
@@ -409,14 +405,12 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
-      console.log(clonedObject, "payload");
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(response.data, "success");
             localStorage.setItem("LinkPath", "/buy_bill_book");
 
             window.setTimeout(function () {
@@ -449,7 +443,6 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
-      console.log(clonedObject);
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {

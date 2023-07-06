@@ -57,7 +57,6 @@ const SellMultiBillStep3 = (props) => {
   const commentText = (e) => {
     // var regEx = /^[a-z][a-z\s]*$/;
     var val = e.target.value;
-    console.log(val,'comm')
     setCommentFieldText(val);
   };
   var totalGross = 0;
@@ -66,7 +65,6 @@ const SellMultiBillStep3 = (props) => {
   const[objArray2, setObjArrray2] = useState([]);
   const [commentext, setCommentFieldText] = useState(fromMultiBillViewStatus ? (billEditedObject?.billInfo[0].comments) : '');
   useEffect(() => {
-    console.log(multiSelectPartnersArray, "array step3");
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
         getGrossTotalValue(multiSelectPartnersArray, i);
@@ -135,7 +133,6 @@ const SellMultiBillStep3 = (props) => {
           source: "WEB",
         });
         objArray1 = [...objArray1, obj]
-        console.log(objArray1,obj,'after');
         setObjArrray2([...objArray1])
       }
     }
@@ -146,7 +143,6 @@ const SellMultiBillStep3 = (props) => {
     var total = 0;
     var clonedArray = [...items];
     var lineitemsArray = [];
-    console.log(items, "grooss");
     for (var i = 0; i < items[mIndex].lineItems.length; i++) {
       let obj = { ...items[mIndex].lineItems[i] };
       if (obj.status == 0) {
@@ -166,7 +162,6 @@ const SellMultiBillStep3 = (props) => {
         status: (fromMultiBillViewStatus ? (fromPreviousStep3Status ? o.status : 2 ) : 1),
         pkgUnit:''
       });
-      console.log(o.rateType,'rate')
       if (o.rateType.toLowerCase() == "kgs" || o.rateType.toUpperCase() == "RATE_PER_KG") {
         if (o.qtyUnit.toLowerCase() == "pieces") {
           o.rateType = "RATE_PER_UNIT";
@@ -189,11 +184,9 @@ const SellMultiBillStep3 = (props) => {
         ...cObj.lineItems[i],
         ...o,
       };
-      console.log(o, "stat");
         lineitemsArray = [...lineitemsArray, mergedObj];
       cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
-      console.log(mergedObj, cObj);
     }
     Object.assign(clonedArray[mIndex], {
       actualReceivable: gTotal,
@@ -372,10 +365,8 @@ const SellMultiBillStep3 = (props) => {
   const postbuybill = () => {
     var arrMain = [];
     if (fromMultiBillViewStatus) {
-      console.log(commentext,'comm')
       billObj.billsInfo.map(function (entry) {
         const objCopy = { ...entry };
-        console.log(objCopy)
         objCopy.comments = commentext ;
         objCopy.billAttributes.comments = commentext ;
         objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
@@ -385,14 +376,12 @@ const SellMultiBillStep3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
-      console.log(clonedObject,'payload')
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(response.data, "success");
             localStorage.setItem("LinkPath", "/sellbillbook");
 
             window.setTimeout(function () {
@@ -424,14 +413,12 @@ const SellMultiBillStep3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, sellBills: arrMain };
-      console.log(clonedObject)
       postMultiSellBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
             toast.success(response.data.status.message, {
               toastId: "success1",
             });
-            console.log(response.data, "success");
             localStorage.setItem("LinkPath", "/sellbillbook");
 
             window.setTimeout(function () {
