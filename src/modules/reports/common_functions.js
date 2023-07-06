@@ -106,10 +106,10 @@ export default function getIndividualTotalUnitsValgross(lineItemsList, fromGross
      }
     }
     if (totalKgs !== 0) {
-      result += ` ${totalKgs} KGS`;
+      result += ` ${totalKgs} KGS |`;
     }
     if (totalLds !== 0) {
-      result += ` ${totalLds} LDS`;
+      result += ` ${totalLds} LDS |`;
     }
     if (totalPcs !== 0) {
       result += ` ${totalPcs} PCS  `;

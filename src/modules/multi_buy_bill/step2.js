@@ -405,13 +405,13 @@ const Step2 = (props) => {
         console.log(response.data.data, cIndex, qSetting, "allcrrops");
         Object.assign(item, {
           cropSelect: "",
-          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
+          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex).toUpperCase() : "CRATES",
           rateType:
             defaultUnitTypeVal == "unit_kg"
-              ? "kgs"
+              ? "KGS"
               : cIndex != -1
-              ? getUnitVal(qSetting, cIndex)
-              : "crates",
+              ? getUnitVal(qSetting, cIndex).toUpperCase()
+              : "CRATES",
         });
       });
       setCropsData(response.data.data);
@@ -459,13 +459,13 @@ const Step2 = (props) => {
           weight: 0,
           rateType:
             defaultUnitTypeVal == "unit_kg"
-              ? "kgs"
+              ? "KGS"
               : cIndex != -1
-              ? getUnitVal(qSetting, cIndex)
-              : "crates",
+              ? getUnitVal(qSetting, cIndex).toUpperCase()
+              : "CRATES",
           rate: 0,
           total: 0,
-          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex) : "crates",
+          qtyUnit: cIndex != -1 ? getUnitVal(qSetting, cIndex).toUpperCase() : "CRATES",
           checked: false,
           bags: [],
           count: 1,
@@ -515,14 +515,14 @@ const Step2 = (props) => {
             qtyUnit: e.target.value,
             rateType:
               defaultUnitTypeVal == "unit_kg"
-                ? "kgs"
+                ? "KGS"
                 : cIndex != -1
                 ? getQuantityUnit(qSetting, cIndex)
                 : e.target.value,
             qty:
-              e.target.value == "loads" ||
-              e.target.value == "kgs" ||
-              e.target.value == "pieces"
+              e.target.value == "LOADS" ||
+              e.target.value == "KGS" ||
+              e.target.value == "PIECES"
                 ? 0
                 : cropData[i].qty,
             weight:
@@ -550,11 +550,12 @@ const Step2 = (props) => {
 
   // getting table based on unit type
   const setQuantityBasedtable = (unitType) => {
+    console.log(unitType,'unit')
     var t = false;
     if (
       unitType?.toLowerCase() == "kgs" ||
       unitType?.toLowerCase() == "loads" ||
-      unitType == "pieces"
+      unitType?.toLowerCase() == "pieces"
     ) {
       t = true;
     }
@@ -1036,15 +1037,16 @@ const Step2 = (props) => {
                                     crop
                                   )}
                                 >
-                                  <option value="Crates">Crates</option>
-                                  <option value="Bags">Bags</option>
-                                  <option value="Sacs">Sacs </option>
-                                  <option value="Boxes">Boxes </option>
-                                  <option value="kgs">Kgs </option>
-                                  <option value="loads">Loads </option>
-                                  <option value="pieces">Pieces </option>
+                                  <option value="CRATES">Crates</option>
+                                  <option value="BAGS">Bags</option>
+                                  <option value="SACS">Sacs </option>
+                                  <option value="BOXES">Boxes </option>
+                                  <option value="KGS">Kgs </option>
+                                  <option value="LOADS">Loads </option>
+                                  <option value="PIECES">Pieces </option>
                                 </select>
                               </td>
+                              
                               {!setQuantityBasedtable(
                                 multiSelectPartnersArray[index].lineItems[i]
                                   .qtyUnit
@@ -1066,14 +1068,14 @@ const Step2 = (props) => {
                                     <option
                                       value={multiSelectPartnersArray[
                                         index
-                                      ].lineItems[i].qtyUnit?.toLowerCase()}
+                                      ].lineItems[i].qtyUnit}
                                     >
                                       {
                                         multiSelectPartnersArray[index]
                                           .lineItems[i].qtyUnit
                                       }{" "}
                                     </option>
-                                    <option value="kgs"> Kg </option>
+                                    <option value="KGS"> Kg </option>
                                   </select>
                                 </td>
                               ) : (
