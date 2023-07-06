@@ -18,6 +18,7 @@ import {
 } from "../../reducers/reportsSlice";
 import GrossProfit from "./gross_profit";
 import moment from "moment";
+import SalesSummary from "./sales_summary";
 const Reports = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -64,6 +65,7 @@ const Reports = () => {
       getGrross(selectedDate);
     }
     dispatch(dailySelectDate(moment(new Date()).format("YYYY-MM-DD")));
+    console.log(path,'tab')
   };
   const Saleslinks = [
     {
@@ -140,8 +142,20 @@ const Reports = () => {
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
-        <SinleDate />
-        <div class="row reports_main_row" id = "scroll_style">
+        {selectedTab == "dailySummary" || selectedTab == "grossProfits" ? (
+          <SinleDate />
+        ) : (
+          ""
+        )}
+
+        <div
+          class={
+            selectedTab == "dailySummary" || selectedTab == "grossProfits"
+              ? "row reports_main_row"
+              : "row"
+          }
+          id="scroll_style"
+        >
           <div class="col-md-2 mb-3 p-0">
             <ul
               className="nav nav-pills reports_nav flex-column"
@@ -270,9 +284,9 @@ const Reports = () => {
                     case "grossProfits":
                       return <GrossProfit />;
                     case "salesSummary":
-                      return <ComingSoon />;
+                      return <SalesSummary type="BUYER" />;
                     case "purchaseSummary":
-                      return <ComingSoon />;
+                      return <SalesSummary type="FARMER" />;
                     case "bySeller":
                       return <ComingSoon />;
                     case "byCrop":

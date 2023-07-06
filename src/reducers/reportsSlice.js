@@ -6,7 +6,9 @@ export const reportsSlice = createSlice({
     dailySelectDate: new Date(),
     dailySummaryData: null,
     reportType: "",
-    grossProfitSummaryData:null
+    grossProfitSummaryData:null,
+    salseSummaryData:[],
+    summaryObj:null
   },
   reducers: {
     dailySelectDate: (state, action) => {
@@ -21,10 +23,16 @@ export const reportsSlice = createSlice({
     grossProfitSummaryData: (state, action) => {
         state.grossProfitSummaryData = action.payload;
       },
+      salseSummaryData: (state, action) => {
+        state.salseSummaryData = action.payload;
+      },
+      summaryObj: (state, action) => {
+        state.summaryObj = action.payload;
+      },
   },
 });
 
-export const { dailySelectDate, dailySummaryData, reportType,grossProfitSummaryData } =
+export const { dailySelectDate, dailySummaryData, reportType,grossProfitSummaryData,salseSummaryData,summaryObj } =
   reportsSlice.actions;
 
 export default reportsSlice.reducer;
