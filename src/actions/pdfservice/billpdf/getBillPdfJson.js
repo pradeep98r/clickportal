@@ -522,7 +522,9 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
         imageUrl: item.imageUrl,
         cropName:
           item.cropName.toUpperCase() +
-          (item.cropSufx != "" ? `(${item.cropSufx.toUpperCase()})` : ""),
+          ((item.cropSufx == "" || item.cropSufx == null)
+            ? ""
+            : `(${item.cropSufx.toUpperCase()})`),
         lotId: item.lotId != null ? item.lotId : "-",
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),

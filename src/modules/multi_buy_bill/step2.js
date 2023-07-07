@@ -32,7 +32,6 @@ const Step2 = (props) => {
   const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
   const fromMultiBillViewStatus = selectedStep?.fromMultiBillView;
   const partyType = selectedStep?.multiSelectPartyType;
-  console.log(fromMultiBillViewStatus, multiSelectPartnersArray, "step2");
   const colourStyles = {
     menuList: (styles) => ({
       ...styles,
@@ -114,7 +113,6 @@ const Step2 = (props) => {
         const dataLineItems = fromMultiBillViewStatus
           ? allDeletedCrops.concat(data1.lineItems)
           : data1.lineItems;
-        console.log(dataLineItems, "line");
         if (dataLineItems.length > 0) {
           arrays = [];
           for (var cIndex = 0; cIndex < dataLineItems.length; cIndex++) {
@@ -127,7 +125,6 @@ const Step2 = (props) => {
                 });
                 return null;
               }
-              console.log(obj1, "obj");
               if (!obj1.cropDelete) {
                 obj1.total = getTotalValue(obj1, cIndex, index);
               }
@@ -137,13 +134,10 @@ const Step2 = (props) => {
                 );
                 if (index1 == cIndex) {
                   if (dataLineItems[cIndex]?.cropDelete) {
-                    console.log("delete1");
                     obj1.status = 0;
                   } else if (dataLineItems[cIndex].id == 0) {
-                    console.log("nnew1");
                     obj1.status = 1;
                   } else {
-                    console.log("updated1");
                     obj1.status = 2;
                   }
                   var arr = [];
@@ -161,23 +155,18 @@ const Step2 = (props) => {
                   if (index1 != -1) {
                     if (!obj1.cropDelete) {
                       if (obj1.id == 0) {
-                        console.log("nnew1");
                         obj1.status = 1;
                       } else {
-                        console.log("updated2");
                         obj1.status = 2;
                       }
                     } else {
-                      console.log("delete1");
                       obj1.status = 0;
                     }
                     // return null;
                   } else {
                     if (!obj1.cropDelete) {
-                      console.log("nnew1");
                       obj1.status = 1;
                     } else {
-                      console.log("delete1");
                       obj1.status = 0;
                     }
                   }
@@ -186,7 +175,6 @@ const Step2 = (props) => {
                 obj1.status = 1;
               }
               data = obj1;
-              console.log(data, arrays, "cliick nnext");
               arrays.push(data);
               if (data.cropDelete) continue;
               const qtyUnit = data.qtyUnit?.toLowerCase();
@@ -196,7 +184,6 @@ const Step2 = (props) => {
                   toast.error("Please enter weight", {
                     toastId: "error1",
                   });
-                  console.log('we3')
                   return null;
                 } else if (data.rate == 0) {
                   toast.error("Please enter rate", {
@@ -219,7 +206,6 @@ const Step2 = (props) => {
                   toast.error("Please enter weight", {
                     toastId: "error1",
                   });
-                  console.log('we2')
                   return null;
                 } else if (data.rate == 0) {
                   toast.error("Please enter rate", {
@@ -232,7 +218,10 @@ const Step2 = (props) => {
                   });
                   return null;
                 }
-              } else if (qtyUnit === rateType || data.qtyUnit.toLowerCase() == 'pieces') {
+              } else if (
+                qtyUnit === rateType ||
+                data.qtyUnit.toLowerCase() == "pieces"
+              ) {
                 if (data.qty == 0) {
                   toast.error("Please enter Quantity", {
                     toastId: "error1",
@@ -259,11 +248,9 @@ const Step2 = (props) => {
                   });
                   return null;
                 } else if (data.weight == 0) {
-                 
                   toast.error("Please enter weight", {
                     toastId: "error2",
                   });
-                 console.log('we1')
                   return null;
                 } else if (data.rate == 0) {
                   toast.error("Please enter rate", {
@@ -308,7 +295,6 @@ const Step2 = (props) => {
         // }
       }
       dispatch(multiStepsVal("step3"));
-      console.log(clonedArray, "arrayonj");
       dispatch(multiSelectPartners(clonedArray));
       dispatch(fromPreviousStep3(true));
       // if (arrays.length === cropData.length) {
@@ -339,7 +325,6 @@ const Step2 = (props) => {
   };
 
   useEffect(() => {
-    console.log(mainArray, "main");
     fetchCropData();
     var party = selectedStep?.multiSelectPartyType;
     for (var i = 0; i < settingsData.billSetting.length; i++) {
@@ -376,7 +361,7 @@ const Step2 = (props) => {
         for (var k = 0; k < multiSelectPartnersArray[j].lineItems.length; k++) {
           let obj = { ...multiSelectPartnersArray[j].lineItems[k] };
           if (obj.rateType == "RATE_PER_KG") {
-            obj.rateType = "kgs";
+            obj.rateType = "KGS";
           }
           lineitemsArray = [...lineitemsArray, obj];
           cObj.lineItems = lineitemsArray;
@@ -386,7 +371,6 @@ const Step2 = (props) => {
         mainArray = [...mainArray, cObj];
       }
       dispatch(multiSelectPartners(mainArray));
-      console.log(multiSelectPartnersArray, mainArray, "arrrayyy");
     }
   }, []);
 
@@ -406,7 +390,6 @@ const Step2 = (props) => {
         } else {
           cIndex = -1;
         }
-        console.log(response.data.data, cIndex, qSetting, "allcrrops");
         Object.assign(item, {
           cropSelect: "",
           qtyUnit:
@@ -431,7 +414,6 @@ const Step2 = (props) => {
     var i = multiSelectPartnersArray.findIndex(
       (obj) => (obj.partyId || obj.farmerId || obj.buyerId) == id
     );
-    console.log(id, i, "addc rrop");
     if (i != -1) {
       let clonedArray = [...multiSelectPartnersArray];
       let clonedObject = { ...clonedArray[i] };
@@ -556,13 +538,11 @@ const Step2 = (props) => {
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
-    console.log(clonedArray, updatedItemList, "clone");
     dispatch(multiSelectPartners(clonedArray));
   };
 
   // getting table based on unit type
   const setQuantityBasedtable = (unitType) => {
-    console.log(unitType, "unit");
     var t = false;
     if (
       unitType?.toLowerCase() == "kgs" ||
@@ -702,7 +682,6 @@ const Step2 = (props) => {
   const [editBagsStatus, setEditBagsStatus] = useState(false);
   const handleCheckEvent = (crd, ink, mIndex, cr) => {
     let clonedArray = [...multiSelectPartnersArray];
-    console.log(mIndex, "bags");
     let updatedItem = crd.map((item, i) => {
       let ob = { ...crd[i] };
       if (i == ink) {
@@ -1058,7 +1037,7 @@ const Step2 = (props) => {
                                   <option value="PIECES">Pieces </option>
                                 </select>
                               </td>
-
+                              
                               {!setQuantityBasedtable(
                                 multiSelectPartnersArray[index].lineItems[i]
                                   .qtyUnit
@@ -1144,27 +1123,32 @@ const Step2 = (props) => {
                                   ].qtyUnit?.toLowerCase()
                                 : multiSelectPartnersArray[index].lineItems[i]
                                     .rateType) ? (
-                                (multiSelectPartnersArray[index].lineItems[i].qtyUnit.toLowerCase()=='pieces' ? <td className="col_1 fadeOut_col">-</td> : <td className="col_1">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="weight"
-                                  onFocus={(e) => resetInput(e)}
-                                  value={
-                                    multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].weight
-                                  }
-                                  onChange={getWeightValue(
-                                    multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].cropId,
-                                    i,
-                                    index,
-                                    multiSelectPartnersArray[index].lineItems
-                                  )}
-                                />
-                              </td>)
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit.toLowerCase() == "pieces" ? (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                ) : (
+                                  <td className="col_1">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="weight"
+                                      onFocus={(e) => resetInput(e)}
+                                      value={
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].weight
+                                      }
+                                      onChange={getWeightValue(
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].cropId,
+                                        i,
+                                        index,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems
+                                      )}
+                                    />
+                                  </td>
+                                )
                               ) : setQuantityBasedtable(
                                   multiSelectPartnersArray[index].lineItems[i]
                                     .qtyUnit
@@ -1363,21 +1347,26 @@ const Step2 = (props) => {
                                         i
                                       ].rateType.toUpperCase() ==
                                         "RATE_PER_UNIT")
-                                      ? (multiSelectPartnersArray[index].lineItems[i].qtyUnit.toLowerCase() == 'pieces' ? (
-                                        (multiSelectPartnersArray[index]
-                                          .lineItems[i].qty -
-                                          multiSelectPartnersArray[index]
-                                            .lineItems[i].wastage) *
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].rate
-                                      ).toFixed(2) : (
-                                        (multiSelectPartnersArray[index]
-                                          .lineItems[i].weight -
-                                          multiSelectPartnersArray[index]
-                                            .lineItems[i].wastage) *
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].rate
-                                      ).toFixed(2) )
+                                      ? multiSelectPartnersArray[
+                                          index
+                                        ].lineItems[i].qtyUnit.toLowerCase() ==
+                                        "pieces"
+                                        ? (
+                                            (multiSelectPartnersArray[index]
+                                              .lineItems[i].qty -
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].wastage) *
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].rate
+                                          ).toFixed(2)
+                                        : (
+                                            (multiSelectPartnersArray[index]
+                                              .lineItems[i].weight -
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].wastage) *
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].rate
+                                          ).toFixed(2)
                                       : (
                                           (multiSelectPartnersArray[index]
                                             .lineItems[i].qty -
