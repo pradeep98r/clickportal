@@ -19,6 +19,8 @@ import {
 import GrossProfit from "./gross_profit";
 import moment from "moment";
 import SalesSummary from "./sales_summary";
+import ByBuyerSeller from "./by_buyer_seller";
+import ByCropDetails from "./by_crop";
 const Reports = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -65,7 +67,7 @@ const Reports = () => {
       getGrross(selectedDate);
     }
     dispatch(dailySelectDate(moment(new Date()).format("YYYY-MM-DD")));
-    console.log(path,'tab')
+    console.log(path, "tab");
   };
   const Saleslinks = [
     {
@@ -269,7 +271,7 @@ const Reports = () => {
               })}
             </ul>
           </div>
-          <div class="col-md-10">
+          <div class="col-md-10 pr-0">
             <div class="tab-content" id="myTabContent">
               <div
                 className="tab-pane active"
@@ -288,13 +290,13 @@ const Reports = () => {
                     case "purchaseSummary":
                       return <SalesSummary type="FARMER" />;
                     case "bySeller":
-                      return <ComingSoon />;
+                      return <ByBuyerSeller Ptype="FARMER" />;
                     case "byCrop":
-                      return <ComingSoon />;
+                      return <ByCropDetails Ptype="BUYER" />;
                     case "byBuyer":
-                      return <ComingSoon />;
+                      return <ByBuyerSeller Ptype="BUYER" />;
                     case "byCropPurchase":
-                      return <ComingSoon />;
+                      return <ByCropDetails Ptype="FARMER" />;
                     case "stockReports":
                       return <ComingSoon />;
                     default:

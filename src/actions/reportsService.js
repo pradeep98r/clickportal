@@ -23,3 +23,23 @@ export function customSalesSummary(clickId, type, fromDate, toDate){
     `reports/report/caId/${clickId}/type/${type}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   )
 }
+export function getSalesAndPurchasesByBuyer(clickId, type, partyid){
+  return axiosCommon.get(
+    `reports/report/caId/${clickId}/type/${type}/partyId/${partyid}?page=0&size=0&writerId=${writerId}`
+  )
+}
+export function getCustomSalesAndPurchasesByBuyer(clickId, type,partyid, fromDate, toDate){
+  return axiosCommon.get(
+    `reports/report/caId/${clickId}/type/${type}/partyId/${partyid}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
+  )
+}
+export function getSalesAndPurchasesByCrops(clickId, type, id){
+  return axiosCommon.get(
+    `reports/report/caId/${clickId}/type/${type}/cropId/${id}?page=0&size=0&writerId=${writerId}`
+  )
+}
+export function getCustomSalesAndPurchasesByCrops(clickId, type,id, fromDate, toDate){
+  return axiosCommon.get(
+    `reports/report/caId/${clickId}/type/${type}/cropId/${id}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
+  )
+}

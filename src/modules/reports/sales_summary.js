@@ -54,6 +54,7 @@ const SalesSummary = (props) => {
   const startDate = ledgersSummary?.beginDate;
   const endDate = ledgersSummary?.closeDate;
   var dateValue = advancesData?.dateFormat;
+  console.log(dateValue,'date1')
   var [datesValue, setDateValue] = useState(date + " to " + date);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -64,7 +65,7 @@ const SalesSummary = (props) => {
     dispatch(beginDate(date));
     dispatch(closeDate(date));
     // callbackFunction(date, date, "Custom");
-    console.log(summaryArray, partyType, "useeffect all data");
+    console.log(summaryArray, partyType,dateValue, "useeffect all data");
   }, [props.type]);
   const getAllSalesSummary = () => {
     getSalesSummary(clickId, partyType)
@@ -103,6 +104,7 @@ const SalesSummary = (props) => {
   const allCustomEvent = (type) => {
     if (type == "custom") {
       setDateDisplay(true);
+      console.log(billEditItemInfo)
       if (billEditItemInfo?.dateCustom) {
         callbackFunction(newDate, newDate, "Custom");
       } else {
@@ -258,7 +260,7 @@ const SalesSummary = (props) => {
                       <table className="table table-bordered advance_table_border ledger-table">
                         <thead>
                           <tr className="theadr-tag p-0">
-                            <th class="col-1">#</th>
+                            <th class="col-1"><p id="p-common-sno">#</p></th>
                             <th class="col-2">Name</th>
                             <th class="col-6">
                               Item<br></br> Unit | Kgs | Rate
@@ -270,7 +272,7 @@ const SalesSummary = (props) => {
                           {summaryArray.map((item, index) => {
                             return (
                               <tr className="align-items-center">
-                                <td className="col-1">{index + 1}</td>
+                                <td className="col-1"><p id="p-common-sno">{index + 1}</p></td>
                                 <td className="col-2">
                                   <div>
                                     <p className="date_ledger_val">
