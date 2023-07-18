@@ -69,7 +69,7 @@ const ByCropSummary = (props) => {
                 </div>
                 <div className="col-lg-3 d-flex align-items-center">
                   <p className="card-text paid">
-                    Total Sales
+                  {partyType == 'BUYER' ? 'Total Sales' : 'Total Purchases'}
                     <p className="">
                       {summaryObj != null
                         ? summaryObj?.totalItemsRate != 0

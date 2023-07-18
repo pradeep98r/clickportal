@@ -164,7 +164,7 @@ const SalesSummary = (props) => {
           <div>
             {/* {allData.length > 0 ? ( */}
             <div className="row">
-              {summaryArray.length > 0 ? (
+           
                 <div className="col-lg-12 p-0">
                   <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
                     <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
@@ -217,7 +217,9 @@ const SalesSummary = (props) => {
                       </button>
                     </div>
                   </div>
-                  <div className="card details-tag">
+                  {totalSummaryData != null ? (
+                 <div>
+                    <div className="card details-tag">
                     <div
                       className="card-body advance_card_body"
                       id="card-details"
@@ -240,7 +242,7 @@ const SalesSummary = (props) => {
                           </p>
                         </div>
                         <div className="col-lg-3">
-                          <p className="card-text paid">Total Sales</p>
+                          <p className="card-text paid">{partyType == 'BUYER' ? 'Total Sales' : 'Total Purchases'}</p>
                           <p className="">
                             {totalSummaryData?.totalItemsRate != 0
                               ? getCurrencyNumberWithSymbol(
@@ -252,6 +254,7 @@ const SalesSummary = (props) => {
                       </div>
                     </div>
                   </div>
+                  
                   {summaryArray.length > 0 ? (
                     <div
                       className="table-scroll ledger-table sales_summary_table"
@@ -342,23 +345,25 @@ const SalesSummary = (props) => {
                       </div>
                     </div>
                   )}
-                </div>
-              ) : (
-                <div className="col-lg-7">
-                  <div
-                    className="partner_no_data_widget d-flex align-items-center justify-content-center"
-                    style={{ height: "100%" }}
-                  >
-                    <div className="text-center">
-                      <img
-                        src={no_data_icon}
-                        alt="icon"
-                        className="d-flex mx-auto justify-content-center"
-                      />
+                 </div>
+                  ) : (
+                    <div className="col-lg-12">
+                      <div
+                        className="partner_no_data_widget d-flex align-items-center justify-content-center"
+                        style={{ height: "100%" }}
+                      >
+                        <div className="text-center">
+                          <img
+                            src={no_data_icon}
+                            alt="icon"
+                            className="d-flex mx-auto justify-content-center"
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
+              
             </div>
             {/* )  */}
             {/* // : (

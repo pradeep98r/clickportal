@@ -115,6 +115,8 @@ const ByBuyerSeller = (props) => {
         return data.partyName.toLowerCase().search(value) != -1;
       } else if (data.partyId.toString().includes(value)) {
         return data.partyId.toString().search(value) != -1;
+      }else if (data.partyAddress.toLowerCase().includes(value)) {
+        return data.partyAddress.toLowerCase().search(value) != -1;
       }
     });
     dispatch(allLedgers(result));
