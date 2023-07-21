@@ -1330,16 +1330,6 @@ const Step2 = (props) => {
                                     multiSelectPartnersArray[index].lineItems[
                                       i
                                     ].rateType.toLowerCase() == "loads" ||
-                                    // multiSelectPartnersArray[index].lineItems[
-                                    //   i
-                                    // ].rateType.toLowerCase() == "pieces" ||
-                                    // (multiSelectPartnersArray[index].lineItems[
-                                    //   i
-                                    // ].qtyUnit.toLowerCase() == "pieces" &&
-                                    //   multiSelectPartnersArray[index].lineItems[
-                                    //     i
-                                    //   ].rateType.toUpperCase() ==
-                                    //     "RATE_PER_UNIT") ||
                                     (multiSelectPartnersArray[index].lineItems[
                                       i
                                     ].qtyUnit.toLowerCase() == "loads" &&

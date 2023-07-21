@@ -696,7 +696,7 @@ const SellBillStep3 = (props) => {
       partyId: cropArray[i].buyerId,
       status: cropArray[i].status,
       rateType:
-      (cropArray[i].rateType == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].qtyUnit.toLowerCase() == "pieces") ? "RATE_PER_KG" : "RATE_PER_UNIT",
+        (cropArray[i].rateType.toLowerCase() == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].rateType == "RATE_PER_KG") ? "RATE_PER_KG" : "RATE_PER_UNIT",
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
       pkgUnit:''
