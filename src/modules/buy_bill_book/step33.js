@@ -565,6 +565,7 @@ const Step33 = (props) => {
         : parseFloat(it[i].qty);
       setTotalUnits(totalunitvalue);
     }
+    console.log(items,transTotalValue,'grrooss')
   };
 
   const getTotalValue = (value) => {
@@ -711,6 +712,7 @@ const Step33 = (props) => {
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
   var len = cropArray.length;
+  console.log(cropArray)
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
@@ -721,7 +723,7 @@ const Step33 = (props) => {
       wastage: cropArray[i].wastage,
       weight: parseFloat(cropArray[i].weight),
       rateType:
-        (cropArray[i].rateType == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].qtyUnit.toLowerCase() == "pieces") ? "RATE_PER_KG" : "RATE_PER_UNIT",
+        (cropArray[i].rateType.toLowerCase() == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].rateType == "RATE_PER_KG") ? "RATE_PER_KG" : "RATE_PER_UNIT",
       id: cropArray[i].id,
       partyId: cropArray[i].farmerId,
       status: cropArray[i].status,
