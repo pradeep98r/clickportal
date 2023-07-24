@@ -18,6 +18,9 @@ import {
 } from "../../reducers/reportsSlice";
 import GrossProfit from "./gross_profit";
 import moment from "moment";
+import SalesSummary from "./sales_summary";
+import ByBuyerSeller from "./by_buyer_seller";
+import ByCropDetails from "./by_crop";
 const Reports = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -64,6 +67,7 @@ const Reports = () => {
       getGrross(selectedDate);
     }
     dispatch(dailySelectDate(moment(new Date()).format("YYYY-MM-DD")));
+    console.log(path, "tab");
   };
   const Saleslinks = [
     {
@@ -140,8 +144,20 @@ const Reports = () => {
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
-        <SinleDate />
-        <div class="row reports_main_row" id = "scroll_style">
+        {selectedTab == "dailySummary" || selectedTab == "grossProfits" ? (
+          <SinleDate />
+        ) : (
+          ""
+        )}
+
+        <div
+          class={
+            selectedTab == "dailySummary" || selectedTab == "grossProfits"
+              ? "row reports_main_row"
+              : "row"
+          }
+          id="scroll_style"
+        >
           <div class="col-md-2 mb-3 p-0">
             <ul
               className="nav nav-pills reports_nav flex-column"
@@ -255,7 +271,7 @@ const Reports = () => {
               })}
             </ul>
           </div>
-          <div class="col-md-10">
+          <div class="col-md-10 pr-0">
             <div class="tab-content" id="myTabContent">
               <div
                 className="tab-pane active"
@@ -270,17 +286,17 @@ const Reports = () => {
                     case "grossProfits":
                       return <GrossProfit />;
                     case "salesSummary":
-                      return <ComingSoon />;
+                      return <SalesSummary type="BUYER" />;
                     case "purchaseSummary":
-                      return <ComingSoon />;
+                      return <SalesSummary type="FARMER" />;
                     case "bySeller":
-                      return <ComingSoon />;
+                      return <ByBuyerSeller Ptype="FARMER" />;
                     case "byCrop":
-                      return <ComingSoon />;
+                      return <ByCropDetails Ptype="BUYER" />;
                     case "byBuyer":
-                      return <ComingSoon />;
+                      return <ByBuyerSeller Ptype="BUYER" />;
                     case "byCropPurchase":
-                      return <ComingSoon />;
+                      return <ByCropDetails Ptype="FARMER" />;
                     case "stockReports":
                       return <ComingSoon />;
                     default:

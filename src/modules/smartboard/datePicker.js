@@ -65,7 +65,7 @@ function DatePickerModel(props) {
     else {
       datev = dateTabs
     }
-    if(link == '/advance'){
+    if(link == '/advance' || link =='/reports'){
       if(billEditItemInfo?.dateCustom){
           datev = 'Custom';
           setStartsDate(new Date());
