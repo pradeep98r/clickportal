@@ -127,6 +127,7 @@ const Step22 = (props) => {
         } else {
           cIndex = -1;
         }
+        console.log(response.data.data,qSetting,'rres')
         Object.assign(item, {
           cropSelect: "",
           cropSufx: "",
@@ -837,6 +838,10 @@ const Step22 = (props) => {
               : cIndex != -1
               ? getQuantityUnit(qSetting, cIndex)
               : e.target.value,
+              qty:(e.target.value?.toLowerCase() == "kgs" ||
+              e.target.value?.toLowerCase() == "loads") ? 0 : cropData[i].qty,
+              wastage:
+              e.target.value?.toLowerCase() == "loads" ? 0 : cropData[i].wastage
         };
       } else {
         cropResponseData([...cropData]);
@@ -909,6 +914,7 @@ const Step22 = (props) => {
     setweightValue(val);
     setUpdatedItemList([...updatedItem1]);
     setCropId(id);
+    console.log(updatedItem1)
   };
   const getCropSuffix = (id, index, cropitem) => (e) => {
     var val = e.target.value;
