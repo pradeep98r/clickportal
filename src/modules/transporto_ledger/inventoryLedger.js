@@ -24,25 +24,23 @@ const InventoryLedger = (props) => {
   const [showBillModal, setShowBillModal] = useState(false);
   const [showInvtModalStatus, setShowInvModalStatus] = useState(false);
   const [showInvModal, setShowInvModal] = useState(false);
- 
+
   const billOnClickView = (billId, type, i, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("T")) {
-      getInventoryListById(clickId,transporterId, bId).then((res) => {
+      getInventoryListById(clickId, transporterId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          if(res.data.data != null){
+          if (res.data.data != null) {
             dispatch(paymentViewInfo(res.data.data));
             setShowInvModalStatus(true);
             setShowInvModal(true);
-            dispatch(fromTransporter(true))
-          }
-          else{
+            dispatch(fromTransporter(true));
+          } else {
             dispatch(paymentViewInfo([]));
           }
         }
       });
-    } 
-    else {
+    } else {
       getBuyBillId(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
           Object.assign(res.data.data, { index: i, partyType: "FARMER" });
@@ -55,106 +53,111 @@ const InventoryLedger = (props) => {
     }
   };
   return (
-    <div className="transporterSummary" id="scroll_style">
+    <div>
       {tabs == "inventoryledger" ? (
         <div id="detailed-inventory">
           {inventoryLedgerSummary.length > 0 ? (
-            <table className="table table-bordered ledger-table">
-              <thead className="thead-tag">
-                <tr>
-                  <th className="col-1" id="p-common-sno">
-                    #
-                  </th>
-                  <th className="col-2">Ref ID</th>
-                  <th className="col-3">{langFullData.collected}</th>
-                  <th className="col-3">{langFullData.given}</th>
-                  <th className="col-3">{langFullData.balance}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {inventoryLedgerSummary.map((item, index) => {
-                  return (
-                    <tr className="tr-tags" key={item.partyId}>
-                      <td className="col-1" id="p-common-sno">
-                        {index + 1}
-                      </td>
-                      <td className="col-2">
-                      <button className="pl-0" onClick={() =>
-                            billOnClickView(item.refId, index, item.partyId)
-                          }>
-                        <p
-                          style={{
-                            color: "#0066FF",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {item.refId}
-                        </p>
-                        </button>
-                        <p>{moment(item.date).format("DD-MMM-YY")}</p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.collected ? item.collected.toFixed(1) : ""}
-                          &nbsp;
-                          {item.collected
-                            ? item.unit === "BAGS"
-                              ? item.unit.charAt(item).toUpperCase() +
-                                item.unit.slice(2, 3).toLowerCase()
-                              : item.unit === "BOXES"
-                              ? item.unit.charAt(item).toUpperCase() +
-                                item.unit.slice(2, 3).toLowerCase()
-                              : item.unit === "CRATES" || "SACS"
-                              ? item.unit.charAt(item).toUpperCase()
-                              : ""
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.given ? item.given.toFixed(1) : ""}
-                          &nbsp;
-                          {item.given
-                            ? item.unit === "BAGS"
-                              ? item.unit.charAt(0).toUpperCase() +
-                                item.unit.slice(2, 3).toLowerCase()
-                              : item.unit === "BOXES"
-                              ? item.unit.charAt(0).toUpperCase() +
-                                item.unit.slice(2, 3).toLowerCase()
-                              : item.unit === "CRATES" || "SACS"
-                              ? item.unit.charAt(item).toUpperCase()
-                              : ""
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.unit === "CRATES"
-                            ? item.cratesBalance.toFixed(1)
-                            : item.unit === "SACS"
-                            ? item.sacsBalance.toFixed(1)
-                            : item.unit === "BAGS"
-                            ? item.bagsBalance.toFixed(1)
-                            : item.unit === "BOXES"
-                            ? item.boxesBalance.toFixed(1)
-                            : ""}
-                          &nbsp;
-                          {item.unit === "BAGS"
-                            ? item.unit.charAt(0).toUpperCase() +
-                              item.unit.slice(2, 3).toLowerCase()
-                            : item.unit === "BOXES"
-                            ? item.unit.charAt(0).toUpperCase() +
-                              item.unit.slice(2, 3).toLowerCase()
-                            : item.unit === "CRATES" || "SACS"
-                            ? item.unit.charAt(item).toUpperCase()
-                            : ""}
-                        </p>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="ledger-table">
+              <div className="row thead-tag head_tag p-0">
+                <th className="col-1" id="p-common-sno">
+                  #
+                </th>
+                <th className="col-2">Ref ID</th>
+                <th className="col-3">{langFullData.collected}</th>
+                <th className="col-3">{langFullData.given}</th>
+                <th className="col-3">{langFullData.balance}</th>
+              </div>
+              <div className="transporterSummary transporterSummary_inv" id="scroll_style">
+                <table className="table table-bordered ledger-table">
+                  <tbody>
+                    {inventoryLedgerSummary.map((item, index) => {
+                      return (
+                        <tr className="tr-tags" key={item.partyId}>
+                          <td className="col-1" id="p-common-sno">
+                            {index + 1}
+                          </td>
+                          <td className="col-2">
+                            <button
+                              className="pl-0"
+                              onClick={() =>
+                                billOnClickView(item.refId, index, item.partyId)
+                              }
+                            >
+                              <p
+                                style={{
+                                  color: "#0066FF",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {item.refId}
+                              </p>
+                            </button>
+                            <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common">
+                              {item.collected ? item.collected.toFixed(1) : ""}
+                              &nbsp;
+                              {item.collected
+                                ? item.unit === "BAGS"
+                                  ? item.unit.charAt(item).toUpperCase() +
+                                    item.unit.slice(2, 3).toLowerCase()
+                                  : item.unit === "BOXES"
+                                  ? item.unit.charAt(item).toUpperCase() +
+                                    item.unit.slice(2, 3).toLowerCase()
+                                  : item.unit === "CRATES" || "SACS"
+                                  ? item.unit.charAt(item).toUpperCase()
+                                  : ""
+                                : ""}
+                            </p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common">
+                              {item.given ? item.given.toFixed(1) : ""}
+                              &nbsp;
+                              {item.given
+                                ? item.unit === "BAGS"
+                                  ? item.unit.charAt(0).toUpperCase() +
+                                    item.unit.slice(2, 3).toLowerCase()
+                                  : item.unit === "BOXES"
+                                  ? item.unit.charAt(0).toUpperCase() +
+                                    item.unit.slice(2, 3).toLowerCase()
+                                  : item.unit === "CRATES" || "SACS"
+                                  ? item.unit.charAt(item).toUpperCase()
+                                  : ""
+                                : ""}
+                            </p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common">
+                              {item.unit === "CRATES"
+                                ? item.cratesBalance.toFixed(1)
+                                : item.unit === "SACS"
+                                ? item.sacsBalance.toFixed(1)
+                                : item.unit === "BAGS"
+                                ? item.bagsBalance.toFixed(1)
+                                : item.unit === "BOXES"
+                                ? item.boxesBalance.toFixed(1)
+                                : ""}
+                              &nbsp;
+                              {item.unit === "BAGS"
+                                ? item.unit.charAt(0).toUpperCase() +
+                                  item.unit.slice(2, 3).toLowerCase()
+                                : item.unit === "BOXES"
+                                ? item.unit.charAt(0).toUpperCase() +
+                                  item.unit.slice(2, 3).toLowerCase()
+                                : item.unit === "CRATES" || "SACS"
+                                ? item.unit.charAt(item).toUpperCase()
+                                : ""}
+                            </p>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           ) : (
             <NoDataAvailable />
           )}
@@ -162,7 +165,7 @@ const InventoryLedger = (props) => {
       ) : (
         ""
       )}
-         {showBillModalStatus ? (
+      {showBillModalStatus ? (
         <BillView
           showBillViewModal={showBillModal}
           closeBillViewModal={() => setShowBillModal(false)}
@@ -176,7 +179,7 @@ const InventoryLedger = (props) => {
         <InventoryHistoryView
           showInvViewModal={showInvModal}
           closeInvViewModal={() => setShowInvModal(false)}
-          partyType = {'Transporter'}
+          partyType={"Transporter"}
         />
       ) : (
         ""

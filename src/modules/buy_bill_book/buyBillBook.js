@@ -406,7 +406,7 @@ function BuyBillBook() {
                                   </div>
                                 </div>
                               ) : (
-                                <div className="buy_bills" id="scroll_style">
+                                <div>
                                   <div className="row header_row">
                                     <div className="col-lg-4">
                                       <div className="row">
@@ -444,6 +444,8 @@ function BuyBillBook() {
                                       </div>
                                     </div>
                                   </div>
+                                  <div className="buy_bills" id="scroll_style">
+                                  
                                   {multiBuyBillData.length > 0 && (
                                     <div>
                                       <div className="" id="">
@@ -1055,6 +1057,8 @@ function BuyBillBook() {
                                     </div>
                                   )}
                                 </div>
+                                </div>
+                               
                               )}
                             </div>
                           </div>

@@ -20,7 +20,7 @@ const ByBuyerSellerSummary = (props) => {
   const summaryObj = reportsData?.bySellerBuyerSummaryObj;
   const selectedParty = reportsData?.selectedReportSeller;
   const partyType = props.type;
-  console.log(selectedParty,'[[p')
+  console.log(selectedParty, "[[p");
   return (
     <div>
       {summaryObj != null || selectedParty != null ? (
@@ -86,7 +86,7 @@ const ByBuyerSellerSummary = (props) => {
                 </div>
                 <div className="col-lg-3 d-flex align-items-center">
                   <p className="card-text paid">
-                  {partyType == 'BUYER' ? 'Total Sales' : 'Total Purchases'}
+                    {partyType == "BUYER" ? "Total Sales" : "Total Purchases"}
                     <p className="">
                       {summaryObj != null
                         ? summaryObj?.totalItemsRate != 0
@@ -102,78 +102,83 @@ const ByBuyerSellerSummary = (props) => {
             </div>
           </div>
 
-          <div
-            className={
-              allCustomTab == "all"
-                ? "ledgerSummary byseller_table"
-                : "ledgerSummary byseller_table_custom"
-            }
-            id="scroll_style"
-          >
+          <div>
             {summary.length > 0 ? (
               <div>
-                <table className="table table-bordered advance_table_border">
-                  <thead>
-                    <tr className="theadr-tag p-0">
-                      <th class="col-1"><p id="p-common-sno">#</p></th>
-                      <th class="col-2">Name</th>
-                      <th class="col-6">
-                        Item<br></br> Unit | Kgs | Rate
-                      </th>
-                      <th class="col-3">Total(₹)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {summary.map((item, index) => {
-                      return (
-                        <tr className="align-items-center">
-                          <td className="col-1"><p id="p-common-sno">{index + 1}</p></td>
-                          <td className="col-2">
-                            <div>
-                              <p className="date_ledger_val">
-                                {item.partyName}
-                              </p>
-                              <p>
-                                <span className="color_blue">
-                                  {item.billId}
+                <div className="row thead-tag head_tag p-0">
+                  <th class="col-1">
+                    <p id="p-common-sno">#</p>
+                  </th>
+                  <th class="col-2">Name</th>
+                  <th class="col-6">
+                    Item<br></br> Unit | Kgs | Rate
+                  </th>
+                  <th class="col-3">Total(₹)</th>
+                </div>
+                <div
+                  className={
+                    allCustomTab == "all"
+                      ? "ledgerSummary byseller_table"
+                      : "ledgerSummary byseller_table_custom"
+                  }
+                  id="scroll_style"
+                >
+                  <table className="table table-bordered advance_table_border">
+                    <tbody>
+                      {summary.map((item, index) => {
+                        return (
+                          <tr className="align-items-center">
+                            <td className="col-1">
+                              <p id="p-common-sno">{index + 1}</p>
+                            </td>
+                            <td className="col-2">
+                              <div>
+                                <p className="date_ledger_val">
+                                  {item.partyName}
+                                </p>
+                                <p>
+                                  <span className="color_blue">
+                                    {item.billId}
+                                  </span>
+                                  {" | " +
+                                    moment(item.date).format("DD-MMM-YY")}
+                                </p>
+                              </div>
+                            </td>
+                            <td className="col-6">
+                              <p>{item.cropName}</p>
+                              <p className="d-flex">
+                                <span>
+                                  {qtyValues(
+                                    item.qty,
+                                    item.qtyUnit,
+                                    item.weight,
+                                    item.wastage,
+                                    item.rateType
+                                  )}
                                 </span>
-                                {" | " + moment(item.date).format("DD-MMM-YY")}
+                                &nbsp;
+                                <span>
+                                  {" | " +
+                                    (item.rate != 0
+                                      ? getCurrencyNumberWithOneDigit(item.rate)
+                                      : 0)}
+                                </span>
                               </p>
-                            </div>
-                          </td>
-                          <td className="col-6">
-                            <p>{item.cropName}</p>
-                            <p className="d-flex">
-                              <span>
-                                {qtyValues(
-                                  item.qty,
-                                  item.qtyUnit,
-                                  item.weight,
-                                  item.wastage,
-                                  item.rateType
-                                )}
-                              </span>
-                              &nbsp;
-                              <span>
-                                {" | " +
-                                  (item.rate != 0
-                                    ? getCurrencyNumberWithOneDigit(item.rate)
-                                    : 0)}
-                              </span>
-                            </p>
-                          </td>
-                          <td className="col-3" key={item.total}>
-                            <p className="">
-                              {item.total != 0
-                                ? getCurrencyNumberWithOutSymbol(item.total)
-                                : 0}
-                            </p>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                            </td>
+                            <td className="col-3" key={item.total}>
+                              <p className="">
+                                {item.total != 0
+                                  ? getCurrencyNumberWithOutSymbol(item.total)
+                                  : 0}
+                              </p>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ) : (
               <div className="">
