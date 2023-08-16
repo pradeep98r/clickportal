@@ -1,9 +1,7 @@
 import { useState, React } from "react";
 import "../../modules/ledgers/buyerLedger.scss";
 import moment from "moment";
-import {
-  getCurrencyNumberWithOutSymbol,
-} from "../../components/getCurrencyNumber";
+import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
 import NoDataAvailable from "../../components/noDataAvailable";
 import {
   getBuyBillId,
@@ -19,12 +17,12 @@ import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import tick from "../../assets/images/tick.svg";
 import { fromAdvanceFeature } from "../../reducers/advanceSlice";
 const LedgerSummary = (props) => {
-  const ledgersSummary = useSelector(state => state.ledgerSummaryInfo);
-  var partnerSummary=ledgersSummary?.ledgerSummaryInfo;
+  const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  var partnerSummary = ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
-  const ledgerSummary =partnerSummary;
-  console.log(ledgerSummary)
-  const ledgerSummaryByDate =partnerSummary;
+  const ledgerSummary = partnerSummary;
+  console.log(ledgerSummary);
+  const ledgerSummaryByDate = partnerSummary;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
   const ledgerType = props.partyType;
@@ -36,9 +34,8 @@ const LedgerSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const billOnClickView = (billId, type, i, partyId) => {
-    var bId = 
-    billId.replace("-", "").replace("C", "").replace("U", "");
-    console.log('c',bId)
+    var bId = billId.replace("-", "").replace("C", "").replace("U", "");
+    console.log("c", bId);
     if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -47,18 +44,16 @@ const LedgerSummary = (props) => {
           setShowPaymentModal(true);
         }
       });
-    } 
-   else if (bId?.includes("A")) {
+    } else if (bId?.includes("A")) {
       getAdvanceListById(clickId, bId, partyId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
-          dispatch(fromAdvanceFeature(false))
+          dispatch(fromAdvanceFeature(false));
         }
       });
-    } 
-    else {
+    } else {
       if (type?.toLowerCase() == "seller" || type?.toLowerCase() == "farmer") {
         getBuyBillId(clickId, bId).then((res) => {
           if (res.data.status.type === "SUCCESS") {
@@ -82,173 +77,215 @@ const LedgerSummary = (props) => {
       }
     }
   };
-  
+console.log( props.dateDisplay,'dae')
   return (
     <div>
       {allCustom == "all" ? (
-        <div
-          className={props.dateDisplay ? "ledgerSummary" : "all_ledgerSummary"}
-          id="scroll_style"
-        >
-          {ledgerSummary.length > 0 ? (
-            <table className="table table-bordered ledger-table">
-              <thead className="thead-tag">
-                <tr>
-                  <th className="col-1" id="sno">
-                    #
-                  </th>
-                  <th className="col-2">Ref ID | Date</th>
-                  {ledgerType == "BUYER" ? (
-                    <th className="col-3">Received(&#8377;)</th>
-                  ) : (
-                    <th className="col-3">Paid(&#8377;)</th>
-                  )}
-                  {ledgerType == "BUYER" ? (
-                    <th className="col-3">To Be Received(&#8377;)</th>
-                  ) : (
-                    <th className="col-3">To Be Paid(&#8377;)</th>
-                  )}
-                  <th className="col-3">Ledger Balance(&#8377;)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ledgerSummary.map((item, index) => {
-                  return (
-                    <tr className="tr-tags" scope="row" kery={item.partyId}>
-                      <td className="col-1">
-                        <p id="p-common-sno">{index + 1}</p>
-                      </td>
-                      <td className="col-2">
-                        <button className="pl-0" onClick={() =>
-                            billOnClickView(item.refId, ledgerType, index, partyId)
-                          }>
-                        <p
-                          style={{ color: "#0066FF" }}
-                          
-                        > 
-                        
-                          <div className="d-flex">
-                            <span>{item.refId}</span>
-                            {item?.billPaid ? (<img src={tick} alt="image" className="ml-2" />) : '' }
+        <div className="ledger-table">
+           {ledgerSummary.length > 0 ? (
+          <div className="row thead-tag head_tag">
+            <th className="col-1" id="sno">
+              #
+            </th>
+            <th className="col-2">Ref ID | Date</th>
+            {ledgerType == "BUYER" ? (
+              <th className="col-3">Received(&#8377;)</th>
+            ) : (
+              <th className="col-3">Paid(&#8377;)</th>
+            )}
+            {ledgerType == "BUYER" ? (
+              <th className="col-3">To Be Received(&#8377;)</th>
+            ) : (
+              <th className="col-3">To Be Paid(&#8377;)</th>
+            )}
+            <th className="col-3">Ledger Balance(&#8377;)</th>
+          </div> ) : '' }
 
-                          </div>
-                        </p>
-                        </button>
-                        <p>{moment(item.date).format("DD-MMM-YY")}</p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.paidRcvd
-                            ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.tobePaidRcvd
-                            ? getCurrencyNumberWithOutSymbol(item.tobePaidRcvd)
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p
-                          className={
-                            ledgerType == "BUYER" ? "coloring" : "paid-coloring"
-                          }
-                          id="p-common"
-                        >
-                          {item.balance
-                            ? getCurrencyNumberWithOutSymbol(item.balance)
-                            : ""}
-                        </p>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <NoDataAvailable />
-          )}
+          <div
+            className={
+              props.dateDisplay ? "ledgerSummary" : "all_ledgerSummary"
+            }
+            id="scroll_style"
+          >
+            {ledgerSummary.length > 0 ? (
+              <table className="table table-bordered ledger-table">
+                <tbody>
+                  {ledgerSummary.map((item, index) => {
+                    return (
+                      <tr className="tr-tags" scope="row" kery={item.partyId}>
+                        <td className="col-1">
+                          <p id="p-common-sno">{index + 1}</p>
+                        </td>
+                        <td className="col-2">
+                          <button
+                            className="pl-0"
+                            onClick={() =>
+                              billOnClickView(
+                                item.refId,
+                                ledgerType,
+                                index,
+                                partyId
+                              )
+                            }
+                          >
+                            <p style={{ color: "#0066FF" }}>
+                              <div className="d-flex">
+                                <span>{item.refId}</span>
+                                {item?.billPaid ? (
+                                  <img
+                                    src={tick}
+                                    alt="image"
+                                    className="ml-2"
+                                  />
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                            </p>
+                          </button>
+                          <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                        </td>
+                        <td className="col-3">
+                          <p id="p-common">
+                            {item.paidRcvd
+                              ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
+                              : ""}
+                          </p>
+                        </td>
+                        <td className="col-3">
+                          <p id="p-common">
+                            {item.tobePaidRcvd
+                              ? getCurrencyNumberWithOutSymbol(
+                                  item.tobePaidRcvd
+                                )
+                              : ""}
+                          </p>
+                        </td>
+                        <td className="col-3">
+                          <p
+                            className={
+                              ledgerType == "BUYER"
+                                ? "coloring"
+                                : "paid-coloring"
+                            }
+                            id="p-common"
+                          >
+                            {item.balance
+                              ? getCurrencyNumberWithOutSymbol(item.balance)
+                              : ""}
+                          </p>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <NoDataAvailable />
+            )}
+          </div>
         </div>
       ) : (
-        <div className="ledgerSummary" id="scroll_style">
+        <div className="ledger-table">
           {ledgerSummaryByDate.length > 0 ? (
-            <table className="table table-bordered ledger-table">
-              {/*ledger-table*/}
-              <thead className="thead-tag">
-                <tr>
-                  <th className="col-1" id="sno">
-                    #
-                  </th>
-                  <th className="col-2">Ref ID | Date</th>
-                  {ledgerType == "BUYER" ? (
-                    <th className="col-3">Received(&#8377;)</th>
-                  ) : (
-                    <th className="col-3">Paid(&#8377;)</th>
-                  )}
-                  {ledgerType == "BUYER" ? (
-                    <th className="col-3">To Be Received(&#8377;)</th>
-                  ) : (
-                    <th className="col-3">To Be Paid(&#8377;)</th>
-                  )}
-                  <th className="col-3">Ledger Balance(&#8377;)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ledgerSummaryByDate.map((item, index) => {
-                  return (
-                    <tr className="tr-tags" scope="row" kery={item.partyId}>
-                      <td className="col-1">
-                        <p id="p-common-sno">{index + 1}</p>
-                      </td>
-                      <td className="col-2">
-                      <button className="pl-0" onClick={() =>
-                            billOnClickView(item.refId, ledgerType, index, partyId)
-                          }>
-                      <p
-                          style={{ color: "#0066FF" }}
-                         
-                        > 
-                        
-                          <div className="d-flex">
-                            <span>{item.refId}</span>
-                            {item?.billPaid ? (<img src={tick} alt="image" className="ml-2" />) : '' }
+            <div>
+              <div className="row thead-tag head_tag">
+                <th className="col-1" id="sno">
+                  #
+                </th>
+                <th className="col-2">Ref ID | Date</th>
+                {ledgerType == "BUYER" ? (
+                  <th className="col-3">Received(&#8377;)</th>
+                ) : (
+                  <th className="col-3">Paid(&#8377;)</th>
+                )}
+                {ledgerType == "BUYER" ? (
+                  <th className="col-3">To Be Received(&#8377;)</th>
+                ) : (
+                  <th className="col-3">To Be Paid(&#8377;)</th>
+                )}
+                <th className="col-3">Ledger Balance(&#8377;)</th>
+              </div>
+              <div
+                className={
+                  props.dateDisplay ? "ledgerSummary" : "all_ledgerSummaryd"
+                }
+                id="scroll_style"
+              >
+                <table className="table table-bordered ledger-table">
+                  {/*ledger-table*/}
 
-                          </div>
-                        </p>
-                      </button>
-                        <p>{moment(item.date).format("DD-MMM-YY")}</p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.tobePaidRcvd
-                            ? item.tobePaidRcvd.toFixed(2)
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p
-                          className={
-                            ledgerType == "BUYER" ? "coloring" : "paid-coloring"
-                          }
-                          id="p-common"
-                        >
-                          {item.balance ? item.balance.toFixed(2) : ""}
-                        </p>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  <tbody>
+                    {ledgerSummaryByDate.map((item, index) => {
+                      return (
+                        <tr className="tr-tags" scope="row" kery={item.partyId}>
+                          <td className="col-1">
+                            <p id="p-common-sno">{index + 1}</p>
+                          </td>
+                          <td className="col-2">
+                            <button
+                              className="pl-0"
+                              onClick={() =>
+                                billOnClickView(
+                                  item.refId,
+                                  ledgerType,
+                                  index,
+                                  partyId
+                                )
+                              }
+                            >
+                              <p style={{ color: "#0066FF" }}>
+                                <div className="d-flex">
+                                  <span>{item.refId}</span>
+                                  {item?.billPaid ? (
+                                    <img
+                                      src={tick}
+                                      alt="image"
+                                      className="ml-2"
+                                    />
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
+                              </p>
+                            </button>
+                            <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common">
+                              {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
+                            </p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common">
+                              {item.tobePaidRcvd
+                                ? item.tobePaidRcvd.toFixed(2)
+                                : ""}
+                            </p>
+                          </td>
+                          <td className="col-3">
+                            <p
+                              className={
+                                ledgerType == "BUYER"
+                                  ? "coloring"
+                                  : "paid-coloring"
+                              }
+                              id="p-common"
+                            >
+                              {item.balance ? item.balance.toFixed(2) : ""}
+                            </p>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           ) : (
+            <div className="nodata_height">
             <NoDataAvailable />
+            </div>
           )}
         </div>
       )}
@@ -266,8 +303,7 @@ const LedgerSummary = (props) => {
         <PaymentHistoryView
           showPaymentViewModal={showPaymentModal}
           closePaymentViewModal={() => setShowPaymentModal(false)}
-          partyType = {ledgerType}
-          
+          partyType={ledgerType}
         />
       ) : (
         ""

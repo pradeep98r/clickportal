@@ -30,10 +30,10 @@
     }
 }
 .table-scroll {
-    height: calc(100vh - 210px);
+    height: calc(100vh - 265px);
     padding:0px;
     vertical-align: top;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 0px;
     background: #FFFFFF;
 }
 .ledger-table{
@@ -66,6 +66,7 @@
         padding: 10px;
         font-weight: 500;
     }
+    border-radius: 10px 10px 0px 0px;
 }
 .thead-tag{ 
     font-weight: 500;
@@ -75,7 +76,6 @@
     padding: 10px;
     th{
         padding: 0px;
-        
     }
 }
 input[type="search"]::placeholder {  
@@ -149,10 +149,13 @@ input[type=radio]:label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 315px);
+    height: calc(100vh - 342px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
+}
+.transporterSummary_inv{
+    height: calc(100vh - 355px); 
 }
 .transporto_ledger_scroll{
     height: calc(100vh - 260px)!important;  
@@ -165,7 +168,7 @@ input[type=radio]:label {
     border-radius: 10px 10px 10px 10px;
 }
 #detailed-inventory{
-    background: #FFFFFF;
+    // background: #FFFFFF;
 }
 .add-record-btn{
     padding: 0px 10px 0px 20px;
@@ -677,4 +680,12 @@ input[type=radio].radioBtnValues{
 .trans_partner_card h5{
     font-size:13px;
 
+}
+.head_tag {
+    th{
+        padding: 10px;
+        font-weight: 500;
+    }
+    width: 100%!important;
+    border-radius: 10px 10px 0px 0px;
 }

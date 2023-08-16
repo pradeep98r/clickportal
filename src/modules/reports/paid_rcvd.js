@@ -13,50 +13,53 @@ const PaidRcvdSummary = (props) => {
       {dataObj != null ? (
         dataObj.paidRcvdSummary.length > 0 ? (
           <div className="daily_summary_table_main">
-            <div className="daily_summary_table">
-              <table className="table table-bordered mb-0" id="scroll_style">
-                <thead className="thead-tag">
-                  <tr>
-                    <th className="col-1" id="sno">
+            <div className="">
+            <div className="row thead-tag">
+                
+                    <th className="col-2" id="sno">
                       #
                     </th>
                     {partyType == "BUYER" ? (
-                      <th className="col-3">Buyer Name</th>
+                      <th className="col-5">Buyer Name</th>
                     ) : (
-                      <th className="col-3">Seller Name</th>
+                      <th className="col-5">Seller Name</th>
                     )}
                     {partyType == "BUYER" ? (
                       <th className="col-3">Received(₹)</th>
                     ) : (
                       <th className="col-3">Paid(₹)</th>
                     )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataObj.paidRcvdSummary.map((item, index) => {
-                    return (
-                      <tr className="tr-tags" scope="row" kery={item.partyId}>
-                        <td className="col-1">
-                          <p className="text-center">{index + 1}</p>
-                        </td>
-                        <td className="col-3">
-                          <p>{item.partyName}</p>
-                        </td>
+                
+                </div>
+             <div className="daily_summary_table">
+             <table className="table table-bordered mb-0" id="scroll_style">
+              
+              <tbody>
+                {dataObj.paidRcvdSummary.map((item, index) => {
+                  return (
+                    <tr className="tr-tags" scope="row" kery={item.partyId}>
+                      <td className="col-1">
+                        <p className="text-center">{index + 1}</p>
+                      </td>
+                      <td className="col-3">
+                        <p>{item.partyName}</p>
+                      </td>
 
-                        <td className="col-3">
-                          <p
-                            className={
-                              partyType == "BUYER" ? "color_green" : "color_red"
-                            }
-                          >
-                            {getCurrencyNumberWithOutSymbol(item.paidRcvd)}
-                          </p>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      <td className="col-3">
+                        <p
+                          className={
+                            partyType == "BUYER" ? "color_green" : "color_red"
+                          }
+                        >
+                          {getCurrencyNumberWithOutSymbol(item.paidRcvd)}
+                        </p>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+             </div>
             </div>
             <div className="totals">
               <div className="row">

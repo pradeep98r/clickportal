@@ -1386,8 +1386,7 @@ const Step22 = (props) => {
             {cropData.length > 0 && (
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
-                <div className="crop_table" id="scroll_style">
-                  <div className="row header_row p-0 crop_table_header_row m-0">
+                <div className="row header_row p-0 crop_table_header_row m-0">
                     <div className="col-lg-2">
                       <p>Crop</p>
                     </div>
@@ -1419,6 +1418,8 @@ const Step22 = (props) => {
                       <p>Total (₹)</p>
                     </div>
                   </div>
+                <div className="crop_table pr-0" id="scroll_style">
+                  
                   {cropData.map((crop, index) => (
                     <div
                       className="crop_div crop_table_div table_crop_div m-0"

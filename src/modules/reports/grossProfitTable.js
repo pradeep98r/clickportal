@@ -25,64 +25,64 @@ const GrossProfitTable = (props) => {
       : grossSummaryInfo?.sellerExpenses;
   return (
     <div className="daily_summary_table_main">
-      <div className="daily_summary_table daily_summary_table_g">
-        <table className="table table-bordered mb-0" id="scroll_style">
-          <thead className="thead-tag">
-            <tr>
-              <th className="col-1" id="sno">
-                #
-              </th>
-              {partyType == "BUYER" ? (
-                <th className="col-3">Buyer Name</th>
-              ) : (
-                <th className="col-3">Seller Name</th>
-              )}
-              <th className="col-3">Qty</th>
+      <div className="">
+        <div className="row thead-tag">
+          <th className="col-1" id="sno">
+            #
+          </th>
+          {partyType == "BUYER" ? (
+            <th className="col-4">Buyer Name</th>
+          ) : (
+            <th className="col-4">Seller Name</th>
+          )}
+          <th className="col-4">Qty</th>
 
-              <th className="col-3">Bill Amount(₹)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dataObj.map((item, index) => {
-              return (
-                <tr className="tr-tags" scope="row" kery={item.partyId}>
-                  <td className="col-1">
-                    <p className="text-center">{index + 1}</p>
-                  </td>
-                  <td className="col-3">
-                    <p>{item.partyName}</p>
-                  </td>
-                  <td className="col-3">
-                    <p>
-                      {item.items.map((crop, i) => {
-                        return (
-                          <div className="mb-1">
-                            <p>{crop.cropName}</p>
-                            <p>
-                              {getIndividualTotalUnitsValgross(
-                                crop.quantityDetails,
-                                true
-                              )}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </p>
-                  </td>
-                  <td className="col-3">
-                    <p
-                      className={
-                        partyType == "BUYER" ? "color_green" : "color_red"
-                      }
-                    >
-                      {getCurrencyNumberWithOutSymbol(item.billAmount)}
-                    </p>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+          <th className="col-3">Bill Amount(₹)</th>
+        </div>
+        <div className="daily_summary_table daily_summary_table_g">
+          <table className="table table-bordered mb-0" id="scroll_style">
+            <tbody>
+              {dataObj.map((item, index) => {
+                return (
+                  <tr className="tr-tags" scope="row" kery={item.partyId}>
+                    <td className="col-1">
+                      <p className="text-center">{index + 1}</p>
+                    </td>
+                    <td className="col-3">
+                      <p>{item.partyName}</p>
+                    </td>
+                    <td className="col-3">
+                      <p>
+                        {item.items.map((crop, i) => {
+                          return (
+                            <div className="mb-1">
+                              <p>{crop.cropName}</p>
+                              <p>
+                                {getIndividualTotalUnitsValgross(
+                                  crop.quantityDetails,
+                                  true
+                                )}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </p>
+                    </td>
+                    <td className="col-3">
+                      <p
+                        className={
+                          partyType == "BUYER" ? "color_green" : "color_red"
+                        }
+                      >
+                        {getCurrencyNumberWithOutSymbol(item.billAmount)}
+                      </p>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
       <div className="totals totals_main_g">
         <div className="row">

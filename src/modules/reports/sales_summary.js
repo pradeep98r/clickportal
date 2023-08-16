@@ -54,7 +54,7 @@ const SalesSummary = (props) => {
   const startDate = ledgersSummary?.beginDate;
   const endDate = ledgersSummary?.closeDate;
   var dateValue = advancesData?.dateFormat;
-  console.log(dateValue,'date1')
+  console.log(dateValue, "date1");
   var [datesValue, setDateValue] = useState(date + " to " + date);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
@@ -65,7 +65,7 @@ const SalesSummary = (props) => {
     dispatch(beginDate(date));
     dispatch(closeDate(date));
     // callbackFunction(date, date, "Custom");
-    console.log(summaryArray, partyType,dateValue, "useeffect all data");
+    console.log(summaryArray, partyType, dateValue, "useeffect all data");
   }, [props.type]);
   const getAllSalesSummary = () => {
     getSalesSummary(clickId, partyType)
@@ -104,7 +104,7 @@ const SalesSummary = (props) => {
   const allCustomEvent = (type) => {
     if (type == "custom") {
       setDateDisplay(true);
-      console.log(billEditItemInfo)
+      console.log(billEditItemInfo);
       if (billEditItemInfo?.dateCustom) {
         callbackFunction(newDate, newDate, "Custom");
       } else {
@@ -164,118 +164,124 @@ const SalesSummary = (props) => {
           <div>
             {/* {allData.length > 0 ? ( */}
             <div className="row">
-           
-                <div className="col-lg-12 p-0">
-                  <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
-                    <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
-                      {tabs.map((tab) => {
-                        return (
-                          <li key={tab.id} className="nav-item ">
-                            <a
-                              className={
-                                "nav-link" +
-                                (allCustom == tab.to ? " active" : "")
-                              }
-                              href={"#" + tab.name}
-                              role="tab"
-                              aria-controls="home"
-                              data-bs-toggle="tab"
-                              onClick={() => allCustomEvent(tab.to)}
-                            >
-                              {tab.name}
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <p
-                    className={
-                      dateDisplay && allCustom == "custom" ? "" : "padding_all"
-                    }
-                  ></p>
+              <div className="col-lg-12 p-0">
+                <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
+                  <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
+                    {tabs.map((tab) => {
+                      return (
+                        <li key={tab.id} className="nav-item ">
+                          <a
+                            className={
+                              "nav-link" +
+                              (allCustom == tab.to ? " active" : "")
+                            }
+                            href={"#" + tab.name}
+                            role="tab"
+                            aria-controls="home"
+                            data-bs-toggle="tab"
+                            onClick={() => allCustomEvent(tab.to)}
+                          >
+                            {tab.name}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <p
+                  className={
+                    dateDisplay && allCustom == "custom" ? "" : "padding_all"
+                  }
+                ></p>
 
-                  <div className="my-2">
-                    <div
-                      style={{
-                        display:
-                          dateDisplay && allCustom == "custom"
-                            ? "flex"
-                            : "none",
-                      }}
-                      className="dateRangePicker justify-content-center"
-                    >
-                      <button onClick={onclickDate} className="color_blue">
-                        <div className="date_icon m-0">
-                          <img
-                            src={date_icon}
-                            alt="icon"
-                            className="mr-2 date_icon_in_custom"
-                          />
-                          {dateValue}
-                        </div>
-                      </button>
-                    </div>
+                <div className="my-2">
+                  <div
+                    style={{
+                      display:
+                        dateDisplay && allCustom == "custom" ? "flex" : "none",
+                    }}
+                    className="dateRangePicker justify-content-center"
+                  >
+                    <button onClick={onclickDate} className="color_blue">
+                      <div className="date_icon m-0">
+                        <img
+                          src={date_icon}
+                          alt="icon"
+                          className="mr-2 date_icon_in_custom"
+                        />
+                        {dateValue}
+                      </div>
+                    </button>
                   </div>
-                  {totalSummaryData != null ? (
-                 <div>
+                </div>
+                {totalSummaryData != null ? (
+                  <div>
                     <div className="card details-tag">
-                    <div
-                      className="card-body advance_card_body"
-                      id="card-details"
-                    >
-                      <div className="row">
-                        <div id="verticalLines" className="col-lg-6 d-block">
-                          <p className="card-text paid">Total Quantities</p>
-                          <p className="">
-                            {(totalSummaryData?.totalUnits != 0
-                              ? getCurrencyNumberWithOneDigit(
-                                  totalSummaryData?.totalUnits
-                                )
-                              : 0) +
-                              " | " +
-                              (totalSummaryData?.totalWeight != 0
+                      <div
+                        className="card-body advance_card_body"
+                        id="card-details"
+                      >
+                        <div className="row">
+                          <div id="verticalLines" className="col-lg-6 d-block">
+                            <p className="card-text paid">Total Quantities</p>
+                            <p className="">
+                              {(totalSummaryData?.totalUnits != 0
                                 ? getCurrencyNumberWithOneDigit(
-                                    totalSummaryData?.totalWeight
+                                    totalSummaryData?.totalUnits
                                   )
-                                : 0)}
-                          </p>
-                        </div>
-                        <div className="col-lg-3">
-                          <p className="card-text paid">{partyType == 'BUYER' ? 'Total Sales' : 'Total Purchases'}</p>
-                          <p className="">
-                            {totalSummaryData?.totalItemsRate != 0
-                              ? getCurrencyNumberWithSymbol(
-                                  totalSummaryData?.totalItemsRate
-                                )
-                              : 0}
-                          </p>
+                                : 0) +
+                                " | " +
+                                (totalSummaryData?.totalWeight != 0
+                                  ? getCurrencyNumberWithOneDigit(
+                                      totalSummaryData?.totalWeight
+                                    )
+                                  : 0)}
+                            </p>
+                          </div>
+                          <div className="col-lg-3">
+                            <p className="card-text paid">
+                              {partyType == "BUYER"
+                                ? "Total Sales"
+                                : "Total Purchases"}
+                            </p>
+                            <p className="">
+                              {totalSummaryData?.totalItemsRate != 0
+                                ? getCurrencyNumberWithSymbol(
+                                    totalSummaryData?.totalItemsRate
+                                  )
+                                : 0}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  {summaryArray.length > 0 ? (
-                    <div
-                      className="table-scroll ledger-table sales_summary_table"
-                      id="scroll_style"
-                    >
-                      <table className="table table-bordered advance_table_border ledger-table">
-                        <thead>
-                          <tr className="theadr-tag p-0">
-                            <th class="col-1"><p id="p-common-sno">#</p></th>
-                            <th class="col-2">Name</th>
-                            <th class="col-6">
-                              Item<br></br> Unit | Kgs | Rate
-                            </th>
-                            <th class="col-3">Total(₹)</th>
-                          </tr>
-                        </thead>
+
+                    {summaryArray.length > 0 ? (
+                      <div
+                        className="ledger-table"
+                      >
+                          <div className="row thead-tag head_tag p-0">
+                              <th class="col-1">
+                                <p id="p-common-sno">#</p>
+                              </th>
+                              <th class="col-2">Name</th>
+                              <th class="col-6">
+                                Item<br></br> Unit | Kgs | Rate
+                              </th>
+                              <th class="col-3">Total(₹)</th>
+                           
+                          </div>
+                       <div className="table-scroll ledger-table sales_summary_table"
+                        id="scroll_style">
+                       <table className="table table-bordered advance_table_border ledger-table">
+                        
                         <tbody>
                           {summaryArray.map((item, index) => {
                             return (
                               <tr className="align-items-center">
-                                <td className="col-1"><p id="p-common-sno">{index + 1}</p></td>
+                                <td className="col-1">
+                                  <p id="p-common-sno">{index + 1}</p>
+                                </td>
                                 <td className="col-2">
                                   <div>
                                     <p className="date_ledger_val">
@@ -327,43 +333,43 @@ const SalesSummary = (props) => {
                           })}
                         </tbody>
                       </table>
-                    </div>
-                  ) : (
-                    <div className="table-scroll nodata_scroll">
-                      <div className="row partner_no_data_widget_rows">
-                        <div className="col-lg-5">
-                          <div className="partner_no_data_widget">
-                            <div className="text-center">
-                              <img
-                                src={no_data_icon}
-                                alt="icon"
-                                className="d-flex mx-auto justify-content-center"
-                              />
+                       </div>
+                      </div>
+                    ) : (
+                      <div className="table-scroll nodata_scroll">
+                        <div className="row partner_no_data_widget_rows">
+                          <div className="col-lg-5">
+                            <div className="partner_no_data_widget">
+                              <div className="text-center">
+                                <img
+                                  src={no_data_icon}
+                                  alt="icon"
+                                  className="d-flex mx-auto justify-content-center"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                 </div>
-                  ) : (
-                    <div className="col-lg-12">
-                      <div
-                        className="partner_no_data_widget d-flex align-items-center justify-content-center"
-                        style={{ height: "100%" }}
-                      >
-                        <div className="text-center">
-                          <img
-                            src={no_data_icon}
-                            alt="icon"
-                            className="d-flex mx-auto justify-content-center"
-                          />
-                        </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="col-lg-12">
+                    <div
+                      className="partner_no_data_widget d-flex align-items-center justify-content-center"
+                      style={{ height: "100%" }}
+                    >
+                      <div className="text-center">
+                        <img
+                          src={no_data_icon}
+                          alt="icon"
+                          className="d-flex mx-auto justify-content-center"
+                        />
                       </div>
                     </div>
-                  )}
-                </div>
-              
+                  </div>
+                )}
+              </div>
             </div>
             {/* )  */}
             {/* // : (

@@ -12,18 +12,20 @@ const CoolieRentSummary = (props) => {
       {dataObj != null ? (
         dataObj.charges.length > 0 ? (
           <div className="daily_summary_table_main">
-            <div className="daily_summary_table">
-              <table className="table table-bordered mb-0" id="scroll_style">
-                <thead className="thead-tag">
-                  <tr>
-                    <th className="col-1" id="sno">
+            <div className="">
+            <div className="row thead-tag">
+               
+                    <th className="col-2" id="sno">
                       #
                     </th>
-                    <th className="col-3">Ref ID</th>
+                    <th className="col-5">Ref ID</th>
 
                     <th className="col-3">Amount(₹)</th>
-                  </tr>
-                </thead>
+                 
+                </div>
+                <div className="daily_summary_table">
+              <table className="table table-bordered mb-0" id="scroll_style">
+               
                 <tbody>
                   {dataObj.charges.map((item, index) => {
                     return (
@@ -45,6 +47,7 @@ const CoolieRentSummary = (props) => {
                   })}
                 </tbody>
               </table>
+              </div>
             </div>
             <div className="totals">
               <div className="row">

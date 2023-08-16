@@ -385,8 +385,8 @@ const SellBillBook = (props) => {
                               </div>
                             </div>
                           ) : (
-                            <div className="buy_bills" id="scroll_style">
-                              <div className="row header_row">
+                            <div>
+                               <div className="row header_row">
                                 <div className="col-lg-4">
                                   <div className="row">
                                     <div className="col-lg-7 col-sm-12 p-0">
@@ -421,6 +421,8 @@ const SellBillBook = (props) => {
                                   </div>
                                 </div>
                               </div>
+                            <div className="buy_bills" id="scroll_style">
+                             
                               {sellMultiBillData.length > 0 && (
                                 <div>
                                   <div className="" id="">
@@ -1003,6 +1005,7 @@ const SellBillBook = (props) => {
                                   ))}
                                 </div>
                               )}
+                            </div>
                             </div>
                           )}
                         </div>

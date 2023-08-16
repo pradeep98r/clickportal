@@ -44,7 +44,7 @@ const PaymentLedger = (props) => {
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
-          dispatch(fromTransporter(true))
+          dispatch(fromTransporter(true));
         }
       });
     } else {
@@ -60,72 +60,72 @@ const PaymentLedger = (props) => {
     }
   };
   return (
-    <div className="transporterSummary" id="scroll_style">
+    <div>
       {tabs == "paymentledger" ? (
         <div id="transporter-summary">
           {paymentLedgerSummary.length > 0 ? (
-            <table className="table table-bordered ledger-table">
-              <thead className="thead-tag">
-                <tr>
-                  <th className="col-1" id="sno">
-                    #
-                  </th>
-                  <th className="col-2">Ref ID</th>
-                  <th className="col-3">{langFullData.paid}(&#8377;)</th>
-                  <th className="col-3">{langFullData.toBePaid}(&#8377;)</th>
-                  <th className="col-3">
-                    {langFullData.ledgerBalance}(&#8377;)
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {paymentLedgerSummary.map((item, index) => {
-                  return (
-                    <tr className="tr-tags" scope="row" kery={item.partyId}>
-                      <td className="col-1">
-                        <p id="p-common-sno">{index + 1}</p>
-                      </td>
-                      <td className="col-2">
-                        <button
-                          className="pl-0"
-                          onClick={() =>
-                            billOnClickView(item.refId, index, item.partyId)
-                          }
-                        >
-                          <p style={{ color: "#0066FF" }}>
-                            <div className="d-flex">
-                              <span>{item.refId}</span>
-                            </div>
-                          </p>
-                        </button>
-                        <p>{moment(item.date).format("DD-MMM-YY")}</p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common">
-                          {item.paid
-                            ? getCurrencyNumberWithOutSymbol(item.paid)
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p id="p-common" className="paid-coloring">
-                          {item.toBePaid
-                            ? getCurrencyNumberWithOutSymbol(item.toBePaid)
-                            : ""}
-                        </p>
-                      </td>
-                      <td className="col-3">
-                        <p className="coloring color_black" id="p-common">
-                          {item.balance
-                            ? getCurrencyNumberWithOutSymbol(item.balance)
-                            : ""}
-                        </p>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="ledger-table">
+              <div className="row thead-tag head_tag p-0">
+                <th className="col-1" id="sno">
+                  #
+                </th>
+                <th className="col-2">Ref ID</th>
+                <th className="col-3">{langFullData.paid}(&#8377;)</th>
+                <th className="col-3">{langFullData.toBePaid}(&#8377;)</th>
+                <th className="col-3">{langFullData.ledgerBalance}(&#8377;)</th>
+              </div>
+              <div className="transporterSummary" id="scroll_style">
+                <table className="table table-bordered ledger-table">
+                  <tbody>
+                    {paymentLedgerSummary.map((item, index) => {
+                      return (
+                        <tr className="tr-tags" scope="row" kery={item.partyId}>
+                          <td className="col-1">
+                            <p id="p-common-sno">{index + 1}</p>
+                          </td>
+                          <td className="col-2">
+                            <button
+                              className="pl-0"
+                              onClick={() =>
+                                billOnClickView(item.refId, index, item.partyId)
+                              }
+                            >
+                              <p style={{ color: "#0066FF" }}>
+                                <div className="d-flex">
+                                  <span>{item.refId}</span>
+                                </div>
+                              </p>
+                            </button>
+                            <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common">
+                              {item.paid
+                                ? getCurrencyNumberWithOutSymbol(item.paid)
+                                : ""}
+                            </p>
+                          </td>
+                          <td className="col-3">
+                            <p id="p-common" className="paid-coloring">
+                              {item.toBePaid
+                                ? getCurrencyNumberWithOutSymbol(item.toBePaid)
+                                : ""}
+                            </p>
+                          </td>
+                          <td className="col-3">
+                            <p className="coloring color_black" id="p-common">
+                              {item.balance
+                                ? getCurrencyNumberWithOutSymbol(item.balance)
+                                : ""}
+                            </p>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           ) : (
             <NoDataAvailable />
           )}

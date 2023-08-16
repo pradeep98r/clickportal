@@ -516,8 +516,7 @@ const Ledgers = (props) => {
                     {ledgers.length > 0 ? (
                       <div>
                         <div
-                          className="table-scroll ledger-table"
-                          id="scroll_style"
+                          className="ledger-table"
                         >
                           <div className="ledgers ledger_table_col">
                             <div className="row theadr-tag p-0">
@@ -536,7 +535,8 @@ const Ledgers = (props) => {
                                 <th class="col-lg-3">To Be Paid(&#8377;)</th>
                               )}
                             </div>
-                            <div>
+                            <div className="table-scroll"
+                          id="scroll_style">
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
@@ -1068,6 +1068,7 @@ const Ledgers = (props) => {
                           allCustomTab={allCustom}
                           partyType={props.type}
                           partyId={partyId}
+                          dateDisplay={dateDisplay}
                         />
                       ) : (
                         ""
@@ -1080,6 +1081,7 @@ const Ledgers = (props) => {
                           allCustomTab={allCustom}
                           partyType={props.type}
                           partyId={partyId}
+                          dateDisplay={dateDisplay}
                         />
                       ) : (
                         ""
