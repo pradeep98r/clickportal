@@ -250,15 +250,16 @@ const ByBuyerSeller = (props) => {
                   </div>
                   {ledgers.length > 0 ? (
                     <div>
+                       <div className="row theadr-tag p-0">
+                            <th class="col-lg-2"><p id="p-common-sno">#</p></th>
+                            <th class="col-lg-10">Name</th>
+                          </div>
                       <div
                         className="table-scroll ledger-table by_seller_buyer_table"
                         id="scroll_style"
                       >
                         <div className="ledgers ledger_table_col">
-                          <div className="row theadr-tag p-0">
-                            <th class="col-lg-2"><p id="p-common-sno">#</p></th>
-                            <th class="col-lg-10">Name</th>
-                          </div>
+                         
                           <div>
                             {ledgers.map((item, index) => {
                               return (

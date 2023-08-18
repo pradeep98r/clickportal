@@ -97,14 +97,15 @@ const AllTransporters = (props) => {
             </div>
             {transporter.length > 0 ? (
               <div>
+                 <div className="all_trans_head">
+                      <p>Transporter Name</p>
+                    </div>
                 <div
                   className="table-scroll ledger-table transporto_ledger_scroll alltransporto_ledger_scroll"
                   id="scroll_style"
                 >
                   <table className="table table-fixed">
-                    <div className="all_trans_head">
-                      <p>Transporter Name</p>
-                    </div>
+                   
 
                     {transporter.map((partner, index) => {
                       return (
