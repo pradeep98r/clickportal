@@ -33,6 +33,8 @@ import RecordPayment from "./recordPayment";
 import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import addbill_icon from "../../assets/images/addbill.svg";
+import print from "../../assets/images/print_bill.svg";
+import download_icon from "../../assets/images/dwnld.svg";
 import {
   allCustomTabs,
   detaildLedgerInfo,
@@ -1008,7 +1010,8 @@ const Ledgers = (props) => {
                           </div>
                         </div>
                         <span id="horizontal-line"></span>
-                        <ul
+                       <div className="d-flex justify-content-between">
+                       <ul
                           className="nav nav-tabs ledger_tabs"
                           id="myTab"
                           role="tablist"
@@ -1033,6 +1036,23 @@ const Ledgers = (props) => {
                             );
                           })}
                         </ul>
+                        <div className="print_dwnld_icons">
+                        <button
+                          // onClick={() => {
+                          //   getDownloadPdf().then();
+                          // }}
+                        >
+                          <img src={download_icon} alt="img" />
+                        </button>
+                        <button
+                          // onClick={() => {
+                          //   getPrintPdf().then();
+                          // }}
+                        >
+                          <img src={print} alt="img" />
+                        </button>      
+                        </div>
+                         </div>
                       </div>
                     </div>
                     <div>
