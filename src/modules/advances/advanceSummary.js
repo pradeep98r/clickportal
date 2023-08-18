@@ -96,59 +96,65 @@ const AdvanceSummary = () => {
               </div>
             </div>
           </div>
-          <div
-            className={
-              allCustomTab == "all"
-                ? "ledgerSummary advance_ledgerSummary"
-                : "ledgerSummary advance_ledgerSummary_custom"
-            }
-            id="scroll_style"
-          >
+          <div>
             {advancesSummary.length > 0 ? (
-              <table className="table table-bordered advance_table_border ledger-table">
-                <thead className="thead-tag">
-                  <tr>
-                    <th className="col-1" id="sno">
-                      #
-                    </th>
-                    <th className="col-2">Ref ID | Date</th>
-                    <th className="col-3">Given(₹) </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {advancesSummary.map((item, index) => {
-                    return (
-                      <tr className="tr-tags" scope="row" kery={item.partyId}>
-                        <td className="col-1">
-                          <p id="p-common-sno">{index + 1}</p>
-                        </td>
-                        <td className="col-2">
-                          <button
-                            className="pl-0"
-                            onClick={() =>
-                              billOnClickView(item.refId, item.partyId)
-                            }
+              <div>
+                <div className="row thead-tag">
+                  <th className="col-2" id="sno">
+                    #
+                  </th>
+                  <th className="col-4">Ref ID | Date</th>
+                  <th className="col-3">Given(₹) </th>
+                </div>
+                <div
+                  className={
+                    allCustomTab == "all"
+                      ? "ledgerSummary advance_ledgerSummary"
+                      : "ledgerSummary advance_ledgerSummary_custom"
+                  }
+                  id="scroll_style"
+                >
+                  <table className="table table-bordered advance_table_border ledger-table">
+                    <tbody>
+                      {advancesSummary.map((item, index) => {
+                        return (
+                          <tr
+                            className="tr-tags"
+                            scope="row"
+                            kery={item.partyId}
                           >
-                            <p style={{ color: "#0066FF" }}>
-                              <div className="d-flex">
-                                <span>{item.refId}</span>
-                              </div>
-                            </p>
-                          </button>
-                          <p>{moment(item.date).format("DD-MMM-YY")}</p>
-                        </td>
-                        <td className="col-3">
-                          <p id="p-common" className="paid-coloring">
-                            {item.amount
-                              ? getCurrencyNumberWithOutSymbol(item.amount)
-                              : ""}
-                          </p>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                            <td className="col-1">
+                              <p id="p-common-sno">{index + 1}</p>
+                            </td>
+                            <td className="col-2">
+                              <button
+                                className="pl-0"
+                                onClick={() =>
+                                  billOnClickView(item.refId, item.partyId)
+                                }
+                              >
+                                <p style={{ color: "#0066FF" }}>
+                                  <div className="d-flex">
+                                    <span>{item.refId}</span>
+                                  </div>
+                                </p>
+                              </button>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                            </td>
+                            <td className="col-3">
+                              <p id="p-common" className="paid-coloring">
+                                {item.amount
+                                  ? getCurrencyNumberWithOutSymbol(item.amount)
+                                  : ""}
+                              </p>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             ) : (
               <NoDataAvailable />
             )}

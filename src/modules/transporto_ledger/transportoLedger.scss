@@ -158,7 +158,7 @@ input[type=radio]:label {
     height: calc(100vh - 355px); 
 }
 .transporto_ledger_scroll{
-    height: calc(100vh - 260px)!important;  
+    height: calc(100vh - 295px)!important;  
 }
 .transporterDetailed{
     width: 100%;
@@ -664,6 +664,7 @@ input[type=radio].radioBtnValues{
 .all_trans_head{
     background-color: #D7F3DD;
     padding: 10px;
+    border-radius: 10px 10px 0px 0px;
     p{
         font-size: 13px;
         color: #121212;
@@ -674,8 +675,8 @@ input[type=radio].radioBtnValues{
     border-bottom: 0px!important;
 }
 .alltransporto_ledger_scroll {
-    height: calc(100vh - 220px) !important;
-    border-radius: 10px;
+    height: calc(100vh - 255px) !important;
+    border-radius: 0px 0px 10px 10px;
 }
 .trans_partner_card h5{
     font-size:13px;
