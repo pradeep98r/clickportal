@@ -18,6 +18,12 @@ export function getMultiBillPdf(singleBillBody) {
     responseType: "arraybuffer",
   });
 }
+export function generateLedgerSummary(singleBillBody) {
+  console.log(singleBillBody, "req body");
+  return pdfService.post(`generateUserLedgerSummary`, singleBillBody, {
+    responseType: "arraybuffer",
+  });
+}
 export default {
   getSingleBillPdf,
   getSingleBillPdfHelth,

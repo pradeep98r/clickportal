@@ -58,6 +58,7 @@ export default function getPdfHeaderData(
 ) {
   var userBusinessData = getBusinessDetailsModel();
   var pdfThemeInfo = getPdfThemeInfo(billData,fromMulti);
+  console.log(isBillView)
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),
     mandiName: userBusinessData.mandiName.toUpperCase(),

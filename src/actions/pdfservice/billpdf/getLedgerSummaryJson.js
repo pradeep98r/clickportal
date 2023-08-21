@@ -1,29 +1,49 @@
-export default function getLedgerSummaryPdfData() {
-    var colorThemeInfo = getPdfThemeInfo(billData, true);
-    var headerData = getPdfHeaderData(billData,true, {
-      isBillView: true,
-    });
-    headerData["groupId"] = billData?.groupId;
-  
-    headerData["billId"] = {
-      groupId: billData?.groupId,
-      billNumber: 0,
-    };
-    headerData["billDate"] = moment(billData?.billInfo[0].billDate).format("DD-MMM-YYYY");
-    var isFarmer = billData?.billInfo[0].partyType === "FARMER";
-    var billType = isFarmer ? "BUYBILL" : "SELLBILL";
-    return {
-        headerData: headerData,
-        ledgerType : "BUYER",
-        outStandingBal: "1000",
-      ledgerData: [
-        {
-          "partyName": "appu",
-          "partyAddress": "string",
-          "date": "string",
-          "tobePaidRcvd": "1000"
-        }
-      ]
-    };
-    
-  }
+import {
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithSymbol,
+} from "../../../components/getCurrencyNumber";
+import getPdfHeaderData from "../headerJsonData";
+import getPdfThemeInfo from "../pdfThemeInfo";
+
+export function getLedgerSummaryJson(
+  ledgerSummary,
+  userLedgerData,
+  date,
+  ledgerType,
+  totalBusiness,
+  outstandingAmount
+) {
+//   var headerData = getPdfHeaderData({
+//     isBillView: false,
+//   });
+  var headerData = getPdfHeaderData(false, {
+    isBillView: true,
+  });
+  var pdfThemeInfo = getPdfThemeInfo();
+  return {
+    primaryColor: pdfThemeInfo.primaryColor,
+    lightColor: pdfThemeInfo.lightColor,
+    darkerColor: pdfThemeInfo.darkerColor,
+    headerData: headerData,
+    ledgerType: ledgerType.toUpperCase(),
+    totalReceived: userLedgerData.tobePaidRcvd
+      ? getCurrencyNumberWithSymbol(userLedgerData.tobePaidRcvd)
+      : 0,
+    totalPaidReceived: totalBusiness,
+    totalOutStAmount: outstandingAmount,
+    name: `${userLedgerData.partyName} - ${userLedgerData.shortName}`.toUpperCase(),
+    date: date,
+    data: {
+      items: ledgerSummary.map((ledgerData) => {
+        return {
+          date: ledgerData.date,
+          refId: ledgerData.refId,
+          paidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.paidRcvd),
+          tobePaidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.tobePaidRcvd),
+          balance: ledgerData.balance,
+          billPaid: ledgerData.billPaid,
+        };
+      }),
+    },
+  };
+}

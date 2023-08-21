@@ -35,6 +35,7 @@ import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import addbill_icon from "../../assets/images/addbill.svg";
 import print from "../../assets/images/print_bill.svg";
 import download_icon from "../../assets/images/dwnld.svg";
+import { ToastContainer, toast } from "react-toastify";
 import {
   allCustomTabs,
   detaildLedgerInfo,
@@ -49,6 +50,8 @@ import {
   trhoughRecordPayment,
 } from "../../reducers/ledgerSummarySlice";
 import PaymentHistoryView from "./paymentHistory";
+import { getLedgerSummaryJson } from "../../actions/pdfservice/billpdf/getLedgerSummaryJson";
+import { generateLedgerSummary } from "../../actions/pdfservice/singleBillPdf";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
@@ -491,7 +494,97 @@ const Ledgers = (props) => {
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
   };
-
+  async function handleLedgerSummaryJson() {
+    var ledgerJsonBody = getLedgerSummaryJson(
+      allCustom === "custom" ? summaryByDate : ledgers,
+      ledgerData,
+      allCustom === "custom" ? dateValue : "",
+      ledgerType,
+      getTotalBusiness(),
+      getTotalOutstandings()
+    );
+    var pdfResponse = await generateLedgerSummary(ledgerJsonBody);
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      window.open(blobUrl, "_blank");
+    }
+  }
+  function getTotalBusiness() {
+    return allCustom == "custom" && ledgerTabs == "ledgersummary"
+      ? cardDetails.totalTobePaidRcvd
+        ? cardDetails.totalTobePaidRcvd
+          ? getCurrencyNumberWithSymbol(cardDetails.totalTobePaidRcvd)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalToBeRecived
+        ? cardDetailed.totalToBeRecived
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalToBeRecived)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalToBePaid
+        ? cardDetailed.totalToBePaid
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalToBePaid)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalToBeRecived
+        ? detailedTotal.totalToBeRecived
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalToBeRecived)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalToBePaid
+        ? detailedTotal.totalToBePaid
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalToBePaid)
+          : 0
+        : 0
+      : summary.totalTobePaidRcvd
+      ? getCurrencyNumberWithSymbol(summary.totalTobePaidRcvd)
+      : 0;
+  }
+  function getTotalOutstandings() {
+    return allCustom == "custom" && ledgerTabs == "ledgersummary"
+      ? cardDetails.outStdRcvPayble
+        ? cardDetails?.outStdRcvPayble
+          ? getCurrencyNumberWithSymbol(cardDetails.outStdRcvPayble)
+          : 0
+        : 0
+      : allCustom == "custom" && ledgerTabs == "detailedledger"
+      ? cardDetailed.totalOutStandingBalance
+        ? cardDetailed?.totalOutStandingBalance
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalOutStandingBalance)
+          : 0
+        : 0
+      : allCustom == "all" && ledgerTabs == "detailedledger"
+      ? detailedTotal.totalOutStandingBalance
+        ? detailedTotal?.totalOutStandingBalance
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalOutStandingBalance)
+          : 0
+        : 0
+      : summary.outStdRcvPayble
+      ? getCurrencyNumberWithSymbol(summary.outStdRcvPayble)
+      : 0;
+  }
   return (
     <div className="main_div_padding">
       {isOnline ? (
@@ -517,9 +610,7 @@ const Ledgers = (props) => {
                     </div>
                     {ledgers.length > 0 ? (
                       <div>
-                        <div
-                          className="ledger-table"
-                        >
+                        <div className="ledger-table">
                           <div className="ledgers ledger_table_col">
                             <div className="row theadr-tag p-0">
                               <th class="col-lg-1">#</th>
@@ -537,8 +628,7 @@ const Ledgers = (props) => {
                                 <th class="col-lg-3">To Be Paid(&#8377;)</th>
                               )}
                             </div>
-                            <div className="table-scroll"
-                          id="scroll_style">
+                            <div className="table-scroll" id="scroll_style">
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
@@ -1010,49 +1100,49 @@ const Ledgers = (props) => {
                           </div>
                         </div>
                         <span id="horizontal-line"></span>
-                       <div className="d-flex justify-content-between">
-                       <ul
-                          className="nav nav-tabs ledger_tabs"
-                          id="myTab"
-                          role="tablist"
-                        >
-                          {links.map((link) => {
-                            return (
-                              <li key={link.id} className="nav-item ">
-                                <a
-                                  className={
-                                    "nav-link" +
-                                    (ledgerTabs == link.to ? " active" : "")
-                                  }
-                                  href={"#" + link.to}
-                                  role="tab"
-                                  aria-controls="home"
-                                  data-bs-toggle="tab"
-                                  onClick={() => ledgerTabEvent(link.to)}
-                                >
-                                  {link.name}
-                                </a>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                        <div className="print_dwnld_icons">
-                        <button
-                          // onClick={() => {
-                          //   getDownloadPdf().then();
-                          // }}
-                        >
-                          <img src={download_icon} alt="img" />
-                        </button>
-                        <button
-                          // onClick={() => {
-                          //   getPrintPdf().then();
-                          // }}
-                        >
-                          <img src={print} alt="img" />
-                        </button>      
+                        <div className="d-flex justify-content-between">
+                          <ul
+                            className="nav nav-tabs ledger_tabs"
+                            id="myTab"
+                            role="tablist"
+                          >
+                            {links.map((link) => {
+                              return (
+                                <li key={link.id} className="nav-item ">
+                                  <a
+                                    className={
+                                      "nav-link" +
+                                      (ledgerTabs == link.to ? " active" : "")
+                                    }
+                                    href={"#" + link.to}
+                                    role="tab"
+                                    aria-controls="home"
+                                    data-bs-toggle="tab"
+                                    onClick={() => ledgerTabEvent(link.to)}
+                                  >
+                                    {link.name}
+                                  </a>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          <div className="print_dwnld_icons">
+                            <button
+                            // onClick={() => {
+                            //   getDownloadPdf().then();
+                            // }}
+                            >
+                              <img src={download_icon} alt="img" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                handleLedgerSummaryJson().then();
+                              }}
+                            >
+                              <img src={print} alt="img" />
+                            </button>
+                          </div>
                         </div>
-                         </div>
                       </div>
                     </div>
                     <div>
@@ -1161,6 +1251,7 @@ const Ledgers = (props) => {
           )}
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };
