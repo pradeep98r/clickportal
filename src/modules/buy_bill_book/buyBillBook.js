@@ -816,7 +816,7 @@ function BuyBillBook() {
                                                       <div className="text-left">
                                                         <h6 className="userName">
                                                           {bill.farmerName +
-                                                            "hloo" +
+                                                            "" +
                                                             "-" +
                                                             bill.shortName}
                                                         </h6>
