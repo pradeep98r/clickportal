@@ -280,17 +280,18 @@ const Advance = (props) => {
                   </div>
                   {advancesArray.length > 0 ? (
                     <div>
-                      <div
-                        className="table-scroll ledger-table"
-                        id="scroll_style"
-                      >
-                        <div className="ledgers ledger_table_col">
-                          <div className="row theadr-tag p-0">
+                        <div className="row theadr-tag p-0">
                             <th class="col-lg-1">#</th>
                             <th class="col-lg-2">Date</th>
                             <th class="col-lg-6">Name</th>
                             <th class="col-lg-3">Given(₹)</th>
                           </div>
+                      <div
+                        className="table-scroll ledger-table advance_table"
+                        id="scroll_style"
+                      >
+                        <div className="ledgers ledger_table_col">
+                        
                           <div>
                             {advancesArray.map((item, index) => {
                               return (

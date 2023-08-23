@@ -844,11 +844,13 @@ const Step2 = (props) => {
     <div>
       <div className="main_div_padding">
         {multiSelectPartnersArray.length > 0 && (
+          <div className="step2_table_div">
+           
           <table
             className="table-bordered step2_table table_view"
             id="scroll_style"
           >
-            <tr>
+            <tr className="head_fix">
               <th className="col_2">Seller</th>
               <th className="col_2">Transporter</th>
               <th className="col_1">Date</th>
@@ -1521,6 +1523,7 @@ const Step2 = (props) => {
               );
             })}
           </table>
+          </div>
         )}
       </div>
       <div className="bottom_div">

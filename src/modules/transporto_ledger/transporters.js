@@ -299,17 +299,18 @@ const Transporters = (props) => {
             </div>
             {transporter.length > 0 ? (
               <div>
-                <div
-                  className="table-scroll ledger-table transporto_ledger_scroll ledger_table_col"
-                  id="scroll_style"
-                >
-                  <div className="row theadr-tag p-0">
+                   <div className="row theadr-tag p-0">
                     <th className="col-lg-1">#</th>
                     <th className="col-lg-2">Date</th>
                     <th class="col-lg-5">Transporter Name</th>
                     {fromInventoryTab?<th class="col-lg-4">Total Balance</th>:
                     <th class="col-lg-4">To Be Paid(&#8377;)</th>}
                   </div>
+                <div
+                  className="table-scroll ledger-table transporto_ledger_scroll ledger_table_col"
+                  id="scroll_style"
+                >
+               
                   <div>
                     {transporter.map((item, index) => {
                       return (

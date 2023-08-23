@@ -1,3 +1,7 @@
+.step2_table_div{
+  
+}
+
 .step2_table {
   overflow-x: auto;
   display: block;
@@ -29,6 +33,12 @@
   th {
     border: 1px solid #737373;
   }
+}
+.head_fix{
+  position: sticky!important;
+  top: 0;
+  z-index: 999;
+  border-top: 1px solid #737373;
 }
 .party_name {
   font-weight: 600;
