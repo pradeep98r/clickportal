@@ -24,6 +24,19 @@ export function generateLedgerSummary(singleBillBody) {
     responseType: "arraybuffer",
   });
 }
+export function generateDetailedLedgerSummary(singleBillBody) {
+  console.log(singleBillBody, "req body");
+  return pdfService.post(`generateUserDetailedLedgerSummary`, singleBillBody, {
+    responseType: "arraybuffer",
+  });
+}
+export function generateLedSummary(singleBillBody) {
+  console.log(singleBillBody, "req body");
+  return pdfService.post(`generateLedgerSummary`, singleBillBody, {
+    responseType: "arraybuffer",
+  });
+}
+
 export default {
   getSingleBillPdf,
   getSingleBillPdfHelth,

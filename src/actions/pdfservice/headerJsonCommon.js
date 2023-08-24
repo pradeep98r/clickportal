@@ -21,25 +21,21 @@ function getBusinessDetailsModel() {
     altNumber: userBusinessData.altMobile,
   };
 }
-function getPdfThemeInfo(billData ,fromMulti) {
+function getPdfThemeInfo(billData, fromMulti, fromLedg) {
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
-  var partyType = fromMulti ? billData?.billInfo[0].partyType : billData?.partyType;
+  var partyType = getPartyType(fromMulti,billData,fromLedg)
   var settingData;
-  if(settArray != null){
-    
+  if (settArray != null) {
     for (var i = 0; i < settArray.length; i++) {
       if (settArray[i].type == "BUY_BILL" && partyType == "FARMER") {
         settingData = settArray[i];
-      } else if (
-        settArray[i].type == "SELL_BILL" &&
-        partyType == "BUYER"
-      ) {
+      } else if (settArray[i].type == "SELL_BILL" && partyType == "BUYER") {
         settingData = settArray[i];
       }
     }
   }
-  console.log(settArray,partyType,settingData,fromMulti,billData,'arr')
+  console.log(settArray, partyType, settingData, fromMulti, billData, "arr");
   if (settingData != null) {
     var settingsData = settingData;
     return {
@@ -52,13 +48,10 @@ function getPdfThemeInfo(billData ,fromMulti) {
   }
 }
 
-export default function getPdfHeaderData(
-  billData,fromMulti,
-  { isBillView = false, isPaymentReceipt = false }
-) {
+export default function getPdfHeaderDataCommon(billData, fromMulti) {
   // console.log(isBillView)
   var userBusinessData = getBusinessDetailsModel();
-  var pdfThemeInfo = getPdfThemeInfo(billData,fromMulti);
+  var pdfThemeInfo = getPdfThemeInfo(billData, fromMulti, true);
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),
     mandiName: userBusinessData.mandiName.toUpperCase(),
@@ -77,7 +70,18 @@ export default function getPdfHeaderData(
         ? pdfThemeInfo.userLabel.toUpperCase()
         : "Proprietor".toUpperCase(),
     isBillView: false,
-    isPaymentReceipt: isPaymentReceipt,
+    isPaymentReceipt: false,
     isSingleBillView: true,
   };
+}
+
+function getPartyType(fromMulti, billData, fromLedg) {
+  var str = "";
+  if (fromMulti) {
+    str = billData?.billInfo[0].partyType;
+  } else if (fromLedg == true) {
+    str = "SELLER";
+  } else {
+    str = billData?.partyType;
+  }
 }

@@ -36,6 +36,7 @@ import addbill_icon from "../../assets/images/addbill.svg";
 import print from "../../assets/images/print_bill.svg";
 import download_icon from "../../assets/images/dwnld.svg";
 import { ToastContainer, toast } from "react-toastify";
+import { Buffer } from "buffer";
 import {
   allCustomTabs,
   detaildLedgerInfo,
@@ -51,10 +52,15 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import PaymentHistoryView from "./paymentHistory";
 import { getLedgerSummaryJson } from "../../actions/pdfservice/billpdf/getLedgerSummaryJson";
-import { generateLedgerSummary } from "../../actions/pdfservice/singleBillPdf";
+import {
+  generateDetailedLedgerSummary,
+  generateLedgerSummary,
+  generateLedSummary,
+} from "../../actions/pdfservice/singleBillPdf";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  console.log(ledgersSummary, "ledgersSummary");
   const ledgers = ledgersSummary?.allLedgers;
   const dispatch = useDispatch();
   const clickId = loginData.caId;
@@ -451,6 +457,7 @@ const Ledgers = (props) => {
   const getData = (data) => {
     if (allCustom == "all" && ledgerTabs == "ledgersummary") {
       setLedgerSummary(data);
+      console.log(data, "data");
     } else if (allCustom == "all" && ledgerTabs == "detailedledger") {
       setdetailedLedger(data);
     } else if (allCustom == "custom" && ledgerTabs == "ledgersummary") {
@@ -495,19 +502,32 @@ const Ledgers = (props) => {
     setRecordPaymentModal(true);
   };
   async function handleLedgerSummaryJson() {
+    setLoading(true);
     var ledgerJsonBody = getLedgerSummaryJson(
-      allCustom === "custom" ? summaryByDate : ledgers,
+      ledgerTabs == "ledgersummary"
+        ? ledgersSummary.ledgerSummaryInfo
+        : ledgersSummary.detaildLedgerInfo,
       ledgerData,
       allCustom === "custom" ? dateValue : "",
       ledgerType,
+      getTotalPaid(),
       getTotalBusiness(),
-      getTotalOutstandings()
+      getTotalOutstandings(),
+      ledgerTabs,
+      ledgersSummary.beginDate,
+      ledgersSummary.closeDate
     );
-    var pdfResponse = await generateLedgerSummary(ledgerJsonBody);
+    console.log(ledgersSummary.ledgerSummaryInfo);
+    var pdfResponse =
+      ledgerTabs == "ledgersummary"
+        ? await generateLedgerSummary(ledgerJsonBody)
+        : await generateDetailedLedgerSummary(ledgerJsonBody);
+    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
+      setLoading(true);
       return;
     } else {
       toast.success("Pdf generated SuccessFully", {
@@ -516,7 +536,68 @@ const Ledgers = (props) => {
       var bufferData = Buffer.from(pdfResponse.data);
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
+      setLoading(true);
       window.open(blobUrl, "_blank");
+    }
+  }
+  async function getDownloadPdf(allLedgersStatus) {
+    setLoading(true);
+    var ledgerJsonBody = getLedgerSummaryJson(
+      allLedgersStatus
+        ? ledgersSummary.allLedgers
+        : ledgerTabs == "ledgersummary"
+        ? ledgersSummary.ledgerSummaryInfo
+        : ledgersSummary.detaildLedgerInfo,
+      ledgerData,
+      allCustom === "custom" ? dateValue : "",
+      ledgerType,
+      getTotalPaid(),
+      getTotalBusiness(),
+      getTotalOutstandings(),
+      ledgerTabs,
+      ledgersSummary.beginDate,
+      ledgersSummary.closeDate,
+      allLedgersStatus,
+      ledgersSummary
+    );
+
+    if(allLedgersStatus){
+      var pdfResponse =
+      generateLedSummary(ledgerJsonBody)
+    }
+    else{
+      var pdfResponse =
+      ledgerTabs == "ledgersummary"
+        ? await generateLedgerSummary(ledgerJsonBody)
+        : await generateDetailedLedgerSummary(ledgerJsonBody);
+    }
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setLoading(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      if (ledgerType == "BUYER") {
+        link.setAttribute("download", `BUYER_LEDGER.pdf`); //or any other extension
+      } else {
+        link.setAttribute("download", `SELLER_LEDGER.pdf`); //or any other extension
+      }
+      document.body.appendChild(link);
+      setLoading(false);
+      link.click();
+      // setLoading(false);
     }
   }
   function getTotalBusiness() {
@@ -585,6 +666,49 @@ const Ledgers = (props) => {
       ? getCurrencyNumberWithSymbol(summary.outStdRcvPayble)
       : 0;
   }
+  function getTotalPaid() {
+    return allCustom == "custom" && ledgerTabs == "ledgersummary"
+      ? cardDetails.totalRcvdPaid
+        ? cardDetails.totalRcvdPaid
+          ? getCurrencyNumberWithSymbol(cardDetails.totalRcvdPaid)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalRecieved
+        ? cardDetailed.totalRecieved
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalRecieved)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalPaid
+        ? cardDetailed.totalPaid
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalPaid)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalRecieved
+        ? detailedTotal.totalRecieved
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalRecieved)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalPaid
+        ? detailedTotal.totalPaid
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalPaid)
+          : 0
+        : 0
+      : summary.totalRcvdPaid
+      ? getCurrencyNumberWithSymbol(summary.totalRcvdPaid)
+      : 0;
+  }
   return (
     <div className="main_div_padding">
       {isOnline ? (
@@ -592,7 +716,7 @@ const Ledgers = (props) => {
       ) : (
         <div>
           {isLoading ? (
-            <div className="">
+            <div className="loading_styles">
               <img src={loading} alt="my-gif" className="gif_img" />
             </div>
           ) : (
@@ -600,13 +724,29 @@ const Ledgers = (props) => {
               {allData.length > 0 ? (
                 <div className="row">
                   <div className="col-lg-5 pl-0">
-                    <div id="search-field">
+                    <div id="search-field" className="d-flex">
                       <SearchField
                         placeholder="Search by Name / Short Code"
                         onChange={(event) => {
                           handleSearch(event);
                         }}
                       />
+                      <div className="print_dwnld_icons d-flex">
+                        <button
+                          onClick={() => {
+                            getDownloadPdf(true).then();
+                          }}
+                        >
+                          <img src={download_icon} alt="img" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleLedgerSummaryJson().then();
+                          }}
+                        >
+                          <img src={print} alt="img" />
+                        </button>
+                      </div>
                     </div>
                     {ledgers.length > 0 ? (
                       <div>
@@ -1128,9 +1268,9 @@ const Ledgers = (props) => {
                           </ul>
                           <div className="print_dwnld_icons">
                             <button
-                            // onClick={() => {
-                            //   getDownloadPdf().then();
-                            // }}
+                              onClick={() => {
+                                getDownloadPdf(false).then();
+                              }}
                             >
                               <img src={download_icon} alt="img" />
                             </button>
