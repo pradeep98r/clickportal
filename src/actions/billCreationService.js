@@ -145,6 +145,13 @@ export function postsellbillApi(billRequestObj) {
     billRequestObj
   );
 }
+export function getGeneratedBillId(obj) {
+  return axiosCommon.post(
+    "/click/bills/generate",
+    obj
+  );
+}
+
 export default {
   getPartnerData,
   getPreferredCrops,
@@ -162,4 +169,5 @@ export default {
   getSellerDetailedLedgerByDate,
   postbuybillApi,
   getOutstandingBal,
+  getGeneratedBillId
 };
