@@ -1,10 +1,14 @@
 // import { getCurrencyNumberWithOutSymbol, getQuantityData, getWastage } from "../../../components/getCurrencyNumber";
-import { getCurrencyNumberWithOutSymbol } from "../../../components/getCurrencyNumber";
+import {
+  getCurrencyNumberWithOutSymbol,
+  getCurrencyNumberWithSymbol,
+} from "../../../components/getCurrencyNumber";
 import { getQuantityUnit } from "../../../components/getText";
 import ledgersService from "../../ledgersService";
 import getQuantityData from "../functions/functions";
 import getPdfHeaderDataCommon from "../headerJsonCommon";
 import getPdfThemeInfo from "../pdfThemeInfo";
+import moment from "moment";
 export function getLedgerSummaryJson(
   ledgerSummary,
   userLedgerData,
@@ -20,30 +24,31 @@ export function getLedgerSummaryJson(
   ledgersSummary
 ) {
   var headerData = getPdfHeaderDataCommon({});
-  var pdfThemeInfo = getPdfThemeInfo(ledgerSummary, false);
+  var pdfThemeInfo = getPdfThemeInfo(ledgerSummary, false, true, ledgerType);
   console.log(userLedgerData, "sumpdf");
-  if(allLedgersStatus){
+  if (allLedgersStatus) {
     return {
       primaryColor: pdfThemeInfo.primaryColor,
       lightColor: pdfThemeInfo.lightColor,
       darkerColor: pdfThemeInfo.darkerColor,
       headerData: headerData,
       ledgerType: ledgerType.toUpperCase(),
-      outStandingBal:ledgersSummary.outStandingBal.totalOutStgAmt,
-        ledgerData: ledgerSummary.map((ledgerData) => {
-          return {
-            date: ledgerData.date,
-            tobePaidRcvd: getCurrencyNumberWithOutSymbol(
-              ledgerData.paidRcvd
-            ),
-            partyAddress: ledgerData.partyAddress,
-            partyName: ledgerData.partyName,
-          };
-        }),
-    
+      outStandingBal:
+        ledgersSummary.outStandingBal != null
+          ? getCurrencyNumberWithSymbol(
+              ledgersSummary.outStandingBal.totalOutStgAmt
+            )
+          : "",
+      ledgerData: ledgerSummary.map((ledgerData) => {
+        return {
+          date: moment(ledgerData.date).format("DD-MMM-YY"),
+          tobePaidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.tobePaidRcvd),
+          partyAddress: ledgerData.partyAddress,
+          partyName: ledgerData.partyName + " - " + ledgerData.shortName,
+        };
+      }),
     };
-  }
-  else{
+  } else {
     if (ledgerTabs == "ledgersummary") {
       return {
         primaryColor: pdfThemeInfo.primaryColor,
@@ -56,14 +61,14 @@ export function getLedgerSummaryJson(
         totalOutStAmount: outstandingAmount,
         name: `${userLedgerData.partyName} - ${userLedgerData.shortName}`.toUpperCase(),
         date: {
-          fromDate: beginDate,
-          toDate: closeDate,
+          fromDate: moment(beginDate).format("DD-MMM-YY"),
+          toDate: moment(closeDate).format("DD-MMM-YY"),
           showDate: date != "" ? true : false,
         },
         data: {
           items: ledgerSummary.map((ledgerData) => {
             return {
-              date: ledgerData.date,
+              date: moment(ledgerData.date).format("DD-MMM-YY"),
               refId: ledgerData.refId,
               paidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.paidRcvd),
               tobePaidRcvd: getCurrencyNumberWithOutSymbol(
@@ -89,14 +94,14 @@ export function getLedgerSummaryJson(
         showOpeningBal: true,
         name: `${userLedgerData.partyName} - ${userLedgerData.shortName}`.toUpperCase(),
         date: {
-          fromDate: beginDate,
-          toDate: closeDate,
+          fromDate: moment(beginDate).format("DD-MMM-YY"),
+          toDate: moment(closeDate).format("DD-MMM-YY"),
           showDate: date != "" ? true : false,
         },
         data: {
           items: ledgerSummary.map((ledgerData) => {
             return {
-              date: ledgerData.date,
+              date: moment(ledgerData.date).format("DD-MMM-YY"),
               refId: ledgerData.refId,
               itemName: ledgerData.itemName,
               partyName: ledgerData.partyName,
@@ -111,19 +116,16 @@ export function getLedgerSummaryJson(
               //   ledgerData.rateType
               // ),
               wastage: "",
-              paid: "string",
+              paid: getCurrencyNumberWithOutSymbol(ledgerData.paid),
               rate: getCurrencyNumberWithOutSymbol(ledgerData.rate),
               recieved: getCurrencyNumberWithOutSymbol(ledgerData.recieved),
               toBeRecieved: getCurrencyNumberWithOutSymbol(
                 ledgerData.toBeRecieved
               ),
-              toBePaid: "",
+              toBePaid: getCurrencyNumberWithOutSymbol(ledgerData.toBePaid),
               cropLineItem: ledgerData.cropLineItem,
               comments: ledgerData.comments,
-              // paidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.paidRcvd),
-              // tobePaidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.tobePaidRcvd),
               balance: ledgerData.balance,
-              // billPaid: ledgerData.billPaid,
             };
           }),
         },

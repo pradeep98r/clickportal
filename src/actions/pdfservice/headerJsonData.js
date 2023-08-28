@@ -1,6 +1,7 @@
 function getBusinessDetailsModel() {
   var userBusinessData = JSON.parse(localStorage.getItem("businessDetails"));
   var personalData = JSON.parse(localStorage.getItem("personalDetails"));
+  console.log(userBusinessData,'userBusinessData')
   var address =
     userBusinessData.businessAddress.addressLine +
     "," +
@@ -59,6 +60,7 @@ export default function getPdfHeaderData(
   // console.log(isBillView)
   var userBusinessData = getBusinessDetailsModel();
   var pdfThemeInfo = getPdfThemeInfo(billData,fromMulti);
+  console.log(userBusinessData,'userBusinessData')
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),
     mandiName: userBusinessData.mandiName.toUpperCase(),
@@ -76,7 +78,7 @@ export default function getPdfHeaderData(
       pdfThemeInfo != null
         ? pdfThemeInfo.userLabel.toUpperCase()
         : "Proprietor".toUpperCase(),
-    isBillView: false,
+    isBillView: isBillView,
     isPaymentReceipt: isPaymentReceipt,
     isSingleBillView: true,
   };

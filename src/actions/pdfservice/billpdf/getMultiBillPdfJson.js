@@ -103,7 +103,7 @@ function getIndividualBags(bagsList) {
 }
 
 export default function getMultibillPdfData(billData, { isDuplicate = false }) {
-  var colorThemeInfo = getPdfThemeInfo(billData, true);
+  var colorThemeInfo = getPdfThemeInfo(billData, true, false);
   var headerData = getPdfHeaderData(billData,true, {
     isBillView: true,
   });

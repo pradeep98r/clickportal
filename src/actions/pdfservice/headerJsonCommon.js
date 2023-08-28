@@ -21,11 +21,13 @@ function getBusinessDetailsModel() {
     altNumber: userBusinessData.altMobile,
   };
 }
-function getPdfThemeInfo(billData, fromMulti, fromLedg) {
+function getPdfThemeInfo(ledgerType) {
   // default shade in app is 80 per
+  console.log(ledgerType);
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
-  var partyType = getPartyType(fromMulti,billData,fromLedg)
+  var partyType = ledgerType;
   var settingData;
+  console.log(settArray, "settArray");
   if (settArray != null) {
     for (var i = 0; i < settArray.length; i++) {
       if (settArray[i].type == "BUY_BILL" && partyType == "FARMER") {
@@ -35,7 +37,6 @@ function getPdfThemeInfo(billData, fromMulti, fromLedg) {
       }
     }
   }
-  console.log(settArray, partyType, settingData, fromMulti, billData, "arr");
   if (settingData != null) {
     var settingsData = settingData;
     return {
@@ -48,10 +49,10 @@ function getPdfThemeInfo(billData, fromMulti, fromLedg) {
   }
 }
 
-export default function getPdfHeaderDataCommon(billData, fromMulti) {
+export default function getPdfHeaderDataCommon(ledgerType) {
   // console.log(isBillView)
   var userBusinessData = getBusinessDetailsModel();
-  var pdfThemeInfo = getPdfThemeInfo(billData, fromMulti, true);
+  var pdfThemeInfo = getPdfThemeInfo(ledgerType);
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),
     mandiName: userBusinessData.mandiName.toUpperCase(),
@@ -75,13 +76,3 @@ export default function getPdfHeaderDataCommon(billData, fromMulti) {
   };
 }
 
-function getPartyType(fromMulti, billData, fromLedg) {
-  var str = "";
-  if (fromMulti) {
-    str = billData?.billInfo[0].partyType;
-  } else if (fromLedg == true) {
-    str = "SELLER";
-  } else {
-    str = billData?.partyType;
-  }
-}

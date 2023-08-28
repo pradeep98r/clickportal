@@ -13,18 +13,25 @@ function colorAdjust(color, amount) {
       )
   );
 }
-export default function getPdfThemeInfo(billData, fromMulti) {
+export default function getPdfThemeInfo(
+  billData,
+  fromMulti,
+  fromLedger,
+  ledgertype
+) {
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
-  var partyType = fromMulti ? billData?.billInfo[0].partyType : billData?.partyType;
+  var partyType = getPartyType(fromMulti, billData, fromLedger, ledgertype);
   var settingsDataArray;
-  if(settArray != null){
-    for(var i = 0; i<settArray.length; i++){
-      if(settArray[i].type == "BUY_BILL" && partyType == 'FARMER'){
+  console.log(settArray, "settArray");
+  if (settArray != null) {
+    for (var i = 0; i < settArray.length; i++) {
+      if (settArray[i].type == "BUY_BILL" && partyType == "FARMER") {
         settingsDataArray = settArray[i];
-      }
-      else if(settArray[i].type == "SELL_BILL" && partyType == 'BUYER'){
+        console.log(settingsDataArray, "buy");
+      } else if (settArray[i].type == "SELL_BILL" && partyType == "BUYER") {
         settingsDataArray = settArray[i];
+        console.log(settingsDataArray, "sell");
       }
     }
   }
@@ -32,7 +39,10 @@ export default function getPdfThemeInfo(billData, fromMulti) {
     var settingsData = settingsDataArray;
     var primaryColor =
       settingsData.colorTheme !== "" ? settingsData.colorTheme : "#16A12B";
-    var lightColor = colorAdjust(primaryColor, 180) == "#ffffff" ? colorAdjust(primaryColor, 40) : colorAdjust(primaryColor, 180);
+    var lightColor =
+      colorAdjust(primaryColor, 180) == "#ffffff"
+        ? colorAdjust(primaryColor, 40)
+        : colorAdjust(primaryColor, 180);
     var darkerColor = colorAdjust(primaryColor, -30);
     return {
       primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
@@ -43,7 +53,10 @@ export default function getPdfThemeInfo(billData, fromMulti) {
     };
   } else {
     var primaryColor = "#16A12B";
-    var lightColor = colorAdjust(primaryColor, 180) == "#ffffff" ? colorAdjust(primaryColor, 40) : colorAdjust(primaryColor, 180);
+    var lightColor =
+      colorAdjust(primaryColor, 180) == "#ffffff"
+        ? colorAdjust(primaryColor, 40)
+        : colorAdjust(primaryColor, 180);
     var darkerColor = colorAdjust(primaryColor, -30);
     return {
       primaryColor: primaryColor !== "" ? primaryColor : "#16A12B",
@@ -53,6 +66,21 @@ export default function getPdfThemeInfo(billData, fromMulti) {
       signatureUrl: "",
     };
   }
- 
 }
 
+function getPartyType(fromMulti, billData, fromLedg, ledgertype) {
+  console.log(ledgertype, "ledgertype");
+  var str = "";
+  if (fromMulti) {
+    str = billData?.billInfo[0].partyType;
+  } else if (fromLedg == true) {
+    if (ledgertype == "SELLER") {
+      str = "FARMER";
+    } else {
+      str = ledgertype;
+    }
+  } else {
+    str = billData?.partyType;
+  }
+  return str;
+}

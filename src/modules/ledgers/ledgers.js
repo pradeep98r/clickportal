@@ -81,6 +81,7 @@ const Ledgers = (props) => {
   const cardDetailed = ledgersSummary?.totalRecivables;
   const [ledgerData, setLedgerData] = useState({});
   const [isLoading, setLoading] = useState(true);
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
   const [isOnline, setOnline] = useState(false);
   const detailedTotal = ledgersSummary?.totalRecivables;
   var date = moment(new Date()).format("YYYY-MM-DD");
@@ -501,12 +502,14 @@ const Ledgers = (props) => {
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
   };
-  async function handleLedgerSummaryJson() {
-    setLoading(true);
+  async function handleLedgerSummaryJson(allLedgersStatus) {
+    setIsLoadingNew(true);
     var ledgerJsonBody = getLedgerSummaryJson(
-      ledgerTabs == "ledgersummary"
-        ? ledgersSummary.ledgerSummaryInfo
-        : ledgersSummary.detaildLedgerInfo,
+      allLedgersStatus
+      ? ledgersSummary.allLedgers
+      : ledgerTabs == "ledgersummary"
+      ? ledgersSummary.ledgerSummaryInfo
+      : ledgersSummary.detaildLedgerInfo,
       ledgerData,
       allCustom === "custom" ? dateValue : "",
       ledgerType,
@@ -515,19 +518,26 @@ const Ledgers = (props) => {
       getTotalOutstandings(),
       ledgerTabs,
       ledgersSummary.beginDate,
-      ledgersSummary.closeDate
+      ledgersSummary.closeDate,
+      allLedgersStatus,
+      ledgersSummary
     );
-    console.log(ledgersSummary.ledgerSummaryInfo);
-    var pdfResponse =
-      ledgerTabs == "ledgersummary"
-        ? await generateLedgerSummary(ledgerJsonBody)
-        : await generateDetailedLedgerSummary(ledgerJsonBody);
+    var pdfResponse;
+    if (allLedgersStatus) {
+      pdfResponse =await generateLedSummary(ledgerJsonBody);
+      console.log('allledg',pdfResponse)
+    } else {
+      pdfResponse =
+        ledgerTabs == "ledgersummary"
+          ? await generateLedgerSummary(ledgerJsonBody)
+          : await generateDetailedLedgerSummary(ledgerJsonBody);
+    }
     console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
-      setLoading(true);
+      setIsLoadingNew(false);
       return;
     } else {
       toast.success("Pdf generated SuccessFully", {
@@ -536,12 +546,12 @@ const Ledgers = (props) => {
       var bufferData = Buffer.from(pdfResponse.data);
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
-      setLoading(true);
+      setIsLoadingNew(false);
       window.open(blobUrl, "_blank");
     }
   }
   async function getDownloadPdf(allLedgersStatus) {
-    setLoading(true);
+    setIsLoadingNew(true);
     var ledgerJsonBody = getLedgerSummaryJson(
       allLedgersStatus
         ? ledgersSummary.allLedgers
@@ -560,16 +570,15 @@ const Ledgers = (props) => {
       allLedgersStatus,
       ledgersSummary
     );
-
-    if(allLedgersStatus){
-      var pdfResponse =
-      generateLedSummary(ledgerJsonBody)
-    }
-    else{
-      var pdfResponse =
-      ledgerTabs == "ledgersummary"
-        ? await generateLedgerSummary(ledgerJsonBody)
-        : await generateDetailedLedgerSummary(ledgerJsonBody);
+    var pdfResponse;
+    if (allLedgersStatus) {
+      pdfResponse =await generateLedSummary(ledgerJsonBody);
+      console.log('allledg',pdfResponse)
+    } else {
+      pdfResponse =
+        ledgerTabs == "ledgersummary"
+          ? await generateLedgerSummary(ledgerJsonBody)
+          : await generateDetailedLedgerSummary(ledgerJsonBody);
     }
     console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
@@ -577,7 +586,7 @@ const Ledgers = (props) => {
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
-      setLoading(false);
+      setIsLoadingNew(false);
       return;
     } else {
       console.log(pdfResponse.status, "true");
@@ -595,7 +604,7 @@ const Ledgers = (props) => {
         link.setAttribute("download", `SELLER_LEDGER.pdf`); //or any other extension
       }
       document.body.appendChild(link);
-      setLoading(false);
+      setIsLoadingNew(false);
       link.click();
       // setLoading(false);
     }
@@ -714,13 +723,14 @@ const Ledgers = (props) => {
       {isOnline ? (
         <NoInternetConnection />
       ) : (
-        <div>
+        <div className="main_ledg">
           {isLoading ? (
-            <div className="loading_styles">
+            <div className="">
               <img src={loading} alt="my-gif" className="gif_img" />
             </div>
           ) : (
             <div>
+              <div>
               {allData.length > 0 ? (
                 <div className="row">
                   <div className="col-lg-5 pl-0">
@@ -741,7 +751,7 @@ const Ledgers = (props) => {
                         </button>
                         <button
                           onClick={() => {
-                            handleLedgerSummaryJson().then();
+                            handleLedgerSummaryJson(true).then();
                           }}
                         >
                           <img src={print} alt="img" />
@@ -1276,7 +1286,7 @@ const Ledgers = (props) => {
                             </button>
                             <button
                               onClick={() => {
-                                handleLedgerSummaryJson().then();
+                                handleLedgerSummaryJson(false).then();
                               }}
                             >
                               <img src={print} alt="img" />
@@ -1354,6 +1364,12 @@ const Ledgers = (props) => {
                   </div>
                 </div>
               )}
+            </div>
+            {isLoadingNew ? (
+              <div className="loading_styles loading_styles_led">
+                <img src={loading} alt="my-gif" className="gif_img" />
+              </div>
+            ) : ''}
             </div>
           )}
           {showDatepickerModal1 ? (

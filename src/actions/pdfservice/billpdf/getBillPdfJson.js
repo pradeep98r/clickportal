@@ -465,7 +465,7 @@ function getCashValue(billData, isFarmer) {
 // }
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
-  var colorThemeInfo = getPdfThemeInfo(billData,false);
+  var colorThemeInfo = getPdfThemeInfo(billData,false,false);
   var headerData = getPdfHeaderData(billData,false, {
     isBillView: true,
   });
