@@ -1,7 +1,6 @@
 function getBusinessDetailsModel() {
   var userBusinessData = JSON.parse(localStorage.getItem("businessDetails"));
   var personalData = JSON.parse(localStorage.getItem("personalDetails"));
-  console.log(userBusinessData,'userBusinessData')
   var address =
     userBusinessData.businessAddress.addressLine +
     "," +
@@ -22,25 +21,22 @@ function getBusinessDetailsModel() {
     altNumber: userBusinessData.altMobile,
   };
 }
-function getPdfThemeInfo(billData ,fromMulti) {
+function getPdfThemeInfo(ledgerType) {
   // default shade in app is 80 per
+  console.log(ledgerType);
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
-  var partyType = fromMulti ? billData?.billInfo[0].partyType : billData?.partyType;
+  var partyType = ledgerType;
   var settingData;
-  if(settArray != null){
-    
+  console.log(settArray, "settArray");
+  if (settArray != null) {
     for (var i = 0; i < settArray.length; i++) {
       if (settArray[i].type == "BUY_BILL" && partyType == "FARMER") {
         settingData = settArray[i];
-      } else if (
-        settArray[i].type == "SELL_BILL" &&
-        partyType == "BUYER"
-      ) {
+      } else if (settArray[i].type == "SELL_BILL" && partyType == "BUYER") {
         settingData = settArray[i];
       }
     }
   }
-  console.log(settArray,partyType,settingData,fromMulti,billData,'arr')
   if (settingData != null) {
     var settingsData = settingData;
     return {
@@ -53,14 +49,10 @@ function getPdfThemeInfo(billData ,fromMulti) {
   }
 }
 
-export default function getPdfHeaderData(
-  billData,fromMulti,
-  { isBillView = false, isPaymentReceipt = false }
-) {
+export default function getPdfHeaderDataCommon(ledgerType) {
   // console.log(isBillView)
   var userBusinessData = getBusinessDetailsModel();
-  var pdfThemeInfo = getPdfThemeInfo(billData,fromMulti);
-  console.log(userBusinessData,'userBusinessData')
+  var pdfThemeInfo = getPdfThemeInfo(ledgerType);
   return {
     propriterName: userBusinessData.propriterName.toUpperCase(),
     mandiName: userBusinessData.mandiName.toUpperCase(),
@@ -78,8 +70,9 @@ export default function getPdfHeaderData(
       pdfThemeInfo != null
         ? pdfThemeInfo.userLabel.toUpperCase()
         : "Proprietor".toUpperCase(),
-    isBillView: isBillView,
-    isPaymentReceipt: isPaymentReceipt,
+    isBillView: false,
+    isPaymentReceipt: false,
     isSingleBillView: true,
   };
 }
+

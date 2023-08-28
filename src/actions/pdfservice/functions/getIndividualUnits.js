@@ -134,3 +134,4 @@ export default function getIndividualTotalUnits(lineItemsList) {
     result.length > 0 ? result.substring(0, result.length - 1) : result;
   return finalResult;
 }
+

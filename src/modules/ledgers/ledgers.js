@@ -33,6 +33,10 @@ import RecordPayment from "./recordPayment";
 import { useDispatch, useSelector } from "react-redux";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import addbill_icon from "../../assets/images/addbill.svg";
+import print from "../../assets/images/print_bill.svg";
+import download_icon from "../../assets/images/dwnld.svg";
+import { ToastContainer, toast } from "react-toastify";
+import { Buffer } from "buffer";
 import {
   allCustomTabs,
   detaildLedgerInfo,
@@ -47,9 +51,16 @@ import {
   trhoughRecordPayment,
 } from "../../reducers/ledgerSummarySlice";
 import PaymentHistoryView from "./paymentHistory";
+import { getLedgerSummaryJson } from "../../actions/pdfservice/billpdf/getLedgerSummaryJson";
+import {
+  generateDetailedLedgerSummary,
+  generateLedgerSummary,
+  generateLedSummary,
+} from "../../actions/pdfservice/singleBillPdf";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  console.log(ledgersSummary, "ledgersSummary");
   const ledgers = ledgersSummary?.allLedgers;
   const dispatch = useDispatch();
   const clickId = loginData.caId;
@@ -70,6 +81,7 @@ const Ledgers = (props) => {
   const cardDetailed = ledgersSummary?.totalRecivables;
   const [ledgerData, setLedgerData] = useState({});
   const [isLoading, setLoading] = useState(true);
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
   const [isOnline, setOnline] = useState(false);
   const detailedTotal = ledgersSummary?.totalRecivables;
   var date = moment(new Date()).format("YYYY-MM-DD");
@@ -446,6 +458,7 @@ const Ledgers = (props) => {
   const getData = (data) => {
     if (allCustom == "all" && ledgerTabs == "ledgersummary") {
       setLedgerSummary(data);
+      console.log(data, "data");
     } else if (allCustom == "all" && ledgerTabs == "detailedledger") {
       setdetailedLedger(data);
     } else if (allCustom == "custom" && ledgerTabs == "ledgersummary") {
@@ -489,35 +502,265 @@ const Ledgers = (props) => {
     setRecordPaymentModalStatus(true);
     setRecordPaymentModal(true);
   };
-
+  async function handleLedgerSummaryJson(allLedgersStatus) {
+    setIsLoadingNew(true);
+    var ledgerJsonBody = getLedgerSummaryJson(
+      allLedgersStatus
+      ? ledgersSummary.allLedgers
+      : ledgerTabs == "ledgersummary"
+      ? ledgersSummary.ledgerSummaryInfo
+      : ledgersSummary.detaildLedgerInfo,
+      ledgerData,
+      allCustom === "custom" ? dateValue : "",
+      ledgerType,
+      getTotalPaid(),
+      getTotalBusiness(),
+      getTotalOutstandings(),
+      ledgerTabs,
+      ledgersSummary.beginDate,
+      ledgersSummary.closeDate,
+      allLedgersStatus,
+      ledgersSummary
+    );
+    var pdfResponse;
+    if (allLedgersStatus) {
+      pdfResponse =await generateLedSummary(ledgerJsonBody);
+      console.log('allledg',pdfResponse)
+    } else {
+      pdfResponse =
+        ledgerTabs == "ledgersummary"
+          ? await generateLedgerSummary(ledgerJsonBody)
+          : await generateDetailedLedgerSummary(ledgerJsonBody);
+    }
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setIsLoadingNew(false);
+      window.open(blobUrl, "_blank");
+    }
+  }
+  async function getDownloadPdf(allLedgersStatus) {
+    setIsLoadingNew(true);
+    var ledgerJsonBody = getLedgerSummaryJson(
+      allLedgersStatus
+        ? ledgersSummary.allLedgers
+        : ledgerTabs == "ledgersummary"
+        ? ledgersSummary.ledgerSummaryInfo
+        : ledgersSummary.detaildLedgerInfo,
+      ledgerData,
+      allCustom === "custom" ? dateValue : "",
+      ledgerType,
+      getTotalPaid(),
+      getTotalBusiness(),
+      getTotalOutstandings(),
+      ledgerTabs,
+      ledgersSummary.beginDate,
+      ledgersSummary.closeDate,
+      allLedgersStatus,
+      ledgersSummary
+    );
+    var pdfResponse;
+    if (allLedgersStatus) {
+      pdfResponse =await generateLedSummary(ledgerJsonBody);
+      console.log('allledg',pdfResponse)
+    } else {
+      pdfResponse =
+        ledgerTabs == "ledgersummary"
+          ? await generateLedgerSummary(ledgerJsonBody)
+          : await generateDetailedLedgerSummary(ledgerJsonBody);
+    }
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      if (ledgerType == "BUYER") {
+        link.setAttribute("download", `BUYER_LEDGER.pdf`); //or any other extension
+      } else {
+        link.setAttribute("download", `SELLER_LEDGER.pdf`); //or any other extension
+      }
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
+  function getTotalBusiness() {
+    return allCustom == "custom" && ledgerTabs == "ledgersummary"
+      ? cardDetails.totalTobePaidRcvd
+        ? cardDetails.totalTobePaidRcvd
+          ? getCurrencyNumberWithSymbol(cardDetails.totalTobePaidRcvd)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalToBeRecived
+        ? cardDetailed.totalToBeRecived
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalToBeRecived)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalToBePaid
+        ? cardDetailed.totalToBePaid
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalToBePaid)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalToBeRecived
+        ? detailedTotal.totalToBeRecived
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalToBeRecived)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalToBePaid
+        ? detailedTotal.totalToBePaid
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalToBePaid)
+          : 0
+        : 0
+      : summary.totalTobePaidRcvd
+      ? getCurrencyNumberWithSymbol(summary.totalTobePaidRcvd)
+      : 0;
+  }
+  function getTotalOutstandings() {
+    return allCustom == "custom" && ledgerTabs == "ledgersummary"
+      ? cardDetails.outStdRcvPayble
+        ? cardDetails?.outStdRcvPayble
+          ? getCurrencyNumberWithSymbol(cardDetails.outStdRcvPayble)
+          : 0
+        : 0
+      : allCustom == "custom" && ledgerTabs == "detailedledger"
+      ? cardDetailed.totalOutStandingBalance
+        ? cardDetailed?.totalOutStandingBalance
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalOutStandingBalance)
+          : 0
+        : 0
+      : allCustom == "all" && ledgerTabs == "detailedledger"
+      ? detailedTotal.totalOutStandingBalance
+        ? detailedTotal?.totalOutStandingBalance
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalOutStandingBalance)
+          : 0
+        : 0
+      : summary.outStdRcvPayble
+      ? getCurrencyNumberWithSymbol(summary.outStdRcvPayble)
+      : 0;
+  }
+  function getTotalPaid() {
+    return allCustom == "custom" && ledgerTabs == "ledgersummary"
+      ? cardDetails.totalRcvdPaid
+        ? cardDetails.totalRcvdPaid
+          ? getCurrencyNumberWithSymbol(cardDetails.totalRcvdPaid)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalRecieved
+        ? cardDetailed.totalRecieved
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalRecieved)
+          : 0
+        : 0
+      : allCustom == "custom" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? cardDetailed.totalPaid
+        ? cardDetailed.totalPaid
+          ? getCurrencyNumberWithSymbol(cardDetailed.totalPaid)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "BUYER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalRecieved
+        ? detailedTotal.totalRecieved
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalRecieved)
+          : 0
+        : 0
+      : allCustom == "all" &&
+        ledgerType == "SELLER" &&
+        ledgerTabs == "detailedledger"
+      ? detailedTotal.totalPaid
+        ? detailedTotal.totalPaid
+          ? getCurrencyNumberWithSymbol(detailedTotal.totalPaid)
+          : 0
+        : 0
+      : summary.totalRcvdPaid
+      ? getCurrencyNumberWithSymbol(summary.totalRcvdPaid)
+      : 0;
+  }
   return (
     <div className="main_div_padding">
       {isOnline ? (
         <NoInternetConnection />
       ) : (
-        <div>
+        <div className="main_ledg">
           {isLoading ? (
             <div className="">
               <img src={loading} alt="my-gif" className="gif_img" />
             </div>
           ) : (
             <div>
+              <div>
               {allData.length > 0 ? (
                 <div className="row">
                   <div className="col-lg-5 pl-0">
-                    <div id="search-field">
+                    <div id="search-field" className="d-flex">
                       <SearchField
                         placeholder="Search by Name / Short Code"
                         onChange={(event) => {
                           handleSearch(event);
                         }}
                       />
+                      <div className="print_dwnld_icons d-flex">
+                        <button
+                          onClick={() => {
+                            getDownloadPdf(true).then();
+                          }}
+                        >
+                          <img src={download_icon} alt="img" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleLedgerSummaryJson(true).then();
+                          }}
+                        >
+                          <img src={print} alt="img" />
+                        </button>
+                      </div>
                     </div>
                     {ledgers.length > 0 ? (
                       <div>
-                        <div
-                          className="ledger-table"
-                        >
+                        <div className="ledger-table">
                           <div className="ledgers ledger_table_col">
                             <div className="row theadr-tag p-0">
                               <th class="col-lg-1">#</th>
@@ -535,8 +778,7 @@ const Ledgers = (props) => {
                                 <th class="col-lg-3">To Be Paid(&#8377;)</th>
                               )}
                             </div>
-                            <div className="table-scroll"
-                          id="scroll_style">
+                            <div className="table-scroll" id="scroll_style">
                               {ledgers.map((item, index) => {
                                 return (
                                   <Fragment>
@@ -1008,31 +1250,49 @@ const Ledgers = (props) => {
                           </div>
                         </div>
                         <span id="horizontal-line"></span>
-                        <ul
-                          className="nav nav-tabs ledger_tabs"
-                          id="myTab"
-                          role="tablist"
-                        >
-                          {links.map((link) => {
-                            return (
-                              <li key={link.id} className="nav-item ">
-                                <a
-                                  className={
-                                    "nav-link" +
-                                    (ledgerTabs == link.to ? " active" : "")
-                                  }
-                                  href={"#" + link.to}
-                                  role="tab"
-                                  aria-controls="home"
-                                  data-bs-toggle="tab"
-                                  onClick={() => ledgerTabEvent(link.to)}
-                                >
-                                  {link.name}
-                                </a>
-                              </li>
-                            );
-                          })}
-                        </ul>
+                        <div className="d-flex justify-content-between">
+                          <ul
+                            className="nav nav-tabs ledger_tabs"
+                            id="myTab"
+                            role="tablist"
+                          >
+                            {links.map((link) => {
+                              return (
+                                <li key={link.id} className="nav-item ">
+                                  <a
+                                    className={
+                                      "nav-link" +
+                                      (ledgerTabs == link.to ? " active" : "")
+                                    }
+                                    href={"#" + link.to}
+                                    role="tab"
+                                    aria-controls="home"
+                                    data-bs-toggle="tab"
+                                    onClick={() => ledgerTabEvent(link.to)}
+                                  >
+                                    {link.name}
+                                  </a>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                          <div className="print_dwnld_icons">
+                            <button
+                              onClick={() => {
+                                getDownloadPdf(false).then();
+                              }}
+                            >
+                              <img src={download_icon} alt="img" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                handleLedgerSummaryJson(false).then();
+                              }}
+                            >
+                              <img src={print} alt="img" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div>
@@ -1105,6 +1365,12 @@ const Ledgers = (props) => {
                 </div>
               )}
             </div>
+            {isLoadingNew ? (
+              <div className="loading_styles loading_styles_led">
+                <img src={loading} alt="my-gif" className="gif_img" />
+              </div>
+            ) : ''}
+            </div>
           )}
           {showDatepickerModal1 ? (
             <DatePickerModel
@@ -1141,6 +1407,7 @@ const Ledgers = (props) => {
           )}
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

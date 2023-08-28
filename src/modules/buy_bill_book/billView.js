@@ -555,7 +555,6 @@ const BillView = (props) => {
       const blobUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = blobUrl;
-      // link.setAttribute("download",'bill.pdf');
       if (billData?.partyType == "BUYER") {
         link.setAttribute(
           "download",
