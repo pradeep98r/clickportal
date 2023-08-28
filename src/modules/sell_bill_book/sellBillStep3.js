@@ -10,6 +10,7 @@ import "../../modules/buy_bill_book/step1.scss";
 import Step3PartySelect from "../buy_bill_book/step3PartySelect";
 import {
   getDefaultSystemSettings,
+  getGeneratedBillId,
   getOutstandingBal,
   getSystemSettings,
 } from "../../actions/billCreationService";
@@ -86,7 +87,7 @@ const SellBillStep3 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
-
+  const [billIdVal, setBillIdVal] = useState(0)
   useEffect(() => {
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
@@ -228,6 +229,18 @@ const SellBillStep3 = (props) => {
           }
         });
       }
+    });
+
+    var partyID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
+    const generateBillObj = {
+      caId: clickId,
+      multiBill: false,
+      partyId: partyID,
+      type: "SELL",
+      writerId: writerId
+    }
+    getGeneratedBillId(generateBillObj).then((res) => {
+      setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
   }, []);
 
@@ -738,6 +751,7 @@ const SellBillStep3 = (props) => {
     advance: Number(advancesValue),
     billDate: partnerSelectDate,
     billStatus: "COMPLETED",
+    billId:billIdVal,
     caId: clickId,
     cashRcvd: Number(cashRcvdValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),

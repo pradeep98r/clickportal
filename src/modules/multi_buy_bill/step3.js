@@ -25,6 +25,7 @@ import {
 } from "../../actions/multiBillService";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { getGeneratedBillId } from "../../actions/billCreationService";
 const Step3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -67,6 +68,7 @@ const Step3 = (props) => {
   const [commentext, setCommentFieldText] = useState(
     fromMultiBillViewStatus ? billEditedObject?.billInfo[0].comments : ""
   );
+  const [billIdVal, setBillIdVal] = useState(0)
   useEffect(() => {
     $("#disable").attr("disabled", false);
     if (multiSelectPartnersArray.length > 0) {
@@ -146,6 +148,16 @@ const Step3 = (props) => {
         setObjArrray2([...objArray1]);
       }
     }
+    const generateBillObj = {
+      caId: clickId,
+      multiBill: true,
+      partyId: 0,
+      type: "BUY",
+      writerId: writerId
+    }
+    getGeneratedBillId(generateBillObj).then((res) => {
+      setBillIdVal(res.data.data == null ? 0 : res.data.data);
+    });
   }, []);
   var gTotal = 0;
 
@@ -456,7 +468,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           }
         },

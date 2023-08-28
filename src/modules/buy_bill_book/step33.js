@@ -9,6 +9,7 @@ import {
   getSystemSettings,
   getOutstandingBal,
   getDefaultSystemSettings,
+  getGeneratedBillId,
 } from "../../actions/billCreationService";
 import CommissionCard from "../../components/commissionCard";
 import CommonCard from "../../components/card";
@@ -83,6 +84,7 @@ const Step33 = (props) => {
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
+  const [billIdVal, setBillIdVal] = useState(0)
   useEffect(() => {
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
@@ -230,6 +232,17 @@ const Step33 = (props) => {
           }
         });
       }
+    });
+    var partyID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
+    const generateBillObj = {
+      caId: clickId,
+      multiBill: false,
+      partyId: partyID,
+      type: "BUY",
+      writerId: writerId
+    }
+    getGeneratedBillId(generateBillObj).then((res) => {
+      setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
   }, [users.buyerInfo]);
   var gTotal = 0;
@@ -537,7 +550,7 @@ const Step33 = (props) => {
 
     // return type;
   };
-
+ 
   const [commentFieldText, setCommentFieldText] = useState(
     billEditItemInfo?.selectedBillInfo?.comments != ""
       ? billEditItemInfo?.selectedBillInfo?.comments
@@ -738,6 +751,7 @@ const Step33 = (props) => {
     advance: Number(advancesValue),
     billDate: partnerSelectDate,
     billStatus: "COMPLETED",
+    billId:billIdVal,
     caId: clickId,
     cashPaid: Number(cashpaidValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -901,10 +915,10 @@ const Step33 = (props) => {
             window.setTimeout(function () {
               props.closem();
             }, 800);
-            window.setTimeout(function () {
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 1000);
+            // window.setTimeout(function () {
+            //   navigate("/buy_bill_book");
+            //   window.location.reload();
+            // }, 1000);
           }
         },
         (error) => {
