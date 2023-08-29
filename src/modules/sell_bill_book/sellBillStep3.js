@@ -887,10 +887,10 @@ const SellBillStep3 = (props) => {
                   );
                 }
               });
-              // window.setTimeout(function () {
-              //   navigate("/buyerLedger");
-              //   window.location.reload();
-              // }, 1000);
+              window.setTimeout(function () {
+                navigate("/buyerLedger");
+                window.location.reload();
+              }, 1000);
             }
           }
         },
