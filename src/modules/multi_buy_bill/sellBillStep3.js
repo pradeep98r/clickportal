@@ -26,6 +26,7 @@ import {
 } from "../../actions/multiBillService";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { getGeneratedBillId } from "../../actions/billCreationService";
 const SellMultiBillStep3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -64,7 +65,9 @@ const SellMultiBillStep3 = (props) => {
   var objArray1 = [];
   const[objArray2, setObjArrray2] = useState([]);
   const [commentext, setCommentFieldText] = useState(fromMultiBillViewStatus ? (billEditedObject?.billInfo[0].comments) : '');
+  const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
+    $("#disable").attr("disabled", false);
     if (multiSelectPartnersArray.length > 0) {
       for (var i = 0; i < multiSelectPartnersArray.length; i++) {
         getGrossTotalValue(multiSelectPartnersArray, i);
@@ -136,6 +139,16 @@ const SellMultiBillStep3 = (props) => {
         setObjArrray2([...objArray1])
       }
     }
+    const generateBillObj = {
+      caId: clickId,
+      multiBill: true,
+      partyId: 0,
+      type: "BUY",
+      writerId: writerId
+    }
+    getGeneratedBillId(generateBillObj).then((res) => {
+      setBillIdVal(res.data.data == null ? 0 : res.data.data);
+    });
   }, []);
   var gTotal = 0;
 
@@ -439,6 +452,9 @@ const SellMultiBillStep3 = (props) => {
       );
     }
   };
+  $("#disable").on("click", function () {
+    $("#disable").attr("disabled", true);
+  });
   return (
     <div>
       <div className="main_div_padding">
