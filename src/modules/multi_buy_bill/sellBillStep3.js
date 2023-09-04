@@ -66,6 +66,7 @@ const SellMultiBillStep3 = (props) => {
   const [billIdVal, setBillIdVal] = useState(0)
   const[objArray2, setObjArrray2] = useState([]);
   const [commentext, setCommentFieldText] = useState(fromMultiBillViewStatus ? (billEditedObject?.billInfo[0].comments) : '');
+  const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
     if (multiSelectPartnersArray.length > 0) {
