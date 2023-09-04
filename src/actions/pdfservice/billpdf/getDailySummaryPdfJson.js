@@ -1,7 +1,5 @@
-// import { getCurrencyNumberWithOutSymbol, getQuantityData, getWastage } from "../../../components/getCurrencyNumber";
 import {
   getCurrencyNumberWithOutSymbol,
-  getCurrencyNumberWithSymbol,
 } from "../../../components/getCurrencyNumber";
 import getPdfHeaderDataCommon from "../headerJsonCommon";
 import getPdfThemeInfo from "../pdfThemeInfo";

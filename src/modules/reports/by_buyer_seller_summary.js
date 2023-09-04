@@ -20,7 +20,7 @@ const ByBuyerSellerSummary = (props) => {
   const summaryObj = reportsData?.bySellerBuyerSummaryObj;
   const selectedParty = reportsData?.selectedReportSeller;
   const partyType = props.type;
-  console.log(selectedParty, "[[p");
+  console.log(selectedParty);
   return (
     <div>
       {summaryObj != null || selectedParty != null ? (

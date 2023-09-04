@@ -10,6 +10,10 @@ import { dateFormat } from "../../reducers/advanceSlice";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import { getText } from "../../components/getText";
 import "../../modules/advances/selectedOptions.scss";
+import print from "../../assets/images/print_bill.svg";
+import download_icon from "../../assets/images/dwnld.svg";
+import { ToastContainer, toast } from "react-toastify";
+import { Buffer } from "buffer";
 import {
   allCustomTabs,
   allLedgers,
@@ -38,6 +42,9 @@ import {
 import ByBuyerSellerSummary from "./by_buyer_seller_summary";
 import { getAllCrops } from "../../actions/billCreationService";
 import ByCropSummary from "./by_crop_summary";
+import { getSalesSummaryJson } from "../../actions/pdfservice/billpdf/getSalesSummaryPdfJson";
+import { getSalesSummaryPdf } from "../../actions/pdfservice/reportsPdf";
+import { getSalesByBuyerSummaryJson } from "../../actions/pdfservice/billpdf/getSalesByBuyerPdfJson";
 
 const ByCropDetails = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -228,7 +235,76 @@ const ByCropDetails = (props) => {
     dispatch(closeDate(toDate));
     getCustomDetailedCrops(selectedPartyId, fromDate, toDate);
   };
-
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
+  async function handleLedgerSummaryJson() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getSalesByBuyerSummaryJson(
+      reportsData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.closeDate,
+      ledgersSummary?.allCustomTabs,
+      ledgerType,
+      true
+    );
+    var pdfResponse = await getSalesSummaryPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setIsLoadingNew(false);
+      window.open(blobUrl, "_blank");
+    }
+  }
+  async function getDownloadPdf() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getSalesSummaryJson(
+      reportsData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.closeDate,
+      ledgersSummary?.allCustomTabs,
+      ledgerType,
+      true
+    );
+    var pdfResponse = await getSalesSummaryPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      if (ledgerType == "BUYER") {
+        link.setAttribute("download", `BY_BUYER_SUMMARY.pdf`); //or any other extension
+      } else {
+        link.setAttribute("download", `BY_SELLER_SUMMARY.pdf`); //or any other extension
+      }
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
   return (
     <div className="main_div_padding advance_empty_div p-0">
       <div>
@@ -339,6 +415,7 @@ const ByCropDetails = (props) => {
                 </div>
                 {allCrops.length > 0 ? (
                   <div className="col-lg-8 p-0">
+                    <div className="d-flex justify-content-between">
                     <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
                       <ul
                         className="nav nav-tabs mb-0"
@@ -365,6 +442,23 @@ const ByCropDetails = (props) => {
                           );
                         })}
                       </ul>
+                    </div>
+                    <div className="print_dwnld_icons d-flex">
+                    <button
+                    onClick={() => {
+                      getDownloadPdf().then();
+                    }}
+                    >
+                      <img src={download_icon} alt="img" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLedgerSummaryJson().then();
+                      }}
+                    >
+                      <img src={print} alt="img" />
+                    </button>
+                  </div>
                     </div>
                     <p
                       className={
@@ -442,6 +536,14 @@ const ByCropDetails = (props) => {
           <p></p>
         )}
       </div>
+      <ToastContainer />
+      {isLoadingNew ? (
+          <div className="loading_styles loading_styles_led">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
     </div>
   );
 };

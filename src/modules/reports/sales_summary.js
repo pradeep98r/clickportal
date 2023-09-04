@@ -187,6 +187,45 @@ const SalesSummary = (props) => {
       window.open(blobUrl, "_blank");
     }
   }
+  async function getDownloadPdf() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getSalesSummaryJson(
+      reportsData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.endDate,
+      ledgersSummary?.allCustomTabs,
+      partyType
+    );
+    var pdfResponse = await getSalesSummaryPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      if (partyType == "BUYER") {
+        link.setAttribute("download", `SALES_SUMMARY.pdf`); //or any other extension
+      } else {
+        link.setAttribute("download", `PURCHASE_SUMMARY.pdf`); //or any other extension
+      }
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
   return (
     <div className="main_div_padding advance_empty_div py-0">
       <div>
@@ -225,9 +264,9 @@ const SalesSummary = (props) => {
                   </div>
                   <div className="print_dwnld_icons d-flex">
                     <button
-                    // onClick={() => {
-                    //   getDownloadPdf(true).then();
-                    // }}
+                    onClick={() => {
+                      getDownloadPdf().then();
+                    }}
                     >
                       <img src={download_icon} alt="img" />
                     </button>

@@ -1,6 +1,6 @@
 // import { getCurrencyNumberWithOutSymbol, getQuantityData, getWastage } from "../../../components/getCurrencyNumber";
 import {
-  getCurrencyNumberWithOneDigit,
+  getCurrencyNumberWithOneDigit, getCurrencyNumberWithOutSymbol, getCurrencyNumberWithSymbol,
 } from "../../../components/getCurrencyNumber";
 import getPdfHeaderDataCommon from "../headerJsonCommon";
 import getPdfThemeInfo from "../pdfThemeInfo";
@@ -20,10 +20,10 @@ export function getSalesSummaryJson(data, fromDate, toDate, customVal,type) {
       toDate: moment(toDate).format("DD-MMM-YY"),
       showDate: customVal == "custom" ? true : false,
     },
-    type: type == 'BUYER' ? 'SELL' : 'BUY',
+    type: type ,
     partyName: "",
     data: {
-      totalItemsRate: data.summaryObj?.totalItemsRate,
+      totalItemsRate: getCurrencyNumberWithOutSymbol(data.summaryObj?.totalItemsRate),
       items: data.salseSummaryData?.map((item) => {
         return {
           billId: item.billId,
@@ -35,8 +35,7 @@ export function getSalesSummaryJson(data, fromDate, toDate, customVal,type) {
           total: item.total,
         };
       }),
-
-      quantityDetails: "string",
+      quantityDetails: getCurrencyNumberWithOutSymbol(data.summaryObj?.totalUnits) + ' | ' + getCurrencyNumberWithOutSymbol(data.summaryObj?.totalWeight),
     },
   };
 }

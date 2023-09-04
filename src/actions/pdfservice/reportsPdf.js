@@ -12,7 +12,14 @@ export function getSalesSummaryPdf(singleBillBody) {
       responseType: "arraybuffer",
     });
   }
+  export function getGrossProfitSummaryPdf(singleBillBody) {
+    console.log(singleBillBody, "req body");
+    return pdfService.post(`generateGrossProfit`, singleBillBody, {
+      responseType: "arraybuffer",
+    });
+  }
 export default {
     getDailySummaryPdf,
-    getSalesSummaryPdf
+    getSalesSummaryPdf,
+    getGrossProfitSummaryPdf
   };

@@ -63,7 +63,6 @@ const SellMultiBillStep3 = (props) => {
   var totalGross = 0;
   const [grossTotal, setGrossTotal] = useState(0);
   var objArray1 = [];
-  const [billIdVal, setBillIdVal] = useState(0)
   const[objArray2, setObjArrray2] = useState([]);
   const [commentext, setCommentFieldText] = useState(fromMultiBillViewStatus ? (billEditedObject?.billInfo[0].comments) : '');
   const [billIdVal, setBillIdVal] = useState(0);

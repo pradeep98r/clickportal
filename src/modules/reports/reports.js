@@ -21,8 +21,9 @@ import print from "../../assets/images/print_bill.svg";
 import download_icon from "../../assets/images/dwnld.svg";
 import { ToastContainer, toast } from "react-toastify";
 import { Buffer } from "buffer";
-import { getDailySummaryPdf } from "../../actions/pdfservice/reportsPdf";
+import { getDailySummaryPdf, getGrossProfitSummaryPdf } from "../../actions/pdfservice/reportsPdf";
 import { getDailySummaryJson } from "../../actions/pdfservice/billpdf/getDailySummaryPdfJson";
+import { getGrossProfitSummaryJson } from "../../actions/pdfservice/billpdf/getGrossProfitPdfJson";
 
 const Reports = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -148,11 +149,15 @@ const Reports = () => {
   };
   async function handleLedgerSummaryJson() {
     setIsLoadingNew(true);
-    var reportsJsonBody = getDailySummaryJson(
+    var reportsJsonBody = selectedTab == 'dailySummary' ? getDailySummaryJson(
       reportsData?.dailySummaryData,
       reportsData?.dailySelectDate
+    ) : getGrossProfitSummaryJson(
+      reportsData,
+      reportsData?.dailySelectDate
     );
-    var pdfResponse = await getDailySummaryPdf(reportsJsonBody);
+    var pdfResponse = selectedTab == 'dailySummary' ?
+     await getDailySummaryPdf(reportsJsonBody) : await getGrossProfitSummaryPdf(reportsJsonBody) ;
     console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
@@ -171,6 +176,42 @@ const Reports = () => {
       window.open(blobUrl, "_blank");
     }
   }
+  async function getDownloadPdf(allLedgersStatus) {
+    setIsLoadingNew(true);
+    var reportsJsonBody = selectedTab == 'dailySummary' ? getDailySummaryJson(
+      reportsData?.dailySummaryData,
+      reportsData?.dailySelectDate
+    ) : getGrossProfitSummaryJson(
+      reportsData,
+      reportsData?.dailySelectDate
+    );
+    var pdfResponse = selectedTab == 'dailySummary' ?
+     await getDailySummaryPdf(reportsJsonBody) : await getGrossProfitSummaryPdf(reportsJsonBody) ;
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+        link.setAttribute("download", `GROSS_PROFIT_SUMMARY.pdf`); //or any other extension
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
@@ -185,9 +226,9 @@ const Reports = () => {
           <div>
             <div className="print_dwnld_icons d-flex">
               <button
-              // onClick={() => {
-              //   getDownloadPdf(true).then();
-              // }}
+              onClick={() => {
+                getDownloadPdf(true).then();
+              }}
               >
                 <img src={download_icon} alt="img" />
               </button>
