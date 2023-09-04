@@ -23,6 +23,12 @@ import {
 import { salseSummaryData, summaryObj } from "../../reducers/reportsSlice";
 import "../reports/summary_reports.scss";
 import { qtyValues } from "../../components/qtyValues";
+import print from "../../assets/images/print_bill.svg";
+import download_icon from "../../assets/images/dwnld.svg";
+import { ToastContainer, toast } from "react-toastify";
+import { Buffer } from "buffer";
+import { getSalesSummaryJson } from "../../actions/pdfservice/billpdf/getSalesSummaryPdfJson";
+import { getSalesSummaryPdf } from "../../actions/pdfservice/reportsPdf";
 const SalesSummary = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -152,7 +158,74 @@ const SalesSummary = (props) => {
     console.log(fromDate, toDate, "fdate");
     getCustomDetailedSummary(fromDate, toDate);
   };
-
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
+  async function handleLedgerSummaryJson() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getSalesSummaryJson(
+      reportsData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.endDate,
+      ledgersSummary?.allCustomTabs,
+      partyType
+    );
+    var pdfResponse = await getSalesSummaryPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setIsLoadingNew(false);
+      window.open(blobUrl, "_blank");
+    }
+  }
+  async function getDownloadPdf() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getSalesSummaryJson(
+      reportsData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.endDate,
+      ledgersSummary?.allCustomTabs,
+      partyType
+    );
+    var pdfResponse = await getSalesSummaryPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      if (partyType == "BUYER") {
+        link.setAttribute("download", `SALES_SUMMARY.pdf`); //or any other extension
+      } else {
+        link.setAttribute("download", `PURCHASE_SUMMARY.pdf`); //or any other extension
+      }
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
   return (
     <div className="main_div_padding advance_empty_div py-0">
       <div>
@@ -165,28 +238,46 @@ const SalesSummary = (props) => {
             {/* {allData.length > 0 ? ( */}
             <div className="row">
               <div className="col-lg-12 p-0">
-                <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
-                  <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
-                    {tabs.map((tab) => {
-                      return (
-                        <li key={tab.id} className="nav-item ">
-                          <a
-                            className={
-                              "nav-link" +
-                              (allCustom == tab.to ? " active" : "")
-                            }
-                            href={"#" + tab.name}
-                            role="tab"
-                            aria-controls="home"
-                            data-bs-toggle="tab"
-                            onClick={() => allCustomEvent(tab.to)}
-                          >
-                            {tab.name}
-                          </a>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
+                    <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
+                      {tabs.map((tab) => {
+                        return (
+                          <li key={tab.id} className="nav-item ">
+                            <a
+                              className={
+                                "nav-link" +
+                                (allCustom == tab.to ? " active" : "")
+                              }
+                              href={"#" + tab.name}
+                              role="tab"
+                              aria-controls="home"
+                              data-bs-toggle="tab"
+                              onClick={() => allCustomEvent(tab.to)}
+                            >
+                              {tab.name}
+                            </a>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div className="print_dwnld_icons d-flex">
+                    <button
+                    onClick={() => {
+                      getDownloadPdf().then();
+                    }}
+                    >
+                      <img src={download_icon} alt="img" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLedgerSummaryJson().then();
+                      }}
+                    >
+                      <img src={print} alt="img" />
+                    </button>
+                  </div>
                 </div>
                 <p
                   className={
@@ -257,83 +348,83 @@ const SalesSummary = (props) => {
                     </div>
 
                     {summaryArray.length > 0 ? (
-                      <div
-                        className="ledger-table"
-                      >
-                          <div className="row thead-tag head_tag p-0">
-                              <th class="col-1">
-                                <p id="p-common-sno">#</p>
-                              </th>
-                              <th class="col-2">Name</th>
-                              <th class="col-6">
-                                Item<br></br> Unit | Kgs | Rate
-                              </th>
-                              <th class="col-3">Total(₹)</th>
-                           
-                          </div>
-                       <div className="table-scroll ledger-table sales_summary_table"
-                        id="scroll_style">
-                       <table className="table table-bordered advance_table_border ledger-table">
-                        
-                        <tbody>
-                          {summaryArray.map((item, index) => {
-                            return (
-                              <tr className="align-items-center">
-                                <td className="col-1">
-                                  <p id="p-common-sno">{index + 1}</p>
-                                </td>
-                                <td className="col-2">
-                                  <div>
-                                    <p className="date_ledger_val">
-                                      {item.partyName}
-                                    </p>
-                                    <p>
-                                      <span className="color_blue">
-                                        {item.billId}
-                                      </span>
-                                      {" | " +
-                                        moment(item.date).format("DD-MMM-YY")}
-                                    </p>
-                                  </div>
-                                </td>
-                                <td className="col-6">
-                                  <p>{item.cropName}</p>
-                                  <p className="d-flex">
-                                    <span>
-                                      {qtyValues(
-                                        item.qty,
-                                        item.qtyUnit,
-                                        item.weight,
-                                        item.wastage,
-                                        item.rateType
-                                      )}
-                                    </span>
-                                    &nbsp;
-                                    <span>
-                                      {" | " +
-                                        (item.rate != 0
-                                          ? getCurrencyNumberWithOneDigit(
-                                              item.rate
+                      <div className="ledger-table">
+                        <div className="row thead-tag head_tag p-0">
+                          <th class="col-1">
+                            <p id="p-common-sno">#</p>
+                          </th>
+                          <th class="col-2">Name</th>
+                          <th class="col-6">
+                            Item<br></br> Unit | Kgs | Rate
+                          </th>
+                          <th class="col-3">Total(₹)</th>
+                        </div>
+                        <div
+                          className="table-scroll ledger-table sales_summary_table"
+                          id="scroll_style"
+                        >
+                          <table className="table table-bordered advance_table_border ledger-table">
+                            <tbody>
+                              {summaryArray.map((item, index) => {
+                                return (
+                                  <tr className="align-items-center">
+                                    <td className="col-1">
+                                      <p id="p-common-sno">{index + 1}</p>
+                                    </td>
+                                    <td className="col-2">
+                                      <div>
+                                        <p className="date_ledger_val">
+                                          {item.partyName}
+                                        </p>
+                                        <p>
+                                          <span className="color_blue">
+                                            {item.billId}
+                                          </span>
+                                          {" | " +
+                                            moment(item.date).format(
+                                              "DD-MMM-YY"
+                                            )}
+                                        </p>
+                                      </div>
+                                    </td>
+                                    <td className="col-6">
+                                      <p>{item.cropName}</p>
+                                      <p className="d-flex">
+                                        <span>
+                                          {qtyValues(
+                                            item.qty,
+                                            item.qtyUnit,
+                                            item.weight,
+                                            item.wastage,
+                                            item.rateType
+                                          )}
+                                        </span>
+                                        &nbsp;
+                                        <span>
+                                          {" | " +
+                                            (item.rate != 0
+                                              ? getCurrencyNumberWithOneDigit(
+                                                  item.rate
+                                                )
+                                              : 0)}
+                                        </span>
+                                      </p>
+                                    </td>
+                                    <td className="col-3" key={item.total}>
+                                      <p className="">
+                                        {item.total != 0
+                                          ? getCurrencyNumberWithOutSymbol(
+                                              item.total
                                             )
-                                          : 0)}
-                                    </span>
-                                  </p>
-                                </td>
-                                <td className="col-3" key={item.total}>
-                                  <p className="">
-                                    {item.total != 0
-                                      ? getCurrencyNumberWithOutSymbol(
-                                          item.total
-                                        )
-                                      : 0}
-                                  </p>
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                       </div>
+                                          : 0}
+                                      </p>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     ) : (
                       <div className="table-scroll nodata_scroll">
@@ -399,6 +490,14 @@ const SalesSummary = (props) => {
           <p></p>
         )}
       </div>
+      <ToastContainer />
+      {isLoadingNew ? (
+          <div className="loading_styles loading_styles_led">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
     </div>
   );
 };

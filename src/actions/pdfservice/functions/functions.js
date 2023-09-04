@@ -1,7 +1,6 @@
 import { getCurrencyNumberWithOneDigit } from "../../../components/getCurrencyNumber";
 
 export default function getQuantityData(qty, qtyUnit, weight) {
-  console.log(qtyUnit);
   if (qtyUnit != null) {
     var qtyData = {
       majorUnitVal: `${
