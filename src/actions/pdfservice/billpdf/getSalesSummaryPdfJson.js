@@ -1,29 +1,26 @@
 // import { getCurrencyNumberWithOutSymbol, getQuantityData, getWastage } from "../../../components/getCurrencyNumber";
 import {
-  getCurrencyNumberWithOutSymbol,
-  getCurrencyNumberWithSymbol,
+  getCurrencyNumberWithOneDigit,
 } from "../../../components/getCurrencyNumber";
 import getPdfHeaderDataCommon from "../headerJsonCommon";
 import getPdfThemeInfo from "../pdfThemeInfo";
 import moment from "moment";
-import getIndividualTotalUnitsVal from "../../../modules/reports/functions";
 import getQuantityData from "../functions/functions";
-export function getSalesSummaryJson(data, date) {
+export function getSalesSummaryJson(data, fromDate, toDate, customVal,type) {
   var headerData = getPdfHeaderDataCommon({});
-  var pdfThemeInfo = getPdfThemeInfo(data, false, true, "SELLER");
-  console.log(data)
+  var pdfThemeInfo = getPdfThemeInfo(data, false, true, type);
+  console.log(customVal);
   return {
     primaryColor: pdfThemeInfo.primaryColor,
     lightColor: pdfThemeInfo.lightColor,
     darkerColor: pdfThemeInfo.darkerColor,
     headerData: headerData,
-    date: moment(date).format("DD-MMM-YY"),
-    //   "date": {
-    //     "fromDate": "string",
-    //     "toDate": "string",
-    //     "showDate": true
-    //   },
-    type: "SELL",
+    date: {
+      fromDate: moment(fromDate).format("DD-MMM-YY"),
+      toDate: moment(toDate).format("DD-MMM-YY"),
+      showDate: customVal == "custom" ? true : false,
+    },
+    type: type == 'BUYER' ? 'SELL' : 'BUY',
     partyName: "",
     data: {
       totalItemsRate: data.summaryObj?.totalItemsRate,
@@ -32,8 +29,8 @@ export function getSalesSummaryJson(data, date) {
           billId: item.billId,
           cropName: item.cropName,
           partyName: item.partyName,
-          date: item.date,
-          rate: item.rate,
+          date: moment(item.date).format("DD-MMM-YY"),
+          rate: getCurrencyNumberWithOneDigit(item.rate),
           qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
           total: item.total,
         };

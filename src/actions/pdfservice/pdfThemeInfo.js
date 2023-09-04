@@ -19,6 +19,7 @@ export default function getPdfThemeInfo(
   fromLedger,
   ledgertype
 ) {
+  console.log(ledgertype,'ledgertype')
   // default shade in app is 80 per
   var settArray = JSON.parse(localStorage.getItem("settingsData"));
   var partyType = getPartyType(fromMulti, billData, fromLedger, ledgertype);

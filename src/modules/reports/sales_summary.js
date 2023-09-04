@@ -163,7 +163,10 @@ const SalesSummary = (props) => {
     setIsLoadingNew(true);
     var reportsJsonBody = getSalesSummaryJson(
       reportsData,
-      reportsData?.dailySelectDate
+      ledgersSummary?.beginDate,
+      ledgersSummary?.endDate,
+      ledgersSummary?.allCustomTabs,
+      partyType
     );
     var pdfResponse = await getSalesSummaryPdf(reportsJsonBody);
     console.log(pdfResponse, "pdfResponse");
@@ -449,6 +452,13 @@ const SalesSummary = (props) => {
         )}
       </div>
       <ToastContainer />
+      {isLoadingNew ? (
+          <div className="loading_styles loading_styles_led">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
     </div>
   );
 };
