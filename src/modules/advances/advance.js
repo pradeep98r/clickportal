@@ -13,6 +13,10 @@ import addIcon from "../../assets/images/addIcon.svg";
 import addbill_icon from "../../assets/images/addbill.svg";
 import date_icon from "../../assets/images/date_icon.svg";
 import DatePickerModel from "../smartboard/datePicker";
+import print from "../../assets/images/print_bill.svg";
+import download_icon from "../../assets/images/dwnld.svg";
+import { ToastContainer, toast } from "react-toastify";
+import { Buffer } from "buffer";
 import {
   advanceDataInfo,
   advanceSummaryById,
@@ -43,6 +47,11 @@ import {
 } from "../../reducers/ledgerSummarySlice";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 import TransportoRecord from "../transporto_ledger/transportoRecord";
+import { getLedgerSummaryJson } from "../../actions/pdfservice/billpdf/getLedgerSummaryJson";
+import { generateLedSummary } from "../../actions/pdfservice/singleBillPdf";
+import { getAllAdvancesJson } from "../../actions/pdfservice/billpdf/getAllAdvancesPdfJson";
+import { getAdvancesSummaryJson } from "../../actions/pdfservice/billpdf/getAdvanceSummaryPdfJSon";
+import { getAdvancesSummaryPdf } from "../../actions/pdfservice/reportsPdf";
 
 const Advance = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -56,6 +65,8 @@ const Advance = (props) => {
   const totalAdvances = advancesData?.totalAdvancesVal;
   const selectedPartyId = advancesData?.selectedAdvanceId;
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
+  console.log(advancesData, "advancesData");
   const tabs = [
     {
       id: 1,
@@ -71,11 +82,11 @@ const Advance = (props) => {
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   const allCustom = ledgersSummary?.allCustomTabs;
   const [dateDisplay, setDateDisplay] = useState(false);
-  var newDate =moment(new Date()).format("YYYY-MM-DD")
+  var newDate = moment(new Date()).format("YYYY-MM-DD");
   var date = moment(new Date()).format("YYYY-MM-DD");
   var defaultDate = moment(new Date()).format("DD-MMM-YYYY");
-  const startDate = ledgersSummary?.beginDate
-  const endDate =ledgersSummary?.closeDate;
+  const startDate = ledgersSummary?.beginDate;
+  const endDate = ledgersSummary?.closeDate;
   var dateValue = advancesData?.dateFormat;
   var [datesValue, setDateValue] = useState(date + " to " + date);
   const [showDatepickerModal, setShowDatepickerModal] = useState(false);
@@ -87,8 +98,8 @@ const Advance = (props) => {
     dispatch(allCustomTabs("all"));
     dispatch(beginDate(date));
     dispatch(closeDate(date));
-    callbackFunction(date, date,'Custom');
-    console.log(allData,'useeffect all data')
+    callbackFunction(date, date, "Custom");
+    console.log(allData, "useeffect all data");
   }, [props]);
   const getAllAdvances = () => {
     getAdvances(clickId)
@@ -101,15 +112,13 @@ const Advance = (props) => {
               dispatch(selectedAdvanceId(res.data.data.advances[0].partyId));
               getAdvanceSummary(res.data.data.advances[0].partyId);
               dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]));
-              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
-            }
-            else{
-                dispatch(partyOutstandingBal(0))
+              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles));
+            } else {
+              dispatch(partyOutstandingBal(0));
             }
             if (res.data.data.totalAdvances != 0) {
               dispatch(totalAdvancesVal(res.data.data.totalAdvances));
             }
-            
           } else {
             dispatch(allAdvancesData([]));
           }
@@ -138,7 +147,7 @@ const Advance = (props) => {
     if (allCustom == "custom") {
       dispatch(allCustomTabs("all"));
       setDateDisplay(false);
-      callbackFunction(date,date, 'Custom')
+      callbackFunction(date, date, "Custom");
     }
     dispatch(dateCustomStatus(true));
     dispatch(selectedAdvanceId(id));
@@ -178,12 +187,11 @@ const Advance = (props) => {
   const allCustomEvent = (type) => {
     if (type == "custom") {
       setDateDisplay(true);
-      if(billEditItemInfo?.dateCustom){
-        callbackFunction(newDate, newDate, 'Custom');
-      }
-      else{
+      if (billEditItemInfo?.dateCustom) {
+        callbackFunction(newDate, newDate, "Custom");
+      } else {
         getCustomDetailedAdvances(selectedPartyId, startDate, endDate);
-      }  
+      }
     } else {
       getAdvanceSummary(selectedPartyId);
       setDateDisplay(false);
@@ -201,17 +209,25 @@ const Advance = (props) => {
     if (dateTab === "Daily") {
       dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY")));
     } else if (dateTab === "Weekly") {
-      dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY") +
-      " to " +
-      moment(toDate).format("DD-MMM-YYYY")));
+      dispatch(
+        dateFormat(
+          moment(fromDate).format("DD-MMM-YYYY") +
+            " to " +
+            moment(toDate).format("DD-MMM-YYYY")
+        )
+      );
     } else if (dateTab === "Monthly") {
       dispatch(dateFormat(moment(fromDate).format("MMM-yyy")));
     } else if (dateTab === "Yearly") {
       dispatch(dateFormat(moment(fromDate).format("YYYY")));
     } else {
-      dispatch(dateFormat(moment(fromDate).format("DD-MMM-YYYY") +
-      " to " +
-      moment(toDate).format("DD-MMM-YYYY")));
+      dispatch(
+        dateFormat(
+          moment(fromDate).format("DD-MMM-YYYY") +
+            " to " +
+            moment(toDate).format("DD-MMM-YYYY")
+        )
+      );
     }
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
@@ -225,30 +241,87 @@ const Advance = (props) => {
     dispatch(fromAdvanceSummary(false));
   };
 
-  const getAdvancesOutStbal =()=>{
+  const getAdvancesOutStbal = () => {
     getAdvances(clickId)
-    .then((res) => {
-      if (res.data.status.type === "SUCCESS") {
-        if (res.data.data != null) {
-          if (res.data.data.advances.length > 0) {
-            dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+            if (res.data.data.advances.length > 0) {
+              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles));
+            } else {
+              dispatch(partyOutstandingBal(0));
+            }
           }
-        else{
-            dispatch(partyOutstandingBal(0))
         }
-        }
-      }
-    })
-    .catch((error) => console.log(error));
-  }
+      })
+      .catch((error) => console.log(error));
+  };
   const recordPaymentSummaryOnClickEvent = () => {
     dispatch(fromAdvanceFeature(true));
     setRecordPayModalStatus(true);
     setRecordPayModal(true);
     dispatch(fromAdvanceSummary(true));
-    dispatch(fromParentSelect(true))
+    dispatch(fromParentSelect(true));
     getAdvancesOutStbal();
   };
+  async function getDownloadPdf(summaryStatus) {
+    setIsLoadingNew(true);
+    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.closeDate,
+      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", `ADVANCES_SUMMARY.pdf`); //or any other extension
+
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
+  async function handleLedgerSummaryJson(summaryStatus) {
+    setIsLoadingNew(true);
+    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.closeDate,
+      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setIsLoadingNew(false);
+      window.open(blobUrl, "_blank");
+    }
+  }
   return (
     <div className="main_div_padding advance_empty_div">
       <div>
@@ -266,32 +339,49 @@ const Advance = (props) => {
                       <SelectOptions />
                     </div>
                     <div className="col-lg-9 p-0" id="search-field">
-                      <div className="form-group has-search mb-0 bills_search advance_search">
-                        <input
-                          className="form-control"
-                          id="searchbar"
-                          placeholder="Search by Name"
-                          onChange={(event) => {
-                            handleSearch(event);
-                          }}
-                        />
+                      <div className="d-flex justify-content-between">
+                        <div className="form-group has-search mb-0 bills_search advance_search">
+                          <input
+                            className="form-control"
+                            id="searchbar"
+                            placeholder="Search by Name"
+                            onChange={(event) => {
+                              handleSearch(event);
+                            }}
+                          />
+                        </div>
+                        <div className="print_dwnld_icons d-flex">
+                          <button
+                            onClick={() => {
+                              getDownloadPdf(false).then();
+                            }}
+                          >
+                            <img src={download_icon} alt="img" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleLedgerSummaryJson(false).then();
+                            }}
+                          >
+                            <img src={print} alt="img" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                   {advancesArray.length > 0 ? (
                     <div>
-                        <div className="row theadr-tag p-0">
-                            <th class="col-lg-1">#</th>
-                            <th class="col-lg-2">Date</th>
-                            <th class="col-lg-6">Name</th>
-                            <th class="col-lg-3">Given(₹)</th>
-                          </div>
+                      <div className="row theadr-tag p-0">
+                        <th class="col-lg-1">#</th>
+                        <th class="col-lg-2">Date</th>
+                        <th class="col-lg-6">Name</th>
+                        <th class="col-lg-3">Given(₹)</th>
+                      </div>
                       <div
                         className="table-scroll ledger-table advance_table"
                         id="scroll_style"
                       >
                         <div className="ledgers ledger_table_col">
-                        
                           <div>
                             {advancesArray.map((item, index) => {
                               return (
@@ -408,80 +498,107 @@ const Advance = (props) => {
                   )}
                 </div>
                 {advancesArray.length > 0 ? (
-                <div className="col-lg-7 p-0">
-                  <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
-                    <ul className="nav nav-tabs mb-0" id="myTab" role="tablist">
-                      {tabs.map((tab) => {
-                        return (
-                          <li key={tab.id} className="nav-item ">
-                            <a
-                              className={
-                                "nav-link" +
-                                (allCustom == tab.to ? " active" : "")
-                              }
-                              href={"#" + tab.name}
-                              role="tab"
-                              aria-controls="home"
-                              data-bs-toggle="tab"
-                              onClick={() => allCustomEvent(tab.to)}
-                            >
-                              {tab.name}
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <button
-                      className="primary_btn add_bills_btn"
-                      onClick={recordPaymentOnClickEvent}
-                    >
-                      <img src={addbill_icon} alt="image" className="mr-2" />
-                      Record Advance
-                    </button>
-                  </div>
-                  <p
-                    className={
-                      dateDisplay && allCustom == "custom" ? "" : "padding_all"
-                    }
-                  ></p>
-
-                  <div className="my-2">
-                    <div
-                      style={{
-                        display:
-                          dateDisplay && allCustom == "custom"
-                            ? "flex"
-                            : "none",
-                      }}
-                      className="dateRangePicker justify-content-center"
-                    >
-                      <button onClick={onclickDate} className="color_blue">
-                        <div className="date_icon m-0">
-                          <img
-                            src={date_icon}
-                            alt="icon"
-                            className="mr-2 date_icon_in_custom"
-                          />
-                          {dateValue}
+                  <div className="col-lg-7 p-0">
+                    <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
+                      <ul
+                        className="nav nav-tabs mb-0"
+                        id="myTab"
+                        role="tablist"
+                      >
+                        {tabs.map((tab) => {
+                          return (
+                            <li key={tab.id} className="nav-item ">
+                              <a
+                                className={
+                                  "nav-link" +
+                                  (allCustom == tab.to ? " active" : "")
+                                }
+                                href={"#" + tab.name}
+                                role="tab"
+                                aria-controls="home"
+                                data-bs-toggle="tab"
+                                onClick={() => allCustomEvent(tab.to)}
+                              >
+                                {tab.name}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                     <div className="d-flex">
+                     <div className="print_dwnld_icons d-flex">
+                          <button
+                            onClick={() => {
+                              getDownloadPdf(true).then();
+                            }}
+                          >
+                            <img src={download_icon} alt="img" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleLedgerSummaryJson(true).then();
+                            }}
+                          >
+                            <img src={print} alt="img" />
+                          </button>
                         </div>
+                     <button
+                        className="primary_btn add_bills_btn"
+                        onClick={recordPaymentOnClickEvent}
+                      >
+                        <img src={addbill_icon} alt="image" className="mr-2" />
+                        Record Advance
                       </button>
+                     </div>
+                    </div>
+                    <p
+                      className={
+                        dateDisplay && allCustom == "custom"
+                          ? ""
+                          : "padding_all"
+                      }
+                    ></p>
+
+                    <div className="my-2">
+                      <div
+                        style={{
+                          display:
+                            dateDisplay && allCustom == "custom"
+                              ? "flex"
+                              : "none",
+                        }}
+                        className="dateRangePicker justify-content-center"
+                      >
+                        <button onClick={onclickDate} className="color_blue">
+                          <div className="date_icon m-0">
+                            <img
+                              src={date_icon}
+                              alt="icon"
+                              className="mr-2 date_icon_in_custom"
+                            />
+                            {dateValue}
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                    <AdvanceSummary />
+                  </div>
+                ) : (
+                  <div className="col-lg-7">
+                    <div
+                      className="partner_no_data_widget d-flex align-items-center justify-content-center"
+                      style={{ height: "100%" }}
+                    >
+                      <div className="text-center">
+                        <img
+                          src={no_data_icon}
+                          alt="icon"
+                          className="d-flex mx-auto justify-content-center"
+                        />
+                      </div>
                     </div>
                   </div>
-                  <AdvanceSummary />
-                </div>
-                ) :
-                <div className="col-lg-7">
-                  <div className="partner_no_data_widget d-flex align-items-center justify-content-center" style={{'height':'100%'}}>
-                    <div className="text-center">
-                      <img
-                        src={no_data_icon}
-                        alt="icon"
-                        className="d-flex mx-auto justify-content-center"
-                      />
-                    </div>
-                  </div>
-                </div>
-               }
+                )}
               </div>
             ) : (
               <div className="row partner_no_data_widget_rows">
@@ -529,6 +646,14 @@ const Advance = (props) => {
           <img src={addIcon} alt="image" />
         </button>
       </div>
+      <ToastContainer />
+      {isLoadingNew ? (
+        <div className="loading_styles loading_styles_led">
+          <img src={loading} alt="my-gif" className="gif_img" />
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

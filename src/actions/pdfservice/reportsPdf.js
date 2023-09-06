@@ -18,8 +18,15 @@ export function getSalesSummaryPdf(singleBillBody) {
       responseType: "arraybuffer",
     });
   }
+  export function getAdvancesSummaryPdf(singleBillBody) {
+    console.log(singleBillBody, "req body");
+    return pdfService.post(`generateAdvances`, singleBillBody, {
+      responseType: "arraybuffer",
+    });
+  }
 export default {
     getDailySummaryPdf,
     getSalesSummaryPdf,
-    getGrossProfitSummaryPdf
+    getGrossProfitSummaryPdf,
+    getAdvancesSummaryPdf
   };
