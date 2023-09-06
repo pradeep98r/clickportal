@@ -350,22 +350,7 @@ const Advance = (props) => {
                             }}
                           />
                         </div>
-                        <div className="print_dwnld_icons d-flex">
-                          <button
-                            onClick={() => {
-                              getDownloadPdf(false).then();
-                            }}
-                          >
-                            <img src={download_icon} alt="img" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              handleLedgerSummaryJson(false).then();
-                            }}
-                          >
-                            <img src={print} alt="img" />
-                          </button>
-                        </div>
+                      
                       </div>
                     </div>
                   </div>
