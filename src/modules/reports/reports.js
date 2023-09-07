@@ -4,15 +4,11 @@ import ComingSoon from "../../components/comingSoon";
 import "../reports/reports.scss";
 import DailySummary from "./daily_summary";
 import SinleDate from "./single_date_sel";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  getDailySummaryData,
-  getGrossProfitData,
-} from "../../actions/reportsService";
+import { getGrossProfitData } from "../../actions/reportsService";
+import loading from "../../assets/images/loading.gif";
 import {
   dailySelectDate,
-  dailySummaryData,
   grossProfitSummaryData,
   reportType,
 } from "../../reducers/reportsSlice";
@@ -21,13 +17,23 @@ import moment from "moment";
 import SalesSummary from "./sales_summary";
 import ByBuyerSeller from "./by_buyer_seller";
 import ByCropDetails from "./by_crop";
+import print from "../../assets/images/print_bill.svg";
+import download_icon from "../../assets/images/dwnld.svg";
+import { ToastContainer, toast } from "react-toastify";
+import { Buffer } from "buffer";
+import { getDailySummaryPdf, getGrossProfitSummaryPdf } from "../../actions/pdfservice/reportsPdf";
+import { getDailySummaryJson } from "../../actions/pdfservice/billpdf/getDailySummaryPdfJson";
+import { getGrossProfitSummaryJson } from "../../actions/pdfservice/billpdf/getGrossProfitPdfJson";
+
 const Reports = () => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const reportsData = useSelector((state) => state.reportsInfo);
   const selectedDate = reportsData?.dailySelectDate;
+  console.log(reportsData, "reportsData");
   const [selectedTab, setSelectedTab] = useState("dailySummary");
   const dispatch = useDispatch();
+  const [isLoadingNew, setIsLoadingNew] = useState(false);
   const links = [
     {
       id: 1,
@@ -141,14 +147,102 @@ const Reports = () => {
       }
     );
   };
+  async function handleLedgerSummaryJson() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = selectedTab == 'dailySummary' ? getDailySummaryJson(
+      reportsData?.dailySummaryData,
+      reportsData?.dailySelectDate
+    ) : getGrossProfitSummaryJson(
+      reportsData,
+      reportsData?.dailySelectDate
+    );
+    var pdfResponse = selectedTab == 'dailySummary' ?
+     await getDailySummaryPdf(reportsJsonBody) : await getGrossProfitSummaryPdf(reportsJsonBody) ;
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setIsLoadingNew(false);
+      window.open(blobUrl, "_blank");
+    }
+  }
+  async function getDownloadPdf(allLedgersStatus) {
+    setIsLoadingNew(true);
+    var reportsJsonBody = selectedTab == 'dailySummary' ? getDailySummaryJson(
+      reportsData?.dailySummaryData,
+      reportsData?.dailySelectDate
+    ) : getGrossProfitSummaryJson(
+      reportsData,
+      reportsData?.dailySelectDate
+    );
+    var pdfResponse = selectedTab == 'dailySummary' ?
+     await getDailySummaryPdf(reportsJsonBody) : await getGrossProfitSummaryPdf(reportsJsonBody) ;
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+        link.setAttribute("download", `GROSS_PROFIT_SUMMARY.pdf`); //or any other extension
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
   return (
     <div className="main_div_padding">
       <div className="container-fluid px-0">
-        {selectedTab == "dailySummary" || selectedTab == "grossProfits" ? (
-          <SinleDate />
-        ) : (
-          ""
-        )}
+        <div className="d-flex justify-content-between">
+          <div></div>
+          {selectedTab == "dailySummary" || selectedTab == "grossProfits" ? (
+            <SinleDate />
+          ) : (
+            ""
+          )}
+          {selectedTab == "dailySummary" || selectedTab == "grossProfits" ?
+          <div>
+            <div className="print_dwnld_icons d-flex">
+              <button
+              onClick={() => {
+                getDownloadPdf(true).then();
+              }}
+              >
+                <img src={download_icon} alt="img" />
+              </button>
+              <button
+                onClick={() => {
+                  handleLedgerSummaryJson().then();
+                }}
+              >
+                <img src={print} alt="img" />
+              </button>
+            </div>
+          </div>
+          : '' }
+        </div>
 
         <div
           class={
@@ -307,6 +401,13 @@ const Reports = () => {
             </div>
           </div>
         </div>
+        {isLoadingNew ? (
+          <div className="loading_styles loading_styles_led">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       <ToastContainer />
     </div>

@@ -1,4 +1,5 @@
 export default function getIndividualTotalUnitsVal(lineItemsList, fromGross) {
+  console.log(fromGross)
   var totalCrates = 0;
   var totalSacs = 0;
   var totalBoxes = 0;
@@ -8,7 +9,7 @@ export default function getIndividualTotalUnitsVal(lineItemsList, fromGross) {
   var totalPcs = 0;
   lineItemsList.forEach((item) => {
     // eslint-disable-next-line default-case
-
+    console.log(item,!fromGross)
     var unit = !fromGross
       ? item.unit.toUpperCase()
       : item.qtyType.toUpperCase();
