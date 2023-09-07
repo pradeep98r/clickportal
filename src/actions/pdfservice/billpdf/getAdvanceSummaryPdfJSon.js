@@ -27,7 +27,7 @@ export function getAdvancesSummaryJson(data, startDate, endDate, customVal) {
           refId: ledgerData.refId,
         };
       }),
-      totalAdvances: data?.totalAdvancesValById,
+      totalAdvances: getCurrencyNumberWithSymbol(data?.totalAdvancesValById),
     },
   };
 }
