@@ -547,11 +547,13 @@ const SellBillStep3 = (props) => {
     var total = 0;
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
-      total += editStatus
+      if(items[i].status != 0){
+        total += editStatus
         ? step2CropEditStatus
           ? items[i].total
           : items[i].total
         : items[i].total;
+      }
       totalunitvalue += editStatus
         ? step2CropEditStatus
           ? parseFloat(items[i].qty)

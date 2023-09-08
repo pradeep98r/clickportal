@@ -249,6 +249,8 @@ const Step33 = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     for (var i = 0; i < items.length; i++) {
+      console.log(items[i].status,'status')
+      if(items[i].status != 0){
       total += editStatus
         ? step2CropEditStatus
           ? items[i].total
@@ -256,6 +258,7 @@ const Step33 = (props) => {
         : items[i].total;
       setGrossTotal(total);
       gTotal = total;
+      }
     }
   };
   const listSettings = (name, res, index) => {
@@ -860,6 +863,7 @@ const Step33 = (props) => {
   // post bill request api call
   const postbuybill = () => {
     if (editStatus) {
+      console.log(editBillRequestObj,'editBillRequestObj')
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
