@@ -138,7 +138,6 @@ const Step33 = (props) => {
         return object.billType === "BUY" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
         for (var i = 0; i < filteredArray.length; i++) {
@@ -249,6 +248,7 @@ const Step33 = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     for (var i = 0; i < items.length; i++) {
+      if(items[i].status != 0){
       total += editStatus
         ? step2CropEditStatus
           ? items[i].total
@@ -256,6 +256,7 @@ const Step33 = (props) => {
         : items[i].total;
       setGrossTotal(total);
       gTotal = total;
+      }
     }
   };
   const listSettings = (name, res, index) => {
@@ -547,7 +548,6 @@ const Step33 = (props) => {
       }
     });
     setAllGroups(updatedItem);
-
     // return type;
   };
  
@@ -578,7 +578,6 @@ const Step33 = (props) => {
         : parseFloat(it[i].qty);
       setTotalUnits(totalunitvalue);
     }
-    console.log(items,transTotalValue,'grrooss')
   };
 
   const getTotalValue = (value) => {
@@ -725,7 +724,6 @@ const Step33 = (props) => {
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
   var len = cropArray.length;
-  console.log(cropArray)
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
       cropId: cropArray[i].cropId,
@@ -860,6 +858,7 @@ const Step33 = (props) => {
   // post bill request api call
   const postbuybill = () => {
     if (editStatus) {
+    
       editbuybillApi(editBillRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -902,7 +901,6 @@ const Step33 = (props) => {
         }
       );
     } else {
-      console.log(billRequestObj,'obj')
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {

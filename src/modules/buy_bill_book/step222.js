@@ -115,7 +115,6 @@ const Step22 = (props) => {
     cropResponseData([...updatedItem3]);
     Object.assign(c[i], { status: 0, cropDelete: true });
     setOnFocusCrop(c[i]);
-    console.log(updatedItem3,c[i])
   };
   const fetchCropData = () => {
     getAllCrops().then((response) => {
@@ -127,7 +126,6 @@ const Step22 = (props) => {
         } else {
           cIndex = -1;
         }
-        console.log(response.data.data,qSetting,'rres')
         Object.assign(item, {
           cropSelect: "",
           cropSufx: "",
@@ -252,7 +250,7 @@ const Step22 = (props) => {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
-    console.log(cropData,preferedCrops[index2])
+    console.log(cropData, preferedCrops[index2]);
   };
 
   //   getting all crops popup when click on other crop
@@ -539,7 +537,13 @@ const Step22 = (props) => {
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
-    console.log(cropInfo,'cropInfo')
+    console.log(
+      cropInfo,
+      billEditStatus,
+      allDeletedCrops,
+      cropData,
+      "cropInfo"
+    );
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
         if (
@@ -554,7 +558,6 @@ const Step22 = (props) => {
             cropInfo[k].total =
               (cropInfo[k].weight - cropInfo[k].wastage) * cropInfo[k].rate;
             cropInfo[k].rateType = "RATE_PER_KG";
-            console.log('hhi')
           }
         } else {
           cropInfo[k].total =
@@ -838,10 +841,13 @@ const Step22 = (props) => {
               : cIndex != -1
               ? getQuantityUnit(qSetting, cIndex)
               : e.target.value,
-              qty:(e.target.value?.toLowerCase() == "kgs" ||
-              e.target.value?.toLowerCase() == "loads") ? 0 : cropData[i].qty,
-              wastage:
-              e.target.value?.toLowerCase() == "loads" ? 0 : cropData[i].wastage
+          qty:
+            e.target.value?.toLowerCase() == "kgs" ||
+            e.target.value?.toLowerCase() == "loads"
+              ? 0
+              : cropData[i].qty,
+          wastage:
+            e.target.value?.toLowerCase() == "loads" ? 0 : cropData[i].wastage,
         };
       } else {
         cropResponseData([...cropData]);
@@ -850,7 +856,6 @@ const Step22 = (props) => {
     });
     cropResponseData([...updatedItemList]);
     setUpdatedItemList([...updatedItemList]);
-    console.log(updatedItemList,'up')
   };
   const getRateType = (cropData, index) => (e) => {
     // cropData[index].rateType = e.target.value;
@@ -914,7 +919,7 @@ const Step22 = (props) => {
     setweightValue(val);
     setUpdatedItemList([...updatedItem1]);
     setCropId(id);
-    console.log(updatedItem1)
+    console.log(updatedItem1);
   };
   const getCropSuffix = (id, index, cropitem) => (e) => {
     var val = e.target.value;
@@ -1034,9 +1039,6 @@ const Step22 = (props) => {
   const deleteCrop = (crop, cropArray, indexVal) => {
     var index = cropArray.indexOf(crop);
     var list = preferedCropsData;
-    // var index = cropArray.findIndex((obj,i) => cropArray[i].cropId == cropArray[indexVal].cropId);
-    // console.log(index,indexVal)
-    // for (var i = 0; i < cropArray.length; i++) {
     if (index != -1) {
       let data = cropArray.map((item, i) => {
         if (Object.keys(cropArray[i]).length != 0) {
@@ -1061,12 +1063,7 @@ const Step22 = (props) => {
           }
         }
       });
-      // Object.assign(cropArray[index], { status: 0, index:  index});
-      // cropArray[index].total = 0;
-      // cropArray[index].qty = 0;
-      // cropArray[index].qtyUnit = "";
-      // cropArray[index].cropDelete = true;
-      if (cropArray[index]?.weight != 0 && cropArray[index]?.rate != 0) {
+      if (cropArray[index]?.weight != 0 || cropArray[index]?.rate != 0) {
         if (Object.keys(cropArray[index]).length != 0) {
           setcropDeletedList([...cropDeletedList, cropArray[index]]);
           cropDeletedList.push(cropArray[index]);
@@ -1387,39 +1384,38 @@ const Step22 = (props) => {
               <div className="p-0 w-100">
                 <h4 className="smartboard_main_header">Crop Information</h4>
                 <div className="row header_row p-0 crop_table_header_row m-0">
-                    <div className="col-lg-2">
-                      <p>Crop</p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>Unit type</p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>
-                        Rate type
-                        {/* <br></br>(Per) */}
-                      </p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>Number of Units</p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>Total Weight</p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>Individual weights</p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>Wastage</p>
-                    </div>
-                    <div className="col-lg-1">
-                      <p>Rate (₹)</p>
-                    </div>
-                    <div className="col-lg-3 last_col">
-                      <p>Total (₹)</p>
-                    </div>
+                  <div className="col-lg-2">
+                    <p>Crop</p>
                   </div>
+                  <div className="col-lg-1">
+                    <p>Unit type</p>
+                  </div>
+                  <div className="col-lg-1">
+                    <p>
+                      Rate type
+                      {/* <br></br>(Per) */}
+                    </p>
+                  </div>
+                  <div className="col-lg-1">
+                    <p>Number of Units</p>
+                  </div>
+                  <div className="col-lg-1">
+                    <p>Total Weight</p>
+                  </div>
+                  <div className="col-lg-1">
+                    <p>Individual weights</p>
+                  </div>
+                  <div className="col-lg-1">
+                    <p>Wastage</p>
+                  </div>
+                  <div className="col-lg-1">
+                    <p>Rate (₹)</p>
+                  </div>
+                  <div className="col-lg-3 last_col">
+                    <p>Total (₹)</p>
+                  </div>
+                </div>
                 <div className="crop_table pr-0" id="scroll_style">
-                  
                   {cropData.map((crop, index) => (
                     <div
                       className="crop_div crop_table_div table_crop_div m-0"
@@ -1512,7 +1508,9 @@ const Step22 = (props) => {
                                 <td className="col-1">
                                   <select
                                     className="form-control qty_dropdown dropdown"
-                                    value={cropData[index].qtyUnit.toUpperCase()}
+                                    value={cropData[
+                                      index
+                                    ].qtyUnit.toUpperCase()}
                                     onChange={getQuantity(
                                       cropData,
                                       index,
@@ -1650,62 +1648,65 @@ const Step22 = (props) => {
                                   "sacs" ? (
                                   cropData[index].qtyUnit?.toLowerCase() !=
                                   cropData[index].rateType.toLowerCase() ? (
-                                    cropData[index].rateType != 'RATE_PER_UNIT' ? (
+                                    cropData[index].rateType !=
+                                    "RATE_PER_UNIT" ? (
                                       <td className="col-1">
-                                      <div className="d-flex align-items-center justify-content-center">
-                                        <button
-                                          onClick={() => {
-                                            handleCheckEvent(
-                                              cropData,
-                                              index,
-                                              crop
-                                            );
-                                          }}
-                                        >
-                                          <div className="d-flex align-items-center justify-content-center">
-                                            <input
-                                              type="checkbox"
-                                              checked={
-                                                billEditStatus
-                                                  ? cropData[index].bags !==
-                                                      null &&
-                                                    cropData[index].bags
-                                                      .length > 0
-                                                    ? true
-                                                    : false
-                                                  : cropData[index].checked
-                                              }
-                                              id="modal_checkbox"
-                                              value="my-value"
-                                              className="checkbox_t cursor_class"
-                                              onChange={() => {
-                                                handleCheckEvent(
-                                                  cropData,
-                                                  index,
-                                                  crop
-                                                );
-                                              }}
-                                            />
-                                            <div>
-                                              {cropData[index].bags !== null &&
-                                              cropData[index].bags.length >
-                                                0 ? (
-                                                <span
-                                                  className="unit-type my-0 cursor_class"
-                                                  for="modal_checkbox"
-                                                >
-                                                  Edit
-                                                </span>
-                                              ) : (
-                                                ""
-                                              )}{" "}
+                                        <div className="d-flex align-items-center justify-content-center">
+                                          <button
+                                            onClick={() => {
+                                              handleCheckEvent(
+                                                cropData,
+                                                index,
+                                                crop
+                                              );
+                                            }}
+                                          >
+                                            <div className="d-flex align-items-center justify-content-center">
+                                              <input
+                                                type="checkbox"
+                                                checked={
+                                                  billEditStatus
+                                                    ? cropData[index].bags !==
+                                                        null &&
+                                                      cropData[index].bags
+                                                        .length > 0
+                                                      ? true
+                                                      : false
+                                                    : cropData[index].checked
+                                                }
+                                                id="modal_checkbox"
+                                                value="my-value"
+                                                className="checkbox_t cursor_class"
+                                                onChange={() => {
+                                                  handleCheckEvent(
+                                                    cropData,
+                                                    index,
+                                                    crop
+                                                  );
+                                                }}
+                                              />
+                                              <div>
+                                                {cropData[index].bags !==
+                                                  null &&
+                                                cropData[index].bags.length >
+                                                  0 ? (
+                                                  <span
+                                                    className="unit-type my-0 cursor_class"
+                                                    for="modal_checkbox"
+                                                  >
+                                                    Edit
+                                                  </span>
+                                                ) : (
+                                                  ""
+                                                )}{" "}
+                                              </div>
                                             </div>
-                                          </div>
-                                        </button>
-                                      </div>
-                                    </td>
+                                          </button>
+                                        </div>
+                                      </td>
+                                    ) : (
+                                      <td className="col-1 fadeOut_col">-</td>
                                     )
-                                    :   <td className="col-1 fadeOut_col">-</td>
                                   ) : (
                                     <td className="col-1 fadeOut_col">-</td>
                                   )
