@@ -94,6 +94,7 @@ const GroupTotals = (props) => {
     var res;
     var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
+      console.log(res.data.data,'res.data.data')
       if (res.data.data.billSetting.length > 0) {
         billSettingData(res.data.data.billSetting);
         if (
@@ -107,336 +108,345 @@ const GroupTotals = (props) => {
         var filteredArray = res.data.data.billSetting.filter((object) => {
           return object.billType === billType && object.formStatus === 1;
         });
+        console.log(filteredArray,billData?.partyType,'billData?.partyType')
         filteredArray.sort((a, b) => a.groupId - b.groupId);
         dispatch(filtereArray(filteredArray));
         groupSettingsToJson();
-        for (var i = 0; i < res.data.data.billSetting.length; i++) {
-          if (
-            billData?.partyType.toUpperCase() === "FARMER" ||
-            billData?.partyType.toUpperCase() === "SELLER"
-          ) {
+        if(filteredArray.length > 0){
+          for (var i = 0; i < res.data.data.billSetting.length; i++) {
             if (
-              res.data.data.billSetting[i].groupId === 1 &&
-              res.data.data.billSetting[i].billType === "BUY" &&
-              res.data.data.billSetting[i].formStatus === 1
+              billData?.partyType.toUpperCase() === "FARMER" ||
+              billData?.partyType.toUpperCase() === "SELLER"
             ) {
-              // filteredArray = res.data.data.billSetting;
-              // setFilterArray([...filterArray,res.data.data.billSetting[i]])
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-                if (!res.data.data.billSetting[i].isShown) {
+              if (
+                res.data.data.billSetting[i].groupId === 1 &&
+                res.data.data.billSetting[i].billType === "BUY" &&
+                res.data.data.billSetting[i].formStatus === 1
+              ) {
+                // filteredArray = res.data.data.billSetting;
+                // setFilterArray([...filterArray,res.data.data.billSetting[i]])
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                  if (!res.data.data.billSetting[i].isShown) {
+                    setStatus(true);
+                  }
+                }
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
+                  setStatus(true);
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                groupOne = [res.data.data.billSetting[i], ...groupOne];
+                dispatch(groupOneSettings(groupOne));
+                setGroupOne([groupone, ...groupOne]);
+                console.log(groupOne,'groupOne buy')
+              } else if (
+                res.data.data.billSetting[i].groupId === 2 &&
+                res.data.data.billSetting[i].billType === "BUY" &&
+                res.data.data.billSetting[i].formStatus === 1
+              ) {
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
                   setStatus(true);
                 }
-              }
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                  if (!res.data.data.billSetting[i].isShown) {
+                    setStatus(true);
+                  }
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+                dispatch(groupTwoSettings(grouptwo));
+                setGroupTwo([groupTwo, ...grouptwo]);
               } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                res.data.data.billSetting[i].groupId === 3 &&
+                res.data.data.billSetting[i].billType === "BUY" &&
+                res.data.data.billSetting[i].formStatus === 1
               ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-              }
-              groupOne = [res.data.data.billSetting[i], ...groupOne];
-              dispatch(groupOneSettings(groupOne));
-              setGroupOne([groupone, ...groupOne]);
-            } else if (
-              res.data.data.billSetting[i].groupId === 2 &&
-              res.data.data.billSetting[i].billType === "BUY" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
-              }
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-                if (!res.data.data.billSetting[i].isShown) {
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
                   setStatus(true);
                 }
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                  if (!res.data.data.billSetting[i].isShown) {
+                    setStatus(true);
+                  }
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                groupthree = [res.data.data.billSetting[i], ...groupthree];
+                dispatch(groupThreeSettings(groupthree));
+                setGroupThree([groupThree, ...groupthree]);
               } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                res.data.data.billSetting[i].groupId === 4 &&
+                res.data.data.billSetting[i].billType === "BUY" &&
+                res.data.data.billSetting[i].formStatus === 1
               ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-              }
-              grouptwo = [res.data.data.billSetting[i], ...grouptwo];
-              dispatch(groupTwoSettings(grouptwo));
-              setGroupTwo([groupTwo, ...grouptwo]);
-            } else if (
-              res.data.data.billSetting[i].groupId === 3 &&
-              res.data.data.billSetting[i].billType === "BUY" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
-              }
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-                if (!res.data.data.billSetting[i].isShown) {
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
                   setStatus(true);
                 }
-              } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-              ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                  if (!res.data.data.billSetting[i].isShown) {
+                    setStatus(true);
+                  }
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                groupfour = [res.data.data.billSetting[i], ...groupfour];
+                dispatch(groupFourSettings(groupfour));
+                setGroupFour([groupFour, ...groupfour]);
               }
-              groupthree = [res.data.data.billSetting[i], ...groupthree];
-              dispatch(groupThreeSettings(groupthree));
-              setGroupThree([groupThree, ...groupthree]);
-            } else if (
-              res.data.data.billSetting[i].groupId === 4 &&
-              res.data.data.billSetting[i].billType === "BUY" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
+            } else {
               if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                res.data.data.billSetting[i].groupId === 1 &&
+                res.data.data.billSetting[i].billType === "SELL" &&
+                res.data.data.billSetting[i].formStatus === 1
               ) {
-                setStatus(true);
-              }
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-                if (!res.data.data.billSetting[i].isShown) {
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                  if (!res.data.data.billSetting[i].isShown) {
+                    setStatus(true);
+                  }
+                }
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
+                  setStatus(true);
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                groupOne = [res.data.data.billSetting[i], ...groupOne];
+                dispatch(groupOneSettings(groupOne));
+                setGroupOne([groupone, ...groupOne]);
+              } else if (
+                res.data.data.billSetting[i].groupId === 2 &&
+                res.data.data.billSetting[i].billType === "SELL" &&
+                res.data.data.billSetting[i].formStatus === 1
+              ) {
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
                   setStatus(true);
                 }
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                grouptwo = [res.data.data.billSetting[i], ...grouptwo];
+                dispatch(groupTwoSettings(grouptwo));
+                setGroupTwo([groupTwo, ...grouptwo]);
               } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                res.data.data.billSetting[i].groupId === 3 &&
+                res.data.data.billSetting[i].billType === "SELL" &&
+                res.data.data.billSetting[i].formStatus === 1
               ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-              }
-              groupfour = [res.data.data.billSetting[i], ...groupfour];
-              dispatch(groupFourSettings(groupfour));
-              setGroupFour([groupFour, ...groupfour]);
-            }
-          } else {
-            if (
-              res.data.data.billSetting[i].groupId === 1 &&
-              res.data.data.billSetting[i].billType === "SELL" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-                if (!res.data.data.billSetting[i].isShown) {
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
                   setStatus(true);
                 }
-              }
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                groupthree = [res.data.data.billSetting[i], ...groupthree];
+                dispatch(groupThreeSettings(groupthree));
+                setGroupThree([groupThree, ...groupthree]);
               } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                res.data.data.billSetting[i].groupId === 4 &&
+                res.data.data.billSetting[i].billType === "SELL" &&
+                res.data.data.billSetting[i].formStatus === 1
               ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
+                if (
+                  res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
+                ) {
+                  setStatus(true);
+                }
+                if (res.data.data.billSetting[i].settingName === "COMMISSION") {
+                  setIncludeComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                  setisShown(
+                    res.data.data.billSetting[i].isShown == 1 ? true : false
+                  );
+                } else if (
+                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                ) {
+                  setAddRetComm(
+                    res.data.data.billSetting[i].addToGt == 1 ? false : true
+                  );
+                  setIncludeRetComm(
+                    res.data.data.billSetting[i].includeInLedger == 1
+                      ? true
+                      : false
+                  );
+                }
+                groupfour = [res.data.data.billSetting[i], ...groupfour];
+                dispatch(groupFourSettings(groupfour));
+                setGroupFour([groupFour, ...groupfour]);
               }
-              groupOne = [res.data.data.billSetting[i], ...groupOne];
-              dispatch(groupOneSettings(groupOne));
-              setGroupOne([groupone, ...groupOne]);
-            } else if (
-              res.data.data.billSetting[i].groupId === 2 &&
-              res.data.data.billSetting[i].billType === "SELL" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
-              }
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-              } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-              ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-              }
-              grouptwo = [res.data.data.billSetting[i], ...grouptwo];
-              dispatch(groupTwoSettings(grouptwo));
-              setGroupTwo([groupTwo, ...grouptwo]);
-            } else if (
-              res.data.data.billSetting[i].groupId === 3 &&
-              res.data.data.billSetting[i].billType === "SELL" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
-              }
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-              } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-              ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-              }
-              groupthree = [res.data.data.billSetting[i], ...groupthree];
-              dispatch(groupThreeSettings(groupthree));
-              setGroupThree([groupThree, ...groupthree]);
-            } else if (
-              res.data.data.billSetting[i].groupId === 4 &&
-              res.data.data.billSetting[i].billType === "SELL" &&
-              res.data.data.billSetting[i].formStatus === 1
-            ) {
-              if (
-                res.data.data.billSetting[i].settingName === "OUT_ST_BALANCE"
-              ) {
-                setStatus(true);
-              }
-              if (res.data.data.billSetting[i].settingName === "COMMISSION") {
-                setIncludeComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-                setisShown(
-                  res.data.data.billSetting[i].isShown == 1 ? true : false
-                );
-              } else if (
-                res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
-              ) {
-                setAddRetComm(
-                  res.data.data.billSetting[i].addToGt == 1 ? false : true
-                );
-                setIncludeRetComm(
-                  res.data.data.billSetting[i].includeInLedger == 1
-                    ? true
-                    : false
-                );
-              }
-              groupfour = [res.data.data.billSetting[i], ...groupfour];
-              dispatch(groupFourSettings(groupfour));
-              setGroupFour([groupFour, ...groupfour]);
             }
           }
         }
+        else {
+          getDefaltSet();
+        }
       } else {
-        getDefaultSystemSettings().then((response) => {
-          res = response.data.data;
-          groupWiseTotals(response);
-          billSettingData(response.data.data);
-          dispatch(filtereArray(response.data.data));
-          SetSysArray(response.data.data);
-          groupSettingsToJson();
-          for (var i = 0; i < response.data.data.length; i++) {
-            if (
-              response.data.data[i].name == "COMM_INCLUDE" &&
-              response.data.data[i].status == 1
-            ) {
-              setIncludeComm(true);
-              setisShown(true);
-            }
-            if (
-              response.data.data[i].name == "RETURN_COMMISSION" &&
-              response.data.data[i].status == 1
-            ) {
-              setIncludeRetComm(true);
-            }
-          }
-        });
+        getDefaltSet();
       }
     });
   };
-
+ const getDefaltSet = () =>{
+  getDefaultSystemSettings().then((response) => {
+    var res = response.data.data;
+    groupWiseTotals(response);
+    billSettingData(response.data.data);
+    dispatch(filtereArray(response.data.data));
+    SetSysArray(response.data.data);
+    groupSettingsToJson();
+    for (var i = 0; i < response.data.data.length; i++) {
+      if (
+        response.data.data[i].name == "COMM_INCLUDE" &&
+        response.data.data[i].status == 1
+      ) {
+        setIncludeComm(true);
+        setisShown(true);
+      }
+      if (
+        response.data.data[i].name == "RETURN_COMMISSION" &&
+        response.data.data[i].status == 1
+      ) {
+        setIncludeRetComm(true);
+      }
+    }
+  });
+ }
   var totalgrp = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
@@ -1024,7 +1034,6 @@ const GroupTotals = (props) => {
       );
     });
     dispatch(allSettings(unique2));
-    console.log(unique2, "totals");
     localStorage.setItem("groupPdfTotals", JSON.stringify(unique2));
   };
   const handleSettingName = (item, list) => {
