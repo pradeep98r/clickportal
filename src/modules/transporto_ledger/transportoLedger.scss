@@ -149,16 +149,16 @@ input[type=radio]:label {
 }
 .transporterSummary{
     width: 100%;
-    height: calc(100vh - 342px);
+    height: calc(100vh - 385px);
     overflow-y: auto;
     background: #FFFFFF;
     border-radius: 10px 10px 10px 10px;
 }
 .transporterSummary_inv{
-    height: calc(100vh - 355px); 
+    height: calc(100vh - 400px); 
 }
 .transporto_ledger_scroll{
-    height: calc(100vh - 295px)!important;  
+    height: calc(100vh - 335px)!important;  
 }
 .transporterDetailed{
     width: 100%;
