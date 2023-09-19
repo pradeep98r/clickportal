@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import AllTransporters from "./allTransporters";
 import Transporters from "./transporters";
 import "../../modules/transporto_ledger/transportoLedger.scss"
+import { useDispatch } from "react-redux";
+import { allCustomTabs } from "../../reducers/ledgerSummarySlice";
 const TransportoLedger = () => {
   useEffect(() => {}, []);
-
+const dispatch = useDispatch();
   const transPortoTabs = [
     {
       id: 1,
@@ -25,6 +27,7 @@ const TransportoLedger = () => {
   const [transPortoTabVal, setTransPortoTabVal] = useState("transporterLedger");
   const transportoTabChange = (data) => {
     setTransPortoTabVal(data);
+    dispatch(allCustomTabs('all'));
   };
   return (
     <div className="main_div_padding">
