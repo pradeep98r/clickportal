@@ -152,7 +152,7 @@ const Transporters = (props) => {
         dispatch(transpoLedgersInfo([]));
         setallData([]);
       }
-      // getPartners(clickId);
+      getPartners(clickId);
     });
   };
   const getTransportersDataAll = () => {
@@ -173,7 +173,7 @@ const Transporters = (props) => {
         dispatch(transpoLedgersInfo([]));
         setallData([]);
       }
-      // getPartners(clickId);
+      getPartners(clickId);
     });
   };
   const getInventoryDataAll = () => {
@@ -520,6 +520,46 @@ const Transporters = (props) => {
       window.open(blobUrl, "_blank");
     }
   }
+  async function getDownloadPdfSummary(tabsVal) {
+    setIsLoadingNew(true);
+    var reportsJsonBody =
+    tabsVal == "inventoryledger"
+      ? getInvLedgerSummaryJson(
+          transpoData?.inventoryTotals,
+          transpoData?.singleTransporterObject
+        )
+      : getPaymentLedgerSummaryJson(
+          transpoData?.paymentTotals,
+          transpoData?.singleTransporterObject
+        );
+  var pdfResponse =
+    tabsVal == "inventoryledger"
+      ? getInvLedgersPdf(reportsJsonBody)
+      : await getPaymentLedgersPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", `PAYMENT_LEDGER_SUMMARY.pdf`); //or any other extension
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+    }
+  }
   const allCustomEvent = (type) => {
     dispatch(allCustomTabs(type));
     if (type == "custom") {
@@ -741,7 +781,7 @@ const Transporters = (props) => {
       // detailedLedgerByDate(clickId, partyId, fromDate, toDate);
     }
   };
-  console.log(allData,'allData')
+  console.log(allData, "allData");
   return (
     <div className="">
       <div className="row">
@@ -798,22 +838,26 @@ const Transporters = (props) => {
                   }}
                 />
               </div>
-              <div className="print_dwnld_icons d-flex">
-                <button
-                  onClick={() => {
-                    getDownloadPdf(true).then();
-                  }}
-                >
-                  <img src={download_icon} alt="img" />
-                </button>
-                <button
-                  onClick={() => {
-                    handleLedgerSummaryJson(true).then();
-                  }}
-                >
-                  <img src={print} alt="img" />
-                </button>
-              </div>
+              {transpotoTabValue == "transporterLedger" ? (
+                <div className="print_dwnld_icons d-flex">
+                  <button
+                    onClick={() => {
+                      getDownloadPdf(true).then();
+                    }}
+                  >
+                    <img src={download_icon} alt="img" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleLedgerSummaryJson(true).then();
+                    }}
+                  >
+                    <img src={print} alt="img" />
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           ) : (
             ""
@@ -1237,11 +1281,12 @@ const Transporters = (props) => {
                   })}
                 </ul>
                 <div>
+                  {tabs === "paymentledger" ? 
                   <div className="print_dwnld_icons d-flex">
                     <button
-                    // onClick={() => {
-                    //   getDownloadPdfSummary(tabs).then();
-                    // }}
+                    onClick={() => {
+                      getDownloadPdfSummary(tabs).then();
+                    }}
                     >
                       <img src={download_icon} alt="img" />
                     </button>
@@ -1253,6 +1298,7 @@ const Transporters = (props) => {
                       <img src={print} alt="img" />
                     </button>
                   </div>
+                  : ''}
                 </div>
                 {tabs == "paymentledger" ? (
                   <button
