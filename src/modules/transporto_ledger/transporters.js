@@ -114,16 +114,13 @@ const Transporters = (props) => {
   const [customDateHanlde, setCustomDateHandle] = useState(false);
   const [customDateHanlde1, setCustomDateHandle1] = useState(false);
   useEffect(() => {
-    console.log(transporter, props.transPortoTabVal, "useeffect");
     if (props.transPortoTabVal == "inventoryLedgerSummary") {
       setTabs("inventoryledger");
       dispatch(transpoTabs("inventoryledger"));
       getInventoryDataAll();
-      console.log("inventooryyy use");
       setAllCustom("all");
       setDateDisplay(false);
     } else {
-      console.log("trans");
       getTransportersDataAll();
       setTabs("paymentledger");
       dispatch(transpoTabs("paymentledger"));
@@ -134,9 +131,7 @@ const Transporters = (props) => {
   }, [props]);
 
   const getTransportersData = (fromDate, toDate) => {
-    console.log("respoo get transporters");
     getTransporters(clickId, fromDate, toDate).then((response) => {
-      console.log(response.data.data, "respoo get transporters");
       dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
       if (response.data.data.ledgers.length > 0) {
@@ -157,7 +152,6 @@ const Transporters = (props) => {
   };
   const getTransportersDataAll = () => {
     getTransportersAll(clickId, startDate, endDate).then((response) => {
-      console.log(response.data.data, "respoo get transporters");
       dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
       if (response.data.data.ledgers.length > 0) {
@@ -177,9 +171,7 @@ const Transporters = (props) => {
     });
   };
   const getInventoryDataAll = () => {
-    console.log("inventory");
     getInventorySummary(clickId).then((response) => {
-      console.log(response, "inventory");
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       dispatch(
         transporterIdVal(response.data.data.summaryInfo[0].transporterId)
@@ -202,9 +194,7 @@ const Transporters = (props) => {
     });
   };
   const getInventoryData = (fromDate, toDate) => {
-    console.log("inventory");
     getInventorySummaryAll(clickId, fromDate, toDate).then((response) => {
-      console.log(response, "inventory");
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       if (response.data.data.summaryInfo.length > 0) {
         dispatch(
@@ -285,7 +275,6 @@ const Transporters = (props) => {
     getInventoryRecord(clickId, transporterId);
     setAllCustom1("all");
     setDateDisplay1(false);
-    console.log(allCustom1, tabs, transpotoTabValue);
     if (
       transpotoTabValue == "inventoryLedgerSummary" &&
       tabs == "inventoryledger"
@@ -309,7 +298,6 @@ const Transporters = (props) => {
       } else {
         paymentLedger(transporterId, startDate1, endDate1);
       }
-      console.log(transporterId, "transporterId");
     }
   };
   const tabEvent = (type) => {
@@ -324,7 +312,6 @@ const Transporters = (props) => {
   };
   //get Payment Ledger
   const paymentLedgerAll = (partyId) => {
-    console.log(partyId);
     getParticularTransporter(clickId, partyId)
       .then((response) => {
         if (response.data.data != null) {
@@ -340,7 +327,6 @@ const Transporters = (props) => {
       });
   };
   const paymentLedger = (partyId, fromDate, toDate) => {
-    console.log(partyId);
     getParticularTransporterAll(clickId, partyId, fromDate, toDate)
       .then((response) => {
         if (response.data.data != null) {
@@ -374,7 +360,6 @@ const Transporters = (props) => {
   const inventoryLedger = (transId, fromDate, toDate) => {
     getInventoryLedgersAll(clickId, transId, fromDate, toDate)
       .then((response) => {
-        console.log(response.data.data, fromDate);
         if (response.data.data != null) {
           dispatch(inventoryTotals(response.data.data));
           dispatch(inventorySummaryInfo(response.data.data.details));
@@ -461,16 +446,13 @@ const Transporters = (props) => {
     setIsLoadingNew(true);
     var reportsJsonBody = getAllAdvancesJson(transpoData);
     var pdfResponse = await getTransportoLedgersPdf(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
-      console.log(pdfResponse.status, "fasl");
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
       setIsLoadingNew(false);
       return;
     } else {
-      console.log(pdfResponse.status, "true");
       toast.success("Pdf Downloaded SuccessFully", {
         toastId: "errorr2",
       });
@@ -487,7 +469,6 @@ const Transporters = (props) => {
   }
   async function handleLedgerSummaryJsonSummary(tabsVal) {
     setIsLoadingNew(true);
-    console.log(transpotoTabValue, tabs, tabsVal);
     var reportsJsonBody =
       tabsVal == "inventoryledger"
         ? getInvLedgerSummaryJson(
@@ -502,7 +483,6 @@ const Transporters = (props) => {
       tabsVal == "inventoryledger"
         ? getInvLedgersPdf(reportsJsonBody)
         : await getPaymentLedgersPdf(reportsJsonBody);
-    console.log(pdfResponse.status, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -523,20 +503,19 @@ const Transporters = (props) => {
   async function getDownloadPdfSummary(tabsVal) {
     setIsLoadingNew(true);
     var reportsJsonBody =
-    tabsVal == "inventoryledger"
-      ? getInvLedgerSummaryJson(
-          transpoData?.inventoryTotals,
-          transpoData?.singleTransporterObject
-        )
-      : getPaymentLedgerSummaryJson(
-          transpoData?.paymentTotals,
-          transpoData?.singleTransporterObject
-        );
-  var pdfResponse =
-    tabsVal == "inventoryledger"
-      ? getInvLedgersPdf(reportsJsonBody)
-      : await getPaymentLedgersPdf(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
+      tabsVal == "inventoryledger"
+        ? getInvLedgerSummaryJson(
+            transpoData?.inventoryTotals,
+            transpoData?.singleTransporterObject
+          )
+        : getPaymentLedgerSummaryJson(
+            transpoData?.paymentTotals,
+            transpoData?.singleTransporterObject
+          );
+    var pdfResponse =
+      tabsVal == "inventoryledger"
+        ? getInvLedgersPdf(reportsJsonBody)
+        : await getPaymentLedgersPdf(reportsJsonBody);
     if (pdfResponse.status !== 200) {
       console.log(pdfResponse.status, "fasl");
       toast.error("Something went wrong", {
@@ -545,7 +524,6 @@ const Transporters = (props) => {
       setIsLoadingNew(false);
       return;
     } else {
-      console.log(pdfResponse.status, "true");
       toast.success("Pdf Downloaded SuccessFully", {
         toastId: "errorr2",
       });
@@ -566,14 +544,17 @@ const Transporters = (props) => {
       console.log(type, handleDate);
       setDateDisplay(true);
     } else {
+      console.log(type, handleDate, "all");
       setDateDisplay(false);
       sethandleDate(true);
+      setCustomDateHandle(true);
     }
     console.log(handleDate, date, defaultDate);
     if (handleDate) {
       setDateValue(defaultDate + " to " + defaultDate);
       setStartDate(date);
       setEndDate(date);
+      console.log(startDate, endDate, "hand");
     }
     if (type == "all" && transpotoTabValue == "transporterLedger") {
       getTransportersDataAll();
@@ -602,8 +583,8 @@ const Transporters = (props) => {
       customDateHanlde
     ) {
       setCustomDateHandle(false);
-      getTransportersData(startDate, endDate);
-      console.log("custom", customDateHanlde);
+      getTransportersData(date, date);
+      console.log("custom", customDateHanlde, date, endDate);
     } else if (type == "custom") {
       getTransportersData(startDate, endDate);
     }
@@ -697,6 +678,7 @@ const Transporters = (props) => {
     } else {
       setDateDisplay1(false);
       sethandleDate1(true);
+      setCustomDateHandle1(true);
     }
     console.log(handleDate1, date, defaultDate);
     if (handleDate1) {
@@ -725,7 +707,7 @@ const Transporters = (props) => {
     }
     if (type == "custom" && tabs == "paymentledger" && customDateHanlde1) {
       setCustomDateHandle1(false);
-      paymentLedger(transporterId, startDate1, endDate1);
+      paymentLedger(transporterId, date, date);
       console.log("custom", customDateHanlde);
     } else if (type == "custom") {
       paymentLedger(transporterId, startDate1, endDate1);
@@ -738,6 +720,7 @@ const Transporters = (props) => {
     var fromDate = moment(startDate1).format("YYYY-MM-DD");
     var toDate = moment(endDate1).format("YYYY-MM-DD");
     dateValue1 = fromDate;
+    console.log(dateTab, "dateTab");
     if (dateTab === "Daily") {
       setDateValue1(moment(fromDate).format("DD-MMM-YYYY"));
     } else if (dateTab === "Weekly") {
@@ -781,7 +764,6 @@ const Transporters = (props) => {
       // detailedLedgerByDate(clickId, partyId, fromDate, toDate);
     }
   };
-  console.log(allData, "allData");
   return (
     <div className="">
       <div className="row">
@@ -1281,24 +1263,26 @@ const Transporters = (props) => {
                   })}
                 </ul>
                 <div>
-                  {tabs === "paymentledger" ? 
-                  <div className="print_dwnld_icons d-flex">
-                    <button
-                    onClick={() => {
-                      getDownloadPdfSummary(tabs).then();
-                    }}
-                    >
-                      <img src={download_icon} alt="img" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleLedgerSummaryJsonSummary(tabs).then();
-                      }}
-                    >
-                      <img src={print} alt="img" />
-                    </button>
-                  </div>
-                  : ''}
+                  {tabs === "paymentledger" ? (
+                    <div className="print_dwnld_icons d-flex">
+                      <button
+                        onClick={() => {
+                          getDownloadPdfSummary(tabs).then();
+                        }}
+                      >
+                        <img src={download_icon} alt="img" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleLedgerSummaryJsonSummary(tabs).then();
+                        }}
+                      >
+                        <img src={print} alt="img" />
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
                 </div>
                 {tabs == "paymentledger" ? (
                   <button

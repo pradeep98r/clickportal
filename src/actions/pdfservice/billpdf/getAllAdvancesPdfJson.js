@@ -14,7 +14,7 @@ export function getAllAdvancesJson(data, fromInventoryTab) {
     lightColor: pdfThemeInfo.lightColor,
     darkerColor: pdfThemeInfo.darkerColor,
     headerData: headerData,
-    totalOutStgAmt: !fromInventoryTab ? getCurrencyNumberWithSymbol(
+    totalOutStgAmt: !fromInventoryTab ? (
       data?.outstandingAmount?.totalOutStgAmt
     ) : formatInvLedger(
       data?.outstandingAmountInv
