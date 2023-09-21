@@ -550,6 +550,7 @@ function BuyBillBook() {
                                                                       : crop.cropName
                                                                     : crop.cropName}
                                                                 </p>
+                                                                <p className="crop_name color_green">{crop.mnLotId + ((crop.mnSubLotId || crop.mnLotId) != '' ?'/' : '') + crop.mnSubLotId}</p>
                                                               </div>
                                                               <div className="col-lg-4 col-sm-12 col">
                                                                 {/* {crop.qtyUnit+crop.qty} */}
@@ -931,6 +932,7 @@ function BuyBillBook() {
                                                               : crop.cropName
                                                             : crop.cropName}
                                                         </p>
+                                                        <p className="crop_name color_green">{crop.mnLotId + ((crop.mnSubLotId || crop.mnLotId) != '' ?'/' : '') + crop.mnSubLotId}</p>
                                                       </div>
                                                       <div className="col-lg-4 col-sm-12 col">
                                                         {/* {crop.qtyUnit+crop.qty} */}

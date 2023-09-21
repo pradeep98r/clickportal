@@ -58,8 +58,21 @@ const PaartyCropDetails = (props) => {
                 {partyType == "FARMER" ? "Seller" : "Buyer"}
               </th>
               <th className="col-9 remove_border p-0">
+              <th
+                  className="col-1"
+                  style={{
+                    backgroundColor:
+                      pdfThemeData != null
+                        ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                          ? colorThemeVal
+                          : colorAdjustBg(colorThemeVal, 180)
+                        : "#D7F3DD",
+                  }}
+                >
+                  Lot / S.Lot
+                </th>
                 <th
-                  className="col-4"
+                  className="col-3"
                   style={{
                     backgroundColor:
                       pdfThemeData != null
@@ -125,7 +138,10 @@ const PaartyCropDetails = (props) => {
                     {party.lineItems.map((item, key) => {
                       return (
                         <div>
-                          <td className="col-4">
+                           <td className="col-1 text-center">
+                  <p className="crop_name color_green">{item.mnLotId + ((item.mnSubLotId || item.mnLotId) != '' ? '/' : '-') + item.mnSubLotId}</p>
+                    </td>
+                          <td className="col-3">
                             <div className="flex_class mr-0 crop_name">
                               <img
                                 src={item.imageUrl}

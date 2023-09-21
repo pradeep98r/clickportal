@@ -211,7 +211,9 @@ const Step22 = (props) => {
         { activeSearch: false },
         { displayStat: false },
         { cropDelete: false },
-        { cropSufx: "" }
+        { cropSufx: "" },
+        { mnLotId: "" },
+        { mnSubLotId: "" }
       );
       cropResponseData([...cropData, preferedCrops[index2]]);
       setUpdatedItemList([...updatedItemList, ...newArray]);
@@ -230,6 +232,8 @@ const Step22 = (props) => {
         { displayStat: false },
         { cropDelete: false },
         { cropSufx: "" },
+        { mnLotId: "" },
+        { mnSubLotId: "" },
         {
           rateType:
             defaultUnitTypeVal == "unit_kg"
@@ -283,7 +287,9 @@ const Step22 = (props) => {
               { bags: [] },
               { status: 1 },
               { cropDelete: false },
-              { cropSufx: "" }
+              { cropSufx: "" },
+              { mnLotId: "" },
+              { mnSubLotId: "" }
             );
             setPreferedCropsData([...list, ...arr]);
           } else {
@@ -304,7 +310,9 @@ const Step22 = (props) => {
               { status: 1 },
               { id: 0 },
               { cropDelete: false },
-              { cropSufx: "" }
+              { cropSufx: "" },
+              { mnLotId: "" },
+              { mnSubLotId: "" }
             );
             arr.push(i);
             setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -474,7 +482,9 @@ const Step22 = (props) => {
             { bags: [] },
             { status: 1 },
             { cropDelete: false },
-            { cropSufx: "" }
+            { cropSufx: "" },
+            { mnLotId: "" },
+            { mnSubLotId: "" }
           );
           var existedItem = list[index];
           existedItem.count += 1;
@@ -516,7 +526,9 @@ const Step22 = (props) => {
             { status: 1 },
             { id: 0 },
             { cropDelete: false },
-            { cropSufx: "" }
+            { cropSufx: "" },
+            { mnLotId: "" },
+            { mnSubLotId: "" }
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -968,6 +980,44 @@ const Step22 = (props) => {
     setUpdatedItemList([...updatedItem2]);
     setCropId(id);
   };
+  const getLotValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value;
+    // .replace(/[^\d.]/g, "")
+    // .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+    // .replace(/(\.\d{0,2})\d*/, "$1")
+    // .replace(/(\.\d*)\./, "$1");
+    // .replace(/\D/g, "");
+    let updatedItem1 = cropitem.map((item, i) => {
+      if (i == index) {
+        return { ...cropitem[i], mnLotId: val };
+      } else {
+        cropResponseData([...cropitem]);
+        return { ...cropitem[i] };
+      }
+    });
+    cropResponseData([...updatedItem1]);
+    setUpdatedItemList([...updatedItem1]);
+    setCropId(id);
+  };
+  const getSubLotValue = (id, index, cropitem) => (e) => {
+    var val = e.target.value;
+    // .replace(/[^\d.]/g, "")
+    // .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
+    // .replace(/(\.\d{0,2})\d*/, "$1")
+    // .replace(/(\.\d*)\./, "$1");
+    // .replace(/\D/g, "");
+    let updatedItem1 = cropitem.map((item, i) => {
+      if (i == index) {
+        return { ...cropitem[i], mnSubLotId: val };
+      } else {
+        cropResponseData([...cropitem]);
+        return { ...cropitem[i] };
+      }
+    });
+    cropResponseData([...updatedItem1]);
+    setUpdatedItemList([...updatedItem1]);
+    setCropId(id);
+  };
   const getRateValue = (id, index, cropitem) => (e) => {
     var val = e.target.value
       .replace(/[^\d.]/g, "")
@@ -1234,6 +1284,8 @@ const Step22 = (props) => {
           status: 1,
           activeSearch: true,
           cropSufx: "",
+          mnLotId: "",
+          mnSubLotId: "",
         };
       } else {
         cropResponseData([...c]);
@@ -1388,6 +1440,9 @@ const Step22 = (props) => {
                     <p>Crop</p>
                   </div>
                   <div className="col-lg-1">
+                    <p>Lot / S.Lot</p>
+                  </div>
+                  <div className="col-lg-1">
                     <p>Unit type</p>
                   </div>
                   <div className="col-lg-1">
@@ -1411,7 +1466,7 @@ const Step22 = (props) => {
                   <div className="col-lg-1">
                     <p>Rate (₹)</p>
                   </div>
-                  <div className="col-lg-3 last_col">
+                  <div className="col-lg-2 last_col">
                     <p>Total (₹)</p>
                   </div>
                 </div>
@@ -1422,7 +1477,7 @@ const Step22 = (props) => {
                       key={index}
                     >
                       <div className="d-flex crop_table_delete_div">
-                        <div className="crop_table_view">
+                        <div className="crop_table_view crop_table_view_input">
                           <table className="table table-bordered table_div">
                             {Object.keys(cropData[index]).length != 0 ? (
                               // !cropData[index].cropDelete ? (
@@ -1504,6 +1559,44 @@ const Step22 = (props) => {
                                   ) : (
                                     ""
                                   )}
+                                </td>
+                                <td className="col-1">
+                                  <div className="d-flex">
+                                    <input
+                                      type="text"
+                                      name="lot"
+                                      onFocus={(e) => resetInput(e)}
+                                      className="form-control lot_number"
+                                      value={
+                                        cropData[index].mnLotId != ""
+                                          ? cropData[index].mnLotId
+                                          : 0
+                                      }
+                                      onChange={getLotValue(
+                                        cropData[index].cropId,
+                                        index,
+                                        cropData
+                                      )}
+                                      placeholder="lot"
+                                    />
+                                    <input
+                                      type="text"
+                                      name="lot"
+                                      onFocus={(e) => resetInput(e)}
+                                      className="form-control lot_number"
+                                      value={
+                                        cropData[index].mnSubLotId != ""
+                                          ? cropData[index].mnSubLotId
+                                          : 0
+                                      }
+                                      onChange={getSubLotValue(
+                                        cropData[index].cropId,
+                                        index,
+                                        cropData
+                                      )}
+                                      placeholder="s.lot"
+                                    />
+                                  </div>
                                 </td>
                                 <td className="col-1">
                                   <select
@@ -1751,7 +1844,7 @@ const Step22 = (props) => {
                                     )}
                                   />
                                 </td>
-                                <td className="col-3">
+                                <td className="col-2">
                                   <div className="d-flex align-items-center justify-content-between">
                                     <p className="totals">
                                       {cropData[index].rateType.toLowerCase() ==

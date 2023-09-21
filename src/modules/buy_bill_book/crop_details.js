@@ -115,7 +115,20 @@ const CropDetails = (props) => {
                 #
               </th>
               <th
-                className="col-4"
+                className="col-1"
+                style={{
+                  backgroundColor:
+                    pdfThemeData != null
+                      ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
+                        ? colorAdjustBg(colorThemeVal, 40)
+                        : colorAdjustBg(colorThemeVal, 180)
+                      : "#D7F3DD",
+                }}
+              >
+                Lot/S.Lot
+              </th>
+              <th
+                className="col-3"
                 style={{
                   backgroundColor:
                     pdfThemeData != null
@@ -173,7 +186,10 @@ const CropDetails = (props) => {
               return (
                 <tr key={item}>
                   <td className="col-1 text-center">{key + 1}</td>
-                  <td className="col-4">
+                  <td className="col-1 text-center">
+                  <p className="crop_name color_green">{item.mnLotId + ((item.mnSubLotId || item.mnLotId) != '' ? '/' : '-') + item.mnSubLotId}</p>
+                    </td>
+                  <td className="col-3">
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
                       <p className="crop-name">

@@ -465,8 +465,8 @@ function getCashValue(billData, isFarmer) {
 // }
 
 export default function getBillPdfJson(billData, { isDuplicate = false }) {
-  var colorThemeInfo = getPdfThemeInfo(billData,false,false);
-  var headerData = getPdfHeaderData(billData,false, {
+  var colorThemeInfo = getPdfThemeInfo(billData, false, false);
+  var headerData = getPdfHeaderData(billData, false, {
     isBillView: true,
   });
   headerData["groupId"] = 0;
@@ -522,16 +522,18 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
         imageUrl: item.imageUrl,
         cropName:
           item.cropName.toUpperCase() +
-          ((item.cropSufx == "" || item.cropSufx == null)
+          (item.cropSufx == "" || item.cropSufx == null
             ? ""
             : `(${item.cropSufx.toUpperCase()})`),
-        lotId: item.lotId != null ? item.lotId : "-",
+        // lotId: item.mnLotId + ((item.mnSubLotId || item.mnLotId) != '' ?'/' : '-') + item.mnSubLotId,
         qty: getQuantityData(item.qty, item.qtyUnit, item.weight),
         wastage: getWastage(item.wastage, item.qtyUnit, item.rateType),
         qtyTotal: "",
         rate: getCurrencyNumberWithOutSymbol(item.rate),
         total: getCurrencyNumberWithOutSymbol(item.total),
         individualBags: getIndividualBags(item.bags),
+        manualLotId: item.mnLotId,
+        subLotId: item.mnSubLotId,
         // cropSufx:item.cropSufx
       };
     }),

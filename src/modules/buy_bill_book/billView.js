@@ -38,7 +38,11 @@ import {
   selectedParty,
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
-import { billViewInfo, colorthemeValue, pdfSelectedThemeData } from "../../reducers/billViewSlice";
+import {
+  billViewInfo,
+  colorthemeValue,
+  pdfSelectedThemeData,
+} from "../../reducers/billViewSlice";
 import { colorAdjustBg, getText } from "../../components/getText";
 import {
   getBillHistoryListById,
@@ -79,7 +83,7 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
-  const[colorThemeVal, setColorThemeVal] = useState('');
+  const [colorThemeVal, setColorThemeVal] = useState("");
   // const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const billData = billViewData?.billViewInfo;
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
@@ -102,42 +106,58 @@ const BillView = (props) => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    if(pdfThemeData != null){
-      for(var i = 0; i<pdfThemeData.length; i++){
-        if(pdfThemeData[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-          setColorThemeVal(pdfThemeData[i] != null
-            ? (pdfThemeData[i]?.colorTheme != ""
-              ? pdfThemeData[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
-            dispatch(colorthemeValue(pdfThemeData[i] != null
-              ? (pdfThemeData[i]?.colorTheme != ""
+    if (pdfThemeData != null) {
+      for (var i = 0; i < pdfThemeData.length; i++) {
+        if (
+          pdfThemeData[i].type == "BUY_BILL" &&
+          billData?.partyType == "FARMER"
+        ) {
+          setColorThemeVal(
+            pdfThemeData[i] != null
+              ? pdfThemeData[i]?.colorTheme != ""
                 ? pdfThemeData[i]?.colorTheme
-                : "#16a12c")
-              : "#16a12c"));
-              localStorage.setItem('pdftheme',pdfThemeData[i])
-        }
-        else if(pdfThemeData[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-          setColorThemeVal(pdfThemeData[i] != null
-            ? (pdfThemeData[i]?.colorTheme != ""
-              ? pdfThemeData[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
-            dispatch(colorthemeValue(pdfThemeData[i] != null
-              ? (pdfThemeData[i]?.colorTheme != ""
+                : "#16a12c"
+              : "#16a12c"
+          );
+          dispatch(
+            colorthemeValue(
+              pdfThemeData[i] != null
+                ? pdfThemeData[i]?.colorTheme != ""
+                  ? pdfThemeData[i]?.colorTheme
+                  : "#16a12c"
+                : "#16a12c"
+            )
+          );
+          localStorage.setItem("pdftheme", pdfThemeData[i]);
+        } else if (
+          pdfThemeData[i].type == "SELL_BILL" &&
+          billData?.partyType == "BUYER"
+        ) {
+          setColorThemeVal(
+            pdfThemeData[i] != null
+              ? pdfThemeData[i]?.colorTheme != ""
                 ? pdfThemeData[i]?.colorTheme
-                : "#16a12c")
-              : "#16a12c"));
-              localStorage.setItem('pdftheme',pdfThemeData[i])
+                : "#16a12c"
+              : "#16a12c"
+          );
+          dispatch(
+            colorthemeValue(
+              pdfThemeData[i] != null
+                ? pdfThemeData[i]?.colorTheme != ""
+                  ? pdfThemeData[i]?.colorTheme
+                  : "#16a12c"
+                : "#16a12c"
+            )
+          );
+          localStorage.setItem("pdftheme", pdfThemeData[i]);
         }
       }
+    } else {
+      setColorThemeVal("#16a12c");
+      dispatch(colorthemeValue("#16a12c"));
+      localStorage.setItem("pdftheme", null);
     }
-    else{
-      setColorThemeVal('#16a12c');
-        dispatch(colorthemeValue('#16a12c'));
-          localStorage.setItem('pdftheme',null)
-    }
-   
+
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
     dispatch(billViewInfo(billViewData.billViewInfo));
@@ -511,10 +531,10 @@ const BillView = (props) => {
       .catch((error) => console.log(error));
   };
   const obj = {
-    name : "aparna"
-}
+    name: "aparna",
+  };
   async function getPrintPdf() {
-    console.log('pdf coming')
+    console.log("pdf coming");
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
@@ -590,15 +610,14 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
-      console.log(blobUrl,'blob')
+      console.log(blobUrl, "blob");
     }
-
   }
   const closeSharePopup = () => {
     $("#shareBill").modal("hide");
   };
   function getsharePdf() {
-    console.log(shareUrl,'share')
+    console.log(shareUrl, "share");
     var xhr = new XMLHttpRequest();
     xhr.responseType = "blob";
     xhr.onload = function () {
