@@ -464,8 +464,6 @@ const Step2 = (props) => {
           status: 1,
           activeSearch: true,
           id: 0,
-          mnLotId:'',
-          mnSubLotId:''
         };
       } else {
         return { ...c[j] };
@@ -646,46 +644,6 @@ const Step2 = (props) => {
     });
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItem2 };
-    clonedArray[mIndex] = clonedObject1;
-    // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray));
-  };
-  const getLotValue = (id, index, mIndex, cropitem) => (e) => {
-    let clonedArray = [...multiSelectPartnersArray];
-    var val = e.target.value;
-      // .replace(/[^\d.]/g, "")
-      // .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
-      // .replace(/(\.\d{0,2})\d*/, "$1")
-      // .replace(/(\.\d*)\./, "$1");
-    let updatedItem1 = cropitem.map((item, i) => {
-      if (i == index) {
-        return { ...cropitem[i], mnLotId: val };
-      } else {
-        return { ...cropitem[i] };
-      }
-    });
-    let clonedObject1 = { ...clonedArray[mIndex] };
-    clonedObject1 = { ...clonedObject1, lineItems: updatedItem1 };
-    clonedArray[mIndex] = clonedObject1;
-    // setMultiSelectPartnersArray(clonedArray);
-    dispatch(multiSelectPartners(clonedArray));
-  };
-  const getSubLotValue = (id, index, mIndex, cropitem) => (e) => {
-    let clonedArray = [...multiSelectPartnersArray];
-    var val = e.target.value
-      // .replace(/[^\d.]/g, "")
-      // .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
-      // .replace(/(\.\d{0,2})\d*/, "$1")
-      // .replace(/(\.\d*)\./, "$1");
-    let updatedItem1 = cropitem.map((item, i) => {
-      if (i == index) {
-        return { ...cropitem[i], mnSubLotId: val };
-      } else {
-        return { ...cropitem[i] };
-      }
-    });
-    let clonedObject1 = { ...clonedArray[mIndex] };
-    clonedObject1 = { ...clonedObject1, lineItems: updatedItem1 };
     clonedArray[mIndex] = clonedObject1;
     // setMultiSelectPartnersArray(clonedArray);
     dispatch(multiSelectPartners(clonedArray));
@@ -899,7 +857,6 @@ const Step2 = (props) => {
               <th className="p-0 extra_border">
                 <tr className="extra_border">
                   <th className="col_2">Crop</th>
-                  <th className="col_1">Lot / S.Lot</th>
                   <th className="col_1">Unit type</th>
                   <th className="col_1">Rate type</th>
                   <th className="col_1">Number of Units</th>
@@ -907,7 +864,7 @@ const Step2 = (props) => {
                   <th className="col_1">individual weights</th>
                   <th className="col_1">Wastage</th>
                   <th className="col_1">Rate (₹)</th>
-                  <th className="col_2">Total (₹)</th>
+                  <th className="col_3">Total (₹)</th>
                 </tr>
               </th>
             </tr>
@@ -1059,58 +1016,6 @@ const Step2 = (props) => {
                                   ""
                                 )}
                               </td>
-                              <td className="col_1">
-                                  <div className="d-flex">
-                                    <input
-                                      type="text"
-                                      name="lot"
-                                      onFocus={(e) => resetInput(e)}
-                                      className="form-control lot_number"
-                                      value={
-                                        multiSelectPartnersArray[index].lineItems[
-                                          i
-                                        ].mnLotId != ""
-                                          ? multiSelectPartnersArray[index].lineItems[
-                                            i
-                                          ].mnLotId
-                                          : 0
-                                      }
-                                      onChange={getLotValue(
-                                        multiSelectPartnersArray[index]
-                                        .lineItems[i].cropId,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index]
-                                        .lineItems
-                                      )}
-                                      placeholder="lot"
-                                    />
-                                    <input
-                                      type="text"
-                                      name="lot"
-                                      onFocus={(e) => resetInput(e)}
-                                      className="form-control lot_number"
-                                      value={
-                                        multiSelectPartnersArray[index].lineItems[
-                                          i
-                                        ].mnSubLotId != ""
-                                          ? multiSelectPartnersArray[index].lineItems[
-                                            i
-                                          ].mnSubLotId
-                                          : 0
-                                      }
-                                      onChange={getSubLotValue(
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].cropId,
-                                        i,
-                                        index,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems
-                                      )}
-                                      placeholder="s.lot"
-                                    />
-                                  </div>
-                                </td>
                               <td className="col_1">
                                 <select
                                   className="form-control qty_dropdown dropdown"
@@ -1418,7 +1323,7 @@ const Step2 = (props) => {
                                   )}
                                 />
                               </td>
-                              <td className="col_2">
+                              <td className="col_3">
                                 <div className="d-flex align-items-center justify-content-between">
                                   <p className="totals">
                                     {multiSelectPartnersArray[index].lineItems[
@@ -1563,8 +1468,7 @@ const Step2 = (props) => {
                               <td className="col_1"></td>
                               <td className="col_1"></td>
                               <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_2">
+                              <td className="col_3">
                                 <div className="d-flex align-items-center justify-content-between">
                                   <div className="d-flex">
                                     <button
