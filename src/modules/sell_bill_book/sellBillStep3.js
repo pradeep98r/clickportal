@@ -719,6 +719,8 @@ const SellBillStep3 = (props) => {
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
       pkgUnit: "",
+      mnLotId:cropArray[i].mnLotId,
+      mnSubLotId:cropArray[i].mnSubLotId
     });
   }
   const getActualRcvd = () => {
@@ -856,6 +858,7 @@ const SellBillStep3 = (props) => {
   };
 
   const postsellbill = () => {
+    console.log(sellBillRequestObj,'sellBillRequestObj')
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -916,7 +919,7 @@ const SellBillStep3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/sellbillbook");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           }
         },

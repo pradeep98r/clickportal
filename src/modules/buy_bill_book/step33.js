@@ -740,7 +740,9 @@ const Step33 = (props) => {
       status: cropArray[i].status,
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
-      pkgUnit:''
+      pkgUnit:'',
+      mnLotId:cropArray[i].mnLotId,
+      mnSubLotId:cropArray[i].mnSubLotId
     });
   }
   // }
@@ -901,6 +903,7 @@ const Step33 = (props) => {
         }
       );
     } else {
+      console.log(billRequestObj,'billRequestObj')
       postbuybillApi(billRequestObj).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {

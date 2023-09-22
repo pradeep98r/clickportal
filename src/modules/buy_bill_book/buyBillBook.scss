@@ -484,6 +484,14 @@ option[value=""][disabled] {
     border-top: 0px solid currentColor;
   }
 }
+.crop_table_view_input {
+  table .lot_number{
+    position: initial!important;
+  }
+  table .lot_number::placeholder {
+    color: red;
+  }
+}
 .inpu_suffix{
   position: initial!important;
   border: 1px solid #C9C9C9!important;
