@@ -532,8 +532,8 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
         rate: getCurrencyNumberWithOutSymbol(item.rate),
         total: getCurrencyNumberWithOutSymbol(item.total),
         individualBags: getIndividualBags(item.bags),
-        manualLotId: item.mnLotId,
-        subLotId: item.mnSubLotId,
+        manualLotId: item.mnLotId != '0' ? item.mnLotId : '',
+        subLotId: item.mnSubLotId != '0' ? item.mnSubLotId : '',
         // cropSufx:item.cropSufx
       };
     }),

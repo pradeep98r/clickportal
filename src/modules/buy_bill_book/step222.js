@@ -212,8 +212,8 @@ const Step22 = (props) => {
         { displayStat: false },
         { cropDelete: false },
         { cropSufx: "" },
-        { mnLotId: "" },
-        { mnSubLotId: "" }
+        { mnLotId: "0" },
+        { mnSubLotId: "0" }
       );
       cropResponseData([...cropData, preferedCrops[index2]]);
       setUpdatedItemList([...updatedItemList, ...newArray]);
@@ -232,8 +232,8 @@ const Step22 = (props) => {
         { displayStat: false },
         { cropDelete: false },
         { cropSufx: "" },
-        { mnLotId: "" },
-        { mnSubLotId: "" },
+        { mnLotId: "0" },
+        { mnSubLotId: "0" },
         {
           rateType:
             defaultUnitTypeVal == "unit_kg"
@@ -288,8 +288,8 @@ const Step22 = (props) => {
               { status: 1 },
               { cropDelete: false },
               { cropSufx: "" },
-              { mnLotId: "" },
-              { mnSubLotId: "" }
+              { mnLotId: "0" },
+              { mnSubLotId: "0" }
             );
             setPreferedCropsData([...list, ...arr]);
           } else {
@@ -311,8 +311,8 @@ const Step22 = (props) => {
               { id: 0 },
               { cropDelete: false },
               { cropSufx: "" },
-              { mnLotId: "" },
-              { mnSubLotId: "" }
+              { mnLotId: "0" },
+              { mnSubLotId: "0" }
             );
             arr.push(i);
             setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -483,8 +483,8 @@ const Step22 = (props) => {
             { status: 1 },
             { cropDelete: false },
             { cropSufx: "" },
-            { mnLotId: "" },
-            { mnSubLotId: "" }
+            { mnLotId: "0" },
+            { mnSubLotId: "0" }
           );
           var existedItem = list[index];
           existedItem.count += 1;
@@ -527,8 +527,8 @@ const Step22 = (props) => {
             { id: 0 },
             { cropDelete: false },
             { cropSufx: "" },
-            { mnLotId: "" },
-            { mnSubLotId: "" }
+            { mnLotId: "0" },
+            { mnSubLotId: "0" }
           );
           arr.push(i);
           setPreferedCropsData([...preferedCropsData, ...arr]);
@@ -709,7 +709,14 @@ const Step22 = (props) => {
               });
               return null;
             }
-          } else if (qtyUnit === "kgs") {
+            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+              toast.error("LotId should not be empty", {
+                toastId: "error15",
+              });
+              return null;
+            }
+          }
+          else if (qtyUnit === "kgs") {
             if (data.weight == 0) {
               toast.error("Please enter weight", {
                 toastId: "error1",
@@ -723,6 +730,12 @@ const Step22 = (props) => {
             } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
               toast.error("wastage is always less than weight", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+              toast.error("LotId should not be empty", {
+                toastId: "error15",
               });
               return null;
             }
@@ -743,6 +756,12 @@ const Step22 = (props) => {
             } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
               toast.error("wastage is always less than quantity", {
                 toastId: "error4",
+              });
+              return null;
+            }
+            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+              toast.error("LotId should not be empty", {
+                toastId: "error15",
               });
               return null;
             }
@@ -771,6 +790,12 @@ const Step22 = (props) => {
               });
               return null;
             }
+            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+              toast.error("LotId should not be empty", {
+                toastId: "error15",
+              });
+              return null;
+            }
           } else if (
             setQuantityBasedtable(data.qtyUnit) &&
             data.weight != 0 &&
@@ -778,6 +803,7 @@ const Step22 = (props) => {
           ) {
             return data;
           }
+          
         }
         // end if
       }
@@ -982,11 +1008,11 @@ const Step22 = (props) => {
   };
   const getLotValue = (id, index, cropitem) => (e) => {
     var val = e.target.value;
-    // .replace(/[^\d.]/g, "")
-    // .replace(/^(\d*)(\.\d{0,2})\d*$/, "$1$2")
-    // .replace(/(\.\d{0,2})\d*/, "$1")
-    // .replace(/(\.\d*)\./, "$1");
-    // .replace(/\D/g, "");
+    if (e.target.value.length > 3) {
+      toast.error("Lot Id should be max 3 characters", {
+        toastId: "error10",
+      });
+    }
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], mnLotId: val };
@@ -1284,8 +1310,8 @@ const Step22 = (props) => {
           status: 1,
           activeSearch: true,
           cropSufx: "",
-          mnLotId: "",
-          mnSubLotId: "",
+          mnLotId: "0",
+          mnSubLotId: "0",
         };
       } else {
         cropResponseData([...c]);
@@ -1568,9 +1594,7 @@ const Step22 = (props) => {
                                       onFocus={(e) => resetInput(e)}
                                       className="form-control lot_number"
                                       value={
-                                        cropData[index].mnLotId != ""
-                                          ? cropData[index].mnLotId
-                                          : 0
+                                        cropData[index].mnLotId
                                       }
                                       onChange={getLotValue(
                                         cropData[index].cropId,
@@ -1578,6 +1602,7 @@ const Step22 = (props) => {
                                         cropData
                                       )}
                                       placeholder="lot"
+                                      maxlength="3"
                                     />
                                     <input
                                       type="text"
@@ -1585,9 +1610,7 @@ const Step22 = (props) => {
                                       onFocus={(e) => resetInput(e)}
                                       className="form-control lot_number"
                                       value={
-                                        cropData[index].mnSubLotId != ""
-                                          ? cropData[index].mnSubLotId
-                                          : 0
+                                        cropData[index].mnSubLotId 
                                       }
                                       onChange={getSubLotValue(
                                         cropData[index].cropId,
@@ -1595,6 +1618,7 @@ const Step22 = (props) => {
                                         cropData
                                       )}
                                       placeholder="s.lot"
+                                      maxlength="2"
                                     />
                                   </div>
                                 </td>
