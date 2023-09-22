@@ -339,6 +339,13 @@ const Step2 = (props) => {
             setDefaultUnitTypeVal("unit_other");
           }
         }
+        if (
+          settingsData.billSetting[i].billType == "SELL" &&
+          settingsData.billSetting[i].settingName == "CROP_SUFFIX" &&
+          settingsData.billSetting[i].formStatus == 1
+        ) {
+          setCropSufixStatus(true);
+        }
       } else {
         if (
           settingsData.billSetting[i].billType == "BUY" &&
@@ -349,6 +356,13 @@ const Step2 = (props) => {
           } else {
             setDefaultUnitTypeVal("unit_other");
           }
+        }
+        if (
+          settingsData.billSetting[i].billType == "BUY" &&
+          settingsData.billSetting[i].settingName == "CROP_SUFFIX" &&
+          settingsData.billSetting[i].formStatus == 1
+        ) {
+          setCropSufixStatus(true);
         }
       }
     }
@@ -402,6 +416,7 @@ const Step2 = (props) => {
               : cIndex != -1
               ? getUnitVal(qSetting, cIndex).toUpperCase()
               : "CRATES",
+              cropSufx: "",
         });
       });
       setCropsData(response.data.data);
@@ -464,6 +479,7 @@ const Step2 = (props) => {
           status: 1,
           activeSearch: true,
           id: 0,
+          cropSufx: "",
         };
       } else {
         return { ...c[j] };
@@ -671,7 +687,22 @@ const Step2 = (props) => {
     dispatch(multiSelectPartners(clonedArray));
     // getTotalValue(index,mIndex,cropitem)
   };
-
+  const getCropSuffix = (id, index, mIndex, cropitem) => (e) => {
+    let clonedArray = [...multiSelectPartnersArray];
+    var val = e.target.value
+    let updatedItem1 = cropitem.map((item, i) => {
+      if (i == index) {
+        return { ...cropitem[i], cropSufx: val };
+      } else {
+        return { ...cropitem[i] };
+      }
+    });
+    let clonedObject1 = { ...clonedArray[mIndex] };
+    clonedObject1 = { ...clonedObject1, lineItems: updatedItem1 };
+    clonedArray[mIndex] = clonedObject1;
+    // setMultiSelectPartnersArray(clonedArray);
+    dispatch(multiSelectPartners(clonedArray));
+  };
   // handle check event for bags and sacs
   const [showBagsModalStatus, setshowBagsModalStatus] = useState(false);
   const [showBagsModal, setShowBagsModal] = useState(false);
@@ -822,6 +853,7 @@ const Step2 = (props) => {
           displayStat: false,
           activeSearch: true,
           cropName: "",
+          cropSufx: "",
         };
       } else {
         // cropResponseData([...c]);
@@ -840,6 +872,7 @@ const Step2 = (props) => {
     Object.assign(c[i], { status: 0, cropDelete: true });
     // setOnFocusCrop(c[i]);
   };
+  const [cropSufixStatus, setCropSufixStatus] = useState(false);
   return (
     <div>
       <div className="main_div_padding">
@@ -950,7 +983,8 @@ const Step2 = (props) => {
                                   .displayStat ? (
                                   // !activeSearch || displayStat?
 
-                                  <div
+                                  <div>
+                                    <div
                                     className="table_crop_div flex_class mr-0"
                                     onClick={() => {
                                       activeSearchCrop(
@@ -974,6 +1008,29 @@ const Step2 = (props) => {
                                           .lineItems[i].cropName
                                       }
                                     </p>
+                                
+                                  </div>
+                                     <p>
+                                     {cropSufixStatus ? (
+                                          <input
+                                            type="text"
+                                            value={multiSelectPartnersArray[index]
+                                              .lineItems[i].cropSufx}
+                                            onChange={getCropSuffix(
+                                              multiSelectPartnersArray[index]
+                                            .lineItems[i].cropId,
+                                          i,
+                                          index,
+                                          multiSelectPartnersArray[index]
+                                            .lineItems
+                                            )}
+                                            className="inpu_suffix"
+                                            placeholder="Add crop suffix"
+                                          />
+                                        ) : (
+                                          ""
+                                        )}
+                                     </p>
                                   </div>
                                 ) : addCropsIndex == index && addCropStatus ? (
                                   <Select

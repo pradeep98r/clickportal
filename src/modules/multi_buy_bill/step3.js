@@ -68,7 +68,7 @@ const Step3 = (props) => {
   const [commentext, setCommentFieldText] = useState(
     fromMultiBillViewStatus ? billEditedObject?.billInfo[0].comments : ""
   );
-  const [billIdVal, setBillIdVal] = useState(0)
+  const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
     if (multiSelectPartnersArray.length > 0) {
@@ -153,8 +153,8 @@ const Step3 = (props) => {
       multiBill: true,
       partyId: 0,
       type: "BUY",
-      writerId: writerId
-    }
+      writerId: writerId,
+    };
     getGeneratedBillId(generateBillObj).then((res) => {
       setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
@@ -177,7 +177,7 @@ const Step3 = (props) => {
       Object.assign(cObj, { grossTotal: total });
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
-        cropSufx: "",
+        // cropSufx: "",
         mnLotId: 0,
         mnSubLotId: 0,
         cropDelete: false,
@@ -455,6 +455,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
+      console.log(clonedObject, "clonedObject");
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -468,7 +469,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           }
         },
@@ -606,7 +607,13 @@ const Step3 = (props) => {
                                             </div>
                                             <div>
                                               <p className="crops-color">
-                                                {crop.cropName}
+                                                {crop.cropSufx != null
+                                                  ? crop.cropSufx != ""
+                                                    ? crop.cropName +
+                                                      " " +
+                                                      `(${crop.cropSufx})`
+                                                    : crop.cropName
+                                                  : crop.cropName}
                                               </p>
                                               <p className="crops-color d-flex">
                                                 {qtyValues(

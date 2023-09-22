@@ -63,8 +63,10 @@ const SellMultiBillStep3 = (props) => {
   var totalGross = 0;
   const [grossTotal, setGrossTotal] = useState(0);
   var objArray1 = [];
-  const[objArray2, setObjArrray2] = useState([]);
-  const [commentext, setCommentFieldText] = useState(fromMultiBillViewStatus ? (billEditedObject?.billInfo[0].comments) : '');
+  const [objArray2, setObjArrray2] = useState([]);
+  const [commentext, setCommentFieldText] = useState(
+    fromMultiBillViewStatus ? billEditedObject?.billInfo[0].comments : ""
+  );
   const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
@@ -73,22 +75,23 @@ const SellMultiBillStep3 = (props) => {
         getGrossTotalValue(multiSelectPartnersArray, i);
       }
     }
-    
-    if(fromMultiBillViewStatus){
+
+    if (fromMultiBillViewStatus) {
       for (var i = 0; i < multiSelectPartnersArray1.length; i++) {
         var obj = {};
         Object.assign(obj, {
           action: "UPDATE",
           billAttributes: {
-            actualPayRecieevable: multiSelectPartnersArray1[i]?.actualReceivable,
+            actualPayRecieevable:
+              multiSelectPartnersArray1[i]?.actualReceivable,
             advance: multiSelectPartnersArray1[i]?.advance,
             billDate: multiSelectPartnersArray1[i]?.billDate,
             cashPaid:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
                 ? multiSelectPartnersArray1[i]?.cashPaid
                 : 0,
             cashRcvd:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "BUYER"
+              multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "BUYER"
                 ? multiSelectPartnersArray1[i]?.cashRcvd
                 : 0,
             comm: multiSelectPartnersArray1[i]?.comm,
@@ -101,18 +104,18 @@ const SellMultiBillStep3 = (props) => {
             less: multiSelectPartnersArray1[i]?.less,
             mandiFee: multiSelectPartnersArray1[i]?.mandiData,
             misc:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
                 ? multiSelectPartnersArray1[i]?.otherFee
                 : multiSelectPartnersArray1[i]?.misc,
             otherFee:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
                 ? multiSelectPartnersArray1[i]?.misc
                 : multiSelectPartnersArray1[i]?.misc,
-  
+
             outStBal: multiSelectPartnersArray1[i]?.outStBal,
             paidTo: 0,
             partyId:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
                 ? multiSelectPartnersArray1[i]?.farmerId
                 : multiSelectPartnersArray1[i]?.buyerId,
             rent: multiSelectPartnersArray1[i]?.rent,
@@ -124,7 +127,7 @@ const SellMultiBillStep3 = (props) => {
           },
           billId: multiSelectPartnersArray1[i]?.billId,
           billType:
-          multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
               ? "BUY"
               : "SELL",
           caBSeq: multiSelectPartnersArray1[i]?.caBSeq,
@@ -135,8 +138,8 @@ const SellMultiBillStep3 = (props) => {
           writerId: writerId,
           source: "WEB",
         });
-        objArray1 = [...objArray1, obj]
-        setObjArrray2([...objArray1])
+        objArray1 = [...objArray1, obj];
+        setObjArrray2([...objArray1]);
       }
     }
     const generateBillObj = {
@@ -144,8 +147,8 @@ const SellMultiBillStep3 = (props) => {
       multiBill: true,
       partyId: 0,
       type: "BUY",
-      writerId: writerId
-    }
+      writerId: writerId,
+    };
     getGeneratedBillId(generateBillObj).then((res) => {
       setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
@@ -168,14 +171,20 @@ const SellMultiBillStep3 = (props) => {
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
         // buyerId: 0,
-        cropSufx: "",
         mnLotId: 0,
         mnSubLotId: 0,
         cropDelete: false,
-        status: (fromMultiBillViewStatus ? (fromPreviousStep3Status ? o.status : 2 ) : 1),
-        pkgUnit:''
+        status: fromMultiBillViewStatus
+          ? fromPreviousStep3Status
+            ? o.status
+            : 2
+          : 1,
+        pkgUnit: "",
       });
-      if (o.rateType.toLowerCase() == "kgs" || o.rateType.toUpperCase() == "RATE_PER_KG") {
+      if (
+        o.rateType.toLowerCase() == "kgs" ||
+        o.rateType.toUpperCase() == "RATE_PER_KG"
+      ) {
         if (o.qtyUnit.toLowerCase() == "pieces") {
           o.rateType = "RATE_PER_UNIT";
         } else {
@@ -184,10 +193,9 @@ const SellMultiBillStep3 = (props) => {
         o.status = o.status;
         o.qtyUnit = o.qtyUnit.toUpperCase();
       } else {
-        if(o.rateType.toLowerCase() == 'loads'){
+        if (o.rateType.toLowerCase() == "loads") {
           o.rateType = "RATE_PER_KG";
-        }
-        else{
+        } else {
           o.rateType = "RATE_PER_UNIT";
         }
         o.status = o.status;
@@ -197,7 +205,7 @@ const SellMultiBillStep3 = (props) => {
         ...cObj.lineItems[i],
         ...o,
       };
-        lineitemsArray = [...lineitemsArray, mergedObj];
+      lineitemsArray = [...lineitemsArray, mergedObj];
       cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
     }
@@ -240,7 +248,6 @@ const SellMultiBillStep3 = (props) => {
     arr1 = [...arr1, clonedArray[mIndex]];
     dispatch(multiSelectPartners(arr1));
     multiSelectPartnersArray1 = arr1;
-    
   };
 
   const [transportationVal, setTransportationVal] = useState(
@@ -380,11 +387,12 @@ const SellMultiBillStep3 = (props) => {
     if (fromMultiBillViewStatus) {
       billObj.billsInfo.map(function (entry) {
         const objCopy = { ...entry };
-        objCopy.comments = commentext ;
-        objCopy.billAttributes.comments = commentext ;
+        objCopy.comments = commentext;
+        objCopy.billAttributes.comments = commentext;
         objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
-        objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
-        arrMain.push(objCopy)
+        objCopy.billAttributes.billDate =
+          moment(slectedBillDateVal).format("YYYY-MM-DD");
+        arrMain.push(objCopy);
         return entry;
       });
       let clonedObject = { ...billObj };
@@ -416,12 +424,13 @@ const SellMultiBillStep3 = (props) => {
     } else {
       billRequestObj.sellBills.map(function (entry) {
         const objCopy = { ...entry };
-        objCopy.comments = commentext ;
+        objCopy.comments = commentext;
         objCopy.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
-        if(fromMultiBillViewStatus){
-          objCopy.billAttributes.billDate = moment(slectedBillDateVal).format("YYYY-MM-DD");
+        if (fromMultiBillViewStatus) {
+          objCopy.billAttributes.billDate =
+            moment(slectedBillDateVal).format("YYYY-MM-DD");
         }
-        arrMain.push(objCopy)
+        arrMain.push(objCopy);
         return entry;
       });
       let clonedObject = { ...billRequestObj };
@@ -525,9 +534,11 @@ const SellMultiBillStep3 = (props) => {
                                   <h6>
                                     {getPartnerType("TRANSPORTER")} -{" "}
                                     {item.transporterId} |{" "}
-                                    {fromMultiBillViewStatus ? '' : getMaskedMobileNumber(
-                                      item.transporterMobile
-                                    ) }
+                                    {fromMultiBillViewStatus
+                                      ? ""
+                                      : getMaskedMobileNumber(
+                                          item.transporterMobile
+                                        )}
                                   </h6>
                                 </div>
                               </div>
@@ -567,7 +578,13 @@ const SellMultiBillStep3 = (props) => {
                                         </div>
                                         <div>
                                           <p className="crops-color">
-                                            {crop.cropName}
+                                            {crop.cropSufx != null
+                                              ? crop.cropSufx != ""
+                                                ? crop.cropName +
+                                                  " " +
+                                                  `(${crop.cropSufx})`
+                                                : crop.cropName
+                                              : crop.cropName}
                                           </p>
                                           <p className="crops-color d-flex">
                                             {qtyValues(
@@ -681,7 +698,12 @@ const SellMultiBillStep3 = (props) => {
                   <div className="card input_card">
                     <div className="row">
                       <div className="col-sm-12">
-                      <input type="text" placeholder="" onChange={(e)=> commentText(e)} value={commentext} />
+                        <input
+                          type="text"
+                          placeholder=""
+                          onChange={(e) => commentText(e)}
+                          value={commentext}
+                        />
                       </div>
                     </div>
                   </div>
