@@ -1587,7 +1587,7 @@ const Step22 = (props) => {
                                   )}
                                 </td>
                                 <td className="col-1">
-                                  <div className="d-flex">
+                                  <div className="d-flex align-items-center">
                                     <input
                                       type="text"
                                       name="lot"
@@ -1604,6 +1604,7 @@ const Step22 = (props) => {
                                       placeholder="lot"
                                       maxlength="3"
                                     />
+                                    <p className="m-0">/</p>
                                     <input
                                       type="text"
                                       name="lot"
