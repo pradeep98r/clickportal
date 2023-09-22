@@ -8,11 +8,8 @@ import { faHillAvalanche } from "@fortawesome/free-solid-svg-icons";
 const CropDetails = (props) => {
   const billViewData = useSelector((state) => state.billViewInfo);
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
-  const theme = localStorage.getItem('pdftheme')
-  const pdfThemeData =
-  theme != null
-      ? theme
-      : null;
+  const theme = localStorage.getItem("pdftheme");
+  const pdfThemeData = theme != null ? theme : null;
   const colorThemeVal = billViewData?.colorthemeValue;
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -187,8 +184,12 @@ const CropDetails = (props) => {
                 <tr key={item}>
                   <td className="col-1 text-center">{key + 1}</td>
                   <td className="col-1 text-center">
-                  <p className="crop_name color_green">{item.mnLotId + ((item.mnSubLotId || item.mnLotId) != '' ? '/' : '-') + item.mnSubLotId}</p>
-                    </td>
+                    <p className="crop_name color_green">
+                      {(item.mnLotId != "0" ? item.mnLotId : "") +
+                        (item.mnLotId != "0" ? "/" : "") +
+                        (item.mnSubLotId != "0" ? item.mnSubLotId : "")}
+                    </p>
+                  </td>
                   <td className="col-3">
                     <div className="flex_class crop_name">
                       <img src={item.imageUrl} className="crop_image_bill" />
@@ -262,7 +263,7 @@ const CropDetails = (props) => {
             backgroundColor:
               pdfThemeData != null
                 ? colorAdjustBg(colorThemeVal, 180) === "#ffffff"
-                  ?  colorAdjustBg(colorThemeVal, 40)
+                  ? colorAdjustBg(colorThemeVal, 40)
                   : colorAdjustBg(colorThemeVal, 180)
                 : "#D7F3DD",
           }}

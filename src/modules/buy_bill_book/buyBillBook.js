@@ -932,7 +932,11 @@ function BuyBillBook() {
                                                               : crop.cropName
                                                             : crop.cropName}
                                                         </p>
-                                                        <p className="crop_name color_green">{crop.mnLotId + ((crop.mnSubLotId || crop.mnLotId) != '' ?'/' : '-') + crop.mnSubLotId}</p>
+                                                        <p className="crop_name color_green">{
+                                                        ((crop.mnLotId != '0' ? crop.mnLotId : '') +  ((crop.mnLotId) != '0' ?'/' : '') + 
+                                                        (crop.mnSubLotId != '0' ? crop.mnSubLotId : ''))}
+                                                        
+        </p>
                                                       </div>
                                                       <div className="col-lg-4 col-sm-12 col">
                                                         {/* {crop.qtyUnit+crop.qty} */}
