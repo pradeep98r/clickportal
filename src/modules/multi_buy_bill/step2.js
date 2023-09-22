@@ -690,6 +690,11 @@ const Step2 = (props) => {
   const getCropSuffix = (id, index, mIndex, cropitem) => (e) => {
     let clonedArray = [...multiSelectPartnersArray];
     var val = e.target.value
+    if (e.target.value.length > 30) {
+      toast.error("Suffix should be max 30 characters", {
+        toastId: "error10",
+      });
+    }
     let updatedItem1 = cropitem.map((item, i) => {
       if (i == index) {
         return { ...cropitem[i], cropSufx: val };
