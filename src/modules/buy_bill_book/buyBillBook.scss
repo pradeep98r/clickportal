@@ -499,8 +499,8 @@ option[value=""][disabled] {
   border-radius: 4px;
 }
 .inpu_suffix::placeholder{
-  text-align: left;
-  padding-left: 0px;
+  text-align: left!important;
+  padding-left: 0px!important;
 }
 // addition/deduction css
 .comm_cards {
