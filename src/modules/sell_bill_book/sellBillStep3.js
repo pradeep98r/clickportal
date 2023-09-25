@@ -87,7 +87,7 @@ const SellBillStep3 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
-  const [billIdVal, setBillIdVal] = useState(0)
+  const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
@@ -231,14 +231,16 @@ const SellBillStep3 = (props) => {
       }
     });
 
-    var partyID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
+    var partyID = editStatus
+      ? billEditItem.buyerId
+      : partnerSelectedData.partyId;
     const generateBillObj = {
       caId: clickId,
       multiBill: false,
       partyId: partyID,
       type: "SELL",
-      writerId: writerId
-    }
+      writerId: writerId,
+    };
     getGeneratedBillId(generateBillObj).then((res) => {
       setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
@@ -547,12 +549,12 @@ const SellBillStep3 = (props) => {
     var total = 0;
     var totalunitvalue = 0;
     for (var i = 0; i < items.length; i++) {
-      if(items[i].status != 0){
+      if (items[i].status != 0) {
         total += editStatus
-        ? step2CropEditStatus
-          ? items[i].total
-          : items[i].total
-        : items[i].total;
+          ? step2CropEditStatus
+            ? items[i].total
+            : items[i].total
+          : items[i].total;
       }
       totalunitvalue += editStatus
         ? step2CropEditStatus
@@ -719,8 +721,8 @@ const SellBillStep3 = (props) => {
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
       pkgUnit: "",
-      mnLotId:cropArray[i].mnLotId,
-      mnSubLotId:cropArray[i].mnSubLotId
+      mnLotId: cropArray[i].mnLotId,
+      mnSubLotId: cropArray[i].mnSubLotId,
     });
   }
   const getActualRcvd = () => {
@@ -755,7 +757,7 @@ const SellBillStep3 = (props) => {
     advance: Number(advancesValue),
     billDate: partnerSelectDate,
     billStatus: "COMPLETED",
-    billId:billIdVal,
+    billId: billIdVal,
     caId: clickId,
     cashRcvd: Number(cashRcvdValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -858,7 +860,7 @@ const SellBillStep3 = (props) => {
   };
 
   const postsellbill = () => {
-    console.log(sellBillRequestObj,'sellBillRequestObj')
+    console.log(sellBillRequestObj, "sellBillRequestObj");
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {
@@ -919,7 +921,7 @@ const SellBillStep3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/sellbillbook");
-              // window.location.reload();
+              window.location.reload();
             }, 1000);
           }
         },

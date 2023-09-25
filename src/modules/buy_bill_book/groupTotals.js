@@ -94,7 +94,7 @@ const GroupTotals = (props) => {
     var res;
     var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      console.log(res.data.data,'res.data.data')
+      console.log(res.data.data, "res.data.data");
       if (res.data.data.billSetting.length > 0) {
         billSettingData(res.data.data.billSetting);
         if (
@@ -108,11 +108,11 @@ const GroupTotals = (props) => {
         var filteredArray = res.data.data.billSetting.filter((object) => {
           return object.billType === billType && object.formStatus === 1;
         });
-        console.log(filteredArray,billData?.partyType,'billData?.partyType')
+        console.log(filteredArray, billData?.partyType, "billData?.partyType");
         filteredArray.sort((a, b) => a.groupId - b.groupId);
         dispatch(filtereArray(filteredArray));
         groupSettingsToJson();
-        if(filteredArray.length > 0){
+        if (filteredArray.length > 0) {
           for (var i = 0; i < res.data.data.billSetting.length; i++) {
             if (
               billData?.partyType.toUpperCase() === "FARMER" ||
@@ -143,7 +143,8 @@ const GroupTotals = (props) => {
                 ) {
                   setStatus(true);
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -157,7 +158,7 @@ const GroupTotals = (props) => {
                 groupOne = [res.data.data.billSetting[i], ...groupOne];
                 dispatch(groupOneSettings(groupOne));
                 setGroupOne([groupone, ...groupOne]);
-                console.log(groupOne,'groupOne buy')
+                console.log(groupOne, "groupOne buy");
               } else if (
                 res.data.data.billSetting[i].groupId === 2 &&
                 res.data.data.billSetting[i].billType === "BUY" &&
@@ -181,7 +182,8 @@ const GroupTotals = (props) => {
                     setStatus(true);
                   }
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -218,7 +220,8 @@ const GroupTotals = (props) => {
                     setStatus(true);
                   }
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -255,7 +258,8 @@ const GroupTotals = (props) => {
                     setStatus(true);
                   }
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -294,7 +298,8 @@ const GroupTotals = (props) => {
                 ) {
                   setStatus(true);
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -328,7 +333,8 @@ const GroupTotals = (props) => {
                     res.data.data.billSetting[i].isShown == 1 ? true : false
                   );
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -362,7 +368,8 @@ const GroupTotals = (props) => {
                     res.data.data.billSetting[i].isShown == 1 ? true : false
                   );
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -396,7 +403,8 @@ const GroupTotals = (props) => {
                     res.data.data.billSetting[i].isShown == 1 ? true : false
                   );
                 } else if (
-                  res.data.data.billSetting[i].settingName === "RETURN_COMMISSION"
+                  res.data.data.billSetting[i].settingName ===
+                  "RETURN_COMMISSION"
                 ) {
                   setAddRetComm(
                     res.data.data.billSetting[i].addToGt == 1 ? false : true
@@ -413,8 +421,7 @@ const GroupTotals = (props) => {
               }
             }
           }
-        }
-        else {
+        } else {
           getDefaltSet();
         }
       } else {
@@ -422,31 +429,31 @@ const GroupTotals = (props) => {
       }
     });
   };
- const getDefaltSet = () =>{
-  getDefaultSystemSettings().then((response) => {
-    var res = response.data.data;
-    groupWiseTotals(response);
-    billSettingData(response.data.data);
-    dispatch(filtereArray(response.data.data));
-    SetSysArray(response.data.data);
-    groupSettingsToJson();
-    for (var i = 0; i < response.data.data.length; i++) {
-      if (
-        response.data.data[i].name == "COMM_INCLUDE" &&
-        response.data.data[i].status == 1
-      ) {
-        setIncludeComm(true);
-        setisShown(true);
+  const getDefaltSet = () => {
+    getDefaultSystemSettings().then((response) => {
+      var res = response.data.data;
+      groupWiseTotals(response);
+      billSettingData(response.data.data);
+      dispatch(filtereArray(response.data.data));
+      SetSysArray(response.data.data);
+      groupSettingsToJson();
+      for (var i = 0; i < response.data.data.length; i++) {
+        if (
+          response.data.data[i].name == "COMM_INCLUDE" &&
+          response.data.data[i].status == 1
+        ) {
+          setIncludeComm(true);
+          setisShown(true);
+        }
+        if (
+          response.data.data[i].name == "RETURN_COMMISSION" &&
+          response.data.data[i].status == 1
+        ) {
+          setIncludeRetComm(true);
+        }
       }
-      if (
-        response.data.data[i].name == "RETURN_COMMISSION" &&
-        response.data.data[i].status == 1
-      ) {
-        setIncludeRetComm(true);
-      }
-    }
-  });
- }
+    });
+  };
   var totalgrp = [];
   const groupWiseTotals = (res) => {
     for (var i = 0; i < res.data.data.length; i++) {
@@ -1169,9 +1176,18 @@ const GroupTotals = (props) => {
       billData?.partyType.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
+      return (Number(finalVal) + billData?.outStBal);
+    } else {
+      return (Number(finalVal) + billData?.outStBal);
+    }
+  };
+  const getFinalOutBalance = () => {
+    if (
+      billData?.partyType.toUpperCase() === "FARMER" ||
+      billData?.partyType.toUpperCase() === "SELLER"
+    ) {
       return (
-        (Number(finalVal) + billData?.outStBal).toFixed(2) -
-        Number(billData?.cashPaid)
+        Number(getFinalLedgerbalance()) - Number(billData?.cashPaid)
       ).toLocaleString("en-IN", {
         maximumFractionDigits: 2,
         style: "currency",
@@ -1180,7 +1196,7 @@ const GroupTotals = (props) => {
     } else {
       var cashRecieved = billData?.cashRcvd === null ? 0 : billData?.cashRcvd;
       return (
-        (Number(finalVal) + billData?.outStBal).toFixed(2) - cashRecieved
+        Number(getFinalLedgerbalance()) - Number(cashRecieved)
       ).toLocaleString("en-IN", {
         maximumFractionDigits: 2,
         style: "currency",
@@ -1188,7 +1204,6 @@ const GroupTotals = (props) => {
       });
     }
   };
-
   const feePerUnit = () => {
     var totalQty = 0;
     billData.lineItems?.map((item) => {
@@ -2844,10 +2859,7 @@ const GroupTotals = (props) => {
                                       : // ? " + " + handleGroupNames(item.settingName).toFixed(2)
                                       billData?.partyType.toUpperCase() ==
                                         "BUYER"
-                                      ? "+" +
-                                        handleGroupNames(
-                                          item.settingName
-                                        )
+                                      ? "+" + handleGroupNames(item.settingName)
                                       : handleGroupNames(
                                           item.settingName
                                         ).toFixed(2)}
@@ -3399,6 +3411,36 @@ const GroupTotals = (props) => {
                   </div>
                 </div>
               </div>
+
+              <div className="row">
+                <div className="col-lg-7">
+                  <p
+                    className="grouping_value"
+                    style={{
+                      display:
+                        status || allGroups.length > 0 ? "block" : "none",
+                    }}
+                  >
+                    Final Ledger Balance:
+                  </p>
+                </div>
+                <div className="col-lg-4 p-0">
+                  <span
+                    className={
+                      billData?.partyType.toUpperCase() === "FARMER"
+                        ? "groups_values color_red text-right"
+                        : "groups_values color_green text-right"
+                    }
+                    style={{
+                      display:
+                        status || allGroups.length > 0 ? "block" : "none",
+                    }}
+                  >
+                    {getCurrencyNumberWithSymbol(getFinalLedgerbalance())}
+                  </span>
+                </div>
+              </div>
+
               <div>
                 {billData?.partyType.toUpperCase() === "FARMER" ? (
                   <div className="row">
@@ -3407,7 +3449,7 @@ const GroupTotals = (props) => {
                       {billData?.cashPaid === 0 ? (
                         "" || billData?.cashPaid === null
                       ) : (
-                        <p className="grouping_value">Cash Paid :</p>
+                        <p className="grouping_value color_red">Cash Paid :</p>
                       )}
                     </div>
                     <div className="col-lg-4 p-0">
@@ -3427,7 +3469,9 @@ const GroupTotals = (props) => {
                       billData?.cashRcvd === null ? (
                         ""
                       ) : (
-                        <p className="grouping_value">Cash Received :</p>
+                        <p className="grouping_value color_red">
+                          Cash Received :
+                        </p>
                       )}
                     </div>
                     <div className="col-lg-4 p-0">
@@ -3545,7 +3589,7 @@ const GroupTotals = (props) => {
             <div className="col-lg-3"></div>
             <div className="col-lg-7">
               <div className="row">
-                <div className="col-lg-6 p-0">
+                <div className="col-lg-7 p-0">
                   <p
                     className="out-st pt-0 pl-0 text-left"
                     style={{
@@ -3553,7 +3597,7 @@ const GroupTotals = (props) => {
                         status || allGroups.length > 0 ? "block" : "none",
                     }}
                   >
-                    Final Ledger Balance:
+                    Final Outstanding Balance:
                   </p>
                 </div>
                 <div className="col-lg-5 p-0">
@@ -3568,7 +3612,7 @@ const GroupTotals = (props) => {
                         status || allGroups.length > 0 ? "block" : "none",
                     }}
                   >
-                    {getCurrencyNumberWithSymbol(getFinalLedgerbalance())}
+                    {getCurrencyNumberWithSymbol(getFinalOutBalance())}
                   </span>
                 </div>
               </div>
