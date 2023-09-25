@@ -2,9 +2,9 @@ import axios from "axios";
 import axiosCommon from "../axios";
 const loginData = JSON.parse(localStorage.getItem("loginResponse"));
 var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
-export function getLedgers(clickId, type) {
+export function getLedgers(clickId, type, fromDate, toDate) {
     return axiosCommon.get(
-        `/click/ledgers/caId/${clickId}/type/${type}?writerId=${writerId}`
+        `/click/ledgers/caId/${clickId}/type/${type}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
     );
 }
 export function getLedgerSummary(clickId, partyId) {

@@ -1318,7 +1318,7 @@ const Transporters = (props) => {
             )}
           </div>
         ) : (
-          <div className="row partner_no_data_widget_rows">
+          <div className="row partner_no_data_widget_rows nodata_scroll_fix">
             <div className="col-lg-5">
               <div className="partner_no_data_widget">
                 <div className="text-center">

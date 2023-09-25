@@ -30,7 +30,7 @@
     }
 }
 .table-scroll {
-    height: calc(100vh - 265px);
+    height: calc(100vh - 302px);
     padding:0px;
     vertical-align: top;
     border-radius: 0px;
@@ -689,4 +689,8 @@ input[type=radio].radioBtnValues{
     }
     width: 100%!important;
     border-radius: 10px 10px 0px 0px;
+}
+.nodata_scroll_fix{
+    position: absolute;
+    left: 20%;
 }

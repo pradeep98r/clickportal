@@ -60,7 +60,6 @@ import {
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
-  console.log(ledgersSummary, "ledgersSummary");
   const ledgers = ledgersSummary?.allLedgers;
   const dispatch = useDispatch();
   const clickId = loginData.caId;
@@ -93,6 +92,13 @@ const Ledgers = (props) => {
   const [handleDate, sethandleDate] = useState(false);
   const [paidRcvd, setPaidRcvd] = useState(0);
   const [open, setIsOpen] = useState(false);
+  const [startDate1, setStartDate1] = useState(date);
+  const [endDate1, setEndDate1] = useState(date);
+  var defaultDate1 = moment(new Date()).format("DD-MMM-YYYY");
+  const [dateDisplay1, setDateDisplay1] = useState(false);
+  var [dateValue1, setDateValue1] = useState(defaultDate + " to " + defaultDate);
+  const [handleDate1, sethandleDate1] = useState(false);
+  const [allCustom1, setAllCustom1] = useState("all");
   const tabs = [
     {
       id: 1,
@@ -118,10 +124,17 @@ const Ledgers = (props) => {
       to: "detailedledger",
     },
   ];
-
+  const [showDatepickerModalForLedger, setShowDatepickerModalForLedger] = useState(false);
+  const [showDatepickerModalForLedgerStatus, setShowDatepickerModalForLedgerStatus] = useState(false);
   const onclickDate = () => {
-    setShowDatepickerModal1(true);
+    
+      setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
+    
+  };
+  const onclickDateLedgers = () => {
+      setShowDatepickerModalForLedgerStatus(true);
+      setShowDatepickerModalForLedger(true)
   };
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
@@ -143,7 +156,7 @@ const Ledgers = (props) => {
   };
 
   useEffect(() => {
-    fetchLedgers();
+    fetchLedgers('','');
     dispatch(partnerTabs("ledgersummary"));
     dispatch(beginDate(startDate));
     dispatch(closeDate(endDate));
@@ -152,8 +165,8 @@ const Ledgers = (props) => {
   }, [props]);
 
   //Fetch ledgers using clickId and type
-  const fetchLedgers = () => {
-    getLedgers(clickId, ledgerType)
+  const fetchLedgers = (sDate,eDate) => {
+    getLedgers(clickId, ledgerType, sDate, eDate)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           setLoading(false);
@@ -197,6 +210,7 @@ const Ledgers = (props) => {
     setPartyId(ledgerId);
     setLedgerData(item);
     setAllCustom("all");
+    setAllCustom1('all')
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
 
@@ -319,7 +333,30 @@ const Ledgers = (props) => {
     }
     setAllCustom(type);
   };
+  const allCustomEvent1 = (type) => {
+    dispatch(allCustomTabs(type));
+    if (type == "custom") {
+      setDateDisplay1(true);
+    } else {
+      setDateDisplay1(false);
+      sethandleDate1(true);
+    }
+    if (handleDate1) {
+      setDateValue1(defaultDate1 + " to " + defaultDate1);
+      setStartDate1(date);
+      setEndDate1(date);
+    }
+    if (type == "all") {
+      fetchLedgers('','');
+      sethandleDate1(true);
+    }
+    else if (type == "custom") {
+      fetchLedgers(startDate1, endDate1);
+    }
+    setAllCustom1(type);
+  };
   const [dateCustom, setdateCustom] = useState(false);
+  const [dateCustom1, setdateCustom1] = useState(false);
   //ledger and detailed ledger tabs
   const ledgerTabEvent = (ledgerTabType) => {
     dispatch(partnerTabs(ledgerTabType));
@@ -455,10 +492,46 @@ const Ledgers = (props) => {
       }
     }
   };
+  const callbackFunction1 = (startDate1, endDate1, dateTab) => {
+    // dispatch(beginDate(startDate));
+    // dispatch(closeDate(endDate));
+    var fromDate = moment(startDate1).format("YYYY-MM-DD");
+    var toDate = moment(endDate1).format("YYYY-MM-DD");
+    dateValue = fromDate;
+    if (dateTab === "Daily") {
+      setDateValue1(moment(fromDate).format("DD-MMM-YYYY"));
+    } else if (dateTab === "Weekly") {
+      setDateValue1(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    } else if (dateTab === "Monthly") {
+      setDateValue1(moment(fromDate).format("MMM-YYYY"));
+    } else if (dateTab === "Yearly") {
+      setDateValue1(moment(fromDate).format("YYYY"));
+    } else {
+      setDateValue1(
+        moment(fromDate).format("DD-MMM-YYYY") +
+          " to " +
+          moment(toDate).format("DD-MMM-YYYY")
+      );
+    }
+    if (allCustom1 == "custom" ) {
+      var fromDate = moment(startDate1).format("YYYY-MM-DD");
+      var toDate = moment(endDate1).format("YYYY-MM-DD");
+      date = fromDate;
+      setStartDate1(fromDate);
+      setEndDate1(toDate);
+      fetchLedgers(fromDate, toDate);
+    } 
+    else{
+      sethandleDate1(true);
+    }
+  };
   const getData = (data) => {
     if (allCustom == "all" && ledgerTabs == "ledgersummary") {
       setLedgerSummary(data);
-      console.log(data, "data");
     } else if (allCustom == "all" && ledgerTabs == "detailedledger") {
       setdetailedLedger(data);
     } else if (allCustom == "custom" && ledgerTabs == "ledgersummary") {
@@ -525,14 +598,12 @@ const Ledgers = (props) => {
     var pdfResponse;
     if (allLedgersStatus) {
       pdfResponse =await generateLedSummary(ledgerJsonBody);
-      console.log('allledg',pdfResponse)
     } else {
       pdfResponse =
         ledgerTabs == "ledgersummary"
           ? await generateLedgerSummary(ledgerJsonBody)
           : await generateDetailedLedgerSummary(ledgerJsonBody);
     }
-    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -573,23 +644,19 @@ const Ledgers = (props) => {
     var pdfResponse;
     if (allLedgersStatus) {
       pdfResponse =await generateLedSummary(ledgerJsonBody);
-      console.log('allledg',pdfResponse)
     } else {
       pdfResponse =
         ledgerTabs == "ledgersummary"
           ? await generateLedgerSummary(ledgerJsonBody)
           : await generateDetailedLedgerSummary(ledgerJsonBody);
     }
-    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
-      console.log(pdfResponse.status, "fasl");
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
       setIsLoadingNew(false);
       return;
     } else {
-      console.log(pdfResponse.status, "true");
       toast.success("Pdf Downloaded SuccessFully", {
         toastId: "errorr2",
       });
@@ -731,9 +798,55 @@ const Ledgers = (props) => {
           ) : (
             <div>
               <div>
-              {allData.length > 0 ? (
+              
                 <div className="row">
                   <div className="col-lg-5 pl-0">
+                  <div className="d-flex mb-2 align-items-center">
+                      <ul
+                        className="nav nav-tabs mb-0"
+                        id="myTab"
+                        role="tablist"
+                      >
+                        {tabs.map((tab) => {
+                          return (
+                            <li key={tab.id} className="nav-item ">
+                              <a
+                                className={
+                                  "nav-link" +
+                                  (allCustom1 == tab.to ? " active" : "")
+                                }
+                                href={"#" + tab.name}
+                                role="tab"
+                                aria-controls="home"
+                                data-bs-toggle="tab"
+                                onClick={() => allCustomEvent1(tab.to)}
+                              >
+                                {tab.name}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                      <div className="my-2">
+                      <div
+                        style={{ display: dateDisplay1 ? "flex" : "none" }}
+                        className="dateRangePicker justify-content-center"
+                      >
+                        <button onClick={onclickDateLedgers} className="color_blue">
+                          <div className="date_icon m-0">
+                            <img
+                              src={date_icon}
+                              alt="icon"
+                              className="mr-2 date_icon_in_custom"
+                            />
+                            {dateValue1}
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                    </div>
+
+                    {allData.length > 0 ? (
                     <div id="search-field" className="d-flex">
                       <SearchField
                         placeholder="Search by Name / Short Code"
@@ -758,6 +871,7 @@ const Ledgers = (props) => {
                         </button>
                       </div>
                     </div>
+                    ): ''}
                     {ledgers.length > 0 ? (
                       <div>
                         <div className="ledger-table">
@@ -928,7 +1042,7 @@ const Ledgers = (props) => {
                         </div>
                       </div>
                     ) : (
-                      <div className="table-scroll nodata_scroll">
+                      <div className="table-scroll nodata_scroll nodata_scroll_sell_buy">
                         <div className="row partner_no_data_widget_rows">
                           <div className="col-lg-5">
                             <div className="partner_no_data_widget">
@@ -945,6 +1059,7 @@ const Ledgers = (props) => {
                       </div>
                     )}
                   </div>
+                  {allData.length > 0 ? (
                   <div className="col-lg-7 p-0">
                     <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
                       <ul
@@ -1348,9 +1463,9 @@ const Ledgers = (props) => {
                       )}
                     </div>
                   </div>
-                </div>
+               
               ) : (
-                <div className="row partner_no_data_widget_rows">
+                <div className="row partner_no_data_widget_rows nodata_scroll_fix">
                   <div className="col-lg-5">
                     <div className="partner_no_data_widget">
                       <div className="text-center">
@@ -1364,6 +1479,7 @@ const Ledgers = (props) => {
                   </div>
                 </div>
               )}
+            </div>
             </div>
             {isLoadingNew ? (
               <div className="loading_styles loading_styles_led">
@@ -1379,6 +1495,17 @@ const Ledgers = (props) => {
               parentCallback={callbackFunction}
               ledgerTabs={ledgerTabs}
               dateCustom={dateCustom}
+            />
+          ) : (
+            <p></p>
+          )}
+          {showDatepickerModalForLedgerStatus ? (
+            <DatePickerModel
+              show={showDatepickerModalForLedger}
+              close={() => setShowDatepickerModalForLedger(false)}
+              parentCallback={callbackFunction1}
+              ledgerTabs={ledgerTabs}
+              // dateCustom={dateCustom}
             />
           ) : (
             <p></p>
@@ -1413,3 +1540,4 @@ const Ledgers = (props) => {
 };
 
 export default Ledgers;
+
