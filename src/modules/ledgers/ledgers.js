@@ -741,7 +741,7 @@ const Ledgers = (props) => {
                           handleSearch(event);
                         }}
                       />
-                      <div className="print_dwnld_icons d-flex">
+                      <div className="print_dwnld_icons d-flex align-items-start mt-1">
                         <button
                           onClick={() => {
                             getDownloadPdf(true).then();

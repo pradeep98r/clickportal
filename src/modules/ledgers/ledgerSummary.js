@@ -158,7 +158,7 @@ console.log( props.dateDisplay,'dae')
                               ? getCurrencyNumberWithOutSymbol(
                                   item.tobePaidRcvd
                                 )
-                              : ""}
+                              : ''}
                           </p>
                         </td>
                         <td className="col-3">
@@ -172,7 +172,7 @@ console.log( props.dateDisplay,'dae')
                           >
                             {item.balance
                               ? getCurrencyNumberWithOutSymbol(item.balance)
-                              : ""}
+                              : 0}
                           </p>
                         </td>
                       </tr>
@@ -272,7 +272,7 @@ console.log( props.dateDisplay,'dae')
                               }
                               id="p-common"
                             >
-                              {item.balance ? item.balance.toFixed(2) : ""}
+                              {item.balance ? item.balance.toFixed(2) : 0}
                             </p>
                           </td>
                         </tr>
