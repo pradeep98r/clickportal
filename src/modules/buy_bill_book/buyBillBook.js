@@ -147,6 +147,7 @@ function BuyBillBook() {
           dispatch(allBuyBillsData([]));
           dispatch(allMultiBuyBillsData([]));
           // setBuyBillData([]);
+          setAllDataStatus(false);
         }
         setLoading(false);
       })
