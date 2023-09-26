@@ -116,7 +116,7 @@ const PaymentLedger = (props) => {
                             <p className="coloring color_black" id="p-common">
                               {item.balance
                                 ? getCurrencyNumberWithOutSymbol(item.balance)
-                                : ""}
+                                : 0}
                             </p>
                           </td>
                         </tr>
