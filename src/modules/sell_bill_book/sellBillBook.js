@@ -134,6 +134,7 @@ const SellBillBook = (props) => {
         } else {
           dispatch(allSellBillsData([]));
           dispatch(allMultiSellBillsData([]));
+          setAllDataStatus(false);
         }
 
         setLoading(false);
