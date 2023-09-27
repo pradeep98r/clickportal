@@ -79,7 +79,7 @@ const Step2 = (props) => {
     //   obj1.rateType.toUpperCase() == "RATE_PER_UNIT") ||
     (obj1.qtyUnit.toLowerCase() == "loads" &&
       obj1.rateType.toUpperCase() == "RATE_PER_UNIT")
-      ? (val = (obj1.weight - obj1.wastage) * obj1.rate)
+      ? (obj1.qtyUnit.toLowerCase() == 'pieces' ? (val = (obj1.qty - obj1.wastage) * obj1.rate) : (val = (obj1.weight - obj1.wastage) * obj1.rate))
       : (val = (obj1.qty - obj1.wastage) * obj1.rate);
     let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map(
       (item, i) => {

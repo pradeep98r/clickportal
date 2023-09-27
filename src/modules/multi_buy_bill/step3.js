@@ -188,7 +188,6 @@ const Step3 = (props) => {
           : 1,
         pkgUnit: "",
       });
-      console.log(o.rateType, "rate");
       if (
         o.rateType.toLowerCase() == "kgs" ||
         o.rateType.toUpperCase() == "RATE_PER_KG"
@@ -431,7 +430,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              // window.location.reload();
+              window.location.reload();
             }, 1000);
           }
         },
@@ -470,7 +469,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              // window.location.reload();
+              window.location.reload();
             }, 1000);
           }
         },
