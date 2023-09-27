@@ -351,7 +351,7 @@ const Ledgers = (props) => {
       sethandleDate1(true);
     }
     else if (type == "custom") {
-      fetchLedgers(startDate1, endDate1);
+      fetchLedgers(date, date);
     }
     setAllCustom1(type);
   };

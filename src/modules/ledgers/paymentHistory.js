@@ -233,7 +233,7 @@ const PaymentHistoryView = (props) => {
   };
   const fetchLedgers = () => {
     var partyType = partyTypeVal == "FARMER" ? "SELLER" : partyTypeVal;
-    getLedgers(clickId, partyType).then((res) => {
+    getLedgers(clickId, partyType,'','').then((res) => {
       if (res.data.status.type === "SUCCESS") {
         dispatch(allLedgers(res.data.data.ledgers));
         dispatch(outStandingBal(res.data.data));

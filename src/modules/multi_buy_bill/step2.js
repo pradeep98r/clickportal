@@ -827,9 +827,15 @@ const Step2 = (props) => {
   //   clone crop (copy crop) function
   const cloneCrop = (crop, cropsData, k, cropInd) => {
     let clonedArray = [...multiSelectPartnersArray];
+    const clonedCrop = Object.assign({}, crop, {
+      cropDelete: false,
+      status: 1,
+      id: 0,
+      cropSufx: "",
+    });
     const updatedCropsData = [
       ...cropsData.slice(0, cropInd + 1),
-      crop,
+      clonedCrop,
       ...cropsData.slice(cropInd + 1),
     ];
     let clonedObject1 = { ...clonedArray[k] };
