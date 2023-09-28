@@ -112,7 +112,8 @@ const Step33 = (props) => {
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
-        setOutsBal(res.data.data == null ? 0 : res.data.data);
+        console.log(res.data.data,'res.data.data')
+        setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
       });
     }
 
@@ -713,7 +714,7 @@ const Step33 = (props) => {
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-
+    console.log(finalVal,outBalance,Number(finalVal))
     return (Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue);
   };
   var lineItemsArray = [];

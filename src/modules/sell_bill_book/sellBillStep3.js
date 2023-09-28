@@ -115,7 +115,7 @@ const SellBillStep3 = (props) => {
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
-        setOutsBal(res.data.data == null ? 0 : res.data.data);
+        setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
       });
     }
     getGrossTotalValue(
