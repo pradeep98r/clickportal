@@ -396,8 +396,9 @@ const Ledgers = (props) => {
     if (type == "all") {
       fetchLedgers("", "");
       sethandleDate1(true);
-    } else if (type == "custom") {
-      fetchLedgers(startDate1, endDate1);
+    }
+    else if (type == "custom") {
+      fetchLedgers(date, date);
     }
     setAllCustom1(type);
   };

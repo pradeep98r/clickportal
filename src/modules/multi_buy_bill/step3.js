@@ -188,7 +188,6 @@ const Step3 = (props) => {
           : 1,
         pkgUnit: "",
       });
-      console.log(o.rateType, "rate");
       if (
         o.rateType.toLowerCase() == "kgs" ||
         o.rateType.toUpperCase() == "RATE_PER_KG"
@@ -417,6 +416,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
+      console.log(clonedObject,'edit')
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -455,7 +455,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
-      console.log(clonedObject, "clonedObject");
+      console.log(clonedObject, "clonedObject if");
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -469,7 +469,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              // window.location.reload();
+              window.location.reload();
             }, 1000);
           }
         },

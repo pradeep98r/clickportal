@@ -79,7 +79,7 @@ const Step2 = (props) => {
     //   obj1.rateType.toUpperCase() == "RATE_PER_UNIT") ||
     (obj1.qtyUnit.toLowerCase() == "loads" &&
       obj1.rateType.toUpperCase() == "RATE_PER_UNIT")
-      ? (val = (obj1.weight - obj1.wastage) * obj1.rate)
+      ? (obj1.qtyUnit.toLowerCase() == 'pieces' ? (val = (obj1.qty - obj1.wastage) * obj1.rate) : (val = (obj1.weight - obj1.wastage) * obj1.rate))
       : (val = (obj1.qty - obj1.wastage) * obj1.rate);
     let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map(
       (item, i) => {
@@ -827,9 +827,15 @@ const Step2 = (props) => {
   //   clone crop (copy crop) function
   const cloneCrop = (crop, cropsData, k, cropInd) => {
     let clonedArray = [...multiSelectPartnersArray];
+    const clonedCrop = Object.assign({}, crop, {
+      cropDelete: false,
+      status: 1,
+      id: 0,
+      cropSufx: "",
+    });
     const updatedCropsData = [
       ...cropsData.slice(0, cropInd + 1),
-      crop,
+      clonedCrop,
       ...cropsData.slice(cropInd + 1),
     ];
     let clonedObject1 = { ...clonedArray[k] };

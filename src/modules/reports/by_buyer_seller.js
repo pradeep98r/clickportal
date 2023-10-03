@@ -85,7 +85,7 @@ const ByBuyerSeller = (props) => {
   }, [props.Ptype]);
   const fetchLedgers = () => {
     var type = ledgerType == "FARMER" ? "SELLER" : ledgerType;
-    getLedgers(clickId, type)
+    getLedgers(clickId, type, '','')
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           setLoading(false);

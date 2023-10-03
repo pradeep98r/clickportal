@@ -458,7 +458,7 @@ const BillView = (props) => {
   const fetchLedgers = () => {
     var partyType =
       billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType;
-    getLedgers(clickId, partyType).then((res) => {
+    getLedgers(clickId, partyType,'','').then((res) => {
       if (res.data.status.type === "SUCCESS") {
         dispatch(allLedgers(res.data.data.ledgers));
         dispatch(outStandingBal(res.data.data));
