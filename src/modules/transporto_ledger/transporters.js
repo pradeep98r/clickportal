@@ -847,7 +847,7 @@ const Transporters = (props) => {
             ""
           )}
           {transporter.length > 0 ? (
-            <div>
+            <div className="ledger-table">
               <div className="row theadr-tag p-0">
                 <th className="col-lg-1">#</th>
                 <th className="col-lg-2">Date</th>

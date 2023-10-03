@@ -4,6 +4,9 @@
 .advance_ledgerSummary{
     height: calc(100vh - 345px)!important;
 }
+.advance_ledgerSummary_tab {
+    height: calc(100vh - 220px) !important;
+}
 .advance_table_border{
     tr td, thead th{
         padding: 5px 20px;
@@ -11,6 +14,9 @@
 }
 .advance_ledgerSummary_custom{
     height: calc(100vh - 365px)!important;
+}
+.advance_ledgerSummary_tab_custom{
+    height: calc(100vh - 236px)!important;
 }
 .advance_search{
     .form-control{
@@ -71,5 +77,5 @@ right: 0;
     transform: translateY(-50%);
 }
 .advance_table{
-    height: calc(100vh - 245px)!important;
+    height: calc(100vh - 270px)!important;
 }

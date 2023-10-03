@@ -355,12 +355,12 @@ const Advance = (props) => {
                     </div>
                   </div>
                   {advancesArray.length > 0 ? (
-                    <div>
+                    <div className="ledger-table">
                       <div className="row theadr-tag p-0">
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-2">Date</th>
-                        <th class="col-lg-6">Name</th>
-                        <th class="col-lg-3">Given(₹)</th>
+                        <th class="col-lg-5">Name</th>
+                        <th class="col-lg-4">Outstanding Advance(₹)</th>
                       </div>
                       <div
                         className="table-scroll ledger-table advance_table"
@@ -390,7 +390,7 @@ const Advance = (props) => {
                                     </td>
                                     <td
                                       key={item.partyName}
-                                      className="col-lg-6"
+                                      className="col-lg-5"
                                     >
                                       <div className="d-flex">
                                         <div className="c-img">
@@ -409,7 +409,7 @@ const Advance = (props) => {
                                           )}
                                         </div>
                                         <div>
-                                          <p className="namedtl-tag">
+                                          <p className="namedtl-tag text-left">
                                             {item.partyName}
                                           </p>
                                           <div className="d-flex align-items-center">
@@ -421,14 +421,9 @@ const Advance = (props) => {
                                                 : "Trader"}{" "}
                                               - {item.partyId}&nbsp;
                                             </p>
-                                            <p className="mobilee-tag desk_responsive">
-                                              {" | " +
-                                                getMaskedMobileNumber(
-                                                  item.mobile
-                                                )}
-                                            </p>
+                                           
                                           </div>
-                                          <p className="mobilee-tag mobile_responsive">
+                                          <p className="mobilee-tag">
                                             {getMaskedMobileNumber(item.mobile)}
                                           </p>
                                           <p className="address-tag">
@@ -439,7 +434,7 @@ const Advance = (props) => {
                                         </div>
                                       </div>
                                     </td>
-                                    <td className="col-lg-3" key={item.amount}>
+                                    <td className="col-lg-4" key={item.amount}>
                                       <p className="paid-coloring">
                                         {item.amount != 0
                                           ? getCurrencyNumberWithOutSymbol(

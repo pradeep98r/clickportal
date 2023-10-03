@@ -46,73 +46,23 @@ const AdvanceSummary = (props) => {
     <div>
       {advancesSummary.length > 0 ? (
         <div>
-          {/* <div className="card details-tag">
-            <div className="card-body advance_card_body" id="card-details">
-              <div className="row">
-                <div
-                  className="col-lg-6 d-flex align-items-center pl-0"
-                  id="verticalLines"
-                >
-                  <div className="pl-0 d-flex" key={selectedParty.partyId}>
-                    {selectedParty.profilePic ? (
-                      <img
-                        id="singles-img"
-                        src={selectedParty.profilePic}
-                        alt="buy-img"
-                      />
-                    ) : (
-                      <img id="singles-img" src={single_bill} alt="img" />
-                    )}
-                    <p id="card-text">
-                      <p className="namedtl-tag">{selectedParty.partyName}</p>
-                      <div className="d-flex align-items-center">
-                        <p className="mobilee-tag">
-                          {!selectedParty.trader
-                            ? partyType == "FARMER"
-                              ? "Farmer"
-                              : getText(partyType)
-                            : "Trader"}{" "}
-                          - {selectedParty.partyId}
-                        </p>
-                        <span className="px-1 desk_responsive">|</span>
-                        <span className="mobilee-tag desk_responsive">
-                          {getMaskedMobileNumber(selectedParty?.mobile)}
-                        </span>
-                      </div>
-                      <p className="mobilee-tag mobile_responsive">
-                        {getMaskedMobileNumber(selectedParty?.mobile)}
-                      </p>
-                    </p>
-                  </div>
-                </div>
-                <div className="col-lg-3 d-flex align-items-center">
-                  <p className="card-text paid">
-                    Total Advances
-                    <p className="coloring paid-coloring">
-                      {totalAdvancesValByPartyId != 0
-                        ? getCurrencyNumberWithSymbol(totalAdvancesValByPartyId)
-                        : 0}
-                    </p>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div> */}
           <div>
             {advancesSummary.length > 0 ? (
               <div>
                 <div className="row thead-tag">
-                  <th className="col-2" id="sno">
+                  <th className="col-1" id="sno">
                     #
                   </th>
-                  <th className="col-4">Ref ID | Date</th>
+                  <th className="col-2">Ref ID | Date</th>
+                  <th className="col-3">Collected(₹) </th>
                   <th className="col-3">Given(₹) </th>
+                  <th className="col-3">Balance(₹) </th>
                 </div>
                 <div
                   className={
                     allCustomTab == "all"
-                      ? "ledgerSummary advance_ledgerSummary"
-                      : "ledgerSummary advance_ledgerSummary_custom"
+                      ? "ledgerSummary advance_ledgerSummary advance_ledgerSummary_tab"
+                      : "ledgerSummary advance_ledgerSummary_custom advance_ledgerSummary_tab_custom"
                   }
                   id="scroll_style"
                 >
@@ -144,11 +94,17 @@ const AdvanceSummary = (props) => {
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td className="col-3">
+                              6000
+                            </td>
+                            <td className="col-3">
                               <p id="p-common" className="paid-coloring">
                                 {item.amount
                                   ? getCurrencyNumberWithOutSymbol(item.amount)
                                   : ""}
                               </p>
+                            </td>
+                            <td className="col-3">
+                              6000
                             </td>
                           </tr>
                         );

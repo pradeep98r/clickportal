@@ -147,7 +147,7 @@ const Ledgers = (props) => {
     },
     {
       id: 3,
-      name: "Detailed Advavanes",
+      name: "Advavanes Ledger",
       to: "detailedadvances",
     },
   ];
@@ -396,8 +396,7 @@ const Ledgers = (props) => {
     if (type == "all") {
       fetchLedgers("", "");
       sethandleDate1(true);
-    }
-    else if (type == "custom") {
+    } else if (type == "custom") {
       fetchLedgers(date, date);
     }
     setAllCustom1(type);
@@ -1350,7 +1349,7 @@ const Ledgers = (props) => {
                           ledgerType != "BUYER" ? (
                             <div className="row">
                               <div
-                                className="col-lg-6 d-flex align-items-center pl-0"
+                                className="col-lg-3 d-flex align-items-center pl-0"
                                 id="verticalLines"
                               >
                                 <div
@@ -1383,16 +1382,9 @@ const Ledgers = (props) => {
                                           : "Trader"}{" "}
                                         - {selectedParty.partyId}
                                       </p>
-                                      <span className="px-1 desk_responsive">
-                                        |
-                                      </span>
-                                      <span className="mobilee-tag desk_responsive">
-                                        {getMaskedMobileNumber(
-                                          selectedParty?.mobile
-                                        )}
-                                      </span>
+                                     
                                     </div>
-                                    <p className="mobilee-tag mobile_responsive">
+                                    <p className="mobilee-tag">
                                       {getMaskedMobileNumber(
                                         selectedParty?.mobile
                                       )}
@@ -1400,7 +1392,31 @@ const Ledgers = (props) => {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col-lg-3 d-flex align-items-center">
+                              <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
+                                <p className="card-text paid">
+                                  Total Collected
+                                  <p className="paid-coloring">
+                                    {totalAdvancesValByPartyId != 0
+                                      ? getCurrencyNumberWithSymbol(
+                                          totalAdvancesValByPartyId
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                              <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
+                                <p className="card-text paid">
+                                  Total Given
+                                  <p className="paid-coloring">
+                                    {totalAdvancesValByPartyId != 0
+                                      ? getCurrencyNumberWithSymbol(
+                                          totalAdvancesValByPartyId
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                              <div className="col-lg-3 d-flex align-items-center" id="">
                                 <p className="card-text paid">
                                   Total Advances
                                   <p className="paid-coloring">
@@ -1462,7 +1478,11 @@ const Ledgers = (props) => {
                                 )}
                               </div>
                               <div
-                                className="col-lg-3 d-flex align-items-center"
+                                className={
+                                  ledgerType != "BUYER"
+                                    ? "col-lg-2 d-flex align-items-center"
+                                    : "col-lg-3 d-flex align-items-center"
+                                }
                                 id="verticalLines"
                               >
                                 <p className="card-text paid">
@@ -1532,7 +1552,11 @@ const Ledgers = (props) => {
                                 </p>
                               </div>
                               <div
-                                className="col-lg-3 d-flex align-items-center"
+                                className={
+                                  ledgerType != "BUYER"
+                                    ? "col-lg-2 d-flex align-items-center"
+                                    : "col-lg-3 d-flex align-items-center"
+                                }
                                 id="verticalLines"
                               >
                                 <div>
@@ -1605,7 +1629,12 @@ const Ledgers = (props) => {
                                   </p>
                                 </div>
                               </div>
-                              <div className="col-lg-3 d-flex align-items-center">
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id={
+                                  ledgerType == "BUYER" ? "" : "verticalLines"
+                                }
+                              >
                                 <div>
                                   {ledgerType == "BUYER" ? (
                                     <p className="out-standing">
@@ -1613,7 +1642,7 @@ const Ledgers = (props) => {
                                     </p>
                                   ) : (
                                     <p className="out-standing">
-                                      Outstanding Payables
+                                      Outstanding <br></br> Payables
                                     </p>
                                   )}
                                   <p
@@ -1660,6 +1689,16 @@ const Ledgers = (props) => {
 
                                 {/* </p> */}
                               </div>
+                              {ledgerType != "BUYER" ? (
+                                <div className="col-lg-2 ">
+                                  <p className="out-standing">
+                                    Outstanding Advances
+                                  </p>
+                                  <p className={"paid-coloring"}>500000</p>
+                                </div>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           )}
                           <span id="horizontal-line"></span>
