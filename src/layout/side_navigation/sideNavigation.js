@@ -115,13 +115,13 @@ function SideNavigation(props) {
     //   className: "side_nav_item",
     //   img: payments,
     // },
-    {
-      id: 11,
-      name: "Advances",
-      to: "/advance",
-      className: "side_nav_item",
-      img: advnces,
-    },
+    // {
+    //   id: 11,
+    //   name: "Advances",
+    //   to: "/advance",
+    //   className: "side_nav_item",
+    //   img: advnces,
+    // },
   ];
   const [linksData, setLinksData] = useState([]);
   const handleToggle = () => {

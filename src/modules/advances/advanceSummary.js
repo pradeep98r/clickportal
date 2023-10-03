@@ -15,7 +15,7 @@ import PaymentHistoryView from "../ledgers/paymentHistory";
 import { useState } from "react";
 import { fromAdvanceFeature } from "../../reducers/advanceSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
-const AdvanceSummary = () => {
+const AdvanceSummary = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const advancesData = useSelector((state) => state.advanceInfo);
@@ -25,8 +25,10 @@ const AdvanceSummary = () => {
   const dispatch = useDispatch();
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
   const allCustomTab = tabClick?.allCustomTabs;
+  const partyType = props.partyType;
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  console.log(selectedParty,advancesSummary,'selectedParty')
   const billOnClickView = (billId, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("A")) {
@@ -44,7 +46,7 @@ const AdvanceSummary = () => {
     <div>
       {advancesSummary.length > 0 ? (
         <div>
-          <div className="card details-tag">
+          {/* <div className="card details-tag">
             <div className="card-body advance_card_body" id="card-details">
               <div className="row">
                 <div
@@ -66,9 +68,9 @@ const AdvanceSummary = () => {
                       <div className="d-flex align-items-center">
                         <p className="mobilee-tag">
                           {!selectedParty.trader
-                            ? selectedParty.partyType == "FARMER"
+                            ? partyType == "FARMER"
                               ? "Farmer"
-                              : getText(selectedParty.partyType)
+                              : getText(partyType)
                             : "Trader"}{" "}
                           - {selectedParty.partyId}
                         </p>
@@ -95,7 +97,7 @@ const AdvanceSummary = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div>
             {advancesSummary.length > 0 ? (
               <div>

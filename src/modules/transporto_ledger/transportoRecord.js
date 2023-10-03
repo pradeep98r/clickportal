@@ -89,7 +89,8 @@ const TransportoRecord = (props) => {
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        dispatch(partyOutstandingBal(response.data.data))
+        console.log(response.data.data)
+        dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd))
       }
     });
   };
@@ -266,6 +267,7 @@ const TransportoRecord = (props) => {
 
   const updateAdvances = () => {
     getAllAdvances();
+    console.log(allCustomTab,'v')
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {

@@ -387,7 +387,9 @@ const Transporters = (props) => {
   //Get Outstanding balance
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      dispatch(outstandingBalForParty(response.data.data));
+      if (response.data.data != null) {
+      dispatch(outstandingBalForParty(response.data.data.tobePaidRcvd));
+      }
     });
   };
 
