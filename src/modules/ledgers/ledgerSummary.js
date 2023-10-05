@@ -76,29 +76,41 @@ const LedgerSummary = (props) => {
       }
     }
   };
-console.log( props.dateDisplay,'dae')
+  console.log(props.dateDisplay, "dae");
   return (
     <div>
       {allCustom == "all" ? (
         <div className="ledger-table">
-           {ledgerSummary.length > 0 ? (
-          <div className="row thead-tag head_tag">
-            <th className="col-1" id="sno">
-              #
-            </th>
-            <th className="col-2">Ref ID | Date</th>
-            {ledgerType == "BUYER" ? (
-              <th className="col-3">Received(&#8377;)</th>
-            ) : (
-              <th className="col-3">Paid(&#8377;)</th>
-            )}
-            {ledgerType == "BUYER" ? (
-              <th className="col-3">To Be Received(&#8377;)</th>
-            ) : (
-              <th className="col-3">To Be Paid(&#8377;)</th>
-            )}
-            <th className="col-3">Ledger Balance(&#8377;)</th>
-          </div> ) : '' }
+          {ledgerSummary.length > 0 ? (
+            <div className="row thead-tag head_tag">
+              <th className="col-1" id="sno">
+                #
+              </th>
+              <th className="col-2">Ref ID | Date</th>
+              {ledgerType == "BUYER" ? "" : <th className="col-2">Advance</th>}
+              {ledgerType == "BUYER" ? (
+                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                  Received(&#8377;)
+                </th>
+              ) : (
+                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                  Paid(&#8377;)
+                </th>
+              )}
+              {ledgerType == "BUYER" ? (
+                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                  To Be Received(&#8377;)
+                </th>
+              ) : (
+                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                  To Be Paid(&#8377;)
+                </th>
+              )}
+              <th className="col-3">Ledger Balance(&#8377;)</th>
+            </div>
+          ) : (
+            ""
+          )}
 
           <div
             className={
@@ -144,19 +156,29 @@ console.log( props.dateDisplay,'dae')
                           </button>
                           <p>{moment(item.date).format("DD-MMM-YY")}</p>
                         </td>
-                        <td className="col-3">
+                        
+                        {ledgerType == "BUYER" ? (
+                          ""
+                        ) : (
+                          <td className="col-2">
+                            <p id="p-common">
+                              {item.advance ? item.advance.toFixed(2) : ""}
+                            </p>
+                          </td>
+                        )}
+                        <td
+                          className={ledgerType == "BUYER" ? "col-3" : "col-2"}
+                        >
                           <p id="p-common">
-                            {item.paidRcvd
-                              ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
-                              : ""}
+                            {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                           </p>
                         </td>
-                        <td className="col-3">
+                        <td
+                          className={ledgerType == "BUYER" ? "col-3" : "col-2"}
+                        >
                           <p id="p-common">
                             {item.tobePaidRcvd
-                              ? getCurrencyNumberWithOutSymbol(
-                                  item.tobePaidRcvd
-                                )
+                              ? item.tobePaidRcvd.toFixed(2)
                               : ""}
                           </p>
                         </td>
@@ -194,14 +216,27 @@ console.log( props.dateDisplay,'dae')
                 </th>
                 <th className="col-2">Ref ID | Date</th>
                 {ledgerType == "BUYER" ? (
-                  <th className="col-3">Received(&#8377;)</th>
+                  ""
                 ) : (
-                  <th className="col-3">Paid(&#8377;)</th>
+                  <th className="col-2">Advance</th>
                 )}
                 {ledgerType == "BUYER" ? (
-                  <th className="col-3">To Be Received(&#8377;)</th>
+                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                    Received(&#8377;)
+                  </th>
                 ) : (
-                  <th className="col-3">To Be Paid(&#8377;)</th>
+                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                    Paid(&#8377;)
+                  </th>
+                )}
+                {ledgerType == "BUYER" ? (
+                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                    To Be Received(&#8377;)
+                  </th>
+                ) : (
+                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
+                    To Be Paid(&#8377;)
+                  </th>
                 )}
                 <th className="col-3">Ledger Balance(&#8377;)</th>
               </div>
@@ -250,12 +285,31 @@ console.log( props.dateDisplay,'dae')
                             </button>
                             <p>{moment(item.date).format("DD-MMM-YY")}</p>
                           </td>
-                          <td className="col-3">
+                          {ledgerType == "BUYER" ? (
+                            ""
+                          ) : (
+                            <td className="col-2">
+                              <p id="p-common">
+                                {item.tobePaidRcvd
+                                  ? item.tobePaidRcvd.toFixed(2)
+                                  : ""}
+                              </p>
+                            </td>
+                          )}
+                          <td
+                            className={
+                              ledgerType == "BUYER" ? "col-3" : "col-2"
+                            }
+                          >
                             <p id="p-common">
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                             </p>
                           </td>
-                          <td className="col-3">
+                          <td
+                            className={
+                              ledgerType == "BUYER" ? "col-3" : "col-2"
+                            }
+                          >
                             <p id="p-common">
                               {item.tobePaidRcvd
                                 ? item.tobePaidRcvd.toFixed(2)
@@ -283,7 +337,7 @@ console.log( props.dateDisplay,'dae')
             </div>
           ) : (
             <div className="nodata_height">
-            <NoDataAvailable />
+              <NoDataAvailable />
             </div>
           )}
         </div>

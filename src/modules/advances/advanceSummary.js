@@ -28,7 +28,8 @@ const AdvanceSummary = (props) => {
   const partyType = props.partyType;
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  console.log(selectedParty,advancesSummary,'selectedParty')
+  const ledgerTabs = props.ledgerTabs;
+  console.log(selectedParty, advancesSummary, "selectedParty");
   const billOnClickView = (billId, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("A")) {
@@ -61,8 +62,15 @@ const AdvanceSummary = (props) => {
                 <div
                   className={
                     allCustomTab == "all"
-                      ? "ledgerSummary advance_ledgerSummary advance_ledgerSummary_tab"
-                      : "ledgerSummary advance_ledgerSummary_custom advance_ledgerSummary_tab_custom"
+                      ? ("ledgerSummary advance_ledgerSummary " + (ledgerTabs ==
+                        "detailedadvances"
+                        ? ""
+                        : "advance_ledgerSummary_tab"))
+                      : ("ledgerSummary advance_ledgerSummary_custom " +
+                          (ledgerTabs ==
+                        "detailedadvances"
+                      ? ""
+                      : "advance_ledgerSummary_tab_custom"))
                   }
                   id="scroll_style"
                 >
@@ -93,9 +101,7 @@ const AdvanceSummary = (props) => {
                               </button>
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
-                            <td className="col-3">
-                              6000
-                            </td>
+                            <td className="col-3">6000</td>
                             <td className="col-3">
                               <p id="p-common" className="paid-coloring">
                                 {item.amount
@@ -103,9 +109,7 @@ const AdvanceSummary = (props) => {
                                   : ""}
                               </p>
                             </td>
-                            <td className="col-3">
-                              6000
-                            </td>
+                            <td className="col-3">6000</td>
                           </tr>
                         );
                       })}

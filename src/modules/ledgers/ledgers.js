@@ -1800,7 +1800,7 @@ const Ledgers = (props) => {
                           ""
                         )}
                         {ledgerTabs == "detailedadvances" ? (
-                          <AdvanceSummary partyType={ledgerType} />
+                          <AdvanceSummary partyType={ledgerType} ledgerTabs={ledgerTabs} />
                         ) : (
                           ""
                         )}
