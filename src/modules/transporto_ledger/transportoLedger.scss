@@ -694,3 +694,9 @@ input[type=radio].radioBtnValues{
     position: absolute;
     left: 20%;
 }
+
+
+.custom-control-input:checked + .custom-control-label::before {
+    background-color: #00B63E;
+    border: none;
+  }

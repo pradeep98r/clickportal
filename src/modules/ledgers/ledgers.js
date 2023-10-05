@@ -121,6 +121,7 @@ const Ledgers = (props) => {
   );
   const [handleDate1, sethandleDate1] = useState(false);
   const [allCustom1, setAllCustom1] = useState("all");
+  console.log(ledgersSummary,'ledgersSummary')
   const tabs = [
     {
       id: 1,
@@ -1162,7 +1163,11 @@ const Ledgers = (props) => {
                                           ""
                                         ) : (
                                           <td className="col-lg-2">
-                                            <p>4500</p>
+                                            <p>{item.advance
+                                              ? getCurrencyNumberWithOutSymbol(
+                                                  item.advance
+                                                )
+                                              : 0}</p>
                                           </td>
                                         )}
                                         <td
@@ -1227,7 +1232,13 @@ const Ledgers = (props) => {
                               </div>
                               <div>
                                 <p className="pat-tag">Outstanding Advances</p>
-                                <p className="paid-coloring">0</p>
+                                <p className="paid-coloring">
+                                {outStAmt?.advanceBal
+                                    ? getCurrencyNumberWithSymbol(
+                                        outStAmt?.advanceBal
+                                      )
+                                    : 0}
+                                  </p>
                               </div>
                             </div>
                           )}
@@ -1694,7 +1705,13 @@ const Ledgers = (props) => {
                                   <p className="out-standing">
                                     Outstanding Advances
                                   </p>
-                                  <p className={"paid-coloring"}>500000</p>
+                                  <p className={"paid-coloring"}>{
+                                    cardDetails?.advanceBal
+                                    ? getCurrencyNumberWithSymbol(
+                                        cardDetails.advanceBal
+                                      )
+                                    : 0
+                                  }</p>
                                 </div>
                               ) : (
                                 ""
