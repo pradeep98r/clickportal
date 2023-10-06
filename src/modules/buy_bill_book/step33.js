@@ -62,6 +62,7 @@ const Step33 = (props) => {
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
   const [outBal, setOutsBal] = useState(0);
+  const [outBalAdvance, setOutBalAdvance] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
 
   const billEditItem = editStatus
@@ -114,6 +115,7 @@ const Step33 = (props) => {
       getOutstandingBal(clickId, pID).then((res) => {
         console.log(res.data.data,'res.data.data')
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
+        setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance)
       });
     }
 
@@ -860,6 +862,13 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
+    if(advancesValue > outBalAdvance){
+      toast.error('You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.', {
+        toastId: "error10",
+      });
+      $("#disable").attr("disabled", false);
+    }
+   else{
     if (editStatus) {
     
       editbuybillApi(editBillRequestObj).then(
@@ -931,6 +940,7 @@ const Step33 = (props) => {
         }
       );
     }
+   }
   };
  
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
@@ -1759,6 +1769,12 @@ const Step33 = (props) => {
                           ) : (
                             ""
                           )}
+                           {allGroups[index].settingName == "ADVANCES" ? (
+                             <div>
+                               <p className="comment_text color_red">Outstanding Advances:{outBalAdvance != 0 ? getCurrencyNumberWithSymbol(outBalAdvance) : 0}</p>
+
+                               </div>
+                           ) : '' }
                         </div>
                       );
                     }

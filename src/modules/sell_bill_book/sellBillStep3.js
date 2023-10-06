@@ -60,6 +60,7 @@ const SellBillStep3 = (props) => {
   const [includeRetComm, setIncludeRetComm] = useState("");
   const [addRetComm, setAddRetComm] = useState(false);
   const [outBal, setOutsBal] = useState(0);
+  const [outBalAdvance, setOutBalAdvance] = useState(0);
   const [outBalformStatusvalue, setOutBalformStatusvalue] = useState(false);
 
   const billEditItem = editStatus
@@ -116,6 +117,7 @@ const SellBillStep3 = (props) => {
       var pID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
+        setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
     }
     getGrossTotalValue(
@@ -861,6 +863,13 @@ const SellBillStep3 = (props) => {
 
   const postsellbill = () => {
     console.log(sellBillRequestObj, "sellBillRequestObj");
+    // if(advancesValue > outBalAdvance){
+    //   toast.error('You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.', {
+    //     toastId: "error10",
+    //   });
+    //   $("#disable").attr("disabled", false);
+    // }
+
     if (editStatus) {
       editbuybillApi(editBillRequestObj).then(
         (response) => {

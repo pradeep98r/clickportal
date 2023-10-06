@@ -133,7 +133,7 @@ const RecordPayment = (props) => {
   var endDate = tabClick.closeDate;
   const recordPayment = tabClick?.trhoughRecordPayment;
   useEffect(() => {
-    setLoading(false)
+    setLoading(false);
   }, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
     setPaidsRcvd(
@@ -155,7 +155,6 @@ const RecordPayment = (props) => {
   };
   var billidsArray = [];
   const onSubmitRecordPayment = () => {
-    
     if (billIds.length > 0 && !fromBillViewPopup) {
       paidsRcvd = totalRecieved;
       setBillIds([]);
@@ -586,7 +585,9 @@ const RecordPayment = (props) => {
   //Get Outstanding balance
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      props.setPaidRcvd(response.data.data);
+      if (response.data.data != null) {
+      props.setPaidRcvd(response.data.data.tobePaidRcvd);
+      }
     });
   };
   const showListOfBillIds = (id) => {
@@ -716,11 +717,13 @@ const RecordPayment = (props) => {
         close={props.closeRecordPaymentModal}
         className="record_payment_modal"
       >
-         {isLoading ? (
-            <div className="loading_styles">
-              <img src={loading} alt="my-gif" className="gif_img" />
-            </div>
-          ) : '' }
+        {isLoading ? (
+          <div className="loading_styles">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
         <div className="modal-body partner_model_body">
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">

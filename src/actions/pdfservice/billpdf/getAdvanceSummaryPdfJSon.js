@@ -23,7 +23,7 @@ export function getAdvancesSummaryJson(data, startDate, endDate, customVal) {
       advances: data?.advanceSummaryById?.map((ledgerData) => {
         return {
           date: moment(ledgerData.date).format("DD-MMM-YY"),
-          amount: getCurrencyNumberWithOutSymbol(ledgerData.amount),
+          amount:ledgerData.givenAdv ? getCurrencyNumberWithOutSymbol(ledgerData.givenAdv) : 0,
           refId: ledgerData.refId,
         };
       }),

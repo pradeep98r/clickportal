@@ -43,6 +43,8 @@ import {
   partyOutstandingBal,
   totalAdvancesVal,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import SelectedPartner from "../advances/selectedPartner";
 const TransportoRecord = (props) => {
@@ -59,15 +61,18 @@ const TransportoRecord = (props) => {
   const fromAdvances = advancesData?.fromAdvanceFeature;
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const selectedPartnerFromAdv = advancesData?.selectedPartyByAdvanceId;
+  console.log(selectedPartnerFromAdv,'selectedPartnerFromAdv')
   const ledgerData = fromAdvances
     ? selectedPartnerFromAdv
     : editRecordStatus
     ? viewInfo
     : transpoData?.singleTransporterObject;
   const transId = fromAdvances
-    ? fromAdvSummary ? selectedPartnerFromAdv?.partyId : selectedPartnerFromAdv?.partyId
+    ? fromAdvSummary
+      ? selectedPartnerFromAdv?.partyId
+      : selectedPartnerFromAdv?.partyId
     : transpoData?.transporterIdVal;
-    console.log(transId,"id")
+  console.log(transId, "id");
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
@@ -80,16 +85,17 @@ const TransportoRecord = (props) => {
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   useEffect(() => {
-    if(!fromAdvSummary)
-   {
-    getOutstandingPaybles(clickId, transId);
-   }
+    if (!fromAdvSummary) {
+      getOutstandingPaybles(clickId, transId);
+    }
+    setReturnAdvanceStatus(false);
     setLoading(false);
   }, [props.showRecordPayModal]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        dispatch(partyOutstandingBal(response.data.data))
+        console.log(response.data.data);
+        dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
       }
     });
   };
@@ -124,18 +130,15 @@ const TransportoRecord = (props) => {
       setRequiredCondition("Amount Received cannot be empty");
     } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
-    } 
-    else if(fromAdvances){
-     if(!fromAdvSummary || !advancesData?.fromParentSelect ){
-      addRecordPayment();
-     }
-     else{
-      toast.error('Please Select Partner', {
-        toastId: "error16",
-      });
-     }
-    }
-    else if (
+    } else if (fromAdvances) {
+      if (!fromAdvSummary || !advancesData?.fromParentSelect) {
+        addRecordPayment();
+      } else {
+        toast.error("Please Select Partner", {
+          toastId: "error16",
+        });
+      }
+    } else if (
       paidsRcvd.toString().trim().length !== 0 &&
       paidsRcvd != 0 &&
       paidsRcvd <= outStandingBal &&
@@ -191,9 +194,10 @@ const TransportoRecord = (props) => {
       amount: paidsRcvd,
       paymentMode: paymentMode,
       partyId: transId,
-      date: moment(selectDate).format("YYYY-MM-DD"),
+      advDate: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       writerId: writerId,
+      advType:returnAdvanceStatus ? 'C' : 'G'
     };
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
@@ -266,6 +270,7 @@ const TransportoRecord = (props) => {
 
   const updateAdvances = () => {
     getAllAdvances();
+    console.log(allCustomTab, "v");
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {
@@ -288,23 +293,23 @@ const TransportoRecord = (props) => {
               );
               dispatch(allAdvancesData(filterArray));
               dispatch(advanceDataInfo(filterArray));
-            } else if(label == 'Transporters'){
+            } else if (label == "Transporters") {
               const filterArray = res.data.data.advances.filter(
                 (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
               );
               dispatch(allAdvancesData(filterArray));
               dispatch(advanceDataInfo(filterArray));
-            } else{
+            } else {
               dispatch(allAdvancesData(res.data.data.advances));
               dispatch(advanceDataInfo(res.data.data.advances));
             }
             if (res.data.data.totalAdvances != 0) {
-              dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+              dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
             }
             if (res.data.data.advances.length > 0) {
-              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
-            } else{
-              dispatch(partyOutstandingBal(0))
+              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles));
+            } else {
+              dispatch(partyOutstandingBal(0));
             }
           } else {
             dispatch(allAdvancesData([]));
@@ -319,7 +324,9 @@ const TransportoRecord = (props) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -333,7 +340,9 @@ const TransportoRecord = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -400,14 +409,18 @@ const TransportoRecord = (props) => {
       setComments("");
       setSelectDate(new Date());
     }
-    if(advancesData?.fromParentSelect){
-      console.log("came to here", transId)
-      getOutstandingPaybles(clickId,transId)
-    } else{
+    if (advancesData?.fromParentSelect) {
+      console.log("came to here", transId);
+      getOutstandingPaybles(clickId, transId);
+    } else {
       getAllAdvances();
     }
   };
-
+  const [returnAdvanceStatus, setReturnAdvanceStatus] = useState(false);
+  const toggleStatus = (status) => {
+    console.log(status, typeof status);
+    setReturnAdvanceStatus(!status);
+  };
   return (
     <Modal
       show={props.showRecordPayModal}
@@ -564,7 +577,7 @@ const TransportoRecord = (props) => {
                 );
               })}
             </div>
-            <div id="comment_in_modal record_modal_row">
+            <div id="comment_in_modal" className="record_modal_row">
               <div className="mb-3">
                 <label
                   for="exampleFormControlTextarea1"
@@ -582,6 +595,28 @@ const TransportoRecord = (props) => {
                 ></textarea>
               </div>
             </div>
+            {fromAdvances ? (
+              <div className="d-flex justify-content-between">
+                <p id="p-tag">Return Advance</p>
+                <div className="custom-control custom-switch">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id={"customSwitches"}
+                    checked={returnAdvanceStatus}
+                    onChange={() => toggleStatus(returnAdvanceStatus)}
+                  />
+                  <label
+                    className={`custom-control-label ${
+                      returnAdvanceStatus ? "bg-success" : "bg-secondary"
+                    }`}
+                    htmlFor={"customSwitches"}
+                  ></label>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
           </form>
         </div>
       </div>

@@ -57,9 +57,33 @@ import {
   generateLedgerSummary,
   generateLedSummary,
 } from "../../actions/pdfservice/singleBillPdf";
+import {
+  customDetailedAvances,
+  getAdvancesSummaryById,
+} from "../../actions/advancesService";
+import {
+  advanceSummaryById,
+  selectedPartyByAdvanceId,
+  totalAdvancesValById,
+  fromAdvanceFeature,
+  fromAdvanceSummary,
+  selectedAdvanceId,
+  totalCollectedById,
+  totalGivenById,
+} from "../../reducers/advanceSlice";
+import AdvanceSummary from "../advances/advanceSummary";
+import { getText } from "../../components/getText";
+import TransportoRecord from "../transporto_ledger/transportoRecord";
+import { getAdvancesSummaryPdf } from "../../actions/pdfservice/reportsPdf";
+import { getAdvancesSummaryJson } from "../../actions/pdfservice/billpdf/getAdvanceSummaryPdfJSon";
 const Ledgers = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
+  const advancesData = useSelector((state) => state.advanceInfo);
+  const selectedParty = advancesData?.selectedPartyByAdvanceId;
+  const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
+  const totalCollectedValByPartyId = advancesData?.totalCollectedById;
+  const totalGivenValByPartyId = advancesData?.totalGivenById;
   const ledgers = ledgersSummary?.allLedgers;
   const dispatch = useDispatch();
   const clickId = loginData.caId;
@@ -96,9 +120,12 @@ const Ledgers = (props) => {
   const [endDate1, setEndDate1] = useState(date);
   var defaultDate1 = moment(new Date()).format("DD-MMM-YYYY");
   const [dateDisplay1, setDateDisplay1] = useState(false);
-  var [dateValue1, setDateValue1] = useState(defaultDate + " to " + defaultDate);
+  var [dateValue1, setDateValue1] = useState(
+    defaultDate + " to " + defaultDate
+  );
   const [handleDate1, sethandleDate1] = useState(false);
   const [allCustom1, setAllCustom1] = useState("all");
+  console.log(ledgersSummary, "ledgersSummary");
   const tabs = [
     {
       id: 1,
@@ -123,18 +150,25 @@ const Ledgers = (props) => {
       name: "Detailed Ledger",
       to: "detailedledger",
     },
+    {
+      id: 3,
+      name: "Advavanes Ledger",
+      to: "detailedadvances",
+    },
   ];
-  const [showDatepickerModalForLedger, setShowDatepickerModalForLedger] = useState(false);
-  const [showDatepickerModalForLedgerStatus, setShowDatepickerModalForLedgerStatus] = useState(false);
+  const [showDatepickerModalForLedger, setShowDatepickerModalForLedger] =
+    useState(false);
+  const [
+    showDatepickerModalForLedgerStatus,
+    setShowDatepickerModalForLedgerStatus,
+  ] = useState(false);
   const onclickDate = () => {
-    
-      setShowDatepickerModal1(true);
+    setShowDatepickerModal1(true);
     setShowDatepickerModal(true);
-    
   };
   const onclickDateLedgers = () => {
-      setShowDatepickerModalForLedgerStatus(true);
-      setShowDatepickerModalForLedger(true)
+    setShowDatepickerModalForLedgerStatus(true);
+    setShowDatepickerModalForLedger(true);
   };
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
@@ -156,7 +190,7 @@ const Ledgers = (props) => {
   };
 
   useEffect(() => {
-    fetchLedgers('','');
+    fetchLedgers("", "");
     dispatch(partnerTabs("ledgersummary"));
     dispatch(beginDate(startDate));
     dispatch(closeDate(endDate));
@@ -165,25 +199,28 @@ const Ledgers = (props) => {
   }, [props]);
 
   //Fetch ledgers using clickId and type
-  const fetchLedgers = (sDate,eDate) => {
+  const fetchLedgers = (sDate, eDate) => {
     getLedgers(clickId, ledgerType, sDate, eDate)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           setLoading(false);
           if (res.data.data !== null) {
             setAllData(res.data.data.ledgers);
+            console.log(res.data.data.ledgers, "res.data.data.ledgers");
             dispatch(outStandingBal(res.data.data));
             dispatch(allLedgers(res.data.data.ledgers));
             setPartyId(res.data.data.ledgers[0].partyId);
             summaryData(clickId, res.data.data.ledgers[0].partyId);
             getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
             setLedgerData(res.data.data.ledgers[0]);
-
+            dispatch(selectedAdvanceId(res.data.data.ledgers[0].partyId));
             if (ledgerType == "BUYER") {
               geyDetailedLedger(clickId, res.data.data.ledgers[0].partyId);
             } else {
               sellerDetailed(clickId, res.data.data.ledgers[0].partyId);
             }
+            getAdvanceSummary(res.data.data.ledgers[0].partyId);
+            dispatch(selectedPartyByAdvanceId(res.data.data.ledgers[0]));
           } else {
             dispatch(allLedgers([]));
             dispatch(setLedgerData(null));
@@ -200,7 +237,9 @@ const Ledgers = (props) => {
   //Get Outstanding balance
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      setPaidRcvd(response.data.data);
+      if (response.data.data != null) {
+        setPaidRcvd(response.data.data.tobePaidRcvd);
+      }
     });
   };
   const [customDateHanlde, setCustomDateHandle] = useState(false);
@@ -210,10 +249,11 @@ const Ledgers = (props) => {
     setPartyId(ledgerId);
     setLedgerData(item);
     setAllCustom("all");
-    setAllCustom1('all')
+    setAllCustom1("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
-
+    dispatch(selectedPartyByAdvanceId(item));
+    dispatch(selectedAdvanceId(ledgerId));
     if (allCustom == "custom") {
       var customTab = "all";
       setDateDisplay(false);
@@ -222,7 +262,8 @@ const Ledgers = (props) => {
     var tabs = "";
     if (
       ledgerTabs == "detailedledger" ||
-      (ledgerTabs == "ledgersummary" && allCustom == "custom")
+      (ledgerTabs == "ledgersummary" && allCustom == "custom") ||
+      ledgerTabs == "detailedadvances"
     ) {
       dispatch(partnerTabs("ledgersummary"));
       dispatch(allCustomTabs("all"));
@@ -325,12 +366,23 @@ const Ledgers = (props) => {
       dispatch(partnerTabs("ledgersummary"));
       setLedgerTabs("ledgersummary");
     }
+    if (type == "custom" && ledgerTabs == "detailedadvances") {
+      dispatch(partnerTabs("detailedadvances"));
+      setLedgerTabs("detailedadvances");
+    } else if (type == "all" && ledgerTabs == "detailedadvances") {
+      dispatch(partnerTabs("detailedadvances"));
+      setLedgerTabs("detailedadvances");
+    }
     if (type == "custom" && ledgerTabs == "ledgersummary" && customDateHanlde) {
       setCustomDateHandle(false);
       ledgerSummaryByDate(clickId, partyId, date, date);
+    } else if (type == "custom" && ledgerTabs == "detailedadvances") {
+      setCustomDateHandle(false);
+      getCustomDetailedAdvances(partyId, date, date);
     } else if (type == "custom") {
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
+    console.log(customDateHanlde, ledgerTabs, type);
     setAllCustom(type);
   };
   const allCustomEvent1 = (type) => {
@@ -347,10 +399,9 @@ const Ledgers = (props) => {
       setEndDate1(date);
     }
     if (type == "all") {
-      fetchLedgers('','');
+      fetchLedgers("", "");
       sethandleDate1(true);
-    }
-    else if (type == "custom") {
+    } else if (type == "custom") {
       fetchLedgers(date, date);
     }
     setAllCustom1(type);
@@ -369,6 +420,9 @@ const Ledgers = (props) => {
       } else {
         sellerDetailed(clickId, partyId);
       }
+    }
+    if (allCustom == "all" && ledgerTabType == "detailedadvances") {
+      getAdvanceSummary(partyId);
     }
     if (allCustom == "custom" && ledgerTabType == "ledgersummary") {
       setDateValue(defaultDate + " to " + defaultDate);
@@ -390,9 +444,51 @@ const Ledgers = (props) => {
         dispatch(dateCustomStatus(true));
       }
     }
+    if (allCustom == "custom" && ledgerTabType == "detailedadvances") {
+      setDateValue(defaultDate + " to " + defaultDate);
+      getCustomDetailedAdvances(partyId, date, date);
+      sethandleDate(true);
+      dispatch(dateCustomStatus(true));
+    }
     setLedgerTabs(ledgerTabType);
+    console.log(allCustom, ledgerTabs);
   };
-
+  const getAdvanceSummary = (partyId) => {
+    getAdvancesSummaryById(clickId, partyId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+            console.log("custom all", res.data.data);
+          } else {
+            dispatch(advanceSummaryById([]));
+          }
+        }
+        setLoading(false);
+      })
+      .catch((error) => console.log(error));
+  };
+  const getCustomDetailedAdvances = (partyId, fromDate, toDate) => {
+    customDetailedAvances(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.status.type == "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+          } else {
+            dispatch(advanceSummaryById([]));
+            console.log("custom adva", res.data.data);
+          }
+          setLoading(false);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   //ledger summary by date
   const ledgerSummaryByDate = (clickId, partyId, fromDate, toDate) => {
     getLedgerSummaryByDate(clickId, partyId, fromDate, toDate)
@@ -476,6 +572,13 @@ const Ledgers = (props) => {
       setStartDate(fromDate);
       setEndDate(toDate);
       ledgerSummaryByDate(clickId, partyId, fromDate, toDate);
+    } else if (allCustom == "custom" && ledgerTabs == "detailedadvances") {
+      var fromDate = moment(startDate).format("YYYY-MM-DD");
+      var toDate = moment(endDate).format("YYYY-MM-DD");
+      date = fromDate;
+      setStartDate(fromDate);
+      setEndDate(toDate);
+      getCustomDetailedAdvances(partyId, fromDate, toDate);
     } else {
       var fromDate = moment(startDate).format("YYYY-MM-DD");
       var toDate = moment(endDate).format("YYYY-MM-DD");
@@ -517,15 +620,14 @@ const Ledgers = (props) => {
           moment(toDate).format("DD-MMM-YYYY")
       );
     }
-    if (allCustom1 == "custom" ) {
+    if (allCustom1 == "custom") {
       var fromDate = moment(startDate1).format("YYYY-MM-DD");
       var toDate = moment(endDate1).format("YYYY-MM-DD");
       date = fromDate;
       setStartDate1(fromDate);
       setEndDate1(toDate);
       fetchLedgers(fromDate, toDate);
-    } 
-    else{
+    } else {
       sethandleDate1(true);
     }
   };
@@ -579,10 +681,10 @@ const Ledgers = (props) => {
     setIsLoadingNew(true);
     var ledgerJsonBody = getLedgerSummaryJson(
       allLedgersStatus
-      ? ledgersSummary.allLedgers
-      : ledgerTabs == "ledgersummary"
-      ? ledgersSummary.ledgerSummaryInfo
-      : ledgersSummary.detaildLedgerInfo,
+        ? ledgersSummary.allLedgers
+        : ledgerTabs == "ledgersummary"
+        ? ledgersSummary.ledgerSummaryInfo
+        : ledgersSummary.detaildLedgerInfo,
       ledgerData,
       allCustom === "custom" ? dateValue : "",
       ledgerType,
@@ -597,7 +699,7 @@ const Ledgers = (props) => {
     );
     var pdfResponse;
     if (allLedgersStatus) {
-      pdfResponse =await generateLedSummary(ledgerJsonBody);
+      pdfResponse = await generateLedSummary(ledgerJsonBody);
     } else {
       pdfResponse =
         ledgerTabs == "ledgersummary"
@@ -643,7 +745,7 @@ const Ledgers = (props) => {
     );
     var pdfResponse;
     if (allLedgersStatus) {
-      pdfResponse =await generateLedSummary(ledgerJsonBody);
+      pdfResponse = await generateLedSummary(ledgerJsonBody);
     } else {
       pdfResponse =
         ledgerTabs == "ledgersummary"
@@ -785,6 +887,75 @@ const Ledgers = (props) => {
       ? getCurrencyNumberWithSymbol(summary.totalRcvdPaid)
       : 0;
   }
+  const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
+  const [recordPayModal, setRecordPayModal] = useState(false);
+  const recordPaymentOnClickEventAdv = () => {
+    dispatch(fromAdvanceFeature(true));
+    setRecordPayModalStatus(true);
+    setRecordPayModal(true);
+    dispatch(fromAdvanceSummary(false));
+  };
+  async function getDownloadPdfAdv() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getAdvancesSummaryJson(
+      advancesData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.closeDate,
+      ledgersSummary?.allCustomTabs
+    );
+    var pdfResponse = await getAdvancesSummaryPdf(reportsJsonBody);
+    if (pdfResponse.status !== 200) {
+      console.log(pdfResponse.status, "fasl");
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      console.log(pdfResponse.status, "true");
+      toast.success("Pdf Downloaded SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.setAttribute("download", `ADVANCES_SUMMARY.pdf`); //or any other extension
+
+      document.body.appendChild(link);
+      setIsLoadingNew(false);
+      link.click();
+      // setLoading(false);
+    }
+  }
+  async function handleLedgerSummaryJsonAdv() {
+    setIsLoadingNew(true);
+    var reportsJsonBody = getAdvancesSummaryJson(
+      advancesData,
+      ledgersSummary?.beginDate,
+      ledgersSummary?.closeDate,
+      ledgersSummary?.allCustomTabs
+    );
+    var pdfResponse = await getAdvancesSummaryPdf(reportsJsonBody);
+    console.log(pdfResponse, "pdfResponse");
+    if (pdfResponse.status !== 200) {
+      toast.error("Something went wrong", {
+        toastId: "errorr2",
+      });
+      setIsLoadingNew(false);
+      return;
+    } else {
+      toast.success("Pdf generated SuccessFully", {
+        toastId: "errorr2",
+      });
+      var bufferData = Buffer.from(pdfResponse.data);
+      var blob = new Blob([bufferData], { type: "application/pdf" });
+      const blobUrl = URL.createObjectURL(blob);
+      setIsLoadingNew(false);
+      window.open(blobUrl, "_blank");
+    }
+  }
   return (
     <div className="main_div_padding">
       {isOnline ? (
@@ -798,10 +969,9 @@ const Ledgers = (props) => {
           ) : (
             <div>
               <div>
-              
                 <div className="row">
                   <div className="col-lg-5 pl-0">
-                  <div className="d-flex mb-2 align-items-center">
+                    <div className="d-flex mb-2 align-items-center">
                       <ul
                         className="nav nav-tabs mb-0"
                         id="myTab"
@@ -828,50 +998,55 @@ const Ledgers = (props) => {
                         })}
                       </ul>
                       <div className="my-2">
-                      <div
-                        style={{ display: dateDisplay1 ? "flex" : "none" }}
-                        className="dateRangePicker justify-content-center"
-                      >
-                        <button onClick={onclickDateLedgers} className="color_blue">
-                          <div className="date_icon m-0">
-                            <img
-                              src={date_icon}
-                              alt="icon"
-                              className="mr-2 date_icon_in_custom"
-                            />
-                            {dateValue1}
-                          </div>
-                        </button>
+                        <div
+                          style={{ display: dateDisplay1 ? "flex" : "none" }}
+                          className="dateRangePicker justify-content-center"
+                        >
+                          <button
+                            onClick={onclickDateLedgers}
+                            className="color_blue"
+                          >
+                            <div className="date_icon m-0">
+                              <img
+                                src={date_icon}
+                                alt="icon"
+                                className="mr-2 date_icon_in_custom"
+                              />
+                              {dateValue1}
+                            </div>
+                          </button>
+                        </div>
                       </div>
-                    </div>
                     </div>
 
                     {allData.length > 0 ? (
-                    <div id="search-field" className="d-flex">
-                      <SearchField
-                        placeholder="Search by Name / Short Code"
-                        onChange={(event) => {
-                          handleSearch(event);
-                        }}
-                      />
-                      <div className="print_dwnld_icons d-flex">
-                        <button
-                          onClick={() => {
-                            getDownloadPdf(true).then();
+                      <div id="search-field" className="d-flex">
+                        <SearchField
+                          placeholder="Search by Name / Short Code"
+                          onChange={(event) => {
+                            handleSearch(event);
                           }}
-                        >
-                          <img src={download_icon} alt="img" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleLedgerSummaryJson(true).then();
-                          }}
-                        >
-                          <img src={print} alt="img" />
-                        </button>
+                        />
+                        <div className="print_dwnld_icons d-flex">
+                          <button
+                            onClick={() => {
+                              getDownloadPdf(true).then();
+                            }}
+                          >
+                            <img src={download_icon} alt="img" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleLedgerSummaryJson(true).then();
+                            }}
+                          >
+                            <img src={print} alt="img" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                    ): ''}
+                    ) : (
+                      ""
+                    )}
                     {ledgers.length > 0 ? (
                       <div>
                         <div className="ledger-table">
@@ -882,7 +1057,12 @@ const Ledgers = (props) => {
                               {ledgerType == "BUYER" ? (
                                 <th class="col-lg-6">Buyer Name</th>
                               ) : (
-                                <th class="col-lg-6">Seller Name</th>
+                                <th class="col-lg-4">Seller Name</th>
+                              )}
+                              {ledgerType == "BUYER" ? (
+                                ""
+                              ) : (
+                                <th class="col-lg-2">Advance(&#8377;)</th>
                               )}
                               {ledgerType == "BUYER" ? (
                                 <th class="col-lg-3">
@@ -923,7 +1103,11 @@ const Ledgers = (props) => {
                                         </td>
                                         <td
                                           key={item.partyName}
-                                          className="col-lg-6"
+                                          className={
+                                            ledgerType == "BUYER"
+                                              ? "col-lg-6"
+                                              : "col-lg-4"
+                                          }
                                         >
                                           <div className="d-flex">
                                             <div className="c-img">
@@ -946,7 +1130,13 @@ const Ledgers = (props) => {
                                                 {item.partyName} -{" "}
                                                 {item.shortName}
                                               </p>
-                                              <div className="d-flex align-items-center">
+                                              <div
+                                                className={
+                                                  ledgerType == "BUYER"
+                                                    ? "d-flex align-items-center"
+                                                    : ""
+                                                }
+                                              >
                                                 <p className="mobilee-tag">
                                                   {!item.trader
                                                     ? ledgerType == "BUYER"
@@ -956,7 +1146,9 @@ const Ledgers = (props) => {
                                                   - {item.partyId}&nbsp;
                                                 </p>
                                                 <p className="mobilee-tag desk_responsive">
-                                                  {" | " +
+                                                  {(ledgerType == "BUYER"
+                                                    ? "| "
+                                                    : "") +
                                                     getMaskedMobileNumber(
                                                       item.mobile
                                                     )}
@@ -975,6 +1167,19 @@ const Ledgers = (props) => {
                                             </div>
                                           </div>
                                         </td>
+                                        {ledgerType == "BUYER" ? (
+                                          ""
+                                        ) : (
+                                          <td className="col-lg-2">
+                                            <p>
+                                              {item.advance
+                                                ? getCurrencyNumberWithOutSymbol(
+                                                    item.advance
+                                                  )
+                                                : 0}
+                                            </p>
+                                          </td>
+                                        )}
                                         <td
                                           className="col-lg-3"
                                           key={item.tobePaidRcvd}
@@ -1024,21 +1229,46 @@ const Ledgers = (props) => {
                           {ledgerType == "BUYER" ? (
                             <p className="pat-tag">Outstanding Recievables:</p>
                           ) : (
-                            <p className="pat-tag">Outstanding Payables:</p>
+                            <div className="d-flex justify-content-between w-100">
+                              <div>
+                                <p className="pat-tag">Outstanding Payables</p>
+                                <p className="paid-coloring">
+                                  {outStAmt?.totalOutStgAmt
+                                    ? getCurrencyNumberWithSymbol(
+                                        outStAmt?.totalOutStgAmt
+                                      )
+                                    : 0}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="pat-tag">Outstanding Advances</p>
+                                <p className="paid-coloring">
+                                  {outStAmt?.advanceBal
+                                    ? getCurrencyNumberWithSymbol(
+                                        outStAmt?.advanceBal
+                                      )
+                                    : 0}
+                                </p>
+                              </div>
+                            </div>
                           )}
-                          <p
-                            className={
-                              ledgerType == "BUYER"
-                                ? "values-tag"
-                                : "paid-coloring"
-                            }
-                          >
-                            {outStAmt?.totalOutStgAmt
-                              ? getCurrencyNumberWithSymbol(
-                                  outStAmt?.totalOutStgAmt
-                                )
-                              : 0}
-                          </p>
+                          {ledgerType == "BUYER" ? (
+                            <p
+                              className={
+                                ledgerType == "BUYER"
+                                  ? "values-tag"
+                                  : "paid-coloring"
+                              }
+                            >
+                              {outStAmt?.totalOutStgAmt
+                                ? getCurrencyNumberWithSymbol(
+                                    outStAmt?.totalOutStgAmt
+                                  )
+                                : 0}
+                            </p>
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -1060,432 +1290,593 @@ const Ledgers = (props) => {
                     )}
                   </div>
                   {allData.length > 0 ? (
-                  <div className="col-lg-7 p-0">
-                    <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
-                      <ul
-                        className="nav nav-tabs mb-0"
-                        id="myTab"
-                        role="tablist"
-                      >
-                        {tabs.map((tab) => {
-                          return (
-                            <li key={tab.id} className="nav-item ">
-                              <a
-                                className={
-                                  "nav-link" +
-                                  (allCustom == tab.to ? " active" : "")
-                                }
-                                href={"#" + tab.name}
-                                role="tab"
-                                aria-controls="home"
-                                data-bs-toggle="tab"
-                                onClick={() => allCustomEvent(tab.to)}
-                              >
-                                {tab.name}
-                              </a>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                      <button
-                        className="primary_btn add_bills_btn"
-                        onClick={recordPaymentOnClickEvent}
-                      >
-                        <img src={addbill_icon} alt="image" className="mr-2" />
-                        {ledgerType == "BUYER"
-                          ? "Record Receivable"
-                          : "Record Payment"}
-                      </button>
-                    </div>
-                    <p className={dateDisplay ? "" : "padding_all"}></p>
-                    <div className="my-2">
-                      <div
-                        style={{ display: dateDisplay ? "flex" : "none" }}
-                        className="dateRangePicker justify-content-center"
-                      >
-                        <button onClick={onclickDate} className="color_blue">
-                          <div className="date_icon m-0">
+                    <div className="col-lg-7 p-0">
+                      <div className="d-flex partner_tabs mb-0 ledger_all_custom justify-content-between align-items-end">
+                        <ul
+                          className="nav nav-tabs mb-0"
+                          id="myTab"
+                          role="tablist"
+                        >
+                          {tabs.map((tab) => {
+                            return (
+                              <li key={tab.id} className="nav-item ">
+                                <a
+                                  className={
+                                    "nav-link" +
+                                    (allCustom == tab.to ? " active" : "")
+                                  }
+                                  href={"#" + tab.name}
+                                  role="tab"
+                                  aria-controls="home"
+                                  data-bs-toggle="tab"
+                                  onClick={() => allCustomEvent(tab.to)}
+                                >
+                                  {tab.name}
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        {ledgerType != "BUYER" &&
+                        ledgerTabs == "detailedadvances" ? (
+                          <button
+                            className="primary_btn add_bills_btn"
+                            onClick={recordPaymentOnClickEventAdv}
+                          >
                             <img
-                              src={date_icon}
-                              alt="icon"
-                              className="mr-2 date_icon_in_custom"
+                              src={addbill_icon}
+                              alt="image"
+                              className="mr-2"
                             />
-                            {dateValue}
-                          </div>
-                        </button>
+                            Record Advance
+                          </button>
+                        ) : (
+                          <button
+                            className="primary_btn add_bills_btn"
+                            onClick={recordPaymentOnClickEvent}
+                          >
+                            <img
+                              src={addbill_icon}
+                              alt="image"
+                              className="mr-2"
+                            />
+                            {ledgerType == "BUYER"
+                              ? "Record Receivable"
+                              : "Record Payment"}
+                          </button>
+                        )}
                       </div>
-                    </div>
-                    <div className="card details-tag">
-                      <div className="card-body" id="card-details">
-                        <div className="row">
-                          <div className="col-lg-3" id="verticalLines">
-                            {ledgerData != null ? (
+                      <p className={dateDisplay ? "" : "padding_all"}></p>
+                      <div className="my-2">
+                        <div
+                          style={{ display: dateDisplay ? "flex" : "none" }}
+                          className="dateRangePicker justify-content-center"
+                        >
+                          <button onClick={onclickDate} className="color_blue">
+                            <div className="date_icon m-0">
+                              <img
+                                src={date_icon}
+                                alt="icon"
+                                className="mr-2 date_icon_in_custom"
+                              />
+                              {dateValue}
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="card details-tag">
+                        <div className="card-body" id="card-details">
+                          {ledgerTabs == "detailedadvances" &&
+                          ledgerType != "BUYER" ? (
+                            <div className="row">
                               <div
-                                className="profilers-details"
-                                key={ledgerData.partyId}
+                                className="col-lg-3 d-flex align-items-center pl-0"
+                                id="verticalLines"
                               >
-                                <div className="d-flex">
-                                  <div>
-                                    {ledgerData.profilePic ? (
-                                      <img
-                                        id="singles-img"
-                                        src={ledgerData.profilePic}
-                                        alt="buy-img"
-                                      />
-                                    ) : (
-                                      <img
-                                        id="singles-img"
-                                        src={single_bill}
-                                        alt="img"
-                                      />
-                                    )}
-                                  </div>
-                                  <div id="ptr-dtls">
+                                <div
+                                  className="pl-0 d-flex"
+                                  key={selectedParty.partyId}
+                                >
+                                  {selectedParty.profilePic ? (
+                                    <img
+                                      id="singles-img"
+                                      src={selectedParty.profilePic}
+                                      alt="buy-img"
+                                    />
+                                  ) : (
+                                    <img
+                                      id="singles-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                  <p id="card-text">
                                     <p className="namedtl-tag">
-                                      {ledgerData.partyName}
+                                      {selectedParty.partyName}
                                     </p>
+                                    <div className="d-flex align-items-center">
+                                      <p className="mobilee-tag">
+                                        {!selectedParty.trader
+                                          ? ledgerType == "FARMER"
+                                            ? "Farmer"
+                                            : getText(ledgerType)
+                                          : "Trader"}{" "}
+                                        - {selectedParty.partyId}
+                                      </p>
+                                    </div>
                                     <p className="mobilee-tag">
-                                      {!ledgerData.trader
-                                        ? props.type == "BUYER"
-                                          ? "Buyer"
-                                          : "Farmer"
-                                        : "Trader"}{" "}
-                                      - {ledgerData.partyId}&nbsp;
+                                      {getMaskedMobileNumber(
+                                        selectedParty?.mobile
+                                      )}
                                     </p>
-                                    <p className="mobilee-tag">
-                                      {ledgerData.mobile}
-                                      {/* {ledgerData?.mobile != '' ?
-                                    getMaskedMobileNumber(ledgerData?.mobile) : ''} */}
-                                    </p>
-                                  </div>
+                                  </p>
                                 </div>
                               </div>
-                            ) : (
-                              ""
-                            )}
-                          </div>
-                          <div
-                            className="col-lg-3 d-flex align-items-center"
-                            id="verticalLines"
-                          >
-                            <p className="card-text paid">
-                              Total Business
-                              <p
-                                className={
-                                  ledgerType == "BUYER"
-                                    ? "coloring"
-                                    : "paid-coloring"
-                                }
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id="verticalLines"
                               >
-                                {allCustom == "custom" &&
-                                ledgerTabs == "ledgersummary"
-                                  ? cardDetails.totalTobePaidRcvd
-                                    ? cardDetails.totalTobePaidRcvd
+                                <p className="card-text paid">
+                                  Total Collected
+                                  <p className="paid-coloring">
+                                    {totalCollectedValByPartyId != 0
                                       ? getCurrencyNumberWithSymbol(
-                                          cardDetails.totalTobePaidRcvd
+                                          totalCollectedValByPartyId
                                         )
-                                      : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerType == "BUYER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalToBeRecived
-                                    ? cardDetailed.totalToBeRecived
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalToBeRecived
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalToBePaid
-                                    ? cardDetailed.totalToBePaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalToBePaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "BUYER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalToBeRecived
-                                    ? detailedTotal.totalToBeRecived
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalToBeRecived
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalToBePaid
-                                    ? detailedTotal.totalToBePaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalToBePaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : summary.totalTobePaidRcvd
-                                  ? getCurrencyNumberWithSymbol(
-                                      summary.totalTobePaidRcvd
-                                    )
-                                  : 0}
-                              </p>
-                            </p>
-                          </div>
-                          <div
-                            className="col-lg-3 d-flex align-items-center"
-                            id="verticalLines"
-                          >
-                            <div>
-                              {ledgerType == "BUYER" ? (
-                                <p className="total-paid">Total Recieved</p>
-                              ) : (
-                                <p className="total-paid">Total Paid</p>
-                              )}
-                              <p
-                                className={
-                                  ledgerType == "BUYER"
-                                    ? "coloring"
-                                    : "paid-coloring"
-                                }
-                              >
-                                {allCustom == "custom" &&
-                                ledgerTabs == "ledgersummary"
-                                  ? cardDetails.totalRcvdPaid
-                                    ? cardDetails.totalRcvdPaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetails.totalRcvdPaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerType == "BUYER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalRecieved
-                                    ? cardDetailed.totalRecieved
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalRecieved
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalPaid
-                                    ? cardDetailed.totalPaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalPaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "BUYER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalRecieved
-                                    ? detailedTotal.totalRecieved
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalRecieved
-                                        )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerType == "SELLER" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalPaid
-                                    ? detailedTotal.totalPaid
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalPaid
-                                        )
-                                      : 0
-                                    : 0
-                                  : summary.totalRcvdPaid
-                                  ? getCurrencyNumberWithSymbol(
-                                      summary.totalRcvdPaid
-                                    )
-                                  : 0}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="col-lg-3 d-flex align-items-center">
-                            <div>
-                              {ledgerType == "BUYER" ? (
-                                <p className="out-standing">
-                                  Outstanding Recievables
+                                      : 0}
+                                  </p>
                                 </p>
-                              ) : (
-                                <p className="out-standing">
-                                  Outstanding Payables
-                                </p>
-                              )}
-                              <p
-                                className={
-                                  ledgerType == "BUYER"
-                                    ? "coloring"
-                                    : "paid-coloring"
-                                }
+                              </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id="verticalLines"
                               >
-                                {allCustom == "custom" &&
-                                ledgerTabs == "ledgersummary"
-                                  ? cardDetails.outStdRcvPayble
-                                    ? cardDetails?.outStdRcvPayble
+                                <p className="card-text paid">
+                                  Total Given
+                                  <p className="paid-coloring">
+                                    {totalGivenValByPartyId != 0
                                       ? getCurrencyNumberWithSymbol(
-                                          cardDetails.outStdRcvPayble
+                                          totalGivenValByPartyId
                                         )
-                                      : 0
-                                    : 0
-                                  : allCustom == "custom" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? cardDetailed.totalOutStandingBalance
-                                    ? cardDetailed?.totalOutStandingBalance
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id=""
+                              >
+                                <p className="card-text paid">
+                                  Total Advances
+                                  <p className="paid-coloring">
+                                    {totalAdvancesValByPartyId != 0
                                       ? getCurrencyNumberWithSymbol(
-                                          cardDetailed.totalOutStandingBalance
+                                          totalAdvancesValByPartyId
                                         )
-                                      : 0
-                                    : 0
-                                  : allCustom == "all" &&
-                                    ledgerTabs == "detailedledger"
-                                  ? detailedTotal.totalOutStandingBalance
-                                    ? detailedTotal?.totalOutStandingBalance
-                                      ? getCurrencyNumberWithSymbol(
-                                          detailedTotal.totalOutStandingBalance
-                                        )
-                                      : 0
-                                    : 0
-                                  : summary.outStdRcvPayble
-                                  ? getCurrencyNumberWithSymbol(
-                                      summary.outStdRcvPayble
-                                    )
-                                  : 0}
-                              </p>
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
                             </div>
-
-                            {/* </p> */}
-                          </div>
-                        </div>
-                        <span id="horizontal-line"></span>
-                        <div className="d-flex justify-content-between">
-                          <ul
-                            className="nav nav-tabs ledger_tabs"
-                            id="myTab"
-                            role="tablist"
-                          >
-                            {links.map((link) => {
-                              return (
-                                <li key={link.id} className="nav-item ">
-                                  <a
-                                    className={
-                                      "nav-link" +
-                                      (ledgerTabs == link.to ? " active" : "")
-                                    }
-                                    href={"#" + link.to}
-                                    role="tab"
-                                    aria-controls="home"
-                                    data-bs-toggle="tab"
-                                    onClick={() => ledgerTabEvent(link.to)}
+                          ) : (
+                            <div className="row">
+                              <div className="col-lg-3" id="verticalLines">
+                                {ledgerData != null ? (
+                                  <div
+                                    className="profilers-details"
+                                    key={ledgerData.partyId}
                                   >
-                                    {link.name}
-                                  </a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                          <div className="print_dwnld_icons">
-                            <button
-                              onClick={() => {
-                                getDownloadPdf(false).then();
-                              }}
+                                    <div className="d-flex">
+                                      <div>
+                                        {ledgerData.profilePic ? (
+                                          <img
+                                            id="singles-img"
+                                            src={ledgerData.profilePic}
+                                            alt="buy-img"
+                                          />
+                                        ) : (
+                                          <img
+                                            id="singles-img"
+                                            src={single_bill}
+                                            alt="img"
+                                          />
+                                        )}
+                                      </div>
+                                      <div id="ptr-dtls">
+                                        <p className="namedtl-tag">
+                                          {ledgerData.partyName}
+                                        </p>
+                                        <p className="mobilee-tag">
+                                          {!ledgerData.trader
+                                            ? props.type == "BUYER"
+                                              ? "Buyer"
+                                              : "Farmer"
+                                            : "Trader"}{" "}
+                                          - {ledgerData.partyId}&nbsp;
+                                        </p>
+                                        <p className="mobilee-tag">
+                                          {ledgerData.mobile}
+                                          {/* {ledgerData?.mobile != '' ?
+                                  getMaskedMobileNumber(ledgerData?.mobile) : ''} */}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                              <div
+                                className={
+                                  ledgerType != "BUYER"
+                                    ? "col-lg-2 d-flex align-items-center"
+                                    : "col-lg-3 d-flex align-items-center"
+                                }
+                                id="verticalLines"
+                              >
+                                <p className="card-text paid">
+                                  Total Business
+                                  <p
+                                    className={
+                                      ledgerType == "BUYER"
+                                        ? "coloring"
+                                        : "paid-coloring"
+                                    }
+                                  >
+                                    {allCustom == "custom" &&
+                                    ledgerTabs == "ledgersummary"
+                                      ? cardDetails.totalTobePaidRcvd
+                                        ? cardDetails.totalTobePaidRcvd
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetails.totalTobePaidRcvd
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "custom" &&
+                                        ledgerType == "BUYER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalToBeRecived
+                                        ? cardDetailed.totalToBeRecived
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetailed.totalToBeRecived
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "custom" &&
+                                        ledgerType == "SELLER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalToBePaid
+                                        ? cardDetailed.totalToBePaid
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetailed.totalToBePaid
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerType == "BUYER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? detailedTotal.totalToBeRecived
+                                        ? detailedTotal.totalToBeRecived
+                                          ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalToBeRecived
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerType == "SELLER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? detailedTotal.totalToBePaid
+                                        ? detailedTotal.totalToBePaid
+                                          ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalToBePaid
+                                            )
+                                          : 0
+                                        : 0
+                                      : summary.totalTobePaidRcvd
+                                      ? getCurrencyNumberWithSymbol(
+                                          summary.totalTobePaidRcvd
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                              <div
+                                className={
+                                  ledgerType != "BUYER"
+                                    ? "col-lg-2 d-flex align-items-center"
+                                    : "col-lg-3 d-flex align-items-center"
+                                }
+                                id="verticalLines"
+                              >
+                                <div>
+                                  {ledgerType == "BUYER" ? (
+                                    <p className="total-paid">Total Recieved</p>
+                                  ) : (
+                                    <p className="total-paid">Total Paid</p>
+                                  )}
+                                  <p
+                                    className={
+                                      ledgerType == "BUYER"
+                                        ? "coloring"
+                                        : "paid-coloring"
+                                    }
+                                  >
+                                    {allCustom == "custom" &&
+                                    ledgerTabs == "ledgersummary"
+                                      ? cardDetails.totalRcvdPaid
+                                        ? cardDetails.totalRcvdPaid
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetails.totalRcvdPaid
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "custom" &&
+                                        ledgerType == "BUYER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalRecieved
+                                        ? cardDetailed.totalRecieved
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetailed.totalRecieved
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "custom" &&
+                                        ledgerType == "SELLER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalPaid
+                                        ? cardDetailed.totalPaid
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetailed.totalPaid
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerType == "BUYER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? detailedTotal.totalRecieved
+                                        ? detailedTotal.totalRecieved
+                                          ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalRecieved
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerType == "SELLER" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? detailedTotal.totalPaid
+                                        ? detailedTotal.totalPaid
+                                          ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalPaid
+                                            )
+                                          : 0
+                                        : 0
+                                      : summary.totalRcvdPaid
+                                      ? getCurrencyNumberWithSymbol(
+                                          summary.totalRcvdPaid
+                                        )
+                                      : 0}
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id={
+                                  ledgerType == "BUYER" ? "" : "verticalLines"
+                                }
+                              >
+                                <div>
+                                  {ledgerType == "BUYER" ? (
+                                    <p className="out-standing">
+                                      Outstanding Recievables
+                                    </p>
+                                  ) : (
+                                    <p className="out-standing">
+                                      Outstanding <br></br> Payables
+                                    </p>
+                                  )}
+                                  <p
+                                    className={
+                                      ledgerType == "BUYER"
+                                        ? "coloring"
+                                        : "paid-coloring"
+                                    }
+                                  >
+                                    {allCustom == "custom" &&
+                                    ledgerTabs == "ledgersummary"
+                                      ? cardDetails.outStdRcvPayble
+                                        ? cardDetails?.outStdRcvPayble
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetails.outStdRcvPayble
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "custom" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? cardDetailed.totalOutStandingBalance
+                                        ? cardDetailed?.totalOutStandingBalance
+                                          ? getCurrencyNumberWithSymbol(
+                                              cardDetailed.totalOutStandingBalance
+                                            )
+                                          : 0
+                                        : 0
+                                      : allCustom == "all" &&
+                                        ledgerTabs == "detailedledger"
+                                      ? detailedTotal.totalOutStandingBalance
+                                        ? detailedTotal?.totalOutStandingBalance
+                                          ? getCurrencyNumberWithSymbol(
+                                              detailedTotal.totalOutStandingBalance
+                                            )
+                                          : 0
+                                        : 0
+                                      : summary.outStdRcvPayble
+                                      ? getCurrencyNumberWithSymbol(
+                                          summary.outStdRcvPayble
+                                        )
+                                      : 0}
+                                  </p>
+                                </div>
+
+                                {/* </p> */}
+                              </div>
+                              {ledgerType != "BUYER" ? (
+                                <div className="col-lg-2 ">
+                                  <p className="out-standing">
+                                    Outstanding Advances
+                                  </p>
+                                  <p className={"paid-coloring"}>
+                                    {cardDetails?.advanceBal
+                                      ? getCurrencyNumberWithSymbol(
+                                          cardDetails.advanceBal
+                                        )
+                                      : 0}
+                                  </p>
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          )}
+                          <span id="horizontal-line"></span>
+                          <div className="d-flex justify-content-between">
+                            <ul
+                              className="nav nav-tabs ledger_tabs"
+                              id="myTab"
+                              role="tablist"
                             >
-                              <img src={download_icon} alt="img" />
-                            </button>
-                            <button
-                              onClick={() => {
-                                handleLedgerSummaryJson(false).then();
-                              }}
-                            >
-                              <img src={print} alt="img" />
-                            </button>
+                              {links.map((link) => {
+                                return (
+                                  <li key={link.id} className="nav-item ">
+                                    <a
+                                      className={
+                                        "nav-link" +
+                                        (ledgerTabs == link.to ? " active" : "")
+                                      }
+                                      href={"#" + link.to}
+                                      role="tab"
+                                      aria-controls="home"
+                                      data-bs-toggle="tab"
+                                      onClick={() => ledgerTabEvent(link.to)}
+                                    >
+                                      {ledgerType == "BUYER" &&
+                                      link.to == "detailedadvances"
+                                        ? ""
+                                        : link.name}
+                                    </a>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                            <div className="print_dwnld_icons">
+                              <button
+                                onClick={() => {
+                                  ledgerType != "BUUYER" &&
+                                  ledgerTabs == "detailedadvances"
+                                    ? getDownloadPdfAdv().then()
+                                    : getDownloadPdf(false).then();
+                                }}
+                              >
+                                <img src={download_icon} alt="img" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  ledgerType != "BUUYER" &&
+                                  ledgerTabs == "detailedadvances"
+                                    ? handleLedgerSummaryJsonAdv().then()
+                                    : handleLedgerSummaryJson(false).then();
+                                }}
+                              >
+                                <img src={print} alt="img" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        {allCustom == "all" && ledgerTabs == "ledgersummary" ? (
+                          <LedgerSummary
+                            ledgerTab={ledgerTabs}
+                            allCustomTab={allCustom}
+                            LedgerSummary={ledgerSummary}
+                            partyType={props.type}
+                            dateDisplay={dateDisplay}
+                            partyId={partyId}
+                          />
+                        ) : (
+                          ""
+                        )}
+                        {allCustom == "all" &&
+                        ledgerTabs == "detailedledger" ? (
+                          <DetailedLedger
+                            detailedLedger={detailedLedger}
+                            ledgerTab={ledgerTabs}
+                            allCustomTab={allCustom}
+                            partyType={props.type}
+                            dateDisplay={dateDisplay}
+                            partyId={partyId}
+                          />
+                        ) : (
+                          ""
+                        )}
+                        {ledgerTabs == "detailedadvances" ? (
+                          <AdvanceSummary
+                            partyType={ledgerType}
+                            ledgerTabs={ledgerTabs}
+                          />
+                        ) : (
+                          ""
+                        )}
+                        {allCustom == "custom" &&
+                        ledgerTabs == "ledgersummary" ? (
+                          <LedgerSummary
+                            LedgerSummaryByDate={summaryByDate}
+                            ledgerTab={ledgerTabs}
+                            allCustomTab={allCustom}
+                            partyType={props.type}
+                            partyId={partyId}
+                            dateDisplay={dateDisplay}
+                          />
+                        ) : (
+                          ""
+                        )}
+                        {allCustom == "custom" &&
+                        ledgerTabs == "detailedledger" ? (
+                          <DetailedLedger
+                            DetailedLedgerByDate={detailedByDate}
+                            ledgerTab={ledgerTabs}
+                            allCustomTab={allCustom}
+                            partyType={props.type}
+                            partyId={partyId}
+                            dateDisplay={dateDisplay}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="row partner_no_data_widget_rows nodata_scroll_fix">
+                      <div className="col-lg-5">
+                        <div className="partner_no_data_widget">
+                          <div className="text-center">
+                            <img
+                              src={no_data_icon}
+                              alt="icon"
+                              className="d-flex mx-auto justify-content-center"
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div>
-                      {allCustom == "all" && ledgerTabs == "ledgersummary" ? (
-                        <LedgerSummary
-                          ledgerTab={ledgerTabs}
-                          allCustomTab={allCustom}
-                          LedgerSummary={ledgerSummary}
-                          partyType={props.type}
-                          dateDisplay={dateDisplay}
-                          partyId={partyId}
-                        />
-                      ) : (
-                        ""
-                      )}
-                      {allCustom == "all" && ledgerTabs == "detailedledger" ? (
-                        <DetailedLedger
-                          detailedLedger={detailedLedger}
-                          ledgerTab={ledgerTabs}
-                          allCustomTab={allCustom}
-                          partyType={props.type}
-                          dateDisplay={dateDisplay}
-                          partyId={partyId}
-                        />
-                      ) : (
-                        ""
-                      )}
-                      {allCustom == "custom" &&
-                      ledgerTabs == "ledgersummary" ? (
-                        <LedgerSummary
-                          LedgerSummaryByDate={summaryByDate}
-                          ledgerTab={ledgerTabs}
-                          allCustomTab={allCustom}
-                          partyType={props.type}
-                          partyId={partyId}
-                          dateDisplay={dateDisplay}
-                        />
-                      ) : (
-                        ""
-                      )}
-                      {allCustom == "custom" &&
-                      ledgerTabs == "detailedledger" ? (
-                        <DetailedLedger
-                          DetailedLedgerByDate={detailedByDate}
-                          ledgerTab={ledgerTabs}
-                          allCustomTab={allCustom}
-                          partyType={props.type}
-                          partyId={partyId}
-                          dateDisplay={dateDisplay}
-                        />
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-               
-              ) : (
-                <div className="row partner_no_data_widget_rows nodata_scroll_fix">
-                  <div className="col-lg-5">
-                    <div className="partner_no_data_widget">
-                      <div className="text-center">
-                        <img
-                          src={no_data_icon}
-                          alt="icon"
-                          className="d-flex mx-auto justify-content-center"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </div>
-            </div>
-            {isLoadingNew ? (
-              <div className="loading_styles loading_styles_led">
-                <img src={loading} alt="my-gif" className="gif_img" />
               </div>
-            ) : ''}
+              {isLoadingNew ? (
+                <div className="loading_styles loading_styles_led">
+                  <img src={loading} alt="my-gif" className="gif_img" />
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           )}
           {showDatepickerModal1 ? (
@@ -1532,6 +1923,16 @@ const Ledgers = (props) => {
           ) : (
             ""
           )}
+          {recordPayModalStatus ? (
+            <TransportoRecord
+              showRecordPayModal={recordPayModal}
+              closeRecordPayModal={() => setRecordPayModal(false)}
+              // tabs={tabs}
+              // type={"TRANS"}
+            />
+          ) : (
+            ""
+          )}
         </div>
       )}
       <ToastContainer />
@@ -1540,4 +1941,3 @@ const Ledgers = (props) => {
 };
 
 export default Ledgers;
-

@@ -28,8 +28,11 @@ import {
   partyOutstandingBal,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
+  selectPartnerOption,
   totalAdvancesVal,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import {
   getCurrencyNumberWithOutSymbol,
@@ -67,6 +70,8 @@ const Advance = (props) => {
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const [isLoadingNew, setIsLoadingNew] = useState(false);
   console.log(advancesData, "advancesData");
+  const selectPartnerOption1 = advancesData?.selectPartnerOption;
+  console.log(selectPartnerOption1,'selectPartnerOption')
   const tabs = [
     {
       id: 1,
@@ -94,6 +99,7 @@ const Advance = (props) => {
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
   useEffect(() => {
+    dispatch(selectPartnerOption('all'))
     getAllAdvances();
     dispatch(allCustomTabs("all"));
     dispatch(beginDate(date));
@@ -102,6 +108,11 @@ const Advance = (props) => {
     console.log(allData, "useeffect all data");
   }, [props]);
   const getAllAdvances = () => {
+    var type = 'ALL';
+    console.log(selectPartnerOption1,'selectPartnerOption1')
+    if(selectPartnerOption1 != null){
+      var type = selectPartnerOption1 == 'Sellers' ? 'FARMER' : selectPartnerOption1;
+    }
     getAdvances(clickId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -117,7 +128,7 @@ const Advance = (props) => {
               dispatch(partyOutstandingBal(0));
             }
             if (res.data.data.totalAdvances != 0) {
-              dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+              dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
             }
           } else {
             dispatch(allAdvancesData([]));
@@ -160,7 +171,9 @@ const Advance = (props) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -175,7 +188,9 @@ const Advance = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -242,7 +257,7 @@ const Advance = (props) => {
   };
 
   const getAdvancesOutStbal = () => {
-    getAdvances(clickId)
+    getAdvances(clickId,selectPartnerOption1)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
@@ -355,12 +370,12 @@ const Advance = (props) => {
                     </div>
                   </div>
                   {advancesArray.length > 0 ? (
-                    <div>
+                    <div className="ledger-table">
                       <div className="row theadr-tag p-0">
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-2">Date</th>
-                        <th class="col-lg-6">Name</th>
-                        <th class="col-lg-3">Given(₹)</th>
+                        <th class="col-lg-5">Name</th>
+                        <th class="col-lg-4">Outstanding Advance(₹)</th>
                       </div>
                       <div
                         className="table-scroll ledger-table advance_table"
@@ -390,7 +405,7 @@ const Advance = (props) => {
                                     </td>
                                     <td
                                       key={item.partyName}
-                                      className="col-lg-6"
+                                      className="col-lg-5"
                                     >
                                       <div className="d-flex">
                                         <div className="c-img">
@@ -409,7 +424,7 @@ const Advance = (props) => {
                                           )}
                                         </div>
                                         <div>
-                                          <p className="namedtl-tag">
+                                          <p className="namedtl-tag text-left">
                                             {item.partyName}
                                           </p>
                                           <div className="d-flex align-items-center">
@@ -421,29 +436,24 @@ const Advance = (props) => {
                                                 : "Trader"}{" "}
                                               - {item.partyId}&nbsp;
                                             </p>
-                                            <p className="mobilee-tag desk_responsive">
-                                              {" | " +
-                                                getMaskedMobileNumber(
-                                                  item.mobile
-                                                )}
-                                            </p>
+                                           
                                           </div>
-                                          <p className="mobilee-tag mobile_responsive">
+                                          <p className="mobilee-tag text-left">
                                             {getMaskedMobileNumber(item.mobile)}
                                           </p>
                                           <p className="address-tag">
-                                            {item.partyAddress
-                                              ? item.partyAddress
+                                            {item.addressLine
+                                              ? item.addressLine
                                               : ""}
                                           </p>
                                         </div>
                                       </div>
                                     </td>
-                                    <td className="col-lg-3" key={item.amount}>
+                                    <td className="col-lg-4" key={item.advance}>
                                       <p className="paid-coloring">
-                                        {item.amount != 0
+                                        {item.advance != 0
                                           ? getCurrencyNumberWithOutSymbol(
-                                              item.amount
+                                              item.advance
                                             )
                                           : 0}
                                       </p>

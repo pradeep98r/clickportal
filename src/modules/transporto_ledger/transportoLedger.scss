@@ -30,7 +30,7 @@
     }
 }
 .table-scroll {
-    height: calc(100vh - 302px);
+    height: calc(100vh - 305px);
     padding:0px;
     vertical-align: top;
     border-radius: 0px;
@@ -694,3 +694,9 @@ input[type=radio].radioBtnValues{
     position: absolute;
     left: 20%;
 }
+
+
+.custom-control-input:checked + .custom-control-label::before {
+    background-color: #00B63E;
+    border: none;
+  }

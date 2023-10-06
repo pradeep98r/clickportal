@@ -168,7 +168,7 @@ const BillView = (props) => {
     }
     getOutstandingBal(clickId, partyId).then((response) => {
       if (response.data.data !== null) {
-        setoutBal(response.data.data);
+        setoutBal(response.data.data.tobePaidRcvd);
       }
     });
     // if (settingsDataArray != null) {

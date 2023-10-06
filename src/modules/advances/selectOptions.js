@@ -16,6 +16,8 @@ import {
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import moment from "moment";
 import { allCustomTabs, beginDate,closeDate } from "../../reducers/ledgerSummarySlice";
@@ -131,7 +133,9 @@ const SelectOptions = () => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -145,7 +149,9 @@ const SelectOptions = () => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }

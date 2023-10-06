@@ -114,7 +114,9 @@ const Step3PartySelect = (props) => {
     }
     if (partnerSelectedData != null) {
       getOutstandingBal(clickId, partnerSelectedData.partyId).then((res) => {
-        setOutsBal(res.data.data == null ? 0 : res.data.data);
+        if (res.data.data != null) {
+        setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
+        }
       });
     }
     props.parentSelectedParty(
@@ -176,7 +178,9 @@ const Step3PartySelect = (props) => {
         transpoStatus
       );
       getOutstandingBal(clickId, item.partyId).then((res) => {
-        setOutsBal(res.data.data);
+        if (res.data.data != null) {
+        setOutsBal(res.data.data.tobePaidRcvd);
+        }
       });
       setTranspoStatus(true);
     } else if (
@@ -202,7 +206,9 @@ const Step3PartySelect = (props) => {
       localStorage.setItem("selectedPartner", JSON.stringify(item));
       dispatch(selectBuyer(item));
       getOutstandingBal(clickId, item.partyId).then((res) => {
-        setOutsBal(res.data.data);
+        if (res.data.data != null) {
+        setOutsBal(res.data.data.tobePaidRcvd);
+        }
       });
       setPartySelectStatus(true);
     }
