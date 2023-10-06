@@ -31,6 +31,8 @@ import {
   selectPartnerOption,
   totalAdvancesVal,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import {
   getCurrencyNumberWithOutSymbol,
@@ -126,7 +128,7 @@ const Advance = (props) => {
               dispatch(partyOutstandingBal(0));
             }
             if (res.data.data.totalAdvances != 0) {
-              dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+              dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
             }
           } else {
             dispatch(allAdvancesData([]));
@@ -169,7 +171,9 @@ const Advance = (props) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -184,7 +188,9 @@ const Advance = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv))
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -432,7 +438,7 @@ const Advance = (props) => {
                                             </p>
                                            
                                           </div>
-                                          <p className="mobilee-tag">
+                                          <p className="mobilee-tag text-left">
                                             {getMaskedMobileNumber(item.mobile)}
                                           </p>
                                           <p className="address-tag">

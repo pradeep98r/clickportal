@@ -68,6 +68,8 @@ import {
   fromAdvanceFeature,
   fromAdvanceSummary,
   selectedAdvanceId,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import AdvanceSummary from "../advances/advanceSummary";
 import { getText } from "../../components/getText";
@@ -80,6 +82,8 @@ const Ledgers = (props) => {
   const advancesData = useSelector((state) => state.advanceInfo);
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
+  const totalCollectedValByPartyId = advancesData?.totalCollectedById;
+  const totalGivenValByPartyId = advancesData?.totalGivenById;
   const ledgers = ledgersSummary?.allLedgers;
   const dispatch = useDispatch();
   const clickId = loginData.caId;
@@ -121,7 +125,7 @@ const Ledgers = (props) => {
   );
   const [handleDate1, sethandleDate1] = useState(false);
   const [allCustom1, setAllCustom1] = useState("all");
-  console.log(ledgersSummary,'ledgersSummary')
+  console.log(ledgersSummary, "ledgersSummary");
   const tabs = [
     {
       id: 1,
@@ -455,7 +459,9 @@ const Ledgers = (props) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
             console.log("custom all", res.data.data);
           } else {
             dispatch(advanceSummaryById([]));
@@ -471,7 +477,9 @@ const Ledgers = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
             console.log("custom adva", res.data.data);
@@ -1163,11 +1171,13 @@ const Ledgers = (props) => {
                                           ""
                                         ) : (
                                           <td className="col-lg-2">
-                                            <p>{item.advance
-                                              ? getCurrencyNumberWithOutSymbol(
-                                                  item.advance
-                                                )
-                                              : 0}</p>
+                                            <p>
+                                              {item.advance
+                                                ? getCurrencyNumberWithOutSymbol(
+                                                    item.advance
+                                                  )
+                                                : 0}
+                                            </p>
                                           </td>
                                         )}
                                         <td
@@ -1233,12 +1243,12 @@ const Ledgers = (props) => {
                               <div>
                                 <p className="pat-tag">Outstanding Advances</p>
                                 <p className="paid-coloring">
-                                {outStAmt?.advanceBal
+                                  {outStAmt?.advanceBal
                                     ? getCurrencyNumberWithSymbol(
                                         outStAmt?.advanceBal
                                       )
                                     : 0}
-                                  </p>
+                                </p>
                               </div>
                             </div>
                           )}
@@ -1358,7 +1368,96 @@ const Ledgers = (props) => {
                         <div className="card-body" id="card-details">
                           {ledgerTabs == "detailedadvances" &&
                           ledgerType != "BUYER" ? (
-                            ''
+                            <div className="row">
+                              <div
+                                className="col-lg-3 d-flex align-items-center pl-0"
+                                id="verticalLines"
+                              >
+                                <div
+                                  className="pl-0 d-flex"
+                                  key={selectedParty.partyId}
+                                >
+                                  {selectedParty.profilePic ? (
+                                    <img
+                                      id="singles-img"
+                                      src={selectedParty.profilePic}
+                                      alt="buy-img"
+                                    />
+                                  ) : (
+                                    <img
+                                      id="singles-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                  <p id="card-text">
+                                    <p className="namedtl-tag">
+                                      {selectedParty.partyName}
+                                    </p>
+                                    <div className="d-flex align-items-center">
+                                      <p className="mobilee-tag">
+                                        {!selectedParty.trader
+                                          ? ledgerType == "FARMER"
+                                            ? "Farmer"
+                                            : getText(ledgerType)
+                                          : "Trader"}{" "}
+                                        - {selectedParty.partyId}
+                                      </p>
+                                    </div>
+                                    <p className="mobilee-tag">
+                                      {getMaskedMobileNumber(
+                                        selectedParty?.mobile
+                                      )}
+                                    </p>
+                                  </p>
+                                </div>
+                              </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id="verticalLines"
+                              >
+                                <p className="card-text paid">
+                                  Total Collected
+                                  <p className="paid-coloring">
+                                    {totalCollectedValByPartyId != 0
+                                      ? getCurrencyNumberWithSymbol(
+                                          totalCollectedValByPartyId
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id="verticalLines"
+                              >
+                                <p className="card-text paid">
+                                  Total Given
+                                  <p className="paid-coloring">
+                                    {totalGivenValByPartyId != 0
+                                      ? getCurrencyNumberWithSymbol(
+                                          totalGivenValByPartyId
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id=""
+                              >
+                                <p className="card-text paid">
+                                  Total Advances
+                                  <p className="paid-coloring">
+                                    {totalAdvancesValByPartyId != 0
+                                      ? getCurrencyNumberWithSymbol(
+                                          totalAdvancesValByPartyId
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                            </div>
                           ) : (
                             <div className="row">
                               <div className="col-lg-3" id="verticalLines">
@@ -1624,13 +1723,13 @@ const Ledgers = (props) => {
                                   <p className="out-standing">
                                     Outstanding Advances
                                   </p>
-                                  <p className={"paid-coloring"}>{
-                                    cardDetails?.advanceBal
-                                    ? getCurrencyNumberWithSymbol(
-                                        cardDetails.advanceBal
-                                      )
-                                    : 0
-                                  }</p>
+                                  <p className={"paid-coloring"}>
+                                    {cardDetails?.advanceBal
+                                      ? getCurrencyNumberWithSymbol(
+                                          cardDetails.advanceBal
+                                        )
+                                      : 0}
+                                  </p>
                                 </div>
                               ) : (
                                 ""
@@ -1719,7 +1818,10 @@ const Ledgers = (props) => {
                           ""
                         )}
                         {ledgerTabs == "detailedadvances" ? (
-                          <AdvanceSummary partyType={ledgerType} ledgerTabs={ledgerTabs} />
+                          <AdvanceSummary
+                            partyType={ledgerType}
+                            ledgerTabs={ledgerTabs}
+                          />
                         ) : (
                           ""
                         )}

@@ -52,7 +52,7 @@ import {
 } from "../../actions/transporterService";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import { customDetailedAvances, getAdvances, getAdvancesSummaryById } from "../../actions/advancesService";
-import { advanceDataInfo, advanceSummaryById, allAdvancesData, totalAdvancesVal, totalAdvancesValById } from "../../reducers/advanceSlice";
+import { advanceDataInfo, advanceSummaryById, allAdvancesData, totalAdvancesVal, totalAdvancesValById, totalCollectedById, totalGivenById } from "../../reducers/advanceSlice";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const advancesData = useSelector((state) => state.advanceInfo);
@@ -345,7 +345,7 @@ const getAllAdvances = () => {
             dispatch(advanceDataInfo(res.data.data.advances));
           }
           if (res.data.data.totalAdvances != 0) {
-            dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+            dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
           }
         } else {
           dispatch(allAdvancesData([]));
@@ -360,7 +360,9 @@ const getAdvanceSummary = () => {
       if (res.data.status.type === "SUCCESS") {
         if (res.data.data != null) {
           dispatch(advanceSummaryById(res.data.data.advances));
-          dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+          dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+          dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+          dispatch(totalGivenById(res.data.data.totalGivenAdv))
         } else {
           dispatch(advanceSummaryById([]));
         }
@@ -373,7 +375,9 @@ const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
     if(res.data.status.type == 'SUCCESS'){
       if(res.data.data != null){
         dispatch(advanceSummaryById(res.data.data.advances));
-        dispatch(totalAdvancesValById(res.data.data.totalAdvances))
+        dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+        dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+        dispatch(totalGivenById(res.data.data.totalGivenAdv))
       } else{
         dispatch(advanceSummaryById([]));
       }

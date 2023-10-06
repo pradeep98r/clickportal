@@ -21,7 +21,10 @@ const AdvanceSummary = (props) => {
   const advancesData = useSelector((state) => state.advanceInfo);
   const advancesSummary = advancesData?.advanceSummaryById;
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
+  console.log(advancesSummary,'adva')
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
+  const totalCollectedValByPartyId = advancesData?.totalCollectedById;
+  const totalGivenValByPartyId = advancesData?.totalGivenById;
   const dispatch = useDispatch();
   const tabClick = useSelector((state) => state.ledgerSummaryInfo);
   const allCustomTab = tabClick?.allCustomTabs;
@@ -29,7 +32,6 @@ const AdvanceSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const ledgerTabs = props.ledgerTabs;
-  console.log(selectedParty, advancesSummary, "selectedParty");
   const billOnClickView = (billId, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("A")) {
@@ -47,94 +49,91 @@ const AdvanceSummary = (props) => {
     <div>
       {advancesSummary.length > 0 ? (
         <div>
-           <div className="card details-tag">
-            <div className="card-body advance_card_body" id="card-details">
-            <div className="row">
-                              <div
-                                className="col-lg-3 d-flex align-items-center pl-0"
-                                id="verticalLines"
-                              >
-                                <div
-                                  className="pl-0 d-flex"
-                                  key={selectedParty.partyId}
-                                >
-                                  {selectedParty.profilePic ? (
-                                    <img
-                                      id="singles-img"
-                                      src={selectedParty.profilePic}
-                                      alt="buy-img"
-                                    />
-                                  ) : (
-                                    <img
-                                      id="singles-img"
-                                      src={single_bill}
-                                      alt="img"
-                                    />
-                                  )}
-                                  <p id="card-text">
-                                    <p className="namedtl-tag">
-                                      {selectedParty.partyName}
-                                    </p>
-                                    <div className="d-flex align-items-center">
-                                      <p className="mobilee-tag">
-                                        {!selectedParty.trader
-                                          ? partyType == "FARMER"
-                                            ? "Farmer"
-                                            : getText(partyType)
-                                          : "Trader"}{" "}
-                                        - {selectedParty.partyId}
-                                      </p>
-                                     
-                                    </div>
-                                    <p className="mobilee-tag">
-                                      {getMaskedMobileNumber(
-                                        selectedParty?.mobile
-                                      )}
-                                    </p>
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
-                                <p className="card-text paid">
-                                  Total Collected
-                                  <p className="paid-coloring">
-                                    {totalAdvancesValByPartyId != 0
-                                      ? getCurrencyNumberWithSymbol(
-                                          totalAdvancesValByPartyId
-                                        )
-                                      : 0}
-                                  </p>
-                                </p>
-                              </div>
-                              <div className="col-lg-3 d-flex align-items-center" id="verticalLines">
-                                <p className="card-text paid">
-                                  Total Given
-                                  <p className="paid-coloring">
-                                    {totalAdvancesValByPartyId != 0
-                                      ? getCurrencyNumberWithSymbol(
-                                          totalAdvancesValByPartyId
-                                        )
-                                      : 0}
-                                  </p>
-                                </p>
-                              </div>
-                              <div className="col-lg-3 d-flex align-items-center" id="">
-                                <p className="card-text paid">
-                                  Total Advances
-                                  <p className="paid-coloring">
-                                    {totalAdvancesValByPartyId != 0
-                                      ? getCurrencyNumberWithSymbol(
-                                          totalAdvancesValByPartyId
-                                        )
-                                      : 0}
-                                  </p>
-                                </p>
-                              </div>
-                            </div>
-
+          {ledgerTabs == "detailedadvances" ? (
+            ""
+          ) : (
+            <div className="card details-tag">
+              <div className="card-body advance_card_body" id="card-details">
+                <div className="row">
+                  <div
+                    className="col-lg-3 d-flex align-items-center pl-0"
+                    id="verticalLines"
+                  >
+                    <div className="pl-0 d-flex" key={selectedParty.partyId}>
+                      {selectedParty.profilePic ? (
+                        <img
+                          id="singles-img"
+                          src={selectedParty.profilePic}
+                          alt="buy-img"
+                        />
+                      ) : (
+                        <img id="singles-img" src={single_bill} alt="img" />
+                      )}
+                      <p id="card-text">
+                        <p className="namedtl-tag">{selectedParty.partyName}</p>
+                        <div className="d-flex align-items-center">
+                          <p className="mobilee-tag">
+                            {/* {!selectedParty.trader */}
+                              {/* // ? partyType == "FARMER"
+                              //   ? "Farmer"
+                              //   : getText(partyType)
+                              // : "Trader"}{" "} */}
+                              Farmer
+                            - {selectedParty.partyId}
+                          </p>
+                        </div>
+                        <p className="mobilee-tag">
+                          {getMaskedMobileNumber(selectedParty?.mobile)}
+                        </p>
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    className="col-lg-3 d-flex align-items-center"
+                    id="verticalLines"
+                  >
+                    <p className="card-text paid">
+                      Total Collected
+                      <p className="paid-coloring">
+                        {totalCollectedValByPartyId != 0
+                          ? getCurrencyNumberWithSymbol(
+                            totalCollectedValByPartyId
+                            )
+                          : 0}
+                      </p>
+                    </p>
+                  </div>
+                  <div
+                    className="col-lg-3 d-flex align-items-center"
+                    id="verticalLines"
+                  >
+                    <p className="card-text paid">
+                      Total Given
+                      <p className="paid-coloring">
+                        {totalGivenValByPartyId != 0
+                          ? getCurrencyNumberWithSymbol(
+                            totalGivenValByPartyId
+                            )
+                          : 0}
+                      </p>
+                    </p>
+                  </div>
+                  <div className="col-lg-3 d-flex align-items-center" id="">
+                    <p className="card-text paid">
+                      Total Advances
+                      <p className="paid-coloring">
+                        {totalAdvancesValByPartyId != 0
+                          ? getCurrencyNumberWithSymbol(
+                            totalAdvancesValByPartyId
+                            )
+                          : 0}
+                      </p>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-
+          )}
           <div>
             {advancesSummary.length > 0 ? (
               <div>
@@ -150,15 +149,14 @@ const AdvanceSummary = (props) => {
                 <div
                   className={
                     allCustomTab == "all"
-                      ? ("ledgerSummary advance_ledgerSummary " + (ledgerTabs ==
-                        "detailedadvances"
-                        ? ""
-                        : "advance_ledgerSummary_tab"))
-                      : ("ledgerSummary advance_ledgerSummary_custom " +
-                          (ledgerTabs ==
-                        "detailedadvances"
-                      ? ""
-                      : "advance_ledgerSummary_tab_custom"))
+                      ? "ledgerSummary advance_ledgerSummary " +
+                        (ledgerTabs == "detailedadvances"
+                          ? ""
+                          : "advance_ledgerSummary_tab")
+                      : "ledgerSummary advance_ledgerSummary_custom " +
+                        (ledgerTabs == "detailedadvances"
+                          ? ""
+                          : "advance_ledgerSummary_tab_custom")
                   }
                   id="scroll_style"
                 >
@@ -189,21 +187,32 @@ const AdvanceSummary = (props) => {
                               </button>
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
-                            <td className="col-3"> {item.collectedAdv
-                                              ? getCurrencyNumberWithOutSymbol(item.collectedAdv)
-                                              : ''}</td>
+                            <td className="col-3">
+                              {" "}
+                              <p id="p-common" className="paid-coloring">
+                              {item.collectedAdv
+                                ? getCurrencyNumberWithOutSymbol(
+                                    item.collectedAdv
+                                  )
+                                : 0}
+                                </p>
+                            </td>
                             <td className="col-3">
                               <p id="p-common" className="paid-coloring">
                                 {item.givenAdv
-                                  ? getCurrencyNumberWithOutSymbol(item.givenAdv)
-                                  : ""}
+                                  ? getCurrencyNumberWithOutSymbol(
+                                      item.givenAdv
+                                    )
+                                  : 0}
                               </p>
                             </td>
                             <td className="col-3">
-                            {item.advBal
-                                  ? getCurrencyNumberWithOutSymbol(item.advBal)
-                                  : 0}
-                              </td>
+                              <p id="p-common" className="paid-coloring">
+                              {item.advBal
+                                ? getCurrencyNumberWithOutSymbol(item.advBal)
+                                : 0}
+                                </p>
+                            </td>
                           </tr>
                         );
                       })}
