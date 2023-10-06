@@ -1769,6 +1769,12 @@ const Step33 = (props) => {
                           ) : (
                             ""
                           )}
+                           {allGroups[index].settingName == "ADVANCES" ? (
+                             <div>
+                               <p className="comment_text color_red">Outstanding Advances:{outBalAdvance != 0 ? getCurrencyNumberWithSymbol(outBalAdvance) : 0}</p>
+
+                               </div>
+                           ) : '' }
                         </div>
                       );
                     }

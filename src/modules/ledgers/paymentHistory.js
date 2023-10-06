@@ -323,6 +323,7 @@ const updateAdvances = () =>{
   }
 }
 const getAllAdvances = () => {
+  var partyType = partyTypeVal == "SELLER" ? "FARMER" : partyTypeVal;
   getAdvances(clickId)
     .then((res) => {
       if (res.data.status.type === "SUCCESS") {

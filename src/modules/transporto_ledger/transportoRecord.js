@@ -59,6 +59,7 @@ const TransportoRecord = (props) => {
   const fromAdvances = advancesData?.fromAdvanceFeature;
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const selectedPartnerFromAdv = advancesData?.selectedPartyByAdvanceId;
+  console.log(selectedPartnerFromAdv,'selectedPartnerFromAdv')
   const ledgerData = fromAdvances
     ? selectedPartnerFromAdv
     : editRecordStatus
@@ -190,9 +191,10 @@ const TransportoRecord = (props) => {
       amount: paidsRcvd,
       paymentMode: paymentMode,
       partyId: transId,
-      date: moment(selectDate).format("YYYY-MM-DD"),
+      advDate: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       writerId: writerId,
+      advType:returnAdvanceStatus ? 'C' : 'G'
     };
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
