@@ -152,7 +152,7 @@ const Ledgers = (props) => {
     },
     {
       id: 3,
-      name: "Advavanes Ledger",
+      name: "Advance Ledger",
       to: "detailedadvances",
     },
   ];

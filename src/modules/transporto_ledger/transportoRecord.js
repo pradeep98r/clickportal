@@ -520,6 +520,7 @@ const TransportoRecord = (props) => {
                 </div>
               </div>
             </div>
+            {!fromAdvances ? 
             <div className="row align-items-center record_modal_row">
               <div className="" align="left">
                 {!editRecordStatus ? (
@@ -532,9 +533,11 @@ const TransportoRecord = (props) => {
                   </div>
                 ) : (
                   ""
-                )}
+                )} 
               </div>
-            </div>
+              </div>
+              : '' }
+           
             <div
               className="form-group record_modal_row mb-0"
               id="input_in_modal"
