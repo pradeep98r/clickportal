@@ -125,7 +125,6 @@ const Ledgers = (props) => {
   );
   const [handleDate1, sethandleDate1] = useState(false);
   const [allCustom1, setAllCustom1] = useState("all");
-  console.log(ledgersSummary, "ledgersSummary");
   const tabs = [
     {
       id: 1,
@@ -206,7 +205,6 @@ const Ledgers = (props) => {
           setLoading(false);
           if (res.data.data !== null) {
             setAllData(res.data.data.ledgers);
-            console.log(res.data.data.ledgers, "res.data.data.ledgers");
             dispatch(outStandingBal(res.data.data));
             dispatch(allLedgers(res.data.data.ledgers));
             setPartyId(res.data.data.ledgers[0].partyId);
@@ -382,7 +380,6 @@ const Ledgers = (props) => {
     } else if (type == "custom") {
       ledgerSummaryByDate(clickId, partyId, startDate, endDate);
     }
-    console.log(customDateHanlde, ledgerTabs, type);
     setAllCustom(type);
   };
   const allCustomEvent1 = (type) => {
@@ -451,7 +448,6 @@ const Ledgers = (props) => {
       dispatch(dateCustomStatus(true));
     }
     setLedgerTabs(ledgerTabType);
-    console.log(allCustom, ledgerTabs);
   };
   const getAdvanceSummary = (partyId) => {
     getAdvancesSummaryById(clickId, partyId)
@@ -462,7 +458,6 @@ const Ledgers = (props) => {
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
             dispatch(totalGivenById(res.data.data.totalGivenAdv));
-            console.log("custom all", res.data.data);
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -482,7 +477,6 @@ const Ledgers = (props) => {
             dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
-            console.log("custom adva", res.data.data);
           }
           setLoading(false);
         }
@@ -905,14 +899,12 @@ const Ledgers = (props) => {
     );
     var pdfResponse = await getAdvancesSummaryPdf(reportsJsonBody);
     if (pdfResponse.status !== 200) {
-      console.log(pdfResponse.status, "fasl");
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
       setIsLoadingNew(false);
       return;
     } else {
-      console.log(pdfResponse.status, "true");
       toast.success("Pdf Downloaded SuccessFully", {
         toastId: "errorr2",
       });
@@ -938,7 +930,6 @@ const Ledgers = (props) => {
       ledgersSummary?.allCustomTabs
     );
     var pdfResponse = await getAdvancesSummaryPdf(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -1417,21 +1408,6 @@ const Ledgers = (props) => {
                                 id="verticalLines"
                               >
                                 <p className="card-text paid">
-                                  Total Collected
-                                  <p className="paid-coloring">
-                                    {totalCollectedValByPartyId != 0
-                                      ? getCurrencyNumberWithSymbol(
-                                          totalCollectedValByPartyId
-                                        )
-                                      : 0}
-                                  </p>
-                                </p>
-                              </div>
-                              <div
-                                className="col-lg-3 d-flex align-items-center"
-                                id="verticalLines"
-                              >
-                                <p className="card-text paid">
                                   Total Given
                                   <p className="paid-coloring">
                                     {totalGivenValByPartyId != 0
@@ -1442,6 +1418,22 @@ const Ledgers = (props) => {
                                   </p>
                                 </p>
                               </div>
+                              <div
+                                className="col-lg-3 d-flex align-items-center"
+                                id="verticalLines"
+                              >
+                                <p className="card-text paid">
+                                  Total Collected
+                                  <p className="paid-coloring">
+                                    {totalCollectedValByPartyId != 0
+                                      ? getCurrencyNumberWithSymbol(
+                                          totalCollectedValByPartyId
+                                        )
+                                      : 0}
+                                  </p>
+                                </p>
+                              </div>
+                            
                               <div
                                 className="col-lg-3 d-flex align-items-center"
                                 id=""

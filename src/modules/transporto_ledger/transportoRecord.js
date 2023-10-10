@@ -61,7 +61,6 @@ const TransportoRecord = (props) => {
   const fromAdvances = advancesData?.fromAdvanceFeature;
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const selectedPartnerFromAdv = advancesData?.selectedPartyByAdvanceId;
-  console.log(selectedPartnerFromAdv,'selectedPartnerFromAdv')
   const ledgerData = fromAdvances
     ? selectedPartnerFromAdv
     : editRecordStatus
@@ -72,7 +71,6 @@ const TransportoRecord = (props) => {
       ? selectedPartnerFromAdv?.partyId
       : selectedPartnerFromAdv?.partyId
     : transpoData?.transporterIdVal;
-  console.log(transId, "id");
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
@@ -84,6 +82,7 @@ const TransportoRecord = (props) => {
   var fromInventoryTab = transpoData?.fromInv;
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
+  const [outBalAdvance, setOutBalAdvance] = useState(0);
   useEffect(() => {
     if (!fromAdvSummary) {
       getOutstandingPaybles(clickId, transId);
@@ -96,6 +95,7 @@ const TransportoRecord = (props) => {
       if (response.data.data != null) {
         console.log(response.data.data);
         dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
+        setOutBalAdvance(response.data.data.advance);
       }
     });
   };
@@ -124,6 +124,7 @@ const TransportoRecord = (props) => {
     }
   };
   const onSubmitRecordPayment = () => {
+    console.log(fromAdvances, returnAdvanceStatus, outBalAdvance, paidsRcvd,!fromAdvSummary,!advancesData?.fromParentSelect,'all values');
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
@@ -132,7 +133,13 @@ const TransportoRecord = (props) => {
       setRequiredCondition("Invalid Amount");
     } else if (fromAdvances) {
       if (!fromAdvSummary || !advancesData?.fromParentSelect) {
-        addRecordPayment();
+        if (parseInt(paidsRcvd) > outBalAdvance && returnAdvanceStatus) {
+          setRequiredCondition(
+            "Entered Amount cannot be more than Outstanding Advance"
+          );
+        } else {
+          addRecordPayment();
+        }
       } else {
         toast.error("Please Select Partner", {
           toastId: "error16",
@@ -144,10 +151,25 @@ const TransportoRecord = (props) => {
       paidsRcvd <= outStandingBal &&
       !(paidsRcvd < 0)
     ) {
-      addRecordPayment();
+      
+      if (fromAdvances) {
+        if (returnAdvanceStatus) {
+          if (parseInt(paidsRcvd) > outBalAdvance) {
+            setRequiredCondition(
+              "Entered Amount cannot be more than Outstanding Advance"
+            );
+          } else {
+            addRecordPayment();
+          }
+        } else {
+          addRecordPayment();
+        }
+      } else {
+        addRecordPayment();
+      }
     } else if (parseInt(paidsRcvd) > outStandingBal) {
       setRequiredCondition(
-        "Entered Amount  cannot more than Outstanding Balance"
+        "Entered Amount cannot more than Outstanding Balance"
       );
     }
   };
@@ -197,7 +219,7 @@ const TransportoRecord = (props) => {
       advDate: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       writerId: writerId,
-      advType:returnAdvanceStatus ? 'C' : 'G'
+      advType: returnAdvanceStatus ? "C" : "G",
     };
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
@@ -270,7 +292,6 @@ const TransportoRecord = (props) => {
 
   const updateAdvances = () => {
     getAllAdvances();
-    console.log(allCustomTab, "v");
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {
@@ -326,7 +347,7 @@ const TransportoRecord = (props) => {
             dispatch(advanceSummaryById(res.data.data.advances));
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv))
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -342,7 +363,7 @@ const TransportoRecord = (props) => {
             dispatch(advanceSummaryById(res.data.data.advances));
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv))
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -410,7 +431,6 @@ const TransportoRecord = (props) => {
       setSelectDate(new Date());
     }
     if (advancesData?.fromParentSelect) {
-      console.log("came to here", transId);
       getOutstandingPaybles(clickId, transId);
     } else {
       getAllAdvances();
@@ -418,8 +438,10 @@ const TransportoRecord = (props) => {
   };
   const [returnAdvanceStatus, setReturnAdvanceStatus] = useState(false);
   const toggleStatus = (status) => {
-    console.log(status, typeof status);
     setReturnAdvanceStatus(!status);
+    if (!status) {
+      getOutstandingPaybles(clickId, transId);
+    }
   };
   return (
     <Modal
@@ -520,24 +542,42 @@ const TransportoRecord = (props) => {
                 </div>
               </div>
             </div>
-            {!fromAdvances ? 
-            <div className="row align-items-center record_modal_row">
-              <div className="" align="left">
-                {!editRecordStatus ? (
-                  <div className="out-paybles p-0">
-                    <p id="p-tag">Outstanding Paybles</p>
-                    <p id="recieve-tag">
-                      &#8377;
-                      {outStandingBal ? outStandingBal.toFixed(2) : 0}
-                    </p>
-                  </div>
-                ) : (
-                  ""
-                )} 
+            {!fromAdvances ? (
+              <div className="row align-items-center record_modal_row">
+                <div className="" align="left">
+                  {!editRecordStatus ? (
+                    <div className="out-paybles p-0">
+                      <p id="p-tag">Outstanding Paybles</p>
+                      <p id="recieve-tag">
+                        &#8377;
+                        {outStandingBal ? outStandingBal.toFixed(2) : 0}
+                      </p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
+            ) : returnAdvanceStatus ? (
+              <div className="row align-items-center record_modal_row">
+                <div className="" align="left">
+                  {!editRecordStatus ? (
+                    <div className="out-paybles p-0">
+                      <p id="p-tag">Outstanding Advances</p>
+                      <p id="recieve-tag">
+                        &#8377;
+                        {outBalAdvance ? outBalAdvance.toFixed(2) : 0}
+                      </p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-              : '' }
-           
+            ) : (
+              ""
+            )}
+
             <div
               className="form-group record_modal_row mb-0"
               id="input_in_modal"
