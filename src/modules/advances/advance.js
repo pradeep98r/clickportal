@@ -69,9 +69,7 @@ const Advance = (props) => {
   const selectedPartyId = advancesData?.selectedAdvanceId;
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const [isLoadingNew, setIsLoadingNew] = useState(false);
-  console.log(advancesData, "advancesData");
   const selectPartnerOption1 = advancesData?.selectPartnerOption;
-  console.log(selectPartnerOption1,'selectPartnerOption')
   const tabs = [
     {
       id: 1,
@@ -105,11 +103,9 @@ const Advance = (props) => {
     dispatch(beginDate(date));
     dispatch(closeDate(date));
     callbackFunction(date, date, "Custom");
-    console.log(allData, "useeffect all data");
   }, [props]);
   const getAllAdvances = () => {
     var type = 'ALL';
-    console.log(selectPartnerOption1,'selectPartnerOption1')
     if(selectPartnerOption1 != null){
       var type = selectPartnerOption1 == 'Sellers' ? 'FARMER' : selectPartnerOption1;
     }
@@ -286,16 +282,13 @@ const Advance = (props) => {
       ledgersSummary?.closeDate,
       ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
     var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
-      console.log(pdfResponse.status, "fasl");
       toast.error("Something went wrong", {
         toastId: "errorr2",
       });
       setIsLoadingNew(false);
       return;
     } else {
-      console.log(pdfResponse.status, "true");
       toast.success("Pdf Downloaded SuccessFully", {
         toastId: "errorr2",
       });
@@ -319,7 +312,6 @@ const Advance = (props) => {
       ledgersSummary?.closeDate,
       ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
     var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",

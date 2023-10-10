@@ -21,7 +21,6 @@ const AdvanceSummary = (props) => {
   const advancesData = useSelector((state) => state.advanceInfo);
   const advancesSummary = advancesData?.advanceSummaryById;
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
-  console.log(advancesSummary,'adva')
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
   const totalCollectedValByPartyId = advancesData?.totalCollectedById;
   const totalGivenValByPartyId = advancesData?.totalGivenById;
@@ -93,21 +92,6 @@ const AdvanceSummary = (props) => {
                     id="verticalLines"
                   >
                     <p className="card-text paid">
-                      Total Collected
-                      <p className="paid-coloring">
-                        {totalCollectedValByPartyId != 0
-                          ? getCurrencyNumberWithSymbol(
-                            totalCollectedValByPartyId
-                            )
-                          : 0}
-                      </p>
-                    </p>
-                  </div>
-                  <div
-                    className="col-lg-3 d-flex align-items-center"
-                    id="verticalLines"
-                  >
-                    <p className="card-text paid">
                       Total Given
                       <p className="paid-coloring">
                         {totalGivenValByPartyId != 0
@@ -118,6 +102,22 @@ const AdvanceSummary = (props) => {
                       </p>
                     </p>
                   </div>
+                  <div
+                    className="col-lg-3 d-flex align-items-center"
+                    id="verticalLines"
+                  >
+                    <p className="card-text paid">
+                      Total Collected
+                      <p className="paid-coloring">
+                        {totalCollectedValByPartyId != 0
+                          ? getCurrencyNumberWithSymbol(
+                            totalCollectedValByPartyId
+                            )
+                          : 0}
+                      </p>
+                    </p>
+                  </div>
+                
                   <div className="col-lg-3 d-flex align-items-center" id="">
                     <p className="card-text paid">
                       Total Advances
@@ -142,8 +142,8 @@ const AdvanceSummary = (props) => {
                     #
                   </th>
                   <th className="col-2">Ref ID | Date</th>
-                  <th className="col-3">Collected(₹) </th>
                   <th className="col-3">Given(₹) </th>
+                  <th className="col-3">Collected(₹) </th>
                   <th className="col-3">Balance(₹) </th>
                 </div>
                 <div
@@ -188,6 +188,15 @@ const AdvanceSummary = (props) => {
                               <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td className="col-3">
+                              <p id="p-common" className="paid-coloring">
+                                {item.givenAdv
+                                  ? getCurrencyNumberWithOutSymbol(
+                                      item.givenAdv
+                                    )
+                                  : 0}
+                              </p>
+                            </td>
+                            <td className="col-3">
                               {" "}
                               <p id="p-common" className="paid-coloring">
                               {item.collectedAdv
@@ -197,15 +206,7 @@ const AdvanceSummary = (props) => {
                                 : 0}
                                 </p>
                             </td>
-                            <td className="col-3">
-                              <p id="p-common" className="paid-coloring">
-                                {item.givenAdv
-                                  ? getCurrencyNumberWithOutSymbol(
-                                      item.givenAdv
-                                    )
-                                  : 0}
-                              </p>
-                            </td>
+                          
                             <td className="col-3">
                               <p id="p-common" className="paid-coloring">
                               {item.advBal
