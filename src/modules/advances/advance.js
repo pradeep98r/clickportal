@@ -96,8 +96,9 @@ const Advance = (props) => {
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
+  const [advSummary, setAdvSummary] = useState([]);
   useEffect(() => {
-    dispatch(selectPartnerOption('all'))
+    dispatch(selectPartnerOption("all"));
     getAllAdvances();
     dispatch(allCustomTabs("all"));
     dispatch(beginDate(date));
@@ -105,9 +106,10 @@ const Advance = (props) => {
     callbackFunction(date, date, "Custom");
   }, [props]);
   const getAllAdvances = () => {
-    var type = 'ALL';
-    if(selectPartnerOption1 != null){
-      var type = selectPartnerOption1 == 'Sellers' ? 'FARMER' : selectPartnerOption1;
+    var type = "ALL";
+    if (selectPartnerOption1 != null) {
+      var type =
+        selectPartnerOption1 == "Sellers" ? "FARMER" : selectPartnerOption1;
     }
     getAdvances(clickId)
       .then((res) => {
@@ -117,6 +119,7 @@ const Advance = (props) => {
             dispatch(advanceDataInfo(res.data.data.advances));
             if (res.data.data.advances.length > 0) {
               dispatch(selectedAdvanceId(res.data.data.advances[0].partyId));
+              console.log("useefffe");
               getAdvanceSummary(res.data.data.advances[0].partyId);
               dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]));
               dispatch(partyOutstandingBal(res.data.data.outStandingPaybles));
@@ -154,7 +157,7 @@ const Advance = (props) => {
     if (allCustom == "custom") {
       dispatch(allCustomTabs("all"));
       setDateDisplay(false);
-      callbackFunction(date, date, "Custom");
+      // callbackFunction(date, date, "Custom");
     }
     dispatch(dateCustomStatus(true));
     dispatch(selectedAdvanceId(id));
@@ -167,11 +170,13 @@ const Advance = (props) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
+            setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv))
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
-            dispatch(advanceSummaryById([]));
+            dispatch(advanceSummaryById(null));
+            setAdvSummary([]);
           }
         }
         setLoading(false);
@@ -184,11 +189,13 @@ const Advance = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
+            setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv))
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
-            dispatch(advanceSummaryById([]));
+            dispatch(advanceSummaryById(null));
+            setAdvSummary([]);
           }
           setLoading(false);
         }
@@ -253,7 +260,7 @@ const Advance = (props) => {
   };
 
   const getAdvancesOutStbal = () => {
-    getAdvances(clickId,selectPartnerOption1)
+    getAdvances(clickId, selectPartnerOption1)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
@@ -277,11 +284,17 @@ const Advance = (props) => {
   };
   async function getDownloadPdf(summaryStatus) {
     setIsLoadingNew(true);
-    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
-      ledgersSummary?.beginDate,
-      ledgersSummary?.closeDate,
-      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
-    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
+    var reportsJsonBody = summaryStatus
+      ? getAdvancesSummaryJson(
+          advancesData,
+          ledgersSummary?.beginDate,
+          ledgersSummary?.closeDate,
+          ledgersSummary?.allCustomTabs
+        )
+      : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus
+      ? await getAdvancesSummaryPdf(reportsJsonBody)
+      : await generateLedSummary(reportsJsonBody);
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -307,11 +320,17 @@ const Advance = (props) => {
   }
   async function handleLedgerSummaryJson(summaryStatus) {
     setIsLoadingNew(true);
-    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
-      ledgersSummary?.beginDate,
-      ledgersSummary?.closeDate,
-      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
-    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
+    var reportsJsonBody = summaryStatus
+      ? getAdvancesSummaryJson(
+          advancesData,
+          ledgersSummary?.beginDate,
+          ledgersSummary?.closeDate,
+          ledgersSummary?.allCustomTabs
+        )
+      : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus
+      ? await getAdvancesSummaryPdf(reportsJsonBody)
+      : await generateLedSummary(reportsJsonBody);
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -357,7 +376,6 @@ const Advance = (props) => {
                             }}
                           />
                         </div>
-                      
                       </div>
                     </div>
                   </div>
@@ -389,10 +407,12 @@ const Advance = (props) => {
                                 >
                                   <div className="row align-items-center">
                                     <td className="col-lg-1">{index + 1}</td>
-                                    <td key={item.date} className="col-lg-2">
+                                    <td key={item.advDate} className="col-lg-2">
                                       <p className="date_ledger_val">
                                         {" "}
-                                        {moment(item.date).format("DD-MMM-YY")}
+                                        {moment(item.advDate).format(
+                                          "DD-MMM-YY"
+                                        )}
                                       </p>
                                     </td>
                                     <td
@@ -428,7 +448,6 @@ const Advance = (props) => {
                                                 : "Trader"}{" "}
                                               - {item.partyId}&nbsp;
                                             </p>
-                                           
                                           </div>
                                           <p className="mobilee-tag text-left">
                                             {getMaskedMobileNumber(item.mobile)}
@@ -512,8 +531,8 @@ const Advance = (props) => {
                           );
                         })}
                       </ul>
-                     <div className="d-flex">
-                     <div className="print_dwnld_icons d-flex">
+                      <div className="d-flex">
+                        <div className="print_dwnld_icons d-flex">
                           <button
                             onClick={() => {
                               getDownloadPdf(true).then();
@@ -529,14 +548,18 @@ const Advance = (props) => {
                             <img src={print} alt="img" />
                           </button>
                         </div>
-                     <button
-                        className="primary_btn add_bills_btn"
-                        onClick={recordPaymentOnClickEvent}
-                      >
-                        <img src={addbill_icon} alt="image" className="mr-2" />
-                        Record Advance
-                      </button>
-                     </div>
+                        <button
+                          className="primary_btn add_bills_btn"
+                          onClick={recordPaymentOnClickEvent}
+                        >
+                          <img
+                            src={addbill_icon}
+                            alt="image"
+                            className="mr-2"
+                          />
+                          Record Advance
+                        </button>
+                      </div>
                     </div>
                     <p
                       className={
@@ -568,7 +591,7 @@ const Advance = (props) => {
                         </button>
                       </div>
                     </div>
-                    <AdvanceSummary />
+                    <AdvanceSummary advancesSum={advSummary} />
                   </div>
                 ) : (
                   <div className="col-lg-7">

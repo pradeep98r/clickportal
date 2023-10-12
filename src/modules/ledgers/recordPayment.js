@@ -507,8 +507,6 @@ const RecordPayment = (props) => {
     }
     getLedgers(clickId, partyType,'','').then((res) => {
       if (res.data.status.type === "SUCCESS") {
-        // setLedgers(res.data.data.ledgers);
-        // setOutStAmt(res.data.data);
         if (props.allCustomTab == "all" && props.ledgerTab == "ledgersummary") {
         }
         if (props.fromPaymentHistory || fromBillViewPopup) {

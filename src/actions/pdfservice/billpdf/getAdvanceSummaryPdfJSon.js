@@ -24,10 +24,14 @@ export function getAdvancesSummaryJson(data, startDate, endDate, customVal) {
         return {
           date: moment(ledgerData.date).format("DD-MMM-YY"),
           amount:ledgerData.givenAdv ? getCurrencyNumberWithOutSymbol(ledgerData.givenAdv) : 0,
+          // collected:ledgerData.collectedAdv ? getCurrencyNumberWithOutSymbol(ledgerData.collectedAdv) : 0,
           refId: ledgerData.refId,
+       // balance:ledgerData.advBal ? getCurrencyNumberWithOutSymbol(ledgerData.advBal) : 0,
         };
       }),
-      totalAdvances: data?.totalAdvancesValById,
+      // totalAdvances: data?.totalAdvancesValById,
+      // totalCollected:data?.totalCollectedById,
+      // totalGiven:data?.totalGivenById
     },
   };
 }

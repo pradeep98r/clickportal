@@ -19,7 +19,7 @@ const AdvanceSummary = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const advancesData = useSelector((state) => state.advanceInfo);
-  const advancesSummary = advancesData?.advanceSummaryById;
+  const advancesSummary = props.advancesSum;
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
   const totalCollectedValByPartyId = advancesData?.totalCollectedById;
@@ -185,7 +185,7 @@ const AdvanceSummary = (props) => {
                                   </div>
                                 </p>
                               </button>
-                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
+                              <p>{moment(item.advDate).format("DD-MMM-YY")}</p>
                             </td>
                             <td className="col-3">
                               <p id="p-common" className="paid-coloring">

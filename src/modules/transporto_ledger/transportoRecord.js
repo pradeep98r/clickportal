@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import loading from "../../assets/images/loading.gif";
 import {
+  getLedgers,
   getOutstandingBal,
   postRecordPayment,
   updateRecordPayment,
@@ -47,6 +48,7 @@ import {
   totalGivenById,
 } from "../../reducers/advanceSlice";
 import SelectedPartner from "../advances/selectedPartner";
+import { allLedgers } from "../../reducers/ledgerSummarySlice";
 const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
@@ -221,6 +223,7 @@ const TransportoRecord = (props) => {
       writerId: writerId,
       advType: returnAdvanceStatus ? "C" : "G",
     };
+    console.log(fromAdvances,'fromAdvances')
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
         (res) => {
@@ -228,10 +231,12 @@ const TransportoRecord = (props) => {
             toastId: "errorr12",
           });
           updateAdvances();
+          
           window.setTimeout(function () {
             props.closeRecordPayModal();
             closePopup();
           }, 800);
+          fetchLedgers();
         },
         (error) => {
           toast.error(error.response.data.status.message, {
@@ -301,6 +306,23 @@ const TransportoRecord = (props) => {
         toDate
       );
     }
+  };
+  const fetchLedgers = () => {
+    getLedgers(clickId, 'SELLER', '', '')
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          console.log(res.data.data,'datt')
+          // setLoading(false);
+          if (res.data.data !== null) {
+            dispatch(outStandingBal(res.data.data));
+            dispatch(allLedgers(res.data.data.ledgers));
+          } else {
+            dispatch(allLedgers([]));
+            // dispatch(setLedgerData(null));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
   };
   const label = advancesData.selectPartnerOption;
   const getAllAdvances = () => {
