@@ -722,15 +722,15 @@ const GroupTotals = (props) => {
       if (setting.settingName?.includes(substring)) {
         substring = setting.settingName;
       }
-      //  else if (
-      //   setting.settingName === "ADVANCES" &&
-      //   !(billData?.partyType.toUpperCase() === "FARMER")
-      // ) {
-      //   let clonedObject1 = { ...setting };
-      //   clonedObject1 = { ...clonedObject1, settingName: "" };
-      //   setting = clonedObject1;
-      //   // setting.settingName = "";
-      // }
+       else if (
+        setting.settingName === "ADVANCES" &&
+        !(billData?.partyType.toUpperCase() === "FARMER")
+      ) {
+        let clonedObject1 = { ...setting };
+        clonedObject1 = { ...clonedObject1, settingName: "" };
+        setting = clonedObject1;
+        // setting.settingName = "";
+      }
 
       switch (setting.settingName || setting.name) {
         case "COMMISSION":
@@ -851,20 +851,20 @@ const GroupTotals = (props) => {
             allFilteredSettings.push(obj);
           }
           break;
-        // case "ADVANCES":
-        //   if (billData?.advance) {
-        //     obj = {
-        //       groupId: setting?.groupId || setting.status,
-        //       settingName: setting?.settingName || setting?.name,
-        //       value: billData?.advance ? billData?.advance.toFixed(1) : 0,
-        //       signIndication:
-        //         billData?.partyType.toUpperCase() === "FARMER" ||
-        //         billData?.partyType.toUpperCase() === "SELLER"
-        //           ? "-"
-        //           : "+",
-        //     };
-        //     allFilteredSettings.push(obj);
-        //   }
+        case "ADVANCES":
+          if (billData?.advance) {
+            obj = {
+              groupId: setting?.groupId || setting.status,
+              settingName: setting?.settingName || setting?.name,
+              value: billData?.advance ? billData?.advance.toFixed(1) : 0,
+              signIndication:
+                billData?.partyType.toUpperCase() === "FARMER" ||
+                billData?.partyType.toUpperCase() === "SELLER"
+                  ? "-"
+                  : "+",
+            };
+            allFilteredSettings.push(obj);
+          }
         case substring:
           var value = 0;
           if (billData?.partyType.toUpperCase() === "FARMER") {

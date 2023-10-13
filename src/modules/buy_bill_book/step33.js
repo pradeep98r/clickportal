@@ -908,7 +908,7 @@ const Step33 = (props) => {
                   }, 800);
                   window.setTimeout(function () {
                     navigate("/buy_bill_book");
-                    // window.location.reload();
+                    window.location.reload();
                   }, 1000);
                 } else {
                   window.setTimeout(function () {

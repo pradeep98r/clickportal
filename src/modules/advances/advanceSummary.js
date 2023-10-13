@@ -19,7 +19,7 @@ const AdvanceSummary = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const advancesData = useSelector((state) => state.advanceInfo);
-  const advancesSummary = props.advancesSum;
+  const advancesSummary = advancesData?.fromTransportoRecord ? advancesData?.advanceSummaryById : props.advancesSum;
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
   const totalCollectedValByPartyId = advancesData?.totalCollectedById;
@@ -31,6 +31,7 @@ const AdvanceSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const ledgerTabs = props.ledgerTabs;
+  console.log(props.advancesSum,'props.advancesSum',advancesData?.advanceSummaryById)
   const billOnClickView = (billId, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("A")) {

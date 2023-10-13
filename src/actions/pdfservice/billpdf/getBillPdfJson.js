@@ -263,12 +263,12 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   if (isNotTrader) {
     return getCurrencyNumberWithSymbol(
       (Number(finalVal) + billData.outStBal).toFixed(2) -
-        Number(billData.cashPaid)
+        Number(billData.cashPaid) - (billData?.partyType == 'BUYER' ? 0 : billData?.advance)
     );
   } else {
     var cashRecieved = billData.cashRcvd === null ? 0 : billData.cashRcvd;
     return getCurrencyNumberWithSymbol(
-      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved
+      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved - (billData?.partyType == 'BUYER' ? 0 : billData?.advance)
     );
   }
 };

@@ -41,6 +41,7 @@ import {
   advanceSummaryById,
   allAdvancesData,
   fromParentSelect,
+  fromTransportoRecord,
   partyOutstandingBal,
   totalAdvancesVal,
   totalAdvancesValById,
@@ -48,7 +49,7 @@ import {
   totalGivenById,
 } from "../../reducers/advanceSlice";
 import SelectedPartner from "../advances/selectedPartner";
-import { allLedgers } from "../../reducers/ledgerSummarySlice";
+import { allLedgers,outStandingBal } from "../../reducers/ledgerSummarySlice";
 const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
@@ -76,7 +77,7 @@ const TransportoRecord = (props) => {
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
-  const outStandingBal = advancesData?.partyOutstandingBal;
+  const outStandingBalVal = advancesData?.partyOutstandingBal;
   // const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -150,7 +151,7 @@ const TransportoRecord = (props) => {
     } else if (
       paidsRcvd.toString().trim().length !== 0 &&
       paidsRcvd != 0 &&
-      paidsRcvd <= outStandingBal &&
+      paidsRcvd <= outStandingBalVal &&
       !(paidsRcvd < 0)
     ) {
       
@@ -169,7 +170,7 @@ const TransportoRecord = (props) => {
       } else {
         addRecordPayment();
       }
-    } else if (parseInt(paidsRcvd) > outStandingBal) {
+    } else if (parseInt(paidsRcvd) > outStandingBalVal) {
       setRequiredCondition(
         "Entered Amount cannot more than Outstanding Balance"
       );
@@ -297,6 +298,8 @@ const TransportoRecord = (props) => {
 
   const updateAdvances = () => {
     getAllAdvances();
+    console.log(allCustomTab)
+    dispatch(fromTransportoRecord(true));
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {
@@ -307,6 +310,7 @@ const TransportoRecord = (props) => {
       );
     }
   };
+  const [advSummary, setAdvSummary] = useState([]);
   const fetchLedgers = () => {
     getLedgers(clickId, 'SELLER', '', '')
       .then((res) => {
@@ -365,13 +369,16 @@ const TransportoRecord = (props) => {
     getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          console.log(res.data.data,advancesData?.selectedAdvanceId)
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
+            setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
             dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
           }
         }
       })
@@ -383,11 +390,13 @@ const TransportoRecord = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
+            setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
             dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
           }
         }
       })
@@ -572,7 +581,7 @@ const TransportoRecord = (props) => {
                       <p id="p-tag">Outstanding Paybles</p>
                       <p id="recieve-tag">
                         &#8377;
-                        {outStandingBal ? outStandingBal.toFixed(2) : 0}
+                        {outStandingBalVal ? outStandingBalVal.toFixed(2) : 0}
                       </p>
                     </div>
                   ) : (
