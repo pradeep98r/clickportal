@@ -59,6 +59,7 @@ const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const dispatch = useDispatch();
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
+  console.log(settingsData,'settingsData')
   const transusers = useSelector((state) => state.transInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billEditStatus = billEditItemInfo?.billEditStatus;
@@ -357,6 +358,7 @@ const Step22 = (props) => {
           if (settingsData.billSetting[i].value == 0) {
             setDefaultUnitTypeVal("unit_kg");
           } else {
+            console.log('unit otherr')
             setDefaultUnitTypeVal("unit_other");
           }
         }
@@ -369,7 +371,7 @@ const Step22 = (props) => {
         }
       }
     }
-    if (settingsData.qtySetting.length == 0) {
+    if (settingsData.qtySetting.length == 0 && settingsData.billSetting.length == 0) {
       setDefaultUnitTypeVal("unit_kg");
     }
     dispatch(cropEditStatus(billEditStatus ? true : false));
@@ -709,6 +711,12 @@ const Step22 = (props) => {
               });
               return null;
             }
+            else if (data.cropSufx.length > 30) {
+              toast.error("Suffix should be max 30 characters", {
+                toastId: "error10",
+              });
+              return null;
+            }
             else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
               toast.error("LotId should not be empty", {
                 toastId: "error15",
@@ -730,6 +738,12 @@ const Step22 = (props) => {
             } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
               toast.error("wastage is always less than weight", {
                 toastId: "error3",
+              });
+              return null;
+            }
+            else if (data.cropSufx.length > 30) {
+              toast.error("Suffix should be max 30 characters", {
+                toastId: "error10",
               });
               return null;
             }
@@ -756,6 +770,12 @@ const Step22 = (props) => {
             } else if (parseInt(data.wastage) >= parseInt(data.qty)) {
               toast.error("wastage is always less than quantity", {
                 toastId: "error4",
+              });
+              return null;
+            }
+            else if (data.cropSufx.length > 30) {
+              toast.error("Suffix should be max 30 characters", {
+                toastId: "error10",
               });
               return null;
             }
@@ -787,6 +807,12 @@ const Step22 = (props) => {
             } else if (parseInt(data.weight) <= parseInt(data.wastage)) {
               toast.error("wastage is always less than weight", {
                 toastId: "error4",
+              });
+              return null;
+            }
+            else if (data.cropSufx.length > 30) {
+              toast.error("Suffix should be max 30 characters", {
+                toastId: "error10",
               });
               return null;
             }
