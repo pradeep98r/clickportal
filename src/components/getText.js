@@ -30,6 +30,9 @@ export function getPartnerType(item, trader) {
         party = "Farmer";
       }
       break;
+      case "LABOR":
+      party = "COOLIE"
+      break;
   }
   return getText(party);
 }

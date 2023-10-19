@@ -82,7 +82,8 @@ const Partner = () => {
     dispatch(isFromTrader(false));
     localStorage.setItem("partyType", type);
     setSearchValue("");
-    getPartnerData(clickId, type)
+    var Ptype = type == "COOLIE" ? 'LABOR' : type;
+    getPartnerData(clickId, Ptype)
       .then((response) => {
         if (response.data.data != null) {
           dispatch(partnersAllData(response.data.data));
@@ -114,7 +115,7 @@ const Partner = () => {
     },
     {
       id: 4,
-      name: langFullData.labor,
+      name: "COOLIE",
       to: "COOLIE",
     },
   ];
@@ -242,7 +243,7 @@ const Partner = () => {
                                             {partner.partyName +
                                               (partner.partyType ==
                                                 "TRANSPORTER" ||
-                                              partner.partyType == "COOLIE"
+                                              partner.partyType == "LABOR"
                                                 ? ""
                                                 : " - ") +
                                               partner.shortName}

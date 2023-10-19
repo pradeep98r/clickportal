@@ -467,7 +467,7 @@ const Advance = (props) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="table-scroll nodata_scroll">
+                    <div className="table-scroll nodata_scroll adv_nodata">
                       <div className="row partner_no_data_widget_rows">
                         <div className="col-lg-5">
                           <div className="partner_no_data_widget">

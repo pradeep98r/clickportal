@@ -10,6 +10,8 @@ const Step1 = (props) => {
   const dispatch = useDispatch();
   const selectedStep = useSelector((state) => state.multiStepsInfo);
   const multiSelectPartnersArray = selectedStep?.multiSelectPartners;
+  const fromMultiBillView = selectedStep?.fromMultiBillView;
+  const multiSelectPartyType = selectedStep?.multiSelectPartyType;
   const deleteParty = (item) => {
     const newArr = [...multiSelectPartnersArray];
     const index = newArr.findIndex((x) => x.partyId === item.partyId);
@@ -23,6 +25,7 @@ const Step1 = (props) => {
   const onClickStep2 = () =>{
       dispatch(multiStepsVal('step2'));
   }
+  console.log(multiSelectPartnersArray,selectedStep,'multiSelectPartnersArray')
   return (
     <div>
       <div>
@@ -63,7 +66,7 @@ const Step1 = (props) => {
                               <div style={{ marginLeft: 5 }}>
                                 <div className="-">
                                   <h5>
-                                    {getText(item.partyName) +
+                                    {fromMultiBillView ? (multiSelectPartyType.toUpperCase() == 'BUYER' ? getText(item.buyerName) : getText(item.farmerName)) : getText(item.partyName) +
                                       " " +
                                       item.shortName}
                                   </h5>
