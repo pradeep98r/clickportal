@@ -243,7 +243,7 @@ const PartnerModal = (props) => {
     openingBalDate: partnerSelectDate,
     partyId: isEdit ? selectedPartnerObj.partyId : 0,
     partyName: nameField,
-    partyType: partyType,
+    partyType: partyType == "COOLIE" ? 'LABOR' : partyType,
     profilePic: isEdit ? updateProfilePic : profilePic, //single_bill,
     seqNum: 0,
     shortName: shortNameField,
@@ -316,6 +316,7 @@ const PartnerModal = (props) => {
     }
   };
   const addEditPartnerApiCall = () => {
+    var type = partyType == "COOLIE" ? 'LABOR' : partyType;
     console.log(obj, "edit");
     if (isEdit) {
       console.log(pincode, obj);
@@ -326,7 +327,8 @@ const PartnerModal = (props) => {
               toastId: "success2",
             });
             props.closeModal();
-            getPartnerData(clickId, partyType)
+            
+            getPartnerData(clickId, type)
               .then((response) => {
                 if (response.data.data != null) {
                   dispatch(partnersAllData(response.data.data));
@@ -357,7 +359,7 @@ const PartnerModal = (props) => {
               toastId: "success2",
             });
 
-            getPartnerData(clickId, partyType)
+            getPartnerData(clickId, type)
               .then((response) => {
                 if (response.data.data != null) {
                   dispatch(partnersAllData(response.data.data));
