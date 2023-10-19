@@ -277,11 +277,13 @@ const Advance = (props) => {
   };
   async function getDownloadPdf(summaryStatus) {
     setIsLoadingNew(true);
+    console.log(advancesData,'advancesData')
     var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
       ledgersSummary?.beginDate,
       ledgersSummary?.closeDate,
       ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
     var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
+    if(advancesData?.advanceSummaryById.length > 0){
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -305,6 +307,13 @@ const Advance = (props) => {
       // setLoading(false);
     }
   }
+  else{
+    toast.error("No Data Available for Print", {
+      toastId: "errorr9",
+    });
+    setIsLoadingNew(false);
+  }
+  }
   async function handleLedgerSummaryJson(summaryStatus) {
     setIsLoadingNew(true);
     var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
@@ -312,6 +321,7 @@ const Advance = (props) => {
       ledgersSummary?.closeDate,
       ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
     var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
+    if(advancesData?.advanceSummaryById.length > 0){
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -327,6 +337,12 @@ const Advance = (props) => {
       const blobUrl = URL.createObjectURL(blob);
       setIsLoadingNew(false);
       window.open(blobUrl, "_blank");
+    }}
+    else{
+      toast.error("No Data Available for Print", {
+        toastId: "errorr9",
+      });
+      setIsLoadingNew(false);
     }
   }
   return (
