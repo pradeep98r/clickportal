@@ -594,8 +594,9 @@ const SellBillStep3 = (props) => {
           : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
-        Number(otherfeeValue) +
-        Number(advancesValue)
+        Number(otherfeeValue) 
+        // +
+        // Number(advancesValue)
     );
     let totalValue = grossTotal + t;
     if (includeComm) {
@@ -658,8 +659,8 @@ const SellBillStep3 = (props) => {
           : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
-        Number(otherfeeValue) +
-        Number(advancesValue)
+        Number(otherfeeValue) 
+        // Number(advancesValue)
     );
     var finalValue = grossTotal + t;
     var finalVal = finalValue;
@@ -827,7 +828,7 @@ const SellBillStep3 = (props) => {
       less: addRetComm,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
-      otherFee: Number(otherfeeValue).toFixed(2),
+      otherFee: Number(otherfeeValue),
       outStBal: outBal,
       paidTo: 0,
       partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
@@ -859,10 +860,12 @@ const SellBillStep3 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
+    billAmt: Number(getTotalBillAmount()),  
+    advBal: 0 ,
   };
 
   const postsellbill = () => {
-    console.log(sellBillRequestObj, "sellBillRequestObj");
+    console.log(editBillRequestObj, "sellBillRequestObj");
     // if(advancesValue > outBalAdvance){
     //   toast.error('You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.', {
     //     toastId: "error10",
