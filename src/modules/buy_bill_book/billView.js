@@ -155,7 +155,7 @@ const BillView = (props) => {
         }
         else {
           setColorThemeVal("#16a12c");
-          dispatch(colorthemeValue("#16a12c"));
+          // dispatch(colorthemeValue("#16a12c"));
           localStorage.setItem("pdftheme", null);
         }
       }
