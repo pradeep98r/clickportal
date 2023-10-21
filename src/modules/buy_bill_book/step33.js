@@ -112,13 +112,14 @@ const Step33 = (props) => {
     }
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
+      console.log(pID, billEditItem, editStatus, "g");
       getOutstandingBal(clickId, pID).then((res) => {
         console.log(res.data.data, "res.data.data");
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
         setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
     }
-
+    console.log(outBalAdvance, "outBalAdvance");
     getGrossTotalValue(
       editStatus
         ? step2CropEditStatus
@@ -723,7 +724,6 @@ const Step33 = (props) => {
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    console.log(finalVal, outBalance, Number(finalVal));
     return (Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue);
   };
   var lineItemsArray = [];
@@ -872,8 +872,8 @@ const Step33 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: getTotalBillAmount(),
-    advBal: outBalAdvance,
+    billAmt: getTotalBillAmount(),  
+    advBal: outBalAdvance ,
   };
   // post bill request api call
   const postbuybill = () => {
@@ -887,7 +887,7 @@ const Step33 = (props) => {
       $("#disable").attr("disabled", false);
     } else {
       if (editStatus) {
-        if (advancesValue > (outBalAdvance + billEditItem?.advance)) {
+        if (advancesValue > outBalAdvance + billEditItem?.advance) {
           toast.error(
             "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
             {
@@ -896,6 +896,7 @@ const Step33 = (props) => {
           );
           $("#disable").attr("disabled", false);
         } else {
+          console.log(editBillRequestObj, "editBillRequestObj");
           editbuybillApi(editBillRequestObj).then(
             (response) => {
               if (response.data.status.type === "SUCCESS") {
@@ -908,7 +909,7 @@ const Step33 = (props) => {
                   }, 800);
                   window.setTimeout(function () {
                     navigate("/buy_bill_book");
-                    window.location.reload();
+                    // window.location.reload();
                   }, 1000);
                 } else {
                   window.setTimeout(function () {

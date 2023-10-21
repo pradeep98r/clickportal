@@ -534,11 +534,9 @@ const BillView = (props) => {
     name: "aparna",
   };
   async function getPrintPdf() {
-    console.log("pdf coming");
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
-    console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -610,14 +608,12 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
-      console.log(blobUrl, "blob");
     }
   }
   const closeSharePopup = () => {
     $("#shareBill").modal("hide");
   };
   function getsharePdf() {
-    console.log(shareUrl, "share");
     var xhr = new XMLHttpRequest();
     xhr.responseType = "blob";
     xhr.onload = function () {

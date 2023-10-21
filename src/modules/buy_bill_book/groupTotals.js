@@ -49,7 +49,6 @@ const GroupTotals = (props) => {
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
-  console.log(billData, "billData");
   const [groupone, setGroupOne] = useState([]);
   const [groupTwo, setGroupTwo] = useState([]);
   const [groupThree, setGroupThree] = useState([]);
@@ -95,7 +94,6 @@ const GroupTotals = (props) => {
     var res;
     var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      console.log(res.data.data, "res.data.data");
       if (res.data.data.billSetting.length > 0) {
         billSettingData(res.data.data.billSetting);
         if (
@@ -109,7 +107,6 @@ const GroupTotals = (props) => {
         var filteredArray = res.data.data.billSetting.filter((object) => {
           return object.billType === billType && object.formStatus === 1;
         });
-        console.log(filteredArray, billData?.partyType, "billData?.partyType");
         filteredArray.sort((a, b) => a.groupId - b.groupId);
         dispatch(filtereArray(filteredArray));
         groupSettingsToJson();
@@ -159,7 +156,6 @@ const GroupTotals = (props) => {
                 groupOne = [res.data.data.billSetting[i], ...groupOne];
                 dispatch(groupOneSettings(groupOne));
                 setGroupOne([groupone, ...groupOne]);
-                console.log(groupOne, "groupOne buy");
               } else if (
                 res.data.data.billSetting[i].groupId === 2 &&
                 res.data.data.billSetting[i].billType === "BUY" &&
@@ -1179,7 +1175,6 @@ const GroupTotals = (props) => {
       billData?.partyType.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
-      console.log(Number(finalVal));
       return Number(finalVal) + billData?.outStBal;
     } else {
       return Number(finalVal) + billData?.outStBal;
