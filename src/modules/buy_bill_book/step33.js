@@ -88,6 +88,9 @@ const Step33 = (props) => {
   const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
+    getDefaultSystemSettings().then((res) => {
+      console.log(res,'res')
+    })
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? props.slectedCropsArray
@@ -186,6 +189,7 @@ const Step33 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
+          console.log(res.data.data)
           response = res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (

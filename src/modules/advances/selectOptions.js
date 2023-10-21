@@ -62,6 +62,7 @@ const SelectOptions = () => {
   const options = [
     { value: "all", label: "All" },
     { value: "sellers", label: "Sellers" },
+    { value: "buyers", label: "Buyers" },
     { value: "transporters", label: "Transporters" },
   ];
 
@@ -99,7 +100,16 @@ const SelectOptions = () => {
       if (optionChangeStatus) {
       getDetails(filterArray);
       }
-    } else if (label == "Transporters") {
+    }else if (label == "Buyers") {
+      const filterArray = partnerArray.filter(
+        (item) => item?.partyType?.toUpperCase() == "BUYER"
+      );
+      console.log(filterArray,'buyer array after selectig')
+      if (optionChangeStatus) {
+      getDetails(filterArray);
+      }
+    } 
+    else if (label == "Transporters") {
       const filterArray = partnerArray.filter(
         (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
       );

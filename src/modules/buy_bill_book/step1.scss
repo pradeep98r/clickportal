@@ -263,6 +263,14 @@
     .css-1m81j2g-MenuList{
         max-height: 245px!important;
     }
+    // #react-select-9-listbox{
+    //     position: relative;
+    //     z-index: 9999!important;
+    //   }
+      .select__menu{
+        // position: relative;
+        z-index: 9999!important; 
+      }
 }
 .empty_col{
     position: relative;

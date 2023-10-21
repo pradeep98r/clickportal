@@ -429,6 +429,7 @@ const GroupTotals = (props) => {
   const getDefaltSet = () => {
     getDefaultSystemSettings().then((response) => {
       var res = response.data.data;
+      console.log(res)
       groupWiseTotals(response);
       billSettingData(response.data.data);
       dispatch(filtereArray(response.data.data));

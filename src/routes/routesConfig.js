@@ -29,6 +29,7 @@ const RoutesConfig = () => {
   function setSystemSettingsDetails(clickId) {
     getSystemSettings(clickId)
       .then((response) => {
+        console.log(response.data.data)
         localStorage.setItem(
           "systemSettingsData",
           JSON.stringify(response.data.data)
@@ -41,6 +42,7 @@ const RoutesConfig = () => {
   function setSettingsDetails(clickId) {
     getMandiLogoDetails(clickId)
       .then((response) => {
+        console.log(response.data.data)
         localStorage.setItem(
           "settingsData",
           JSON.stringify(response.data.data)

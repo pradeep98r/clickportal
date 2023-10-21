@@ -58,7 +58,7 @@ const SelectedPartner = (props) => {
   }, []);
   const fetchPertnerData = () => {
     const obj = {
-      types: ["TRANSPORTER", "FARMER"],
+      types: ["TRANSPORTER", "FARMER", "BUYER"],
       writerId: writerId,
     };
     getAllPartnersByTypes(clickId, obj)

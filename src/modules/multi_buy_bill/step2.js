@@ -895,7 +895,7 @@ const Step2 = (props) => {
             id="scroll_style"
           >
             <tr className="head_fix">
-              <th className="col_2">Seller</th>
+              <th className="col_2">{partyType.toUpperCase() == "BUYER" ? 'Buyer' : 'Seller'}</th>
               <th className="col_2">Transporter</th>
               <th className="col_1">Date</th>
               <th className="p-0 extra_border">
