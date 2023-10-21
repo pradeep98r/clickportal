@@ -198,8 +198,8 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
         billData.rent +
         billData.mandiFee +
         billData.govtLevies +
-        billData.misc +
-        billData.advance
+        billData.misc 
+        // billData.advance
     );
   } else {
     t = Number(
@@ -263,12 +263,12 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   if (isNotTrader) {
     return getCurrencyNumberWithSymbol(
       (Number(finalVal) + billData.outStBal).toFixed(2) -
-        Number(billData.cashPaid)
+        Number(billData.cashPaid) - (billData?.partyType == 'BUYER' ? 0 : billData?.advance)
     );
   } else {
     var cashRecieved = billData.cashRcvd === null ? 0 : billData.cashRcvd;
     return getCurrencyNumberWithSymbol(
-      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved
+      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved - (billData?.partyType == 'BUYER' ? 0 : billData?.advance)
     );
   }
 };
@@ -326,6 +326,13 @@ function getCashValue(billData, isFarmer) {
     : billData?.cashRcvd === 0 || billData?.cashRcvd === null
     ? ""
     : "-" + getCurrencyNumberWithSymbol(billData?.cashRcvd);
+}
+function getAdvannceValue(billData, isFarmer) {
+  return isFarmer
+    ? billData?.advance === 0 || billData?.advance === null
+      ? ""
+      : " -" + getCurrencyNumberWithSymbol(billData?.advance)
+    : ''
 }
 //todo this method will be moved to common
 //   static String getIndividualTotalUnits(
@@ -552,6 +559,8 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
     groupSettings: getGroupSettingsList(),
     cashValue: getCashValue(billData, isFarmer),
     cashValueComment: "",
+    // totalNetPayble:''
+    // advance:getAdvannceValue()
     // billData.cashPaidCmnt === null ? "" : billData.cashPaidCmnt,
   };
 

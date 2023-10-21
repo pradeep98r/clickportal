@@ -125,6 +125,7 @@ const Ledgers = (props) => {
   );
   const [handleDate1, sethandleDate1] = useState(false);
   const [allCustom1, setAllCustom1] = useState("all");
+  console.log(allData,ledgers,'ledgers')
   const tabs = [
     {
       id: 1,
@@ -207,6 +208,7 @@ const Ledgers = (props) => {
             setAllData(res.data.data.ledgers);
             dispatch(outStandingBal(res.data.data));
             dispatch(allLedgers(res.data.data.ledgers));
+            console.log(res.data.data);
             setPartyId(res.data.data.ledgers[0].partyId);
             summaryData(clickId, res.data.data.ledgers[0].partyId);
             getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
@@ -247,15 +249,16 @@ const Ledgers = (props) => {
     setPartyId(ledgerId);
     setLedgerData(item);
     setAllCustom("all");
-    setAllCustom1("all");
+    // setAllCustom1("all");
     setCustomDateHandle(true);
     getOutstandingPaybles(clickId, ledgerId);
     dispatch(selectedPartyByAdvanceId(item));
     dispatch(selectedAdvanceId(ledgerId));
     if (allCustom == "custom") {
-      var customTab = "all";
-      setDateDisplay(false);
-      dispatch(dateCustomStatus(true));
+      // var customTab = "all";
+      // setDateDisplay(false);
+      // setDateDisplay1(false);
+      // dispatch(dateCustomStatus(true));
     }
     var tabs = "";
     if (
@@ -449,17 +452,20 @@ const Ledgers = (props) => {
     }
     setLedgerTabs(ledgerTabType);
   };
+  const [advSummary, setAdvSummary] = useState([]);
   const getAdvanceSummary = (partyId) => {
     getAdvancesSummaryById(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
+            setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
             dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
             dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
           }
         }
         setLoading(false);
@@ -1433,7 +1439,7 @@ const Ledgers = (props) => {
                                   </p>
                                 </p>
                               </div>
-                            
+
                               <div
                                 className="col-lg-3 d-flex align-items-center"
                                 id=""
@@ -1813,6 +1819,7 @@ const Ledgers = (props) => {
                           <AdvanceSummary
                             partyType={ledgerType}
                             ledgerTabs={ledgerTabs}
+                            advancesSum={advSummary}
                           />
                         ) : (
                           ""

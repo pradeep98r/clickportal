@@ -9,6 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ono_connect_click from "../../assets/images/ono-click-connect.svg";
 import { colorAdjustBg, getText } from "../../components/getText";
+import moment from "moment";
 import {
   allGroupsSettings,
   groupFourSettings,
@@ -48,7 +49,6 @@ const GroupTotals = (props) => {
   var grouptwo = [];
   var groupthree = [];
   var groupfour = [];
-
   const [groupone, setGroupOne] = useState([]);
   const [groupTwo, setGroupTwo] = useState([]);
   const [groupThree, setGroupThree] = useState([]);
@@ -94,7 +94,6 @@ const GroupTotals = (props) => {
     var res;
     var billType = "";
     getSystemSettings(clickId, clientId, clientSecret).then((res) => {
-      console.log(res.data.data, "res.data.data");
       if (res.data.data.billSetting.length > 0) {
         billSettingData(res.data.data.billSetting);
         if (
@@ -108,7 +107,6 @@ const GroupTotals = (props) => {
         var filteredArray = res.data.data.billSetting.filter((object) => {
           return object.billType === billType && object.formStatus === 1;
         });
-        console.log(filteredArray, billData?.partyType, "billData?.partyType");
         filteredArray.sort((a, b) => a.groupId - b.groupId);
         dispatch(filtereArray(filteredArray));
         groupSettingsToJson();
@@ -158,7 +156,6 @@ const GroupTotals = (props) => {
                 groupOne = [res.data.data.billSetting[i], ...groupOne];
                 dispatch(groupOneSettings(groupOne));
                 setGroupOne([groupone, ...groupOne]);
-                console.log(groupOne, "groupOne buy");
               } else if (
                 res.data.data.billSetting[i].groupId === 2 &&
                 res.data.data.billSetting[i].billType === "BUY" &&
@@ -503,12 +500,13 @@ const GroupTotals = (props) => {
     var substring = "CUSTOM_FIELD";
     if (name?.includes(substring)) {
       substring = name;
-    } else if (
-      name === "ADVANCES" &&
-      !(billData?.partyType.toUpperCase() === "FARMER")
-    ) {
-      name = "";
     }
+    // else if (
+    //   name === "ADVANCES" &&
+    //   !(billData?.partyType.toUpperCase() === "FARMER")
+    // ) {
+    //   name = "";
+    // }
     switch (name) {
       case "COMMISSION":
         if (billData?.partyType.toUpperCase() === "FARMER") {
@@ -651,16 +649,16 @@ const GroupTotals = (props) => {
           value = billData?.govtLevies;
         }
         break;
-      case "ADVANCES":
-        if (
-          billData?.partyType.toUpperCase() === "FARMER" ||
-          billData?.partyType.toUpperCase() === "SELLER"
-        ) {
-          value = -billData?.advance;
-        } else {
-          value = billData?.advance;
-        }
-        break;
+      // case "ADVANCES":
+      //   if (
+      //     billData?.partyType.toUpperCase() === "FARMER" ||
+      //     billData?.partyType.toUpperCase() === "SELLER"
+      //   ) {
+      //     value = -billData?.advance;
+      //   } else {
+      //     value = billData?.advance;
+      //   }
+      //   break;
       case substring:
         if (billData?.partyType.toUpperCase() === "FARMER") {
           billData?.customFields.map((item) => {
@@ -720,7 +718,8 @@ const GroupTotals = (props) => {
       var substring = "CUSTOM_FIELD";
       if (setting.settingName?.includes(substring)) {
         substring = setting.settingName;
-      } else if (
+      }
+       else if (
         setting.settingName === "ADVANCES" &&
         !(billData?.partyType.toUpperCase() === "FARMER")
       ) {
@@ -1177,9 +1176,9 @@ const GroupTotals = (props) => {
       billData?.partyType.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
-      return (Number(finalVal) + billData?.outStBal);
+      return Number(finalVal) + billData?.outStBal;
     } else {
-      return (Number(finalVal) + billData?.outStBal);
+      return Number(finalVal) + billData?.outStBal;
     }
   };
   const getFinalOutBalance = () => {
@@ -1221,16 +1220,13 @@ const GroupTotals = (props) => {
       (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal) ===
       null
       ? " "
-      : (
-          billData?.grossTotal +
-          (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal)
-        ).toLocaleString("en-IN", {
-          maximumFractionDigits: 2,
-          style: "currency",
-          currency: "INR",
-        });
+      : billData?.grossTotal +
+        (groupFourTotal + groupThreeTotal + groupTwoTotal + groupOneTotal);
   try {
-    localStorage.setItem("totalSelectedBillAmount", totalBillAmount);
+    localStorage.setItem(
+      "totalSelectedBillAmount",
+      getCurrencyNumberWithSymbol(totalBillAmount)
+    );
   } catch (error) {
     console.log(error);
   }
@@ -1590,6 +1586,9 @@ const GroupTotals = (props) => {
               <div className="row">
                 <div className="col-lg-7">
                   <p className="grouping_value">Outstanding Balance</p>
+                  <p class="fee-percentage color_red">
+                    {moment(billData?.timeStamp).format("DD-MMM-YY | hh:mm:A")}
+                  </p>
                 </div>
                 <div className="col-lg-4">
                   <p
@@ -3376,22 +3375,87 @@ const GroupTotals = (props) => {
                           : "groups_values color_green"
                       }
                     >
-                      {totalBillAmount}
+                      {totalBillAmount != 0
+                        ? getCurrencyNumberWithSymbol(totalBillAmount)
+                        : 0}
                     </p>
                   </div>
                 </div>
+                {billData?.partyType.toUpperCase() === "FARMER" ? (
+                  billData?.advance === 0 || billData?.advance === null ? (
+                    ""
+                  ) : (
+                    <div className="row">
+                      {/* <div className="col-lg-2"></div> */}
+                      <div className="col-lg-7">
+                        <p className="grouping_value p-0 adv_out_bottom">
+                          Advances :
+                        </p>
+
+                        <span class="fee-percentage color_red">
+                          Outstanding Advances :{" "}
+                          {billData?.advBal ? billData?.advBal : 0}
+                        </span>
+                      </div>
+                      <div className="col-lg-4 p-0">
+                        <p className="groups_values color_red">
+                          {"-" + getCurrencyNumberWithSymbol(billData?.advance)}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                ) : (
+                  ""
+                )}
+
+                {billData?.partyType.toUpperCase() === "FARMER" ? (
+                  <div className="row">
+                    {/* <div className="col-lg-2"></div> */}
+                    <div className="col-lg-7">
+                      <p className="grouping_value">Total Net Payble :</p>
+                    </div>
+                    <div className="col-lg-4 p-0">
+                      <p
+                        className={
+                          billData?.partyType.toUpperCase() === "FARMER"
+                            ? "groups_values color_red"
+                            : "groups_values color_green"
+                        }
+                      >
+                        {billData?.partyType.toUpperCase() === "FARMER"
+                          ? getCurrencyNumberWithSymbol(
+                              totalBillAmount - billData?.advance
+                            )
+                          : getCurrencyNumberWithSymbol(
+                              totalBillAmount + billData?.advance
+                            )}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
 
               <div></div>
               <div>
-                <div className="row">
+                <div className="row align-items-center">
                   {/* <div className="col-lg-2"></div> */}
                   <div className="col-lg-7">
                     <p
-                      className="grouping_value"
+                      className="grouping_value p-0"
                       style={{ display: status ? "block" : "none" }}
                     >
                       Outstanding Balance:
+                    </p>
+                    <p
+                      class="fee-percentage"
+                      style={{ display: status ? "block" : "none" }}
+                    >
+                      {"Balance as on " +
+                        moment(billData?.timeStamp).format(
+                          "DD-MMM-YY | hh:mm:A"
+                        )}
                     </p>
                   </div>
                   <div className="col-lg-4 p-0">

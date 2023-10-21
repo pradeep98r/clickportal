@@ -85,7 +85,7 @@ const Step33 = (props) => {
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
-  const [billIdVal, setBillIdVal] = useState(0)
+  const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
     getDefaultSystemSettings().then((res) => {
@@ -115,13 +115,14 @@ const Step33 = (props) => {
     }
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
+      console.log(pID, billEditItem, editStatus, "g");
       getOutstandingBal(clickId, pID).then((res) => {
-        console.log(res.data.data,'res.data.data')
+        console.log(res.data.data, "res.data.data");
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
-        setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance)
+        setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
     }
-
+    console.log(outBalAdvance, "outBalAdvance");
     getGrossTotalValue(
       editStatus
         ? step2CropEditStatus
@@ -245,8 +246,8 @@ const Step33 = (props) => {
       multiBill: false,
       partyId: partyID,
       type: "BUY",
-      writerId: writerId
-    }
+      writerId: writerId,
+    };
     getGeneratedBillId(generateBillObj).then((res) => {
       setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
@@ -255,14 +256,14 @@ const Step33 = (props) => {
   const getGrossTotalValue = (items) => {
     var total = 0;
     for (var i = 0; i < items.length; i++) {
-      if(items[i].status != 0){
-      total += editStatus
-        ? step2CropEditStatus
-          ? items[i].total
-          : items[i].total
-        : items[i].total;
-      setGrossTotal(total);
-      gTotal = total;
+      if (items[i].status != 0) {
+        total += editStatus
+          ? step2CropEditStatus
+            ? items[i].total
+            : items[i].total
+          : items[i].total;
+        setGrossTotal(total);
+        gTotal = total;
       }
     }
   };
@@ -557,7 +558,7 @@ const Step33 = (props) => {
     setAllGroups(updatedItem);
     // return type;
   };
- 
+
   const [commentFieldText, setCommentFieldText] = useState(
     billEditItemInfo?.selectedBillInfo?.comments != ""
       ? billEditItemInfo?.selectedBillInfo?.comments
@@ -614,8 +615,8 @@ const Step33 = (props) => {
           : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
-        Number(otherfeeValue) +
-        Number(advancesValue)
+        Number(otherfeeValue)
+      // Number(advancesValue)
     );
     let totalValue = grossTotal - t;
     for (var i = 0; i < questionsTitle.length; i++) {
@@ -668,7 +669,14 @@ const Step33 = (props) => {
     return actualPay;
   };
   const getTotalPayble = () => {
-    return Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2);
+    return (
+      Number(getTotalBillAmount()) -
+      Number(cashpaidValue).toFixed(2) -
+      Number(advancesValue).toFixed(2)
+    );
+  };
+  const getNetTotalPayble = () => {
+    return Number(getTotalBillAmount()) - Number(advancesValue).toFixed(2);
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
@@ -720,7 +728,6 @@ const Step33 = (props) => {
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    console.log(finalVal,outBalance,Number(finalVal))
     return (Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue);
   };
   var lineItemsArray = [];
@@ -741,15 +748,19 @@ const Step33 = (props) => {
       wastage: cropArray[i].wastage,
       weight: parseFloat(cropArray[i].weight),
       rateType:
-        (cropArray[i].rateType.toLowerCase() == "kgs" || cropArray[i].qtyUnit.toLowerCase() == "loads" || cropArray[i].rateType == "RATE_PER_KG") ? "RATE_PER_KG" : "RATE_PER_UNIT",
+        cropArray[i].rateType.toLowerCase() == "kgs" ||
+        cropArray[i].qtyUnit.toLowerCase() == "loads" ||
+        cropArray[i].rateType == "RATE_PER_KG"
+          ? "RATE_PER_KG"
+          : "RATE_PER_UNIT",
       id: cropArray[i].id,
       partyId: cropArray[i].farmerId,
       status: cropArray[i].status,
       bags: cropArray[i].bags,
       cropSufx: cropArray[i].cropSufx,
-      pkgUnit:'',
-      mnLotId:cropArray[i].mnLotId,
-      mnSubLotId:cropArray[i].mnSubLotId
+      pkgUnit: "",
+      mnLotId: cropArray[i].mnLotId,
+      mnSubLotId: cropArray[i].mnSubLotId,
     });
   }
   // }
@@ -758,7 +769,7 @@ const Step33 = (props) => {
     advance: Number(advancesValue),
     billDate: partnerSelectDate,
     billStatus: "COMPLETED",
-    billId:billIdVal,
+    billId: billIdVal,
     caId: clickId,
     cashPaid: Number(cashpaidValue),
     comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -804,6 +815,8 @@ const Step33 = (props) => {
     writerId: writerId,
     timeStamp: "",
     source: "WEB",
+    billAmt: getTotalBillAmount(),
+    advBal: outBalAdvance,
   };
 
   const editBillRequestObj = {
@@ -863,25 +876,84 @@ const Step33 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
+    billAmt: getTotalBillAmount(),  
+    advBal: outBalAdvance ,
   };
   // post bill request api call
   const postbuybill = () => {
-    if(advancesValue > outBalAdvance){
-      toast.error('You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.', {
-        toastId: "error10",
-      });
+    if (advancesValue > outBalAdvance) {
+      toast.error(
+        "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
+        {
+          toastId: "error10",
+        }
+      );
       $("#disable").attr("disabled", false);
-    }
-   else{
-    if (editStatus) {
-    
-      editbuybillApi(editBillRequestObj).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            localStorage.setItem("stepOne", false);
-            localStorage.setItem("billViewStatus", false);
-            if (!props.fromLedger) {
+    } else {
+      if (editStatus) {
+        if (advancesValue > outBalAdvance + billEditItem?.advance) {
+          toast.error(
+            "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
+            {
+              toastId: "error10",
+            }
+          );
+          $("#disable").attr("disabled", false);
+        } else {
+          console.log(editBillRequestObj, "editBillRequestObj");
+          editbuybillApi(editBillRequestObj).then(
+            (response) => {
+              if (response.data.status.type === "SUCCESS") {
+                localStorage.setItem("stepOne", false);
+                localStorage.setItem("billViewStatus", false);
+                if (!props.fromLedger) {
+                  localStorage.setItem("LinkPath", "/buy_bill_book");
+                  window.setTimeout(function () {
+                    props.closem();
+                  }, 800);
+                  window.setTimeout(function () {
+                    navigate("/buy_bill_book");
+                    // window.location.reload();
+                  }, 1000);
+                } else {
+                  window.setTimeout(function () {
+                    props.closem();
+                  }, 800);
+                  getBuyBillId(clickId, billEditItem?.caBSeq).then((res) => {
+                    if (res.data.status.type === "SUCCESS") {
+                      Object.assign(res.data.data, { partyType: "FARMER" });
+                      dispatch(billViewInfo(res.data.data));
+                      localStorage.setItem(
+                        "billData",
+                        JSON.stringify(res.data.data)
+                      );
+                    }
+                  });
+                }
+                toast.success(response.data.status.message, {
+                  toastId: "success1",
+                });
+              }
+            },
+            (error) => {
+              toast.error(error.response.data.status.description, {
+                toastId: "error1",
+              });
+              $("#disable").attr("disabled", false);
+            }
+          );
+        }
+      } else {
+        console.log(billRequestObj, "billRequestObj");
+        postbuybillApi(billRequestObj).then(
+          (response) => {
+            if (response.data.status.type === "SUCCESS") {
+              toast.success(response.data.status.message, {
+                toastId: "success1",
+              });
+              localStorage.setItem("stepOne", false);
               localStorage.setItem("LinkPath", "/buy_bill_book");
+
               window.setTimeout(function () {
                 props.closem();
               }, 800);
@@ -889,64 +961,19 @@ const Step33 = (props) => {
                 navigate("/buy_bill_book");
                 window.location.reload();
               }, 1000);
-            } else {
-              window.setTimeout(function () {
-                props.closem();
-              }, 800);
-              getBuyBillId(clickId, billEditItem?.caBSeq).then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                  Object.assign(res.data.data, { partyType: "FARMER" });
-                  dispatch(billViewInfo(res.data.data));
-                  localStorage.setItem(
-                    "billData",
-                    JSON.stringify(res.data.data)
-                  );
-                }
-              });
             }
-            toast.success(response.data.status.message, {
-              toastId: "success1",
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
             });
+            $("#disable").attr("disabled", false);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-        }
-      );
-    } else {
-      console.log(billRequestObj,'billRequestObj')
-      postbuybillApi(billRequestObj).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
-            localStorage.setItem("stepOne", false);
-            localStorage.setItem("LinkPath", "/buy_bill_book");
-
-            window.setTimeout(function () {
-              props.closem();
-            }, 800);
-            window.setTimeout(function () {
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 1000);
-          }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-        }
-      );
+        );
+      }
     }
-   }
   };
- 
+
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value
       .replace(/[^\d.]/g, "") // Remove all characters except digits and dots
@@ -1681,40 +1708,46 @@ const Step33 = (props) => {
                     } else if (allGroups[index].tableType == 1) {
                       return (
                         <div>
-                          {allGroups[index]?.settingName == null ? '' :  <div className="comm_cards">
-                            <div className="card input_card">
-                              <div className="row">
-                                <div className="col-lg-3 title_bg">
-                                  <h5 className="comm_card_title mb-0">
-                                    {allGroups[index]?.settingName == null
-                                      ? ''
-                                      // allGroups[index]?.cstmName != ""
-                                      //   ? allGroups[index]?.customFieldName !=
-                                      //     null
-                                      //     ? getText(
-                                      //         allGroups[index]?.customFieldName
-                                      //       )
-                                      //     : getText(allGroups[index]?.cstmName)
-                                      //   : getText(allGroups[index]?.cstmName)
-                                      : getText(allGroups[index]?.settingName)}
-                                  </h5>
-                                </div>
-                                <div className="col-lg-9 col-sm-12 col_left_border">
-                                  <input
-                                    type="text"
-                                    placeholder=""
-                                    onFocus={(e) => resetInput(e)}
-                                    value={allGroups[index].value}
-                                    onChange={advLevOnchangeEvent(
-                                      allGroups,
-                                      index
-                                    )}
-                                  />
+                          {allGroups[index]?.settingName == null ? (
+                            ""
+                          ) : (
+                            <div className="comm_cards">
+                              <div className="card input_card">
+                                <div className="row">
+                                  <div className="col-lg-3 title_bg">
+                                    <h5 className="comm_card_title mb-0">
+                                      {allGroups[index]?.settingName == null
+                                        ? ""
+                                        : // allGroups[index]?.cstmName != ""
+                                          //   ? allGroups[index]?.customFieldName !=
+                                          //     null
+                                          //     ? getText(
+                                          //         allGroups[index]?.customFieldName
+                                          //       )
+                                          //     : getText(allGroups[index]?.cstmName)
+                                          //   : getText(allGroups[index]?.cstmName)
+                                          getText(
+                                            allGroups[index]?.settingName
+                                          )}
+                                    </h5>
+                                  </div>
+                                  <div className="col-lg-9 col-sm-12 col_left_border">
+                                    <input
+                                      type="text"
+                                      placeholder=""
+                                      onFocus={(e) => resetInput(e)}
+                                      value={allGroups[index].value}
+                                      onChange={advLevOnchangeEvent(
+                                        allGroups,
+                                        index
+                                      )}
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>}
-                         
+                          )}
+
                           {item?.comments ? (
                             <div className="comm_cards">
                               <div className="card input_card">
@@ -1773,12 +1806,18 @@ const Step33 = (props) => {
                           ) : (
                             ""
                           )}
-                           {allGroups[index].settingName == "ADVANCES" ? (
-                             <div>
-                               <p className="comment_text color_red">Outstanding Advances:{outBalAdvance != 0 ? getCurrencyNumberWithSymbol(outBalAdvance) : 0}</p>
-
-                               </div>
-                           ) : '' }
+                          {allGroups[index].settingName == "ADVANCES" ? (
+                            <div>
+                              <p className="comment_text color_red">
+                                Outstanding Advances:
+                                {outBalAdvance != 0
+                                  ? getCurrencyNumberWithSymbol(outBalAdvance)
+                                  : 0}
+                              </p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </div>
                       );
                     }
