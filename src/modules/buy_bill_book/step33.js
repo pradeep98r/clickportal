@@ -78,6 +78,7 @@ const Step33 = (props) => {
   const [otherfeeValue, getOtherfeeValue] = useState(0);
   const [cashpaidValue, getCashpaidValue] = useState(0);
   const [advancesValue, getAdvancesValue] = useState(0);
+  const [advancesValueStatus, getAdvancesValueStatus] = useState(false);
   const [grossTotal, setGrossTotal] = useState(0);
   const [totalUnits, setTotalUnits] = useState(0);
   const [cstmFieldVal, getcstmFieldVal] = useState(0);
@@ -87,10 +88,11 @@ const Step33 = (props) => {
   const [isShown, setisShown] = useState(false);
   const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
+    console.log(advancesValue, "as");
     $("#disable").attr("disabled", false);
     getDefaultSystemSettings().then((res) => {
-      console.log(res,'res')
-    })
+      console.log(res, "res");
+    });
     var cropArrays = editStatus
       ? step2CropEditStatus
         ? props.slectedCropsArray
@@ -113,6 +115,7 @@ const Step33 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
+    console.log(partnerSelectedData);
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
       console.log(pID, billEditItem, editStatus, "g");
@@ -122,7 +125,6 @@ const Step33 = (props) => {
         setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
     }
-    console.log(outBalAdvance, "outBalAdvance");
     getGrossTotalValue(
       editStatus
         ? step2CropEditStatus
@@ -189,7 +191,6 @@ const Step33 = (props) => {
         }
       } else {
         getDefaultSystemSettings().then((res) => {
-          console.log(res.data.data)
           response = res.data.data.sort((a, b) => a.id - b.id);
           for (var i = 0; i < response.length; i++) {
             if (
@@ -647,7 +648,8 @@ const Step33 = (props) => {
     return totalValue;
   };
   const getActualPayble = () => {
-    var actualPay = getTotalBillAmount() - Number(cashpaidValue);
+    var actualPay =
+      getTotalBillAmount() - Number(cashpaidValue) - Number(advancesValue);
     if (includeComm) {
       if (!isShown) {
         actualPay = actualPay - getTotalValue(commValue);
@@ -669,6 +671,9 @@ const Step33 = (props) => {
     return actualPay;
   };
   const getTotalPayble = () => {
+    return Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2);
+  };
+  const getTotalNetPayble = () => {
     return (
       Number(getTotalBillAmount()) -
       Number(cashpaidValue).toFixed(2) -
@@ -846,7 +851,7 @@ const Step33 = (props) => {
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
       otherFee: Number(otherfeeValue),
-      outStBal: outBal,
+      outStBal: editStatus ? billEditItem?.outStBal : outBal,
       paidTo: 0,
       partyId: billEditItem.farmerId, //partnerSelectedData.partyId,
       rent:
@@ -876,29 +881,42 @@ const Step33 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: getTotalBillAmount(),  
-    advBal: outBalAdvance ,
+    billAmt: getTotalBillAmount(),
+    advBal: outBalAdvance,
   };
   // post bill request api call
   const postbuybill = () => {
-    if (advancesValue > outBalAdvance) {
-      toast.error(
-        "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
-        {
-          toastId: "error10",
-        }
-      );
-      $("#disable").attr("disabled", false);
+    console.log(
+      advancesValue,
+      advancesValueStatus,
+      outBalAdvance,
+      editStatus,
+      "advancesValue"
+    );
+    
+      if (advancesValue > outBalAdvance) {
+        if (advancesValueStatus) {
+        toast.error(
+          "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
+          {
+            toastId: "error10",
+          }
+        );
+        $("#disable").attr("disabled", false);
+      }
     } else {
       if (editStatus) {
-        if (advancesValue > outBalAdvance + billEditItem?.advance) {
-          toast.error(
-            "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
-            {
-              toastId: "error10",
-            }
-          );
-          $("#disable").attr("disabled", false);
+       
+          if (advancesValue > outBalAdvance + billEditItem?.advance) {
+            if (advancesValueStatus) {
+            toast.error(
+              "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
+              {
+                toastId: "error10",
+              }
+            );
+            $("#disable").attr("disabled", false);
+          }
         } else {
           console.log(editBillRequestObj, "editBillRequestObj");
           editbuybillApi(editBillRequestObj).then(
@@ -959,7 +977,7 @@ const Step33 = (props) => {
               }, 800);
               window.setTimeout(function () {
                 navigate("/buy_bill_book");
-                window.location.reload();
+                // window.location.reload();
               }, 1000);
             }
           },
@@ -1396,6 +1414,8 @@ const Step33 = (props) => {
     }
     if (groupLiist.settingName == "ADVANCES") {
       getAdvancesValue(v);
+      getAdvancesValueStatus(true);
+      $("#disable").attr("disabled", false);
     }
     var subString = "CUSTOM_FIELD";
     if (groupLiist.cstmName.includes(subString)) {
@@ -1838,13 +1858,29 @@ const Step33 = (props) => {
                 <h5>Total Bill Amount (₹)</h5>
                 <h6>{getCurrencyNumberWithOutSymbol(getTotalBillAmount())}</h6>
               </div>
+              {advancesValue != 0 ? (
+                <div className="totals_value">
+                  <h5>Advances (₹)</h5>
+                  <h6 className="black_color">- {advancesValue}</h6>
+                </div>
+              ) : (
+                ""
+              )}
+              <div className="totals_value">
+                <h5>Total Payables (₹)</h5>
+                <h6>{getCurrencyNumberWithOutSymbol(getNetTotalPayble())}</h6>
+              </div>
               {outBalformStatusvalue ? (
                 <div className="totals_value">
                   <h5>Outstanding Balance (₹)</h5>
                   <h6>
                     {outBal != 0
                       ? editStatus
-                        ? getCurrencyNumberWithOutSymbol(billEditItem?.outStBal)
+                        ? billEditItem?.outStBal != 0
+                          ? getCurrencyNumberWithOutSymbol(
+                              billEditItem?.outStBal
+                            )
+                          : 0
                         : getCurrencyNumberWithOutSymbol(outBal)
                       : "0"}
                   </h6>
@@ -1856,13 +1892,13 @@ const Step33 = (props) => {
               {cashpaidValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Paid</h5>
-                  <h6 className="black_color">
+                  <h6>
                     -
                     {billEditItem?.cashPaid
                       ? cashPaidStatus
-                        ? cashpaidValue
-                        : billEditItem?.cashPaid
-                      : cashpaidValue}
+                        ? getCurrencyNumberWithOutSymbol(cashpaidValue)
+                        : getCurrencyNumberWithOutSymbol(billEditItem?.cashPaid)
+                      : getCurrencyNumberWithOutSymbol(cashpaidValue)}
                   </h6>
                 </div>
               ) : (

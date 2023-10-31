@@ -25,7 +25,7 @@ import { billViewInfo } from "../../reducers/billViewSlice";
 import { selectSteps } from "../../reducers/stepsSlice";
 import { selectBuyer } from "../../reducers/buyerSlice";
 import Steps from "../buy_bill_book/steps";
-import { fromBillbook } from "../../reducers/billEditItemSlice";
+import { billDate, fromBillbook } from "../../reducers/billEditItemSlice";
 import no_data_icon from "../../assets/images/NodataAvailable.svg";
 import addbill_icon from "../../assets/images/addbill.svg";
 import NoInternetConnection from "../../components/noInternetConnection";
@@ -211,6 +211,7 @@ const SellBillBook = (props) => {
     setLoading(true);
     callbackFunction(newDate, newDate, "Daily");
     setCurrentDate(newDate);
+    dispatch(billDate(newDate));
   };
   const onNextDate = () => {
     const newDate = new Date(currentDate.getTime());
@@ -220,6 +221,7 @@ const SellBillBook = (props) => {
       callbackFunction(newDate, newDate, "Daily");
       setCurrentDate(newDate);
     }
+    dispatch(billDate(newDate));
   };
   const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
     useState(false);
@@ -525,7 +527,6 @@ const SellBillBook = (props) => {
                                                                     : crop.cropName
                                                                   : crop.cropName}
                                                               </p>
-                                                            
                                                             </div>
                                                             <div className="col-lg-4 col-sm-12 col">
                                                               {/* {crop.qtyUnit+crop.qty} */}
@@ -894,10 +895,18 @@ const SellBillBook = (props) => {
                                                         : crop.cropName}
                                                     </p>
                                                     <p className="crop_name color_green">
-                                                    {
-                                                        ((crop.mnLotId != '0' ? crop.mnLotId : '') +  ((crop.mnLotId) != '0' ?'/' : '') + 
-                                                        (crop.mnSubLotId != '0' ? crop.mnSubLotId : ''))}
-                                                              </p>
+                                                      {(crop.mnLotId != "0"
+                                                        ? crop.mnLotId
+                                                        : "") +
+                                                        (crop.mnLotId != ""
+                                                          ? crop.mnLotId != "0"
+                                                            ? "/"
+                                                            : ""
+                                                          : "") +
+                                                        (crop.mnSubLotId != "0"
+                                                          ? crop.mnSubLotId
+                                                          : "")}
+                                                    </p>
                                                   </div>
                                                   <div className="col-lg-4 col-sm-12 col flex_class">
                                                     <div

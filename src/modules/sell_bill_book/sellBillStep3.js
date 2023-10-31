@@ -594,9 +594,9 @@ const SellBillStep3 = (props) => {
           : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
-        Number(otherfeeValue) 
-        // +
-        // Number(advancesValue)
+        Number(otherfeeValue)
+      // +
+      // Number(advancesValue)
     );
     let totalValue = grossTotal + t;
     if (includeComm) {
@@ -659,8 +659,8 @@ const SellBillStep3 = (props) => {
           : getTotalUnits(rentValue)) +
         getTotalValue(mandifeeValue) +
         Number(levisValue) +
-        Number(otherfeeValue) 
-        // Number(advancesValue)
+        Number(otherfeeValue)
+      // Number(advancesValue)
     );
     var finalValue = grossTotal + t;
     var finalVal = finalValue;
@@ -860,8 +860,8 @@ const SellBillStep3 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: Number(getTotalBillAmount()),  
-    advBal: 0 ,
+    billAmt: Number(getTotalBillAmount()),
+    advBal: 0,
   };
 
   const postsellbill = () => {
@@ -1731,7 +1731,7 @@ const SellBillStep3 = (props) => {
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Received</h5>
-                  <h6 className="black_color">
+                  <h6>
                     -
                     {billEditItem?.cashRcvd
                       ? cashRcdStatus

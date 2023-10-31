@@ -59,9 +59,9 @@ const Step22 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const dispatch = useDispatch();
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
-  console.log(settingsData,'settingsData')
   const transusers = useSelector((state) => state.transInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  console.log(billEditItemInfo,'billEditItemInfo')
   const billEditStatus = billEditItemInfo?.billEditStatus;
   const cropTableEditStatus = billEditItemInfo?.cropTableEditStatus;
 
@@ -255,7 +255,6 @@ const Step22 = (props) => {
       crop.count = crop.count + 1;
       crop.cropActive = true;
     }
-    console.log(cropData, preferedCrops[index2]);
   };
 
   //   getting all crops popup when click on other crop
@@ -358,7 +357,6 @@ const Step22 = (props) => {
           if (settingsData.billSetting[i].value == 0) {
             setDefaultUnitTypeVal("unit_kg");
           } else {
-            console.log('unit otherr')
             setDefaultUnitTypeVal("unit_other");
           }
         }
@@ -551,13 +549,6 @@ const Step22 = (props) => {
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
-    console.log(
-      cropInfo,
-      billEditStatus,
-      allDeletedCrops,
-      cropData,
-      "cropInfo"
-    );
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
         if (
@@ -580,7 +571,6 @@ const Step22 = (props) => {
         }
       }
     }
-    console.log(cropInfo, "cropInfo");
     var h = [];
     // if (cropData.length > 0) {
     cropInfo.map((item, index) => {
@@ -711,11 +701,13 @@ const Step22 = (props) => {
               });
               return null;
             }
-            else if (data.cropSufx.length > 30) {
-              toast.error("Suffix should be max 30 characters", {
-                toastId: "error10",
-              });
-              return null;
+            else if (data.cropSufx != null) {
+              if(data.cropSufx.length > 30){
+                toast.error("Suffix should be max 30 characters", {
+                  toastId: "error10",
+                });
+                return null;
+              }
             }
             else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
               toast.error("LotId should not be empty", {
@@ -741,11 +733,13 @@ const Step22 = (props) => {
               });
               return null;
             }
-            else if (data.cropSufx.length > 30) {
-              toast.error("Suffix should be max 30 characters", {
-                toastId: "error10",
-              });
-              return null;
+            else if (data.cropSufx != null) {
+              if(data.cropSufx.length > 30){
+                toast.error("Suffix should be max 30 characters", {
+                  toastId: "error10",
+                });
+                return null;
+              }
             }
             else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
               toast.error("LotId should not be empty", {
@@ -773,11 +767,13 @@ const Step22 = (props) => {
               });
               return null;
             }
-            else if (data.cropSufx.length > 30) {
-              toast.error("Suffix should be max 30 characters", {
-                toastId: "error10",
-              });
-              return null;
+            else if (data.cropSufx != null) {
+              if(data.cropSufx.length > 30){
+                toast.error("Suffix should be max 30 characters", {
+                  toastId: "error10",
+                });
+                return null;
+              }
             }
             else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
               toast.error("LotId should not be empty", {
@@ -810,11 +806,14 @@ const Step22 = (props) => {
               });
               return null;
             }
-            else if (data.cropSufx.length > 30) {
-              toast.error("Suffix should be max 30 characters", {
-                toastId: "error10",
-              });
-              return null;
+           
+            else if (data.cropSufx != null) {
+              if(data.cropSufx.length > 30){
+                toast.error("Suffix should be max 30 characters", {
+                  toastId: "error10",
+                });
+                return null;
+              }
             }
             else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
               toast.error("LotId should not be empty", {
@@ -983,7 +982,6 @@ const Step22 = (props) => {
     setweightValue(val);
     setUpdatedItemList([...updatedItem1]);
     setCropId(id);
-    console.log(updatedItem1);
   };
   const getCropSuffix = (id, index, cropitem) => (e) => {
     var val = e.target.value;

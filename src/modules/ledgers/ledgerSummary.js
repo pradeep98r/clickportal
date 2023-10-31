@@ -110,13 +110,13 @@ const LedgerSummary = (props) => {
             ""
           )}
 
-          <div
-            className={
-              props.dateDisplay ? "ledgerSummary" : "all_ledgerSummary"
-            }
-            id="scroll_style"
-          >
-            {ledgerSummary.length > 0 ? (
+          {ledgerSummary.length > 0 ? (
+            <div
+              className={
+                props.dateDisplay ? "ledgerSummary" : "all_ledgerSummary"
+              }
+              id="scroll_style"
+            >
               <table className="table table-bordered ledger-table">
                 <tbody>
                   {ledgerSummary.map((item, index) => {
@@ -154,7 +154,7 @@ const LedgerSummary = (props) => {
                           </button>
                           <p>{moment(item.date).format("DD-MMM-YY")}</p>
                         </td>
-                        
+
                         {ledgerType == "BUYER" ? (
                           ""
                         ) : (
@@ -170,6 +170,7 @@ const LedgerSummary = (props) => {
                           <p id="p-common">
                             {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                           </p>
+                          <p>{item.comments ? item.comments : ''}</p>
                         </td>
                         <td
                           className={ledgerType == "BUYER" ? "col-3" : "col-2"}
@@ -199,10 +200,19 @@ const LedgerSummary = (props) => {
                   })}
                 </tbody>
               </table>
-            ) : (
+            </div>
+          ) : (
+            <div
+              className={
+                props.dateDisplay
+                  ? "ledgerSummary all_ledgerSummary_no_dat"
+                  : "all_ledgerSummary all_ledgerSummary_no_dat"
+              }
+              id=""
+            >
               <NoDataAvailable />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="ledger-table">
@@ -288,9 +298,7 @@ const LedgerSummary = (props) => {
                           ) : (
                             <td className="col-2">
                               <p id="p-common">
-                                {item.advance
-                                  ? item.advance.toFixed(2)
-                                  : ""}
+                                {item.advance ? item.advance.toFixed(2) : ""}
                               </p>
                             </td>
                           )}
@@ -334,7 +342,14 @@ const LedgerSummary = (props) => {
               </div>
             </div>
           ) : (
-            <div className="nodata_height">
+            <div
+              className={
+                props.dateDisplay
+                  ? "ledgerSummary nodata_height"
+                  : "all_ledgerSummaryd nodata_height"
+              }
+              id=""
+            >
               <NoDataAvailable />
             </div>
           )}

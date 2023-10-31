@@ -76,14 +76,17 @@ input[type="radio"]:checked + label {
   width: 100%;
   border-radius: 10px 10px 10px 10px;
 }
+.all_ledgerSummary_no_dat {
+  height: calc(100vh - 320px);
+}
 .detailedLedger {
   height: calc(100vh - 390px);
   overflow-y: auto;
   background: #ffffff;
   border-radius: 10px 10px 10px 10px;
 }
-.nodata_height{
-    height: calc(100vh - 390px); 
+.nodata_height {
+  height: calc(100vh - 340px);
 }
 #ledger-sum {
   thead,
@@ -732,17 +735,18 @@ input[name="billIdDisabled"] {
     transform: translate(-50%, -50%);
   }
 }
-.print_dwnld_icons{
-    img{
-        width: 30px;
-    }
+.print_dwnld_icons {
+  img {
+    width: 30px;
+  }
 }
-.main_ledg{
-position: relative};
-.loading_styles_led{
+.main_ledg {
+  position: relative;
+}
+.loading_styles_led {
   top: 0;
   background: none;
 }
-.nodata_scroll_sell_buy{
-  height: calc(100vh - 167px)!important;
+.nodata_scroll_sell_buy {
+  height: calc(100vh - 167px) !important;
 }

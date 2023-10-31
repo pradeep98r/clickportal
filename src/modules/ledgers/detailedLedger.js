@@ -94,35 +94,38 @@ const DetailedLedger = (props) => {
       {allCustom == "all" && ledgerTabs == "detailedledger" ? (
         <div className="ledger-table">
           {details.length > 0 ? (
-          <thead className="row thead-tag head_tag p-0">
-            <th className="col-1" id="sno">
-              #
-            </th>
-            <th className="col-2">Ref ID | Date</th>
-            <th className="col-3">
-              <p>Item</p>
-              <p> Unit | Kgs | Rate</p>
-            </th>
-            {ledgerType == "BUYER" ? (
-              <th className="col-2">Received(&#8377;)</th>
-            ) : (
-              <th className="col-2">Paid(&#8377;)</th>
-            )}
-            {ledgerType == "BUYER" ? (
-              <th className="col-2">To Be Received(&#8377;)</th>
-            ) : (
-              <th className="col-2">To Be Paid(&#8377;)</th>
-            )}
-            <th className="col-2">Ledger Balance(&#8377;)</th>
-          </thead>
-          ) : '' }
-          <div
-            className={
-              props.dateDisplay ? "detailedLedger" : "all_ledgerSummary"
-            }
-            id="scroll_style"
-          >
-            {details.length > 0 ? (
+            <thead className="row thead-tag head_tag p-0">
+              <th className="col-1" id="sno">
+                #
+              </th>
+              <th className="col-2">Ref ID | Date</th>
+              <th className="col-3">
+                <p>Item</p>
+                <p> Unit | Kgs | Rate</p>
+              </th>
+              {ledgerType == "BUYER" ? (
+                <th className="col-2">Received(&#8377;)</th>
+              ) : (
+                <th className="col-2">Paid(&#8377;)</th>
+              )}
+              {ledgerType == "BUYER" ? (
+                <th className="col-2">To Be Received(&#8377;)</th>
+              ) : (
+                <th className="col-2">To Be Paid(&#8377;)</th>
+              )}
+              <th className="col-2">Ledger Balance(&#8377;)</th>
+            </thead>
+          ) : (
+            ""
+          )}
+
+          {details.length > 0 ? (
+            <div
+              className={
+                props.dateDisplay ? "detailedLedger" : "all_ledgerSummary"
+              }
+              id="scroll_style"
+            >
               <table className="table table-bordered" id="ledger-sum">
                 <tbody>
                   {details.map((item, index) => {
@@ -220,38 +223,50 @@ const DetailedLedger = (props) => {
                   })}
                 </tbody>
               </table>
-            ) : (
+            </div>
+          ) : (
+            <div
+              className={
+                props.dateDisplay
+                  ? "detailedLedger"
+                  : "all_ledgerSummary all_ledgerSummary_no_dat"
+              }
+              id=""
+            >
               <NoDataAvailable />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="ledger-table">
-           {detailsByDate.length > 0 ? (
-          <thead className="row thead-tag head_tag p-0">
-            <th className="col-1" id="sno">
-              #
-            </th>
-            <th className="col-2">Ref ID | Date</th>
-            <th className="col-3">
-              <p>Item</p>
-              <p> Unit | Kgs | Rate</p>
-            </th>
-            {ledgerType == "BUYER" ? (
-              <th className="col-2">Received(&#8377;)</th>
-            ) : (
-              <th className="col-2">Paid(&#8377;)</th>
-            )}
-            {ledgerType == "BUYER" ? (
-              <th className="col-2">To Be Received(&#8377;)</th>
-            ) : (
-              <th className="col-2">To Be Paid(&#8377;)</th>
-            )}
-            <th className="col-2">Ledger Balance(&#8377;)</th>
-          </thead>
-           ) : '' }
-          <div className="detailedLedger" id="scroll_style">
-            {detailsByDate.length > 0 ? (
+          {detailsByDate.length > 0 ? (
+            <thead className="row thead-tag head_tag p-0">
+              <th className="col-1" id="sno">
+                #
+              </th>
+              <th className="col-2">Ref ID | Date</th>
+              <th className="col-3">
+                <p>Item</p>
+                <p> Unit | Kgs | Rate</p>
+              </th>
+              {ledgerType == "BUYER" ? (
+                <th className="col-2">Received(&#8377;)</th>
+              ) : (
+                <th className="col-2">Paid(&#8377;)</th>
+              )}
+              {ledgerType == "BUYER" ? (
+                <th className="col-2">To Be Received(&#8377;)</th>
+              ) : (
+                <th className="col-2">To Be Paid(&#8377;)</th>
+              )}
+              <th className="col-2">Ledger Balance(&#8377;)</th>
+            </thead>
+          ) : (
+            ""
+          )}
+
+          {detailsByDate.length > 0 ? (
+            <div className="detailedLedger" id="scroll_style">
               <table className="table table-bordered">
                 <tbody>
                   {detailsByDate.map((item, index) => {
@@ -339,10 +354,12 @@ const DetailedLedger = (props) => {
                   })}
                 </tbody>
               </table>
-            ) : (
+            </div>
+          ) : (
+            <div className="detailedLedger nodata_height" id="">
               <NoDataAvailable />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
       {showBillModalStatus ? (

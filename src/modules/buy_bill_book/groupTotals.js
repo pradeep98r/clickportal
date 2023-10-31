@@ -429,7 +429,6 @@ const GroupTotals = (props) => {
   const getDefaltSet = () => {
     getDefaultSystemSettings().then((response) => {
       var res = response.data.data;
-      console.log(res)
       groupWiseTotals(response);
       billSettingData(response.data.data);
       dispatch(filtereArray(response.data.data));
@@ -1074,7 +1073,7 @@ const GroupTotals = (props) => {
         item = "";
         break;
       case "COMMISSION":
-        if (!list.isShown) {
+        if (!billData?.commShown) {
           item = "";
         } else {
           item = "COMMISSION";
@@ -1124,19 +1123,24 @@ const GroupTotals = (props) => {
       var finalValue = billData?.grossTotal + t;
     }
     var finalVal = finalValue;
-
     if (
       billData?.partyType?.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
       if (includeComm) {
-        if (isShown) {
+        if (billData?.commShown) {
+          finalVal = finalVal - billData.comm;
+        }
+      }
+      else{
+        
+        if (billData?.commShown) {
           finalVal = finalVal - billData.comm;
         }
       }
     } else {
       if (includeComm) {
-        if (isShown) {
+        if (billData?.commShown) {
           finalVal = finalVal + billData.comm;
         }
       }
@@ -3412,7 +3416,7 @@ const GroupTotals = (props) => {
                   <div className="row">
                     {/* <div className="col-lg-2"></div> */}
                     <div className="col-lg-7">
-                      <p className="grouping_value">Total Net Payble :</p>
+                      <p className="grouping_value">Total Payables :</p>
                     </div>
                     <div className="col-lg-4 p-0">
                       <p
