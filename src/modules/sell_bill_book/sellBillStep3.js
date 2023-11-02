@@ -810,7 +810,7 @@ const SellBillStep3 = (props) => {
     action: "UPDATE",
     billAttributes: {
       actualPayRecieevable: Number(getActualRcvd()),
-      advance: Number(advancesValue),
+      // advance: Number(advancesValue),
       billDate: partnerSelectDate,
       cashRcvd: Number(cashRcvdValue),
       comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -860,8 +860,8 @@ const SellBillStep3 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: Number(getTotalBillAmount()),
-    advBal: 0,
+    // billAmt: Number(getTotalBillAmount()),
+    // advBal: 0,
   };
 
   const postsellbill = () => {
@@ -908,7 +908,7 @@ const SellBillStep3 = (props) => {
               });
               window.setTimeout(function () {
                 navigate("/buyerLedger");
-                window.location.reload();
+                // window.location.reload();
               }, 1000);
             }
           }

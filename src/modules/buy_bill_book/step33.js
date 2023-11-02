@@ -640,16 +640,16 @@ const Step33 = (props) => {
       }
     }
     if (addRetComm) {
-      totalValue = (totalValue - getTotalValue(retcommValue)).toFixed(2);
+      totalValue = (totalValue - getTotalValue(retcommValue));
     } else {
-      totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
+      totalValue = (totalValue + getTotalValue(retcommValue));
     }
 
     return totalValue;
   };
   const getActualPayble = () => {
     var actualPay =
-      getTotalBillAmount() - Number(cashpaidValue) - Number(advancesValue);
+      getTotalBillAmount().toFixed(2) - Number(cashpaidValue) - Number(advancesValue);
     if (includeComm) {
       if (!isShown) {
         actualPay = actualPay - getTotalValue(commValue);
@@ -671,17 +671,17 @@ const Step33 = (props) => {
     return actualPay;
   };
   const getTotalPayble = () => {
-    return Number(getTotalBillAmount()) - Number(cashpaidValue).toFixed(2);
+    return Number(getTotalBillAmount().toFixed(2)) - Number(advancesValue).toFixed(2);
   };
   const getTotalNetPayble = () => {
     return (
-      Number(getTotalBillAmount()) -
+      Number(getTotalBillAmount().toFixed(2)) -
       Number(cashpaidValue).toFixed(2) -
       Number(advancesValue).toFixed(2)
     );
   };
   const getNetTotalPayble = () => {
-    return Number(getTotalBillAmount()) - Number(advancesValue).toFixed(2);
+    return Number(getTotalBillAmount().toFixed(2)) - Number(advancesValue).toFixed(2);
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
@@ -820,7 +820,7 @@ const Step33 = (props) => {
     writerId: writerId,
     timeStamp: "",
     source: "WEB",
-    billAmt: getTotalBillAmount(),
+    billAmt: Number(getTotalBillAmount().toFixed(2)),
     advBal: outBalAdvance,
   };
 
@@ -881,7 +881,7 @@ const Step33 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: getTotalBillAmount(),
+    billAmt: Number(getTotalBillAmount().toFixed(2)),
     advBal: outBalAdvance,
   };
   // post bill request api call
@@ -893,9 +893,9 @@ const Step33 = (props) => {
       editStatus,
       "advancesValue"
     );
-    
-      if (advancesValue > outBalAdvance) {
-        if (advancesValueStatus) {
+
+    if (advancesValue > outBalAdvance) {
+      if (advancesValueStatus) {
         toast.error(
           "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
           {
@@ -903,12 +903,13 @@ const Step33 = (props) => {
           }
         );
         $("#disable").attr("disabled", false);
+      } else {
+        addBillApiCall();
       }
     } else {
       if (editStatus) {
-       
-          if (advancesValue > outBalAdvance + billEditItem?.advance) {
-            if (advancesValueStatus) {
+        if (advancesValue > outBalAdvance + billEditItem?.advance) {
+          if (advancesValueStatus) {
             toast.error(
               "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
               {
@@ -916,82 +917,86 @@ const Step33 = (props) => {
               }
             );
             $("#disable").attr("disabled", false);
+          } else {
+            editBillApiCall();
           }
         } else {
           console.log(editBillRequestObj, "editBillRequestObj");
-          editbuybillApi(editBillRequestObj).then(
-            (response) => {
-              if (response.data.status.type === "SUCCESS") {
-                localStorage.setItem("stepOne", false);
-                localStorage.setItem("billViewStatus", false);
-                if (!props.fromLedger) {
-                  localStorage.setItem("LinkPath", "/buy_bill_book");
-                  window.setTimeout(function () {
-                    props.closem();
-                  }, 800);
-                  window.setTimeout(function () {
-                    navigate("/buy_bill_book");
-                    // window.location.reload();
-                  }, 1000);
-                } else {
-                  window.setTimeout(function () {
-                    props.closem();
-                  }, 800);
-                  getBuyBillId(clickId, billEditItem?.caBSeq).then((res) => {
-                    if (res.data.status.type === "SUCCESS") {
-                      Object.assign(res.data.data, { partyType: "FARMER" });
-                      dispatch(billViewInfo(res.data.data));
-                      localStorage.setItem(
-                        "billData",
-                        JSON.stringify(res.data.data)
-                      );
-                    }
-                  });
-                }
-                toast.success(response.data.status.message, {
-                  toastId: "success1",
-                });
-              }
-            },
-            (error) => {
-              toast.error(error.response.data.status.description, {
-                toastId: "error1",
-              });
-              $("#disable").attr("disabled", false);
-            }
-          );
+          editBillApiCall();
         }
       } else {
         console.log(billRequestObj, "billRequestObj");
-        postbuybillApi(billRequestObj).then(
-          (response) => {
-            if (response.data.status.type === "SUCCESS") {
-              toast.success(response.data.status.message, {
-                toastId: "success1",
-              });
-              localStorage.setItem("stepOne", false);
-              localStorage.setItem("LinkPath", "/buy_bill_book");
-
-              window.setTimeout(function () {
-                props.closem();
-              }, 800);
-              window.setTimeout(function () {
-                navigate("/buy_bill_book");
-                // window.location.reload();
-              }, 1000);
-            }
-          },
-          (error) => {
-            toast.error(error.response.data.status.description, {
-              toastId: "error1",
-            });
-            $("#disable").attr("disabled", false);
-          }
-        );
+        addBillApiCall();
       }
     }
   };
+  const addBillApiCall = () => {
+    postbuybillApi(billRequestObj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          toast.success(response.data.status.message, {
+            toastId: "success1",
+          });
+          localStorage.setItem("stepOne", false);
+          localStorage.setItem("LinkPath", "/buy_bill_book");
 
+          window.setTimeout(function () {
+            props.closem();
+          }, 800);
+          window.setTimeout(function () {
+            navigate("/buy_bill_book");
+            // window.location.reload();
+          }, 1000);
+        }
+      },
+      (error) => {
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
+        $("#disable").attr("disabled", false);
+      }
+    );
+  };
+  const editBillApiCall = () => {
+    editbuybillApi(editBillRequestObj).then(
+      (response) => {
+        if (response.data.status.type === "SUCCESS") {
+          localStorage.setItem("stepOne", false);
+          localStorage.setItem("billViewStatus", false);
+          if (!props.fromLedger) {
+            localStorage.setItem("LinkPath", "/buy_bill_book");
+            window.setTimeout(function () {
+              props.closem();
+            }, 800);
+            window.setTimeout(function () {
+              navigate("/buy_bill_book");
+              // window.location.reload();
+            }, 1000);
+          } else {
+            window.setTimeout(function () {
+              props.closem();
+            }, 800);
+            getBuyBillId(clickId, billEditItem?.caBSeq).then((res) => {
+              if (res.data.status.type === "SUCCESS") {
+                Object.assign(res.data.data, { partyType: "FARMER" });
+                dispatch(billViewInfo(res.data.data));
+                localStorage.setItem("billData", JSON.stringify(res.data.data));
+              }
+            });
+          }
+          toast.success(response.data.status.message, {
+            toastId: "success1",
+          });
+        }
+      },
+      (error) => {
+        toast.error(error.response.data.status.description, {
+          toastId: "error1",
+        });
+        $("#disable").attr("disabled", false);
+      }
+    );
+  };
   const advLevOnchangeEvent = (groupLiist, index) => (e) => {
     var val = e.target.value
       .replace(/[^\d.]/g, "") // Remove all characters except digits and dots
