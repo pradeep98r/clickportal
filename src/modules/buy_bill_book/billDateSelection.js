@@ -11,6 +11,7 @@ const langFullData = JSON.parse(langData);
 const BillDateSelection = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateselected = billEditItemInfo?.selectedBillDate;
+  console.log(billDateselected,'billDateselected')
   const [selectedDate, setStartDate] = useState(
     billDateselected !== null ? billDateselected : new Date()
   );

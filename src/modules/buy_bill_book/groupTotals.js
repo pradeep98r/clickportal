@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import {
   getDefaultSystemSettings,
+  getOutstandingBal,
   getSystemSettings,
 } from "../../actions/billCreationService";
 import { useDispatch, useSelector } from "react-redux";
@@ -65,10 +66,15 @@ const GroupTotals = (props) => {
   var ldsValue = false;
   const [lpk, setLPK] = useState(false);
   var filterArray = billSettings?.filtereArray;
+  const [outBalAdvance, setOutBalAdvance] = useState(0);
   useEffect(() => {
     getBuyBillsById();
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
-
+    var pId =
+      billData?.partyType == "BUYER" ? billData?.buyerId : billData?.farmerId;
+    getOutstandingBal(clickId, pId).then((res) => {
+      setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
+    });
     var h = [];
     for (var c = 0; c < billData.lineItems.length; c++) {
       var cropArrays = billData.lineItems;
@@ -429,7 +435,7 @@ const GroupTotals = (props) => {
   const getDefaltSet = () => {
     getDefaultSystemSettings().then((response) => {
       var res = response.data.data;
-      console.log(res)
+      console.log(res);
       groupWiseTotals(response);
       billSettingData(response.data.data);
       dispatch(filtereArray(response.data.data));
@@ -718,8 +724,7 @@ const GroupTotals = (props) => {
       var substring = "CUSTOM_FIELD";
       if (setting.settingName?.includes(substring)) {
         substring = setting.settingName;
-      }
-       else if (
+      } else if (
         setting.settingName === "ADVANCES" &&
         !(billData?.partyType.toUpperCase() === "FARMER")
       ) {
@@ -1074,7 +1079,7 @@ const GroupTotals = (props) => {
         item = "";
         break;
       case "COMMISSION":
-        if (!list.isShown) {
+        if (!billData?.commShown) {
           item = "";
         } else {
           item = "COMMISSION";
@@ -1124,19 +1129,22 @@ const GroupTotals = (props) => {
       var finalValue = billData?.grossTotal + t;
     }
     var finalVal = finalValue;
-
     if (
       billData?.partyType?.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
       if (includeComm) {
-        if (isShown) {
+        if (billData?.commShown) {
+          finalVal = finalVal - billData.comm;
+        }
+      } else {
+        if (billData?.commShown) {
           finalVal = finalVal - billData.comm;
         }
       }
     } else {
       if (includeComm) {
-        if (isShown) {
+        if (billData?.commShown) {
           finalVal = finalVal + billData.comm;
         }
       }
@@ -3394,7 +3402,7 @@ const GroupTotals = (props) => {
 
                         <span class="fee-percentage color_red">
                           Outstanding Advances :{" "}
-                          {billData?.advBal ? billData?.advBal : 0}
+                          {billData?.advBal ? billData?.advBal : outBalAdvance}
                         </span>
                       </div>
                       <div className="col-lg-4 p-0">
@@ -3412,7 +3420,7 @@ const GroupTotals = (props) => {
                   <div className="row">
                     {/* <div className="col-lg-2"></div> */}
                     <div className="col-lg-7">
-                      <p className="grouping_value">Total Net Payble :</p>
+                      <p className="grouping_value">Total Payables :</p>
                     </div>
                     <div className="col-lg-4 p-0">
                       <p

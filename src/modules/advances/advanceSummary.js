@@ -31,7 +31,7 @@ const AdvanceSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const ledgerTabs = props.ledgerTabs;
-  console.log(props.advancesSum,'props.advancesSum',advancesData?.advanceSummaryById)
+  console.log(advancesSummary,selectedParty,'props.advancesSum')
   const billOnClickView = (billId, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("A")) {
@@ -177,7 +177,7 @@ const AdvanceSummary = (props) => {
                               <button
                                 className="pl-0"
                                 onClick={() =>
-                                  billOnClickView(item.refId, item.partyId)
+                                  billOnClickView(item.refId, item.partyId != 0 ? item.partyId : selectedParty?.partyId)
                                 }
                               >
                                 <p style={{ color: "#0066FF" }}>
