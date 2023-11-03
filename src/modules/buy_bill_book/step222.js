@@ -61,7 +61,6 @@ const Step22 = (props) => {
   const settingsData = JSON.parse(localStorage.getItem("systemSettingsData"));
   const transusers = useSelector((state) => state.transInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
-  console.log(billEditItemInfo,'billEditItemInfo')
   const billEditStatus = billEditItemInfo?.billEditStatus;
   const cropTableEditStatus = billEditItemInfo?.cropTableEditStatus;
 
@@ -90,7 +89,6 @@ const Step22 = (props) => {
   const [allData, setAllData] = useState([]);
   const [cropsData, setCropsData] = useState(allData);
   const [activeSearch, setActiveSearch] = useState(false);
-
   const [addCropsIndex, setAddCropsIndex] = useState(0);
   const [onFocusCrop, setOnFocusCrop] = useState(null);
   const [defaultUnitTypeVal, setDefaultUnitTypeVal] = useState("");
@@ -369,7 +367,10 @@ const Step22 = (props) => {
         }
       }
     }
-    if (settingsData.qtySetting.length == 0 && settingsData.billSetting.length == 0) {
+    if (
+      settingsData.qtySetting.length == 0 &&
+      settingsData.billSetting.length == 0
+    ) {
       setDefaultUnitTypeVal("unit_kg");
     }
     dispatch(cropEditStatus(billEditStatus ? true : false));
@@ -395,7 +396,6 @@ const Step22 = (props) => {
       if (billEditStatus) {
         for (var d = 0; d < cropObjectArr.length; d++) {
           let object = { ...cropObjectArr[d] };
-
           if (
             cropObjectArr[d].rateType === "RATE_PER_KG" ||
             cropObjectArr[d].rateType === "KGS"
@@ -413,7 +413,20 @@ const Step22 = (props) => {
           lineIt = JSON.parse(localStorage.getItem("lineItemsEdit"));
         }
         if (lineIt != null) {
-          cropResponseData([...lineIt]);
+          for (var d = 0; d < cropObjectArr.length; d++) {
+            let object = { ...cropObjectArr[d] };
+            if (
+              cropObjectArr[d].rateType === "RATE_PER_KG" ||
+              cropObjectArr[d].rateType === "KGS"
+            ) {
+              object = { ...object, rateType: "KGS" };
+              a.push(object);
+            } else {
+              object = { ...object, qtyUnit: cropObjectArr[d].qtyUnit };
+              a.push(object);
+            }
+          }
+          cropResponseData([...a]);
           setUpdatedItemList(lineIt);
           setPreferedCropsData([...lineIt]);
         }
@@ -700,23 +713,20 @@ const Step22 = (props) => {
                 toastId: "error3",
               });
               return null;
-            }
-            else if (data.cropSufx != null) {
-              if(data.cropSufx.length > 30){
+            } else if (data.cropSufx != null) {
+              if (data.cropSufx.length > 30) {
                 toast.error("Suffix should be max 30 characters", {
                   toastId: "error10",
                 });
                 return null;
               }
-            }
-            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+            } else if (data.mnSubLotId != "0" && data.mnLotId == "0") {
               toast.error("LotId should not be empty", {
                 toastId: "error15",
               });
               return null;
             }
-          }
-          else if (qtyUnit === "kgs") {
+          } else if (qtyUnit === "kgs") {
             if (data.weight == 0) {
               toast.error("Please enter weight", {
                 toastId: "error1",
@@ -732,16 +742,14 @@ const Step22 = (props) => {
                 toastId: "error3",
               });
               return null;
-            }
-            else if (data.cropSufx != null) {
-              if(data.cropSufx.length > 30){
+            } else if (data.cropSufx != null) {
+              if (data.cropSufx.length > 30) {
                 toast.error("Suffix should be max 30 characters", {
                   toastId: "error10",
                 });
                 return null;
               }
-            }
-            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+            } else if (data.mnSubLotId != "0" && data.mnLotId == "0") {
               toast.error("LotId should not be empty", {
                 toastId: "error15",
               });
@@ -766,16 +774,14 @@ const Step22 = (props) => {
                 toastId: "error4",
               });
               return null;
-            }
-            else if (data.cropSufx != null) {
-              if(data.cropSufx.length > 30){
+            } else if (data.cropSufx != null) {
+              if (data.cropSufx.length > 30) {
                 toast.error("Suffix should be max 30 characters", {
                   toastId: "error10",
                 });
                 return null;
               }
-            }
-            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+            } else if (data.mnSubLotId != "0" && data.mnLotId == "0") {
               toast.error("LotId should not be empty", {
                 toastId: "error15",
               });
@@ -805,17 +811,14 @@ const Step22 = (props) => {
                 toastId: "error4",
               });
               return null;
-            }
-           
-            else if (data.cropSufx != null) {
-              if(data.cropSufx.length > 30){
+            } else if (data.cropSufx != null) {
+              if (data.cropSufx.length > 30) {
                 toast.error("Suffix should be max 30 characters", {
                   toastId: "error10",
                 });
                 return null;
               }
-            }
-            else if (data.mnSubLotId != '0' && data.mnLotId == '0') {
+            } else if (data.mnSubLotId != "0" && data.mnLotId == "0") {
               toast.error("LotId should not be empty", {
                 toastId: "error15",
               });
@@ -828,7 +831,6 @@ const Step22 = (props) => {
           ) {
             return data;
           }
-          
         }
         // end if
       }
@@ -1617,9 +1619,7 @@ const Step22 = (props) => {
                                       name="lot"
                                       onFocus={(e) => resetInput(e)}
                                       className="form-control lot_number"
-                                      value={
-                                        cropData[index].mnLotId
-                                      }
+                                      value={cropData[index].mnLotId}
                                       onChange={getLotValue(
                                         cropData[index].cropId,
                                         index,
@@ -1634,9 +1634,7 @@ const Step22 = (props) => {
                                       name="lot"
                                       onFocus={(e) => resetInput(e)}
                                       className="form-control lot_number"
-                                      value={
-                                        cropData[index].mnSubLotId 
-                                      }
+                                      value={cropData[index].mnSubLotId}
                                       onChange={getSubLotValue(
                                         cropData[index].cropId,
                                         index,

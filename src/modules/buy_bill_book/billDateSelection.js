@@ -11,7 +11,6 @@ const langFullData = JSON.parse(langData);
 const BillDateSelection = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateselected = billEditItemInfo?.selectedBillDate;
-  console.log(billDateselected,'billDateselected')
   const [selectedDate, setStartDate] = useState(
     billDateselected !== null ? billDateselected : new Date()
   );
@@ -43,15 +42,12 @@ const BillDateSelection = (props) => {
       setStartDate(new Date(billDateselected));
       dispatch(billDate(new Date(billDateselected)));
     } else if (!checked) {
-      console.log(selectedDate,'else if')
       setStartDate(selectedDate);
       dispatch(billDate(selectedDate));
     } else {
-      console.log(new Date(localStorage.getItem("setDate")),'else')
       setStartDate(new Date(localStorage.getItem("setDate")));
       dispatch(billDate(new Date(localStorage.getItem("setDate"))));
     }
-    console.log(checked,localStorage.getItem("defaultDate"),'useeffect')
    
   }, []);
 

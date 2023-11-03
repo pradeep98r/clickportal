@@ -88,7 +88,7 @@ const Step33 = (props) => {
   const [isShown, setisShown] = useState(false);
   const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
-    console.log(advancesValue, "as");
+    console.log(billEditItem,'billEditItem')
     $("#disable").attr("disabled", false);
     getDefaultSystemSettings().then((res) => {
       console.log(res, "res");
@@ -115,12 +115,9 @@ const Step33 = (props) => {
       tableChangeStatusval = true;
       setTableChangeStatus(true);
     }
-    console.log(partnerSelectedData);
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
-      console.log(pID, billEditItem, editStatus, "g");
       getOutstandingBal(clickId, pID).then((res) => {
-        console.log(res.data.data, "res.data.data");
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
         setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
