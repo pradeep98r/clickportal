@@ -162,6 +162,13 @@ const LedgerSummary = (props) => {
                             <p id="p-common">
                               {item.advance ? item.advance.toFixed(2) : ""}
                             </p>
+                            <p>
+                              {item.advance == 0
+                                ? ""
+                                : item.comments
+                                ? item.comments
+                                : ""}
+                            </p>
                           </td>
                         )}
                         <td
@@ -170,7 +177,13 @@ const LedgerSummary = (props) => {
                           <p id="p-common">
                             {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                           </p>
-                          <p>{item.comments ? item.comments : ''}</p>
+                          <p>
+                            {item.advance != 0
+                              ? ""
+                              : item.comments
+                              ? item.comments
+                              : ""}
+                          </p>
                         </td>
                         <td
                           className={ledgerType == "BUYER" ? "col-3" : "col-2"}
@@ -300,6 +313,13 @@ const LedgerSummary = (props) => {
                               <p id="p-common">
                                 {item.advance ? item.advance.toFixed(2) : ""}
                               </p>
+                              <p>
+                              {item.advance == 0
+                                ? ""
+                                : item.comments
+                                ? item.comments
+                                : ""}
+                            </p>
                             </td>
                           )}
                           <td
@@ -309,6 +329,13 @@ const LedgerSummary = (props) => {
                           >
                             <p id="p-common">
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
+                            </p>
+                            <p>
+                              {item.advance != 0
+                                ? ""
+                                : item.comments
+                                ? item.comments
+                                : ""}
                             </p>
                           </td>
                           <td

@@ -1710,7 +1710,7 @@ const SellBillStep3 = (props) => {
               <div className="totals_value">
                 <h5>Total Bill Amount (₹)</h5>
                 <h6 className="color_green">
-                  {getCurrencyNumberWithOutSymbol(getTotalBillAmount())}
+                  {getCurrencyNumberWithOutSymbol(Number(getTotalBillAmount()))}
                 </h6>
               </div>
               {outBalformStatusvalue ? (
@@ -1735,9 +1735,9 @@ const SellBillStep3 = (props) => {
                     -
                     {billEditItem?.cashRcvd
                       ? cashRcdStatus
-                        ? cashRcvdValue
+                        ? getCurrencyNumberWithOutSymbol(Number(cashRcvdValue))
                         : billEditItem?.cashRcvd
-                      : cashRcvdValue}
+                      : getCurrencyNumberWithOutSymbol(Number(cashRcvdValue))}
                   </h6>
                 </div>
               ) : (

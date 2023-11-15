@@ -19,7 +19,9 @@ const AdvanceSummary = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
   const advancesData = useSelector((state) => state.advanceInfo);
-  const advancesSummary = advancesData?.fromTransportoRecord ? advancesData?.advanceSummaryById : props.advancesSum;
+  const advancesSummary = advancesData?.fromTransportoRecord
+    ? advancesData?.advanceSummaryById
+    : props.advancesSum;
   const selectedParty = advancesData?.selectedPartyByAdvanceId;
   const totalAdvancesValByPartyId = advancesData?.totalAdvancesValById;
   const totalCollectedValByPartyId = advancesData?.totalCollectedById;
@@ -31,7 +33,7 @@ const AdvanceSummary = (props) => {
   const [showPaymentModalStatus, setShowPaymentModalStatus] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const ledgerTabs = props.ledgerTabs;
-  console.log(advancesSummary,selectedParty,'props.advancesSum')
+  console.log(advancesSummary, props.advancesSum, "props.advancesSum");
   const billOnClickView = (billId, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
     if (bId?.includes("A")) {
@@ -74,12 +76,11 @@ const AdvanceSummary = (props) => {
                         <div className="d-flex align-items-center">
                           <p className="mobilee-tag">
                             {/* {!selectedParty.trader */}
-                              {/* // ? partyType == "FARMER"
+                            {/* // ? partyType == "FARMER"
                               //   ? "Farmer"
                               //   : getText(partyType)
                               // : "Trader"}{" "} */}
-                              Farmer
-                            - {selectedParty.partyId}
+                            Farmer - {selectedParty.partyId}
                           </p>
                         </div>
                         <p className="mobilee-tag">
@@ -96,9 +97,7 @@ const AdvanceSummary = (props) => {
                       Total Given
                       <p className="paid-coloring">
                         {totalGivenValByPartyId != 0
-                          ? getCurrencyNumberWithSymbol(
-                            totalGivenValByPartyId
-                            )
+                          ? getCurrencyNumberWithSymbol(totalGivenValByPartyId)
                           : 0}
                       </p>
                     </p>
@@ -112,20 +111,20 @@ const AdvanceSummary = (props) => {
                       <p className="paid-coloring">
                         {totalCollectedValByPartyId != 0
                           ? getCurrencyNumberWithSymbol(
-                            totalCollectedValByPartyId
+                              totalCollectedValByPartyId
                             )
                           : 0}
                       </p>
                     </p>
                   </div>
-                
+
                   <div className="col-lg-3 d-flex align-items-center" id="">
                     <p className="card-text paid">
                       Total Advances
                       <p className="paid-coloring">
                         {totalAdvancesValByPartyId != 0
                           ? getCurrencyNumberWithSymbol(
-                            totalAdvancesValByPartyId
+                              totalAdvancesValByPartyId
                             )
                           : 0}
                       </p>
@@ -177,7 +176,12 @@ const AdvanceSummary = (props) => {
                               <button
                                 className="pl-0"
                                 onClick={() =>
-                                  billOnClickView(item.refId, item.partyId != 0 ? item.partyId : selectedParty?.partyId)
+                                  billOnClickView(
+                                    item.refId,
+                                    item.partyId != 0
+                                      ? item.partyId
+                                      : selectedParty?.partyId
+                                  )
                                 }
                               >
                                 <p style={{ color: "#0066FF" }}>
@@ -200,20 +204,20 @@ const AdvanceSummary = (props) => {
                             <td className="col-3">
                               {" "}
                               <p id="p-common" className="paid-coloring">
-                              {item.collectedAdv
-                                ? getCurrencyNumberWithOutSymbol(
-                                    item.collectedAdv
-                                  )
-                                : 0}
-                                </p>
+                                {item.collectedAdv
+                                  ? getCurrencyNumberWithOutSymbol(
+                                      item.collectedAdv
+                                    )
+                                  : 0}
+                              </p>
                             </td>
-                          
+
                             <td className="col-3">
                               <p id="p-common" className="paid-coloring">
-                              {item.advBal
-                                ? getCurrencyNumberWithOutSymbol(item.advBal)
-                                : 0}
-                                </p>
+                                {item.advBal
+                                  ? getCurrencyNumberWithOutSymbol(item.advBal)
+                                  : 0}
+                              </p>
                             </td>
                           </tr>
                         );

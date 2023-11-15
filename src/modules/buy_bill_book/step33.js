@@ -1898,9 +1898,9 @@ const Step33 = (props) => {
                     -
                     {billEditItem?.cashPaid
                       ? cashPaidStatus
-                        ? getCurrencyNumberWithOutSymbol(cashpaidValue)
+                        ? getCurrencyNumberWithOutSymbol(Number(cashpaidValue))
                         : getCurrencyNumberWithOutSymbol(billEditItem?.cashPaid)
-                      : getCurrencyNumberWithOutSymbol(cashpaidValue)}
+                      : getCurrencyNumberWithOutSymbol(Number(cashpaidValue))}
                   </h6>
                 </div>
               ) : (
