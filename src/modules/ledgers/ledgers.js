@@ -125,7 +125,6 @@ const Ledgers = (props) => {
   );
   const [handleDate1, sethandleDate1] = useState(false);
   const [allCustom1, setAllCustom1] = useState("all");
-  console.log(allData,ledgers,'ledgers')
   const tabs = [
     {
       id: 1,
@@ -208,7 +207,6 @@ const Ledgers = (props) => {
             setAllData(res.data.data.ledgers);
             dispatch(outStandingBal(res.data.data));
             dispatch(allLedgers(res.data.data.ledgers));
-            console.log(res.data.data);
             setPartyId(res.data.data.ledgers[0].partyId);
             summaryData(clickId, res.data.data.ledgers[0].partyId);
             getOutstandingPaybles(clickId, res.data.data.ledgers[0].partyId);
@@ -370,6 +368,7 @@ const Ledgers = (props) => {
     if (type == "custom" && ledgerTabs == "detailedadvances") {
       dispatch(partnerTabs("detailedadvances"));
       setLedgerTabs("detailedadvances");
+      getCustomDetailedAdvances(partyId, date, date);
     } else if (type == "all" && ledgerTabs == "detailedadvances") {
       dispatch(partnerTabs("detailedadvances"));
       setLedgerTabs("detailedadvances");
@@ -445,6 +444,7 @@ const Ledgers = (props) => {
       }
     }
     if (allCustom == "custom" && ledgerTabType == "detailedadvances") {
+      console.log(allCustom, ledgerTabType, "if");
       setDateValue(defaultDate + " to " + defaultDate);
       getCustomDetailedAdvances(partyId, date, date);
       sethandleDate(true);
@@ -476,13 +476,21 @@ const Ledgers = (props) => {
     customDetailedAvances(clickId, partyId, fromDate, toDate)
       .then((res) => {
         if (res.data.status.type == "SUCCESS") {
+          console.log(res.data.data, "res.data.data");
           if (res.data.data != null) {
-            dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
-            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+            if (res.data.data.advances.length > 0) {
+              dispatch(advanceSummaryById(res.data.data.advances));
+              dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+              dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+              dispatch(totalGivenById(res.data.data.totalGivenAdv));
+              setAdvSummary(res.data.data.advances);
+            } else {
+              dispatch(advanceSummaryById([]));
+              setAdvSummary([]);
+            }
           } else {
             dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
           }
           setLoading(false);
         }
