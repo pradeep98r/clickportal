@@ -1,10 +1,10 @@
 import React from "react";
-import {getText} from "./getText";
+import { getText } from "./getText";
 const resetInput = (e) => {
-  if(e.target.value == 0){
+  if (e.target.value == 0) {
     e.target.value = "";
   }
-}
+};
 const CommonCard = ({
   title,
   rateTitle,
@@ -14,7 +14,7 @@ const CommonCard = ({
   unitsTitle,
   inputValue,
   units,
-  onChangeTotals
+  onChangeTotals,
 }) => (
   <div>
     {title == "Transportation" || "Labor Charges" || "Rent" ? (
@@ -47,10 +47,10 @@ const CommonCard = ({
               />
             </div>
             <div className="col-lg-3 col-sm-12 col_left_border">
-              <input type="text" placeholder="" onChange={onChange} value={units}/>
+              <input type="text" placeholder="" value={units} />
             </div>
             <div className="col-lg-3 col-sm-12 col_left_border">
-            <input
+              <input
                 type="text"
                 placeholder=""
                 onChange={onChangeTotals}
