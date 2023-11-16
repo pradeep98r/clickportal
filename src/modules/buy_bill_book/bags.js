@@ -35,7 +35,7 @@ const SelectBags = (props) => {
       total: 0,
       wastage: 0,
       weight: 0,
-      status: props.editBagsStatus ? 2 : 1,
+      status: 1,
       totalWeight: 0,
     };
     props.cropsArray[0].unitValue = e.target.value;
