@@ -253,12 +253,13 @@ const Ledgers = (props) => {
     dispatch(selectedPartyByAdvanceId(item));
     dispatch(selectedAdvanceId(ledgerId));
     if (allCustom == "custom") {
-      // var customTab = "all";
-      // setDateDisplay(false);
-      // setDateDisplay1(false);
-      // dispatch(dateCustomStatus(true));
+      var customTab = "all";
+      setDateDisplay(false);
+      setDateDisplay1(false);
+      dispatch(dateCustomStatus(true));
     }
     var tabs = "";
+    console.log(ledgerTabs, allCustom, tabs, customTab);
     if (
       ledgerTabs == "detailedledger" ||
       (ledgerTabs == "ledgersummary" && allCustom == "custom") ||

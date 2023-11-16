@@ -144,8 +144,10 @@ const Step33 = (props) => {
         return object.billType === "BUY" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
+      
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
+        console.log(response,'response settings')
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "BUY") {
             if (filteredArray[i].formStatus === 1) {
@@ -491,7 +493,8 @@ const Step33 = (props) => {
                 : []
             );
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
-              var trVa = newitem != 0 ? getSingleValues(newitem) : 0;
+              console.log(newitem,'newitem')
+              var trVa = newitem != 0 ? getSingleValues(newitem,newitem) : 0;
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
