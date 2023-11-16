@@ -613,7 +613,11 @@ const Step22 = (props) => {
               if (cropInfo[index1]?.bags.length > 0) {
                 cropInfo[index1].bags.map((item, i) => {
                   let clonedObject = { ...cropInfo[index].bags[i] };
-                  Object.assign(clonedObject, { status: 2 });
+                  if (cropInfo[index].bags[i].status == 1) {
+                    Object.assign(clonedObject, { status: 1 });
+                  } else {
+                    Object.assign(clonedObject, { status: 2 });
+                  }
                   arr.push(clonedObject);
                 });
                 cropInfo[index].bags = [...arr];
@@ -1248,7 +1252,10 @@ const Step22 = (props) => {
     cropResponseData([...updatedItem]);
     setshowBagsModalStatus(true);
     setShowBagsModal(true);
-    if (crd[ink].bags.length > 0) {
+    if (
+      (crd[ink].bags == null && crd[ink].rateType == "KGS") ||
+      crd[ink].bags.length > 0
+    ) {
       setEditBagsStatus(true);
     }
   };
@@ -1271,6 +1278,7 @@ const Step22 = (props) => {
       }
     });
     cropResponseData([...updatedItems]);
+    setUpdatedItemList([...updatedItems]);
   };
   //   click on input to reset 0 to enter value
   const resetInput = (e) => {

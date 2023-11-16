@@ -88,7 +88,6 @@ const Step33 = (props) => {
   const [isShown, setisShown] = useState(false);
   const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
-    console.log(billEditItem,'billEditItem')
     $("#disable").attr("disabled", false);
     getDefaultSystemSettings().then((res) => {
       console.log(res, "res");
@@ -144,10 +143,9 @@ const Step33 = (props) => {
         return object.billType === "BUY" && object.formStatus === 1;
       });
       filteredArray.sort((a, b) => a.groupId - b.groupId);
-      
+
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
-        console.log(response,'response settings')
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "BUY") {
             if (filteredArray[i].formStatus === 1) {
@@ -493,8 +491,8 @@ const Step33 = (props) => {
                 : []
             );
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
-              console.log(newitem,'newitem')
-              var trVa = newitem != 0 ? getSingleValues(newitem,newitem) : 0;
+              console.log(newitem, "newitem");
+              var trVa = newitem != 0 ? getSingleValues(newitem, newitem) : 0;
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
@@ -640,16 +638,18 @@ const Step33 = (props) => {
       }
     }
     if (addRetComm) {
-      totalValue = (totalValue - getTotalValue(retcommValue));
+      totalValue = totalValue - getTotalValue(retcommValue);
     } else {
-      totalValue = (totalValue + getTotalValue(retcommValue));
+      totalValue = totalValue + getTotalValue(retcommValue);
     }
 
     return totalValue;
   };
   const getActualPayble = () => {
     var actualPay =
-      getTotalBillAmount().toFixed(2) - Number(cashpaidValue) - Number(advancesValue);
+      getTotalBillAmount().toFixed(2) -
+      Number(cashpaidValue) -
+      Number(advancesValue);
     if (includeComm) {
       if (!isShown) {
         actualPay = actualPay - getTotalValue(commValue);
@@ -671,7 +671,9 @@ const Step33 = (props) => {
     return actualPay;
   };
   const getTotalPayble = () => {
-    return Number(getTotalBillAmount().toFixed(2)) - Number(advancesValue).toFixed(2);
+    return (
+      Number(getTotalBillAmount().toFixed(2)) - Number(advancesValue).toFixed(2)
+    );
   };
   const getTotalNetPayble = () => {
     return (
@@ -681,7 +683,9 @@ const Step33 = (props) => {
     );
   };
   const getNetTotalPayble = () => {
-    return Number(getTotalBillAmount().toFixed(2)) - Number(advancesValue).toFixed(2);
+    return (
+      Number(getTotalBillAmount().toFixed(2)) - Number(advancesValue).toFixed(2)
+    );
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
@@ -742,6 +746,7 @@ const Step33 = (props) => {
       ? props.slectedCropsArray
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
+    console.log(cropArray,props.slectedCropsArray,'lineItemsArray')
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -886,13 +891,6 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
-    console.log(
-      advancesValue,
-      advancesValueStatus,
-      outBalAdvance,
-      editStatus,
-      "advancesValue"
-    );
 
     if (advancesValue > outBalAdvance) {
       if (advancesValueStatus) {
