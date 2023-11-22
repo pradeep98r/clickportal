@@ -137,6 +137,7 @@ const SellBillStep3 = (props) => {
       filteredArray.sort((a, b) => a.groupId - b.groupId);
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
+        console.log(response)
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "SELL") {
             if (filteredArray[i].formStatus === 1) {
@@ -159,6 +160,7 @@ const SellBillStep3 = (props) => {
                 if (filteredArray[i]?.settingName.includes("ADVANCES")) {
                   filteredArray[i].settingName = "";
                 }
+                console.log(filteredArray,'set if')
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
               }
@@ -212,9 +214,9 @@ const SellBillStep3 = (props) => {
                   } else if (response[i]?.name.includes("ADVANCES")) {
                     response[i].name = "";
                   }
+                  console.log(response,'set')
                   listSettings(response[i].name, response, i);
                   allGroups.push(response[i]);
-                  console.log(allGroups);
                 }
                 if (response[i].name === "OUT_ST_BALANCE")
                   setOutBalformStatusvalue(true);
@@ -256,6 +258,7 @@ const SellBillStep3 = (props) => {
     return editStatus ? (step2CropEditStatus ? val : val) : v;
   };
   const listSettings = (name, res, index) => {
+
     var totalQty = 0;
     var item = editStatus
       ? step2CropEditStatus
@@ -269,6 +272,7 @@ const SellBillStep3 = (props) => {
     if (name.includes(substring)) {
       substring = name;
     }
+    console.log(res,'respon')
     let updatedItem = res.map((item, j) => {
       if (j == index) {
         switch (name) {
@@ -487,6 +491,7 @@ const SellBillStep3 = (props) => {
                 value: trVa,
                 fieldType: "SIMPlE",
                 commentText: commentTextFor,
+                comments:res[j].comments
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
@@ -511,6 +516,7 @@ const SellBillStep3 = (props) => {
                 commentText: commentTextFor,
                 subText: "Default Rs",
                 subText2: "Number of units",
+                comments:res[j].comments
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -534,6 +540,7 @@ const SellBillStep3 = (props) => {
                 totalVal: totalV.toFixed(2),
                 commentText: commentTextFor,
                 subText: "Default Percentage %",
+                comments:res[j].comments
               };
             }
             break;
@@ -544,7 +551,6 @@ const SellBillStep3 = (props) => {
       }
     });
     setAllGroups(updatedItem);
-
     // return type;
   };
   const getGrossTotalValue = (items) => {
@@ -989,7 +995,6 @@ const SellBillStep3 = (props) => {
                 tab[tabIndex] = tabObje;
               }
             } else {
-              console.log(groupLiist[i]);
               tab.push({
                 comments: "",
                 fee: getTargetValue(e.target.value, groupLiist[i], i),
