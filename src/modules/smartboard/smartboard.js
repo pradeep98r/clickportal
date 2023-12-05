@@ -555,7 +555,7 @@ const SmartBoard = () => {
                                               <p>
                                                 {outStandingBal.pendingRecievables ==
                                                 0 ? (
-                                                  ""
+                                                  ''
                                                 ) : (
                                                   <a
                                                     id=""
@@ -597,7 +597,7 @@ const SmartBoard = () => {
                                               <p className="color_blue">
                                                 {outStandingBal.totalSellBills ==
                                                 0 ? (
-                                                  ""
+                                                  ''
                                                 ) : (
                                                   <a
                                                     id=""
@@ -648,7 +648,7 @@ const SmartBoard = () => {
                                               <p className="color_blue">
                                                 {outStandingBal.pendingPaybles ==
                                                 0 ? (
-                                                  ""
+                                                  ''
                                                 ) : (
                                                   <a
                                                     href="/sellerledger"
@@ -689,7 +689,7 @@ const SmartBoard = () => {
                                               <p className="color_blue">
                                                 {outStandingBal.totalBuyBills ==
                                                 0 ? (
-                                                  ""
+                                                  ''
                                                 ) : (
                                                   <a
                                                     id=""
@@ -731,7 +731,7 @@ const SmartBoard = () => {
                                             ) : (
                                               <h6 className="m-0">
                                                 {commissionEarns.totalComm == 0
-                                                  ? ""
+                                                  ? 0
                                                   : commissionEarns.totalComm.toLocaleString(
                                                       "en-IN",
                                                       {
@@ -760,7 +760,7 @@ const SmartBoard = () => {
                                             ) : (
                                               <h6 className="m-0">
                                                 {commissionEarns.netComm == 0
-                                                  ? ""
+                                                  ? 0
                                                   : commissionEarns.netComm.toLocaleString(
                                                       "en-IN",
                                                       {
@@ -795,7 +795,7 @@ const SmartBoard = () => {
                                               <h6 className="text-center mb-0">
                                                 {salesReprtData.totalBusiness ==
                                                 0
-                                                  ? ""
+                                                  ? 0
                                                   : salesReprtData.totalBusiness.toLocaleString(
                                                       "en-IN",
                                                       {
@@ -812,7 +812,7 @@ const SmartBoard = () => {
                                               </h5>
                                               <h6 className="text-center mb-0">
                                                 {salesReprtData.totalUnits == 0
-                                                  ? ""
+                                                  ? 0
                                                   : salesReprtData.totalUnits.toLocaleString(
                                                       undefined,
                                                       {
@@ -863,7 +863,7 @@ const SmartBoard = () => {
                                               <h6 className="text-center mb-0">
                                                 {purchaseReprtData.totalBusiness ==
                                                 0
-                                                  ? ""
+                                                  ? 0
                                                   : purchaseReprtData.totalBusiness.toLocaleString(
                                                       "en-IN",
                                                       {
@@ -881,7 +881,7 @@ const SmartBoard = () => {
                                               <h6 className="text-center mb-0">
                                                 {purchaseReprtData.totalUnits ==
                                                 0
-                                                  ? ""
+                                                  ? 0
                                                   : purchaseReprtData.totalUnits.toLocaleString(
                                                       undefined,
                                                       {
@@ -1012,7 +1012,7 @@ const SmartBoard = () => {
                                                       </h5>
                                                       <h6 className="text-center mb-0">
                                                         {cropItem.totalQty == 0
-                                                          ? ""
+                                                          ? 0
                                                           : cropItem.totalQty.toLocaleString(
                                                               "en-IN",
                                                               {
@@ -1150,7 +1150,7 @@ const SmartBoard = () => {
                                                       <h6 className="text-center mb-0">
                                                         {buycropItem.totalQty ==
                                                         0
-                                                          ? ""
+                                                          ? 0
                                                           : buycropItem.totalQty.toLocaleString(
                                                               "en-IN",
                                                               {
@@ -1291,7 +1291,7 @@ const SmartBoard = () => {
                                                             <h6 className="text-center mb-0">
                                                               {buyerItem.totalQty ==
                                                               0
-                                                                ? ""
+                                                                ? 0
                                                                 : buyerItem.totalQty.toLocaleString(
                                                                     undefined,
                                                                     {
@@ -1429,7 +1429,7 @@ const SmartBoard = () => {
                                                           <h6 className="text-center mb-0">
                                                             {farmerItem.totalQty ==
                                                             0
-                                                              ? ""
+                                                              ? 0
                                                               : farmerItem.totalQty.toLocaleString(
                                                                   undefined,
                                                                   {

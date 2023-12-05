@@ -190,7 +190,9 @@ const LedgerSummary = (props) => {
                         >
                           <p id="p-common">
                             {item.tobePaidRcvd
-                              ? item.tobePaidRcvd.toFixed(2)
+                              ? getCurrencyNumberWithOutSymbol(
+                                  item.tobePaidRcvd
+                                )
                               : ""}
                           </p>
                         </td>
@@ -205,7 +207,7 @@ const LedgerSummary = (props) => {
                           >
                             {item.balance
                               ? getCurrencyNumberWithOutSymbol(item.balance)
-                              : ""}
+                              : 0}
                           </p>
                         </td>
                       </tr>
@@ -314,12 +316,12 @@ const LedgerSummary = (props) => {
                                 {item.advance ? item.advance.toFixed(2) : ""}
                               </p>
                               <p>
-                              {item.advance == 0
-                                ? ""
-                                : item.comments
-                                ? item.comments
-                                : ""}
-                            </p>
+                                {item.advance == 0
+                                  ? ""
+                                  : item.comments
+                                  ? item.comments
+                                  : ""}
+                              </p>
                             </td>
                           )}
                           <td
@@ -358,7 +360,7 @@ const LedgerSummary = (props) => {
                               }
                               id="p-common"
                             >
-                              {item.balance ? item.balance.toFixed(2) : ""}
+                              {item.balance ? item.balance.toFixed(2) : 0}
                             </p>
                           </td>
                         </tr>
