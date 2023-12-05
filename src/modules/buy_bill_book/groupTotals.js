@@ -3660,7 +3660,7 @@ const GroupTotals = (props) => {
             </div>
 
             <div className="col-lg-3"></div>
-            <div className="col-lg-7">
+            <div className="col-lg-7 pr-0">
               <div className="row">
                 <div className="col-lg-7 p-0">
                   <p

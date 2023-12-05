@@ -258,7 +258,7 @@ const CropDetails = (props) => {
           </tbody>
         </table>
         <div
-          className="row gross_profit"
+          className="row gross_profit pr-0"
           style={{
             backgroundColor:
               pdfThemeData != null
@@ -268,12 +268,18 @@ const CropDetails = (props) => {
                 : "#D7F3DD",
           }}
         >
-          <div className="col-lg-2"></div>
-          <div className="col-lg-4"></div>
-          <div className="col-lg-6 p-0 ">
-            <div className="row justify-content-around">
-              <p className="total_value">Gross Total : </p>
-              <p className="total_value number_overflow">
+          <div className="col-lg-5">
+
+          </div>
+          <div className="col-lg-7 p-0">
+            <div className="row">
+            <div className="col-lg-5">
+              </div>
+          <div className="col-lg-3 p-0">
+          <p className="total_value">Gross Total : </p></div>
+          <div className="col-lg-3 p-0 ">
+              
+              <p className="total_value number_overflow text-right">
                 &nbsp;&nbsp;
                 {billData?.grossTotal.toLocaleString("en-IN", {
                   maximumFractionDigits: 2,
@@ -281,6 +287,7 @@ const CropDetails = (props) => {
                   currency: "INR",
                 })}
               </p>
+          </div>
             </div>
           </div>
         </div>

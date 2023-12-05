@@ -42,7 +42,7 @@ export function getLedgerSummaryJson(
       ledgerData: ledgerSummary.map((ledgerData) => {
         return {
           date: moment(ledgerData.date).format("DD-MMM-YY"),
-          tobePaidRcvd: getCurrencyNumberWithOutSymbol(ledgerData.tobePaidRcvd),
+          tobePaidRcvd:ledgerData.tobePaidRcvd ? getCurrencyNumberWithOutSymbol(ledgerData.tobePaidRcvd) : 0,
           partyAddress: ledgerData.partyAddress,
           partyName: ledgerData.partyName + " - " + ledgerData.shortName,
         };

@@ -215,7 +215,7 @@ const DetailedLedger = (props) => {
                           >
                             {item.balance
                               ? getCurrencyNumberWithOutSymbol(item.balance)
-                              : ""}
+                              : 0}
                           </p>
                         </td>
                       </tr>
@@ -346,7 +346,7 @@ const DetailedLedger = (props) => {
                             }
                             id="p-common"
                           >
-                            {item.balance ? item.balance.toFixed(2) : ""}
+                            {item.balance ? item.balance.toFixed(2) : 0}
                           </p>
                         </td>
                       </tr>
