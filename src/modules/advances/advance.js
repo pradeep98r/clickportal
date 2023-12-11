@@ -127,7 +127,7 @@ const Advance = (props) => {
               dispatch(partyOutstandingBal(0));
             }
             if (res.data.data.totalAdvances != 0) {
-              dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
+              dispatch(totalAdvancesVal(res.data.data.totalAdvances));
             }
           } else {
             dispatch(allAdvancesData([]));
@@ -172,8 +172,8 @@ const Advance = (props) => {
             dispatch(advanceSummaryById(res.data.data.advances));
             setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
-            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+            dispatch(totalCollectedById(res.data.data.totalCollected));
+            dispatch(totalGivenById(res.data.data.totalGiven));
           } else {
             dispatch(advanceSummaryById(null));
             setAdvSummary([]);
@@ -191,8 +191,8 @@ const Advance = (props) => {
             dispatch(advanceSummaryById(res.data.data.advances));
             setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
-            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+            dispatch(totalCollectedById(res.data.data.totalCollected));
+            dispatch(totalGivenById(res.data.data.totalGiven));
           } else {
             dispatch(advanceSummaryById(null));
             setAdvSummary([]);
@@ -284,68 +284,79 @@ const Advance = (props) => {
   };
   async function getDownloadPdf(summaryStatus) {
     setIsLoadingNew(true);
-    console.log(advancesData,'advancesData')
-    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
-      ledgersSummary?.beginDate,
-      ledgersSummary?.closeDate,
-      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
-    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
-    if(advancesData?.advanceSummaryById.length > 0){
-    if (pdfResponse.status !== 200) {
-      toast.error("Something went wrong", {
-        toastId: "errorr2",
-      });
-      setIsLoadingNew(false);
-      return;
-    } else {
-      toast.success("Pdf Downloaded SuccessFully", {
-        toastId: "errorr2",
-      });
-      var bufferData = Buffer.from(pdfResponse.data);
-      var blob = new Blob([bufferData], { type: "application/pdf" });
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.setAttribute("download", `ADVANCES_SUMMARY.pdf`); //or any other extension
+    console.log(advancesData, "advancesData");
+    var reportsJsonBody = summaryStatus
+      ? getAdvancesSummaryJson(
+          advancesData,
+          ledgersSummary?.beginDate,
+          ledgersSummary?.closeDate,
+          ledgersSummary?.allCustomTabs
+        )
+      : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus
+      ? await getAdvancesSummaryPdf(reportsJsonBody)
+      : await generateLedSummary(reportsJsonBody);
+    if (advancesData?.advanceSummaryById.length > 0) {
+      if (pdfResponse.status !== 200) {
+        toast.error("Something went wrong", {
+          toastId: "errorr2",
+        });
+        setIsLoadingNew(false);
+        return;
+      } else {
+        toast.success("Pdf Downloaded SuccessFully", {
+          toastId: "errorr2",
+        });
+        var bufferData = Buffer.from(pdfResponse.data);
+        var blob = new Blob([bufferData], { type: "application/pdf" });
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", `ADVANCES_SUMMARY.pdf`); //or any other extension
 
-      document.body.appendChild(link);
+        document.body.appendChild(link);
+        setIsLoadingNew(false);
+        link.click();
+        // setLoading(false);
+      }
+    } else {
+      toast.error("No Data Available for Print", {
+        toastId: "errorr9",
+      });
       setIsLoadingNew(false);
-      link.click();
-      // setLoading(false);
     }
-  }
-  else{
-    toast.error("No Data Available for Print", {
-      toastId: "errorr9",
-    });
-    setIsLoadingNew(false);
-  }
   }
   async function handleLedgerSummaryJson(summaryStatus) {
     setIsLoadingNew(true);
-    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
-      ledgersSummary?.beginDate,
-      ledgersSummary?.closeDate,
-      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
-    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
-    if(advancesData?.advanceSummaryById.length > 0){
-    if (pdfResponse.status !== 200) {
-      toast.error("Something went wrong", {
-        toastId: "errorr2",
-      });
-      setIsLoadingNew(false);
-      return;
+    var reportsJsonBody = summaryStatus
+      ? getAdvancesSummaryJson(
+          advancesData,
+          ledgersSummary?.beginDate,
+          ledgersSummary?.closeDate,
+          ledgersSummary?.allCustomTabs
+        )
+      : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus
+      ? await getAdvancesSummaryPdf(reportsJsonBody)
+      : await generateLedSummary(reportsJsonBody);
+    if (advancesData?.advanceSummaryById.length > 0) {
+      if (pdfResponse.status !== 200) {
+        toast.error("Something went wrong", {
+          toastId: "errorr2",
+        });
+        setIsLoadingNew(false);
+        return;
+      } else {
+        toast.success("Pdf generated SuccessFully", {
+          toastId: "errorr2",
+        });
+        var bufferData = Buffer.from(pdfResponse.data);
+        var blob = new Blob([bufferData], { type: "application/pdf" });
+        const blobUrl = URL.createObjectURL(blob);
+        setIsLoadingNew(false);
+        window.open(blobUrl, "_blank");
+      }
     } else {
-      toast.success("Pdf generated SuccessFully", {
-        toastId: "errorr2",
-      });
-      var bufferData = Buffer.from(pdfResponse.data);
-      var blob = new Blob([bufferData], { type: "application/pdf" });
-      const blobUrl = URL.createObjectURL(blob);
-      setIsLoadingNew(false);
-      window.open(blobUrl, "_blank");
-    }}
-    else{
       toast.error("No Data Available for Print", {
         toastId: "errorr9",
       });
@@ -389,7 +400,7 @@ const Advance = (props) => {
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-2">Date</th>
                         <th class="col-lg-5">Name</th>
-                        <th class="col-lg-4">Outstanding Advance(₹)</th>
+                        <th class="col-lg-4">Advance(₹)</th>
                       </div>
                       <div
                         className="table-scroll ledger-table advance_table"
@@ -464,11 +475,11 @@ const Advance = (props) => {
                                         </div>
                                       </div>
                                     </td>
-                                    <td className="col-lg-4" key={item.advance}>
-                                      <p className="paid-coloring">
-                                        {item.advance != 0
+                                    <td className="col-lg-4" key={item.amount}>
+                                      <p className="coloring">
+                                        {item.advBal != 0
                                           ? getCurrencyNumberWithOutSymbol(
-                                              item.advance
+                                              item.advBal
                                             )
                                           : 0}
                                       </p>
@@ -481,8 +492,8 @@ const Advance = (props) => {
                         </div>
                       </div>
                       <div className="outstanding-pay d-flex align-items-center justify-content-between">
-                        <p className="pat-tag"> Total Advances : </p>
-                        <p className="paid-coloring">
+                        <p className="pat-tag"> Outstanding Advances : </p>
+                        <p className="coloring">
                           {totalAdvances != 0
                             ? getCurrencyNumberWithSymbol(totalAdvances)
                             : 0}
@@ -652,14 +663,14 @@ const Advance = (props) => {
           ""
         )}
       </div>
-      <div className="addIcon_div">
+      {/* <div className="addIcon_div">
         <button
           className="primary_btn add_bills_btn advance_add_btn"
           onClick={recordPaymentSummaryOnClickEvent}
         >
           <img src={addIcon} alt="image" />
         </button>
-      </div>
+      </div> */}
       <ToastContainer />
       {isLoadingNew ? (
         <div className="loading_styles loading_styles_led">

@@ -85,24 +85,15 @@ const LedgerSummary = (props) => {
                 #
               </th>
               <th className="col-2">Ref ID | Date</th>
-              {ledgerType == "BUYER" ? "" : <th className="col-2">Advance</th>}
               {ledgerType == "BUYER" ? (
-                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                  Received(&#8377;)
-                </th>
+                <th className="col-3">Received(&#8377;)</th>
               ) : (
-                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                  Paid(&#8377;)
-                </th>
+                <th className="col-3">Paid(&#8377;)</th>
               )}
               {ledgerType == "BUYER" ? (
-                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                  To Be Received(&#8377;)
-                </th>
+                <th className="col-3">To Be Received(&#8377;)</th>
               ) : (
-                <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                  To Be Paid(&#8377;)
-                </th>
+                <th className="col-3">To Be Paid(&#8377;)</th>
               )}
               <th className="col-3">Ledger Balance(&#8377;)</th>
             </div>
@@ -155,25 +146,7 @@ const LedgerSummary = (props) => {
                           <p>{moment(item.date).format("DD-MMM-YY")}</p>
                         </td>
 
-                        {ledgerType == "BUYER" ? (
-                          ""
-                        ) : (
-                          <td className="col-2">
-                            <p id="p-common">
-                              {item.advance ? item.advance.toFixed(2) : ""}
-                            </p>
-                            <p>
-                              {item.advance == 0
-                                ? ""
-                                : item.comments
-                                ? item.comments
-                                : ""}
-                            </p>
-                          </td>
-                        )}
-                        <td
-                          className={ledgerType == "BUYER" ? "col-3" : "col-2"}
-                        >
+                        <td className="col-3">
                           <p id="p-common">
                             {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                           </p>
@@ -185,9 +158,7 @@ const LedgerSummary = (props) => {
                               : ""}
                           </p>
                         </td>
-                        <td
-                          className={ledgerType == "BUYER" ? "col-3" : "col-2"}
-                        >
+                        <td className="col-3">
                           <p id="p-common">
                             {item.tobePaidRcvd
                               ? getCurrencyNumberWithOutSymbol(
@@ -239,27 +210,14 @@ const LedgerSummary = (props) => {
                 </th>
                 <th className="col-2">Ref ID | Date</th>
                 {ledgerType == "BUYER" ? (
-                  ""
+                  <th className="col-3">Received(&#8377;)</th>
                 ) : (
-                  <th className="col-2">Advance</th>
+                  <th className="col-3">Paid(&#8377;)</th>
                 )}
                 {ledgerType == "BUYER" ? (
-                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                    Received(&#8377;)
-                  </th>
+                  <th className="col-3">To Be Received(&#8377;)</th>
                 ) : (
-                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                    Paid(&#8377;)
-                  </th>
-                )}
-                {ledgerType == "BUYER" ? (
-                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                    To Be Received(&#8377;)
-                  </th>
-                ) : (
-                  <th className={ledgerType == "BUYER" ? "col-3" : "col-2"}>
-                    To Be Paid(&#8377;)
-                  </th>
+                  <th className="col-3">To Be Paid(&#8377;)</th>
                 )}
                 <th className="col-3">Ledger Balance(&#8377;)</th>
               </div>
@@ -308,27 +266,8 @@ const LedgerSummary = (props) => {
                             </button>
                             <p>{moment(item.date).format("DD-MMM-YY")}</p>
                           </td>
-                          {ledgerType == "BUYER" ? (
-                            ""
-                          ) : (
-                            <td className="col-2">
-                              <p id="p-common">
-                                {item.advance ? item.advance.toFixed(2) : ""}
-                              </p>
-                              <p>
-                                {item.advance == 0
-                                  ? ""
-                                  : item.comments
-                                  ? item.comments
-                                  : ""}
-                              </p>
-                            </td>
-                          )}
-                          <td
-                            className={
-                              ledgerType == "BUYER" ? "col-3" : "col-2"
-                            }
-                          >
+
+                          <td className={"col-3"}>
                             <p id="p-common">
                               {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                             </p>
@@ -340,11 +279,7 @@ const LedgerSummary = (props) => {
                                 : ""}
                             </p>
                           </td>
-                          <td
-                            className={
-                              ledgerType == "BUYER" ? "col-3" : "col-2"
-                            }
-                          >
+                          <td className="col-3">
                             <p id="p-common">
                               {item.tobePaidRcvd
                                 ? item.tobePaidRcvd.toFixed(2)

@@ -462,8 +462,8 @@ const Ledgers = (props) => {
             dispatch(advanceSummaryById(res.data.data.advances));
             setAdvSummary(res.data.data.advances);
             dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
-            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+            dispatch(totalCollectedById(res.data.data.totalCollected));
+            dispatch(totalGivenById(res.data.data.totalGiven));
           } else {
             dispatch(advanceSummaryById([]));
             setAdvSummary([]);
@@ -482,8 +482,8 @@ const Ledgers = (props) => {
             if (res.data.data.advances.length > 0) {
               dispatch(advanceSummaryById(res.data.data.advances));
               dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
-              dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
-              dispatch(totalGivenById(res.data.data.totalGivenAdv));
+              dispatch(totalCollectedById(res.data.data.totalCollected));
+              dispatch(totalGivenById(res.data.data.totalGiven));
               setAdvSummary(res.data.data.advances);
             } else {
               dispatch(advanceSummaryById([]));
@@ -1177,7 +1177,7 @@ const Ledgers = (props) => {
                                           ""
                                         ) : (
                                           <td className="col-lg-2">
-                                            <p>
+                                            <p className="coloring">
                                               {item.advance
                                                 ? getCurrencyNumberWithOutSymbol(
                                                     item.advance
@@ -1237,21 +1237,21 @@ const Ledgers = (props) => {
                           ) : (
                             <div className="d-flex justify-content-between w-100">
                               <div>
-                                <p className="pat-tag">Outstanding Payables</p>
-                                <p className="paid-coloring">
-                                  {outStAmt?.totalOutStgAmt
+                                <p className="pat-tag">Outstanding Advances</p>
+                                <p className="values-tag">
+                                  {outStAmt?.advanceBal
                                     ? getCurrencyNumberWithSymbol(
-                                        outStAmt?.totalOutStgAmt
+                                        outStAmt?.advanceBal
                                       )
                                     : 0}
                                 </p>
                               </div>
                               <div>
-                                <p className="pat-tag">Outstanding Advances</p>
+                                <p className="pat-tag">Outstanding Payables</p>
                                 <p className="paid-coloring">
-                                  {outStAmt?.advanceBal
+                                  {outStAmt?.totalOutStgAmt
                                     ? getCurrencyNumberWithSymbol(
-                                        outStAmt?.advanceBal
+                                        outStAmt?.totalOutStgAmt
                                       )
                                     : 0}
                                 </p>
@@ -1514,15 +1514,11 @@ const Ledgers = (props) => {
                                 )}
                               </div>
                               <div
-                                className={
-                                  ledgerType != "BUYER"
-                                    ? "col-lg-2 d-flex align-items-center"
-                                    : "col-lg-3 d-flex align-items-center"
-                                }
+                                className="col-lg-3 d-flex align-items-center"
                                 id="verticalLines"
                               >
                                 <p className="card-text paid">
-                                  Total Business
+                                  Total Bill Amount
                                   <p
                                     className={
                                       ledgerType == "BUYER"
@@ -1588,11 +1584,7 @@ const Ledgers = (props) => {
                                 </p>
                               </div>
                               <div
-                                className={
-                                  ledgerType != "BUYER"
-                                    ? "col-lg-2 d-flex align-items-center"
-                                    : "col-lg-3 d-flex align-items-center"
-                                }
+                                className="col-lg-3 d-flex align-items-center"
                                 id="verticalLines"
                               >
                                 <div>
@@ -1665,12 +1657,7 @@ const Ledgers = (props) => {
                                   </p>
                                 </div>
                               </div>
-                              <div
-                                className="col-lg-3 d-flex align-items-center"
-                                id={
-                                  ledgerType == "BUYER" ? "" : "verticalLines"
-                                }
-                              >
+                              <div className="col-lg-3 d-flex align-items-center">
                                 <div>
                                   {ledgerType == "BUYER" ? (
                                     <p className="out-standing">
@@ -1725,7 +1712,7 @@ const Ledgers = (props) => {
 
                                 {/* </p> */}
                               </div>
-                              {ledgerType != "BUYER" ? (
+                              {/* {ledgerType != "BUYER" ? (
                                 <div className="col-lg-2 ">
                                   <p className="out-standing">
                                     Outstanding Advances
@@ -1740,7 +1727,7 @@ const Ledgers = (props) => {
                                 </div>
                               ) : (
                                 ""
-                              )}
+                              )} */}
                             </div>
                           )}
                           <span id="horizontal-line"></span>

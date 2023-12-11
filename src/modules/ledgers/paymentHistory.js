@@ -455,31 +455,42 @@ const PaymentHistoryView = (props) => {
                   </div>
                 </div>
               </div>
-              {paymentHistoryData.billIds.length > 0 && (
-                <div className="partyDetails">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6>Selected Bills</h6>
-                      <div className="d-flex">
-                        <h5>
-                          {"Bill IDs: " +
-                            paymentHistoryData.billIds.join(" , ")}
-                        </h5>
-                        {/* {.map((item, index) => {
+              {!fromAdvances
+                ? paymentHistoryData.billIds.length > 0 && (
+                    <div className="partyDetails">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                          <h6>Selected Bills</h6>
+                          <div className="d-flex">
+                            <h5>
+                              {"Bill IDs: " +
+                                paymentHistoryData.billIds.join(" , ")}
+                            </h5>
+                            {/* {.map((item, index) => {
                         return <h5>{item?.join(" , ")}</h5>
                       })} */}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  )
+                : ""}
+
               <PaymentHistoryCard
                 title1="Amount"
                 title2="Payment Mode"
                 title3="Status"
-                title1Data={amount}
+                title1Data={
+                  !fromAdvances
+                    ? amount
+                    : paymentHistoryData?.collected
+                    ? paymentHistoryData?.collected
+                    : paymentHistoryData?.given
+                }
                 title2Data={paymentHistoryData?.paymentMode}
-                title3Data="-"
+                title3Data={
+                  paymentHistoryData?.collected ? "COLLECTED" : "GIVEN"
+                }
               />
               {discount > 0 ? (
                 <PaymentHistoryCard
@@ -509,9 +520,16 @@ const PaymentHistoryView = (props) => {
                 ""
               ) : (
                 <div>
-                  {fromAdvances ? "" : <p className="more-p-tag">Actions</p>}
+                  <p className="more-p-tag">Actions</p>
                   {fromAdvances ? (
-                    ""
+                    <div className="action_icons">
+                      <div className="items_div">
+                        <button onClick={() => advanceDelete()}>
+                          <img src={cancel} alt="img" className="" />
+                        </button>
+                        <p>Delete</p>
+                      </div>
+                    </div>
                   ) : (
                     // <div className="action_icons">
                     //   <div className="items_div">

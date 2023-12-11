@@ -49,7 +49,7 @@ import {
   totalGivenById,
 } from "../../reducers/advanceSlice";
 import SelectedPartner from "../advances/selectedPartner";
-import { allLedgers,outStandingBal } from "../../reducers/ledgerSummarySlice";
+import { allLedgers, outStandingBal } from "../../reducers/ledgerSummarySlice";
 const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
@@ -127,7 +127,15 @@ const TransportoRecord = (props) => {
     }
   };
   const onSubmitRecordPayment = () => {
-    console.log(fromAdvances, returnAdvanceStatus, outBalAdvance, paidsRcvd,!fromAdvSummary,!advancesData?.fromParentSelect,'all values');
+    console.log(
+      fromAdvances,
+      returnAdvanceStatus,
+      outBalAdvance,
+      paidsRcvd,
+      !fromAdvSummary,
+      !advancesData?.fromParentSelect,
+      "all values"
+    );
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
@@ -141,7 +149,19 @@ const TransportoRecord = (props) => {
             "Entered Amount cannot be more than Outstanding Advance"
           );
         } else {
-          addRecordPayment();
+          if (advanceTypeMode != "") {
+            if (paymentMode != "") {
+              addRecordPayment();
+            } else {
+              toast.error("Please Select Payment mode", {
+                toastId: "error20",
+              });
+            }
+          } else {
+            toast.error("Please Select Advance", {
+              toastId: "error19",
+            });
+          }
         }
       } else {
         toast.error("Please Select Partner", {
@@ -154,7 +174,6 @@ const TransportoRecord = (props) => {
       paidsRcvd <= outStandingBalVal &&
       !(paidsRcvd < 0)
     ) {
-      
       if (fromAdvances) {
         if (returnAdvanceStatus) {
           if (parseInt(paidsRcvd) > outBalAdvance) {
@@ -177,8 +196,9 @@ const TransportoRecord = (props) => {
     }
   };
   const [paymentMode, setPaymentMode] = useState(
-    editRecordStatus ? viewInfo?.paymentMode : "CASH"
+    editRecordStatus ? viewInfo?.paymentMode : fromAdvances ? "" : "CASH"
   );
+  const [advanceTypeMode, setAdvanceTypeMode] = useState("");
   const addRecordPayment = async () => {
     setLoading(true);
     const addRecordData = {
@@ -219,12 +239,12 @@ const TransportoRecord = (props) => {
       amount: paidsRcvd,
       paymentMode: paymentMode,
       partyId: transId,
-      advDate: moment(selectDate).format("YYYY-MM-DD"),
+      date: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       writerId: writerId,
-      advType: returnAdvanceStatus ? "C" : "G",
+      type: advanceTypeMode == "Given" ? "G" : "C",
     };
-    console.log(fromAdvances,'fromAdvances')
+    console.log(fromAdvances, "fromAdvances");
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
         (res) => {
@@ -232,7 +252,7 @@ const TransportoRecord = (props) => {
             toastId: "errorr12",
           });
           updateAdvances();
-          
+
           window.setTimeout(function () {
             props.closeRecordPayModal();
             closePopup();
@@ -298,7 +318,7 @@ const TransportoRecord = (props) => {
 
   const updateAdvances = () => {
     getAllAdvances();
-    console.log(allCustomTab)
+    console.log(allCustomTab);
     dispatch(fromTransportoRecord(true));
     if (allCustomTab == "all") {
       getAdvanceSummary();
@@ -312,10 +332,10 @@ const TransportoRecord = (props) => {
   };
   const [advSummary, setAdvSummary] = useState([]);
   const fetchLedgers = () => {
-    getLedgers(clickId, 'SELLER', '', '')
+    getLedgers(clickId, "SELLER", "", "")
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log(res.data.data,'datt')
+          console.log(res.data.data, "datt");
           // setLoading(false);
           if (res.data.data !== null) {
             dispatch(outStandingBal(res.data.data));
@@ -369,7 +389,7 @@ const TransportoRecord = (props) => {
     getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log(res.data.data,advancesData?.selectedAdvanceId)
+          console.log(res.data.data, advancesData?.selectedAdvanceId);
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
             setAdvSummary(res.data.data.advances);
@@ -447,6 +467,16 @@ const TransportoRecord = (props) => {
       name: "IMPS",
     },
   ];
+  const advanceMethods = [
+    {
+      id: 1,
+      name: "Given",
+    },
+    {
+      id: 2,
+      name: "Collected",
+    },
+  ];
   const closePopup = () => {
     if (editRecordStatus) {
       setPaidsRcvd(viewInfo?.amount);
@@ -457,7 +487,8 @@ const TransportoRecord = (props) => {
     } else {
       setPaidsRcvd(0);
       setRequiredCondition("");
-      setPaymentMode("CASH");
+      setPaymentMode(fromAdvances ? "" : "CASH");
+      setAdvanceTypeMode("");
       setComments("");
       setSelectDate(new Date());
     }
@@ -573,41 +604,71 @@ const TransportoRecord = (props) => {
                 </div>
               </div>
             </div>
-            {!fromAdvances ? (
-              <div className="row align-items-center record_modal_row">
-                <div className="" align="left">
-                  {!editRecordStatus ? (
-                    <div className="out-paybles p-0">
-                      <p id="p-tag">Outstanding Paybles</p>
-                      <p id="recieve-tag">
-                        &#8377;
-                        {outStandingBalVal ? outStandingBalVal.toFixed(2) : 0}
-                      </p>
+            {fromAdvances ? (
+              <div className="record_modal_row">
+                <p className="payment-tag">Advance</p>
+                {advanceMethods.map((item) => {
+                  return (
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        // name="radio"
+                        id="inlineRadio2"
+                        value={item.name}
+                        onChange={(e) => setAdvanceTypeMode(e.target.value)}
+                        checked={advanceTypeMode === item.name}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio2">
+                        {item.name}
+                      </label>
                     </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-            ) : returnAdvanceStatus ? (
-              <div className="row align-items-center record_modal_row">
-                <div className="" align="left">
-                  {!editRecordStatus ? (
-                    <div className="out-paybles p-0">
-                      <p id="p-tag">Outstanding Advances</p>
-                      <p id="recieve-tag">
-                        &#8377;
-                        {outBalAdvance ? outBalAdvance.toFixed(2) : 0}
-                      </p>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                </div>
+                  );
+                })}
               </div>
             ) : (
               ""
             )}
+            {
+              !fromAdvances ? (
+                <div className="row align-items-center record_modal_row">
+                  <div className="" align="left">
+                    {!editRecordStatus ? (
+                      <div className="out-paybles p-0">
+                        <p id="p-tag">Outstanding Paybles</p>
+                        <p id="recieve-tag">
+                          &#8377;
+                          {outStandingBalVal ? outStandingBalVal.toFixed(2) : 0}
+                        </p>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              ) : (
+                // returnAdvanceStatus ? (
+                <div className="row align-items-center record_modal_row">
+                  <div className="" align="left">
+                    {!editRecordStatus ? (
+                      <div className="out-paybles p-0">
+                        <p id="p-tag">Outstanding Advances</p>
+                        <p id="recieve-tag" className="coloring">
+                          &#8377;
+                          {outBalAdvance ? outBalAdvance.toFixed(2) : 0}
+                        </p>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              )
+              // ) : (
+              //   ""
+              // )
+            }
 
             <div
               className="form-group record_modal_row mb-0"
@@ -669,28 +730,6 @@ const TransportoRecord = (props) => {
                 ></textarea>
               </div>
             </div>
-            {fromAdvances ? (
-              <div className="d-flex justify-content-between">
-                <p id="p-tag">Return Advance</p>
-                <div className="custom-control custom-switch">
-                  <input
-                    type="checkbox"
-                    className="custom-control-input"
-                    id={"customSwitches"}
-                    checked={returnAdvanceStatus}
-                    onChange={() => toggleStatus(returnAdvanceStatus)}
-                  />
-                  <label
-                    className={`custom-control-label ${
-                      returnAdvanceStatus ? "bg-success" : "bg-secondary"
-                    }`}
-                    htmlFor={"customSwitches"}
-                  ></label>
-                </div>
-              </div>
-            ) : (
-              ""
-            )}
           </form>
         </div>
       </div>
