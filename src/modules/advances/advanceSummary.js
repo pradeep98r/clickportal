@@ -120,8 +120,8 @@ const AdvanceSummary = (props) => {
 
                   <div className="col-lg-3 d-flex align-items-center" id="">
                     <p className="card-text paid">
-                      Total Advances
-                      <p className="paid-coloring">
+                      Outstanding Advances
+                      <p className="coloring">
                         {totalAdvancesValByPartyId != 0
                           ? getCurrencyNumberWithSymbol(
                               totalAdvancesValByPartyId
@@ -193,27 +193,25 @@ const AdvanceSummary = (props) => {
                               <p>{moment(item.advDate).format("DD-MMM-YY")}</p>
                             </td>
                             <td className="col-3">
-                              <p id="p-common" className="paid-coloring">
-                                {item.givenAdv
-                                  ? getCurrencyNumberWithOutSymbol(
-                                      item.givenAdv
-                                    )
+                              <p id="p-common" className="">
+                                {item.given
+                                  ? getCurrencyNumberWithOutSymbol(item.given)
                                   : 0}
                               </p>
                             </td>
                             <td className="col-3">
                               {" "}
-                              <p id="p-common" className="paid-coloring">
-                                {item.collectedAdv
+                              <p id="p-common" className="">
+                                {item.collected
                                   ? getCurrencyNumberWithOutSymbol(
-                                      item.collectedAdv
+                                      item.collected
                                     )
                                   : 0}
                               </p>
                             </td>
 
                             <td className="col-3">
-                              <p id="p-common" className="paid-coloring">
+                              <p id="p-common" className="coloring">
                                 {item.advBal
                                   ? getCurrencyNumberWithOutSymbol(item.advBal)
                                   : 0}
