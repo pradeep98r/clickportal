@@ -606,7 +606,7 @@ const TransportoRecord = (props) => {
             </div>
             {fromAdvances ? (
               <div className="record_modal_row">
-                <p className="payment-tag">Advance</p>
+                <p className="payment-tag">Advance*</p>
                 {advanceMethods.map((item) => {
                   return (
                     <div className="form-check form-check-inline">
@@ -675,7 +675,7 @@ const TransportoRecord = (props) => {
               id="input_in_modal"
             >
               <label hmtlFor="amtRecieved" id="amt-tag">
-                Amount
+                Amount*
               </label>
               <input
                 className="form-cont"
@@ -691,7 +691,9 @@ const TransportoRecord = (props) => {
               <p className="text-valid">{requiredCondition}</p>
             </div>
             <div id="radios_in_modal" className="record_modal_row">
-              <p className="payment-tag">Payment Mode</p>
+              <p className="payment-tag">
+                {fromAdvances ? "Payment Mode*" : "Payment Mode"}
+              </p>
               {paymentMethods.map((link) => {
                 return (
                   <div className="form-check form-check-inline">

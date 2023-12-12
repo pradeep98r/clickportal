@@ -151,7 +151,7 @@ const Ledgers = (props) => {
     },
     {
       id: 3,
-      name: "Advance Ledger",
+      name: "Advances Ledger",
       to: "detailedadvances",
     },
   ];
@@ -1454,8 +1454,8 @@ const Ledgers = (props) => {
                                 id=""
                               >
                                 <p className="card-text paid">
-                                  Total Advances
-                                  <p className="paid-coloring">
+                                  Outstanding Advances
+                                  <p className="coloring">
                                     {totalAdvancesValByPartyId != 0
                                       ? getCurrencyNumberWithSymbol(
                                           totalAdvancesValByPartyId
