@@ -190,7 +190,7 @@ const AdvanceSummary = (props) => {
                                   </div>
                                 </p>
                               </button>
-                              <p>{moment(item.advDate).format("DD-MMM-YY")}</p>
+                              <p>{moment(item.date).format("DD-MMM-YY")}</p>
                             </td>
                             <td className="col-3">
                               <p id="p-common" className="">
