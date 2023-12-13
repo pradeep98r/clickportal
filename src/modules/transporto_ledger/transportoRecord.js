@@ -109,6 +109,11 @@ const TransportoRecord = (props) => {
   const [comments, setComments] = useState(
     editRecordStatus ? viewInfo?.comments : ""
   );
+  const handleCommentText = (e) => {
+    let text = e.target.value;
+    let value = text.slice(0, 26);
+    setComments(value);
+  };
   const getAmountVal = (e) => {
     setPaidsRcvd(
       e.target.value
@@ -729,7 +734,7 @@ const TransportoRecord = (props) => {
                   id="comments"
                   rows="2"
                   value={comments}
-                  onChange={(e) => setComments(e.target.value)}
+                  onChange={(e) => handleCommentText(e)}
                 ></textarea>
               </div>
             </div>

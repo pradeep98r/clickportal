@@ -707,7 +707,11 @@ const RecordPayment = (props) => {
     dispatch(dateInRP(date));
     dispatch(dates(date));
   };
-
+  const handleCommentText = (e) => {
+    let text = e.target.value;
+    let value = text.slice(0, 26);
+    setComments(value);
+  };
   return (
     <div>
       <Modal
@@ -1105,7 +1109,7 @@ const RecordPayment = (props) => {
                         id="comments"
                         rows="2"
                         value={comments}
-                        onChange={(e) => setComments(e.target.value)}
+                        onChange={(e) => handleCommentText(e)}
                       ></textarea>
                     </div>
                   </div>
