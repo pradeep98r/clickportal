@@ -137,8 +137,10 @@ const Advance = (props) => {
       })
       .catch((error) => console.log(error));
   };
+  const [searchVal, setSearchVal] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
+    setSearchVal(value);
     let result = [];
     result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
@@ -363,6 +365,11 @@ const Advance = (props) => {
       setIsLoadingNew(false);
     }
   }
+  const callbackfunction = (chaild) => {
+    if (chaild) {
+      setSearchVal("");
+    }
+  };
   return (
     <div className="main_div_padding advance_empty_div">
       <div>
@@ -377,7 +384,7 @@ const Advance = (props) => {
                 <div className="col-lg-5 pl-0">
                   <div className="row">
                     <div className="col-lg-3 p-0">
-                      <SelectOptions />
+                      <SelectOptions parentcall={callbackfunction} />
                     </div>
                     <div className="col-lg-9 p-0" id="search-field">
                       <div className="d-flex justify-content-between">
@@ -385,6 +392,7 @@ const Advance = (props) => {
                           <input
                             className="form-control"
                             id="searchbar"
+                            value={searchVal}
                             placeholder="Search by Name"
                             onChange={(event) => {
                               handleSearch(event);
