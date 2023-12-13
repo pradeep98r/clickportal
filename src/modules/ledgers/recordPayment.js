@@ -505,7 +505,7 @@ const RecordPayment = (props) => {
         ? ledgerData?.type
         : props.partyType;
     }
-    getLedgers(clickId, partyType,'','').then((res) => {
+    getLedgers(clickId, partyType, "", "").then((res) => {
       if (res.data.status.type === "SUCCESS") {
         if (props.allCustomTab == "all" && props.ledgerTab == "ledgersummary") {
         }
@@ -584,7 +584,7 @@ const RecordPayment = (props) => {
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
       if (response.data.data != null) {
-      props.setPaidRcvd(response.data.data.tobePaidRcvd);
+        props.setPaidRcvd(response.data.data.tobePaidRcvd);
       }
     });
   };
@@ -921,8 +921,8 @@ const RecordPayment = (props) => {
                       {ledgerData?.type == "FARMER" ||
                       props.partyType == "SELLER" ||
                       (fromBillViewPopup && props.partyType == "FARMER")
-                        ? "Amount Paid"
-                        : "Amount Recieved"}
+                        ? "Amount Paid*"
+                        : "Amount Recieved*"}
                     </label>
                     {fromBillViewPopup ? (
                       <input

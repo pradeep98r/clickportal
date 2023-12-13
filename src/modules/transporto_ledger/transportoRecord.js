@@ -694,7 +694,7 @@ const TransportoRecord = (props) => {
               <p className="payment-tag">
                 {fromAdvances ? "Payment Mode*" : "Payment Mode"}
               </p>
-              {paymentMethods.map((link) => {
+              {paymentMethods.map((link, i) => {
                 return (
                   <div className="form-check form-check-inline">
                     <input
@@ -706,6 +706,7 @@ const TransportoRecord = (props) => {
                       onChange={(e) => setPaymentMode(e.target.value)}
                       checked={paymentMode === link.name}
                       required
+                      tabIndex={i}
                     />
                     <label className="form-check-label" for="inlineRadio1">
                       {link.name}
