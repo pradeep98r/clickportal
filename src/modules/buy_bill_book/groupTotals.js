@@ -122,6 +122,10 @@ const GroupTotals = (props) => {
               billData?.partyType.toUpperCase() === "FARMER" ||
               billData?.partyType.toUpperCase() === "SELLER"
             ) {
+              console.log(
+                res.data.data.billSetting,
+                "res.data.data.billSetting"
+              );
               if (
                 res.data.data.billSetting[i].groupId === 1 &&
                 res.data.data.billSetting[i].billType === "BUY" &&
@@ -1134,9 +1138,10 @@ const GroupTotals = (props) => {
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
       if (includeComm) {
-        if (billData?.commShown) {
-          finalVal = finalVal - billData.comm;
-        }
+        console.log(billData?.commShown);
+        // if (billData?.commShown || !billData?.commShown) {
+        finalVal = finalVal - billData.comm;
+        // }
       } else {
         if (billData?.commShown) {
           finalVal = finalVal - billData.comm;
@@ -1144,9 +1149,9 @@ const GroupTotals = (props) => {
       }
     } else {
       if (includeComm) {
-        if (billData?.commShown) {
-          finalVal = finalVal + billData.comm;
-        }
+        // if (billData?.commShown) {
+        finalVal = finalVal + billData.comm;
+        // }
       }
     }
     if (
@@ -1622,7 +1627,14 @@ const GroupTotals = (props) => {
                       {billData?.cashPaid === 0 ? (
                         "" || billData?.cashPaid === null
                       ) : (
-                        <p className="grouping_value">Cash Paid </p>
+                        <div>
+                          <p className="grouping_value color_red pb-0">
+                            Cash Paid :
+                          </p>
+                          <p className="grouping_value pt-0">
+                            {billData?.cashPaidCmnt}
+                          </p>
+                        </div>
                       )}
                     </div>
                     <div className="col-lg-4">
@@ -3522,7 +3534,14 @@ const GroupTotals = (props) => {
                       {billData?.cashPaid === 0 ? (
                         "" || billData?.cashPaid === null
                       ) : (
-                        <p className="grouping_value color_red">Cash Paid :</p>
+                        <div>
+                          <p className="grouping_value color_red pb-0">
+                            Cash Paid :
+                          </p>
+                          <p className="grouping_value pt-0">
+                            {billData?.cashPaidCmnt}
+                          </p>
+                        </div>
                       )}
                     </div>
                     <div className="col-lg-4 p-0">

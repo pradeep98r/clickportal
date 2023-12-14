@@ -137,7 +137,7 @@ const SellBillStep3 = (props) => {
       filteredArray.sort((a, b) => a.groupId - b.groupId);
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
-        console.log(response)
+        console.log(response);
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "SELL") {
             if (filteredArray[i].formStatus === 1) {
@@ -160,7 +160,7 @@ const SellBillStep3 = (props) => {
                 if (filteredArray[i]?.settingName.includes("ADVANCES")) {
                   filteredArray[i].settingName = "";
                 }
-                console.log(filteredArray,'set if')
+                console.log(filteredArray, "set if");
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
               }
@@ -214,7 +214,7 @@ const SellBillStep3 = (props) => {
                   } else if (response[i]?.name.includes("ADVANCES")) {
                     response[i].name = "";
                   }
-                  console.log(response,'set')
+                  console.log(response, "set");
                   listSettings(response[i].name, response, i);
                   allGroups.push(response[i]);
                 }
@@ -258,7 +258,6 @@ const SellBillStep3 = (props) => {
     return editStatus ? (step2CropEditStatus ? val : val) : v;
   };
   const listSettings = (name, res, index) => {
-
     var totalQty = 0;
     var item = editStatus
       ? step2CropEditStatus
@@ -272,7 +271,7 @@ const SellBillStep3 = (props) => {
     if (name.includes(substring)) {
       substring = name;
     }
-    console.log(res,'respon')
+    console.log(res, "respon");
     let updatedItem = res.map((item, j) => {
       if (j == index) {
         switch (name) {
@@ -482,7 +481,7 @@ const SellBillStep3 = (props) => {
             );
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
               // var trVa = res[j].value != 0 ? getSingleValues(newitem) : 0;
-              var trVa = newitem != 0 ? getSingleValues(newitem,newitem) : 0;
+              var trVa = newitem != 0 ? getSingleValues(newitem, newitem) : 0;
               res[j] = {
                 ...res[j],
                 settingName: res[j].customFieldName,
@@ -491,7 +490,7 @@ const SellBillStep3 = (props) => {
                 value: trVa,
                 fieldType: "SIMPlE",
                 commentText: commentTextFor,
-                comments:res[j].comments
+                comments: res[j].comments,
               };
             }
             if (res[j].fieldType == "COMPLEX_RS") {
@@ -516,7 +515,7 @@ const SellBillStep3 = (props) => {
                 commentText: commentTextFor,
                 subText: "Default Rs",
                 subText2: "Number of units",
-                comments:res[j].comments
+                comments: res[j].comments,
               };
             }
             if (res[j].fieldType == "COMPLEX_PERCENTAGE") {
@@ -540,7 +539,7 @@ const SellBillStep3 = (props) => {
                 totalVal: totalV.toFixed(2),
                 commentText: commentTextFor,
                 subText: "Default Percentage %",
-                comments:res[j].comments
+                comments: res[j].comments,
               };
             }
             break;
@@ -632,19 +631,22 @@ const SellBillStep3 = (props) => {
     return totalValue;
   };
   const getTotalRcble = () => {
-    if (!includeComm) {
-      if (isShown) {
-        return Number(getTotalBillAmount()) - Number(cashRcvdValue);
-      } else {
-        return Number(getTotalBillAmount()) - Number(cashRcvdValue);
-      }
-    } else {
-      if (isShown) {
-        return Number(getTotalBillAmount()) - Number(cashRcvdValue);
-      } else {
-        return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
-      }
+    if (!includeComm || includeComm) {
+      return Number(getTotalBillAmount());
+      // if (isShown) {
+      //   return Number(getTotalBillAmount()) - Number(cashRcvdValue);
+      // } else {
+      //   return Number(getTotalBillAmount()) - Number(cashRcvdValue);
+      // }
     }
+    // else {
+    //   return Number(getTotalBillAmount());
+    //   // if (isShown) {
+    //   //   return Number(getTotalBillAmount()) - Number(cashRcvdValue);
+    //   // } else {
+    //   //   return Number(getTotalBillAmount()) - Number(cashRcvdValue).toFixed(2);
+    //   // }
+    // }
   };
   const getFinalLedgerbalance = () => {
     var t = Number(
@@ -671,9 +673,9 @@ const SellBillStep3 = (props) => {
     var finalValue = grossTotal + t;
     var finalVal = finalValue;
     if (includeComm) {
-      if (isShown) {
-        finalVal = finalValue + getTotalValue(commValue);
-      }
+      // if (isShown) {
+      finalVal = finalValue + getTotalValue(commValue);
+      // }
     }
 
     for (var i = 0; i < questionsTitle.length; i++) {
@@ -694,10 +696,10 @@ const SellBillStep3 = (props) => {
       finalVal = finalVal + getTotalValue(retcommValue);
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    return (
-      (Number(finalVal) + outBalance).toFixed(2) -
-      Number(cashRcvdValue).toFixed(2)
-    );
+    return (Number(finalVal) + outBalance).toFixed(2);
+  };
+  const getFinalOutstandingBal = () => {
+    return getFinalLedgerbalance() - Number(cashRcvdValue).toFixed(2);
   };
   var lineItemsArray = [];
   // var cropArray = props.slectedSellCropsArray;
@@ -866,7 +868,7 @@ const SellBillStep3 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    // billAmt: Number(getTotalBillAmount()),
+    billAmt: Number(getTotalBillAmount()),
     // advBal: 0,
   };
 
@@ -1733,6 +1735,21 @@ const SellBillStep3 = (props) => {
                 ""
               )}
 
+              {/* {outBalformStatusvalue ? ( */}
+              <div className="totals_value">
+                <h5>Final Ledger Balance (₹)</h5>
+                <h6 className="color_green">
+                  {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
+                </h6>
+              </div>
+              {/* // ) : (
+              //   <div className="totals_value">
+              //     <h5>Total Receivables (₹)</h5>
+              //     <h6 className="color_green">
+              //       {getCurrencyNumberWithOutSymbol(getTotalRcble())}
+              //     </h6>
+              //   </div>
+              // )} */}
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Received</h5>
@@ -1750,9 +1767,9 @@ const SellBillStep3 = (props) => {
               )}
               {outBalformStatusvalue ? (
                 <div className="totals_value">
-                  <h5>Final Ledger Balance (₹)</h5>
+                  <h5>Final Outstanding Balance (₹)</h5>
                   <h6 className="color_green">
-                    {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
+                    {getCurrencyNumberWithOutSymbol(getFinalOutstandingBal())}
                   </h6>
                 </div>
               ) : (

@@ -192,6 +192,7 @@ const DetailedLedger = (props) => {
                               ? item.paid
                               : ""}
                           </p>
+                          <p>{item.comments}</p>
                         </td>
                         <td className="col-2">
                           <p id="p-common">
