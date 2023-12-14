@@ -563,6 +563,7 @@ const Step33 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
+  const [cashCommentTextVal, setCashCommentVal] = useState("");
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -712,9 +713,9 @@ const Step33 = (props) => {
     var finalValue = grossTotal - t;
     var finalVal = finalValue;
     if (includeComm) {
-      if (isShown) {
-        finalVal = finalValue - getTotalValue(commValue);
-      }
+      // if (isShown) {
+      finalVal = finalValue - getTotalValue(commValue);
+      // }
     }
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
@@ -737,7 +738,10 @@ const Step33 = (props) => {
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    return (Number(finalVal) + outBalance).toFixed(2) - Number(cashpaidValue);
+    return (Number(finalVal) + outBalance).toFixed(2);
+  };
+  const getFinalOutstandingBal = () => {
+    return getFinalLedgerbalance() - Number(cashpaidValue);
   };
   var lineItemsArray = [];
 
@@ -746,7 +750,7 @@ const Step33 = (props) => {
       ? props.slectedCropsArray
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
-    console.log(cropArray,props.slectedCropsArray,'lineItemsArray')
+  console.log(cropArray, props.slectedCropsArray, "lineItemsArray");
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -782,6 +786,7 @@ const Step33 = (props) => {
     billId: billIdVal,
     caId: clickId,
     cashPaid: Number(cashpaidValue),
+    cashPaidCmnt: cashCommentTextVal,
     comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
     commShown: isShown,
@@ -836,6 +841,7 @@ const Step33 = (props) => {
       advance: Number(advancesValue),
       billDate: partnerSelectDate,
       cashRcvd: Number(cashpaidValue),
+      cashPaidCmnt: cashCommentTextVal,
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
       comments: commentFieldText,
@@ -891,7 +897,6 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
-
     if (advancesValue > outBalAdvance) {
       if (advancesValueStatus) {
         toast.error(
@@ -1500,8 +1505,12 @@ const Step33 = (props) => {
         : false
       : false
   );
+  const [cashPaidCommentStatus, setCashPaidComment] = useState(false);
   const addCommentClick = () => {
     setCommentShownStatus(true);
+  };
+  const addCashCommentClick = () => {
+    setCashPaidComment(true);
   };
   const commentText = (e) => {
     var val = e.target.value;
@@ -1510,6 +1519,10 @@ const Step33 = (props) => {
 
   const customFieldComments = (e) => {
     return e.target.value;
+  };
+  const cashCommentText = (e) => {
+    var val = e.target.value;
+    setCashCommentVal(val);
   };
   const cstmCommentText = (groupLiist, index) => (e) => {
     var regEx = /^[a-z][a-z\s]*$/;
@@ -1841,6 +1854,38 @@ const Step33 = (props) => {
                           ) : (
                             ""
                           )}
+                          {allGroups[index].settingName == "CASH_PAID" ? (
+                            cashPaidCommentStatus ? (
+                              <div className="comm_cards">
+                                <div className="card input_card">
+                                  <div className="row">
+                                    <div className="col-lg-3 title_bg">
+                                      <h5 className="comm_card_title mb-0">
+                                        Comments
+                                      </h5>
+                                    </div>
+                                    <div className="col-lg-9 col-sm-12 col_left_border">
+                                      <input
+                                        type="text"
+                                        placeholder=""
+                                        value={cashCommentTextVal}
+                                        onChange={cashCommentText}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                className="comment_text"
+                                onClick={() => addCashCommentClick()}
+                              >
+                                +Add Comment
+                              </button>
+                            )
+                          ) : (
+                            ""
+                          )}
                         </div>
                       );
                     }
@@ -1891,7 +1936,20 @@ const Step33 = (props) => {
               ) : (
                 ""
               )}
-
+              {/* {outBalformStatusvalue ? ( */}
+              <div className="totals_value">
+                <h5>Final Ledger Balance (₹)</h5>
+                <h6>
+                  {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
+                </h6>
+              </div>
+              {/* // ) : ( //{" "}
+              <div className="totals_value">
+                // <h5>Total Paybles (₹)</h5>
+                // <h6>{getCurrencyNumberWithOutSymbol(getTotalPayble())}</h6>
+                //{" "}
+              </div>
+              // )} */}
               {cashpaidValue != 0 ? (
                 <div className="totals_value">
                   <h5>Cash Paid</h5>
@@ -1909,9 +1967,9 @@ const Step33 = (props) => {
               )}
               {outBalformStatusvalue ? (
                 <div className="totals_value">
-                  <h5>Final Ledger Balance (₹)</h5>
+                  <h5>Final Outstanding Balance (₹)</h5>
                   <h6>
-                    {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
+                    {getCurrencyNumberWithOutSymbol(getFinalOutstandingBal())}
                   </h6>
                 </div>
               ) : (

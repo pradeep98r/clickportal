@@ -150,13 +150,7 @@ const LedgerSummary = (props) => {
                           <p id="p-common">
                             {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                           </p>
-                          <p>
-                            {item.advance != 0
-                              ? ""
-                              : item.comments
-                              ? item.comments
-                              : ""}
-                          </p>
+                          <p>{item.comments}</p>
                         </td>
                         <td className="col-3">
                           <p id="p-common">
