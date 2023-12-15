@@ -672,12 +672,21 @@ const SellBillStep3 = (props) => {
     );
     var finalValue = grossTotal + t;
     var finalVal = finalValue;
-    if (includeComm) {
+    if (editStatus ? billEditItem?.commIncluded : includeComm) {
       // if (isShown) {
       finalVal = finalValue + getTotalValue(commValue);
       // }
     }
-
+    if (editStatus ? !billEditItem?.less : addRetComm) {
+      if (editStatus ? billEditItem?.rtCommIncluded : includeRetComm) {
+        finalVal = finalVal + getTotalValue(retcommValue);
+      }
+      //  else {
+      //   finalVal = finalVal - getTotalValue(retcommValue);
+      // }
+    } else {
+      finalVal = finalVal - getTotalValue(retcommValue);
+    }
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
         if (questionsTitle[i].less) {
@@ -687,13 +696,6 @@ const SellBillStep3 = (props) => {
           finalVal = finalVal + Number(questionsTitle[i].fee);
         }
       }
-    }
-    if (addRetComm) {
-      if (includeRetComm) {
-        finalVal = finalVal - getTotalValue(retcommValue);
-      }
-    } else {
-      finalVal = finalVal + getTotalValue(retcommValue);
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
     return (Number(finalVal) + outBalance).toFixed(2);

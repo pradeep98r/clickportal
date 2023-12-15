@@ -1134,11 +1134,7 @@ const GroupTotals = (props) => {
     ) {
       if (billData?.commIncluded) {
         finalVal = finalVal - billData.comm;
-      } else {
-        // if (billData?.commShown) {
-        //   finalVal = finalVal - billData.comm;
-        // }
-      }
+      } 
     } else {
       if (billData?.commIncluded) {
         finalVal = finalVal + billData.comm;
@@ -1160,10 +1156,12 @@ const GroupTotals = (props) => {
     } else {
       if (!billData?.less) {
         if (billData?.rtCommIncluded) {
-          finalVal = finalVal - billData?.rtComm;
+          finalVal = finalVal + billData?.rtComm;
         }
       } else {
-        finalVal = finalVal + billData?.rtComm;
+        if (billData?.rtCommIncluded) {
+          finalVal = finalVal - billData?.rtComm;
+        }
       }
     }
     for (var i = 0; i < billData?.customFields.length; i++) {
