@@ -15,7 +15,10 @@ import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import tick from "../../assets/images/tick.svg";
-import { fromAdvanceFeature } from "../../reducers/advanceSlice";
+import {
+  fromAdvanceBillId,
+  fromAdvanceFeature,
+} from "../../reducers/advanceSlice";
 const LedgerSummary = (props) => {
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   var partnerSummary = ledgersSummary?.ledgerSummaryInfo;
@@ -45,6 +48,7 @@ const LedgerSummary = (props) => {
     } else if (bId?.includes("A")) {
       getAdvanceListById(clickId, bId, partyId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          dispatch(fromAdvanceBillId(true));
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
