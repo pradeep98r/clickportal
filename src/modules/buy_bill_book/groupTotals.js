@@ -122,10 +122,6 @@ const GroupTotals = (props) => {
               billData?.partyType.toUpperCase() === "FARMER" ||
               billData?.partyType.toUpperCase() === "SELLER"
             ) {
-              console.log(
-                res.data.data.billSetting,
-                "res.data.data.billSetting"
-              );
               if (
                 res.data.data.billSetting[i].groupId === 1 &&
                 res.data.data.billSetting[i].billType === "BUY" &&
@@ -439,7 +435,6 @@ const GroupTotals = (props) => {
   const getDefaltSet = () => {
     getDefaultSystemSettings().then((response) => {
       var res = response.data.data;
-      console.log(res);
       groupWiseTotals(response);
       billSettingData(response.data.data);
       dispatch(filtereArray(response.data.data));
@@ -1137,39 +1132,34 @@ const GroupTotals = (props) => {
       billData?.partyType?.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
-      if (includeComm) {
-        console.log(billData?.commShown);
-        // if (billData?.commShown || !billData?.commShown) {
+      if (billData?.commIncluded) {
         finalVal = finalVal - billData.comm;
-        // }
       } else {
-        if (billData?.commShown) {
-          finalVal = finalVal - billData.comm;
-        }
+        // if (billData?.commShown) {
+        //   finalVal = finalVal - billData.comm;
+        // }
       }
     } else {
-      if (includeComm) {
-        // if (billData?.commShown) {
+      if (billData?.commIncluded) {
         finalVal = finalVal + billData.comm;
-        // }
       }
     }
     if (
       billData?.partyType?.toUpperCase() === "FARMER" ||
       billData?.partyType.toUpperCase() === "SELLER"
     ) {
-      if (addRetComm) {
-        if (includeRetComm) {
-          finalVal = finalVal - billData?.rtComm;
+      if (!billData?.less) {
+        if (billData?.rtCommIncluded) {
+          finalVal = finalVal + billData?.rtComm;
         }
       } else {
-        if (includeRetComm) {
-          finalVal = finalVal + billData?.rtComm;
+        if (billData?.rtCommIncluded) {
+          finalVal = finalVal - billData?.rtComm;
         }
       }
     } else {
-      if (addRetComm) {
-        if (includeRetComm) {
+      if (!billData?.less) {
+        if (billData?.rtCommIncluded) {
           finalVal = finalVal - billData?.rtComm;
         }
       } else {

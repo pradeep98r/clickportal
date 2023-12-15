@@ -117,6 +117,7 @@ const Step33 = (props) => {
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
+        console.log(res, "out");
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
         setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
