@@ -98,7 +98,11 @@ const PaymentHistoryView = (props) => {
   }
   // var fromAdvances = false;
   const [fromAdvances, setfromAdvances] = useState(
-    fromAdvanceFeatureVal ? true : false
+    fromAdvanceFeatureVal
+      ? true
+      : advancesData?.fromAdvanceBillId
+      ? true
+      : false
   );
   useEffect(() => {
     if (paymentViewData?.paymentViewInfo?.refId?.includes("A")) {
@@ -508,7 +512,11 @@ const PaymentHistoryView = (props) => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <h6>Comment</h6>
-                    <h5>{paymentHistoryData?.comments}</h5>
+                    <h5>
+                      {paymentHistoryData?.comments
+                        ? paymentHistoryData?.comments
+                        : "-"}
+                    </h5>
                   </div>
                 </div>
               </div>

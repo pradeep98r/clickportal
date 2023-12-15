@@ -167,6 +167,7 @@ const Step33 = (props) => {
               } else {
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
+                console.log(allGroups, "allgrp");
               }
 
               if (filteredArray[i].settingName === "OUT_ST_BALANCE")
