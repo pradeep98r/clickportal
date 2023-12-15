@@ -709,7 +709,7 @@ const RecordPayment = (props) => {
   };
   const handleCommentText = (e) => {
     let text = e.target.value;
-    let value = text.slice(0, 26);
+    let value = text.slice(0, 25);
     setComments(value);
   };
   return (
