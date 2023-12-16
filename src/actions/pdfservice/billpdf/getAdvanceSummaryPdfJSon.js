@@ -8,6 +8,7 @@ import moment from "moment";
 export function getAdvancesSummaryJson(data, startDate, endDate, customVal) {
   var headerData = getPdfHeaderDataCommon({});
   var pdfThemeInfo = getPdfThemeInfo(data, false, true, "SELLER");
+  console.log(data?.totalGivenById);
   return {
     primaryColor: pdfThemeInfo.primaryColor,
     lightColor: pdfThemeInfo.lightColor,
@@ -23,15 +24,16 @@ export function getAdvancesSummaryJson(data, startDate, endDate, customVal) {
       advances: data?.advanceSummaryById?.map((ledgerData) => {
         return {
           date: moment(ledgerData.date).format("DD-MMM-YY"),
-          amount: ledgerData.givenAdv
-            ? getCurrencyNumberWithOutSymbol(ledgerData.givenAdv)
-            : 0,
+          amount:
+            ledgerData.given != 0
+              ? getCurrencyNumberWithOutSymbol(ledgerData.given)
+              : "0",
           // collected:ledgerData.collectedAdv ? getCurrencyNumberWithOutSymbol(ledgerData.collectedAdv) : 0,
           refId: ledgerData.refId,
           // balance:ledgerData.advBal ? getCurrencyNumberWithOutSymbol(ledgerData.advBal) : 0,
         };
       }),
-      totalAdvances: getCurrencyNumberWithSymbol(data?.totalAdvancesValById),
+      totalAdvances: getCurrencyNumberWithSymbol(data?.totalGivenById),
     },
   };
 }
