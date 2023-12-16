@@ -4,10 +4,7 @@ const loginData = JSON.parse(localStorage.getItem("loginResponse"));
 var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
 
 export function addPartner(obj, clickId) {
-  return axiosCommon.post(
-    `/account/partners/caId/${clickId}`,
-    obj
-  );
+  return axiosCommon.post(`/account/partners/caId/${clickId}`, obj);
 }
 export function deletePartnerId(partyId, clickId) {
   return axiosCommon.put(
@@ -44,22 +41,12 @@ export function getLedgerSummary(clickId, partyId, clientId, clientSecret) {
   );
 }
 
-export function getLedgerSummaryByDate(
-  clickId,
-  partyId,
-  fromDate,
-  toDate,
-) {
+export function getLedgerSummaryByDate(clickId, partyId, fromDate, toDate) {
   return axiosCommon.get(
     `/reports/ledger/summary/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}?writerId=${writerId}`
   );
 }
-export function getDetailedLedgerByDate(
-  clickId,
-  partyId,
-  fromDate,
-  toDate,
-) {
+export function getDetailedLedgerByDate(clickId, partyId, fromDate, toDate) {
   return axiosCommon.get(
     `/reports/buyer-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
@@ -69,7 +56,7 @@ export function getSellerDetailedLedgerByDate(
   clickId,
   partyId,
   fromDate,
-  toDate,
+  toDate
 ) {
   return axiosCommon.get(
     `/reports/seller-ledger/caId/${clickId}/partyId/${partyId}?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
@@ -128,28 +115,16 @@ export function getMandiLogoDetails(clickId) {
 }
 
 export function postbuybillApi(billRequestObj) {
-  return axiosCommon.post(
-    "/click/bills/buy-bill",
-    billRequestObj
-  );
+  return axiosCommon.post("/click/bills/buy-bill", billRequestObj);
 }
 export function editbuybillApi(billRequestObj) {
-  return axiosCommon.put(
-    "/click/bills/sell-buy-bill",
-    billRequestObj
-  );
+  return axiosCommon.put("/click/bills/sell-buy-bill", billRequestObj);
 }
 export function postsellbillApi(billRequestObj) {
-  return axiosCommon.post(
-    "/click/bills/sales-bill",
-    billRequestObj
-  );
+  return axiosCommon.post("/click/bills/sales-bill", billRequestObj);
 }
 export function getGeneratedBillId(obj) {
-  return axiosCommon.post(
-    "/click/bills/generate",
-    obj
-  );
+  return axiosCommon.post("/click/bills/generate", obj);
 }
 
 export default {
@@ -169,5 +144,5 @@ export default {
   getSellerDetailedLedgerByDate,
   postbuybillApi,
   getOutstandingBal,
-  getGeneratedBillId
+  getGeneratedBillId,
 };

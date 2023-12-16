@@ -115,10 +115,13 @@ const SellBillStep3 = (props) => {
     }
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
-      getOutstandingBal(clickId, pID).then((res) => {
-        setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
-        setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
-      });
+      if (pID != 0) {
+        getOutstandingBal(clickId, pID).then((res) => {
+          console.log(res, "out");
+          setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
+          setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
+        });
+      }
     }
     getGrossTotalValue(
       editStatus
@@ -268,7 +271,6 @@ const SellBillStep3 = (props) => {
     if (name.includes(substring)) {
       substring = name;
     }
-    console.log(res, "respon");
     let updatedItem = res.map((item, j) => {
       if (j == index) {
         switch (name) {
@@ -892,7 +894,7 @@ const SellBillStep3 = (props) => {
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
       otherFee: Number(otherfeeValue),
-      outStBal: outBal,
+      outStBal: editStatus ? billEditItem?.outStBal : outBal,
       paidTo: 0,
       partyId: billEditItem.buyerId, //partnerSelectedData.partyId,
       rent:
@@ -913,6 +915,10 @@ const SellBillStep3 = (props) => {
 
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
+      billAmt: Number(getTotalBillAmount().toFixed(2)),
+      advBal: 0,
+      finalLedgerBal: Number(getFinalLedgerbalance().toFixed(2)),
+      finalOutStBal: Number(getFinalOutstandingBal().toFixed(2)),
     },
     billId: billEditItem.billId,
     billType: "SELL",
@@ -923,7 +929,6 @@ const SellBillStep3 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: Number(getTotalBillAmount()),
     // advBal: 0,
   };
 
@@ -1781,7 +1786,11 @@ const SellBillStep3 = (props) => {
                   <h6 className="color_green">
                     {outBal != 0
                       ? editStatus
-                        ? getCurrencyNumberWithOutSymbol(billEditItem?.outStBal)
+                        ? billEditItem?.outStBal != 0
+                          ? getCurrencyNumberWithOutSymbol(
+                              billEditItem?.outStBal
+                            )
+                          : 0
                         : getCurrencyNumberWithOutSymbol(outBal)
                       : "0"}
                   </h6>

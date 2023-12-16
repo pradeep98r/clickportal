@@ -702,12 +702,12 @@ const Step33 = (props) => {
         totalValue = totalValue - getTotalValue(commValue);
       }
     }
+
     if (addRetComm) {
       totalValue = totalValue - getTotalValue(retcommValue);
     } else {
       totalValue = totalValue + getTotalValue(retcommValue);
     }
-
     return totalValue;
   };
   const getActualPayble = () => {
@@ -895,12 +895,14 @@ const Step33 = (props) => {
     source: "WEB",
     billAmt: Number(getTotalBillAmount().toFixed(2)),
     advBal: outBalAdvance,
+    finalLedgerBal: getFinalLedgerbalance(),
+    finalOutStBal: getFinalOutstandingBal(),
   };
 
   const editBillRequestObj = {
     action: "UPDATE",
     billAttributes: {
-      actualPayRecieevable: getActualPayble(),
+      actualPayRecieevable: Number(getActualPayble()),
       advance: Number(advancesValue),
       billDate: partnerSelectDate,
       cashRcvd: Number(cashpaidValue),
@@ -945,6 +947,10 @@ const Step33 = (props) => {
           : Number(getTotalUnits(transportationValue).toFixed(2)),
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
+      billAmt: Number(getTotalBillAmount().toFixed(2)),
+      advBal: outBalAdvance,
+      finalLedgerBal: Number(getFinalLedgerbalance().toFixed(2)),
+      finalOutStBal: Number(getFinalOutstandingBal().toFixed(2)),
     },
     billId: billEditItem?.billId,
     billType: "BUY",
@@ -955,8 +961,6 @@ const Step33 = (props) => {
     updatedOn: "",
     writerId: writerId,
     source: "WEB",
-    billAmt: Number(getTotalBillAmount().toFixed(2)),
-    advBal: outBalAdvance,
   };
   // post bill request api call
   const postbuybill = () => {
@@ -1011,6 +1015,7 @@ const Step33 = (props) => {
     }
   };
   const addBillApiCall = () => {
+    console.log(billRequestObj);
     postbuybillApi(billRequestObj).then(
       (response) => {
         if (response.data.status.type === "SUCCESS") {
