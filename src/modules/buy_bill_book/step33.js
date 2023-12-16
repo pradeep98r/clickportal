@@ -90,7 +90,7 @@ const Step33 = (props) => {
   useEffect(() => {
     $("#disable").attr("disabled", false);
     getDefaultSystemSettings().then((res) => {
-      console.log(res, "res");
+      // console.log(res, "res");
     });
     var cropArrays = editStatus
       ? step2CropEditStatus
@@ -117,7 +117,7 @@ const Step33 = (props) => {
     if (partnerSelectedData != null) {
       var pID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
       getOutstandingBal(clickId, pID).then((res) => {
-        console.log(res, "out");
+        // console.log(res, "out");
         setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
         setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
       });
@@ -168,7 +168,7 @@ const Step33 = (props) => {
               } else {
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
-                console.log(allGroups, "allgrp");
+                // console.log(allGroups, "allgrp");
               }
 
               if (filteredArray[i].settingName === "OUT_ST_BALANCE")
@@ -267,6 +267,7 @@ const Step33 = (props) => {
       }
     }
   };
+  var cstmArray = [];
   const listSettings = (name, res, index) => {
     var totalQty = 0;
     var item = editStatus
@@ -493,7 +494,7 @@ const Step33 = (props) => {
                 : []
             );
             if (res[j].fieldType == "SIMPLE" || res[j].fieldType == null) {
-              console.log(newitem, "newitem");
+              // console.log(newitem, "newitem");
               var trVa = newitem != 0 ? getSingleValues(newitem, newitem) : 0;
               res[j] = {
                 ...res[j],
@@ -557,7 +558,69 @@ const Step33 = (props) => {
       }
     });
     setAllGroups(updatedItem);
-    // return type;
+
+    let updatedCustomItems = updatedItem.map((item, i) => {
+      if (i == index) {
+        if (updatedItem[i].cstmName != "") {
+          console.log(cstmArray, updatedItem[i]);
+          let tab = [...cstmArray];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee =
+              updatedItem[i].totalVal != 0
+                ? updatedItem[i].totalVal
+                : updatedItem[i].value;
+          } else {
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === updatedItem[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee:
+                    updatedItem[i].totalVal != 0
+                      ? updatedItem[i].totalVal
+                      : updatedItem[i].value,
+                  field: updatedItem[i].cstmName,
+                  fieldName: updatedItem[i].settingName,
+                  fieldType: updatedItem[i].fieldType,
+                  index: i,
+                  less: updatedItem[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje,
+                  fee:
+                    updatedItem[i].totalVal != 0
+                      ? updatedItem[i].totalVal
+                      : updatedItem[i].value,
+                };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee:
+                  updatedItem[i].totalVal != 0
+                    ? updatedItem[i].totalVal
+                    : updatedItem[i].value,
+                field: updatedItem[i].cstmName,
+                fieldName: updatedItem[i].settingName,
+                fieldType: updatedItem[i].fieldType,
+                index: i,
+                less: updatedItem[i].addToGt == 1 ? false : true,
+              });
+            }
+          }
+          setCstmval(true);
+          cstmArray = tab;
+          setQuestionsTitle([...tab, ...questionsTitle]);
+          console.log(tab, questionsTitle, "addeven");
+        }
+      }
+    });
   };
 
   const [commentFieldText, setCommentFieldText] = useState(
@@ -580,12 +643,14 @@ const Step33 = (props) => {
   const getUnitsTotalValue = (items) => {
     var totalunitvalue = 0;
     var it = editStatus ? (step2CropEditStatus ? items : items) : items;
+    console.log(items, it, "total");
     for (var i = 0; i < it.length; i++) {
       totalunitvalue += editStatus
         ? step2CropEditStatus
           ? parseFloat(it[i].qty)
           : it[i].qty
         : parseFloat(it[i].qty);
+      console.log(totalunitvalue, it[i].qty);
       setTotalUnits(totalunitvalue);
     }
   };
@@ -594,6 +659,7 @@ const Step33 = (props) => {
     return (value / 100) * grossTotal;
   };
   const getTotalUnits = (val) => {
+    // console.log(totalUnits, "totalUnits");
     return val * totalUnits;
   };
   const [enterVal, setEnterVal] = useState();
@@ -621,6 +687,7 @@ const Step33 = (props) => {
       // Number(advancesValue)
     );
     let totalValue = grossTotal - t;
+    // console.log(questionsTitle, "questionsTitle");
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
         if (questionsTitle[i].less) {
@@ -740,7 +807,7 @@ const Step33 = (props) => {
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    return (Number(finalVal) + outBalance).toFixed(2);
+    return Number(finalVal) + outBalance;
   };
   const getFinalOutstandingBal = () => {
     return getFinalLedgerbalance() - Number(cashpaidValue);
@@ -752,7 +819,6 @@ const Step33 = (props) => {
       ? props.slectedCropsArray
       : billEditItemInfo.selectedBillInfo.lineItems
     : props.slectedCropsArray; //billEditItem.lineItems
-  console.log(cropArray, props.slectedCropsArray, "lineItemsArray");
   var len = cropArray.length;
   for (var i = 0; i < len; i++) {
     lineItemsArray.push({
@@ -899,15 +965,36 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
+    console.log(
+      advancesValue,
+      outBalAdvance,
+      billEditItem?.advance,
+      editStatus,
+      advancesValueStatus
+    );
     if (advancesValue > outBalAdvance) {
       if (advancesValueStatus) {
-        toast.error(
-          "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
-          {
-            toastId: "error10",
+        if (editStatus) {
+          if (advancesValue > outBalAdvance + billEditItem?.advance) {
+            toast.error(
+              "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
+              {
+                toastId: "error10",
+              }
+            );
+            $("#disable").attr("disabled", false);
+          } else {
+            editBillApiCall();
           }
-        );
-        $("#disable").attr("disabled", false);
+        } else {
+          toast.error(
+            "You have entered advances amount higher than outstanding advance.Please correct it before sumitting the bill.",
+            {
+              toastId: "error10",
+            }
+          );
+          $("#disable").attr("disabled", false);
+        }
       } else {
         addBillApiCall();
       }
@@ -1068,6 +1155,7 @@ const Step33 = (props) => {
           }
           setCstmval(true);
           setQuestionsTitle(tab);
+          console.log(tab, "addeven");
         }
         getAdditionValues(groupLiist[i], val);
 
@@ -1080,13 +1168,16 @@ const Step33 = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
+    console.log(val, list, tableChangeStatus, "valll");
     if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
       if (tableChangeStatus) {
         return (list.fee = Number(val));
       } else {
-        return (list.fee = Number(getTotalUnits(val).toFixed(2)));
+        list.fee = Number(getTotalUnits(val).toFixed(2));
+        console.log(list.fee, totalUnits, val, val * totalUnits);
+        return list.fee;
       }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {
       return (list.fee = Number(getTotalValue(val).toFixed(2)));
@@ -1954,7 +2045,7 @@ const Step33 = (props) => {
               // )} */}
               {cashpaidValue != 0 ? (
                 <div className="totals_value">
-                  <h5>Cash Paid</h5>
+                  <h5>Cash Paid (₹)</h5>
                   <h6>
                     -
                     {billEditItem?.cashPaid
