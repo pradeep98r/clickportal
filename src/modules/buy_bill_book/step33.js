@@ -562,7 +562,6 @@ const Step33 = (props) => {
     let updatedCustomItems = updatedItem.map((item, i) => {
       if (i == index) {
         if (updatedItem[i].cstmName != "") {
-          console.log(cstmArray, updatedItem[i]);
           let tab = [...cstmArray];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
@@ -617,7 +616,6 @@ const Step33 = (props) => {
           setCstmval(true);
           cstmArray = tab;
           setQuestionsTitle([...tab, ...questionsTitle]);
-          console.log(tab, questionsTitle, "addeven");
         }
       }
     });
@@ -643,14 +641,12 @@ const Step33 = (props) => {
   const getUnitsTotalValue = (items) => {
     var totalunitvalue = 0;
     var it = editStatus ? (step2CropEditStatus ? items : items) : items;
-    console.log(items, it, "total");
     for (var i = 0; i < it.length; i++) {
       totalunitvalue += editStatus
         ? step2CropEditStatus
           ? parseFloat(it[i].qty)
           : it[i].qty
         : parseFloat(it[i].qty);
-      console.log(totalunitvalue, it[i].qty);
       setTotalUnits(totalunitvalue);
     }
   };
@@ -659,7 +655,6 @@ const Step33 = (props) => {
     return (value / 100) * grossTotal;
   };
   const getTotalUnits = (val) => {
-    // console.log(totalUnits, "totalUnits");
     return val * totalUnits;
   };
   const [enterVal, setEnterVal] = useState();
@@ -965,13 +960,6 @@ const Step33 = (props) => {
   };
   // post bill request api call
   const postbuybill = () => {
-    console.log(
-      advancesValue,
-      outBalAdvance,
-      billEditItem?.advance,
-      editStatus,
-      advancesValueStatus
-    );
     if (advancesValue > outBalAdvance) {
       if (advancesValueStatus) {
         if (editStatus) {
@@ -1155,7 +1143,6 @@ const Step33 = (props) => {
           }
           setCstmval(true);
           setQuestionsTitle(tab);
-          console.log(tab, "addeven");
         }
         getAdditionValues(groupLiist[i], val);
 
@@ -1168,7 +1155,6 @@ const Step33 = (props) => {
     setEnterVal(val);
   };
   const getTargetValue = (val, list, index) => {
-    console.log(val, list, tableChangeStatus, "valll");
     if (list.fieldType == "SIMPLE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
@@ -1176,7 +1162,6 @@ const Step33 = (props) => {
         return (list.fee = Number(val));
       } else {
         list.fee = Number(getTotalUnits(val).toFixed(2));
-        console.log(list.fee, totalUnits, val, val * totalUnits);
         return list.fee;
       }
     } else if (list.fieldType == "COMPLEX_PERCENTAGE") {

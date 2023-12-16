@@ -137,7 +137,6 @@ const SellBillStep3 = (props) => {
       filteredArray.sort((a, b) => a.groupId - b.groupId);
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
-        console.log(response);
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "SELL") {
             if (filteredArray[i].formStatus === 1) {
@@ -160,7 +159,6 @@ const SellBillStep3 = (props) => {
                 if (filteredArray[i]?.settingName.includes("ADVANCES")) {
                   filteredArray[i].settingName = "";
                 }
-                console.log(filteredArray, "set if");
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
               }
@@ -214,7 +212,6 @@ const SellBillStep3 = (props) => {
                   } else if (response[i]?.name.includes("ADVANCES")) {
                     response[i].name = "";
                   }
-                  console.log(response, "set");
                   listSettings(response[i].name, response, i);
                   allGroups.push(response[i]);
                 }
@@ -254,7 +251,6 @@ const SellBillStep3 = (props) => {
   var gTotal = 0;
   const [cashRcdStatus, setcashRcdStatus] = useState(false);
   const getSingleValues = (val, v) => {
-    console.log(v);
     return editStatus ? (step2CropEditStatus ? val : val) : v;
   };
   var cstmArray = [];
@@ -554,7 +550,6 @@ const SellBillStep3 = (props) => {
     let updatedCustomItems = updatedItem.map((item, i) => {
       if (i == index) {
         if (updatedItem[i].cstmName != "") {
-          console.log(cstmArray, questionsTitle);
           let tab = [...cstmArray];
           let tabIndex = tab.findIndex((x) => x.index === index);
           if (tabIndex !== -1) {
@@ -605,7 +600,6 @@ const SellBillStep3 = (props) => {
           }
           cstmArray = tab;
           setQuestionsTitle([...tab, ...questionsTitle]);
-          console.log(tab, questionsTitle, "addeven");
         }
       }
     });
@@ -1331,7 +1325,6 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItem]);
   };
   const getTargetValue = (val, list, index) => {
-    console.log(val, list);
     if (list.fieldType == "SIMPlE" || list.fieldType == null) {
       return (list.fee = Number(val));
     } else if (list.fieldType == "COMPLEX_RS") {
