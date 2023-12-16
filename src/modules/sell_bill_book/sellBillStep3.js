@@ -137,7 +137,6 @@ const SellBillStep3 = (props) => {
       filteredArray.sort((a, b) => a.groupId - b.groupId);
       if (filteredArray.length > 0) {
         response = res.data.data.billSetting;
-        console.log(response);
         for (var i = 0; i < filteredArray.length; i++) {
           if (filteredArray[i].billType === "SELL") {
             if (filteredArray[i].formStatus === 1) {
@@ -160,7 +159,6 @@ const SellBillStep3 = (props) => {
                 if (filteredArray[i]?.settingName.includes("ADVANCES")) {
                   filteredArray[i].settingName = "";
                 }
-                console.log(filteredArray, "set if");
                 listSettings(filteredArray[i].settingName, filteredArray, i);
                 allGroups.push(filteredArray[i]);
               }
@@ -214,7 +212,6 @@ const SellBillStep3 = (props) => {
                   } else if (response[i]?.name.includes("ADVANCES")) {
                     response[i].name = "";
                   }
-                  console.log(response, "set");
                   listSettings(response[i].name, response, i);
                   allGroups.push(response[i]);
                 }
@@ -254,9 +251,9 @@ const SellBillStep3 = (props) => {
   var gTotal = 0;
   const [cashRcdStatus, setcashRcdStatus] = useState(false);
   const getSingleValues = (val, v) => {
-    console.log(v);
     return editStatus ? (step2CropEditStatus ? val : val) : v;
   };
+  var cstmArray = [];
   const listSettings = (name, res, index) => {
     var totalQty = 0;
     var item = editStatus
@@ -550,6 +547,62 @@ const SellBillStep3 = (props) => {
       }
     });
     setAllGroups(updatedItem);
+    let updatedCustomItems = updatedItem.map((item, i) => {
+      if (i == index) {
+        if (updatedItem[i].cstmName != "") {
+          let tab = [...cstmArray];
+          let tabIndex = tab.findIndex((x) => x.index === index);
+          if (tabIndex !== -1) {
+            tab[tabIndex].fee =
+              updatedItem[i].totalVal != 0
+                ? updatedItem[i].totalVal
+                : updatedItem[i].value;
+          } else {
+            if (editStatus) {
+              let tabIndex = tab.findIndex(
+                (x) => x.fieldName === updatedItem[i].settingName
+              );
+              if (tabIndex == -1) {
+                tab.push({
+                  comments: "",
+                  fee:
+                    updatedItem[i].totalVal != 0
+                      ? updatedItem[i].totalVal
+                      : updatedItem[i].value,
+                  field: updatedItem[i].cstmName,
+                  fieldName: updatedItem[i].settingName,
+                  fieldType: updatedItem[i].fieldType,
+                  index: i,
+                  less: updatedItem[i].addToGt == 1 ? false : true,
+                });
+              } else {
+                let tabObje = { ...tab[tabIndex] };
+                tabObje = {
+                  ...tabObje,
+                  fee: getTargetValue(updatedItem[i].value, updatedItem[i], i),
+                };
+                tab[tabIndex] = tabObje;
+              }
+            } else {
+              tab.push({
+                comments: "",
+                fee:
+                  updatedItem[i].totalVal != 0
+                    ? updatedItem[i].totalVal
+                    : updatedItem[i].value,
+                field: updatedItem[i].cstmName,
+                fieldName: updatedItem[i].settingName,
+                fieldType: updatedItem[i].fieldType,
+                index: i,
+                less: updatedItem[i].addToGt == 1 ? false : true,
+              });
+            }
+          }
+          cstmArray = tab;
+          setQuestionsTitle([...tab, ...questionsTitle]);
+        }
+      }
+    });
     // return type;
   };
   const getGrossTotalValue = (items) => {
@@ -698,7 +751,7 @@ const SellBillStep3 = (props) => {
       }
     }
     var outBalance = editStatus ? billEditItem?.outStBal : outBal;
-    return (Number(finalVal) + outBalance).toFixed(2);
+    return Number(finalVal) + outBalance;
   };
   const getFinalOutstandingBal = () => {
     return getFinalLedgerbalance() - Number(cashRcvdValue).toFixed(2);
@@ -1754,13 +1807,13 @@ const SellBillStep3 = (props) => {
               // )} */}
               {cashRcvdValue != 0 ? (
                 <div className="totals_value">
-                  <h5>Cash Received</h5>
+                  <h5>Cash Received (₹)</h5>
                   <h6>
                     -
                     {billEditItem?.cashRcvd
                       ? cashRcdStatus
                         ? getCurrencyNumberWithOutSymbol(Number(cashRcvdValue))
-                        : billEditItem?.cashRcvd
+                        : getCurrencyNumberWithOutSymbol(billEditItem?.cashRcvd)
                       : getCurrencyNumberWithOutSymbol(Number(cashRcvdValue))}
                   </h6>
                 </div>
