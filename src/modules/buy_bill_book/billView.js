@@ -79,7 +79,6 @@ import { colorAdjustBill } from "../../components/qtyValues";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
-  console.log(pdfThemeDataArray,'pdfThemeDataArray')
   const pdfThemeData = pdfThemeDataArray != null ? pdfThemeDataArray : null;
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
@@ -108,7 +107,7 @@ const BillView = (props) => {
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
     if (pdfThemeData != null) {
-      console.log(pdfThemeData,billData)
+      console.log(pdfThemeData, billData);
       for (var i = 0; i < pdfThemeData.length; i++) {
         if (
           pdfThemeData[i].type == "BUY_BILL" &&
@@ -152,8 +151,7 @@ const BillView = (props) => {
             )
           );
           localStorage.setItem("pdftheme", pdfThemeData[i]);
-        }
-        else {
+        } else {
           setColorThemeVal("#16a12c");
           // dispatch(colorthemeValue("#16a12c"));
           localStorage.setItem("pdftheme", null);
@@ -465,7 +463,7 @@ const BillView = (props) => {
   const fetchLedgers = () => {
     var partyType =
       billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType;
-    getLedgers(clickId, partyType,'','').then((res) => {
+    getLedgers(clickId, partyType, "", "").then((res) => {
       if (res.data.status.type === "SUCCESS") {
         dispatch(allLedgers(res.data.data.ledgers));
         dispatch(outStandingBal(res.data.data));
