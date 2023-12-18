@@ -693,17 +693,17 @@ const Step33 = (props) => {
         }
       }
     }
-    if (includeComm) {
-      if (isShown) {
+    if (editStatus ? billEditItem?.commIncluded : includeComm) {
+      if (editStatus ? billEditItem?.commShown : isShown) {
         totalValue = totalValue - getTotalValue(commValue);
       }
     } else {
-      if (isShown) {
+      if (editStatus ? billEditItem?.commShown : isShown) {
         totalValue = totalValue - getTotalValue(commValue);
       }
     }
-
-    if (addRetComm) {
+   
+    if (editStatus ? billEditItem?.less : addRetComm) {
       totalValue = totalValue - getTotalValue(retcommValue);
     } else {
       totalValue = totalValue + getTotalValue(retcommValue);
@@ -776,7 +776,7 @@ const Step33 = (props) => {
     );
     var finalValue = grossTotal - t;
     var finalVal = finalValue;
-    if (includeComm) {
+    if (editStatus ? billEditItem?.commIncluded : includeComm) {
       // if (isShown) {
       finalVal = finalValue - getTotalValue(commValue);
       // }
@@ -792,12 +792,12 @@ const Step33 = (props) => {
       }
     }
 
-    if (addRetComm) {
-      if (includeRetComm) {
+    if (editStatus ? billEditItem?.less : addRetComm) {
+      if (editStatus ? billEditItem?.rtCommIncluded : includeRetComm) {
         finalVal = (finalVal - getTotalValue(retcommValue)).toFixed(2);
       }
     } else {
-      if (includeRetComm) {
+      if (editStatus ? billEditItem?.rtCommIncluded : includeRetComm) {
         finalVal = (finalVal + getTotalValue(retcommValue)).toFixed(2);
       }
     }
@@ -1055,7 +1055,7 @@ const Step33 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           } else {
             window.setTimeout(function () {

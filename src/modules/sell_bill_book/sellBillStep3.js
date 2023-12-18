@@ -734,7 +734,7 @@ const SellBillStep3 = (props) => {
       finalVal = finalValue + getTotalValue(commValue);
       // }
     }
-    if (editStatus ? !billEditItem?.less : addRetComm) {
+    if (editStatus ? !billEditItem?.less : !addRetComm) {
       if (editStatus ? billEditItem?.rtCommIncluded : includeRetComm) {
         finalVal = finalVal + getTotalValue(retcommValue);
       }
