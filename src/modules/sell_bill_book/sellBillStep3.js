@@ -659,6 +659,7 @@ const SellBillStep3 = (props) => {
       // Number(advancesValue)
     );
     let totalValue = grossTotal + t;
+    console.log(totalValue, grossTotal, t);
     if (includeComm) {
       if (isShown) {
         totalValue = totalValue + getTotalValue(commValue);
@@ -683,6 +684,7 @@ const SellBillStep3 = (props) => {
     } else {
       totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
     }
+    console.log(totalValue);
     return totalValue;
   };
   const getTotalRcble = () => {
@@ -915,9 +917,12 @@ const SellBillStep3 = (props) => {
 
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
-      billAmt: Number(getTotalBillAmount().toFixed(2)),
+      billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
       advBal: 0,
-      finalLedgerBal: Number(getFinalLedgerbalance().toFixed(2)),
+      finalLedgerBal:
+        getFinalLedgerbalance() != 0
+          ? Number(getFinalLedgerbalance().toFixed(2))
+          : 0,
       finalOutStBal: Number(getFinalOutstandingBal().toFixed(2)),
     },
     billId: billEditItem.billId,
