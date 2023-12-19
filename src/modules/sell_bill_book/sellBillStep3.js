@@ -877,7 +877,7 @@ const SellBillStep3 = (props) => {
     action: "UPDATE",
     billAttributes: {
       actualPayRecieevable: Number(getActualRcvd()),
-      // advance: Number(advancesValue),
+      // advance: 0,
       billDate: partnerSelectDate,
       cashRcvd: Number(cashRcvdValue),
       comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -917,8 +917,8 @@ const SellBillStep3 = (props) => {
 
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
-      billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
-      advBal: 0,
+      // billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
+      // advBal: 0,
       finalLedgerBal:
         getFinalLedgerbalance() != 0
           ? Number(getFinalLedgerbalance().toFixed(2))
@@ -962,7 +962,7 @@ const SellBillStep3 = (props) => {
               }, 800);
               window.setTimeout(function () {
                 navigate("/sellbillbook");
-                window.location.reload();
+                // window.location.reload();
               }, 1000);
             } else {
               console.log("from ledger step3", props.fromLedger);

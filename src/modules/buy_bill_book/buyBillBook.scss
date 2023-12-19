@@ -549,7 +549,7 @@ option[value=""][disabled] {
   }
 }
 input:focus-visible {
-  outline: 1px solid var(--ono-blue);
+  outline: 1px solid transparent;
 }
 .comm_total_card {
   padding: 15px;

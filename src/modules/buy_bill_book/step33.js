@@ -906,7 +906,7 @@ const Step33 = (props) => {
       advance: Number(advancesValue),
       billDate: partnerSelectDate,
       cashRcvd: Number(cashpaidValue),
-      cashPaidCmnt: cashCommentTextVal,
+      CashCmnt: cashCommentTextVal,
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
       comments: commentFieldText,
