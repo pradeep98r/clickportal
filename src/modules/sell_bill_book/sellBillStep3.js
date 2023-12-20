@@ -659,6 +659,7 @@ const SellBillStep3 = (props) => {
       // Number(advancesValue)
     );
     let totalValue = grossTotal + t;
+    console.log(totalValue, grossTotal, t);
     if (includeComm) {
       if (isShown) {
         totalValue = totalValue + getTotalValue(commValue);
@@ -683,6 +684,7 @@ const SellBillStep3 = (props) => {
     } else {
       totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
     }
+    console.log(totalValue);
     return totalValue;
   };
   const getTotalRcble = () => {
@@ -732,7 +734,7 @@ const SellBillStep3 = (props) => {
       finalVal = finalValue + getTotalValue(commValue);
       // }
     }
-    if (editStatus ? !billEditItem?.less : addRetComm) {
+    if (editStatus ? !billEditItem?.less : !addRetComm) {
       if (editStatus ? billEditItem?.rtCommIncluded : includeRetComm) {
         finalVal = finalVal + getTotalValue(retcommValue);
       }
@@ -875,7 +877,7 @@ const SellBillStep3 = (props) => {
     action: "UPDATE",
     billAttributes: {
       actualPayRecieevable: Number(getActualRcvd()),
-      // advance: Number(advancesValue),
+      // advance: 0,
       billDate: partnerSelectDate,
       cashRcvd: Number(cashRcvdValue),
       comm: Number(getTotalValue(commValue).toFixed(2)),
@@ -915,9 +917,12 @@ const SellBillStep3 = (props) => {
 
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
-      billAmt: Number(getTotalBillAmount().toFixed(2)),
-      advBal: 0,
-      finalLedgerBal: Number(getFinalLedgerbalance().toFixed(2)),
+      // billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
+      // advBal: 0,
+      finalLedgerBal:
+        getFinalLedgerbalance() != 0
+          ? Number(getFinalLedgerbalance().toFixed(2))
+          : 0,
       finalOutStBal: Number(getFinalOutstandingBal().toFixed(2)),
     },
     billId: billEditItem.billId,
@@ -957,7 +962,7 @@ const SellBillStep3 = (props) => {
               }, 800);
               window.setTimeout(function () {
                 navigate("/sellbillbook");
-                window.location.reload();
+                // window.location.reload();
               }, 1000);
             } else {
               console.log("from ledger step3", props.fromLedger);
