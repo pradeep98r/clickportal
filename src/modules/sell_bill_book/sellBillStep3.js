@@ -818,7 +818,7 @@ const SellBillStep3 = (props) => {
     }
     return actualRcvd;
   };
-
+  const [cashCommentTextVal, setCashCommentVal] = useState("");
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -830,6 +830,7 @@ const SellBillStep3 = (props) => {
     billId: billIdVal,
     caId: clickId,
     cashRcvd: Number(cashRcvdValue),
+    cashRcvdCmnt: cashCommentTextVal,
     comm: Number(getTotalValue(commValue).toFixed(2)),
     commIncluded: includeComm,
     commShown: isShown,
@@ -880,6 +881,7 @@ const SellBillStep3 = (props) => {
       // advance: 0,
       billDate: partnerSelectDate,
       cashRcvd: Number(cashRcvdValue),
+      CashCmnt: cashCommentTextVal,
       comm: Number(getTotalValue(commValue).toFixed(2)),
       commIncluded: includeComm,
       comments: commentFieldText,
@@ -1457,12 +1459,20 @@ const SellBillStep3 = (props) => {
         : false
       : false
   );
+  const [cashPaidCommentStatus, setCashPaidComment] = useState(false);
   const addCommentClick = () => {
     setCommentShownStatus(true);
+  };
+  const addCashCommentClick = () => {
+    setCashPaidComment(true);
   };
   const commentText = (e) => {
     var val = e.target.value;
     setCommentFieldText(val);
+  };
+  const cashCommentText = (e) => {
+    var val = e.target.value;
+    setCashCommentVal(val);
   };
   $("#disable").on("click", function () {
     $("#disable").attr("disabled", true);
@@ -1756,6 +1766,38 @@ const SellBillStep3 = (props) => {
                               <button
                                 className="comment_text"
                                 onClick={() => addCommentClick()}
+                              >
+                                +Add Comment
+                              </button>
+                            )
+                          ) : (
+                            ""
+                          )}
+                          {allGroups[index].settingName == "CASH_RECEIVED" ? (
+                            cashPaidCommentStatus ? (
+                              <div className="comm_cards">
+                                <div className="card input_card">
+                                  <div className="row">
+                                    <div className="col-lg-3 title_bg">
+                                      <h5 className="comm_card_title mb-0">
+                                        Comments
+                                      </h5>
+                                    </div>
+                                    <div className="col-lg-9 col-sm-12 col_left_border">
+                                      <input
+                                        type="text"
+                                        placeholder=""
+                                        value={cashCommentTextVal}
+                                        onChange={cashCommentText}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                className="comment_text"
+                                onClick={() => addCashCommentClick()}
                               >
                                 +Add Comment
                               </button>

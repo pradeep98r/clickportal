@@ -1134,7 +1134,7 @@ const GroupTotals = (props) => {
     ) {
       if (billData?.commIncluded) {
         finalVal = finalVal - billData.comm;
-      } 
+      }
     } else {
       if (billData?.commIncluded) {
         finalVal = finalVal + billData.comm;
@@ -1642,7 +1642,12 @@ const GroupTotals = (props) => {
                       billData?.cashRcvd === null ? (
                         ""
                       ) : (
-                        <p className="grouping_value">Cash Received</p>
+                        <div>
+                          <p className="grouping_value">Cash Received</p>
+                          <p className="grouping_value pt-0">
+                            {billData?.cashRcvdCmnt}
+                          </p>
+                        </div>
                       )}
                     </div>
                     <div className="col-lg-4">
