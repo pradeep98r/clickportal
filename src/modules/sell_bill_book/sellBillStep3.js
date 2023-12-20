@@ -962,7 +962,7 @@ const SellBillStep3 = (props) => {
               }, 800);
               window.setTimeout(function () {
                 navigate("/sellbillbook");
-                // window.location.reload();
+                window.location.reload();
               }, 1000);
             } else {
               console.log("from ledger step3", props.fromLedger);
