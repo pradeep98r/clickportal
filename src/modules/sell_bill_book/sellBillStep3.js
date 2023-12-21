@@ -659,7 +659,6 @@ const SellBillStep3 = (props) => {
       // Number(advancesValue)
     );
     let totalValue = grossTotal + t;
-    console.log(totalValue, grossTotal, t);
     if (includeComm) {
       if (isShown) {
         totalValue = totalValue + getTotalValue(commValue);
@@ -684,7 +683,6 @@ const SellBillStep3 = (props) => {
     } else {
       totalValue = (totalValue + getTotalValue(retcommValue)).toFixed(2);
     }
-    console.log(totalValue);
     return totalValue;
   };
   const getTotalRcble = () => {
@@ -818,7 +816,11 @@ const SellBillStep3 = (props) => {
     }
     return actualRcvd;
   };
-  const [cashCommentTextVal, setCashCommentVal] = useState("");
+  const [cashCommentTextVal, setCashCommentVal] = useState(
+    billEditItemInfo?.selectedBillInfo?.cashRcvdCmnt != ""
+      ? billEditItemInfo?.selectedBillInfo?.cashRcvdCmnt
+      : ""
+  );
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -1459,7 +1461,13 @@ const SellBillStep3 = (props) => {
         : false
       : false
   );
-  const [cashPaidCommentStatus, setCashPaidComment] = useState(false);
+  const [cashPaidCommentStatus, setCashPaidComment] = useState(
+    editStatus
+      ? billEditItemInfo?.selectedBillInfo?.cashRcvdCmnt != ""
+        ? true
+        : false
+      : false
+  );
   const addCommentClick = () => {
     setCommentShownStatus(true);
   };
