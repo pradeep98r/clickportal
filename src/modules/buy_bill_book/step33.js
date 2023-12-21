@@ -626,7 +626,11 @@ const Step33 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
-  const [cashCommentTextVal, setCashCommentVal] = useState("");
+  const [cashCommentTextVal, setCashCommentVal] = useState(
+    billEditItemInfo?.selectedBillInfo?.cashPaidCmnt != ""
+      ? billEditItemInfo?.selectedBillInfo?.cashPaidCmnt
+      : ""
+  );
   const [transTotalValue, setTransTotalValue] = useState(0);
   const [labourTotalValue, setLaborTotalValue] = useState(0);
   const [rentTotalValue, setRentTotalValue] = useState(0);
@@ -702,7 +706,7 @@ const Step33 = (props) => {
         totalValue = totalValue - getTotalValue(commValue);
       }
     }
-   
+
     if (editStatus ? billEditItem?.less : addRetComm) {
       totalValue = totalValue - getTotalValue(retcommValue);
     } else {
@@ -1588,7 +1592,13 @@ const Step33 = (props) => {
         : false
       : false
   );
-  const [cashPaidCommentStatus, setCashPaidComment] = useState(false);
+  const [cashPaidCommentStatus, setCashPaidComment] = useState(
+    editStatus
+      ? billEditItemInfo?.selectedBillInfo?.cashPaidCmnt != ""
+        ? true
+        : false
+      : false
+  );
   const addCommentClick = () => {
     setCommentShownStatus(true);
   };
