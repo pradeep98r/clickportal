@@ -3,7 +3,7 @@ import moment from "moment/moment";
 import { useSelector } from "react-redux";
 const BillViewFooter = (props) => {
   var billViewData = useSelector((state) => state.billViewInfo);
-  
+
   const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   useEffect(() => {
     setBillViewData(JSON.parse(localStorage.getItem("billData")));
@@ -12,7 +12,8 @@ const BillViewFooter = (props) => {
     <div className="row">
       <div className="col-lg-6">
         <p className="ono-footer">
-          ONO-{moment(billData?.billDate).format("DDMMYYYY")}
+          ONO-{!billData?.commShown ? billData?.comm : ""}-
+          {moment(billData?.billDate).format("DDMMYYYY")}
           -CLICK-
           {billData?.partyType === "BUYER"
             ? billData?.actualReceivable.toFixed(2)
