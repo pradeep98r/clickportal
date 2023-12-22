@@ -198,8 +198,8 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
         billData.rent +
         billData.mandiFee +
         billData.govtLevies +
-        billData.misc 
-        // billData.advance
+        billData.misc
+      // billData.advance
     );
   } else {
     t = Number(
@@ -219,36 +219,36 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   }
   var finalVal = finalValue;
   if (isNotTrader) {
-    if (includeComm) {
-      if (isShown) {
-        finalVal = finalVal - billData.comm;
-      }
+    if (billData?.commIncluded) {
+      // if (billData?.commShown) {
+      finalVal = finalVal - billData.comm;
+      // }
     }
   } else {
-    if (includeComm) {
-      if (isShown) {
-        finalVal = finalVal + billData.comm;
-      }
+    if (billData?.commIncluded) {
+      // if (billData?.commShown) {
+      finalVal = finalVal + billData.comm;
+      // }
     }
   }
 
   if (isNotTrader) {
-    if (addRetComm) {
-      if (includeRetComm) {
-        finalVal = finalVal - billData.rtComm;
+    if (!billData?.less) {
+      if (billData?.rtCommIncluded) {
+        finalVal = finalVal + billData.rtComm;
       }
     } else {
-      if (includeRetComm) {
-        finalVal = finalVal + billData.rtComm;
+      if (billData?.rtCommIncluded) {
+        finalVal = finalVal - billData.rtComm;
       }
     }
   } else {
-    if (addRetComm) {
-      if (includeRetComm) {
-        finalVal = finalVal - billData.rtComm;
+    if (!billData?.less) {
+      if (billData?.rtCommIncluded) {
+        finalVal = finalVal + billData.rtComm;
       }
     } else {
-      finalVal = finalVal + billData.rtComm;
+      finalVal = finalVal - billData.rtComm;
     }
   }
   for (var i = 0; i < billData.customFields.length; i++) {
@@ -263,12 +263,15 @@ const getFinalLedgerBalance = (billData, billSettingsData, isFarmer) => {
   if (isNotTrader) {
     return getCurrencyNumberWithSymbol(
       (Number(finalVal) + billData.outStBal).toFixed(2) -
-        Number(billData.cashPaid) - (billData?.partyType == 'BUYER' ? 0 : billData?.advance)
+        Number(billData.cashPaid) -
+        (billData?.partyType == "BUYER" ? 0 : billData?.advance)
     );
   } else {
     var cashRecieved = billData.cashRcvd === null ? 0 : billData.cashRcvd;
     return getCurrencyNumberWithSymbol(
-      (Number(finalVal) + billData.outStBal).toFixed(2) - cashRecieved - (billData?.partyType == 'BUYER' ? 0 : billData?.advance)
+      (Number(finalVal) + billData.outStBal).toFixed(2) -
+        cashRecieved -
+        (billData?.partyType == "BUYER" ? 0 : billData?.advance)
     );
   }
 };
@@ -332,7 +335,7 @@ function getAdvannceValue(billData, isFarmer) {
     ? billData?.advance === 0 || billData?.advance === null
       ? ""
       : " -" + getCurrencyNumberWithSymbol(billData?.advance)
-    : ''
+    : "";
 }
 //todo this method will be moved to common
 //   static String getIndividualTotalUnits(
@@ -539,8 +542,8 @@ export default function getBillPdfJson(billData, { isDuplicate = false }) {
         rate: getCurrencyNumberWithOutSymbol(item.rate),
         total: getCurrencyNumberWithOutSymbol(item.total),
         individualBags: getIndividualBags(item.bags),
-        manualLotId: item.mnLotId != '0' ? item.mnLotId : '',
-        subLotId: item.mnSubLotId != '0' ? item.mnSubLotId : '',
+        manualLotId: item.mnLotId != "0" ? item.mnLotId : "",
+        subLotId: item.mnSubLotId != "0" ? item.mnSubLotId : "",
         // cropSufx:item.cropSufx
       };
     }),
