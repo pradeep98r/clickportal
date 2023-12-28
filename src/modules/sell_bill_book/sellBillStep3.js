@@ -740,7 +740,9 @@ const SellBillStep3 = (props) => {
       //   finalVal = finalVal - getTotalValue(retcommValue);
       // }
     } else {
-      finalVal = finalVal - getTotalValue(retcommValue);
+      if (editStatus ? billEditItem?.rtCommIncluded : includeRetComm) {
+        finalVal = finalVal - getTotalValue(retcommValue);
+      }
     }
     for (var i = 0; i < questionsTitle.length; i++) {
       if (questionsTitle[i].field != "") {
