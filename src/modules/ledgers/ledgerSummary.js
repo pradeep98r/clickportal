@@ -267,7 +267,9 @@ const LedgerSummary = (props) => {
 
                           <td className={"col-3"}>
                             <p id="p-common">
-                              {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
+                              {item.paidRcvd
+                                ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
+                                : ""}
                             </p>
                             <p>
                               {item.advance != 0
@@ -280,7 +282,9 @@ const LedgerSummary = (props) => {
                           <td className="col-3">
                             <p id="p-common">
                               {item.tobePaidRcvd
-                                ? item.tobePaidRcvd.toFixed(2)
+                                ? getCurrencyNumberWithOutSymbol(
+                                    item.tobePaidRcvd
+                                  )
                                 : ""}
                             </p>
                           </td>
@@ -293,7 +297,9 @@ const LedgerSummary = (props) => {
                               }
                               id="p-common"
                             >
-                              {item.balance ? item.balance.toFixed(2) : 0}
+                              {item.balance
+                                ? getCurrencyNumberWithOutSymbol(item.balance)
+                                : 0}
                             </p>
                           </td>
                         </tr>
