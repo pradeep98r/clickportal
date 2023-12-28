@@ -186,10 +186,10 @@ const DetailedLedger = (props) => {
                           <p id="p-common">
                             {ledgerType == "BUYER"
                               ? item.recieved
-                                ? item.recieved.toFixed(2)
+                                ? getCurrencyNumberWithOutSymbol(item.recieved)
                                 : ""
                               : item.paid
-                              ? item.paid
+                              ? getCurrencyNumberWithOutSymbol(item.paid)
                               : ""}
                           </p>
                           <p>{item.comments}</p>
@@ -198,10 +198,12 @@ const DetailedLedger = (props) => {
                           <p id="p-common">
                             {ledgerType == "BUYER"
                               ? item.toBeRecieved
-                                ? item.toBeRecieved.toFixed(2)
+                                ? getCurrencyNumberWithOutSymbol(
+                                    item.toBeRecieved
+                                  )
                                 : ""
                               : item.toBePaid
-                              ? item.toBePaid
+                              ? getCurrencyNumberWithOutSymbol(item.toBePaid)
                               : ""}
                           </p>
                         </td>
@@ -320,10 +322,10 @@ const DetailedLedger = (props) => {
                           <p id="p-common">
                             {ledgerType == "BUYER"
                               ? item.recieved
-                                ? item.recieved.toFixed(2)
+                                ? getCurrencyNumberWithOutSymbol(item.recieved)
                                 : ""
                               : item.paid
-                              ? item.paid
+                              ? getCurrencyNumberWithOutSymbol(item.paid)
                               : ""}
                           </p>
                         </td>
@@ -331,10 +333,12 @@ const DetailedLedger = (props) => {
                           <p id="p-common">
                             {ledgerType == "BUYER"
                               ? item.toBeRecieved
-                                ? item.toBeRecieved.toFixed(2)
+                                ? getCurrencyNumberWithOutSymbol(
+                                    item.toBeRecieved
+                                  )
                                 : ""
                               : item.toBePaid
-                              ? item.toBePaid
+                              ? getCurrencyNumberWithOutSymbol(item.toBePaid)
                               : ""}
                           </p>
                         </td>
@@ -347,7 +351,9 @@ const DetailedLedger = (props) => {
                             }
                             id="p-common"
                           >
-                            {item.balance ? item.balance.toFixed(2) : 0}
+                            {item.balance
+                              ? getCurrencyNumberWithOutSymbol(item.balance)
+                              : 0}
                           </p>
                         </td>
                       </tr>

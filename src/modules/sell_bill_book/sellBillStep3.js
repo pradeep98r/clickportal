@@ -826,7 +826,7 @@ const SellBillStep3 = (props) => {
   const [rentTotalValue, setRentTotalValue] = useState(0);
   const sellBillRequestObj = {
     actualReceivable: Number(getActualRcvd()),
-    advance: Number(advancesValue),
+    // advance: Number(advancesValue),
     billDate: partnerSelectDate,
     billStatus: "COMPLETED",
     billId: billIdVal,
@@ -875,6 +875,13 @@ const SellBillStep3 = (props) => {
     timeStamp: "",
     customFields: questionsTitle,
     source: "WEB",
+    billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
+    // advBal: 0,
+    finalLedgerBal:
+      getFinalLedgerbalance() != 0
+        ? Number(getFinalLedgerbalance().toFixed(2))
+        : 0,
+    finalOutStBal: Number(getFinalOutstandingBal().toFixed(2)),
   };
   const editBillRequestObj = {
     action: "UPDATE",
@@ -921,7 +928,7 @@ const SellBillStep3 = (props) => {
 
       transporterId:
         transpoSelectedData != null ? transpoSelectedData?.transporterId : 0,
-      // billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
+      billAmt: getTotalBillAmount() != 0 ? Number(getTotalBillAmount()) : 0,
       // advBal: 0,
       finalLedgerBal:
         getFinalLedgerbalance() != 0
