@@ -133,7 +133,7 @@ const RecordPayment = (props) => {
   var endDate = tabClick.closeDate;
   const recordPayment = tabClick?.trhoughRecordPayment;
   useEffect(() => {
-    setLoading(false)
+    setLoading(false);
   }, [props.showRecordPaymentModal]);
   const getAmountVal = (e) => {
     setPaidsRcvd(
@@ -155,7 +155,6 @@ const RecordPayment = (props) => {
   };
   var billidsArray = [];
   const onSubmitRecordPayment = () => {
-    
     if (billIds.length > 0 && !fromBillViewPopup) {
       paidsRcvd = totalRecieved;
       setBillIds([]);
@@ -506,10 +505,8 @@ const RecordPayment = (props) => {
         ? ledgerData?.type
         : props.partyType;
     }
-    getLedgers(clickId, partyType).then((res) => {
+    getLedgers(clickId, partyType, "", "").then((res) => {
       if (res.data.status.type === "SUCCESS") {
-        // setLedgers(res.data.data.ledgers);
-        // setOutStAmt(res.data.data);
         if (props.allCustomTab == "all" && props.ledgerTab == "ledgersummary") {
         }
         if (props.fromPaymentHistory || fromBillViewPopup) {
@@ -586,7 +583,9 @@ const RecordPayment = (props) => {
   //Get Outstanding balance
   const getOutstandingPaybles = (clickId, partyId) => {
     getOutstandingBal(clickId, partyId).then((response) => {
-      props.setPaidRcvd(response.data.data);
+      if (response.data.data != null) {
+        props.setPaidRcvd(response.data.data.tobePaidRcvd);
+      }
     });
   };
   const showListOfBillIds = (id) => {
@@ -708,7 +707,11 @@ const RecordPayment = (props) => {
     dispatch(dateInRP(date));
     dispatch(dates(date));
   };
-
+  const handleCommentText = (e) => {
+    let text = e.target.value;
+    let value = text.slice(0, 25);
+    setComments(value);
+  };
   return (
     <div>
       <Modal
@@ -716,11 +719,13 @@ const RecordPayment = (props) => {
         close={props.closeRecordPaymentModal}
         className="record_payment_modal"
       >
-         {isLoading ? (
-            <div className="loading_styles">
-              <img src={loading} alt="my-gif" className="gif_img" />
-            </div>
-          ) : '' }
+        {isLoading ? (
+          <div className="loading_styles">
+            <img src={loading} alt="my-gif" className="gif_img" />
+          </div>
+        ) : (
+          ""
+        )}
         <div className="modal-body partner_model_body">
           <form>
             <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
@@ -920,8 +925,8 @@ const RecordPayment = (props) => {
                       {ledgerData?.type == "FARMER" ||
                       props.partyType == "SELLER" ||
                       (fromBillViewPopup && props.partyType == "FARMER")
-                        ? "Amount Paid"
-                        : "Amount Recieved"}
+                        ? "Amount Paid*"
+                        : "Amount Recieved*"}
                     </label>
                     {fromBillViewPopup ? (
                       <input
@@ -1104,7 +1109,7 @@ const RecordPayment = (props) => {
                         id="comments"
                         rows="2"
                         value={comments}
-                        onChange={(e) => setComments(e.target.value)}
+                        onChange={(e) => handleCommentText(e)}
                       ></textarea>
                     </div>
                   </div>

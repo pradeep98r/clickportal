@@ -58,7 +58,7 @@ const SelectedPartner = (props) => {
   }, []);
   const fetchPertnerData = () => {
     const obj = {
-      types: ["TRANSPORTER", "FARMER"],
+      types: ["TRANSPORTER", "FARMER", "BUYER"],
       writerId: writerId,
     };
     getAllPartnersByTypes(clickId, obj)
@@ -95,7 +95,7 @@ const SelectedPartner = (props) => {
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-       dispatch(partyOutstandingBal(response.data.data))
+       dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd))
       }
     });
   };

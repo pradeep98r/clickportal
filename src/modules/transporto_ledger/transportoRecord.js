@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
 import loading from "../../assets/images/loading.gif";
 import {
+  getLedgers,
   getOutstandingBal,
   postRecordPayment,
   updateRecordPayment,
@@ -40,11 +41,15 @@ import {
   advanceSummaryById,
   allAdvancesData,
   fromParentSelect,
+  fromTransportoRecord,
   partyOutstandingBal,
   totalAdvancesVal,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import SelectedPartner from "../advances/selectedPartner";
+import { allLedgers, outStandingBal } from "../../reducers/ledgerSummarySlice";
 const TransportoRecord = (props) => {
   const dispatch = useDispatch();
   const transpoData = useSelector((state) => state.transpoInfo);
@@ -65,13 +70,14 @@ const TransportoRecord = (props) => {
     ? viewInfo
     : transpoData?.singleTransporterObject;
   const transId = fromAdvances
-    ? fromAdvSummary ? selectedPartnerFromAdv?.partyId : selectedPartnerFromAdv?.partyId
+    ? fromAdvSummary
+      ? selectedPartnerFromAdv?.partyId
+      : selectedPartnerFromAdv?.partyId
     : transpoData?.transporterIdVal;
-    console.log(transId,"id")
   const [selectDate, setSelectDate] = useState(
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
-  const outStandingBal = advancesData?.partyOutstandingBal;
+  const outStandingBalVal = advancesData?.partyOutstandingBal;
   // const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -79,17 +85,20 @@ const TransportoRecord = (props) => {
   var fromInventoryTab = transpoData?.fromInv;
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
+  const [outBalAdvance, setOutBalAdvance] = useState(0);
   useEffect(() => {
-    if(!fromAdvSummary)
-   {
-    getOutstandingPaybles(clickId, transId);
-   }
+    if (!fromAdvSummary) {
+      getOutstandingPaybles(clickId, transId);
+    }
+    setReturnAdvanceStatus(false);
     setLoading(false);
   }, [props.showRecordPayModal]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        dispatch(partyOutstandingBal(response.data.data))
+        console.log(response.data.data);
+        dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
+        setOutBalAdvance(response.data.data.advance);
       }
     });
   };
@@ -100,6 +109,11 @@ const TransportoRecord = (props) => {
   const [comments, setComments] = useState(
     editRecordStatus ? viewInfo?.comments : ""
   );
+  const handleCommentText = (e) => {
+    let text = e.target.value;
+    let value = text.slice(0, 25);
+    setComments(value);
+  };
   const getAmountVal = (e) => {
     setPaidsRcvd(
       e.target.value
@@ -118,39 +132,78 @@ const TransportoRecord = (props) => {
     }
   };
   const onSubmitRecordPayment = () => {
+    console.log(
+      fromAdvances,
+      returnAdvanceStatus,
+      outBalAdvance,
+      paidsRcvd,
+      !fromAdvSummary,
+      !advancesData?.fromParentSelect,
+      "all values"
+    );
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
       setRequiredCondition("Amount Received cannot be empty");
     } else if (isNaN(paidsRcvd)) {
       setRequiredCondition("Invalid Amount");
-    } 
-    else if(fromAdvances){
-     if(!fromAdvSummary || !advancesData?.fromParentSelect ){
-      addRecordPayment();
-     }
-     else{
-      toast.error('Please Select Partner', {
-        toastId: "error16",
-      });
-     }
-    }
-    else if (
+    } else if (fromAdvances) {
+      if (!fromAdvSummary || !advancesData?.fromParentSelect) {
+        if (parseInt(paidsRcvd) > outBalAdvance && returnAdvanceStatus) {
+          setRequiredCondition(
+            "Entered Amount cannot be more than Outstanding Advance"
+          );
+        } else {
+          if (advanceTypeMode != "") {
+            if (paymentMode != "") {
+              addRecordPayment();
+            } else {
+              toast.error("Please Select Payment mode", {
+                toastId: "error20",
+              });
+            }
+          } else {
+            toast.error("Please Select Advance", {
+              toastId: "error19",
+            });
+          }
+        }
+      } else {
+        toast.error("Please Select Partner", {
+          toastId: "error16",
+        });
+      }
+    } else if (
       paidsRcvd.toString().trim().length !== 0 &&
       paidsRcvd != 0 &&
-      paidsRcvd <= outStandingBal &&
+      paidsRcvd <= outStandingBalVal &&
       !(paidsRcvd < 0)
     ) {
-      addRecordPayment();
-    } else if (parseInt(paidsRcvd) > outStandingBal) {
+      if (fromAdvances) {
+        if (returnAdvanceStatus) {
+          if (parseInt(paidsRcvd) > outBalAdvance) {
+            setRequiredCondition(
+              "Entered Amount cannot be more than Outstanding Advance"
+            );
+          } else {
+            addRecordPayment();
+          }
+        } else {
+          addRecordPayment();
+        }
+      } else {
+        addRecordPayment();
+      }
+    } else if (parseInt(paidsRcvd) > outStandingBalVal) {
       setRequiredCondition(
-        "Entered Amount  cannot more than Outstanding Balance"
+        "Entered Amount cannot more than Outstanding Balance"
       );
     }
   };
   const [paymentMode, setPaymentMode] = useState(
-    editRecordStatus ? viewInfo?.paymentMode : "CASH"
+    editRecordStatus ? viewInfo?.paymentMode : fromAdvances ? "" : "CASH"
   );
+  const [advanceTypeMode, setAdvanceTypeMode] = useState("");
   const addRecordPayment = async () => {
     setLoading(true);
     const addRecordData = {
@@ -194,7 +247,9 @@ const TransportoRecord = (props) => {
       date: moment(selectDate).format("YYYY-MM-DD"),
       comments: comments,
       writerId: writerId,
+      type: advanceTypeMode == "Given" ? "G" : "C",
     };
+    console.log(fromAdvances, "fromAdvances");
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
         (res) => {
@@ -202,10 +257,12 @@ const TransportoRecord = (props) => {
             toastId: "errorr12",
           });
           updateAdvances();
+
           window.setTimeout(function () {
             props.closeRecordPayModal();
             closePopup();
           }, 800);
+          fetchLedgers();
         },
         (error) => {
           toast.error(error.response.data.status.message, {
@@ -266,6 +323,8 @@ const TransportoRecord = (props) => {
 
   const updateAdvances = () => {
     getAllAdvances();
+    console.log(allCustomTab);
+    dispatch(fromTransportoRecord(true));
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {
@@ -275,6 +334,24 @@ const TransportoRecord = (props) => {
         toDate
       );
     }
+  };
+  const [advSummary, setAdvSummary] = useState([]);
+  const fetchLedgers = () => {
+    getLedgers(clickId, "SELLER", "", "")
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          console.log(res.data.data, "datt");
+          // setLoading(false);
+          if (res.data.data !== null) {
+            dispatch(outStandingBal(res.data.data));
+            dispatch(allLedgers(res.data.data.ledgers));
+          } else {
+            dispatch(allLedgers([]));
+            // dispatch(setLedgerData(null));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
   };
   const label = advancesData.selectPartnerOption;
   const getAllAdvances = () => {
@@ -288,23 +365,23 @@ const TransportoRecord = (props) => {
               );
               dispatch(allAdvancesData(filterArray));
               dispatch(advanceDataInfo(filterArray));
-            } else if(label == 'Transporters'){
+            } else if (label == "Transporters") {
               const filterArray = res.data.data.advances.filter(
                 (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
               );
               dispatch(allAdvancesData(filterArray));
               dispatch(advanceDataInfo(filterArray));
-            } else{
+            } else {
               dispatch(allAdvancesData(res.data.data.advances));
               dispatch(advanceDataInfo(res.data.data.advances));
             }
             if (res.data.data.totalAdvances != 0) {
-              dispatch(totalAdvancesVal(res.data.data.totalAdvances));
+              dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
             }
             if (res.data.data.advances.length > 0) {
-              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles))
-            } else{
-              dispatch(partyOutstandingBal(0))
+              dispatch(partyOutstandingBal(res.data.data.outStandingPaybles));
+            } else {
+              dispatch(partyOutstandingBal(0));
             }
           } else {
             dispatch(allAdvancesData([]));
@@ -317,11 +394,16 @@ const TransportoRecord = (props) => {
     getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          console.log(res.data.data, advancesData?.selectedAdvanceId);
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            setAdvSummary(res.data.data.advances);
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
           }
         }
       })
@@ -333,9 +415,13 @@ const TransportoRecord = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            setAdvSummary(res.data.data.advances);
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
           }
         }
       })
@@ -386,6 +472,16 @@ const TransportoRecord = (props) => {
       name: "IMPS",
     },
   ];
+  const advanceMethods = [
+    {
+      id: 1,
+      name: "Given",
+    },
+    {
+      id: 2,
+      name: "Collected",
+    },
+  ];
   const closePopup = () => {
     if (editRecordStatus) {
       setPaidsRcvd(viewInfo?.amount);
@@ -396,18 +492,24 @@ const TransportoRecord = (props) => {
     } else {
       setPaidsRcvd(0);
       setRequiredCondition("");
-      setPaymentMode("CASH");
+      setPaymentMode(fromAdvances ? "" : "CASH");
+      setAdvanceTypeMode("");
       setComments("");
       setSelectDate(new Date());
     }
-    if(advancesData?.fromParentSelect){
-      console.log("came to here", transId)
-      getOutstandingPaybles(clickId,transId)
-    } else{
+    if (advancesData?.fromParentSelect) {
+      getOutstandingPaybles(clickId, transId);
+    } else {
       getAllAdvances();
     }
   };
-
+  const [returnAdvanceStatus, setReturnAdvanceStatus] = useState(false);
+  const toggleStatus = (status) => {
+    setReturnAdvanceStatus(!status);
+    if (!status) {
+      getOutstandingPaybles(clickId, transId);
+    }
+  };
   return (
     <Modal
       show={props.showRecordPayModal}
@@ -507,27 +609,78 @@ const TransportoRecord = (props) => {
                 </div>
               </div>
             </div>
-            <div className="row align-items-center record_modal_row">
-              <div className="" align="left">
-                {!editRecordStatus ? (
-                  <div className="out-paybles p-0">
-                    <p id="p-tag">Outstanding Paybles</p>
-                    <p id="recieve-tag">
-                      &#8377;
-                      {outStandingBal ? outStandingBal.toFixed(2) : 0}
-                    </p>
-                  </div>
-                ) : (
-                  ""
-                )}
+            {fromAdvances ? (
+              <div className="record_modal_row">
+                <p className="payment-tag">Advance*</p>
+                {advanceMethods.map((item) => {
+                  return (
+                    <div className="form-check form-check-inline">
+                      <input
+                        className="form-check-input radioBtnVal mb-0"
+                        type="radio"
+                        // name="radio"
+                        id="inlineRadio2"
+                        value={item.name}
+                        onChange={(e) => setAdvanceTypeMode(e.target.value)}
+                        checked={advanceTypeMode === item.name}
+                        required
+                      />
+                      <label className="form-check-label" for="inlineRadio2">
+                        {item.name}
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
+            ) : (
+              ""
+            )}
+            {
+              !fromAdvances ? (
+                <div className="row align-items-center record_modal_row">
+                  <div className="" align="left">
+                    {!editRecordStatus ? (
+                      <div className="out-paybles p-0">
+                        <p id="p-tag">Outstanding Paybles</p>
+                        <p id="recieve-tag">
+                          &#8377;
+                          {outStandingBalVal ? outStandingBalVal.toFixed(2) : 0}
+                        </p>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              ) : (
+                // returnAdvanceStatus ? (
+                <div className="row align-items-center record_modal_row">
+                  <div className="" align="left">
+                    {!editRecordStatus ? (
+                      <div className="out-paybles p-0">
+                        <p id="p-tag">Outstanding Advances</p>
+                        <p id="recieve-tag" className="coloring">
+                          &#8377;
+                          {outBalAdvance ? outBalAdvance.toFixed(2) : 0}
+                        </p>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              )
+              // ) : (
+              //   ""
+              // )
+            }
+
             <div
               className="form-group record_modal_row mb-0"
               id="input_in_modal"
             >
               <label hmtlFor="amtRecieved" id="amt-tag">
-                Amount
+                Amount*
               </label>
               <input
                 className="form-cont"
@@ -543,8 +696,10 @@ const TransportoRecord = (props) => {
               <p className="text-valid">{requiredCondition}</p>
             </div>
             <div id="radios_in_modal" className="record_modal_row">
-              <p className="payment-tag">Payment Mode</p>
-              {paymentMethods.map((link) => {
+              <p className="payment-tag">
+                {fromAdvances ? "Payment Mode*" : "Payment Mode"}
+              </p>
+              {paymentMethods.map((link, i) => {
                 return (
                   <div className="form-check form-check-inline">
                     <input
@@ -556,6 +711,7 @@ const TransportoRecord = (props) => {
                       onChange={(e) => setPaymentMode(e.target.value)}
                       checked={paymentMode === link.name}
                       required
+                      tabIndex={i}
                     />
                     <label className="form-check-label" for="inlineRadio1">
                       {link.name}
@@ -564,7 +720,7 @@ const TransportoRecord = (props) => {
                 );
               })}
             </div>
-            <div id="comment_in_modal record_modal_row">
+            <div id="comment_in_modal" className="record_modal_row">
               <div className="mb-3">
                 <label
                   for="exampleFormControlTextarea1"
@@ -578,7 +734,7 @@ const TransportoRecord = (props) => {
                   id="comments"
                   rows="2"
                   value={comments}
-                  onChange={(e) => setComments(e.target.value)}
+                  onChange={(e) => handleCommentText(e)}
                 ></textarea>
               </div>
             </div>

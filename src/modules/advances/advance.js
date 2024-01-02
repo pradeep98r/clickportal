@@ -28,8 +28,11 @@ import {
   partyOutstandingBal,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
+  selectPartnerOption,
   totalAdvancesVal,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import {
   getCurrencyNumberWithOutSymbol,
@@ -66,7 +69,7 @@ const Advance = (props) => {
   const selectedPartyId = advancesData?.selectedAdvanceId;
   const fromAdvSummary = advancesData?.fromAdvanceSummary;
   const [isLoadingNew, setIsLoadingNew] = useState(false);
-  console.log(advancesData, "advancesData");
+  const selectPartnerOption1 = advancesData?.selectPartnerOption;
   const tabs = [
     {
       id: 1,
@@ -93,15 +96,21 @@ const Advance = (props) => {
   const [showDatepickerModal1, setShowDatepickerModal1] = useState(false);
   const [recordPayModalStatus, setRecordPayModalStatus] = useState(false);
   const [recordPayModal, setRecordPayModal] = useState(false);
+  const [advSummary, setAdvSummary] = useState([]);
   useEffect(() => {
+    dispatch(selectPartnerOption("all"));
     getAllAdvances();
     dispatch(allCustomTabs("all"));
     dispatch(beginDate(date));
     dispatch(closeDate(date));
     callbackFunction(date, date, "Custom");
-    console.log(allData, "useeffect all data");
   }, [props]);
   const getAllAdvances = () => {
+    var type = "ALL";
+    if (selectPartnerOption1 != null) {
+      var type =
+        selectPartnerOption1 == "Sellers" ? "FARMER" : selectPartnerOption1;
+    }
     getAdvances(clickId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -110,6 +119,7 @@ const Advance = (props) => {
             dispatch(advanceDataInfo(res.data.data.advances));
             if (res.data.data.advances.length > 0) {
               dispatch(selectedAdvanceId(res.data.data.advances[0].partyId));
+              console.log("useefffe");
               getAdvanceSummary(res.data.data.advances[0].partyId);
               dispatch(selectedPartyByAdvanceId(res.data.data.advances[0]));
               dispatch(partyOutstandingBal(res.data.data.outStandingPaybles));
@@ -127,8 +137,10 @@ const Advance = (props) => {
       })
       .catch((error) => console.log(error));
   };
+  const [searchVal, setSearchVal] = useState("");
   const handleSearch = (event) => {
     let value = event.target.value.toLowerCase();
+    setSearchVal(value);
     let result = [];
     result = allData.filter((data) => {
       if (data.mobile.includes(value)) {
@@ -147,7 +159,7 @@ const Advance = (props) => {
     if (allCustom == "custom") {
       dispatch(allCustomTabs("all"));
       setDateDisplay(false);
-      callbackFunction(date, date, "Custom");
+      // callbackFunction(date, date, "Custom");
     }
     dispatch(dateCustomStatus(true));
     dispatch(selectedAdvanceId(id));
@@ -160,9 +172,13 @@ const Advance = (props) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            setAdvSummary(res.data.data.advances);
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollected));
+            dispatch(totalGivenById(res.data.data.totalGiven));
           } else {
-            dispatch(advanceSummaryById([]));
+            dispatch(advanceSummaryById(null));
+            setAdvSummary([]);
           }
         }
         setLoading(false);
@@ -175,9 +191,13 @@ const Advance = (props) => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            setAdvSummary(res.data.data.advances);
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollected));
+            dispatch(totalGivenById(res.data.data.totalGiven));
           } else {
-            dispatch(advanceSummaryById([]));
+            dispatch(advanceSummaryById(null));
+            setAdvSummary([]);
           }
           setLoading(false);
         }
@@ -242,7 +262,7 @@ const Advance = (props) => {
   };
 
   const getAdvancesOutStbal = () => {
-    getAdvances(clickId)
+    getAdvances(clickId, selectPartnerOption1)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
@@ -266,62 +286,90 @@ const Advance = (props) => {
   };
   async function getDownloadPdf(summaryStatus) {
     setIsLoadingNew(true);
-    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
-      ledgersSummary?.beginDate,
-      ledgersSummary?.closeDate,
-      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
-    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
-    if (pdfResponse.status !== 200) {
-      console.log(pdfResponse.status, "fasl");
-      toast.error("Something went wrong", {
-        toastId: "errorr2",
-      });
-      setIsLoadingNew(false);
-      return;
-    } else {
-      console.log(pdfResponse.status, "true");
-      toast.success("Pdf Downloaded SuccessFully", {
-        toastId: "errorr2",
-      });
-      var bufferData = Buffer.from(pdfResponse.data);
-      var blob = new Blob([bufferData], { type: "application/pdf" });
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.setAttribute("download", `ADVANCES_SUMMARY.pdf`); //or any other extension
+    console.log(advancesData, "advancesData");
+    var reportsJsonBody = summaryStatus
+      ? getAdvancesSummaryJson(
+          advancesData,
+          ledgersSummary?.beginDate,
+          ledgersSummary?.closeDate,
+          ledgersSummary?.allCustomTabs
+        )
+      : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus
+      ? await getAdvancesSummaryPdf(reportsJsonBody)
+      : await generateLedSummary(reportsJsonBody);
+    if (advancesData?.advanceSummaryById.length > 0) {
+      if (pdfResponse.status !== 200) {
+        toast.error("Something went wrong", {
+          toastId: "errorr2",
+        });
+        setIsLoadingNew(false);
+        return;
+      } else {
+        toast.success("Pdf Downloaded SuccessFully", {
+          toastId: "errorr2",
+        });
+        var bufferData = Buffer.from(pdfResponse.data);
+        var blob = new Blob([bufferData], { type: "application/pdf" });
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.setAttribute("download", `ADVANCES_SUMMARY.pdf`); //or any other extension
 
-      document.body.appendChild(link);
+        document.body.appendChild(link);
+        setIsLoadingNew(false);
+        link.click();
+        // setLoading(false);
+      }
+    } else {
+      toast.error("No Data Available for Print", {
+        toastId: "errorr9",
+      });
       setIsLoadingNew(false);
-      link.click();
-      // setLoading(false);
     }
   }
   async function handleLedgerSummaryJson(summaryStatus) {
     setIsLoadingNew(true);
-    var reportsJsonBody = summaryStatus ? getAdvancesSummaryJson(advancesData,
-      ledgersSummary?.beginDate,
-      ledgersSummary?.closeDate,
-      ledgersSummary?.allCustomTabs) : getAllAdvancesJson(advancesData);
-    var pdfResponse = summaryStatus ? await getAdvancesSummaryPdf(reportsJsonBody) : await generateLedSummary(reportsJsonBody);
-    console.log(pdfResponse, "pdfResponse");
-    if (pdfResponse.status !== 200) {
-      toast.error("Something went wrong", {
-        toastId: "errorr2",
-      });
-      setIsLoadingNew(false);
-      return;
+    var reportsJsonBody = summaryStatus
+      ? getAdvancesSummaryJson(
+          advancesData,
+          ledgersSummary?.beginDate,
+          ledgersSummary?.closeDate,
+          ledgersSummary?.allCustomTabs
+        )
+      : getAllAdvancesJson(advancesData);
+    var pdfResponse = summaryStatus
+      ? await getAdvancesSummaryPdf(reportsJsonBody)
+      : await generateLedSummary(reportsJsonBody);
+    if (advancesData?.advanceSummaryById.length > 0) {
+      if (pdfResponse.status !== 200) {
+        toast.error("Something went wrong", {
+          toastId: "errorr2",
+        });
+        setIsLoadingNew(false);
+        return;
+      } else {
+        toast.success("Pdf generated SuccessFully", {
+          toastId: "errorr2",
+        });
+        var bufferData = Buffer.from(pdfResponse.data);
+        var blob = new Blob([bufferData], { type: "application/pdf" });
+        const blobUrl = URL.createObjectURL(blob);
+        setIsLoadingNew(false);
+        window.open(blobUrl, "_blank");
+      }
     } else {
-      toast.success("Pdf generated SuccessFully", {
-        toastId: "errorr2",
+      toast.error("No Data Available for Print", {
+        toastId: "errorr9",
       });
-      var bufferData = Buffer.from(pdfResponse.data);
-      var blob = new Blob([bufferData], { type: "application/pdf" });
-      const blobUrl = URL.createObjectURL(blob);
       setIsLoadingNew(false);
-      window.open(blobUrl, "_blank");
     }
   }
+  const callbackfunction = (chaild) => {
+    if (chaild) {
+      setSearchVal("");
+    }
+  };
   return (
     <div className="main_div_padding advance_empty_div">
       <div>
@@ -336,7 +384,7 @@ const Advance = (props) => {
                 <div className="col-lg-5 pl-0">
                   <div className="row">
                     <div className="col-lg-3 p-0">
-                      <SelectOptions />
+                      <SelectOptions parentcall={callbackfunction} />
                     </div>
                     <div className="col-lg-9 p-0" id="search-field">
                       <div className="d-flex justify-content-between">
@@ -344,23 +392,23 @@ const Advance = (props) => {
                           <input
                             className="form-control"
                             id="searchbar"
+                            value={searchVal}
                             placeholder="Search by Name"
                             onChange={(event) => {
                               handleSearch(event);
                             }}
                           />
                         </div>
-                      
                       </div>
                     </div>
                   </div>
                   {advancesArray.length > 0 ? (
-                    <div>
+                    <div className="ledger-table">
                       <div className="row theadr-tag p-0">
                         <th class="col-lg-1">#</th>
                         <th class="col-lg-2">Date</th>
-                        <th class="col-lg-6">Name</th>
-                        <th class="col-lg-3">Given(₹)</th>
+                        <th class="col-lg-5">Name</th>
+                        <th class="col-lg-4">Advance(₹)</th>
                       </div>
                       <div
                         className="table-scroll ledger-table advance_table"
@@ -382,15 +430,17 @@ const Advance = (props) => {
                                 >
                                   <div className="row align-items-center">
                                     <td className="col-lg-1">{index + 1}</td>
-                                    <td key={item.date} className="col-lg-2">
+                                    <td key={item.advDate} className="col-lg-2">
                                       <p className="date_ledger_val">
                                         {" "}
-                                        {moment(item.date).format("DD-MMM-YY")}
+                                        {moment(item.advDate).format(
+                                          "DD-MMM-YY"
+                                        )}
                                       </p>
                                     </td>
                                     <td
                                       key={item.partyName}
-                                      className="col-lg-6"
+                                      className="col-lg-5"
                                     >
                                       <div className="d-flex">
                                         <div className="c-img">
@@ -409,7 +459,7 @@ const Advance = (props) => {
                                           )}
                                         </div>
                                         <div>
-                                          <p className="namedtl-tag">
+                                          <p className="namedtl-tag text-left">
                                             {item.partyName}
                                           </p>
                                           <div className="d-flex align-items-center">
@@ -421,29 +471,23 @@ const Advance = (props) => {
                                                 : "Trader"}{" "}
                                               - {item.partyId}&nbsp;
                                             </p>
-                                            <p className="mobilee-tag desk_responsive">
-                                              {" | " +
-                                                getMaskedMobileNumber(
-                                                  item.mobile
-                                                )}
-                                            </p>
                                           </div>
-                                          <p className="mobilee-tag mobile_responsive">
+                                          <p className="mobilee-tag text-left">
                                             {getMaskedMobileNumber(item.mobile)}
                                           </p>
                                           <p className="address-tag">
-                                            {item.partyAddress
-                                              ? item.partyAddress
+                                            {item.addressLine
+                                              ? item.addressLine
                                               : ""}
                                           </p>
                                         </div>
                                       </div>
                                     </td>
-                                    <td className="col-lg-3" key={item.amount}>
-                                      <p className="paid-coloring">
-                                        {item.amount != 0
+                                    <td className="col-lg-4" key={item.amount}>
+                                      <p className="coloring">
+                                        {item.advBal != 0
                                           ? getCurrencyNumberWithOutSymbol(
-                                              item.amount
+                                              item.advBal
                                             )
                                           : 0}
                                       </p>
@@ -456,8 +500,8 @@ const Advance = (props) => {
                         </div>
                       </div>
                       <div className="outstanding-pay d-flex align-items-center justify-content-between">
-                        <p className="pat-tag"> Total Advances : </p>
-                        <p className="paid-coloring">
+                        <p className="pat-tag"> Outstanding Advances : </p>
+                        <p className="coloring">
                           {totalAdvances != 0
                             ? getCurrencyNumberWithSymbol(totalAdvances)
                             : 0}
@@ -465,7 +509,7 @@ const Advance = (props) => {
                       </div>
                     </div>
                   ) : (
-                    <div className="table-scroll nodata_scroll">
+                    <div className="table-scroll nodata_scroll adv_nodata">
                       <div className="row partner_no_data_widget_rows">
                         <div className="col-lg-5">
                           <div className="partner_no_data_widget">
@@ -510,8 +554,8 @@ const Advance = (props) => {
                           );
                         })}
                       </ul>
-                     <div className="d-flex">
-                     <div className="print_dwnld_icons d-flex">
+                      <div className="d-flex">
+                        <div className="print_dwnld_icons d-flex">
                           <button
                             onClick={() => {
                               getDownloadPdf(true).then();
@@ -527,14 +571,18 @@ const Advance = (props) => {
                             <img src={print} alt="img" />
                           </button>
                         </div>
-                     <button
-                        className="primary_btn add_bills_btn"
-                        onClick={recordPaymentOnClickEvent}
-                      >
-                        <img src={addbill_icon} alt="image" className="mr-2" />
-                        Record Advance
-                      </button>
-                     </div>
+                        <button
+                          className="primary_btn add_bills_btn"
+                          onClick={recordPaymentOnClickEvent}
+                        >
+                          <img
+                            src={addbill_icon}
+                            alt="image"
+                            className="mr-2"
+                          />
+                          Record Advance
+                        </button>
+                      </div>
                     </div>
                     <p
                       className={
@@ -566,7 +614,7 @@ const Advance = (props) => {
                         </button>
                       </div>
                     </div>
-                    <AdvanceSummary />
+                    <AdvanceSummary advancesSum={advSummary} />
                   </div>
                 ) : (
                   <div className="col-lg-7">
@@ -623,14 +671,14 @@ const Advance = (props) => {
           ""
         )}
       </div>
-      <div className="addIcon_div">
+      {/* <div className="addIcon_div">
         <button
           className="primary_btn add_bills_btn advance_add_btn"
           onClick={recordPaymentSummaryOnClickEvent}
         >
           <img src={addIcon} alt="image" />
         </button>
-      </div>
+      </div> */}
       <ToastContainer />
       {isLoadingNew ? (
         <div className="loading_styles loading_styles_led">

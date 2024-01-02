@@ -68,7 +68,7 @@ const Step3 = (props) => {
   const [commentext, setCommentFieldText] = useState(
     fromMultiBillViewStatus ? billEditedObject?.billInfo[0].comments : ""
   );
-  const [billIdVal, setBillIdVal] = useState(0)
+  const [billIdVal, setBillIdVal] = useState(0);
   useEffect(() => {
     $("#disable").attr("disabled", false);
     if (multiSelectPartnersArray.length > 0) {
@@ -153,8 +153,8 @@ const Step3 = (props) => {
       multiBill: true,
       partyId: 0,
       type: "BUY",
-      writerId: writerId
-    }
+      writerId: writerId,
+    };
     getGeneratedBillId(generateBillObj).then((res) => {
       setBillIdVal(res.data.data == null ? 0 : res.data.data);
     });
@@ -177,7 +177,7 @@ const Step3 = (props) => {
       Object.assign(cObj, { grossTotal: total });
       let o = { ...items[mIndex].lineItems[i] };
       Object.assign(o, {
-        cropSufx: "",
+        // cropSufx: "",
         mnLotId: 0,
         mnSubLotId: 0,
         cropDelete: false,
@@ -188,7 +188,6 @@ const Step3 = (props) => {
           : 1,
         pkgUnit: "",
       });
-      console.log(o.rateType, "rate");
       if (
         o.rateType.toLowerCase() == "kgs" ||
         o.rateType.toUpperCase() == "RATE_PER_KG"
@@ -417,6 +416,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
+      console.log(clonedObject,'edit')
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -455,6 +455,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
+      console.log(clonedObject, "clonedObject if");
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -606,7 +607,13 @@ const Step3 = (props) => {
                                             </div>
                                             <div>
                                               <p className="crops-color">
-                                                {crop.cropName}
+                                                {crop.cropSufx != null
+                                                  ? crop.cropSufx != ""
+                                                    ? crop.cropName +
+                                                      " " +
+                                                      `(${crop.cropSufx})`
+                                                    : crop.cropName
+                                                  : crop.cropName}
                                               </p>
                                               <p className="crops-color d-flex">
                                                 {qtyValues(

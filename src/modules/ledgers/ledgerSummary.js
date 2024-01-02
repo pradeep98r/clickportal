@@ -15,13 +15,15 @@ import BillView from "../buy_bill_book/billView";
 import PaymentHistoryView from "./paymentHistory";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import tick from "../../assets/images/tick.svg";
-import { fromAdvanceFeature } from "../../reducers/advanceSlice";
+import {
+  fromAdvanceBillId,
+  fromAdvanceFeature,
+} from "../../reducers/advanceSlice";
 const LedgerSummary = (props) => {
   const ledgersSummary = useSelector((state) => state.ledgerSummaryInfo);
   var partnerSummary = ledgersSummary?.ledgerSummaryInfo;
   const partyId = props.partyId;
   const ledgerSummary = partnerSummary;
-  console.log(ledgerSummary);
   const ledgerSummaryByDate = partnerSummary;
   const allCustom = props.allCustomTab;
   const ledgerTabs = props.ledgerTab;
@@ -35,7 +37,6 @@ const LedgerSummary = (props) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const billOnClickView = (billId, type, i, partyId) => {
     var bId = billId.replace("-", "").replace("C", "").replace("U", "");
-    console.log("c", bId);
     if (bId?.includes("P") || bId?.includes("D")) {
       getPaymentListById(clickId, bId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -47,6 +48,7 @@ const LedgerSummary = (props) => {
     } else if (bId?.includes("A")) {
       getAdvanceListById(clickId, bId, partyId).then((res) => {
         if (res.data.status.type === "SUCCESS") {
+          dispatch(fromAdvanceBillId(true));
           dispatch(paymentViewInfo(res.data.data));
           setShowPaymentModalStatus(true);
           setShowPaymentModal(true);
@@ -77,37 +79,39 @@ const LedgerSummary = (props) => {
       }
     }
   };
-console.log( props.dateDisplay,'dae')
   return (
     <div>
       {allCustom == "all" ? (
         <div className="ledger-table">
-           {ledgerSummary.length > 0 ? (
-          <div className="row thead-tag head_tag">
-            <th className="col-1" id="sno">
-              #
-            </th>
-            <th className="col-2">Ref ID | Date</th>
-            {ledgerType == "BUYER" ? (
-              <th className="col-3">Received(&#8377;)</th>
-            ) : (
-              <th className="col-3">Paid(&#8377;)</th>
-            )}
-            {ledgerType == "BUYER" ? (
-              <th className="col-3">To Be Received(&#8377;)</th>
-            ) : (
-              <th className="col-3">To Be Paid(&#8377;)</th>
-            )}
-            <th className="col-3">Ledger Balance(&#8377;)</th>
-          </div> ) : '' }
+          {ledgerSummary.length > 0 ? (
+            <div className="row thead-tag head_tag">
+              <th className="col-1" id="sno">
+                #
+              </th>
+              <th className="col-2">Ref ID | Date</th>
+              {ledgerType == "BUYER" ? (
+                <th className="col-3">Received(&#8377;)</th>
+              ) : (
+                <th className="col-3">Paid(&#8377;)</th>
+              )}
+              {ledgerType == "BUYER" ? (
+                <th className="col-3">To Be Received(&#8377;)</th>
+              ) : (
+                <th className="col-3">To Be Paid(&#8377;)</th>
+              )}
+              <th className="col-3">Ledger Balance(&#8377;)</th>
+            </div>
+          ) : (
+            ""
+          )}
 
-          <div
-            className={
-              props.dateDisplay ? "ledgerSummary" : "all_ledgerSummary"
-            }
-            id="scroll_style"
-          >
-            {ledgerSummary.length > 0 ? (
+          {ledgerSummary.length > 0 ? (
+            <div
+              className={
+                props.dateDisplay ? "ledgerSummary" : "all_ledgerSummary"
+              }
+              id="scroll_style"
+            >
               <table className="table table-bordered ledger-table">
                 <tbody>
                   {ledgerSummary.map((item, index) => {
@@ -145,12 +149,12 @@ console.log( props.dateDisplay,'dae')
                           </button>
                           <p>{moment(item.date).format("DD-MMM-YY")}</p>
                         </td>
+
                         <td className="col-3">
                           <p id="p-common">
-                            {item.paidRcvd
-                              ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
-                              : ""}
+                            {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
                           </p>
+                          <p>{item.comments}</p>
                         </td>
                         <td className="col-3">
                           <p id="p-common">
@@ -158,7 +162,7 @@ console.log( props.dateDisplay,'dae')
                               ? getCurrencyNumberWithOutSymbol(
                                   item.tobePaidRcvd
                                 )
-                              : ''}
+                              : ""}
                           </p>
                         </td>
                         <td className="col-3">
@@ -180,10 +184,19 @@ console.log( props.dateDisplay,'dae')
                   })}
                 </tbody>
               </table>
-            ) : (
+            </div>
+          ) : (
+            <div
+              className={
+                props.dateDisplay
+                  ? "ledgerSummary all_ledgerSummary_no_dat"
+                  : "all_ledgerSummary all_ledgerSummary_no_dat"
+              }
+              id=""
+            >
               <NoDataAvailable />
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="ledger-table">
@@ -251,15 +264,27 @@ console.log( props.dateDisplay,'dae')
                             </button>
                             <p>{moment(item.date).format("DD-MMM-YY")}</p>
                           </td>
-                          <td className="col-3">
+
+                          <td className={"col-3"}>
                             <p id="p-common">
-                              {item.paidRcvd ? item.paidRcvd.toFixed(2) : ""}
+                              {item.paidRcvd
+                                ? getCurrencyNumberWithOutSymbol(item.paidRcvd)
+                                : ""}
+                            </p>
+                            <p>
+                              {item.advance != 0
+                                ? ""
+                                : item.comments
+                                ? item.comments
+                                : ""}
                             </p>
                           </td>
                           <td className="col-3">
                             <p id="p-common">
                               {item.tobePaidRcvd
-                                ? item.tobePaidRcvd.toFixed(2)
+                                ? getCurrencyNumberWithOutSymbol(
+                                    item.tobePaidRcvd
+                                  )
                                 : ""}
                             </p>
                           </td>
@@ -272,7 +297,9 @@ console.log( props.dateDisplay,'dae')
                               }
                               id="p-common"
                             >
-                              {item.balance ? item.balance.toFixed(2) : 0}
+                              {item.balance
+                                ? getCurrencyNumberWithOutSymbol(item.balance)
+                                : 0}
                             </p>
                           </td>
                         </tr>
@@ -283,8 +310,15 @@ console.log( props.dateDisplay,'dae')
               </div>
             </div>
           ) : (
-            <div className="nodata_height">
-            <NoDataAvailable />
+            <div
+              className={
+                props.dateDisplay
+                  ? "ledgerSummary nodata_height"
+                  : "all_ledgerSummaryd nodata_height"
+              }
+              id=""
+            >
+              <NoDataAvailable />
             </div>
           )}
         </div>

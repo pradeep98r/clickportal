@@ -16,9 +16,15 @@ import {
   selectedAdvanceId,
   selectedPartyByAdvanceId,
   totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
 } from "../../reducers/advanceSlice";
 import moment from "moment";
-import { allCustomTabs, beginDate,closeDate } from "../../reducers/ledgerSummarySlice";
+import {
+  allCustomTabs,
+  beginDate,
+  closeDate,
+} from "../../reducers/ledgerSummarySlice";
 import { dateCustomStatus } from "../../reducers/billEditItemSlice";
 const colourStyles = {
   control: (provided) => ({
@@ -56,10 +62,11 @@ const colourStyles = {
     padding: "10px 0px",
   }),
 };
-const SelectOptions = () => {
+const SelectOptions = (props) => {
   const options = [
     { value: "all", label: "All" },
     { value: "sellers", label: "Sellers" },
+    { value: "buyers", label: "Buyers" },
     { value: "transporters", label: "Transporters" },
   ];
 
@@ -73,7 +80,7 @@ const SelectOptions = () => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const allCustomTab = tabClick?.allCustomTabs;
   var optionChangeStatus = false;
-//   const [optionChangeStatus, setOptionChangeStatus] = useState(false);
+  //   const [optionChangeStatus, setOptionChangeStatus] = useState(false);
   const dispatch = useDispatch();
   const getSelectedOption = (label) => {
     onClickEvent(label);
@@ -82,12 +89,13 @@ const SelectOptions = () => {
   function handleChange(option) {
     optionChangeStatus = true;
     onClickEvent(option.label);
-    dispatch(selectPartnerOption(option.label))
-    dispatch(allCustomTabs('all'))
-    console.log('handle channge',fromDate,toDate)
+    dispatch(selectPartnerOption(option.label));
+    dispatch(allCustomTabs("all"));
+    console.log("handle channge", fromDate, toDate);
     dispatch(dateCustomStatus(true));
-    dispatch(beginDate(moment(new Date()).format("YYYY-MM-DD")))
-    dispatch(closeDate(moment(new Date()).format("YYYY-MM-DD")))
+    dispatch(beginDate(moment(new Date()).format("YYYY-MM-DD")));
+    dispatch(closeDate(moment(new Date()).format("YYYY-MM-DD")));
+    props.parentcall(true);
   }
   const onClickEvent = (label) => {
     if (label == "Sellers") {
@@ -95,15 +103,23 @@ const SelectOptions = () => {
         (item) => item?.partyType?.toUpperCase() == "FARMER"
       );
       if (optionChangeStatus) {
-      getDetails(filterArray);
+        getDetails(filterArray);
+      }
+    } else if (label == "Buyers") {
+      const filterArray = partnerArray.filter(
+        (item) => item?.partyType?.toUpperCase() == "BUYER"
+      );
+      console.log(filterArray, "buyer array after selectig");
+      if (optionChangeStatus) {
+        getDetails(filterArray);
       }
     } else if (label == "Transporters") {
       const filterArray = partnerArray.filter(
         (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
       );
-      console.log(filterArray,'trans array after selectig')
+      console.log(filterArray, "trans array after selectig");
       if (optionChangeStatus) {
-      getDetails(filterArray);
+        getDetails(filterArray);
       }
     } else if (label == "All") {
       if (optionChangeStatus) {
@@ -114,15 +130,15 @@ const SelectOptions = () => {
   const getDetails = (array) => {
     // dispatch(allAdvancesData(array))
     dispatch(advanceDataInfo(array));
-    if(array.length > 0){
-    dispatch(selectedAdvanceId(array[0].partyId));
-    dispatch(selectedPartyByAdvanceId(array[0]));
-    console.log(array,allCustomTab,'get details')
-    if (allCustomTab == "all") {
-      getAdvanceSummary(array[0].partyId);
-    } else {
-      getCustomDetailedAdvances(array[0].partyId);
-    }
+    if (array.length > 0) {
+      dispatch(selectedAdvanceId(array[0].partyId));
+      dispatch(selectedPartyByAdvanceId(array[0]));
+      console.log(array, allCustomTab, "get details");
+      if (allCustomTab == "all") {
+        getAdvanceSummary(array[0].partyId);
+      } else {
+        getCustomDetailedAdvances(array[0].partyId);
+      }
     }
   };
   const getAdvanceSummary = (id) => {
@@ -131,7 +147,9 @@ const SelectOptions = () => {
         if (res.data.status.type === "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
           }
@@ -145,7 +163,9 @@ const SelectOptions = () => {
         if (res.data.status.type == "SUCCESS") {
           if (res.data.data != null) {
             dispatch(advanceSummaryById(res.data.data.advances));
-            dispatch(totalAdvancesValById(res.data.data.totalAdvances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
           } else {
             dispatch(advanceSummaryById([]));
           }

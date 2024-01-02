@@ -38,7 +38,11 @@ import {
   selectedParty,
   cropEditStatus,
 } from "../../reducers/billEditItemSlice";
-import { billViewInfo, colorthemeValue, pdfSelectedThemeData } from "../../reducers/billViewSlice";
+import {
+  billViewInfo,
+  colorthemeValue,
+  pdfSelectedThemeData,
+} from "../../reducers/billViewSlice";
 import { colorAdjustBg, getText } from "../../components/getText";
 import {
   getBillHistoryListById,
@@ -79,7 +83,7 @@ const BillView = (props) => {
   const clickId = loginData.caId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   var billViewData = useSelector((state) => state.billViewInfo);
-  const[colorThemeVal, setColorThemeVal] = useState('');
+  const [colorThemeVal, setColorThemeVal] = useState("");
   // const [billData, setBillViewData] = useState(billViewData.billViewInfo);
   const billData = billViewData?.billViewInfo;
   const [fromBillViewPopup, setFromBillViewPopup] = useState(false);
@@ -102,42 +106,63 @@ const BillView = (props) => {
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
   useEffect(() => {
-    if(pdfThemeData != null){
-      for(var i = 0; i<pdfThemeData.length; i++){
-        if(pdfThemeData[i].type == "BUY_BILL" && billData?.partyType == 'FARMER'){
-          setColorThemeVal(pdfThemeData[i] != null
-            ? (pdfThemeData[i]?.colorTheme != ""
-              ? pdfThemeData[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
-            dispatch(colorthemeValue(pdfThemeData[i] != null
-              ? (pdfThemeData[i]?.colorTheme != ""
+    if (pdfThemeData != null) {
+      console.log(pdfThemeData, billData);
+      for (var i = 0; i < pdfThemeData.length; i++) {
+        if (
+          pdfThemeData[i].type == "BUY_BILL" &&
+          billData?.partyType == "FARMER"
+        ) {
+          setColorThemeVal(
+            pdfThemeData[i] != null
+              ? pdfThemeData[i]?.colorTheme != ""
                 ? pdfThemeData[i]?.colorTheme
-                : "#16a12c")
-              : "#16a12c"));
-              localStorage.setItem('pdftheme',pdfThemeData[i])
-        }
-        else if(pdfThemeData[i].type == "SELL_BILL" && billData?.partyType == 'BUYER'){
-          setColorThemeVal(pdfThemeData[i] != null
-            ? (pdfThemeData[i]?.colorTheme != ""
-              ? pdfThemeData[i]?.colorTheme
-              : "#16a12c")
-            : "#16a12c");
-            dispatch(colorthemeValue(pdfThemeData[i] != null
-              ? (pdfThemeData[i]?.colorTheme != ""
+                : "#16a12c"
+              : "#16a12c"
+          );
+          dispatch(
+            colorthemeValue(
+              pdfThemeData[i] != null
+                ? pdfThemeData[i]?.colorTheme != ""
+                  ? pdfThemeData[i]?.colorTheme
+                  : "#16a12c"
+                : "#16a12c"
+            )
+          );
+          localStorage.setItem("pdftheme", pdfThemeData[i]);
+        } else if (
+          pdfThemeData[i].type == "SELL_BILL" &&
+          billData?.partyType == "BUYER"
+        ) {
+          setColorThemeVal(
+            pdfThemeData[i] != null
+              ? pdfThemeData[i]?.colorTheme != ""
                 ? pdfThemeData[i]?.colorTheme
-                : "#16a12c")
-              : "#16a12c"));
-              localStorage.setItem('pdftheme',pdfThemeData[i])
+                : "#16a12c"
+              : "#16a12c"
+          );
+          dispatch(
+            colorthemeValue(
+              pdfThemeData[i] != null
+                ? pdfThemeData[i]?.colorTheme != ""
+                  ? pdfThemeData[i]?.colorTheme
+                  : "#16a12c"
+                : "#16a12c"
+            )
+          );
+          localStorage.setItem("pdftheme", pdfThemeData[i]);
+        } else {
+          setColorThemeVal("#16a12c");
+          // dispatch(colorthemeValue("#16a12c"));
+          localStorage.setItem("pdftheme", null);
         }
       }
+    } else {
+      setColorThemeVal("#16a12c");
+      dispatch(colorthemeValue("#16a12c"));
+      localStorage.setItem("pdftheme", null);
     }
-    else{
-      setColorThemeVal('#16a12c');
-        dispatch(colorthemeValue('#16a12c'));
-          localStorage.setItem('pdftheme',null)
-    }
-   
+
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
     dispatch(billViewInfo(billViewData.billViewInfo));
@@ -148,7 +173,7 @@ const BillView = (props) => {
     }
     getOutstandingBal(clickId, partyId).then((response) => {
       if (response.data.data !== null) {
-        setoutBal(response.data.data);
+        setoutBal(response.data.data.tobePaidRcvd);
       }
     });
     // if (settingsDataArray != null) {
@@ -163,6 +188,21 @@ const BillView = (props) => {
     //     lightColor: lightColor !== "" ? lightColor : "#12B82E",
     //     darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
     //   };
+    // }
+    // isEnabledEditBill()
+    //  isEnabledEditBill(billDate) {
+    //   var _value = false;
+    //   if (date.isNotEmpty) {
+    //     //Due to advance feature changes as we are disabling the edit option for some time
+    //      var currentDate = DateTime.parse('2024-01-03');
+    //     var billDate = DateTime.parse(date);
+    //     if (currentDate.isSameDate(billDate)) {
+    //       _value = true;
+    //     } else if (billDate.isAfter(currentDate)) {
+    //       _value = true;
+    //     }
+    //   }
+    //   return _value;
     // }
   }, [props]);
 
@@ -186,7 +226,9 @@ const BillView = (props) => {
     var val = data / feePerUnit();
     return val;
   };
+
   const editBill = (itemVal) => {
+    editBillTim(itemVal);
     var valArr = props.fromLedger ? billViewData.billViewInfo : itemVal;
     let clonedObject = { ...valArr };
     Object.assign(clonedObject, {
@@ -199,25 +241,54 @@ const BillView = (props) => {
     });
     var arr = [];
     arr.push(clonedObject);
-    if (!props.fromLedger) {
-      $(".billView_modal").hide();
-      $(".modal-backdrop").remove();
+    if (editBillTim()) {
+      if (!props.fromLedger) {
+        $(".billView_modal").hide();
+        $(".modal-backdrop").remove();
+      }
+      dispatch(selectSteps("step3"));
+      setShowStepsModalStatus(true);
+      setShowStepsModal(true);
+      dispatch(selectBill(arr[0]));
+
+      dispatch(editStatus(true));
+      dispatch(tableEditStatus(false));
+      dispatch(billDate(new Date(billData.billDate)));
+      dispatch(
+        selectedParty(
+          billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
+        )
+      );
+
+      dispatch(cropEditStatus(false));
+    } else {
+      toast.error(
+        "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
+        {
+          toastId: "success33",
+        }
+      );
     }
-    dispatch(selectSteps("step3"));
-    setShowStepsModalStatus(true);
-    setShowStepsModal(true);
-    dispatch(selectBill(arr[0]));
-
-    dispatch(editStatus(true));
-    dispatch(tableEditStatus(false));
-    dispatch(billDate(new Date(billData.billDate)));
-    dispatch(
-      selectedParty(
-        billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
-      )
-    );
-
-    dispatch(cropEditStatus(false));
+  };
+  const editBillTim = () => {
+    var _value = false;
+    console.log(billData?.billDate, "itemVal");
+    if (billData?.billDate != "") {
+      //Due to advance feature changes as we are disabling the edit option for some time
+      var currentDate = new Date("2024-01-03");
+      var billDate = new Date(billData?.billDate);
+      console.log(currentDate, billDate);
+      if (currentDate == billDate) {
+        _value = true;
+      } else if (billDate > currentDate) {
+        console.log("hi");
+        _value = true;
+      } else if (billDate < currentDate) {
+        console.log("hloo");
+        _value = false;
+      }
+    }
+    return _value;
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
@@ -313,14 +384,24 @@ const BillView = (props) => {
   };
   let isPopupOpen = false;
   const handleCheckEvent = () => {
-    if (!isPopupOpen) {
-      // check if popup is already open
-      isPopupOpen = true; // set flag to true
-      $("#cancelBill").modal("show"); // show popup
-      setTimeout(() => {
-        // reset flag after a short delay
-        isPopupOpen = false;
-      }, 1000); // adjust delay time as needed
+    editBillTim();
+    if (editBillTim()) {
+      if (!isPopupOpen) {
+        // check if popup is already open
+        isPopupOpen = true; // set flag to true
+        $("#cancelBill").modal("show"); // show popup
+        setTimeout(() => {
+          // reset flag after a short delay
+          isPopupOpen = false;
+        }, 1000); // adjust delay time as needed
+      }
+    } else {
+      toast.error(
+        "The Cancel option has been temporarily disabled. Please reach out to mandi head's for assistance",
+        {
+          toastId: "success33",
+        }
+      );
     }
     // $("#cancelBill").modal("show");
   };
@@ -438,7 +519,7 @@ const BillView = (props) => {
   const fetchLedgers = () => {
     var partyType =
       billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType;
-    getLedgers(clickId, partyType).then((res) => {
+    getLedgers(clickId, partyType, "", "").then((res) => {
       if (res.data.status.type === "SUCCESS") {
         dispatch(allLedgers(res.data.data.ledgers));
         dispatch(outStandingBal(res.data.data));
@@ -511,14 +592,12 @@ const BillView = (props) => {
       .catch((error) => console.log(error));
   };
   const obj = {
-    name : "aparna"
-}
+    name: "aparna",
+  };
   async function getPrintPdf() {
-    console.log('pdf coming')
     setLoading(true);
     var billViewPdfJson = getBillPdfJson(billData, {});
     var pdfResponse = await getSingleBillPdf(billViewPdfJson);
-    console.log(pdfResponse, "pdfres2");
     if (pdfResponse.status !== 200) {
       toast.error("Something went wrong", {
         toastId: "errorr2",
@@ -590,15 +669,12 @@ const BillView = (props) => {
       var blob = new Blob([bufferData], { type: "application/pdf" });
       const blobUrl = URL.createObjectURL(blob);
       setShareUrl(blobUrl);
-      console.log(blobUrl,'blob')
     }
-
   }
   const closeSharePopup = () => {
     $("#shareBill").modal("hide");
   };
   function getsharePdf() {
-    console.log(shareUrl,'share')
     var xhr = new XMLHttpRequest();
     xhr.responseType = "blob";
     xhr.onload = function () {

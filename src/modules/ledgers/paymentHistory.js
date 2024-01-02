@@ -51,8 +51,20 @@ import {
   getTransporters,
 } from "../../actions/transporterService";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
-import { customDetailedAvances, getAdvances, getAdvancesSummaryById } from "../../actions/advancesService";
-import { advanceDataInfo, advanceSummaryById, allAdvancesData, totalAdvancesVal, totalAdvancesValById } from "../../reducers/advanceSlice";
+import {
+  customDetailedAvances,
+  getAdvances,
+  getAdvancesSummaryById,
+} from "../../actions/advancesService";
+import {
+  advanceDataInfo,
+  advanceSummaryById,
+  allAdvancesData,
+  totalAdvancesVal,
+  totalAdvancesValById,
+  totalCollectedById,
+  totalGivenById,
+} from "../../reducers/advanceSlice";
 const PaymentHistoryView = (props) => {
   var paymentViewData = useSelector((state) => state.paymentViewInfo);
   const advancesData = useSelector((state) => state.advanceInfo);
@@ -85,7 +97,13 @@ const PaymentHistoryView = (props) => {
     discountPercentage = ((discount / amount) * 100).toPrecision(2);
   }
   // var fromAdvances = false;
-  const [fromAdvances, setfromAdvances] = useState(fromAdvanceFeatureVal ? true : false);
+  const [fromAdvances, setfromAdvances] = useState(
+    fromAdvanceFeatureVal
+      ? true
+      : advancesData?.fromAdvanceBillId
+      ? true
+      : false
+  );
   useEffect(() => {
     if (paymentViewData?.paymentViewInfo?.refId?.includes("A")) {
       setfromAdvances(true);
@@ -164,10 +182,9 @@ const PaymentHistoryView = (props) => {
       }, 1000);
       if (fromTranspo) {
         updateTransportersData();
-      } else if(fromAdvanceFeatureVal){
+      } else if (fromAdvanceFeatureVal) {
         updateAdvances();
-      }
-      else {
+      } else {
         commonUpdateLedgers();
       }
     });
@@ -176,7 +193,7 @@ const PaymentHistoryView = (props) => {
     if (transpoData?.transporterMainTab == "inventoryLedgerSummary") {
       getInventoryData();
       paymentLedger(clickId, paymentHistoryData?.partyId);
-    } else{
+    } else {
       getTransportersData();
       paymentLedger(clickId, paymentHistoryData?.partyId);
     }
@@ -233,7 +250,7 @@ const PaymentHistoryView = (props) => {
   };
   const fetchLedgers = () => {
     var partyType = partyTypeVal == "FARMER" ? "SELLER" : partyTypeVal;
-    getLedgers(clickId, partyType).then((res) => {
+    getLedgers(clickId, partyType, "", "").then((res) => {
       if (res.data.status.type === "SUCCESS") {
         dispatch(allLedgers(res.data.data.ledgers));
         dispatch(outStandingBal(res.data.data));
@@ -242,18 +259,16 @@ const PaymentHistoryView = (props) => {
     });
   };
   const summaryData = (clickId, partyId) => {
-   
     getLedgerSummary(clickId, partyId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log('summary',res.data.data)
-          if(res.data.data != null){
+          console.log("summary", res.data.data);
+          if (res.data.data != null) {
             dispatch(businessValues(res.data.data));
-          dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
-          }
-          else{
-            dispatch(businessValues([]))
-            dispatch(ledgerSummaryInfo([]))
+            dispatch(ledgerSummaryInfo(res.data.data.ledgerSummary));
+          } else {
+            dispatch(businessValues([]));
+            dispatch(ledgerSummaryInfo([]));
           }
         }
       })
@@ -313,73 +328,82 @@ const PaymentHistoryView = (props) => {
       })
       .catch((error) => console.log(error));
   };
-const updateAdvances = () =>{
-  getAllAdvances();
-  if(allCustomTab == 'all'){
-    getAdvanceSummary();
-  }
-  else{
-    getCustomDetailedAdvances(advancesData?.selectedAdvanceId,fromDate,toDate);
-  }
-}
-const getAllAdvances = () => {
-  getAdvances(clickId)
-    .then((res) => {
-      if (res.data.status.type === "SUCCESS") {
-        if (res.data.data != null) {
-          if (label == "Sellers") {
-            const filterArray = res.data.data.advances.filter(
-              (item) => item?.partyType?.toUpperCase() == "FARMER"
-            );
-            dispatch(allAdvancesData(filterArray));
-            dispatch(advanceDataInfo(filterArray));
-          } else if(label == 'Transporters'){
-            const filterArray = res.data.data.advances.filter(
-              (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
-            );
-            dispatch(allAdvancesData(filterArray));
-            dispatch(advanceDataInfo(filterArray));
-          } else{
-            dispatch(allAdvancesData(res.data.data.advances));
-            dispatch(advanceDataInfo(res.data.data.advances));
-          }
-          if (res.data.data.totalAdvances != 0) {
-            dispatch(totalAdvancesVal(res.data.data.totalAdvances));
-          }
-        } else {
-          dispatch(allAdvancesData([]));
-        }
-      }
-    })
-    .catch((error) => console.log(error));
-};
-const getAdvanceSummary = () => {
-  getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
-    .then((res) => {
-      if (res.data.status.type === "SUCCESS") {
-        if (res.data.data != null) {
-          dispatch(advanceSummaryById(res.data.data.advances));
-          dispatch(totalAdvancesValById(res.data.data.totalAdvances));
-        } else {
-          dispatch(advanceSummaryById([]));
-        }
-      }
-    })
-    .catch((error) => console.log(error));
-}
-const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
-  customDetailedAvances(clickId,id, fromDate, toDate).then(res=>{
-    if(res.data.status.type == 'SUCCESS'){
-      if(res.data.data != null){
-        dispatch(advanceSummaryById(res.data.data.advances));
-        dispatch(totalAdvancesValById(res.data.data.totalAdvances))
-      } else{
-        dispatch(advanceSummaryById([]));
-      }
+  const updateAdvances = () => {
+    getAllAdvances();
+    if (allCustomTab == "all") {
+      getAdvanceSummary();
+    } else {
+      getCustomDetailedAdvances(
+        advancesData?.selectedAdvanceId,
+        fromDate,
+        toDate
+      );
     }
-  })
-  .catch((error) => console.log(error));
-}
+  };
+  const getAllAdvances = () => {
+    var partyType = partyTypeVal == "SELLER" ? "FARMER" : partyTypeVal;
+    getAdvances(clickId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+            if (label == "Sellers") {
+              const filterArray = res.data.data.advances.filter(
+                (item) => item?.partyType?.toUpperCase() == "FARMER"
+              );
+              dispatch(allAdvancesData(filterArray));
+              dispatch(advanceDataInfo(filterArray));
+            } else if (label == "Transporters") {
+              const filterArray = res.data.data.advances.filter(
+                (item) => item?.partyType?.toUpperCase() == "TRANSPORTER"
+              );
+              dispatch(allAdvancesData(filterArray));
+              dispatch(advanceDataInfo(filterArray));
+            } else {
+              dispatch(allAdvancesData(res.data.data.advances));
+              dispatch(advanceDataInfo(res.data.data.advances));
+            }
+            if (res.data.data.totalAdvances != 0) {
+              dispatch(totalAdvancesVal(res.data.data.totalAdvBal));
+            }
+          } else {
+            dispatch(allAdvancesData([]));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const getAdvanceSummary = () => {
+    getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
+      .then((res) => {
+        if (res.data.status.type === "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+          } else {
+            dispatch(advanceSummaryById([]));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+  const getCustomDetailedAdvances = (id, fromDate, toDate) => {
+    customDetailedAvances(clickId, id, fromDate, toDate)
+      .then((res) => {
+        if (res.data.status.type == "SUCCESS") {
+          if (res.data.data != null) {
+            dispatch(advanceSummaryById(res.data.data.advances));
+            dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+            dispatch(totalCollectedById(res.data.data.totalCollectedAdv));
+            dispatch(totalGivenById(res.data.data.totalGivenAdv));
+          } else {
+            dispatch(advanceSummaryById([]));
+          }
+        }
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <Modal
       show={props.showPaymentViewModal}
@@ -410,15 +434,14 @@ const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
                 <div className="row justify-content-between align-items-center">
                   <div className="col-lg-4 p-0">
                     <div className="d-flex align-items-center">
-                    {paymentHistoryData?.profilePic?
-                      <img
-                        src={paymentHistoryData?.profilePic}
-                        className="payment_profilepic"
-                      />:<img
-                      src={single_bill}
-                      className="payment_profilepic"
-                      />
-                      }
+                      {paymentHistoryData?.profilePic ? (
+                        <img
+                          src={paymentHistoryData?.profilePic}
+                          className="payment_profilepic"
+                        />
+                      ) : (
+                        <img src={single_bill} className="payment_profilepic" />
+                      )}
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
                         <p>
@@ -436,31 +459,42 @@ const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
                   </div>
                 </div>
               </div>
-              {paymentHistoryData.billIds.length > 0 && (
-                <div className="partyDetails">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div>
-                      <h6>Selected Bills</h6>
-                      <div className="d-flex">
-                        <h5>
-                          {"Bill IDs: " +
-                            paymentHistoryData.billIds.join(" , ")}
-                        </h5>
-                        {/* {.map((item, index) => {
+              {!fromAdvances
+                ? paymentHistoryData.billIds.length > 0 && (
+                    <div className="partyDetails">
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                          <h6>Selected Bills</h6>
+                          <div className="d-flex">
+                            <h5>
+                              {"Bill IDs: " +
+                                paymentHistoryData.billIds.join(" , ")}
+                            </h5>
+                            {/* {.map((item, index) => {
                         return <h5>{item?.join(" , ")}</h5>
                       })} */}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  )
+                : ""}
+
               <PaymentHistoryCard
                 title1="Amount"
                 title2="Payment Mode"
                 title3="Status"
-                title1Data={amount}
+                title1Data={
+                  !fromAdvances
+                    ? amount
+                    : paymentHistoryData?.collected
+                    ? paymentHistoryData?.collected
+                    : paymentHistoryData?.given
+                }
                 title2Data={paymentHistoryData?.paymentMode}
-                title3Data="-"
+                title3Data={
+                  paymentHistoryData?.collected ? "COLLECTED" : "GIVEN"
+                }
               />
               {discount > 0 ? (
                 <PaymentHistoryCard
@@ -478,7 +512,11 @@ const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <h6>Comment</h6>
-                    <h5>{paymentHistoryData?.comments}</h5>
+                    <h5>
+                      {paymentHistoryData?.comments
+                        ? paymentHistoryData?.comments
+                        : "-"}
+                    </h5>
                   </div>
                 </div>
               </div>
@@ -501,6 +539,14 @@ const getCustomDetailedAdvances =(id,fromDate,toDate)=>{
                       </div>
                     </div>
                   ) : (
+                    // <div className="action_icons">
+                    //   <div className="items_div">
+                    //     <button onClick={() => advanceDelete()}>
+                    //       <img src={cancel} alt="img" className="" />
+                    //     </button>
+                    //     <p>Delete</p>
+                    //   </div>
+                    // </div>
                     <div>
                       <div className="action_icons">
                         {paymentHistoryData.billPaid ? (

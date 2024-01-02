@@ -17,9 +17,15 @@ const SelectBags = (props) => {
   // const upTo100Kgs = 30;
   useEffect(() => {
     if (props.editBagsStatus) {
-      setQuantityVal(props.cropsArray[0].qty);
-      setInvArr(props.cropsArray[0].bags);
-      setQuantityVal(props.cropsArray[0].qty);
+      setQuantityVal(
+        props.cropsArray[0].bags != null ? props.cropsArray[0].qty : 0
+      );
+      setInvArr(
+        props.cropsArray[0].bags != null ? props.cropsArray[0].bags : []
+      );
+      setQuantityVal(
+        props.cropsArray[0].bags != null ? props.cropsArray[0].qty : 0
+      );
     }
   }, [props.show]);
   var arr = [];
@@ -29,20 +35,25 @@ const SelectBags = (props) => {
       total: 0,
       wastage: 0,
       weight: 0,
-      status: props.editBagsStatus ? 2 : 1,
+      status: 1,
       totalWeight: 0,
     };
-    console.log(props.cropsArray[0].unitValue, props.cropsArray[0]);
     props.cropsArray[0].unitValue = e.target.value;
     var k = props.editBagsStatus
-      ? e.target.value - props.cropsArray[0].bags.length
+      ? props.cropsArray[0].bags != null
+        ? e.target.value - props.cropsArray[0].bags.length
+        : e.target.value
       : e.target.value;
     for (var i = 0; i < k; i++) {
       arr.push(obj);
     }
     setQuantityVal(e.target.value);
     if (props.editBagsStatus) {
-      setInvArr([...arr, ...props.cropsArray[0].bags]);
+      if (props.cropsArray[0].bags != null) {
+        setInvArr([...arr, ...props.cropsArray[0].bags]);
+      } else {
+        setInvArr(arr);
+      }
     } else {
       setInvArr(arr);
     }
@@ -129,7 +140,6 @@ const SelectBags = (props) => {
     // var invWastage =e.target.value;;
     let updatedItem = a.map((item, index) => {
       if (i == index) {
-        console.log(a, item);
         // a[index].weight = a[index].weight - e.target.value;
         return { ...a[index], wastage: e.target.value };
       } else {
@@ -151,9 +161,11 @@ const SelectBags = (props) => {
   };
   var totalVal = 0;
   const getInvTotalValue = () => {
-    invArr.map((item) => {
-      totalVal += parseInt(item.weight || 0);
-    });
+    if (invArr.length > 0) {
+      invArr.map((item) => {
+        totalVal += parseInt(item.weight || 0);
+      });
+    }
     return totalVal;
   };
   var wastageSum = 0;
@@ -176,7 +188,10 @@ const SelectBags = (props) => {
       if (invArr[l].status == 1 || props.cropsArray[0].status == 1) {
         invArr[l].status = 1;
       } else if (props.editBagsStatus) {
-        invArr[l].status = 2;
+        if (props.cropsArray[0].bags == null) invArr[l].status = 1;
+        else {
+          invArr[l].status = 2;
+        }
       } else {
         invArr[l].status = 2;
       }
@@ -189,7 +204,7 @@ const SelectBags = (props) => {
       props.cropsArray[0].weight = totalw;
       props.cropsArray[0].qty = quantityVal;
       props.cropsArray[0].checked = false;
-        props.parentCallback(props.cropsArray, invArr, props.partyIndex);
+      props.parentCallback(props.cropsArray, invArr, props.partyIndex);
       setInvArr([]);
       setQuantityVal(0);
       props.closeBagsModal();

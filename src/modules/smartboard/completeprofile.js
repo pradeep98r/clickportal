@@ -215,11 +215,15 @@ const CompleteProfile = (props) => {
       !(contactName.trim().length < 2) &&
       !(mandiTypeField.trim().length < 2) &&
       !(mandiNameField.trim().length < 2) &&
+      shopNumberField.trim().length <= 7 &&
       marketname.trim().length !== 0 &&
       pincode.toString().trim().length !== 0 &&
       cityVal.trim().length !== 0 &&
       stateVal.trim().length !== 0 &&
-      streetVillage.trim().length !== 0
+      streetVillage.trim().length !== 0 &&
+      mandiNameField.trim().length <= 30 &&
+      contactName.trim().length <= 30 &&
+      !(alternateMobileNumber.trim().length < 10)
     ) {
       addEditMandiSetupApiCall();
     } else if (mandiNameField.trim().length === 0) {
@@ -263,10 +267,11 @@ const CompleteProfile = (props) => {
     otherMarket: marketname ? marketname : "", //"string",
     shopNum: shopNumberField,
     shortCode: mandiShortCode,
-    writerId:writerId
+    writerId: writerId,
   };
   const addEditMandiSetupApiCall = () => {
     if (mandiEditStatus == "true") {
+      console.log("edit");
       editMandiSetup(obj, clickId).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -396,7 +401,6 @@ const CompleteProfile = (props) => {
       setStateValError("");
       setPincodeLength(true);
     }
-    
   };
 
   function fillCityAndStateFields(localities) {
@@ -535,16 +539,16 @@ const CompleteProfile = (props) => {
     setContactName(mandiEditStatus == "true" ? mandiData.contactName : "");
     setPincodeLength(false);
     setMarketName(mandiEditStatus === "true" ? mandiData.marketName : "");
-    setMandiShortCodeError('');
-    setShopNumberError('');
-    setRequiredNumberField('');
+    setMandiShortCodeError("");
+    setShopNumberError("");
+    setRequiredNumberField("");
     setRequiredNumberField();
-    setContactNameError('');
-    setStreetvillageError('');
-    setPincodeError('');
-    setStateValError('');
-    setCityValError('');
-    setMandiNameError('');
+    setContactNameError("");
+    setStreetvillageError("");
+    setPincodeError("");
+    setStateValError("");
+    setCityValError("");
+    setMandiNameError("");
   };
   return (
     <Modal show={props.show} close={props.close} className="modal_popup">
