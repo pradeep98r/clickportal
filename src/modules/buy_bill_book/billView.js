@@ -189,6 +189,21 @@ const BillView = (props) => {
     //     darkerColor: darkerColor !== "" ? darkerColor : "#0C7A1E",
     //   };
     // }
+    // isEnabledEditBill()
+    //  isEnabledEditBill(billDate) {
+    //   var _value = false;
+    //   if (date.isNotEmpty) {
+    //     //Due to advance feature changes as we are disabling the edit option for some time
+    //      var currentDate = DateTime.parse('2024-01-03');
+    //     var billDate = DateTime.parse(date);
+    //     if (currentDate.isSameDate(billDate)) {
+    //       _value = true;
+    //     } else if (billDate.isAfter(currentDate)) {
+    //       _value = true;
+    //     }
+    //   }
+    //   return _value;
+    // }
   }, [props]);
 
   const dispatch = useDispatch();
@@ -211,7 +226,9 @@ const BillView = (props) => {
     var val = data / feePerUnit();
     return val;
   };
+
   const editBill = (itemVal) => {
+    editBillTim(itemVal);
     var valArr = props.fromLedger ? billViewData.billViewInfo : itemVal;
     let clonedObject = { ...valArr };
     Object.assign(clonedObject, {
@@ -224,25 +241,54 @@ const BillView = (props) => {
     });
     var arr = [];
     arr.push(clonedObject);
-    if (!props.fromLedger) {
-      $(".billView_modal").hide();
-      $(".modal-backdrop").remove();
+    if (editBillTim()) {
+      if (!props.fromLedger) {
+        $(".billView_modal").hide();
+        $(".modal-backdrop").remove();
+      }
+      dispatch(selectSteps("step3"));
+      setShowStepsModalStatus(true);
+      setShowStepsModal(true);
+      dispatch(selectBill(arr[0]));
+
+      dispatch(editStatus(true));
+      dispatch(tableEditStatus(false));
+      dispatch(billDate(new Date(billData.billDate)));
+      dispatch(
+        selectedParty(
+          billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
+        )
+      );
+
+      dispatch(cropEditStatus(false));
+    } else {
+      toast.error(
+        "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
+        {
+          toastId: "success33",
+        }
+      );
     }
-    dispatch(selectSteps("step3"));
-    setShowStepsModalStatus(true);
-    setShowStepsModal(true);
-    dispatch(selectBill(arr[0]));
-
-    dispatch(editStatus(true));
-    dispatch(tableEditStatus(false));
-    dispatch(billDate(new Date(billData.billDate)));
-    dispatch(
-      selectedParty(
-        billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
-      )
-    );
-
-    dispatch(cropEditStatus(false));
+  };
+  const editBillTim = () => {
+    var _value = false;
+    console.log(billData?.billDate, "itemVal");
+    if (billData?.billDate != "") {
+      //Due to advance feature changes as we are disabling the edit option for some time
+      var currentDate = new Date("2024-01-03");
+      var billDate = new Date(billData?.billDate);
+      console.log(currentDate, billDate);
+      if (currentDate == billDate) {
+        _value = true;
+      } else if (billDate > currentDate) {
+        console.log("hi");
+        _value = true;
+      } else if (billDate < currentDate) {
+        console.log("hloo");
+        _value = false;
+      }
+    }
+    return _value;
   };
   const cancelBill = (itemVal) => {
     $("#cancelBill").modal("hide");
@@ -338,14 +384,24 @@ const BillView = (props) => {
   };
   let isPopupOpen = false;
   const handleCheckEvent = () => {
-    if (!isPopupOpen) {
-      // check if popup is already open
-      isPopupOpen = true; // set flag to true
-      $("#cancelBill").modal("show"); // show popup
-      setTimeout(() => {
-        // reset flag after a short delay
-        isPopupOpen = false;
-      }, 1000); // adjust delay time as needed
+    editBillTim();
+    if (editBillTim()) {
+      if (!isPopupOpen) {
+        // check if popup is already open
+        isPopupOpen = true; // set flag to true
+        $("#cancelBill").modal("show"); // show popup
+        setTimeout(() => {
+          // reset flag after a short delay
+          isPopupOpen = false;
+        }, 1000); // adjust delay time as needed
+      }
+    } else {
+      toast.error(
+        "The Cancel option has been temporarily disabled. Please reach out to mandi head's for assistance",
+        {
+          toastId: "success33",
+        }
+      );
     }
     // $("#cancelBill").modal("show");
   };
