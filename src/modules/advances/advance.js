@@ -671,14 +671,14 @@ const Advance = (props) => {
           ""
         )}
       </div>
-      {/* <div className="addIcon_div">
+      <div className="addIcon_div">
         <button
           className="primary_btn add_bills_btn advance_add_btn"
           onClick={recordPaymentSummaryOnClickEvent}
         >
           <img src={addIcon} alt="image" />
         </button>
-      </div> */}
+      </div>
       <ToastContainer />
       {isLoadingNew ? (
         <div className="loading_styles loading_styles_led">

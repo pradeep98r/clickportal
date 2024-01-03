@@ -3696,7 +3696,7 @@ const GroupTotals = (props) => {
                     Final Outstanding Balance:
                   </p>
                 </div>
-                <div className="col-lg-5 p-0">
+                <div className="col-lg-4 p-0">
                   <span
                     className={
                       billData?.partyType.toUpperCase() === "FARMER"
