@@ -242,6 +242,9 @@ const SellMultiBillStep3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
+      finalLedgerBal: 0,
+      finalOutStbal: 0,
+      billAmt: 0,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
