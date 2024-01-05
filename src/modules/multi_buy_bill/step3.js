@@ -143,6 +143,9 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
+          finalLedgerBal: 0,
+          finalOutStbal: 0,
+          billAmt: 0,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -400,6 +403,7 @@ const Step3 = (props) => {
       total: getTotalExpences(),
       transportation: parseFloat(transportationVal),
     },
+    skipIndividualExpenses: true,
     groupId: billEditedObject?.groupId,
     writerId: writerId,
   };
