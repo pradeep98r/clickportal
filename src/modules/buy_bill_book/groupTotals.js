@@ -3389,8 +3389,10 @@ const GroupTotals = (props) => {
                       }
                     >
                       {totalBillAmount != 0
-                        ? billData?.billAmt != 0 || billData?.billAmt != null
-                          ? getCurrencyNumberWithSymbol(billData?.billAmt)
+                        ? billData?.billAmt != 0
+                          ? billData?.billAmt != null
+                            ? getCurrencyNumberWithSymbol(billData?.billAmt)
+                            : getCurrencyNumberWithSymbol(totalBillAmount)
                           : getCurrencyNumberWithSymbol(totalBillAmount)
                         : 0}
                     </p>
