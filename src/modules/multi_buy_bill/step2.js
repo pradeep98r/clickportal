@@ -919,74 +919,114 @@ const Step2 = (props) => {
                 return (
                   <tr>
                     <td className="col_2">
-                      <div id="scroll_style" onClick={activateSelect}>
-                        {active ? (
-                          <SelectSinglePartner indexVal={index} />
-                        ) : (
-                          <button>
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                              className="justify-content-between"
-                            >
-                              <div className="d-flex">
-                                {item.profilePic !== "" ? (
-                                  <img
-                                    src={item.profilePic}
-                                    className="icon_user"
-                                  />
-                                ) : (
-                                  <img
-                                    src={single_bill}
-                                    className="icon_user"
-                                  />
-                                )}
-                                <div
-                                  style={{
-                                    marginLeft: 5,
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <div className="d-flex user_name">
-                                    <h5 className="party_name">
-                                      {fromMultiBillViewStatus
-                                        ? partyType == "BUYER"
-                                          ? getText(item.buyerName)
-                                          : getText(item.farmerName)
-                                        : getText(item.partyName)}
-                                    </h5>
+                      {!fromMultiBillViewStatus ? (
+                        <div id="scroll_style" onClick={activateSelect}>
+                          {active ? (
+                            <SelectSinglePartner indexVal={index} />
+                          ) : (
+                            <button>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                                className="justify-content-between"
+                              >
+                                <div className="d-flex">
+                                  {item.profilePic !== "" ? (
                                     <img
-                                      src={down_arrow}
-                                      alt="down_arrow"
-                                      style={{ padding: "0px 10px" }}
+                                      src={item.profilePic}
+                                      className="icon_user"
                                     />
+                                  ) : (
+                                    <img
+                                      src={single_bill}
+                                      className="icon_user"
+                                    />
+                                  )}
+                                  <div
+                                    style={{
+                                      marginLeft: 5,
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <div className="d-flex user_name">
+                                      <h5 className="party_name">
+                                        {fromMultiBillViewStatus
+                                          ? partyType == "BUYER"
+                                            ? getText(item.buyerName)
+                                            : getText(item.farmerName)
+                                          : getText(item.partyName)}
+                                      </h5>
+                                      <img
+                                        src={down_arrow}
+                                        alt="down_arrow"
+                                        style={{ padding: "0px 10px" }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="d-flex">
+                          {item.profilePic !== "" ? (
+                            <img src={item.profilePic} className="icon_user" />
+                          ) : (
+                            <img src={single_bill} className="icon_user" />
+                          )}
+                          <div
+                            style={{
+                              marginLeft: 5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <div className="d-flex user_name">
+                              <h5 className="party_name">
+                                {partyType == "BUYER"
+                                  ? getText(item.buyerName)
+                                  : getText(item.farmerName)}
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                    <td className="col_2">
+                      <div onClick={activeTransporter}>
+                        {activeTrans ? (
+                          <SelectSinglePartner
+                            indexVal={index}
+                            fromTrans={true}
+                          />
+                        ) : (
+                          <button className="p-0">
+                            <div className="d-flex">
+                              <p>
+                                {item.transporterName != "" ? (
+                                  <div>
+                                    {" "}
+                                    <img
+                                      src={single_bill}
+                                      className="icon_user"
+                                    />
+                                    <span>{item.transporterName}</span>
+                                  </div>
+                                ) : (
+                                  "Select transporter"
+                                )}
+                              </p>
+                              <img
+                                src={down_arrow}
+                                alt="down_arrow"
+                                style={{ padding: "0px 10px" }}
+                              />
                             </div>
                           </button>
                         )}
                       </div>
-                    </td>
-                    <td className="col_2">
-                      {activeTrans ? (
-                        <SelectSinglePartner
-                          indexVal={index}
-                          fromTrans={true}
-                        />
-                      ) : (
-                        <button className="p-0">
-                          <div className="d-flex">
-                            <p onClick={activeTransporter}>
-                              Select transporter
-                            </p>
-                            <img
-                              src={down_arrow}
-                              alt="down_arrow"
-                              style={{ padding: "0px 10px" }}
-                            />
-                          </div>
-                        </button>
-                      )}
                     </td>
                     <td className="col_1">
                       <DateSelection />

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPartnerType, getText } from "../../components/getText";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
+  getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
   getMaskedMobileNumber,
 } from "../../components/getCurrencyNumber";
@@ -652,7 +653,9 @@ const Step3 = (props) => {
                         <div className="col-lg-4">
                           <div>
                             <p className="crops-color">Gross Total(₹)</p>
-                            <p className="crops-color">{item.grossTotal}</p>
+                            <p className="crops-color">
+                              {getCurrencyNumberWithOutSymbol(item.grossTotal)}
+                            </p>
                           </div>
                         </div>
                       </div>
