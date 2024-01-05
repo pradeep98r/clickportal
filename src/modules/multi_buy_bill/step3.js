@@ -143,6 +143,9 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
+          finalLedgerBal: 0,
+          finalOutStbal: 0,
+          billAmt: 0,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -261,6 +264,9 @@ const Step3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
+      finalLedgerBal: 0,
+      finalOutStbal: 0,
+      billAmt: 0,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
@@ -397,6 +403,7 @@ const Step3 = (props) => {
       total: getTotalExpences(),
       transportation: parseFloat(transportationVal),
     },
+    skipIndividualExpenses: true,
     groupId: billEditedObject?.groupId,
     writerId: writerId,
   };
@@ -416,7 +423,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
-      console.log(clonedObject,'edit')
+      console.log(clonedObject, "edit");
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {

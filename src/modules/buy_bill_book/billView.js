@@ -851,32 +851,41 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      <div className="items_div">
-                        <button
-                          onClick={() =>
-                            historyData(billData?.billId, billData?.partyType)
-                          }
-                        >
-                          <img src={history_icon} alt="img" />
-                        </button>
-                        <p>History</p>
-                      </div>
-                      <div className="items_div">
-                        <button
-                          onClick={() => {
-                            recordPaymentOnClickEvent(billData);
-                          }}
-                        >
-                          <img src={pay_icon} alt="img" />
-                        </button>
-                        <p>Pay</p>
-                      </div>
-                      <div className="items_div">
-                        <button onClick={() => editBill(billData)}>
-                          <img src={edit} alt="img" />
-                        </button>
-                        <p>Edit</p>
-                      </div>
+                      {billData?.groupId != 0 ? (
+                        ""
+                      ) : (
+                        <div>
+                          <div className="items_div">
+                            <button
+                              onClick={() =>
+                                historyData(
+                                  billData?.billId,
+                                  billData?.partyType
+                                )
+                              }
+                            >
+                              <img src={history_icon} alt="img" />
+                            </button>
+                            <p>History</p>
+                          </div>
+                          <div className="items_div">
+                            <button
+                              onClick={() => {
+                                recordPaymentOnClickEvent(billData);
+                              }}
+                            >
+                              <img src={pay_icon} alt="img" />
+                            </button>
+                            <p>Pay</p>
+                          </div>
+                          <div className="items_div">
+                            <button onClick={() => editBill(billData)}>
+                              <img src={edit} alt="img" />
+                            </button>
+                            <p>Edit</p>
+                          </div>
+                        </div>
+                      )}
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -907,12 +916,16 @@ const BillView = (props) => {
                         </button>
                         <p>Download</p>
                       </div>
-                      <div className="items_div">
-                        <button onClick={() => handleCheckEvent()}>
-                          <img src={cancel} alt="img" className="" />
-                        </button>
-                        <p>Cancel</p>
-                      </div>
+                      {billData.groupId != 0 ? (
+                        ''
+                      ) : (
+                        <div className="items_div">
+                          <button onClick={() => handleCheckEvent()}>
+                            <img src={cancel} alt="img" className="" />
+                          </button>
+                          <p>Cancel</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

@@ -90,6 +90,7 @@ const SellMultiBillStep3 = (props) => {
               multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
                 ? multiSelectPartnersArray1[i]?.cashPaid
                 : 0,
+            CashCmnt: "",
             cashRcvd:
               multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "BUYER"
                 ? multiSelectPartnersArray1[i]?.cashRcvd
@@ -124,6 +125,10 @@ const SellMultiBillStep3 = (props) => {
             totalPayRecieevable: multiSelectPartnersArray1[i]?.totalReceivable,
             transportation: multiSelectPartnersArray1[i]?.transportation,
             transporterId: multiSelectPartnersArray1[i]?.transporterId,
+            finalLedgerBal: 0,
+            finalOutStbal: 0,
+            billAmt: 0,
+            advBal: 0,
           },
           billId: multiSelectPartnersArray1[i]?.billId,
           billType:
@@ -242,6 +247,9 @@ const SellMultiBillStep3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
+      finalLedgerBal: 0,
+      finalOutStbal: 0,
+      billAmt: 0,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
@@ -379,6 +387,7 @@ const SellMultiBillStep3 = (props) => {
       transportation: parseFloat(transportationVal),
     },
     groupId: billEditedObject?.groupId,
+    // skipIndividualExpenses: true,
     writerId: writerId,
   };
   // post bill request api call
