@@ -1006,14 +1006,18 @@ const Step2 = (props) => {
                             <div className="d-flex">
                               <p>
                                 {item.transporterName != "" ? (
-                                  <div>
-                                    {" "}
-                                    <img
-                                      src={single_bill}
-                                      className="icon_user"
-                                    />
-                                    <span>{item.transporterName}</span>
-                                  </div>
+                                  item.transporterName != null ? (
+                                    <div>
+                                      {" "}
+                                      <img
+                                        src={single_bill}
+                                        className="icon_user"
+                                      />
+                                      <span>{item.transporterName}</span>
+                                    </div>
+                                  ) : (
+                                    "Select transporter"
+                                  )
                                 ) : (
                                   "Select transporter"
                                 )}
