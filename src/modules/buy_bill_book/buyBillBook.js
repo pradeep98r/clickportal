@@ -753,23 +753,25 @@ function BuyBillBook() {
                                                           </p>
                                                         </div>
                                                       </div>
-                                                      <div className="row d-flex flex-end">
-                                                        <div className="col-lg-4">
-                                                          <p>
-                                                            Total Expenses :
-                                                          </p>
+                                                      {bill?.totalExpenses !=
+                                                      0 ? (
+                                                        <div className="row d-flex flex-end">
+                                                          <div className="col-lg-4">
+                                                            <p>
+                                                              Total Expenses :
+                                                            </p>
+                                                          </div>
+                                                          <div className="col-lg-3">
+                                                            <p className="payble_text">
+                                                              {getCurrencyNumberWithSymbol(
+                                                                bill?.totalExpenses
+                                                              )}
+                                                            </p>
+                                                          </div>
                                                         </div>
-                                                        <div className="col-lg-3">
-                                                          <p className="payble_text">
-                                                            {bill?.totalExpenses !=
-                                                            0
-                                                              ? getCurrencyNumberWithSymbol(
-                                                                  bill?.totalExpenses
-                                                                )
-                                                              : 0}
-                                                          </p>
-                                                        </div>
-                                                      </div>
+                                                      ) : (
+                                                        ""
+                                                      )}
                                                       <div className="row d-flex flex-end">
                                                         <div className="col-lg-4">
                                                           <p>COGS :</p>

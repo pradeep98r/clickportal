@@ -242,33 +242,40 @@ const BillView = (props) => {
     var arr = [];
     arr.push(clonedObject);
     if (editBillTim()) {
-      if (!props.fromLedger) {
-        $(".billView_modal").hide();
-        $(".modal-backdrop").remove();
-      }
-      dispatch(selectSteps("step3"));
-      setShowStepsModalStatus(true);
-      setShowStepsModal(true);
-      dispatch(selectBill(arr[0]));
-
-      dispatch(editStatus(true));
-      dispatch(tableEditStatus(false));
-      dispatch(billDate(new Date(billData.billDate)));
-      dispatch(
-        selectedParty(
-          billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
-        )
-      );
-
-      dispatch(cropEditStatus(false));
+      editEvent(arr);
     } else {
+      // if (billData?.advance > 0) {
       toast.error(
         "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
         {
           toastId: "success33",
         }
       );
+      // } else {
+      //   editEvent(arr);
+      // }
     }
+  };
+  const editEvent = (arr) => {
+    if (!props.fromLedger) {
+      $(".billView_modal").hide();
+      $(".modal-backdrop").remove();
+    }
+    dispatch(selectSteps("step3"));
+    setShowStepsModalStatus(true);
+    setShowStepsModal(true);
+    dispatch(selectBill(arr[0]));
+
+    dispatch(editStatus(true));
+    dispatch(tableEditStatus(false));
+    dispatch(billDate(new Date(billData.billDate)));
+    dispatch(
+      selectedParty(
+        billData?.partyType == "FARMER" ? "SELLER" : billData?.partyType
+      )
+    );
+
+    dispatch(cropEditStatus(false));
   };
   const editBillTim = () => {
     var _value = false;
@@ -284,7 +291,6 @@ const BillView = (props) => {
         console.log("hi");
         _value = true;
       } else if (billDate < currentDate) {
-        console.log("hloo");
         _value = false;
       }
     }
@@ -386,24 +392,32 @@ const BillView = (props) => {
   const handleCheckEvent = () => {
     editBillTim();
     if (editBillTim()) {
-      if (!isPopupOpen) {
-        // check if popup is already open
-        isPopupOpen = true; // set flag to true
-        $("#cancelBill").modal("show"); // show popup
-        setTimeout(() => {
-          // reset flag after a short delay
-          isPopupOpen = false;
-        }, 1000); // adjust delay time as needed
-      }
+      cancelEvent();
     } else {
+      console.log(billData?.advance, "billData?.advance");
+      // if (billData?.advance > 0) {
       toast.error(
         "The Cancel option has been temporarily disabled. Please reach out to mandi head's for assistance",
         {
           toastId: "success33",
         }
       );
+      // } else {
+      //   cancelEvent();
+      // }
     }
     // $("#cancelBill").modal("show");
+  };
+  const cancelEvent = () => {
+    if (!isPopupOpen) {
+      // check if popup is already open
+      isPopupOpen = true; // set flag to true
+      $("#cancelBill").modal("show"); // show popup
+      setTimeout(() => {
+        // reset flag after a short delay
+        isPopupOpen = false;
+      }, 1000); // adjust delay time as needed
+    }
   };
   const closePopup = () => {
     $("#cancelBill").modal("hide");
@@ -837,32 +851,35 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      <div className="items_div">
-                        <button
-                          onClick={() =>
-                            historyData(billData?.billId, billData?.partyType)
-                          }
-                        >
-                          <img src={history_icon} alt="img" />
-                        </button>
-                        <p>History</p>
+                      <div>
+                        <div className="items_div">
+                          <button
+                            onClick={() =>
+                              historyData(billData?.billId, billData?.partyType)
+                            }
+                          >
+                            <img src={history_icon} alt="img" />
+                          </button>
+                          <p>History</p>
+                        </div>
+                        <div className="items_div">
+                          <button
+                            onClick={() => {
+                              recordPaymentOnClickEvent(billData);
+                            }}
+                          >
+                            <img src={pay_icon} alt="img" />
+                          </button>
+                          <p>Pay</p>
+                        </div>
+                        <div className="items_div">
+                          <button onClick={() => editBill(billData)}>
+                            <img src={edit} alt="img" />
+                          </button>
+                          <p>Edit</p>
+                        </div>
                       </div>
-                      <div className="items_div">
-                        <button
-                          onClick={() => {
-                            recordPaymentOnClickEvent(billData);
-                          }}
-                        >
-                          <img src={pay_icon} alt="img" />
-                        </button>
-                        <p>Pay</p>
-                      </div>
-                      <div className="items_div">
-                        <button onClick={() => editBill(billData)}>
-                          <img src={edit} alt="img" />
-                        </button>
-                        <p>Edit</p>
-                      </div>
+
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -893,12 +910,16 @@ const BillView = (props) => {
                         </button>
                         <p>Download</p>
                       </div>
-                      <div className="items_div">
-                        <button onClick={() => handleCheckEvent()}>
-                          <img src={cancel} alt="img" className="" />
-                        </button>
-                        <p>Cancel</p>
-                      </div>
+                      {billData.groupId != 0 ? (
+                        ""
+                      ) : (
+                        <div className="items_div">
+                          <button onClick={() => handleCheckEvent()}>
+                            <img src={cancel} alt="img" className="" />
+                          </button>
+                          <p>Cancel</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

@@ -3390,7 +3390,9 @@ const GroupTotals = (props) => {
                     >
                       {totalBillAmount != 0
                         ? billData?.billAmt != 0
-                          ? getCurrencyNumberWithSymbol(billData?.billAmt)
+                          ? billData?.billAmt != null
+                            ? getCurrencyNumberWithSymbol(billData?.billAmt)
+                            : getCurrencyNumberWithSymbol(totalBillAmount)
                           : getCurrencyNumberWithSymbol(totalBillAmount)
                         : 0}
                     </p>
@@ -3517,7 +3519,9 @@ const GroupTotals = (props) => {
                     }}
                   >
                     {billData?.finalLedgerBal != 0
-                      ? getCurrencyNumberWithSymbol(billData?.finalLedgerBal)
+                      ? billData?.finalLedgerBal != null
+                        ? getCurrencyNumberWithSymbol(billData?.finalLedgerBal)
+                        : getCurrencyNumberWithSymbol(getFinalLedgerbalance())
                       : getCurrencyNumberWithSymbol(getFinalLedgerbalance())}
                   </span>
                 </div>
@@ -3707,7 +3711,9 @@ const GroupTotals = (props) => {
                     }}
                   >
                     {billData?.finalOutStBal != 0
-                      ? getCurrencyNumberWithSymbol(billData?.finalOutStBal)
+                      ? billData?.finalOutStBal != null
+                        ? getCurrencyNumberWithSymbol(billData?.finalOutStBal)
+                        : getCurrencyNumberWithSymbol(getFinalOutBalance())
                       : getCurrencyNumberWithSymbol(getFinalOutBalance())}
                   </span>
                 </div>

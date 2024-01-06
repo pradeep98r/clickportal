@@ -84,12 +84,13 @@ const SellMultiBillStep3 = (props) => {
           billAttributes: {
             actualPayRecieevable:
               multiSelectPartnersArray1[i]?.actualReceivable,
-            advance: multiSelectPartnersArray1[i]?.advance,
+            // advance: multiSelectPartnersArray1[i]?.advance,
             billDate: multiSelectPartnersArray1[i]?.billDate,
             cashPaid:
               multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
                 ? multiSelectPartnersArray1[i]?.cashPaid
                 : 0,
+            CashCmnt: "",
             cashRcvd:
               multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "BUYER"
                 ? multiSelectPartnersArray1[i]?.cashRcvd
@@ -124,6 +125,14 @@ const SellMultiBillStep3 = (props) => {
             totalPayRecieevable: multiSelectPartnersArray1[i]?.totalReceivable,
             transportation: multiSelectPartnersArray1[i]?.transportation,
             transporterId: multiSelectPartnersArray1[i]?.transporterId,
+            finalLedgerBal:
+              multiSelectPartnersArray1[i].billAmt +
+              multiSelectPartnersArray1[i].outStBal,
+            finalOutStBal:
+              multiSelectPartnersArray1[i].finalLedgerBal -
+              multiSelectPartnersArray1[i]?.cashRcvd,
+            billAmt: multiSelectPartnersArray1[i].grossTotal,
+            advBal: 0,
           },
           billId: multiSelectPartnersArray1[i]?.billId,
           billType:
@@ -230,7 +239,7 @@ const SellMultiBillStep3 = (props) => {
       less: true,
       mandiFee: 0,
       misc: 0,
-      outStBal: 0,
+      outStBal: fromMultiBillViewStatus ? items[mIndex].outStBal : 0,
       paidTo: 0,
       rent: 0,
       rtComm: 0,
@@ -242,6 +251,11 @@ const SellMultiBillStep3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
+      finalLedgerBal: fromMultiBillViewStatus
+        ? items[mIndex].finalLedgerBal
+        : 0,
+      finalOutStBal: fromMultiBillViewStatus ? items[mIndex].finalOutStBal : 0,
+      billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
@@ -379,6 +393,7 @@ const SellMultiBillStep3 = (props) => {
       transportation: parseFloat(transportationVal),
     },
     groupId: billEditedObject?.groupId,
+    // skipIndividualExpenses: true,
     writerId: writerId,
   };
   // post bill request api call
@@ -396,6 +411,7 @@ const SellMultiBillStep3 = (props) => {
         return entry;
       });
       let clonedObject = { ...billObj };
+      console.log(billObj, "billObj");
       clonedObject = { ...clonedObject, billsInfo: arrMain };
       editMultiBuyBill(clonedObject).then(
         (response) => {

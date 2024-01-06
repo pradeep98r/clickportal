@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPartnerType, getText } from "../../components/getText";
 import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
+  getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
   getMaskedMobileNumber,
 } from "../../components/getCurrencyNumber";
@@ -44,6 +45,7 @@ const Step3 = (props) => {
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
+  console.log(multiSelectPartnersArray, "multiSelectPartnersArray");
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -143,6 +145,16 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
+          finalLedgerBal:
+            multiSelectPartnersArray1[i].billAmt +
+            multiSelectPartnersArray1[i].outStBal,
+          finalOutStBal:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              ? multiSelectPartnersArray1[i].finalLedgerBal -
+                multiSelectPartnersArray1[i].cashPaid
+              : multiSelectPartnersArray1[i].finalLedgerBal -
+                multiSelectPartnersArray1[i].cashRcvd,
+          billAmt: multiSelectPartnersArray1[i].grossTotal,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -215,6 +227,7 @@ const Step3 = (props) => {
       // if (o.status != 0) {
       lineitemsArray = [...lineitemsArray, mergedObj];
       // }
+      console.log(lineitemsArray, "lineitemsArray");
       cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
     }
@@ -261,6 +274,9 @@ const Step3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
+      finalLedgerBal: 0,
+      finalOutStBal: 0,
+      billAmt: 0,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
@@ -397,6 +413,7 @@ const Step3 = (props) => {
       total: getTotalExpences(),
       transportation: parseFloat(transportationVal),
     },
+    skipIndividualExpenses: true,
     groupId: billEditedObject?.groupId,
     writerId: writerId,
   };
@@ -416,7 +433,7 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
-      console.log(clonedObject,'edit')
+      console.log(clonedObject, "edit");
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -645,7 +662,9 @@ const Step3 = (props) => {
                         <div className="col-lg-4">
                           <div>
                             <p className="crops-color">Gross Total(₹)</p>
-                            <p className="crops-color">{item.grossTotal}</p>
+                            <p className="crops-color">
+                              {getCurrencyNumberWithOutSymbol(item.grossTotal)}
+                            </p>
                           </div>
                         </div>
                       </div>

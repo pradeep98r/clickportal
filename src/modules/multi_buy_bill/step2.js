@@ -79,7 +79,9 @@ const Step2 = (props) => {
     //   obj1.rateType.toUpperCase() == "RATE_PER_UNIT") ||
     (obj1.qtyUnit.toLowerCase() == "loads" &&
       obj1.rateType.toUpperCase() == "RATE_PER_UNIT")
-      ? (obj1.qtyUnit.toLowerCase() == 'pieces' ? (val = (obj1.qty - obj1.wastage) * obj1.rate) : (val = (obj1.weight - obj1.wastage) * obj1.rate))
+      ? obj1.qtyUnit.toLowerCase() == "pieces"
+        ? (val = (obj1.qty - obj1.wastage) * obj1.rate)
+        : (val = (obj1.weight - obj1.wastage) * obj1.rate)
       : (val = (obj1.qty - obj1.wastage) * obj1.rate);
     let updatedItem3 = multiSelectPartnersArray[mIndex].lineItems.map(
       (item, i) => {
@@ -416,7 +418,7 @@ const Step2 = (props) => {
               : cIndex != -1
               ? getUnitVal(qSetting, cIndex).toUpperCase()
               : "CRATES",
-              cropSufx: "",
+          cropSufx: "",
         });
       });
       setCropsData(response.data.data);
@@ -535,8 +537,11 @@ const Step2 = (props) => {
                 : cropData[i].qty,
             weight:
               cropData[i].rateType.toUpperCase() == "RATE_PER_UNIT" ||
-              cropData[i].rateType.toUpperCase() ==
-                cropData[i].qtyUnit.toUpperCase()
+              (defaultUnitTypeVal == "unit_kg"
+                ? "KGS"
+                : cIndex != -1
+                ? getQuantityUnit(qSetting, cIndex)
+                : e.target.value) == e.target.value
                 ? 0
                 : cropData[i].weight,
           };
@@ -549,7 +554,7 @@ const Step2 = (props) => {
         return { ...cropData[i] };
       }
     });
-
+    console.log(updatedItemList, defaultUnitTypeVal, cIndex, "updatedItemList");
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
@@ -689,7 +694,7 @@ const Step2 = (props) => {
   };
   const getCropSuffix = (id, index, mIndex, cropitem) => (e) => {
     let clonedArray = [...multiSelectPartnersArray];
-    var val = e.target.value
+    var val = e.target.value;
     if (e.target.value.length > 30) {
       toast.error("Suffix should be max 30 characters", {
         toastId: "error10",
@@ -889,151 +894,208 @@ const Step2 = (props) => {
       <div className="main_div_padding">
         {multiSelectPartnersArray.length > 0 && (
           <div className="step2_table_div">
-           
-          <table
-            className="table-bordered step2_table table_view"
-            id="scroll_style"
-          >
-            <tr className="head_fix">
-              <th className="col_2">{partyType.toUpperCase() == "BUYER" ? 'Buyer' : 'Seller'}</th>
-              <th className="col_2">Transporter</th>
-              <th className="col_1">Date</th>
-              <th className="p-0 extra_border">
-                <tr className="extra_border">
-                  <th className="col_2">Crop</th>
-                  <th className="col_1">Unit type</th>
-                  <th className="col_1">Rate type</th>
-                  <th className="col_1">Number of Units</th>
-                  <th className="col_1">Total Weight</th>
-                  <th className="col_1">individual weights</th>
-                  <th className="col_1">Wastage</th>
-                  <th className="col_1">Rate (₹)</th>
-                  <th className="col_3">Total (₹)</th>
-                </tr>
-              </th>
-            </tr>
-            {multiSelectPartnersArray.map((item, index) => {
-              return (
-                <tr>
-                  <td className="col_2">
-                    <div id="scroll_style" onClick={activateSelect}>
-                      {active ? (
-                        <SelectSinglePartner indexVal={index} />
-                      ) : (
-                        <button>
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                            className="justify-content-between"
-                          >
-                            <div className="d-flex">
-                              {item.profilePic !== "" ? (
-                                <img
-                                  src={item.profilePic}
-                                  className="icon_user"
-                                />
-                              ) : (
-                                <img src={single_bill} className="icon_user" />
-                              )}
+            <table
+              className="table-bordered step2_table table_view"
+              id="scroll_style"
+            >
+              <tr className="head_fix">
+                <th className="col_2">
+                  {partyType.toUpperCase() == "BUYER" ? "Buyer" : "Seller"}
+                </th>
+                <th className="col_2">Transporter</th>
+                <th className="col_1">Date</th>
+                <th className="p-0 extra_border">
+                  <tr className="extra_border">
+                    <th className="col_2">Crop</th>
+                    <th className="col_1">Unit type</th>
+                    <th className="col_1">Rate type</th>
+                    <th className="col_1">Number of Units</th>
+                    <th className="col_1">Total Weight</th>
+                    <th className="col_1">individual weights</th>
+                    <th className="col_1">Wastage</th>
+                    <th className="col_1">Rate (₹)</th>
+                    <th className="col_3">Total (₹)</th>
+                  </tr>
+                </th>
+              </tr>
+              {multiSelectPartnersArray.map((item, index) => {
+                return (
+                  <tr>
+                    <td className="col_2">
+                      {!fromMultiBillViewStatus ? (
+                        <div id="scroll_style" onClick={activateSelect}>
+                          {active ? (
+                            <SelectSinglePartner indexVal={index} />
+                          ) : (
+                            <button>
                               <div
-                                style={{ marginLeft: 5, alignItems: "center" }}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                                className="justify-content-between"
                               >
-                                <div className="d-flex user_name">
-                                  <h5 className="party_name">
-                                    {fromMultiBillViewStatus
-                                      ? partyType == "BUYER"
-                                        ? getText(item.buyerName)
-                                        : getText(item.farmerName)
-                                      : getText(item.partyName)}
-                                  </h5>
-                                  <img
-                                    src={down_arrow}
-                                    alt="down_arrow"
-                                    style={{ padding: "0px 10px" }}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                  <td className="col_2">
-                    {activeTrans ? (
-                      <SelectSinglePartner indexVal={index} fromTrans={true} />
-                    ) : (
-                      <button className="p-0">
-                        <div className="d-flex">
-                          <p onClick={activeTransporter}>Select transporter</p>
-                          <img
-                            src={down_arrow}
-                            alt="down_arrow"
-                            style={{ padding: "0px 10px" }}
-                          />
-                        </div>
-                      </button>
-                    )}
-                  </td>
-                  <td className="col_1">
-                    <DateSelection />
-                  </td>
-                  <td className="p-0 extra_border">
-                    {multiSelectPartnersArray[index].lineItems.length > 0 &&
-                      multiSelectPartnersArray[index].lineItems.map(
-                        (crop, i) => {
-                          return Object.keys(
-                            multiSelectPartnersArray[index].lineItems[i]
-                          ).length != 0 &&
-                            multiSelectPartnersArray[index].lineItems[i]
-                              .cropName != "" ? (
-                            <tr className="extra_border">
-                              <td className="col_2 ">
-                                {!multiSelectPartnersArray[index].lineItems[i]
-                                  .activeSearch ||
-                                multiSelectPartnersArray[index].lineItems[i]
-                                  .displayStat ? (
-                                  // !activeSearch || displayStat?
-
-                                  <div>
-                                    <div
-                                    className="table_crop_div flex_class mr-0"
-                                    onClick={() => {
-                                      activeSearchCrop(
-                                        multiSelectPartnersArray[index]
-                                          .lineItems,
-                                        i,
-                                        index
-                                      );
+                                <div className="d-flex">
+                                  {item.profilePic !== "" ? (
+                                    <img
+                                      src={item.profilePic}
+                                      className="icon_user"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={single_bill}
+                                      className="icon_user"
+                                    />
+                                  )}
+                                  <div
+                                    style={{
+                                      marginLeft: 5,
+                                      alignItems: "center",
                                     }}
                                   >
-                                    <img
-                                      src={
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].imageUrl
-                                      }
-                                      className="flex_class mr-2"
-                                    />
-                                    <p className="m-0">
-                                      {
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].cropName
-                                      }
-                                    </p>
-                                
+                                    <div className="d-flex user_name">
+                                      <h5 className="party_name">
+                                        {fromMultiBillViewStatus
+                                          ? partyType == "BUYER"
+                                            ? getText(item.buyerName)
+                                            : getText(item.farmerName)
+                                          : getText(item.partyName)}
+                                      </h5>
+                                      <img
+                                        src={down_arrow}
+                                        alt="down_arrow"
+                                        style={{ padding: "0px 10px" }}
+                                      />
+                                    </div>
                                   </div>
-                                     <p>
-                                     {cropSufixStatus ? (
+                                </div>
+                              </div>
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="d-flex">
+                          {item.profilePic !== "" ? (
+                            <img src={item.profilePic} className="icon_user" />
+                          ) : (
+                            <img src={single_bill} className="icon_user" />
+                          )}
+                          <div
+                            style={{
+                              marginLeft: 5,
+                              alignItems: "center",
+                            }}
+                          >
+                            <div className="d-flex user_name">
+                              <h5 className="party_name">
+                                {partyType == "BUYER"
+                                  ? getText(item.buyerName)
+                                  : getText(item.farmerName)}
+                              </h5>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </td>
+                    <td className="col_2">
+                      <div onClick={activeTransporter}>
+                        {activeTrans ? (
+                          <SelectSinglePartner
+                            indexVal={index}
+                            fromTrans={true}
+                          />
+                        ) : (
+                          <button className="p-0">
+                            <div className="d-flex">
+                              <p>
+                                {item.transporterName != "" ? (
+                                  item.transporterName != null ? (
+                                    <div>
+                                      {" "}
+                                      <img
+                                        src={single_bill}
+                                        className="icon_user"
+                                      />
+                                      <span>{item.transporterName}</span>
+                                    </div>
+                                  ) : (
+                                    "Select transporter"
+                                  )
+                                ) : (
+                                  "Select transporter"
+                                )}
+                              </p>
+                              <img
+                                src={down_arrow}
+                                alt="down_arrow"
+                                style={{ padding: "0px 10px" }}
+                              />
+                            </div>
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                    <td className="col_1">
+                      <DateSelection />
+                    </td>
+                    <td className="p-0 extra_border">
+                      {multiSelectPartnersArray[index].lineItems.length > 0 &&
+                        multiSelectPartnersArray[index].lineItems.map(
+                          (crop, i) => {
+                            return Object.keys(
+                              multiSelectPartnersArray[index].lineItems[i]
+                            ).length != 0 &&
+                              multiSelectPartnersArray[index].lineItems[i]
+                                .cropName != "" ? (
+                              <tr className="extra_border">
+                                <td className="col_2 ">
+                                  {!multiSelectPartnersArray[index].lineItems[i]
+                                    .activeSearch ||
+                                  multiSelectPartnersArray[index].lineItems[i]
+                                    .displayStat ? (
+                                    // !activeSearch || displayStat?
+
+                                    <div>
+                                      <div
+                                        className="table_crop_div flex_class mr-0"
+                                        onClick={() => {
+                                          activeSearchCrop(
+                                            multiSelectPartnersArray[index]
+                                              .lineItems,
+                                            i,
+                                            index
+                                          );
+                                        }}
+                                      >
+                                        <img
+                                          src={
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].imageUrl
+                                          }
+                                          className="flex_class mr-2"
+                                        />
+                                        <p className="m-0">
+                                          {
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].cropName
+                                          }
+                                        </p>
+                                      </div>
+                                      <p>
+                                        {cropSufixStatus ? (
                                           <input
                                             type="text"
-                                            value={multiSelectPartnersArray[index]
-                                              .lineItems[i].cropSufx}
+                                            value={
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].cropSufx
+                                            }
                                             onChange={getCropSuffix(
                                               multiSelectPartnersArray[index]
-                                            .lineItems[i].cropId,
-                                          i,
-                                          index,
-                                          multiSelectPartnersArray[index]
-                                            .lineItems
+                                                .lineItems[i].cropId,
+                                              i,
+                                              index,
+                                              multiSelectPartnersArray[index]
+                                                .lineItems
                                             )}
                                             className="inpu_suffix"
                                             placeholder="Add crop suffix"
@@ -1041,9 +1103,466 @@ const Step2 = (props) => {
                                         ) : (
                                           ""
                                         )}
-                                     </p>
+                                      </p>
+                                    </div>
+                                  ) : addCropsIndex == index &&
+                                    addCropStatus ? (
+                                    <Select
+                                      isSearchable={true}
+                                      className="basic-single crop_select"
+                                      classNamePrefix="select"
+                                      styles={colourStyles}
+                                      name="partner"
+                                      hideSelectedOptions={false}
+                                      options={cropsData}
+                                      placeholder={"Click here and add Crop"}
+                                      // value={selectedCropItem}
+                                      onChange={(event) =>
+                                        addCropToEmptyRow(
+                                          event,
+                                          i,
+                                          index,
+                                          multiSelectPartnersArray[index]
+                                            .lineItems
+                                        )
+                                      }
+                                      filterOption={filterOption}
+                                      isClearable={false}
+                                      noOptionsMessage={() =>
+                                        "No Data Available"
+                                      }
+                                      getOptionValue={(e) => e.cropId}
+                                      getOptionLabel={(e) => (
+                                        <div
+                                          contenteditable="true"
+                                          className="table_crop_div flex_class mr-0"
+                                        >
+                                          <img
+                                            src={e.imageUrl}
+                                            className="flex_class mr-2"
+                                          />
+                                          <p className="m-0">{e.cropName}</p>
+                                        </div>
+                                      )}
+                                    />
+                                  ) : (
+                                    ""
+                                  )}
+                                </td>
+                                <td className="col_1">
+                                  <select
+                                    className="form-control qty_dropdown dropdown"
+                                    value={
+                                      multiSelectPartnersArray[index].lineItems[
+                                        i
+                                      ].qtyUnit
+                                    }
+                                    onChange={getQuantity(
+                                      multiSelectPartnersArray[index].lineItems,
+                                      i,
+                                      index,
+                                      crop
+                                    )}
+                                  >
+                                    <option value="CRATES">Crates</option>
+                                    <option value="BAGS">Bags</option>
+                                    <option value="SACS">Sacs </option>
+                                    <option value="BOXES">Boxes </option>
+                                    <option value="KGS">Kgs </option>
+                                    <option value="LOADS">Loads </option>
+                                    <option value="PIECES">Pieces </option>
+                                  </select>
+                                </td>
+
+                                {!setQuantityBasedtable(
+                                  multiSelectPartnersArray[index].lineItems[i]
+                                    .qtyUnit
+                                ) ? (
+                                  multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].qtyUnit.toLowerCase() == "pieces" ? (
+                                    <td className="col_1 fadeOut_col">-</td>
+                                  ) : (
+                                    <td className="col_1">
+                                      <select
+                                        className="form-control qty_dropdown dropdown pl-0 m-0"
+                                        value={
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].rateType
+                                        }
+                                        onChange={getRateType(
+                                          multiSelectPartnersArray[index]
+                                            .lineItems,
+                                          i,
+                                          index
+                                        )}
+                                      >
+                                        <option
+                                          value={
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].qtyUnit
+                                          }
+                                        >
+                                          {
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].qtyUnit
+                                          }{" "}
+                                        </option>
+                                        <option value="KGS"> Kg </option>
+                                      </select>
+                                    </td>
+                                  )
+                                ) : (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                )}
+                                {!setQuantityBasedtable(
+                                  multiSelectPartnersArray[index].lineItems[i]
+                                    .qtyUnit
+                                ) ? (
+                                  <td className="col_1">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="quantity"
+                                      onFocus={(e) => resetInput(e)}
+                                      value={
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].qty
+                                      }
+                                      onChange={getQuantityValue(
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].cropId,
+                                        i,
+                                        index,
+                                        multiSelectPartnersArray[index]
+                                          .lineItems
+                                      )}
+                                    />
+                                  </td>
+                                ) : (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                )}
+                                {multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit?.toLowerCase() !=
+                                (multiSelectPartnersArray[index].lineItems[i]
+                                  .rateType == "RATE_PER_UNIT" ||
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].rateType?.toLowerCase() ==
+                                  multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].qtyUnit?.toLowerCase()
+                                  ? multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].qtyUnit?.toLowerCase()
+                                  : multiSelectPartnersArray[index].lineItems[i]
+                                      .rateType) ? (
+                                  multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].qtyUnit.toLowerCase() == "pieces" ? (
+                                    <td className="col_1 fadeOut_col">-</td>
+                                  ) : (
+                                    <td className="col_1">
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        name="weight"
+                                        onFocus={(e) => resetInput(e)}
+                                        value={
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].weight
+                                        }
+                                        onChange={getWeightValue(
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].cropId,
+                                          i,
+                                          index,
+                                          multiSelectPartnersArray[index]
+                                            .lineItems
+                                        )}
+                                      />
+                                    </td>
+                                  )
+                                ) : setQuantityBasedtable(
+                                    multiSelectPartnersArray[index].lineItems[i]
+                                      .qtyUnit
+                                  ) ? (
+                                  multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].qtyUnit.toLowerCase() == "pieces" ? (
+                                    <td className="col_1 fadeOut_col">-</td>
+                                  ) : (
+                                    <td className="col_1">
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        name="weight"
+                                        onFocus={(e) => resetInput(e)}
+                                        value={
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].weight
+                                        }
+                                        onChange={getWeightValue(
+                                          multiSelectPartnersArray[index]
+                                            .lineItems[i].cropId,
+                                          i,
+                                          index,
+                                          multiSelectPartnersArray[index]
+                                            .lineItems
+                                        )}
+                                      />
+                                    </td>
+                                  )
+                                ) : (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                )}
+                                {multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit?.toLowerCase() === "bags" ||
+                                multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit?.toLowerCase() === "sacs" ? (
+                                  multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].qtyUnit?.toLowerCase() !=
+                                  multiSelectPartnersArray[index].lineItems[
+                                    i
+                                  ].rateType.toLowerCase() ? (
+                                    multiSelectPartnersArray[index].lineItems[
+                                      i
+                                    ].rateType.toUpperCase() !=
+                                    "RATE_PER_UNIT" ? (
+                                      <td className="col_1">
+                                        <div className="d-flex align-items-center justify-content-center">
+                                          <button
+                                            onClick={() => {
+                                              handleCheckEvent(
+                                                multiSelectPartnersArray[index]
+                                                  .lineItems,
+                                                i,
+                                                index,
+                                                crop
+                                              );
+                                            }}
+                                          >
+                                            <div className="d-flex align-items-center justify-content-center">
+                                              <input
+                                                type="checkbox"
+                                                checked={
+                                                  // billEditStatus
+                                                  //   ? cropData[index].bags !==
+                                                  //       null &&
+                                                  //     cropData[index].bags
+                                                  //       .length > 0
+                                                  //     ? true
+                                                  //     : false
+                                                  //   :
+                                                  multiSelectPartnersArray[
+                                                    index
+                                                  ].lineItems[i].checked
+                                                }
+                                                id="modal_checkbox"
+                                                value="my-value"
+                                                className="checkbox_t cursor_class"
+                                                onChange={() => {
+                                                  handleCheckEvent(
+                                                    multiSelectPartnersArray[
+                                                      index
+                                                    ].lineItems,
+                                                    i,
+                                                    index,
+                                                    crop
+                                                  );
+                                                }}
+                                              />
+                                              <div>
+                                                {multiSelectPartnersArray[index]
+                                                  .lineItems[i].bags !== null &&
+                                                multiSelectPartnersArray[index]
+                                                  .lineItems[i].bags.length >
+                                                  0 ? (
+                                                  <span
+                                                    className="unit-type my-0 cursor_class"
+                                                    for="modal_checkbox"
+                                                  >
+                                                    Edit
+                                                  </span>
+                                                ) : (
+                                                  ""
+                                                )}{" "}
+                                              </div>
+                                            </div>
+                                          </button>
+                                        </div>
+                                      </td>
+                                    ) : (
+                                      <td className="col_1 fadeOut_col">-</td>
+                                    )
+                                  ) : (
+                                    <td className="col_1 fadeOut_col">-</td>
+                                  )
+                                ) : (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                )}
+                                {multiSelectPartnersArray[index].lineItems[
+                                  i
+                                ].qtyUnit?.toLowerCase() == "loads" ? (
+                                  <td className="col_1 fadeOut_col">-</td>
+                                ) : (
+                                  <td className="col_1">
+                                    {/* <p>hi</p> */}
+                                    <input
+                                      type="text"
+                                      name="wastage"
+                                      onFocus={(e) => resetInput(e)}
+                                      className="form-control wastage_val"
+                                      value={
+                                        multiSelectPartnersArray[index]
+                                          .lineItems[i].wastage
+                                      }
+                                      onChange={
+                                        !multiSelectPartnersArray[index]
+                                          .lineItems[i].checked
+                                          ? getWastageValue(
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].cropId,
+                                              i,
+                                              index,
+                                              multiSelectPartnersArray[index]
+                                                .lineItems
+                                            )
+                                          : ""
+                                      }
+                                    />
+                                  </td>
+                                )}
+                                <td className="col_1">
+                                  <input
+                                    type="text"
+                                    name="rate"
+                                    className="form-control"
+                                    onFocus={(e) => resetInput(e)}
+                                    value={
+                                      multiSelectPartnersArray[index].lineItems[
+                                        i
+                                      ].rate
+                                    }
+                                    onChange={getRateValue(
+                                      multiSelectPartnersArray[index].lineItems[
+                                        i
+                                      ].cropId,
+                                      i,
+                                      index,
+                                      multiSelectPartnersArray[index].lineItems
+                                    )}
+                                  />
+                                </td>
+                                <td className="col_3">
+                                  <div className="d-flex align-items-center justify-content-between">
+                                    <p className="totals">
+                                      {multiSelectPartnersArray[
+                                        index
+                                      ].lineItems[i].rateType.toLowerCase() ==
+                                        "kgs" ||
+                                      multiSelectPartnersArray[index].lineItems[
+                                        i
+                                      ].rateType.toLowerCase() == "loads" ||
+                                      (multiSelectPartnersArray[
+                                        index
+                                      ].lineItems[i].qtyUnit.toLowerCase() ==
+                                        "loads" &&
+                                        multiSelectPartnersArray[
+                                          index
+                                        ].lineItems[i].rateType.toUpperCase() ==
+                                          "RATE_PER_UNIT")
+                                        ? multiSelectPartnersArray[
+                                            index
+                                          ].lineItems[
+                                            i
+                                          ].qtyUnit.toLowerCase() == "pieces"
+                                          ? (
+                                              (multiSelectPartnersArray[index]
+                                                .lineItems[i].qty -
+                                                multiSelectPartnersArray[index]
+                                                  .lineItems[i].wastage) *
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].rate
+                                            ).toFixed(2)
+                                          : (
+                                              (multiSelectPartnersArray[index]
+                                                .lineItems[i].weight -
+                                                multiSelectPartnersArray[index]
+                                                  .lineItems[i].wastage) *
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].rate
+                                            ).toFixed(2)
+                                        : (
+                                            (multiSelectPartnersArray[index]
+                                              .lineItems[i].qty -
+                                              multiSelectPartnersArray[index]
+                                                .lineItems[i].wastage) *
+                                            multiSelectPartnersArray[index]
+                                              .lineItems[i].rate
+                                          ).toFixed(2)}
+                                    </p>
+                                    <div className="d-flex">
+                                      <button
+                                        className="flex_class mr-0 sub_icons_div"
+                                        onClick={cloneCrop.bind(
+                                          this,
+                                          crop,
+                                          multiSelectPartnersArray[index]
+                                            .lineItems,
+                                          index,
+                                          i
+                                        )}
+                                      >
+                                        <img
+                                          src={copy_icon}
+                                          className="sub_icons"
+                                          alt="image"
+                                        />
+                                      </button>
+                                      <button
+                                        className="flex_class mr-0 sub_icons_div"
+                                        onClick={deleteCrop.bind(
+                                          this,
+                                          crop,
+                                          multiSelectPartnersArray[index]
+                                            .lineItems,
+                                          index,
+                                          i
+                                        )}
+                                      >
+                                        <img
+                                          src={delete_icon}
+                                          className="sub_icons"
+                                          alt="image"
+                                        />
+                                      </button>
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        addCrop(
+                                          item,
+                                          fromMultiBillViewStatus
+                                            ? partyType == "BUYER"
+                                              ? item.buyerId
+                                              : item.farmerId
+                                            : item.partyId
+                                        )
+                                      }
+                                      className="add_crop_text2"
+                                    >
+                                      +Add crop
+                                    </button>
                                   </div>
-                                ) : addCropsIndex == index && addCropStatus ? (
+                                </td>
+                              </tr>
+                            ) : (
+                              <tr className="extra_border">
+                                <td className="col_2 ">
                                   <Select
                                     isSearchable={true}
                                     className="basic-single crop_select"
@@ -1080,517 +1599,71 @@ const Step2 = (props) => {
                                       </div>
                                     )}
                                   />
-                                ) : (
-                                  ""
-                                )}
-                              </td>
-                              <td className="col_1">
-                                <select
-                                  className="form-control qty_dropdown dropdown"
-                                  value={
-                                    multiSelectPartnersArray[index].lineItems[i]
-                                      .qtyUnit
-                                  }
-                                  onChange={getQuantity(
-                                    multiSelectPartnersArray[index].lineItems,
-                                    i,
-                                    index,
-                                    crop
-                                  )}
-                                >
-                                  <option value="CRATES">Crates</option>
-                                  <option value="BAGS">Bags</option>
-                                  <option value="SACS">Sacs </option>
-                                  <option value="BOXES">Boxes </option>
-                                  <option value="KGS">Kgs </option>
-                                  <option value="LOADS">Loads </option>
-                                  <option value="PIECES">Pieces </option>
-                                </select>
-                              </td>
-                              
-                              {!setQuantityBasedtable(
-                                multiSelectPartnersArray[index].lineItems[i]
-                                  .qtyUnit
-                              ) ? (
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].qtyUnit.toLowerCase() == "pieces" ? (
-                                  <td className="col_1 fadeOut_col">-</td>
-                                ) : (
-                                  <td className="col_1">
-                                    <select
-                                      className="form-control qty_dropdown dropdown pl-0 m-0"
-                                      value={
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].rateType
-                                      }
-                                      onChange={getRateType(
-                                        multiSelectPartnersArray[index]
-                                          .lineItems,
-                                        i,
-                                        index
-                                      )}
-                                    >
-                                      <option
-                                        value={
+                                </td>
+                                <td className="col_1"></td>
+                                <td className="col_1"></td>
+                                <td className="col_1"></td>
+                                <td className="col_1"></td>
+                                <td className="col_1"></td>
+                                <td className="col_1"></td>
+                                <td className="col_1"></td>
+                                <td className="col_3">
+                                  <div className="d-flex align-items-center justify-content-between">
+                                    <div className="d-flex">
+                                      <button
+                                        className="flex_class mr-0 sub_icons_div"
+                                        onClick={cloneCrop.bind(
+                                          this,
+                                          crop,
                                           multiSelectPartnersArray[index]
-                                            .lineItems[i].qtyUnit
-                                        }
+                                            .lineItems,
+                                          index,
+                                          i
+                                        )}
                                       >
-                                        {
+                                        <img
+                                          src={copy_icon}
+                                          className="sub_icons"
+                                          alt="image"
+                                        />
+                                      </button>
+                                      <button
+                                        className="flex_class mr-0 sub_icons_div"
+                                        onClick={deleteCrop.bind(
+                                          this,
+                                          crop,
                                           multiSelectPartnersArray[index]
-                                            .lineItems[i].qtyUnit
-                                        }{" "}
-                                      </option>
-                                      <option value="KGS"> Kg </option>
-                                    </select>
-                                  </td>
-                                )
-                              ) : (
-                                <td className="col_1 fadeOut_col">-</td>
-                              )}
-                              {!setQuantityBasedtable(
-                                multiSelectPartnersArray[index].lineItems[i]
-                                  .qtyUnit
-                              ) ? (
-                                <td className="col_1">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="quantity"
-                                    onFocus={(e) => resetInput(e)}
-                                    value={
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].qty
-                                    }
-                                    onChange={getQuantityValue(
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].cropId,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index].lineItems
-                                    )}
-                                  />
-                                </td>
-                              ) : (
-                                <td className="col_1 fadeOut_col">-</td>
-                              )}
-                              {multiSelectPartnersArray[index].lineItems[
-                                i
-                              ].qtyUnit?.toLowerCase() !=
-                              (multiSelectPartnersArray[index].lineItems[i]
-                                .rateType == "RATE_PER_UNIT" ||
-                              multiSelectPartnersArray[index].lineItems[
-                                i
-                              ].rateType?.toLowerCase() ==
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].qtyUnit?.toLowerCase()
-                                ? multiSelectPartnersArray[index].lineItems[
-                                    i
-                                  ].qtyUnit?.toLowerCase()
-                                : multiSelectPartnersArray[index].lineItems[i]
-                                    .rateType) ? (
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].qtyUnit.toLowerCase() == "pieces" ? (
-                                  <td className="col_1 fadeOut_col">-</td>
-                                ) : (
-                                  <td className="col_1">
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="weight"
-                                      onFocus={(e) => resetInput(e)}
-                                      value={
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].weight
-                                      }
-                                      onChange={getWeightValue(
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].cropId,
-                                        i,
-                                        index,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems
-                                      )}
-                                    />
-                                  </td>
-                                )
-                              ) : setQuantityBasedtable(
-                                  multiSelectPartnersArray[index].lineItems[i]
-                                    .qtyUnit
-                                ) ? (
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].qtyUnit.toLowerCase() == "pieces" ? (
-                                  <td className="col_1 fadeOut_col">-</td>
-                                ) : (
-                                  <td className="col_1">
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      name="weight"
-                                      onFocus={(e) => resetInput(e)}
-                                      value={
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].weight
-                                      }
-                                      onChange={getWeightValue(
-                                        multiSelectPartnersArray[index]
-                                          .lineItems[i].cropId,
-                                        i,
-                                        index,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems
-                                      )}
-                                    />
-                                  </td>
-                                )
-                              ) : (
-                                <td className="col_1 fadeOut_col">-</td>
-                              )}
-                              {multiSelectPartnersArray[index].lineItems[
-                                i
-                              ].qtyUnit?.toLowerCase() === "bags" ||
-                              multiSelectPartnersArray[index].lineItems[
-                                i
-                              ].qtyUnit?.toLowerCase() === "sacs" ? (
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].qtyUnit?.toLowerCase() !=
-                                multiSelectPartnersArray[index].lineItems[
-                                  i
-                                ].rateType.toLowerCase() ? (
-                                  multiSelectPartnersArray[index].lineItems[
-                                    i
-                                  ].rateType.toUpperCase() !=
-                                  "RATE_PER_UNIT" ? (
-                                    <td className="col_1">
-                                      <div className="d-flex align-items-center justify-content-center">
-                                        <button
-                                          onClick={() => {
-                                            handleCheckEvent(
-                                              multiSelectPartnersArray[index]
-                                                .lineItems,
-                                              i,
-                                              index,
-                                              crop
-                                            );
-                                          }}
-                                        >
-                                          <div className="d-flex align-items-center justify-content-center">
-                                            <input
-                                              type="checkbox"
-                                              checked={
-                                                // billEditStatus
-                                                //   ? cropData[index].bags !==
-                                                //       null &&
-                                                //     cropData[index].bags
-                                                //       .length > 0
-                                                //     ? true
-                                                //     : false
-                                                //   :
-                                                multiSelectPartnersArray[index]
-                                                  .lineItems[i].checked
-                                              }
-                                              id="modal_checkbox"
-                                              value="my-value"
-                                              className="checkbox_t cursor_class"
-                                              onChange={() => {
-                                                handleCheckEvent(
-                                                  multiSelectPartnersArray[
-                                                    index
-                                                  ].lineItems,
-                                                  i,
-                                                  index,
-                                                  crop
-                                                );
-                                              }}
-                                            />
-                                            <div>
-                                              {multiSelectPartnersArray[index]
-                                                .lineItems[i].bags !== null &&
-                                              multiSelectPartnersArray[index]
-                                                .lineItems[i].bags.length >
-                                                0 ? (
-                                                <span
-                                                  className="unit-type my-0 cursor_class"
-                                                  for="modal_checkbox"
-                                                >
-                                                  Edit
-                                                </span>
-                                              ) : (
-                                                ""
-                                              )}{" "}
-                                            </div>
-                                          </div>
-                                        </button>
-                                      </div>
-                                    </td>
-                                  ) : (
-                                    <td className="col_1 fadeOut_col">-</td>
-                                  )
-                                ) : (
-                                  <td className="col_1 fadeOut_col">-</td>
-                                )
-                              ) : (
-                                <td className="col_1 fadeOut_col">-</td>
-                              )}
-                              {multiSelectPartnersArray[index].lineItems[
-                                i
-                              ].qtyUnit?.toLowerCase() == "loads" ? (
-                                <td className="col_1 fadeOut_col">-</td>
-                              ) : (
-                                <td className="col_1">
-                                  {/* <p>hi</p> */}
-                                  <input
-                                    type="text"
-                                    name="wastage"
-                                    onFocus={(e) => resetInput(e)}
-                                    className="form-control wastage_val"
-                                    value={
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].wastage
-                                    }
-                                    onChange={
-                                      !multiSelectPartnersArray[index]
-                                        .lineItems[i].checked
-                                        ? getWastageValue(
-                                            multiSelectPartnersArray[index]
-                                              .lineItems[i].cropId,
-                                            i,
-                                            index,
-                                            multiSelectPartnersArray[index]
-                                              .lineItems
-                                          )
-                                        : ""
-                                    }
-                                  />
-                                </td>
-                              )}
-                              <td className="col_1">
-                                <input
-                                  type="text"
-                                  name="rate"
-                                  className="form-control"
-                                  onFocus={(e) => resetInput(e)}
-                                  value={
-                                    multiSelectPartnersArray[index].lineItems[i]
-                                      .rate
-                                  }
-                                  onChange={getRateValue(
-                                    multiSelectPartnersArray[index].lineItems[i]
-                                      .cropId,
-                                    i,
-                                    index,
-                                    multiSelectPartnersArray[index].lineItems
-                                  )}
-                                />
-                              </td>
-                              <td className="col_3">
-                                <div className="d-flex align-items-center justify-content-between">
-                                  <p className="totals">
-                                    {multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].rateType.toLowerCase() == "kgs" ||
-                                    multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].rateType.toLowerCase() == "loads" ||
-                                    (multiSelectPartnersArray[index].lineItems[
-                                      i
-                                    ].qtyUnit.toLowerCase() == "loads" &&
-                                      multiSelectPartnersArray[index].lineItems[
-                                        i
-                                      ].rateType.toUpperCase() ==
-                                        "RATE_PER_UNIT")
-                                      ? multiSelectPartnersArray[
-                                          index
-                                        ].lineItems[i].qtyUnit.toLowerCase() ==
-                                        "pieces"
-                                        ? (
-                                            (multiSelectPartnersArray[index]
-                                              .lineItems[i].qty -
-                                              multiSelectPartnersArray[index]
-                                                .lineItems[i].wastage) *
-                                            multiSelectPartnersArray[index]
-                                              .lineItems[i].rate
-                                          ).toFixed(2)
-                                        : (
-                                            (multiSelectPartnersArray[index]
-                                              .lineItems[i].weight -
-                                              multiSelectPartnersArray[index]
-                                                .lineItems[i].wastage) *
-                                            multiSelectPartnersArray[index]
-                                              .lineItems[i].rate
-                                          ).toFixed(2)
-                                      : (
-                                          (multiSelectPartnersArray[index]
-                                            .lineItems[i].qty -
-                                            multiSelectPartnersArray[index]
-                                              .lineItems[i].wastage) *
-                                          multiSelectPartnersArray[index]
-                                            .lineItems[i].rate
-                                        ).toFixed(2)}
-                                  </p>
-                                  <div className="d-flex">
-                                    <button
-                                      className="flex_class mr-0 sub_icons_div"
-                                      onClick={cloneCrop.bind(
-                                        this,
-                                        crop,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems,
-                                        index,
-                                        i
-                                      )}
-                                    >
-                                      <img
-                                        src={copy_icon}
-                                        className="sub_icons"
-                                        alt="image"
-                                      />
-                                    </button>
-                                    <button
-                                      className="flex_class mr-0 sub_icons_div"
-                                      onClick={deleteCrop.bind(
-                                        this,
-                                        crop,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems,
-                                        index,
-                                        i
-                                      )}
-                                    >
-                                      <img
-                                        src={delete_icon}
-                                        className="sub_icons"
-                                        alt="image"
-                                      />
-                                    </button>
-                                  </div>
-                                  <button
-                                    onClick={() =>
-                                      addCrop(
-                                        item,
-                                        fromMultiBillViewStatus
-                                          ? partyType == "BUYER"
-                                            ? item.buyerId
-                                            : item.farmerId
-                                          : item.partyId
-                                      )
-                                    }
-                                    className="add_crop_text2"
-                                  >
-                                    +Add crop
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ) : (
-                            <tr className="extra_border">
-                              <td className="col_2 ">
-                                <Select
-                                  isSearchable={true}
-                                  className="basic-single crop_select"
-                                  classNamePrefix="select"
-                                  styles={colourStyles}
-                                  name="partner"
-                                  hideSelectedOptions={false}
-                                  options={cropsData}
-                                  placeholder={"Click here and add Crop"}
-                                  // value={selectedCropItem}
-                                  onChange={(event) =>
-                                    addCropToEmptyRow(
-                                      event,
-                                      i,
-                                      index,
-                                      multiSelectPartnersArray[index].lineItems
-                                    )
-                                  }
-                                  filterOption={filterOption}
-                                  isClearable={false}
-                                  noOptionsMessage={() => "No Data Available"}
-                                  getOptionValue={(e) => e.cropId}
-                                  getOptionLabel={(e) => (
-                                    <div
-                                      contenteditable="true"
-                                      className="table_crop_div flex_class mr-0"
-                                    >
-                                      <img
-                                        src={e.imageUrl}
-                                        className="flex_class mr-2"
-                                      />
-                                      <p className="m-0">{e.cropName}</p>
+                                            .lineItems,
+                                          index,
+                                          i
+                                        )}
+                                      >
+                                        <img
+                                          src={delete_icon}
+                                          className="sub_icons"
+                                          alt="image"
+                                        />
+                                      </button>
                                     </div>
-                                  )}
-                                />
-                              </td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_1"></td>
-                              <td className="col_3">
-                                <div className="d-flex align-items-center justify-content-between">
-                                  <div className="d-flex">
                                     <button
-                                      className="flex_class mr-0 sub_icons_div"
-                                      onClick={cloneCrop.bind(
-                                        this,
-                                        crop,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems,
-                                        index,
-                                        i
-                                      )}
+                                      onClick={() =>
+                                        addCrop(item, item.partyId)
+                                      }
+                                      className="add_crop_text2"
                                     >
-                                      <img
-                                        src={copy_icon}
-                                        className="sub_icons"
-                                        alt="image"
-                                      />
-                                    </button>
-                                    <button
-                                      className="flex_class mr-0 sub_icons_div"
-                                      onClick={deleteCrop.bind(
-                                        this,
-                                        crop,
-                                        multiSelectPartnersArray[index]
-                                          .lineItems,
-                                        index,
-                                        i
-                                      )}
-                                    >
-                                      <img
-                                        src={delete_icon}
-                                        className="sub_icons"
-                                        alt="image"
-                                      />
+                                      +Add crop
                                     </button>
                                   </div>
-                                  <button
-                                    onClick={() => addCrop(item, item.partyId)}
-                                    className="add_crop_text2"
-                                  >
-                                    +Add crop
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        }
-                      )}
-                  </td>
-                </tr>
-              );
-            })}
-          </table>
+                                </td>
+                              </tr>
+                            );
+                          }
+                        )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </table>
           </div>
         )}
       </div>
@@ -1600,12 +1673,17 @@ const Step2 = (props) => {
             cancel
           </button>
           <div className="d-flex align-items-center">
-            <button
-              className="secondary_btn no_delete_btn"
-              onClick={() => previousStep()}
-            >
-              Previous
-            </button>
+            {fromMultiBillViewStatus ? (
+              ""
+            ) : (
+              <button
+                className="secondary_btn no_delete_btn"
+                onClick={() => previousStep()}
+              >
+                Previous
+              </button>
+            )}
+
             <button
               className="primary_btn"
               onClick={() => onClickStep2(multiSelectPartnersArray)}

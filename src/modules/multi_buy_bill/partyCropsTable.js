@@ -15,7 +15,6 @@ const PaartyCropDetails = (props) => {
   const theme = localStorage.getItem("pdftheme");
   const pdfThemeData = theme != null ? theme : null;
   const colorThemeVal = billViewData?.colorthemeValue;
-  console.log(selectedBillData)
   useEffect(() => {}, [props]);
   const totalBagsValue = (bags) => {
     var totalValue = 0;
@@ -119,7 +118,10 @@ const PaartyCropDetails = (props) => {
                 <tr key={party}>
                   <td className="col-1 text-center">{key + 1}</td>
                   <td className="col-2">
-                    {(partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER') ? party.farmerName : party.buyerName}
+                    {partyType == "FARMER" ||
+                    partyType.toUpperCase() == "SELLER"
+                      ? party.farmerName
+                      : party.buyerName}
                   </td>
                   <td className="col-9 p-0 remove_border">
                     {party.lineItems.map((item, key) => {
@@ -188,7 +190,8 @@ const PaartyCropDetails = (props) => {
                           </td>
                           <td
                             className={
-                              (partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER')
+                              partyType == "FARMER" ||
+                              partyType.toUpperCase() == "SELLER"
                                 ? "col-2 color_red"
                                 : "col-2 color_green"
                             }
@@ -221,42 +224,75 @@ const PaartyCropDetails = (props) => {
           <div className="col-lg-6 p-0 ">
             <div className="row justify-content-around multi_totals">
               <div className="col-lg-6 pr-0">
-              <p className="total_value">Gross Total : </p>
-              
+                <p className="total_value">Group Total : </p>
               </div>
               <div className="col-lg-6">
-              <p className="total_value number_overflow">
-                &nbsp;&nbsp;
-                {getCurrencyNumberWithSymbol(selectedBillData?.grossTotal)}
-              </p>
+                <p className="total_value number_overflow">
+                  &nbsp;&nbsp;
+                  <span
+                    className={
+                      partyType == "FARMER" ||
+                      partyType.toUpperCase() == "SELLER"
+                        ? "color_red"
+                        : "color_green"
+                    }
+                  >
+                    {getCurrencyNumberWithSymbol(selectedBillData?.grossTotal)}
+                  </span>
+                </p>
               </div>
             </div>
+            {selectedBillData?.totalExpenses != 0 ? (
+              <div className="row justify-content-around multi_totals">
+                <div className="col-lg-6 pr-0">
+                  <p className="total_value">Total Expenses : </p>
+                </div>
+                <div className="col-lg-6">
+                  <p className="total_value number_overflow">
+                    &nbsp;&nbsp;
+                    <span
+                      className={
+                        partyType == "FARMER" ||
+                        partyType.toUpperCase() == "SELLER"
+                          ? "color_red"
+                          : "color_green"
+                      }
+                    >
+                      {getCurrencyNumberWithSymbol(
+                        selectedBillData?.totalExpenses
+                      )}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
             <div className="row justify-content-around multi_totals">
-            <div className="col-lg-6 pr-0">
-              <p className="total_value">Total Expenses : </p>
+              <div className="col-lg-6 pr-0">
+                {partyType == "FARMER" ||
+                partyType.toUpperCase() == "SELLER" ? (
+                  <p className="total_value">COGS : </p>
+                ) : (
+                  <p className="total_value">Total Revenue : </p>
+                )}
               </div>
               <div className="col-lg-6">
-              <p className="total_value number_overflow">
-                &nbsp;&nbsp;
-                {selectedBillData?.totalExpenses != 0
-                  ? getCurrencyNumberWithSymbol(selectedBillData?.totalExpenses)
-                  : 0}
-              </p>
-              </div>
-            </div>
-            <div className="row justify-content-around multi_totals">
-            <div className="col-lg-6 pr-0">
-              {
-                (partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER') ? <p className="total_value">COGS : </p> : <p className="total_value">Total Revenue : </p>
-              }
-              </div>
-              <div className="col-lg-6">
-              <p className="total_value number_overflow">
-                &nbsp;&nbsp;
-                {(partyType  == 'FARMER' || partyType.toUpperCase() == 'SELLER')
-                  ? getCurrencyNumberWithSymbol(selectedBillData?.totalRevenue)
-                  : getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
-              </p>
+                <p className="total_value number_overflow">
+                  &nbsp;&nbsp;
+                  {partyType == "FARMER" ||
+                  partyType.toUpperCase() == "SELLER" ? (
+                    <span className="color_red">
+                      {getCurrencyNumberWithSymbol(
+                        selectedBillData?.totalRevenue
+                      )}
+                    </span>
+                  ) : (
+                    <span className="color_green">
+                      {getCurrencyNumberWithSymbol(selectedBillData?.totalCOGS)}
+                    </span>
+                  )}
+                </p>
               </div>
             </div>
           </div>
