@@ -505,6 +505,7 @@ const Step2 = (props) => {
   var arr1 = [];
   // changing unit type in table
   const getQuantity = (cropData, index1, mIndex, crop) => (e) => {
+    console.log(e.target.value);
     let clonedArray = [...multiSelectPartnersArray];
     var cIndex = 0;
     var qSetting = settingsData.qtySetting;
@@ -537,10 +538,15 @@ const Step2 = (props) => {
                 : cropData[i].qty,
             weight:
               cropData[i].rateType.toUpperCase() == "RATE_PER_UNIT" ||
-              cropData[i].rateType.toUpperCase() ==
-                cropData[i].qtyUnit.toUpperCase()
+              (defaultUnitTypeVal == "unit_kg"
+              ? "KGS"
+              : cIndex != -1
+              ? getQuantityUnit(qSetting, cIndex)
+              : e.target.value) == e.target.value
                 ? 0
-                : cropData[i].weight,
+                : cropData[i].weight +
+                  e.target.value +
+                  item.rateType.toUpperCase(),
           };
         } else {
           return {
@@ -551,7 +557,7 @@ const Step2 = (props) => {
         return { ...cropData[i] };
       }
     });
-
+    console.log(updatedItemList, defaultUnitTypeVal, cIndex, "updatedItemList");
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;

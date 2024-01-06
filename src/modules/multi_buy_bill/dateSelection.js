@@ -20,7 +20,6 @@ const DateSelection = ({ fromStep3BillDate }) => {
     : listOfDates?.multiSelectPartners;
   const fromPreviousStep3Status = listOfDates?.fromPreviousStep3;
   const slectedBillDateVal = listOfDates?.slectedBillDate != '' ? listOfDates?.slectedBillDate : new Date();
-  console.log(listOfDates?.slectedBillDate+'kl','bil date')
   const dispatch = useDispatch();
 
   var arr = [];
@@ -28,7 +27,6 @@ const DateSelection = ({ fromStep3BillDate }) => {
     let clonedArray = [...multiSelectPartnersArray];
     for (var i = 0; i < multiSelectPartnersArray.length; i++) {
       let clonedObject = { ...multiSelectPartnersArray[i] };
-      console.log(clonedObject, "obj date");
       if (!fromPreviousStep3Status) {
         Object.assign(clonedObject, {
           billDate: moment(new Date()).format("YYYY-MM-DD"),
@@ -49,7 +47,6 @@ const DateSelection = ({ fromStep3BillDate }) => {
       objCopy.billDate = moment(date).format("YYYY-MM-DD");
       setSelectedDate(new Date(objCopy.billDate));
       dispatch(slectedBillDate(date));
-      console.log(objCopy.billDate,'date selected')
       arrMain.push(objCopy);
       return entry;
     });

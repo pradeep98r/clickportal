@@ -15,7 +15,6 @@ const PaartyCropDetails = (props) => {
   const theme = localStorage.getItem("pdftheme");
   const pdfThemeData = theme != null ? theme : null;
   const colorThemeVal = billViewData?.colorthemeValue;
-  console.log(selectedBillData);
   useEffect(() => {}, [props]);
   const totalBagsValue = (bags) => {
     var totalValue = 0;
