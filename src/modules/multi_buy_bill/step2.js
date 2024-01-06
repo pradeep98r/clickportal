@@ -505,7 +505,6 @@ const Step2 = (props) => {
   var arr1 = [];
   // changing unit type in table
   const getQuantity = (cropData, index1, mIndex, crop) => (e) => {
-    console.log(e.target.value);
     let clonedArray = [...multiSelectPartnersArray];
     var cIndex = 0;
     var qSetting = settingsData.qtySetting;
@@ -539,14 +538,12 @@ const Step2 = (props) => {
             weight:
               cropData[i].rateType.toUpperCase() == "RATE_PER_UNIT" ||
               (defaultUnitTypeVal == "unit_kg"
-              ? "KGS"
-              : cIndex != -1
-              ? getQuantityUnit(qSetting, cIndex)
-              : e.target.value) == e.target.value
+                ? "KGS"
+                : cIndex != -1
+                ? getQuantityUnit(qSetting, cIndex)
+                : e.target.value) == e.target.value
                 ? 0
-                : cropData[i].weight +
-                  e.target.value +
-                  item.rateType.toUpperCase(),
+                : cropData[i].weight,
           };
         } else {
           return {
