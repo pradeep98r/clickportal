@@ -656,10 +656,9 @@ const Transporters = (props) => {
       setCustomDateHandle(false);
       getTransportersData(date, date);
       console.log("custom", customDateHanlde, date, endDate);
-    } 
-    // else if (type == "custom") {
-    //   getTransportersData(startDate, endDate);
-    // }
+    } else if (type == "custom" && transpotoTabValue == "transporterLedger") {
+      getTransportersData(startDate, endDate);
+    }
     setAllCustom(type);
     console.log(fromInventoryTab, "frominv");
   };
