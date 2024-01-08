@@ -32,6 +32,7 @@ import { useEffect } from "react";
 import {
   getParticularTransporter,
   getTransporters,
+  getTransportersAll,
 } from "../../actions/transporterService";
 import SelectBillIds from "./selectBillIds";
 import { Modal } from "react-bootstrap";
@@ -416,7 +417,7 @@ const RecordPayment = (props) => {
   };
 
   const getTransportersData = () => {
-    getTransporters(clickId).then((response) => {
+    getTransportersAll(clickId).then((response) => {
       props.outStAmt(response.data.data);
       props.transData(response.data.data.ledgers);
       // setOutStAmt(response.data.data)

@@ -21,6 +21,7 @@ import {
   getInventorySummary,
   getParticularTransporter,
   getTransporters,
+  getTransportersAll,
 } from "../../actions/transporterService";
 import {
   outstandingAmount,
@@ -86,6 +87,7 @@ const TransportoRecord = (props) => {
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   const [outBalAdvance, setOutBalAdvance] = useState(0);
+  console.log(advancesData, "advancesData");
   useEffect(() => {
     if (!fromAdvSummary) {
       getOutstandingPaybles(clickId, transId);
@@ -96,7 +98,6 @@ const TransportoRecord = (props) => {
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        console.log(response.data.data);
         dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
         setOutBalAdvance(response.data.data.advance);
       }
@@ -132,15 +133,6 @@ const TransportoRecord = (props) => {
     }
   };
   const onSubmitRecordPayment = () => {
-    console.log(
-      fromAdvances,
-      returnAdvanceStatus,
-      outBalAdvance,
-      paidsRcvd,
-      !fromAdvSummary,
-      !advancesData?.fromParentSelect,
-      "all values"
-    );
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
@@ -249,7 +241,6 @@ const TransportoRecord = (props) => {
       writerId: writerId,
       type: advanceTypeMode == "Given" ? "G" : "C",
     };
-    console.log(fromAdvances, "fromAdvances");
     if (fromAdvances) {
       await addAdvanceRecord(addAdvanceReq).then(
         (res) => {
@@ -325,6 +316,7 @@ const TransportoRecord = (props) => {
     getAllAdvances();
     console.log(allCustomTab);
     dispatch(fromTransportoRecord(true));
+    getTransportersData();
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {
@@ -340,7 +332,6 @@ const TransportoRecord = (props) => {
     getLedgers(clickId, "SELLER", "", "")
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log(res.data.data, "datt");
           // setLoading(false);
           if (res.data.data !== null) {
             dispatch(outStandingBal(res.data.data));
@@ -391,6 +382,7 @@ const TransportoRecord = (props) => {
       .catch((error) => console.log(error));
   };
   const getAdvanceSummary = () => {
+    console.log(advancesData?.selectedAdvanceId);
     getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -434,7 +426,7 @@ const TransportoRecord = (props) => {
     });
   };
   const getTransportersData = () => {
-    getTransporters(clickId).then((response) => {
+    getTransportersAll(clickId).then((response) => {
       dispatch(outstandingAmount(response.data.data));
       dispatch(transpoLedgersInfo(response.data.data.ledgers));
     });
