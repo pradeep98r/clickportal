@@ -193,28 +193,34 @@ const Transporters = (props) => {
   };
   const getInventoryDataAll = () => {
     getInventorySummary(clickId).then((response) => {
-      dispatch(outstandingAmountInv(response.data.data.totalInventory));
-      dispatch(
-        transporterIdVal(response.data.data.summaryInfo[0].transporterId)
-      );
-      dispatch(singleTransporterObject(response.data.data.summaryInfo[0]));
-      setallData(response.data.data.summaryInfo);
-      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
-      getOutstandingPaybles(
-        clickId,
-        response.data.data.summaryInfo[0].transporterId
-      );
-      paymentLedgerAll(response.data.data.summaryInfo[0].transporterId);
-      inventoryLedgerAll(response.data.data.summaryInfo[0].transporterId);
-      getInventoryRecord(
-        clickId,
-        response.data.data.summaryInfo[0].transporterId
-      );
+      if (response.data.data.summaryInfo.length > 0) {
+        dispatch(outstandingAmountInv(response.data.data.totalInventory));
+        dispatch(
+          transporterIdVal(response.data.data.summaryInfo[0].transporterId)
+        );
+        dispatch(singleTransporterObject(response.data.data.summaryInfo[0]));
+        setallData(response.data.data.summaryInfo);
+        dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+        getOutstandingPaybles(
+          clickId,
+          response.data.data.summaryInfo[0].transporterId
+        );
+        paymentLedgerAll(response.data.data.summaryInfo[0].transporterId);
+        inventoryLedgerAll(response.data.data.summaryInfo[0].transporterId);
+        getInventoryRecord(
+          clickId,
+          response.data.data.summaryInfo[0].transporterId
+        );
+      } else {
+        dispatch(transpoLedgersInfo([]));
+        setallData([]);
+      }
       getPartners(clickId);
       dispatch(fromInv(true));
     });
   };
   const getInventoryData = (fromDate, toDate) => {
+    dispatch(fromInv(true));
     getInventorySummaryAll(clickId, fromDate, toDate).then((response) => {
       dispatch(outstandingAmountInv(response.data.data.totalInventory));
       if (response.data.data.summaryInfo.length > 0) {
@@ -232,13 +238,15 @@ const Transporters = (props) => {
           clickId,
           response.data.data.summaryInfo[0].transporterId
         );
+        setallData(response.data.data.summaryInfo);
+        dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
+      } else {
+        dispatch(transpoLedgersInfo([]));
+        setallData([]);
       }
 
-      setallData(response.data.data.summaryInfo);
-      dispatch(transpoLedgersInfo(response.data.data.summaryInfo));
-
       getPartners(clickId);
-      dispatch(fromInv(true));
+      console.log(response.data.data.summaryInfo, "hi");
     });
   };
   const handleSearch = (event) => {
@@ -629,6 +637,7 @@ const Transporters = (props) => {
       // setLedgerTabs("ledgersummary");
       dispatch(transporterMainTab("inventoryLedgerSummary"));
       getInventoryDataAll();
+      dispatch(fromInv(true));
     } else if (
       type == "custom" &&
       transpotoTabValue == "inventoryLedgerSummary"
@@ -637,6 +646,7 @@ const Transporters = (props) => {
       // setLedgerTabs("ledgersummary");
       dispatch(transporterMainTab("inventoryLedgerSummary"));
       getInventoryData(startDate, endDate);
+      dispatch(fromInv(true));
     }
     if (
       type == "custom" &&
@@ -646,10 +656,12 @@ const Transporters = (props) => {
       setCustomDateHandle(false);
       getTransportersData(date, date);
       console.log("custom", customDateHanlde, date, endDate);
-    } else if (type == "custom") {
-      getTransportersData(startDate, endDate);
-    }
+    } 
+    // else if (type == "custom") {
+    //   getTransportersData(startDate, endDate);
+    // }
     setAllCustom(type);
+    console.log(fromInventoryTab, "frominv");
   };
   const callbackFunction = (startDate, endDate, dateTab) => {
     dispatch(beginDate(startDate));
@@ -914,7 +926,8 @@ const Transporters = (props) => {
             ""
           )}
           {transporter.length > 0 ? (
-            fromInventoryTab ? (
+            fromInventoryTab ||
+            transpotoTabValue == "inventoryLedgerSummary" ? (
               <div className="ledger-table">
                 <div className="row theadr-tag p-0">
                   <th className="col-lg-1">#</th>
