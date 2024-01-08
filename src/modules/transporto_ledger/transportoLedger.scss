@@ -718,7 +718,9 @@ input[type="radio"].radioBtnValues {
   // }
 }
 
-
 .transporto_ledger_scroll_new {
   height: calc(100vh - 312px) !important;
+}
+.ledger_new_changes th:hover {
+  cursor: pointer;
 }
