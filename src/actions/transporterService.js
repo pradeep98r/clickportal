@@ -7,7 +7,7 @@ export function getTransporters(clickId, fromDate, toDate) {
     `/click/ledgers/caId/${clickId}/type/TRANS?fromDate=${fromDate}&toDate=${toDate}&writerId=${writerId}`
   );
 }
-export function getTransportersAll(clickId, fromDate, toDate) {
+export function getTransportersAll(clickId) {
   return axiosCommon.get(
     `/click/ledgers/caId/${clickId}/type/TRANS?&writerId=${writerId}`
   );

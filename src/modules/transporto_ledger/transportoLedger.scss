@@ -154,7 +154,7 @@ input[type="radio"]:label {
 }
 .transporterSummary {
   width: 100%;
-  height: calc(100vh - 385px);
+  height: calc(100vh - 398px);
   overflow-y: auto;
   background: #ffffff;
   border-radius: 10px 10px 10px 10px;
@@ -706,4 +706,19 @@ input[type="radio"].radioBtnValues {
 }
 .coloring {
   color: #00b63e !important;
+}
+.trans_new_tabs {
+  // display: inline-flex;
+  // flex-wrap: nowrap;
+  // align-items: center;
+  // overflow-x: auto;
+  // width: 100%;
+  // .nav-item {
+  //   width: 100%;
+  // }
+}
+
+
+.transporto_ledger_scroll_new {
+  height: calc(100vh - 312px) !important;
 }

@@ -15,7 +15,6 @@ const PaartyCropDetails = (props) => {
   const theme = localStorage.getItem("pdftheme");
   const pdfThemeData = theme != null ? theme : null;
   const colorThemeVal = billViewData?.colorthemeValue;
-  console.log(selectedBillData);
   useEffect(() => {}, [props]);
   const totalBagsValue = (bags) => {
     var totalValue = 0;
@@ -59,7 +58,7 @@ const PaartyCropDetails = (props) => {
               </th>
               <th className="col-9 remove_border p-0">
                 <th
-                  className="col-4"
+                  className="col-3"
                   style={{
                     backgroundColor:
                       pdfThemeData != null
@@ -98,7 +97,7 @@ const PaartyCropDetails = (props) => {
                   Rate (₹)
                 </th>
                 <th
-                  className="col-2"
+                  className="col-3"
                   style={{
                     backgroundColor:
                       pdfThemeData != null
@@ -128,7 +127,7 @@ const PaartyCropDetails = (props) => {
                     {party.lineItems.map((item, key) => {
                       return (
                         <div>
-                          <td className="col-4">
+                          <td className="col-3">
                             <div className="flex_class mr-0 crop_name">
                               <img
                                 src={item.imageUrl}
@@ -193,8 +192,8 @@ const PaartyCropDetails = (props) => {
                             className={
                               partyType == "FARMER" ||
                               partyType.toUpperCase() == "SELLER"
-                                ? "col-2 color_red"
-                                : "col-2 color_green"
+                                ? "col-3 color_red"
+                                : "col-3 color_green"
                             }
                           >
                             {getCurrencyNumberWithOutSymbol(item.total)}

@@ -45,6 +45,7 @@ const Step3 = (props) => {
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
+  console.log(multiSelectPartnersArray, "multiSelectPartnersArray");
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -144,9 +145,16 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
-          finalLedgerBal: 0,
-          finalOutStbal: 0,
-          billAmt: 0,
+          finalLedgerBal:
+            multiSelectPartnersArray1[i].billAmt +
+            multiSelectPartnersArray1[i].outStBal,
+          finalOutStBal:
+            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
+              ? multiSelectPartnersArray1[i].finalLedgerBal -
+                multiSelectPartnersArray1[i].cashPaid
+              : multiSelectPartnersArray1[i].finalLedgerBal -
+                multiSelectPartnersArray1[i].cashRcvd,
+          billAmt: multiSelectPartnersArray1[i].grossTotal,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -219,6 +227,7 @@ const Step3 = (props) => {
       // if (o.status != 0) {
       lineitemsArray = [...lineitemsArray, mergedObj];
       // }
+      console.log(lineitemsArray, "lineitemsArray");
       cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
     }
@@ -266,7 +275,7 @@ const Step3 = (props) => {
       updatedOn: "",
       writerId: writerId,
       finalLedgerBal: 0,
-      finalOutStbal: 0,
+      finalOutStBal: 0,
       billAmt: 0,
     });
     totalGross += clonedArray[mIndex].grossTotal;

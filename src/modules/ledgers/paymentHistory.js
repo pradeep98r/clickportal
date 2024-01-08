@@ -49,6 +49,7 @@ import {
   getInventorySummary,
   getParticularTransporter,
   getTransporters,
+  getTransportersAll,
 } from "../../actions/transporterService";
 import { paymentViewInfo } from "../../reducers/paymentViewSlice";
 import {
@@ -230,7 +231,7 @@ const PaymentHistoryView = (props) => {
     }
   };
   const getTransportersData = () => {
-    getTransporters(clickId).then((response) => {
+    getTransportersAll(clickId).then((response) => {
       dispatch(outstandingAmount(response.data.data));
       dispatch(transpoLedgersInfo(response.data.data.ledgers));
     });

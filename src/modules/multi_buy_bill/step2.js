@@ -427,7 +427,7 @@ const Step2 = (props) => {
   };
   // onclick button add crrop event
   const addCrop = (item, id) => {
-    var crpObject = {};
+    var crpObject = { cropName: "" };
     var i = multiSelectPartnersArray.findIndex(
       (obj) => (obj.partyId || obj.farmerId || obj.buyerId) == id
     );
@@ -438,6 +438,7 @@ const Step2 = (props) => {
       clonedObject = { ...clonedObject, lineItems: updatedLineItems };
       clonedArray[i] = clonedObject;
       // setMultiSelectPartnersArray(clonedArray);
+      console.log(clonedArray);
       dispatch(multiSelectPartners(clonedArray));
     }
   };
@@ -537,8 +538,11 @@ const Step2 = (props) => {
                 : cropData[i].qty,
             weight:
               cropData[i].rateType.toUpperCase() == "RATE_PER_UNIT" ||
-              cropData[i].rateType.toUpperCase() ==
-                cropData[i].qtyUnit.toUpperCase()
+              (defaultUnitTypeVal == "unit_kg"
+                ? "KGS"
+                : cIndex != -1
+                ? getQuantityUnit(qSetting, cIndex)
+                : e.target.value) == e.target.value
                 ? 0
                 : cropData[i].weight,
           };
@@ -551,7 +555,7 @@ const Step2 = (props) => {
         return { ...cropData[i] };
       }
     });
-
+    console.log(updatedItemList, defaultUnitTypeVal, cIndex, "updatedItemList");
     let clonedObject1 = { ...clonedArray[mIndex] };
     clonedObject1 = { ...clonedObject1, lineItems: updatedItemList };
     clonedArray[mIndex] = clonedObject1;
@@ -805,7 +809,6 @@ const Step2 = (props) => {
       }
       // }
       newArr.splice(index, 1);
-      // cropArray.splice(index, 1);
     }
     // }
 

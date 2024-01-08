@@ -1,35 +1,34 @@
-
- import { getCurrencyNumberForWastage } from "./getCurrencyNumber";
+import { getCurrencyNumberForWastage } from "./getCurrencyNumber";
 import { getCurrencyNumberWithOneDigit } from "./getCurrencyNumber";
 
 export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
-    const getCropUnit = (unit) => {
-        var unitType = "";
-        switch (unit.toLowerCase()) {
-          case "crates":
-            unitType = " C";
-            break;
-          case "boxes":
-            unitType = " BX";
-            break;
-          case "bags":
-            unitType = " BG";
-            break;
-          case "sacs":
-            unitType = " S";
-            break;
-          case "loads":
-            unitType = " LDS";
-            break;
-          case "pieces":
-            unitType = " PCS";
-            break;
-            case "kgs":
-            unitType = " KGS";
-            break;
-        }
-        return unitType;
-      };
+  const getCropUnit = (unit) => {
+    var unitType = "";
+    switch (unit.toLowerCase()) {
+      case "crates":
+        unitType = " C";
+        break;
+      case "boxes":
+        unitType = " BX";
+        break;
+      case "bags":
+        unitType = " BG";
+        break;
+      case "sacs":
+        unitType = " S";
+        break;
+      case "loads":
+        unitType = " LDS";
+        break;
+      case "pieces":
+        unitType = " PCS";
+        break;
+      case "kgs":
+        unitType = " KGS";
+        break;
+    }
+    return unitType;
+  };
   return (
     <p className="crop_name text-left">
       {(qty == 0 ? "" : getCurrencyNumberWithOneDigit(qty)) +
@@ -38,7 +37,11 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
         qtyUnit.toLowerCase() == "kgs"
           ? ""
           : getCropUnit(qtyUnit))}
-      {(qty == 0 || qty == null) ? "" : weight == 0 || weight == null ? "" : " | "}
+      {qty == 0 || qty == null
+        ? ""
+        : weight == 0 || weight == null
+        ? ""
+        : " | "}
       {getCurrencyNumberWithOneDigit(weight) +
         (qtyUnit.toLowerCase() == "loads" ||
         qtyUnit.toLowerCase() == "pieces" ||
@@ -51,7 +54,7 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
         {wastage != "0"
           ? wastage != null
             ? " - " +
-            getCurrencyNumberForWastage(wastage) +
+              getCurrencyNumberForWastage(wastage) +
               (qtyUnit.toLowerCase() == "pieces"
                 ? getCropUnit(qtyUnit)
                 : qtyUnit.toLowerCase() == "loads"
@@ -65,9 +68,8 @@ export function qtyValues(qty, qtyUnit, weight, wastage, rateType) {
     </p>
   );
 }
+
 export function colorAdjustBill(color, amount) {
-  // positive values for lighten the color
-  // negative for darken the color
   return (
     "#" +
     color

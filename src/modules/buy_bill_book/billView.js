@@ -244,16 +244,16 @@ const BillView = (props) => {
     if (editBillTim()) {
       editEvent(arr);
     } else {
-      if (billData?.advance > 0) {
-        toast.error(
-          "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
-          {
-            toastId: "success33",
-          }
-        );
-      } else {
-        editEvent(arr);
-      }
+      // if (billData?.advance > 0) {
+      toast.error(
+        "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
+        {
+          toastId: "success33",
+        }
+      );
+      // } else {
+      //   editEvent(arr);
+      // }
     }
   };
   const editEvent = (arr) => {
@@ -395,16 +395,16 @@ const BillView = (props) => {
       cancelEvent();
     } else {
       console.log(billData?.advance, "billData?.advance");
-      if (billData?.advance > 0) {
-        toast.error(
-          "The Cancel option has been temporarily disabled. Please reach out to mandi head's for assistance",
-          {
-            toastId: "success33",
-          }
-        );
-      } else {
-        cancelEvent();
-      }
+      // if (billData?.advance > 0) {
+      toast.error(
+        "The Cancel option has been temporarily disabled. Please reach out to mandi head's for assistance",
+        {
+          toastId: "success33",
+        }
+      );
+      // } else {
+      //   cancelEvent();
+      // }
     }
     // $("#cancelBill").modal("show");
   };
@@ -851,41 +851,35 @@ const BillView = (props) => {
                   <div>
                     <p className="more-p-tag">Actions</p>
                     <div className="action_icons">
-                      {billData?.groupId != 0 ? (
-                        ""
-                      ) : (
-                        <div>
-                          <div className="items_div">
-                            <button
-                              onClick={() =>
-                                historyData(
-                                  billData?.billId,
-                                  billData?.partyType
-                                )
-                              }
-                            >
-                              <img src={history_icon} alt="img" />
-                            </button>
-                            <p>History</p>
-                          </div>
-                          <div className="items_div">
-                            <button
-                              onClick={() => {
-                                recordPaymentOnClickEvent(billData);
-                              }}
-                            >
-                              <img src={pay_icon} alt="img" />
-                            </button>
-                            <p>Pay</p>
-                          </div>
-                          <div className="items_div">
-                            <button onClick={() => editBill(billData)}>
-                              <img src={edit} alt="img" />
-                            </button>
-                            <p>Edit</p>
-                          </div>
+                      <div>
+                        <div className="items_div">
+                          <button
+                            onClick={() =>
+                              historyData(billData?.billId, billData?.partyType)
+                            }
+                          >
+                            <img src={history_icon} alt="img" />
+                          </button>
+                          <p>History</p>
                         </div>
-                      )}
+                        <div className="items_div">
+                          <button
+                            onClick={() => {
+                              recordPaymentOnClickEvent(billData);
+                            }}
+                          >
+                            <img src={pay_icon} alt="img" />
+                          </button>
+                          <p>Pay</p>
+                        </div>
+                        <div className="items_div">
+                          <button onClick={() => editBill(billData)}>
+                            <img src={edit} alt="img" />
+                          </button>
+                          <p>Edit</p>
+                        </div>
+                      </div>
+
                       <div className="items_div">
                         <button
                           onClick={() => {
@@ -917,7 +911,7 @@ const BillView = (props) => {
                         <p>Download</p>
                       </div>
                       {billData.groupId != 0 ? (
-                        ''
+                        ""
                       ) : (
                         <div className="items_div">
                           <button onClick={() => handleCheckEvent()}>
