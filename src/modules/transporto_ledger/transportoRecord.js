@@ -259,6 +259,7 @@ const TransportoRecord = (props) => {
           toast.error(error.response.data.status.message, {
             toastId: "error15",
           });
+          setLoading(false);
         }
       );
     } else if (transpoData?.fromTransporter) {
@@ -277,6 +278,7 @@ const TransportoRecord = (props) => {
           toast.error(error.response.data.status.message, {
             toastId: "error15",
           });
+          setLoading(false);
         }
       );
     } else {
@@ -295,6 +297,7 @@ const TransportoRecord = (props) => {
           toast.error(error.response.data.status.message, {
             toastId: "error4",
           });
+          setLoading(false);
         }
       );
     }
