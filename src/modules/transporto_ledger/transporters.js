@@ -79,7 +79,10 @@ import { allCustomTabs, beginDate } from "../../reducers/ledgerSummarySlice";
 import DatePickerModel from "../smartboard/datePicker";
 import { closeDate } from "../../reducers/ledgersCustomDateSlice";
 import AdvanceSummary from "../advances/advanceSummary";
-import { getAdvancesSummaryById } from "../../actions/advancesService";
+import {
+  customDetailedAvances,
+  getAdvancesSummaryById,
+} from "../../actions/advancesService";
 const Transporters = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const dispatch = useDispatch();
@@ -343,16 +346,29 @@ const Transporters = (props) => {
   };
   const tabEvent = (type) => {
     dispatch(transpoTabs(type));
+    console.log(allCustom1, "allcst1");
     if (type == "inventoryledger") {
-      inventoryLedgerAll(transporterId);
+      if (allCustom1 == "all") {
+        inventoryLedgerAll(transporterId);
+      } else {
+        inventoryLedger(transporterId, startDate1, endDate1);
+      }
     }
     if (type == "paymentledger") {
-      paymentLedgerAll(transporterId);
+      if (allCustom1 == "all") {
+        paymentLedgerAll(transporterId);
+      } else {
+        paymentLedger(transporterId, startDate1, endDate1);
+      }
     }
     console.log("advance", "like");
     if (type == "advanceledger") {
       console.log("advance", tabClick?.allCustomTabs);
-      getAdvanceSummary(transporterId);
+      if (allCustom1 == "all") {
+        getAdvanceSummary(transporterId);
+      } else {
+        getCustomDetailedAdvances(transporterId, startDate1, endDate1);
+      }
     }
     setTabs(type);
   };
@@ -390,6 +406,31 @@ const Transporters = (props) => {
           }
         }
         // setLoading(false);
+      })
+      .catch((error) => console.log(error));
+  };
+  const getCustomDetailedAdvances = (partyId, fromDate, toDate) => {
+    customDetailedAvances(clickId, partyId, fromDate, toDate)
+      .then((res) => {
+        if (res.data.status.type == "SUCCESS") {
+          console.log(res.data.data, "res.data.data");
+          if (res.data.data != null) {
+            if (res.data.data.advances.length > 0) {
+              dispatch(advanceSummaryById(res.data.data.advances));
+              dispatch(totalAdvancesValById(res.data.data.totalAdvBal));
+              dispatch(totalCollectedById(res.data.data.totalCollected));
+              dispatch(totalGivenById(res.data.data.totalGiven));
+              setAdvSummary(res.data.data.advances);
+            } else {
+              dispatch(advanceSummaryById([]));
+              setAdvSummary([]);
+            }
+          } else {
+            dispatch(advanceSummaryById([]));
+            setAdvSummary([]);
+          }
+          // setLoading(false);
+        }
       })
       .catch((error) => console.log(error));
   };
