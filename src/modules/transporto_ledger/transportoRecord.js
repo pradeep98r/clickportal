@@ -187,9 +187,13 @@ const TransportoRecord = (props) => {
         addRecordPayment();
       }
     } else if (parseInt(paidsRcvd) > outStandingBalVal) {
-      setRequiredCondition(
-        "Entered Amount cannot more than Outstanding Balance"
-      );
+      if (!editRecordStatus) {
+        setRequiredCondition(
+          "Entered Amount cannot more than Outstanding Balance"
+        );
+      } else {
+        addRecordPayment();
+      }
     }
   };
   const [paymentMode, setPaymentMode] = useState(
