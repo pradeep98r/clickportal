@@ -1011,8 +1011,7 @@ const Transporters = (props) => {
                                 <td className="col-lg-2" key={item.date}>
                                   <p className="date_ledger_val">
                                     {" "}
-                                    {moment(item.date).format("DD-MMM-YY")} +
-                                    'lk'
+                                    {moment(item.date).format("DD-MMM-YY")}
                                   </p>
                                 </td>
                                 <td
@@ -1103,7 +1102,7 @@ const Transporters = (props) => {
                   >
                     <div className="d-flex p-0 head_scroll">
                       <th className="col-lg-1">#</th>
-                      <th className="col-lg-2">Date</th>
+                      <th className="col-lg-3">Date</th>
                       <th class="col-lg-5">Transporter Name</th>
 
                       <th class="col-lg-4">To Be Paid(&#8377;)</th>
@@ -1125,7 +1124,7 @@ const Transporters = (props) => {
                             }
                           >
                             <th className="col-lg-1">{index + 1}</th>
-                            <th className="col-lg-2" key={item.date}>
+                            <th className="col-lg-3" key={item.date}>
                               <p className="date_ledger_val">
                                 {" "}
                                 {moment(item.date).format("DD-MMM-YY")}
