@@ -317,6 +317,9 @@ const Transporters = (props) => {
     setDateDisplay1(false);
     dispatch(selectedPartyByAdvanceId(item));
     dispatch(selectedAdvanceId(transporterId));
+    setDateValue1(defaultDate + " to " + defaultDate);
+    setStartDate1(date);
+    setEndDate1(date);
     if (
       transpotoTabValue == "inventoryLedgerSummary" &&
       tabs == "inventoryledger"
