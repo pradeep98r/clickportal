@@ -820,12 +820,16 @@ const Transporters = (props) => {
       setTabs("inventoryledger");
       inventoryLedger(transporterId, startDate1, endDate1);
       console.log("inner", type, tabs);
+    } else if (type == "custom" && tabs == "advanceledger") {
+      getCustomDetailedAdvances(transporterId, startDate1, endDate1);
+    } else if (type == "all" && tabs == "advanceledger") {
+      getAdvanceSummary(transporterId);
     }
     if (type == "custom" && tabs == "paymentledger" && customDateHanlde1) {
       setCustomDateHandle1(false);
       paymentLedger(transporterId, date, date);
       console.log("custom", customDateHanlde);
-    } else if (type == "custom") {
+    } else if (type == "custom" && tabs == "paymentledger") {
       paymentLedger(transporterId, startDate1, endDate1);
     }
     setAllCustom1(type);
