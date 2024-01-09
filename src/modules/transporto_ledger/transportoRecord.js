@@ -141,7 +141,7 @@ const TransportoRecord = (props) => {
       setRequiredCondition("Invalid Amount");
     } else if (fromAdvances) {
       if (!fromAdvSummary || !advancesData?.fromParentSelect) {
-        if (parseInt(paidsRcvd) > outBalAdvance && returnAdvanceStatus) {
+        if (parseInt(paidsRcvd) > outBalAdvance && advanceTypeMode != "Given") {
           setRequiredCondition(
             "Entered Amount cannot be more than Outstanding Advance"
           );
