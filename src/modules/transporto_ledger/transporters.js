@@ -153,6 +153,7 @@ const Transporters = (props) => {
   }, [props]);
 
   const getTransportersData = (fromDate, toDate) => {
+    setLoading(true);
     getTransporters(clickId, fromDate, toDate).then((response) => {
       dispatch(fromInv(false));
       dispatch(outstandingAmount(response.data.data));
@@ -221,6 +222,7 @@ const Transporters = (props) => {
         dispatch(transpoLedgersInfo([]));
         setallData([]);
       }
+      setLoading(false);
       getPartners(clickId);
       dispatch(fromInv(true));
     });
@@ -250,7 +252,7 @@ const Transporters = (props) => {
         dispatch(transpoLedgersInfo([]));
         setallData([]);
       }
-
+      setLoading(false);
       getPartners(clickId);
       console.log(response.data.data.summaryInfo, "hi");
     });
