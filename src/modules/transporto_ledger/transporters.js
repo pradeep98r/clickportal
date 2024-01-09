@@ -529,6 +529,7 @@ const Transporters = (props) => {
     dispatch(fromAdvanceFeature(false));
     setRecordPayModal(true);
     setRecordPayModalStatus(true);
+    dispatch(fromAdvanceSummary(false));
   };
   const [isLoadingNew, setIsLoadingNew] = useState(false);
   async function handleLedgerSummaryJson(summaryStatus) {
