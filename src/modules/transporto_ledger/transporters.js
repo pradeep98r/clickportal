@@ -105,6 +105,7 @@ const Transporters = (props) => {
   const [dateDisplay, setDateDisplay] = useState(false);
   var [dateValue, setDateValue] = useState(defaultDate + " to " + defaultDate);
   const [handleDate, sethandleDate] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [tabs, setTabs] = useState(
     props.transPortoTabVal == "inventoryLedgerSummary"
       ? "inventoryledger"
@@ -169,6 +170,7 @@ const Transporters = (props) => {
         setallData([]);
       }
       getPartners(clickId);
+      setLoading(false);
     });
   };
   const getTransportersDataAll = () => {
@@ -191,6 +193,7 @@ const Transporters = (props) => {
         dispatch(transpoLedgersInfo([]));
         setallData([]);
       }
+      setLoading(false);
       getPartners(clickId);
     });
   };
@@ -887,374 +890,27 @@ const Transporters = (props) => {
   };
   return (
     <div className="">
-      <div className="row">
-        <div className="col-lg-5 pl-0">
-          <div className="d-flex align-items-center">
-            <ul className="nav nav-tabs mt-0 mb-2" id="myTab" role="tablist">
-              {tabsData.map((tab) => {
-                return (
-                  <li key={tab.id} className="nav-item ">
-                    <a
-                      className={
-                        "nav-link" + (allCustom == tab.to ? " active" : "")
-                      }
-                      href={"#" + tab.name}
-                      role="tab"
-                      aria-controls="home"
-                      data-bs-toggle="tab"
-                      onClick={() => allCustomEvent(tab.to)}
-                    >
-                      {tab.name}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-            <div>
-              <p className={dateDisplay ? "" : "padding_all"}></p>
-              <div className="mb-2">
-                <div
-                  style={{ display: dateDisplay ? "flex" : "none" }}
-                  className="dateRangePicker justify-content-center"
-                >
-                  <button onClick={onclickDate} className="color_blue">
-                    <div className="date_icon m-0">
-                      <img
-                        src={date_icon}
-                        alt="icon"
-                        className="mr-2 date_icon_in_custom"
-                      />
-                      {dateValue}
-                    </div>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          {allData.length > 0 ? (
-            <div className="d-flex">
-              <div id="search-field">
-                <SearchField
-                  placeholder="Search by Name"
-                  onChange={(event) => {
-                    handleSearch(event);
-                  }}
-                />
-              </div>
-              {transpotoTabValue == "transporterLedger" ? (
-                <div className="print_dwnld_icons d-flex">
-                  <button
-                    onClick={() => {
-                      getDownloadPdf(true).then();
-                    }}
-                  >
-                    <img src={download_icon} alt="img" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleLedgerSummaryJson(true).then();
-                    }}
-                  >
-                    <img src={print} alt="img" />
-                  </button>
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-          ) : (
-            ""
-          )}
-          {transporter.length > 0 ? (
-            fromInventoryTab ||
-            transpotoTabValue == "inventoryLedgerSummary" ? (
-              <div className="ledger-table">
-                <div className="row theadr-tag p-0">
-                  <th className="col-lg-1">#</th>
-                  <th className="col-lg-2">Date</th>
-                  <th class="col-lg-5">Transporter Name</th>
-                  <th class="col-lg-4">Total Balance</th>
-                </div>
-                <div
-                  className="table-scroll ledger-table transporto_ledger_scroll ledger_table_col"
-                  id="scroll_style"
-                >
-                  <div>
-                    {transporter.map((item, index) => {
-                      return (
-                        <Fragment>
-                          <button
-                            onClick={() =>
-                              particularTransporter(item.transporterId, item)
-                            }
-                            className={
-                              transporterId == item.transporterId
-                                ? "tabRowSelected"
-                                : "tr-tags"
-                            }
-                          >
-                            <div className="row text-left align-items-center">
-                              <td className="col-lg-1">{index + 1}</td>
-                              <td className="col-lg-2" key={item.date}>
-                                <p className="date_ledger_val">
-                                  {" "}
-                                  {moment(item.date).format("DD-MMM-YY")}
-                                </p>
-                              </td>
-                              <td
-                                className="col-lg-5 text-left"
-                                key={item.partyName}
-                              >
-                                <div className="d-flex">
-                                  <div className="c-img">
-                                    {item.profilePic ? (
-                                      <img
-                                        className="profile-img"
-                                        src={item.profilePic}
-                                        alt="pref-img"
-                                      />
-                                    ) : (
-                                      <img
-                                        className="profile-img"
-                                        src={single_bill}
-                                        alt="img"
-                                      />
-                                    )}
-                                  </div>
-                                  <div>
-                                    <p className="namedtl-tag text-left">
-                                      {item.transporterName}
-                                    </p>
-
-                                    <p className="mobilee-tag">
-                                      {item.transporterId +
-                                        " | " +
-                                        getMaskedMobileNumber(item.mobile)}
-                                      &nbsp;
-                                    </p>
-                                    <p className="address-tag">
-                                      {fromInventoryTab
-                                        ? item.addressLine
-                                        : item.partyAddress
-                                        ? item.partyAddress
-                                        : ""}
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-
-                              <td className="col-lg-4" key={item.tobePaidRcvd}>
-                                <p className="color_black coloring">
-                                  {formatInvLedger(
-                                    item?.inventory ? item.inventory : []
-                                  )}
-                                </p>
-                              </td>
-                            </div>
-                          </button>
-                        </Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="outstanding-pay ">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <p className="pat-tag"> Total Inventory Balance : </p>
-                    <p className="color_black coloring">
-                      {formatInvLedger(
-                        outstandingAmountInvData ? outstandingAmountInvData : []
-                      )}
-                      {/* {outstandingAmountInvData.length > 0 &&
-                       outstandingAmountInvData.map((itemVal, index) => {
-                         return itemVal.qty
-                           ? itemVal.qty.toFixed(1) +
-                               " " +
-                               getCropUnit(itemVal.unit, itemVal.qty)
-                           : "";
-                       })} */}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="ledger-table ledger_new_changes">
-                <div
-                  className="table-scroll ledger-table transporto_ledger_scroll transporto_ledger_scroll_new ledger_table_col"
-                  id="scroll_style"
-                >
-                  <div className="d-flex p-0 head_scroll">
-                    <th className="col-lg-1">#</th>
-                    <th className="col-lg-2">Date</th>
-                    <th class="col-lg-5">Transporter Name</th>
-
-                    <th class="col-lg-4">To Be Paid(&#8377;)</th>
-                    <th class="col-lg-4">Advances</th>
-
-                    <th class="col-lg-4">Net Payable(&#8377;)</th>
-                  </div>
-                  <div>
-                    {transporter.map((item, index) => {
-                      return (
-                        <div
-                          onClick={() =>
-                            particularTransporter(item.partyId, item)
-                          }
-                          className={
-                            transporterId == item.partyId
-                              ? "head_scroll head_scroll1 p-0 d-flex"
-                              : "head_scroll tr-tags1 p-0 d-flex"
-                          }
-                        >
-                          <th className="col-lg-1">{index + 1}</th>
-                          <th className="col-lg-2" key={item.date}>
-                            <p className="date_ledger_val">
-                              {" "}
-                              {moment(item.date).format("DD-MMM-YY")}
-                            </p>
-                          </th>
-                          <th
-                            className="col-lg-5 text-left"
-                            key={item.partyName}
-                          >
-                            <div className="d-flex">
-                              <div className="c-img">
-                                {item.profilePic ? (
-                                  <img
-                                    className="profile-img"
-                                    src={item.profilePic}
-                                    alt="pref-img"
-                                  />
-                                ) : (
-                                  <img
-                                    className="profile-img"
-                                    src={single_bill}
-                                    alt="img"
-                                  />
-                                )}
-                              </div>
-                              <div>
-                                <p className="namedtl-tag text-left">
-                                  {item.partyName}
-                                </p>
-
-                                <p className="mobilee-tag">
-                                  {item.partyId +
-                                    " | " +
-                                    getMaskedMobileNumber(item.mobile)}
-                                  &nbsp;
-                                </p>
-
-                                <p className="address-tag">
-                                  {fromInventoryTab
-                                    ? item.addressLine
-                                    : item.partyAddress
-                                    ? item.partyAddress
-                                    : ""}
-                                </p>
-                              </div>
-                            </div>
-                          </th>
-                          <th className="col-lg-4" key={item.tobePaidRcvd}>
-                            <p className="color_red">
-                              {item.tobePaidRcvd
-                                ? getCurrencyNumberWithOutSymbol(
-                                    item.tobePaidRcvd
-                                  )
-                                : 0}
-                            </p>
-                          </th>
-                          <th className="col-lg-4">
-                            <p className="coloring">
-                              {" "}
-                              {item.advance
-                                ? getCurrencyNumberWithOutSymbol(item.advance)
-                                : 0}
-                            </p>
-                          </th>
-                          <th className="col-lg-4" key={item.tobePaidRcvd}>
-                            <p className="color_red">
-                              {item.tobePaidRcvd
-                                ? getCurrencyNumberWithOutSymbol(
-                                    item.tobePaidRcvd - item.advance
-                                  )
-                                : 0}
-                            </p>
-                          </th>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-                <div className="outstanding-pay ">
-                  <p className="valu-tag">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div>
-                        <p className="pat-tag">Total Payable</p>
-                        <p className="paid-coloring">
-                          {outStAmt?.totalOutStgAmt
-                            ? getCurrencyNumberWithSymbol(
-                                outStAmt?.totalOutStgAmt
-                              )
-                            : 0}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="pat-tag">Total Advances</p>
-                        <p className="coloring">
-                          {outStAmt?.advanceBal
-                            ? getCurrencyNumberWithSymbol(outStAmt?.advanceBal)
-                            : 0}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="pat-tag">Total Net Payable</p>
-                        <p className="paid-coloring">
-                          {outStAmt?.totalOutStgAmt
-                            ? getCurrencyNumberWithSymbol(
-                                outStAmt?.totalOutStgAmt - outStAmt?.advanceBal
-                              )
-                            : 0}
-                        </p>
-                      </div>
-                    </div>
-                  </p>
-                </div>
-              </div>
-            )
-          ) : (
-            <div className="table-scroll nodata_scroll">
-              <div className="row partner_no_data_widget_rows">
-                <div className="col-lg-5">
-                  <div className="partner_no_data_widget">
-                    <div className="text-center">
-                      <img
-                        src={no_data_icon}
-                        alt="icon"
-                        className="d-flex mx-auto justify-content-center"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+      {isLoading ? (
+        <div className="">
+          <img src={loading} alt="my-gif" className="gif_img" />
         </div>
-        {allData.length > 0 ? (
-          <div className="col-lg-7 p-0">
-            <div className="d-flex align-items-end justify-content-between partner_tabs mb-0">
-              <ul className="nav nav-tabs m-0" id="myTab" role="tablist">
+      ) : (
+        <div className="row">
+          <div className="col-lg-5 pl-0">
+            <div className="d-flex align-items-center">
+              <ul className="nav nav-tabs mt-0 mb-2" id="myTab" role="tablist">
                 {tabsData.map((tab) => {
                   return (
                     <li key={tab.id} className="nav-item ">
                       <a
                         className={
-                          "nav-link" + (allCustom1 == tab.to ? " active" : "")
+                          "nav-link" + (allCustom == tab.to ? " active" : "")
                         }
                         href={"#" + tab.name}
                         role="tab"
                         aria-controls="home"
                         data-bs-toggle="tab"
-                        onClick={() => allCustomEvent1(tab.to)}
+                        onClick={() => allCustomEvent(tab.to)}
                       >
                         {tab.name}
                       </a>
@@ -1262,166 +918,529 @@ const Transporters = (props) => {
                   );
                 })}
               </ul>
-              {tabs == "paymentledger" ? (
-                <button
-                  className="primary_btn add_bills_btn"
-                  onClick={() => {
-                    onClickPaymentRecord();
-                  }}
-                >
-                  <img src={addbill_icon} alt="image" className="mr-2" />
-                  Record Payment
-                </button>
-              ) : tabs == "inventoryledger" ? (
-                <button
-                  className="primary_btn add_bills_btn"
-                  onClick={() => {
-                    onClickInventoryRecord();
-                  }}
-                >
-                  <img src={addbill_icon} alt="image" className="mr-2" />
-                  Record Inventory
-                </button>
-              ) : tabs == "advanceledger" ? (
-                <button
-                  className="primary_btn add_bills_btn"
-                  onClick={recordPaymentOnClickEventAdv}
-                >
-                  <img src={addbill_icon} alt="image" className="mr-2" />
-                  Record Advance
-                </button>
-              ) : (
-                ""
-              )}
-            </div>
-            <div>
-              <p className={dateDisplay1 ? "" : "padding_all"}></p>
-              <div className="m-2">
-                <div
-                  style={{ display: dateDisplay1 ? "flex" : "none" }}
-                  className="dateRangePicker justify-content-center"
-                >
-                  <button onClick={onclickDate1} className="color_blue">
-                    <div className="date_icon m-0">
-                      <img
-                        src={date_icon}
-                        alt="icon"
-                        className="mr-2 date_icon_in_custom"
-                      />
-                      {dateValue1}
-                    </div>
-                  </button>
+              <div>
+                <p className={dateDisplay ? "" : "padding_all"}></p>
+                <div className="mb-2">
+                  <div
+                    style={{ display: dateDisplay ? "flex" : "none" }}
+                    className="dateRangePicker justify-content-center"
+                  >
+                    <button onClick={onclickDate} className="color_blue">
+                      <div className="date_icon m-0">
+                        <img
+                          src={date_icon}
+                          alt="icon"
+                          className="mr-2 date_icon_in_custom"
+                        />
+                        {dateValue}
+                      </div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="card details-tag">
-              <div className="card-body" id="card-details">
-                <div className="row">
+            {allData.length > 0 ? (
+              <div className="d-flex">
+                <div id="search-field">
+                  <SearchField
+                    placeholder="Search by Name"
+                    onChange={(event) => {
+                      handleSearch(event);
+                    }}
+                  />
+                </div>
+                {transpotoTabValue == "transporterLedger" ? (
+                  <div className="print_dwnld_icons d-flex">
+                    <button
+                      onClick={() => {
+                        getDownloadPdf(true).then();
+                      }}
+                    >
+                      <img src={download_icon} alt="img" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLedgerSummaryJson(true).then();
+                      }}
+                    >
+                      <img src={print} alt="img" />
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
+            ) : (
+              ""
+            )}
+            {transporter.length > 0 ? (
+              fromInventoryTab ||
+              transpotoTabValue == "inventoryLedgerSummary" ? (
+                <div className="ledger-table">
+                  <div className="row theadr-tag p-0">
+                    <th className="col-lg-1">#</th>
+                    <th className="col-lg-2">Date</th>
+                    <th class="col-lg-5">Transporter Name</th>
+                    <th class="col-lg-4">Total Balance</th>
+                  </div>
                   <div
-                    className="col-lg-3 d-flex align-items-center pl-0"
-                    id="verticalLines"
+                    className="table-scroll ledger-table transporto_ledger_scroll ledger_table_col"
+                    id="scroll_style"
                   >
-                    <div className="pl-0 d-flex" key={transData.partyId}>
-                      {transData.profilePic ? (
-                        <img
-                          id="singles-img"
-                          src={transData.profilePic}
-                          alt="buy-img"
-                        />
-                      ) : (
-                        <img id="singles-img" src={single_bill} alt="img" />
-                      )}
-                      <p id="card-text">
-                        <p className="namedtl-tag">
-                          {fromInventoryTab
-                            ? transData.transporterName
-                            : transData.partyName}
-                        </p>
-                        <div className="d-flex align-items-center">
-                          <p className="mobilee-tag">
-                            {fromInventoryTab
-                              ? transData.transporterId
-                              : transData.partyId}
-                          </p>
-                          <span className="px-1 desk_responsive">|</span>
-                          <span className="mobilee-tag desk_responsive">
-                            {getMaskedMobileNumber(transData?.mobile)}
-                          </span>
-                        </div>
-                        <p className="mobilee-tag mobile_responsive">
-                          {getMaskedMobileNumber(transData?.mobile)}
-                        </p>
+                    <div>
+                      {transporter.map((item, index) => {
+                        return (
+                          <Fragment>
+                            <button
+                              onClick={() =>
+                                particularTransporter(item.transporterId, item)
+                              }
+                              className={
+                                transporterId == item.transporterId
+                                  ? "tabRowSelected"
+                                  : "tr-tags"
+                              }
+                            >
+                              <div className="row text-left align-items-center">
+                                <td className="col-lg-1">{index + 1}</td>
+                                <td className="col-lg-2" key={item.date}>
+                                  <p className="date_ledger_val">
+                                    {" "}
+                                    {moment(item.date).format("DD-MMM-YY")} +
+                                    'lk'
+                                  </p>
+                                </td>
+                                <td
+                                  className="col-lg-5 text-left"
+                                  key={item.partyName}
+                                >
+                                  <div className="d-flex">
+                                    <div className="c-img">
+                                      {item.profilePic ? (
+                                        <img
+                                          className="profile-img"
+                                          src={item.profilePic}
+                                          alt="pref-img"
+                                        />
+                                      ) : (
+                                        <img
+                                          className="profile-img"
+                                          src={single_bill}
+                                          alt="img"
+                                        />
+                                      )}
+                                    </div>
+                                    <div>
+                                      <p className="namedtl-tag text-left">
+                                        {item.transporterName}
+                                      </p>
+
+                                      <p className="mobilee-tag">
+                                        {item.transporterId +
+                                          " | " +
+                                          getMaskedMobileNumber(item.mobile)}
+                                        &nbsp;
+                                      </p>
+                                      <p className="address-tag">
+                                        {fromInventoryTab
+                                          ? item.addressLine
+                                          : item.partyAddress
+                                          ? item.partyAddress
+                                          : ""}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                <td
+                                  className="col-lg-4"
+                                  key={item.tobePaidRcvd}
+                                >
+                                  <p className="color_black coloring">
+                                    {formatInvLedger(
+                                      item?.inventory ? item.inventory : []
+                                    )}
+                                  </p>
+                                </td>
+                              </div>
+                            </button>
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="outstanding-pay ">
+                    <div className="d-flex align-items-center justify-content-between">
+                      <p className="pat-tag"> Total Inventory Balance : </p>
+                      <p className="color_black coloring">
+                        {formatInvLedger(
+                          outstandingAmountInvData
+                            ? outstandingAmountInvData
+                            : []
+                        )}
+                        {/* {outstandingAmountInvData.length > 0 &&
+                       outstandingAmountInvData.map((itemVal, index) => {
+                         return itemVal.qty
+                           ? itemVal.qty.toFixed(1) +
+                               " " +
+                               getCropUnit(itemVal.unit, itemVal.qty)
+                           : "";
+                       })} */}
                       </p>
                     </div>
                   </div>
-                  {tabs === "paymentledger" && payLedger != null && (
-                    <>
-                      <div
-                        className="col-lg-3 d-flex align-items-center"
-                        id="verticalLines"
-                      >
-                        <p className="card-text paid">
-                          {langFullData.totalBusiness}{" "}
-                          <p className="coloring color_black">
-                            {payLedger?.totalToBePaid
+                </div>
+              ) : (
+                <div className="ledger-table ledger_new_changes">
+                  <div
+                    className="table-scroll ledger-table transporto_ledger_scroll transporto_ledger_scroll_new ledger_table_col"
+                    id="scroll_style"
+                  >
+                    <div className="d-flex p-0 head_scroll">
+                      <th className="col-lg-1">#</th>
+                      <th className="col-lg-2">Date</th>
+                      <th class="col-lg-5">Transporter Name</th>
+
+                      <th class="col-lg-4">To Be Paid(&#8377;)</th>
+                      <th class="col-lg-4">Advances</th>
+
+                      <th class="col-lg-4">Net Payable(&#8377;)</th>
+                    </div>
+                    <div>
+                      {transporter.map((item, index) => {
+                        return (
+                          <div
+                            onClick={() =>
+                              particularTransporter(item.partyId, item)
+                            }
+                            className={
+                              transporterId == item.partyId
+                                ? "head_scroll head_scroll1 p-0 d-flex"
+                                : "head_scroll tr-tags1 p-0 d-flex"
+                            }
+                          >
+                            <th className="col-lg-1">{index + 1}</th>
+                            <th className="col-lg-2" key={item.date}>
+                              <p className="date_ledger_val">
+                                {" "}
+                                {moment(item.date).format("DD-MMM-YY")}
+                              </p>
+                            </th>
+                            <th
+                              className="col-lg-5 text-left"
+                              key={item.partyName}
+                            >
+                              <div className="d-flex">
+                                <div className="c-img">
+                                  {item.profilePic ? (
+                                    <img
+                                      className="profile-img"
+                                      src={item.profilePic}
+                                      alt="pref-img"
+                                    />
+                                  ) : (
+                                    <img
+                                      className="profile-img"
+                                      src={single_bill}
+                                      alt="img"
+                                    />
+                                  )}
+                                </div>
+                                <div>
+                                  <p className="namedtl-tag text-left">
+                                    {item.partyName}
+                                  </p>
+
+                                  <p className="mobilee-tag">
+                                    {item.partyId +
+                                      " | " +
+                                      getMaskedMobileNumber(item.mobile)}
+                                    &nbsp;
+                                  </p>
+
+                                  <p className="address-tag">
+                                    {fromInventoryTab
+                                      ? item.addressLine
+                                      : item.partyAddress
+                                      ? item.partyAddress
+                                      : ""}
+                                  </p>
+                                </div>
+                              </div>
+                            </th>
+                            <th className="col-lg-4" key={item.tobePaidRcvd}>
+                              <p className="color_red">
+                                {item.tobePaidRcvd
+                                  ? getCurrencyNumberWithOutSymbol(
+                                      item.tobePaidRcvd
+                                    )
+                                  : 0}
+                              </p>
+                            </th>
+                            <th className="col-lg-4">
+                              <p className="coloring">
+                                {" "}
+                                {item.advance
+                                  ? getCurrencyNumberWithOutSymbol(item.advance)
+                                  : 0}
+                              </p>
+                            </th>
+                            <th className="col-lg-4">
+                              <p className="color_red">
+                                {item.tobePaidRcvd
+                                  ? getCurrencyNumberWithOutSymbol(
+                                      item.tobePaidRcvd - item.advance
+                                    )
+                                  : 0}
+                              </p>
+                            </th>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="outstanding-pay ">
+                    <p className="valu-tag">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <div>
+                          <p className="pat-tag">Total Payable</p>
+                          <p className="paid-coloring">
+                            {outStAmt?.totalOutStgAmt
                               ? getCurrencyNumberWithSymbol(
-                                  payLedger.totalToBePaid
+                                  outStAmt?.totalOutStgAmt
                                 )
                               : 0}
                           </p>
-                        </p>
-                      </div>
-                      <div
-                        className="col-lg-3 d-flex align-items-center"
-                        id="verticalLines"
-                      >
-                        <p className="total-paid">
-                          {langFullData.totalPaid}
-                          <p className="coloring color_black">
-                            {payLedger.totalPaid
-                              ? getCurrencyNumberWithSymbol(payLedger.totalPaid)
-                              : 0}
-                          </p>{" "}
-                        </p>
-                      </div>
-                      <div className="col-lg-3 d-flex align-items-center">
-                        <p className="out-standing">
-                          {langFullData.outstandingPayables}
-                          <p className="coloring color_black">
-                            {payLedger.totalOutStandingBalance
+                        </div>
+                        <div>
+                          <p className="pat-tag">Total Advances</p>
+                          <p className="coloring">
+                            {outStAmt?.advanceBal
                               ? getCurrencyNumberWithSymbol(
-                                  payLedger.totalOutStandingBalance
+                                  outStAmt?.advanceBal
                                 )
                               : 0}
                           </p>
+                        </div>
+                        <div>
+                          <p className="pat-tag">Total Net Payable</p>
+                          <p className="paid-coloring">
+                            {outStAmt?.totalOutStgAmt
+                              ? getCurrencyNumberWithSymbol(
+                                  outStAmt?.totalOutStgAmt -
+                                    outStAmt?.advanceBal
+                                )
+                              : 0}
+                          </p>
+                        </div>
+                      </div>
+                    </p>
+                  </div>
+                </div>
+              )
+            ) : (
+              <div className="table-scroll nodata_scroll">
+                <div className="row partner_no_data_widget_rows">
+                  <div className="col-lg-5">
+                    <div className="partner_no_data_widget">
+                      <div className="text-center">
+                        <img
+                          src={no_data_icon}
+                          alt="icon"
+                          className="d-flex mx-auto justify-content-center"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+          {allData.length > 0 ? (
+            <div className="col-lg-7 p-0">
+              <div className="d-flex align-items-end justify-content-between partner_tabs mb-0">
+                <ul className="nav nav-tabs m-0" id="myTab" role="tablist">
+                  {tabsData.map((tab) => {
+                    return (
+                      <li key={tab.id} className="nav-item ">
+                        <a
+                          className={
+                            "nav-link" + (allCustom1 == tab.to ? " active" : "")
+                          }
+                          href={"#" + tab.name}
+                          role="tab"
+                          aria-controls="home"
+                          data-bs-toggle="tab"
+                          onClick={() => allCustomEvent1(tab.to)}
+                        >
+                          {tab.name}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {tabs == "paymentledger" ? (
+                  <button
+                    className="primary_btn add_bills_btn"
+                    onClick={() => {
+                      onClickPaymentRecord();
+                    }}
+                  >
+                    <img src={addbill_icon} alt="image" className="mr-2" />
+                    Record Payment
+                  </button>
+                ) : tabs == "inventoryledger" ? (
+                  <button
+                    className="primary_btn add_bills_btn"
+                    onClick={() => {
+                      onClickInventoryRecord();
+                    }}
+                  >
+                    <img src={addbill_icon} alt="image" className="mr-2" />
+                    Record Inventory
+                  </button>
+                ) : tabs == "advanceledger" ? (
+                  <button
+                    className="primary_btn add_bills_btn"
+                    onClick={recordPaymentOnClickEventAdv}
+                  >
+                    <img src={addbill_icon} alt="image" className="mr-2" />
+                    Record Advance
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div>
+                <p className={dateDisplay1 ? "" : "padding_all"}></p>
+                <div className="m-2">
+                  <div
+                    style={{ display: dateDisplay1 ? "flex" : "none" }}
+                    className="dateRangePicker justify-content-center"
+                  >
+                    <button onClick={onclickDate1} className="color_blue">
+                      <div className="date_icon m-0">
+                        <img
+                          src={date_icon}
+                          alt="icon"
+                          className="mr-2 date_icon_in_custom"
+                        />
+                        {dateValue1}
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="card details-tag">
+                <div className="card-body" id="card-details">
+                  <div className="row">
+                    <div
+                      className="col-lg-3 d-flex align-items-center pl-0"
+                      id="verticalLines"
+                    >
+                      <div className="pl-0 d-flex" key={transData.partyId}>
+                        {transData.profilePic ? (
+                          <img
+                            id="singles-img"
+                            src={transData.profilePic}
+                            alt="buy-img"
+                          />
+                        ) : (
+                          <img id="singles-img" src={single_bill} alt="img" />
+                        )}
+                        <p id="card-text">
+                          <p className="namedtl-tag">
+                            {fromInventoryTab
+                              ? transData.transporterName
+                              : transData.partyName}
+                          </p>
+                          <div className="d-flex align-items-center">
+                            <p className="mobilee-tag">
+                              {fromInventoryTab
+                                ? transData.transporterId
+                                : transData.partyId}
+                            </p>
+                            <span className="px-1 desk_responsive">|</span>
+                            <span className="mobilee-tag desk_responsive">
+                              {getMaskedMobileNumber(transData?.mobile)}
+                            </span>
+                          </div>
+                          <p className="mobilee-tag mobile_responsive">
+                            {getMaskedMobileNumber(transData?.mobile)}
+                          </p>
                         </p>
                       </div>
-                    </>
-                  )}
-                  {tabs === "inventoryledger" && invLedger != null && (
-                    <>
-                      <div
-                        className="col-lg-3 d-flex align-items-center"
-                        id="verticalLines"
-                      >
-                        <p className="card-text paid">
-                          Total Given{" "}
-                          <p className="coloring color_black">
-                            {invLedger?.totalGiven.length > 0
-                              ? formatInvLedger(
-                                  invLedger?.totalGiven
-                                    ? invLedger.totalGiven
-                                    : []
-                                ).length > 0
+                    </div>
+                    {tabs === "paymentledger" && payLedger != null && (
+                      <>
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id="verticalLines"
+                        >
+                          <p className="card-text paid">
+                            {langFullData.totalBusiness}{" "}
+                            <p className="coloring color_black">
+                              {payLedger?.totalToBePaid
+                                ? getCurrencyNumberWithSymbol(
+                                    payLedger.totalToBePaid
+                                  )
+                                : 0}
+                            </p>
+                          </p>
+                        </div>
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id="verticalLines"
+                        >
+                          <p className="total-paid">
+                            {langFullData.totalPaid}
+                            <p className="coloring color_black">
+                              {payLedger.totalPaid
+                                ? getCurrencyNumberWithSymbol(
+                                    payLedger.totalPaid
+                                  )
+                                : 0}
+                            </p>{" "}
+                          </p>
+                        </div>
+                        <div className="col-lg-3 d-flex align-items-center">
+                          <p className="out-standing">
+                            {langFullData.outstandingPayables}
+                            <p className="coloring color_black">
+                              {payLedger.totalOutStandingBalance
+                                ? getCurrencyNumberWithSymbol(
+                                    payLedger.totalOutStandingBalance
+                                  )
+                                : 0}
+                            </p>
+                          </p>
+                        </div>
+                      </>
+                    )}
+                    {tabs === "inventoryledger" && invLedger != null && (
+                      <>
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id="verticalLines"
+                        >
+                          <p className="card-text paid">
+                            Total Given{" "}
+                            <p className="coloring color_black">
+                              {invLedger?.totalGiven.length > 0
                                 ? formatInvLedger(
                                     invLedger?.totalGiven
                                       ? invLedger.totalGiven
                                       : []
-                                  )
-                                : 0
-                              : 0}
-                            {/* {invLedger.totalGiven
+                                  ).length > 0
+                                  ? formatInvLedger(
+                                      invLedger?.totalGiven
+                                        ? invLedger.totalGiven
+                                        : []
+                                    )
+                                  : 0
+                                : 0}
+                              {/* {invLedger.totalGiven
                               ? invLedger.totalGiven.map((item) => {
                                   return item.qty > 0
                                     ? item.qty.toFixed(1) +
@@ -1430,24 +1449,24 @@ const Transporters = (props) => {
                                     : "";
                                 })
                               : 0} */}
+                            </p>
                           </p>
-                        </p>
-                      </div>
-                      <div
-                        className="col-lg-3 d-flex align-items-center"
-                        id="verticalLines"
-                      >
-                        <p className="total-paid">
-                          Total Collected
-                          <p className="coloring color_black">
-                            {invLedger?.totalCollected.length > 0
-                              ? formatInvLedger(
-                                  invLedger?.totalCollected
-                                    ? invLedger?.totalCollected
-                                    : []
-                                )
-                              : 0}
-                            {/* {invLedger.totalCollected
+                        </div>
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id="verticalLines"
+                        >
+                          <p className="total-paid">
+                            Total Collected
+                            <p className="coloring color_black">
+                              {invLedger?.totalCollected.length > 0
+                                ? formatInvLedger(
+                                    invLedger?.totalCollected
+                                      ? invLedger?.totalCollected
+                                      : []
+                                  )
+                                : 0}
+                              {/* {invLedger.totalCollected
                               ? invLedger.totalCollected.map((item) => {
                                   return item.qty > 0
                                     ? item.qty.toFixed(1) +
@@ -1456,19 +1475,19 @@ const Transporters = (props) => {
                                     : "";
                                 })
                               : 0} */}
-                          </p>{" "}
-                        </p>
-                      </div>
-                      <div className="col-lg-3 d-flex align-items-center">
-                        <p className="out-standing">
-                          Total Balance
-                          <p className="coloring color_black">
-                            {invLedger?.balance.length > 0
-                              ? formatInvLedger(
-                                  invLedger?.balance ? invLedger?.balance : []
-                                )
-                              : 0}
-                            {/* {invLedger.balance
+                            </p>{" "}
+                          </p>
+                        </div>
+                        <div className="col-lg-3 d-flex align-items-center">
+                          <p className="out-standing">
+                            Total Balance
+                            <p className="coloring color_black">
+                              {invLedger?.balance.length > 0
+                                ? formatInvLedger(
+                                    invLedger?.balance ? invLedger?.balance : []
+                                  )
+                                : 0}
+                              {/* {invLedger.balance
                               ? invLedger.balance.map((item) => {
                                   return item.qty
                                     ? item.qty.toFixed(1) +
@@ -1477,143 +1496,148 @@ const Transporters = (props) => {
                                     : "";
                                 })
                               : 0} */}
+                            </p>
                           </p>
-                        </p>
-                      </div>
-                    </>
-                  )}
-                  {tabs == "advanceledger" && (
-                    <>
-                      <div
-                        className="col-lg-3 d-flex align-items-center"
-                        id="verticalLines"
-                      >
-                        <p className="card-text paid">
-                          Total Given
-                          <p className="paid-coloring">
-                            {totalGivenValByPartyId != 0
-                              ? getCurrencyNumberWithSymbol(
-                                  totalGivenValByPartyId
-                                )
-                              : 0}
-                          </p>
-                        </p>
-                      </div>
-                      <div
-                        className="col-lg-3 d-flex align-items-center"
-                        id="verticalLines"
-                      >
-                        <p className="card-text paid">
-                          Total Collected
-                          <p className="paid-coloring">
-                            {totalCollectedValByPartyId != 0
-                              ? getCurrencyNumberWithSymbol(
-                                  totalCollectedValByPartyId
-                                )
-                              : 0}
-                          </p>
-                        </p>
-                      </div>
-
-                      <div className="col-lg-3 d-flex align-items-center" id="">
-                        <p className="card-text paid">
-                          Outstanding Advances
-                          <p className="coloring">
-                            {totalAdvancesValByPartyId != 0
-                              ? getCurrencyNumberWithSymbol(
-                                  totalAdvancesValByPartyId
-                                )
-                              : 0}
-                          </p>
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-              <span id="horizontal-line-card"></span>
-              <div className="d-flex justify-content-between align-items-end">
-                <ul
-                  className="nav nav-tabs ledger_tabs trans_new_tabs"
-                  id="myTab"
-                  role="tablist"
-                >
-                  {links.map((link) => {
-                    return (
-                      <li key={link.id} className="nav-item ">
-                        <a
-                          className={
-                            "nav-link" + (tabs == link.to ? " active" : "")
-                          }
-                          href={"#" + link.to}
-                          role="tab"
-                          aria-controls="home"
-                          data-bs-toggle="tab"
-                          onClick={() => tabEvent(link.to)}
+                        </div>
+                      </>
+                    )}
+                    {tabs == "advanceledger" && (
+                      <>
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id="verticalLines"
                         >
-                          {props.transPortoTabVal == "inventoryLedgerSummary" &&
-                          link.to == "advanceledger"
-                            ? ""
-                            : link.name}
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-                <div>
-                  {tabs === "paymentledger" ? (
-                    <div className="print_dwnld_icons d-flex">
-                      <button
-                        onClick={() => {
-                          getDownloadPdfSummary(tabs).then();
-                        }}
-                      >
-                        <img src={download_icon} alt="img" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          handleLedgerSummaryJsonSummary(tabs).then();
-                        }}
-                      >
-                        <img src={print} alt="img" />
-                      </button>
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                          <p className="card-text paid">
+                            Total Given
+                            <p className="paid-coloring">
+                              {totalGivenValByPartyId != 0
+                                ? getCurrencyNumberWithSymbol(
+                                    totalGivenValByPartyId
+                                  )
+                                : 0}
+                            </p>
+                          </p>
+                        </div>
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id="verticalLines"
+                        >
+                          <p className="card-text paid">
+                            Total Collected
+                            <p className="paid-coloring">
+                              {totalCollectedValByPartyId != 0
+                                ? getCurrencyNumberWithSymbol(
+                                    totalCollectedValByPartyId
+                                  )
+                                : 0}
+                            </p>
+                          </p>
+                        </div>
+
+                        <div
+                          className="col-lg-3 d-flex align-items-center"
+                          id=""
+                        >
+                          <p className="card-text paid">
+                            Outstanding Advances
+                            <p className="coloring">
+                              {totalAdvancesValByPartyId != 0
+                                ? getCurrencyNumberWithSymbol(
+                                    totalAdvancesValByPartyId
+                                  )
+                                : 0}
+                            </p>
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <span id="horizontal-line-card"></span>
+                <div className="d-flex justify-content-between align-items-end">
+                  <ul
+                    className="nav nav-tabs ledger_tabs trans_new_tabs"
+                    id="myTab"
+                    role="tablist"
+                  >
+                    {links.map((link) => {
+                      return (
+                        <li key={link.id} className="nav-item ">
+                          <a
+                            className={
+                              "nav-link" + (tabs == link.to ? " active" : "")
+                            }
+                            href={"#" + link.to}
+                            role="tab"
+                            aria-controls="home"
+                            data-bs-toggle="tab"
+                            onClick={() => tabEvent(link.to)}
+                          >
+                            {props.transPortoTabVal ==
+                              "inventoryLedgerSummary" &&
+                            link.to == "advanceledger"
+                              ? ""
+                              : link.name}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div>
+                    {tabs === "paymentledger" ? (
+                      <div className="print_dwnld_icons d-flex">
+                        <button
+                          onClick={() => {
+                            getDownloadPdfSummary(tabs).then();
+                          }}
+                        >
+                          <img src={download_icon} alt="img" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleLedgerSummaryJsonSummary(tabs).then();
+                          }}
+                        >
+                          <img src={print} alt="img" />
+                        </button>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              </div>
+              {tabs == "paymentledger" ? (
+                <PaymentLedger tabs={tabs} />
+              ) : tabs == "inventoryledger" ? (
+                <InventoryLedger tabs={tabs} />
+              ) : tabs == "advanceledger" ? (
+                <AdvanceSummary
+                  tabs={tabs}
+                  advancesSum={advSummary}
+                  ledgerTabs="detailedadvances"
+                />
+              ) : (
+                ""
+              )}
+            </div>
+          ) : (
+            <div className="row partner_no_data_widget_rows nodata_scroll_fix">
+              <div className="col-lg-5">
+                <div className="partner_no_data_widget">
+                  <div className="text-center">
+                    <img
+                      src={no_data_icon}
+                      alt="icon"
+                      className="d-flex mx-auto justify-content-center"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            {tabs == "paymentledger" ? (
-              <PaymentLedger tabs={tabs} />
-            ) : tabs == "inventoryledger" ? (
-              <InventoryLedger tabs={tabs} />
-            ) : tabs == "advanceledger" ? (
-              <AdvanceSummary
-                tabs={tabs}
-                advancesSum={advSummary}
-                ledgerTabs="detailedadvances"
-              />
-            ) : (
-              ""
-            )}
-          </div>
-        ) : (
-          <div className="row partner_no_data_widget_rows nodata_scroll_fix">
-            <div className="col-lg-5">
-              <div className="partner_no_data_widget">
-                <div className="text-center">
-                  <img
-                    src={no_data_icon}
-                    alt="icon"
-                    className="d-flex mx-auto justify-content-center"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
       {recordInventoryModalStatus ? (
         <AddRecordInventory
           showRecordInventoryModal={recordInventoryModal}
