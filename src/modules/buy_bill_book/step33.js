@@ -980,13 +980,14 @@ const Step33 = (props) => {
             );
             $("#disable").attr("disabled", false);
           } else {
-            if (cashpaidValue > outBal) {
+            if (cashpaidValue > billEditItem?.finalLedgerBal) {
               toast.error(
-                `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+                `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${billEditItem?.finalLedgerBal}. `,
                 {
                   toastId: "error10",
                 }
               );
+              $("#disable").attr("disabled", false);
             } else {
               editBillApiCall();
             }
@@ -1001,13 +1002,14 @@ const Step33 = (props) => {
           $("#disable").attr("disabled", false);
         }
       } else {
-        if (cashpaidValue > outBal) {
+        if (cashpaidValue > getFinalLedgerbalance()) {
           toast.error(
-            `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+            `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${getFinalLedgerbalance()}. `,
             {
               toastId: "error10",
             }
           );
+          $("#disable").attr("disabled", false);
         } else {
           addBillApiCall();
         }
@@ -1024,39 +1026,42 @@ const Step33 = (props) => {
             );
             $("#disable").attr("disabled", false);
           } else {
-            if (cashpaidValue > outBal) {
+            if (cashpaidValue > billEditItem?.finalLedgerBal) {
               toast.error(
-                `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+                `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${billEditItem?.finalLedgerBal}. `,
                 {
                   toastId: "error10",
                 }
               );
+              $("#disable").attr("disabled", false);
             } else {
               editBillApiCall();
             }
           }
         } else {
           console.log(editBillRequestObj, "editBillRequestObj");
-          if (cashpaidValue > outBal) {
+          if (cashpaidValue > billEditItem?.finalLedgerBal) {
             toast.error(
-              `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+              `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${billEditItem?.finalLedgerBal}. `,
               {
                 toastId: "error10",
               }
             );
+            $("#disable").attr("disabled", false);
           } else {
             editBillApiCall();
           }
         }
       } else {
         console.log(billRequestObj, "billRequestObj");
-        if (cashpaidValue > outBal) {
+        if (cashpaidValue > getFinalLedgerbalance()) {
           toast.error(
-            `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+            `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${getFinalLedgerbalance()}. `,
             {
               toastId: "error10",
             }
           );
+          $("#disable").attr("disabled", false);
         } else {
           addBillApiCall();
         }
