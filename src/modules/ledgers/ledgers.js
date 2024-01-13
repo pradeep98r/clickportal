@@ -1072,7 +1072,7 @@ const Ledgers = (props) => {
                               ) : (
                                 <th class="col-lg-3">To Be Paid(&#8377;)</th>
                               )}
-                              {ledgerType == "BUYER" ? (
+                              {/* {ledgerType == "BUYER" ? (
                                 ""
                               ) : (
                                 <th class="col-lg-2">Advance(&#8377;)</th>
@@ -1081,7 +1081,7 @@ const Ledgers = (props) => {
                                 ""
                               ) : (
                                 <th class="col-lg-2">Net Payable(&#8377;)</th>
-                              )}
+                              )} */}
                             </div>
                             <div className="table-scroll" id="scroll_style">
                               {ledgers.map((item, index) => {
@@ -1192,7 +1192,7 @@ const Ledgers = (props) => {
                                             : 0}
                                         </p>
                                       </td>
-                                      {ledgerType == "BUYER" ? (
+                                      {/* {ledgerType == "BUYER" ? (
                                         ""
                                       ) : (
                                         <td className="col-lg-2">
@@ -1217,7 +1217,7 @@ const Ledgers = (props) => {
                                               : 0}
                                           </p>
                                         </td>
-                                      )}
+                                      )} */}
                                     </div>
                                   </button>
                                   // </Fragment>
@@ -1244,7 +1244,7 @@ const Ledgers = (props) => {
                                       To Be Paid(&#8377;)
                                     </th>
                                   )}
-                                  {ledgerType == "BUYER" ? (
+                                  {/* {ledgerType == "BUYER" ? (
                                     ""
                                   ) : (
                                     <th class="col-lg-4">Advances(&#8377;)</th>
@@ -1255,7 +1255,7 @@ const Ledgers = (props) => {
                                     <th class="col-lg-4">
                                       Net Payable(&#8377;)
                                     </th>
-                                  )}
+                                  )} */}
                                 </div>
 
                                 {ledgers.map((item, index) => {
@@ -1365,7 +1365,7 @@ const Ledgers = (props) => {
                                             : 0}
                                         </p>
                                       </th>
-                                      {ledgerType == "BUYER" ? (
+                                      {/* {ledgerType == "BUYER" ? (
                                         ""
                                       ) : (
                                         <th className="col-md-4">
@@ -1391,7 +1391,7 @@ const Ledgers = (props) => {
                                               : 0}
                                           </p>
                                         </th>
-                                      )}
+                                      )} */}
                                     </div>
                                     // </Fragment>
                                   );
@@ -1424,18 +1424,18 @@ const Ledgers = (props) => {
                           {ledgerType == "BUYER" ? (
                             <p className="pat-tag">Outstanding Recievables:</p>
                           ) : (
-                            <div className="d-flex justify-content-between w-100">
-                              <div>
-                                <p className="pat-tag">Total Payable</p>
-                                <p className="values-tag paid-coloring">
-                                  {outStAmt?.totalOutStgAmt
-                                    ? getCurrencyNumberWithSymbol(
-                                        outStAmt?.totalOutStgAmt
-                                      )
-                                    : 0}
-                                </p>
-                              </div>
-                              <div>
+                            // <div className="d-flex justify-content-between w-100">
+                            <div className="d-flex align-items-center justify-content-between w-100">
+                              <p className="pat-tag">Outstanding Payables:</p>
+                              <p className="values-tag paid-coloring">
+                                {outStAmt?.totalOutStgAmt
+                                  ? getCurrencyNumberWithSymbol(
+                                      outStAmt?.totalOutStgAmt
+                                    )
+                                  : 0}
+                              </p>
+                              {/* </div> */}
+                              {/* <div>
                                 <p className="pat-tag">Total Advances</p>
                                 <p className="values-tag">
                                   {outStAmt?.advanceBal
@@ -1455,7 +1455,7 @@ const Ledgers = (props) => {
                                       )
                                     : 0}
                                 </p>
-                              </div>
+                              </div> */}
                             </div>
                           )}
                           {ledgerType == "BUYER" ? (
