@@ -21,6 +21,7 @@ import {
   getInventorySummary,
   getParticularTransporter,
   getTransporters,
+  getTransportersAll,
 } from "../../actions/transporterService";
 import {
   outstandingAmount,
@@ -43,6 +44,7 @@ import {
   fromParentSelect,
   fromTransportoRecord,
   partyOutstandingBal,
+  partyOutstandingAdv,
   totalAdvancesVal,
   totalAdvancesValById,
   totalCollectedById,
@@ -78,6 +80,7 @@ const TransportoRecord = (props) => {
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
   const outStandingBalVal = advancesData?.partyOutstandingBal;
+  const outStandingBalAdv = advancesData?.partyOutstandingAdv;
   // const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -85,20 +88,20 @@ const TransportoRecord = (props) => {
   var fromInventoryTab = transpoData?.fromInv;
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
-  const [outBalAdvance, setOutBalAdvance] = useState(0);
+  // const [outBalAdvance, setOutBalAdvance] = useState(outStandingBalAdv);
   useEffect(() => {
     if (!fromAdvSummary) {
       getOutstandingPaybles(clickId, transId);
     }
     setReturnAdvanceStatus(false);
     setLoading(false);
-  }, [props.showRecordPayModal]);
+  }, [props.showRecordPayModal, advancesData?.partyOutstandingAdv]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-        console.log(response.data.data);
         dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
-        setOutBalAdvance(response.data.data.advance);
+        // setOutBalAdvance(response.data.data.advance);
+        dispatch(partyOutstandingAdv(response.data.data.advance));
       }
     });
   };
@@ -132,15 +135,6 @@ const TransportoRecord = (props) => {
     }
   };
   const onSubmitRecordPayment = () => {
-    console.log(
-      fromAdvances,
-      returnAdvanceStatus,
-      outBalAdvance,
-      paidsRcvd,
-      !fromAdvSummary,
-      !advancesData?.fromParentSelect,
-      "all values"
-    );
     if (paidsRcvd < 0) {
       setRequiredCondition("Amount Recieved Cannot be negative");
     } else if (parseInt(paidsRcvd) === 0) {
@@ -149,7 +143,10 @@ const TransportoRecord = (props) => {
       setRequiredCondition("Invalid Amount");
     } else if (fromAdvances) {
       if (!fromAdvSummary || !advancesData?.fromParentSelect) {
-        if (parseInt(paidsRcvd) > outBalAdvance && returnAdvanceStatus) {
+        if (
+          parseInt(paidsRcvd) > outStandingBalAdv &&
+          advanceTypeMode != "Given"
+        ) {
           setRequiredCondition(
             "Entered Amount cannot be more than Outstanding Advance"
           );
@@ -181,7 +178,7 @@ const TransportoRecord = (props) => {
     ) {
       if (fromAdvances) {
         if (returnAdvanceStatus) {
-          if (parseInt(paidsRcvd) > outBalAdvance) {
+          if (parseInt(paidsRcvd) > outStandingBalAdv) {
             setRequiredCondition(
               "Entered Amount cannot be more than Outstanding Advance"
             );
@@ -195,9 +192,13 @@ const TransportoRecord = (props) => {
         addRecordPayment();
       }
     } else if (parseInt(paidsRcvd) > outStandingBalVal) {
-      setRequiredCondition(
-        "Entered Amount cannot more than Outstanding Balance"
-      );
+      if (!editRecordStatus) {
+        setRequiredCondition(
+          "Entered Amount cannot more than Outstanding Balance"
+        );
+      } else {
+        addRecordPayment();
+      }
     }
   };
   const [paymentMode, setPaymentMode] = useState(
@@ -249,27 +250,44 @@ const TransportoRecord = (props) => {
       writerId: writerId,
       type: advanceTypeMode == "Given" ? "G" : "C",
     };
-    console.log(fromAdvances, "fromAdvances");
     if (fromAdvances) {
-      await addAdvanceRecord(addAdvanceReq).then(
-        (res) => {
-          toast.success(res.data.status.message, {
-            toastId: "errorr12",
-          });
-          updateAdvances();
-
-          window.setTimeout(function () {
-            props.closeRecordPayModal();
-            closePopup();
-          }, 800);
-          fetchLedgers();
-        },
-        (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error15",
-          });
-        }
+      var obDate = new Date(
+        fromAdvSummary
+          ? selectedPartnerFromAdv?.openingBalDate
+          : ledgerData?.partyObDate
       );
+      var dateVal = moment(obDate).format("YYYY-MM-DD");
+      var recordDate = new Date(selectDate);
+      if (recordDate < obDate) {
+        toast.error(
+          `Party was onboarded on ${dateVal} and you can not make transaction before onboarding date.`,
+          {
+            toastId: "errorr15",
+          }
+        );
+        setLoading(false);
+      } else {
+        await addAdvanceRecord(addAdvanceReq).then(
+          (res) => {
+            toast.success(res.data.status.message, {
+              toastId: "errorr12",
+            });
+            updateAdvances();
+
+            window.setTimeout(function () {
+              props.closeRecordPayModal();
+              closePopup();
+            }, 800);
+            fetchLedgers();
+          },
+          (error) => {
+            toast.error(error.response.data.status.message, {
+              toastId: "error15",
+            });
+            setLoading(false);
+          }
+        );
+      }
     } else if (transpoData?.fromTransporter) {
       await updateRecordPayment(updateRecordRequest).then(
         (res) => {
@@ -286,6 +304,7 @@ const TransportoRecord = (props) => {
           toast.error(error.response.data.status.message, {
             toastId: "error15",
           });
+          setLoading(false);
         }
       );
     } else {
@@ -304,6 +323,7 @@ const TransportoRecord = (props) => {
           toast.error(error.response.data.status.message, {
             toastId: "error4",
           });
+          setLoading(false);
         }
       );
     }
@@ -325,6 +345,7 @@ const TransportoRecord = (props) => {
     getAllAdvances();
     console.log(allCustomTab);
     dispatch(fromTransportoRecord(true));
+    getTransportersData();
     if (allCustomTab == "all") {
       getAdvanceSummary();
     } else {
@@ -340,7 +361,6 @@ const TransportoRecord = (props) => {
     getLedgers(clickId, "SELLER", "", "")
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
-          console.log(res.data.data, "datt");
           // setLoading(false);
           if (res.data.data !== null) {
             dispatch(outStandingBal(res.data.data));
@@ -391,6 +411,7 @@ const TransportoRecord = (props) => {
       .catch((error) => console.log(error));
   };
   const getAdvanceSummary = () => {
+    console.log(advancesData?.selectedAdvanceId);
     getAdvancesSummaryById(clickId, advancesData?.selectedAdvanceId)
       .then((res) => {
         if (res.data.status.type === "SUCCESS") {
@@ -434,7 +455,7 @@ const TransportoRecord = (props) => {
     });
   };
   const getTransportersData = () => {
-    getTransporters(clickId).then((response) => {
+    getTransportersAll(clickId).then((response) => {
       dispatch(outstandingAmount(response.data.data));
       dispatch(transpoLedgersInfo(response.data.data.ledgers));
     });
@@ -516,6 +537,26 @@ const TransportoRecord = (props) => {
       close={props.closeRecordPayModal}
       className="record_payment_modal"
     >
+      <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row p-4">
+        <h5 className="modal-title header2_text" id="staticBackdropLabel">
+          {fromAdvances
+            ? "Record Advance"
+            : editRecordStatus
+            ? "Update Record Payment"
+            : "Record Payment"}
+        </h5>
+
+        <a
+          onClick={(e) => {
+            closePopup();
+            props.closeRecordPayModal();
+            e.preventDefault();
+          }}
+          href=""
+        >
+          <img src={close} alt="image" className="close_icon" />
+        </a>
+      </div>
       {isLoading ? (
         <div className="loading_styles">
           <img src={loading} alt="my-gif" className="gif_img" />
@@ -523,29 +564,9 @@ const TransportoRecord = (props) => {
       ) : (
         ""
       )}
-      <div className="modal-body partner_model_body" id="scroll_style">
+      <div className="modal-body partner_model_body pt-0" id="scroll_style">
         <div>
           <form>
-            <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
-              <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {fromAdvances
-                  ? "Record Advance"
-                  : editRecordStatus
-                  ? "Update Record Payment"
-                  : "Record Payment"}
-              </h5>
-
-              <a
-                onClick={(e) => {
-                  closePopup();
-                  props.closeRecordPayModal();
-                  e.preventDefault();
-                }}
-                href=""
-              >
-                <img src={close} alt="image" className="close_icon" />
-              </a>
-            </div>
             <div className="d-flex justify-content-between card record_modal_row">
               <div
                 className="d-flex justify-content-between align-items-center card-body mb-0"
@@ -661,7 +682,7 @@ const TransportoRecord = (props) => {
                         <p id="p-tag">Outstanding Advances</p>
                         <p id="recieve-tag" className="coloring">
                           &#8377;
-                          {outBalAdvance ? outBalAdvance.toFixed(2) : 0}
+                          {outStandingBalAdv ? outStandingBalAdv.toFixed(2) : 0}
                         </p>
                       </div>
                     ) : (

@@ -196,7 +196,7 @@ const AdvanceSummary = (props) => {
                               <p id="p-common" className="">
                                 {item.given
                                   ? getCurrencyNumberWithOutSymbol(item.given)
-                                  : 0}
+                                  : ""}
                               </p>
                             </td>
                             <td className="col-3">
@@ -206,7 +206,7 @@ const AdvanceSummary = (props) => {
                                   ? getCurrencyNumberWithOutSymbol(
                                       item.collected
                                     )
-                                  : 0}
+                                  : ""}
                               </p>
                             </td>
 

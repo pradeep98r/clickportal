@@ -562,6 +562,7 @@ const Step22 = (props) => {
   const [allDeletedCrops, setAllDeletedCrops] = useState([]);
   const addStep3Modal = () => {
     var cropInfo = billEditStatus ? cropData.concat(allDeletedCrops) : cropData;
+    console.log(cropInfo, allDeletedCrops, cropData);
     for (var k = 0; k < cropInfo.length; k++) {
       if (Object.keys(cropInfo[k]).length != 0) {
         if (
@@ -1310,8 +1311,10 @@ const Step22 = (props) => {
     let updatedItem3 = c.map((item, j) => {
       if (j == i) {
         setSelectedCropItem(crop);
-        setcropDeletedList([...cropDeletedList, onFocusCrop]);
-        cropDeletedList.push(onFocusCrop);
+        if (onFocusCrop != null) {
+          setcropDeletedList([...cropDeletedList, onFocusCrop]);
+          cropDeletedList.push(onFocusCrop);
+        }
         var cIndex;
         var qSetting = settingsData.qtySetting;
         if (qSetting.length > 0) {
@@ -1434,6 +1437,7 @@ const Step22 = (props) => {
     cropResponseData([...updatedItem3]);
     setUpdatedItemList([...updatedItem3, ...cropDeletedList]);
     setPreferedCropsData([...updatedItem4]);
+    console.log(cropDeletedList);
     if (cropDeletedList?.length > 0) {
       setAllDeletedCrops(cropDeletedList);
     }

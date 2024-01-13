@@ -71,46 +71,46 @@
   width: 100%;
   border-radius: 10px 10px 10px 10px;
 }
-.row_top_margin{
-    margin-top: 25px;
+.row_top_margin {
+  margin-top: 25px;
 }
-.reports_nav{
-    position: sticky;
-    left: 0;
-    top: 0;
+.reports_nav {
+  position: sticky;
+  left: 0;
+  top: 0;
 }
-.reports_nav_g .nav-link{
-    background-color: #ffffff;
+.reports_nav_g .nav-link {
+  background-color: #ffffff;
 }
-.totals_g{
-    border-top: 1px solid #e4e4e4;
+.totals_g {
+  border-top: 1px solid #e4e4e4;
 }
-.totals_main_g{
-    border-top: 0px;
-    .row{
-        padding: 5px 0px;
-    }
+.totals_main_g {
+  border-top: 0px;
+  .row {
+    padding: 5px 0px;
+  }
 }
-.reports_nav_g{
-    position: initial;
+.reports_nav_g {
+  position: initial;
 }
-.daily_summary_table_g{
-    border-radius: 0px;
+.daily_summary_table_g {
+  border-radius: 0px;
 }
-.reports_nav_g .sales:hover{
-background-color: #fff;
+.reports_nav_g .sales:hover {
+  background-color: #fff;
 }
-.total_gross{
-    border-radius: 10px;
-    background-color: #fff;
-    padding: 20px;
-    text-align: center;
-    margin-bottom: 20px;
+.total_gross {
+  border-radius: 10px;
+  background-color: #fff;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
 }
-.color_blue{
-    color: var(--ono-blue);
+.color_blue {
+  color: var(--ono-blue) !important;
 }
-.reports_main_row{
-    overflow-y: auto;
-    height: calc(100vh - 155px);
+.reports_main_row {
+  overflow-y: auto;
+  height: calc(100vh - 155px);
 }

@@ -16,6 +16,7 @@ import {
   getInventoryLedgers,
   getInventorySummary,
   getTransporters,
+  getTransportersAll,
   updateRecordInventory,
 } from "../../actions/transporterService";
 import { useDispatch, useSelector } from "react-redux";
@@ -207,7 +208,7 @@ const AddRecordInventory = (props) => {
     }
   };
   const getTransportersData = () => {
-    getTransporters(clickId).then((response) => {
+    getTransportersAll(clickId).then((response) => {
       if (response.data.data != null) {
         dispatch(outstandingAmount(response.data.data));
         dispatch(transpoLedgersInfo(response.data.data.ledgers));

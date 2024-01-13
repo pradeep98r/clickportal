@@ -16,6 +16,7 @@ import {
   getInventoryLedgers,
   getInventorySummary,
   getTransporters,
+  getTransportersAll,
   updateRecordInventory,
 } from "../../actions/transporterService";
 import {
@@ -95,7 +96,7 @@ const InventoryHistoryView = (props) => {
     });
   };
   const getTransportersData = () => {
-    getTransporters(clickId).then((response) => {
+    getTransportersAll(clickId).then((response) => {
       if (response.data.data != null) {
         dispatch(outstandingAmount(response.data.data));
         dispatch(transpoLedgersInfo(response.data.data.ledgers));
