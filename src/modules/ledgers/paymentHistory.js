@@ -456,8 +456,7 @@ const PaymentHistoryView = (props) => {
                       )}
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
-                        {paymentHistoryData?.paymentMode === "BILL" &&
-                        fromAdvances ? (
+                        {paymentHistoryData?.billId > 0 ? (
                           <p className="color_blue">
                             Bill Id : {paymentHistoryData?.billId}
                           </p>
