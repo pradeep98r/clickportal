@@ -246,15 +246,21 @@ const TransportoRecord = (props) => {
       type: advanceTypeMode == "Given" ? "G" : "C",
     };
     if (fromAdvances) {
-      var obDate = new Date(ledgerData?.partyObDate);
+      var obDate = new Date(
+        fromAdvSummary
+          ? selectedPartnerFromAdv?.openingBalDate
+          : ledgerData?.partyObDate
+      );
+      var dateVal = moment(obDate).format("YYYY-MM-DD");
       var recordDate = new Date(selectDate);
       if (recordDate < obDate) {
         toast.error(
-          `Party was onboarded on ${ledgerData?.partyObDate} and you can not make transaction before onboarding date.`,
+          `Party was onboarded on ${dateVal} and you can not make transaction before onboarding date.`,
           {
-            toastId: "errorr10",
+            toastId: "errorr15",
           }
         );
+        setLoading(false);
       } else {
         await addAdvanceRecord(addAdvanceReq).then(
           (res) => {
