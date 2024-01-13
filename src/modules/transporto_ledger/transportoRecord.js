@@ -44,6 +44,7 @@ import {
   fromParentSelect,
   fromTransportoRecord,
   partyOutstandingBal,
+  partyOutstandingAdv,
   totalAdvancesVal,
   totalAdvancesValById,
   totalCollectedById,
@@ -79,6 +80,7 @@ const TransportoRecord = (props) => {
     editRecordStatus ? new Date(viewInfo?.date) : new Date()
   );
   const outStandingBalVal = advancesData?.partyOutstandingBal;
+  const outStandingBalAdv = advancesData?.partyOutstandingAdv;
   // const [outStandingBal, setOutStandingBal] = useState("");
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const clickId = loginData.caId;
@@ -86,20 +88,20 @@ const TransportoRecord = (props) => {
   var fromInventoryTab = transpoData?.fromInv;
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
-  const [outBalAdvance, setOutBalAdvance] = useState(0);
-  console.log(advancesData, "advancesData");
+  // const [outBalAdvance, setOutBalAdvance] = useState(outStandingBalAdv);
   useEffect(() => {
     if (!fromAdvSummary) {
       getOutstandingPaybles(clickId, transId);
     }
     setReturnAdvanceStatus(false);
     setLoading(false);
-  }, [props.showRecordPayModal]);
+  }, [props.showRecordPayModal, advancesData?.partyOutstandingAdv]);
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
         dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
-        setOutBalAdvance(response.data.data.advance);
+        // setOutBalAdvance(response.data.data.advance);
+        dispatch(partyOutstandingAdv(response.data.data.advance));
       }
     });
   };
@@ -141,7 +143,10 @@ const TransportoRecord = (props) => {
       setRequiredCondition("Invalid Amount");
     } else if (fromAdvances) {
       if (!fromAdvSummary || !advancesData?.fromParentSelect) {
-        if (parseInt(paidsRcvd) > outBalAdvance && advanceTypeMode != "Given") {
+        if (
+          parseInt(paidsRcvd) > outStandingBalAdv &&
+          advanceTypeMode != "Given"
+        ) {
           setRequiredCondition(
             "Entered Amount cannot be more than Outstanding Advance"
           );
@@ -173,7 +178,7 @@ const TransportoRecord = (props) => {
     ) {
       if (fromAdvances) {
         if (returnAdvanceStatus) {
-          if (parseInt(paidsRcvd) > outBalAdvance) {
+          if (parseInt(paidsRcvd) > outStandingBalAdv) {
             setRequiredCondition(
               "Entered Amount cannot be more than Outstanding Advance"
             );
@@ -677,7 +682,7 @@ const TransportoRecord = (props) => {
                         <p id="p-tag">Outstanding Advances</p>
                         <p id="recieve-tag" className="coloring">
                           &#8377;
-                          {outBalAdvance ? outBalAdvance.toFixed(2) : 0}
+                          {outStandingBalAdv ? outStandingBalAdv.toFixed(2) : 0}
                         </p>
                       </div>
                     ) : (
