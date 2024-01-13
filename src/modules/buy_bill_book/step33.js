@@ -980,7 +980,16 @@ const Step33 = (props) => {
             );
             $("#disable").attr("disabled", false);
           } else {
-            editBillApiCall();
+            if (cashpaidValue > outBal) {
+              toast.error(
+                `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+                {
+                  toastId: "error10",
+                }
+              );
+            } else {
+              editBillApiCall();
+            }
           }
         } else {
           toast.error(
@@ -992,7 +1001,16 @@ const Step33 = (props) => {
           $("#disable").attr("disabled", false);
         }
       } else {
-        addBillApiCall();
+        if (cashpaidValue > outBal) {
+          toast.error(
+            `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+            {
+              toastId: "error10",
+            }
+          );
+        } else {
+          addBillApiCall();
+        }
       }
     } else {
       if (editStatus) {
@@ -1006,15 +1024,42 @@ const Step33 = (props) => {
             );
             $("#disable").attr("disabled", false);
           } else {
-            editBillApiCall();
+            if (cashpaidValue > outBal) {
+              toast.error(
+                `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+                {
+                  toastId: "error10",
+                }
+              );
+            } else {
+              editBillApiCall();
+            }
           }
         } else {
           console.log(editBillRequestObj, "editBillRequestObj");
-          editBillApiCall();
+          if (cashpaidValue > outBal) {
+            toast.error(
+              `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+              {
+                toastId: "error10",
+              }
+            );
+          } else {
+            editBillApiCall();
+          }
         }
       } else {
         console.log(billRequestObj, "billRequestObj");
-        addBillApiCall();
+        if (cashpaidValue > outBal) {
+          toast.error(
+            `Amount you entered in cash paid is higher than the ledger balance. Please keep cash paid less than or equal to the ledger balance Rs. ${outBal}. `,
+            {
+              toastId: "error10",
+            }
+          );
+        } else {
+          addBillApiCall();
+        }
       }
     }
   };

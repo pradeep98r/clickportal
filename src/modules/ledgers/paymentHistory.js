@@ -545,17 +545,24 @@ const PaymentHistoryView = (props) => {
                 ""
               ) : (
                 <div>
-                  <p className="more-p-tag">Actions</p>
-                  {fromAdvances &&
-                  paymentHistoryData?.paymentMode != "BILLL" ? (
-                    <div className="action_icons">
-                      <div className="items_div">
-                        <button onClick={() => advanceDelete()}>
-                          <img src={cancel} alt="img" className="" />
-                        </button>
-                        <p>Cancel</p>
+                  <p className="more-p-tag">
+                    {fromAdvances && paymentHistoryData?.paymentMode == "BILL"
+                      ? ""
+                      : "Actions"}
+                  </p>
+                  {fromAdvances ? (
+                    paymentHistoryData?.paymentMode != "BILL" ? (
+                      <div className="action_icons">
+                        <div className="items_div">
+                          <button onClick={() => advanceDelete()}>
+                            <img src={cancel} alt="img" className="" />
+                          </button>
+                          <p>Cancel</p>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      ""
+                    )
                   ) : (
                     // <div className="action_icons">
                     //   <div className="items_div">
