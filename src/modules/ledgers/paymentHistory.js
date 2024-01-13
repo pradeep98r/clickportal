@@ -456,11 +456,15 @@ const PaymentHistoryView = (props) => {
                       )}
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
-                        {/* {paymentHistoryData?.paymentMode === "BILL" ? ( */}
-                        <p className="color_blue">
-                          Bill Id : {paymentHistoryData?.billId}
-                        </p>
-                        {/* // ) : ( // "" // )} */}
+                        {paymentHistoryData?.paymentMode === "BILL" &&
+                        fromAdvances ? (
+                          <p className="color_blue">
+                            Bill Id : {paymentHistoryData?.billId}
+                          </p>
+                        ) : (
+                          ""
+                        )}
+
                         <p>
                           {getMaskedMobileNumber(paymentHistoryData?.mobile)}
                         </p>
@@ -510,7 +514,11 @@ const PaymentHistoryView = (props) => {
                 }
                 title2Data={paymentHistoryData?.paymentMode}
                 title3Data={
-                  paymentHistoryData?.collected ? "COLLECTED" : "GIVEN"
+                  !fromAdvances
+                    ? ""
+                    : paymentHistoryData?.collected
+                    ? "COLLECTED"
+                    : "GIVEN"
                 }
               />
               {discount > 0 ? (
