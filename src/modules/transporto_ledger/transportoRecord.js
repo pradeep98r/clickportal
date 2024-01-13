@@ -246,26 +246,37 @@ const TransportoRecord = (props) => {
       type: advanceTypeMode == "Given" ? "G" : "C",
     };
     if (fromAdvances) {
-      await addAdvanceRecord(addAdvanceReq).then(
-        (res) => {
-          toast.success(res.data.status.message, {
-            toastId: "errorr12",
-          });
-          updateAdvances();
+      var obDate = new Date(ledgerData?.partyObDate);
+      var recordDate = new Date(selectDate);
+      if (recordDate < obDate) {
+        toast.error(
+          `Party was onboarded on ${ledgerData?.partyObDate} and you can not make transaction before onboarding date.`,
+          {
+            toastId: "errorr10",
+          }
+        );
+      } else {
+        await addAdvanceRecord(addAdvanceReq).then(
+          (res) => {
+            toast.success(res.data.status.message, {
+              toastId: "errorr12",
+            });
+            updateAdvances();
 
-          window.setTimeout(function () {
-            props.closeRecordPayModal();
-            closePopup();
-          }, 800);
-          fetchLedgers();
-        },
-        (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error15",
-          });
-          setLoading(false);
-        }
-      );
+            window.setTimeout(function () {
+              props.closeRecordPayModal();
+              closePopup();
+            }, 800);
+            fetchLedgers();
+          },
+          (error) => {
+            toast.error(error.response.data.status.message, {
+              toastId: "error15",
+            });
+            setLoading(false);
+          }
+        );
+      }
     } else if (transpoData?.fromTransporter) {
       await updateRecordPayment(updateRecordRequest).then(
         (res) => {
@@ -515,6 +526,26 @@ const TransportoRecord = (props) => {
       close={props.closeRecordPayModal}
       className="record_payment_modal"
     >
+      <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row p-4">
+        <h5 className="modal-title header2_text" id="staticBackdropLabel">
+          {fromAdvances
+            ? "Record Advance"
+            : editRecordStatus
+            ? "Update Record Payment"
+            : "Record Payment"}
+        </h5>
+
+        <a
+          onClick={(e) => {
+            closePopup();
+            props.closeRecordPayModal();
+            e.preventDefault();
+          }}
+          href=""
+        >
+          <img src={close} alt="image" className="close_icon" />
+        </a>
+      </div>
       {isLoading ? (
         <div className="loading_styles">
           <img src={loading} alt="my-gif" className="gif_img" />
@@ -522,29 +553,9 @@ const TransportoRecord = (props) => {
       ) : (
         ""
       )}
-      <div className="modal-body partner_model_body" id="scroll_style">
+      <div className="modal-body partner_model_body pt-0" id="scroll_style">
         <div>
           <form>
-            <div className="d-flex align-items-center justify-content-between modal_common_header partner_model_body_row">
-              <h5 className="modal-title header2_text" id="staticBackdropLabel">
-                {fromAdvances
-                  ? "Record Advance"
-                  : editRecordStatus
-                  ? "Update Record Payment"
-                  : "Record Payment"}
-              </h5>
-
-              <a
-                onClick={(e) => {
-                  closePopup();
-                  props.closeRecordPayModal();
-                  e.preventDefault();
-                }}
-                href=""
-              >
-                <img src={close} alt="image" className="close_icon" />
-              </a>
-            </div>
             <div className="d-flex justify-content-between card record_modal_row">
               <div
                 className="d-flex justify-content-between align-items-center card-body mb-0"
