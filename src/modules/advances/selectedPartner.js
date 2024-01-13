@@ -10,6 +10,7 @@ import { getAllPartnersByTypes } from "../../actions/advancesService";
 import {
   allpartnerDataByTypes,
   fromParentSelect,
+  partyOutstandingAdv,
   partyOutstandingBal,
   selectedAdvanceId,
   selectedPartyByAdvanceId,
@@ -51,7 +52,9 @@ const SelectedPartner = (props) => {
   const dispatch = useDispatch();
   const fromParentSelectVal = advancesData?.fromParentSelect;
   const partnerData = advancesData?.allpartnerDataByTypes;
-  const selectedParty = fromParentSelectVal ? null : advancesData?.selectedPartyByAdvanceId;
+  const selectedParty = fromParentSelectVal
+    ? null
+    : advancesData?.selectedPartyByAdvanceId;
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
   useEffect(() => {
     fetchPertnerData();
@@ -72,7 +75,6 @@ const SelectedPartner = (props) => {
       });
   };
 
-
   const filterOption = (option, inputValue) => {
     const { partyName, mobile, shortName, partyId } = option.data;
     const addressLine = option.data.address?.addressLine;
@@ -89,13 +91,18 @@ const SelectedPartner = (props) => {
   const partySelect = (item) => {
     dispatch(selectedPartyByAdvanceId(item));
     dispatch(fromParentSelect(false));
-    dispatch(selectedAdvanceId(item.partyId))
-    getOutstandingPaybles(clickId,item.partyId)
+    dispatch(selectedAdvanceId(item.partyId));
+    getOutstandingPaybles(clickId, item.partyId);
   };
   const getOutstandingPaybles = (clickId, transId) => {
     getOutstandingBal(clickId, transId).then((response) => {
       if (response.data.data != null) {
-       dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd))
+        dispatch(partyOutstandingBal(response.data.data.tobePaidRcvd));
+        dispatch(
+          partyOutstandingAdv(
+            response.data.data.advance != null ? response.data.data.advance : 0
+          )
+        );
       }
     });
   };
@@ -104,50 +111,52 @@ const SelectedPartner = (props) => {
       {partnerData.length > 0 ? (
         <div className="partner_card">
           <div className="d-flex align-items-center">
-          <Select
-            isSearchable={true}
-            className="basic-single record_popup_select"
-            classNamePrefix="select"
-            styles={colourStyles}
-            name="partner"
-            hideSelectedOptions={false}
-            options={partnerData}
-            placeholder={"Select Party"}
-            value={selectedParty}
-            onChange={partySelect}
-            filterOption={filterOption}
-            isClearable={false}
-            noOptionsMessage={() => "No Data Available"}
-            getOptionValue={(e) => e.partyId}
-            getOptionLabel={(e) => (
-               
-              <div
-                style={{ display: "flex", alignItems: "center" }}
-                className=""
-              >
-                {e.profilePic !== "" ? (
-                  <img src={e.profilePic} className="icon_user" />
-                ) : (
-                  <img src={single_bill} className="icon_user" />
-                )}
-                <div style={{ marginLeft: 5 }}>
-                  <div className="-">
-                    <h5>{e.partyName}</h5>
-                    <h6>
-                      {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
-                      {getMaskedMobileNumber(e.mobile)}
-                    </h6>
-                    <p>{e.address?.addressLine}</p>
+            <Select
+              isSearchable={true}
+              className="basic-single record_popup_select"
+              classNamePrefix="select"
+              styles={colourStyles}
+              name="partner"
+              hideSelectedOptions={false}
+              options={partnerData}
+              placeholder={"Select Party"}
+              value={selectedParty}
+              onChange={partySelect}
+              filterOption={filterOption}
+              isClearable={false}
+              noOptionsMessage={() => "No Data Available"}
+              getOptionValue={(e) => e.partyId}
+              getOptionLabel={(e) => (
+                <div
+                  style={{ display: "flex", alignItems: "center" }}
+                  className=""
+                >
+                  {e.profilePic !== "" ? (
+                    <img src={e.profilePic} className="icon_user" />
+                  ) : (
+                    <img src={single_bill} className="icon_user" />
+                  )}
+                  <div style={{ marginLeft: 5 }}>
+                    <div className="-">
+                      <h5>{e.partyName}</h5>
+                      <h6>
+                        {getPartnerType(e.partyType, e.trader)} - {e.partyId} |{" "}
+                        {getMaskedMobileNumber(e.mobile)}
+                      </h6>
+                      <p>{e.address?.addressLine}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          />
-          <img src={a_icon} alt="image" className={fromParentSelectVal ? "a_icon" : 'a_icon_selected' } />
-              </div>
+              )}
+            />
+            <img
+              src={a_icon}
+              alt="image"
+              className={fromParentSelectVal ? "a_icon" : "a_icon_selected"}
+            />
+          </div>
         </div>
-      ) : 
-      (
+      ) : (
         <div>
           <Select placeholder={"Select Party"} />
         </div>

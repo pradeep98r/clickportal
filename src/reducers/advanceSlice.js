@@ -16,6 +16,7 @@ export const advanceSlice = createSlice({
     allpartnerDataByTypes: [],
     fromParentSelect: false,
     partyOutstandingBal: 0,
+    partyOutstandingAdv: 0,
     selectPartnerOption: null,
     totalCollectedById: 0,
     totalGivenById: 0,
@@ -62,6 +63,9 @@ export const advanceSlice = createSlice({
     partyOutstandingBal: (state, action) => {
       state.partyOutstandingBal = action.payload;
     },
+    partyOutstandingAdv: (state, action) => {
+      state.partyOutstandingAdv = action.payload;
+    },
     selectPartnerOption: (state, action) => {
       state.selectPartnerOption = action.payload;
     },
@@ -99,6 +103,7 @@ export const {
   totalCollectedById,
   fromTransportoRecord,
   fromAdvanceBillId,
+  partyOutstandingAdv,
 } = advanceSlice.actions;
 
 export default advanceSlice.reducer;
