@@ -144,8 +144,7 @@ const PartnerModal = (props) => {
       } else if (type == "shortName") {
         setShortNameError(string2);
       }
-    } 
-    else {
+    } else {
       if (type == "name") {
         setNameError("");
       } else if (type == "shortName") {
@@ -243,7 +242,7 @@ const PartnerModal = (props) => {
     openingBalDate: partnerSelectDate,
     partyId: isEdit ? selectedPartnerObj.partyId : 0,
     partyName: nameField,
-    partyType: partyType == "COOLIE" ? 'LABOR' : partyType,
+    partyType: partyType == "COOLIE" ? "LABOR" : partyType,
     profilePic: isEdit ? updateProfilePic : profilePic, //single_bill,
     seqNum: 0,
     shortName: shortNameField,
@@ -316,7 +315,7 @@ const PartnerModal = (props) => {
     }
   };
   const addEditPartnerApiCall = () => {
-    var type = partyType == "COOLIE" ? 'LABOR' : partyType;
+    var type = partyType == "COOLIE" ? "LABOR" : partyType;
     console.log(obj, "edit");
     if (isEdit) {
       console.log(pincode, obj);
@@ -327,7 +326,7 @@ const PartnerModal = (props) => {
               toastId: "success2",
             });
             props.closeModal();
-            
+
             getPartnerData(clickId, type)
               .then((response) => {
                 if (response.data.data != null) {

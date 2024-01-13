@@ -105,6 +105,9 @@ const PaymentHistoryView = (props) => {
       ? true
       : false
   );
+  // console.log(fromAdvances, fromAdvanceFeatureVal, "fromAdvanceFeatureVal");
+  // const [outStAdv, setOutStAdv] = useState(0);
+  // const [outStBal, setOutStBal] = useState(0);
   useEffect(() => {
     if (paymentViewData?.paymentViewInfo?.refId?.includes("A")) {
       setfromAdvances(true);
@@ -113,7 +116,15 @@ const PaymentHistoryView = (props) => {
     }
 
     dispatch(paymentViewInfo(paymentViewData.paymentViewInfo));
-  }, [props.showPaymentViewModal]);
+    // const getOutstandingPaybles = (clickId, transId) => {
+    // getOutstandingBal(clickId, partyDetails?.partyId).then((response) => {
+    //   if (response.data.data != null) {
+    //     setOutStBal(response.data.data.tobePaidRcvd);
+    //     setOutStAdv(response.data.data.advance);
+    //   }
+    // });
+    // };
+  }, [props.showPaymentViewModal, fromAdvanceFeatureVal]);
 
   const [recordPaymentActive, setRecordPaymentActive] = useState(false);
   const [recordPaymentModal, setRecordPaymentModal] = useState(false);
@@ -445,6 +456,11 @@ const PaymentHistoryView = (props) => {
                       )}
                       <div>
                         <h6>{paymentHistoryData?.partyName}</h6>
+                        {/* {paymentHistoryData?.paymentMode === "BILL" ? ( */}
+                        <p className="color_blue">
+                          Bill Id : {paymentHistoryData?.billId}
+                        </p>
+                        {/* // ) : ( // "" // )} */}
                         <p>
                           {getMaskedMobileNumber(paymentHistoryData?.mobile)}
                         </p>
@@ -484,7 +500,7 @@ const PaymentHistoryView = (props) => {
               <PaymentHistoryCard
                 title1="Amount"
                 title2="Payment Mode"
-                title3="Status"
+                title3={!fromAdvances ? "Status" : "Advance"}
                 title1Data={
                   !fromAdvances
                     ? amount
@@ -530,13 +546,14 @@ const PaymentHistoryView = (props) => {
               ) : (
                 <div>
                   <p className="more-p-tag">Actions</p>
-                  {fromAdvances ? (
+                  {fromAdvances &&
+                  paymentHistoryData?.paymentMode != "BILLL" ? (
                     <div className="action_icons">
                       <div className="items_div">
                         <button onClick={() => advanceDelete()}>
                           <img src={cancel} alt="img" className="" />
                         </button>
-                        <p>Delete</p>
+                        <p>Cancel</p>
                       </div>
                     </div>
                   ) : (
