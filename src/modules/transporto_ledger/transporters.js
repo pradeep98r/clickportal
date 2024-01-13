@@ -304,11 +304,11 @@ const Transporters = (props) => {
       name: "Inventory Ledger",
       to: "inventoryledger",
     },
-    {
-      id: 3,
-      name: "Advance Ledger",
-      to: "advanceledger",
-    },
+    // {
+    //   id: 3,
+    //   name: "Advance Ledger",
+    //   to: "advanceledger",
+    // },
   ];
   const particularTransporter = (transporterId, item) => {
     dispatch(transporterIdVal(transporterId));
@@ -1111,9 +1111,9 @@ const Transporters = (props) => {
                       <th class="col-lg-5">Transporter Name</th>
 
                       <th class="col-lg-4">To Be Paid(&#8377;)</th>
-                      <th class="col-lg-4">Advances</th>
+                      {/* <th class="col-lg-4">Advances</th>
 
-                      <th class="col-lg-4">Net Payable(&#8377;)</th>
+                      <th class="col-lg-4">Net Payable(&#8377;)</th> */}
                     </div>
                     <div>
                       {transporter.map((item, index) => {
@@ -1186,7 +1186,7 @@ const Transporters = (props) => {
                                   : 0}
                               </p>
                             </th>
-                            <th className="col-lg-4">
+                            {/* <th className="col-lg-4">
                               <p className="coloring">
                                 {" "}
                                 {item.advance
@@ -1202,7 +1202,7 @@ const Transporters = (props) => {
                                     )
                                   : 0}
                               </p>
-                            </th>
+                            </th> */}
                           </div>
                         );
                       })}
@@ -1211,17 +1211,15 @@ const Transporters = (props) => {
                   <div className="outstanding-pay ">
                     <p className="valu-tag">
                       <div className="d-flex align-items-center justify-content-between">
-                        <div>
-                          <p className="pat-tag">Total Payable</p>
-                          <p className="paid-coloring">
-                            {outStAmt?.totalOutStgAmt
-                              ? getCurrencyNumberWithSymbol(
-                                  outStAmt?.totalOutStgAmt
-                                )
-                              : 0}
-                          </p>
-                        </div>
-                        <div>
+                        <p className="pat-tag">Outstanding Payables:</p>
+                        <p className="paid-coloring">
+                          {outStAmt?.totalOutStgAmt
+                            ? getCurrencyNumberWithSymbol(
+                                outStAmt?.totalOutStgAmt
+                              )
+                            : 0}
+                        </p>
+                        {/* <div>
                           <p className="pat-tag">Total Advances</p>
                           <p className="coloring">
                             {outStAmt?.advanceBal
@@ -1230,8 +1228,8 @@ const Transporters = (props) => {
                                 )
                               : 0}
                           </p>
-                        </div>
-                        <div>
+                        </div> */}
+                        {/* <div>
                           <p className="pat-tag">Total Net Payable</p>
                           <p className="paid-coloring">
                             {outStAmt?.totalOutStgAmt
@@ -1241,7 +1239,7 @@ const Transporters = (props) => {
                                 )
                               : 0}
                           </p>
-                        </div>
+                        </div> */}
                       </div>
                     </p>
                   </div>
@@ -1582,11 +1580,11 @@ const Transporters = (props) => {
                             data-bs-toggle="tab"
                             onClick={() => tabEvent(link.to)}
                           >
-                            {props.transPortoTabVal ==
+                            {/* {props.transPortoTabVal ==
                               "inventoryLedgerSummary" &&
                             link.to == "advanceledger"
-                              ? ""
-                              : link.name}
+                              ? "" */}
+                            {link.name}
                           </a>
                         </li>
                       );
