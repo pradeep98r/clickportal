@@ -276,7 +276,7 @@ const Step3 = (props) => {
       writerId: writerId,
       finalLedgerBal: 0,
       finalOutStBal: 0,
-      billAmt: 0,
+      billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
