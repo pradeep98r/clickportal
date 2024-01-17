@@ -43,9 +43,9 @@ const Step3 = (props) => {
   const billEditedObject = selectedStep?.totalEditedObject;
   const partyType = selectedStep?.multiSelectPartyType;
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
+  console.log(fromPreviousStep3Status, "fromPreviousStep3Status");
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
-  console.log(multiSelectPartnersArray, "multiSelectPartnersArray");
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -132,6 +132,9 @@ const Step3 = (props) => {
                 : multiSelectPartnersArray1[i]?.totalReceivable,
             transportation: multiSelectPartnersArray1[i]?.transportation,
             transporterId: multiSelectPartnersArray1[i]?.transporterId,
+            finalLedgerBal: multiSelectPartnersArray1[i].finalLedgerBal,
+            finalOutStBal: multiSelectPartnersArray1[i].finalOutStBal,
+            billAmt: multiSelectPartnersArray1[i].billAmt,
           },
           billId: multiSelectPartnersArray1[i]?.billId,
           billType:
@@ -145,16 +148,6 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
-          finalLedgerBal:
-            multiSelectPartnersArray1[i].billAmt +
-            multiSelectPartnersArray1[i].outStBal,
-          finalOutStBal:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray1[i].finalLedgerBal -
-                multiSelectPartnersArray1[i].cashPaid
-              : multiSelectPartnersArray1[i].finalLedgerBal -
-                multiSelectPartnersArray1[i].cashRcvd,
-          billAmt: multiSelectPartnersArray1[i].grossTotal,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -227,7 +220,6 @@ const Step3 = (props) => {
       // if (o.status != 0) {
       lineitemsArray = [...lineitemsArray, mergedObj];
       // }
-      console.log(lineitemsArray, "lineitemsArray");
       cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
     }
@@ -262,7 +254,7 @@ const Step3 = (props) => {
       less: true,
       mandiFee: 0,
       misc: 0,
-      outStBal: 0,
+      outStBal: fromMultiBillViewStatus ? items[mIndex].outStBal : 0,
       paidTo: 0,
       rent: 0,
       rtComm: 0,
@@ -274,9 +266,21 @@ const Step3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
-      finalLedgerBal: 0,
-      finalOutStBal: 0,
-      billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
+      finalLedgerBal: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal + items[mIndex].outStBal
+          : items[mIndex].finalLedgerBal
+        : 0,
+      finalOutStBal: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal + items[mIndex].outStBal
+          : items[mIndex].finalOutStBal
+        : 0,
+      billAmt: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal
+          : items[mIndex].billAmt
+        : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
@@ -433,7 +437,6 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
-      console.log(clonedObject, "edit");
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -472,7 +475,6 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
-      console.log(clonedObject, "clonedObject if");
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
