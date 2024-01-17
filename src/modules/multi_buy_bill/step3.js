@@ -45,7 +45,6 @@ const Step3 = (props) => {
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
-  console.log(multiSelectPartnersArray, "multiSelectPartnersArray");
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -132,6 +131,9 @@ const Step3 = (props) => {
                 : multiSelectPartnersArray1[i]?.totalReceivable,
             transportation: multiSelectPartnersArray1[i]?.transportation,
             transporterId: multiSelectPartnersArray1[i]?.transporterId,
+            finalLedgerBal: multiSelectPartnersArray1[i].finalLedgerBal,
+            finalOutStBal: multiSelectPartnersArray1[i].finalOutStBal,
+            billAmt: multiSelectPartnersArray1[i].billAmt,
           },
           billId: multiSelectPartnersArray1[i]?.billId,
           billType:
@@ -145,11 +147,6 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
-          finalLedgerBal: multiSelectPartnersArray1[i].finalLedgerBal,
-          finalOutStBal:
-            multiSelectPartnersArray1[i].finalLedgerBal -
-            multiSelectPartnersArray1[i].cashPaid,
-          billAmt: multiSelectPartnersArray1[i].billAmt,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -222,7 +219,6 @@ const Step3 = (props) => {
       // if (o.status != 0) {
       lineitemsArray = [...lineitemsArray, mergedObj];
       // }
-      console.log(lineitemsArray, "lineitemsArray");
       cObj.lineItems = lineitemsArray;
       clonedArray[mIndex] = cObj;
     }
@@ -272,9 +268,7 @@ const Step3 = (props) => {
       finalLedgerBal: fromMultiBillViewStatus
         ? items[mIndex].finalLedgerBal
         : 0,
-      finalOutStBal: fromMultiBillViewStatus
-        ? items[mIndex].finalLedgerBal - items[mIndex].cashPaid
-        : 0,
+      finalOutStBal: fromMultiBillViewStatus ? items[mIndex].finalOutStBal : 0,
       billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
@@ -432,7 +426,6 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billObj };
       clonedObject = { ...clonedObject, billsInfo: arrMain };
-      console.log(clonedObject, "edit");
       editMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
@@ -471,7 +464,6 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
-      console.log(clonedObject, "clonedObject if");
       postMultiBuyBill(clonedObject).then(
         (response) => {
           if (response.data.status.type === "SUCCESS") {
