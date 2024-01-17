@@ -131,7 +131,7 @@ const SellMultiBillStep3 = (props) => {
             finalOutStBal:
               multiSelectPartnersArray1[i].finalLedgerBal -
               multiSelectPartnersArray1[i]?.cashRcvd,
-            billAmt: multiSelectPartnersArray1[i].grossTotal,
+            billAmt: multiSelectPartnersArray1[i].billAmt,
             advBal: 0,
           },
           billId: multiSelectPartnersArray1[i]?.billId,

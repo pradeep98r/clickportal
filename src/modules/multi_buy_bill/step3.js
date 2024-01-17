@@ -145,16 +145,11 @@ const Step3 = (props) => {
           updatedOn: "",
           writerId: writerId,
           source: "WEB",
-          finalLedgerBal:
-            multiSelectPartnersArray1[i].billAmt +
-            multiSelectPartnersArray1[i].outStBal,
+          finalLedgerBal: multiSelectPartnersArray1[i].finalLedgerBal,
           finalOutStBal:
-            multiSelectPartnersArray1[i]?.partyType.toUpperCase() === "FARMER"
-              ? multiSelectPartnersArray1[i].finalLedgerBal -
-                multiSelectPartnersArray1[i].cashPaid
-              : multiSelectPartnersArray1[i].finalLedgerBal -
-                multiSelectPartnersArray1[i].cashRcvd,
-          billAmt: multiSelectPartnersArray1[i].grossTotal,
+            multiSelectPartnersArray1[i].finalLedgerBal -
+            multiSelectPartnersArray1[i].cashPaid,
+          billAmt: multiSelectPartnersArray1[i].billAmt,
         });
         objArray1 = [...objArray1, obj];
         setObjArrray2([...objArray1]);
@@ -274,8 +269,12 @@ const Step3 = (props) => {
       updatedBy: 0,
       updatedOn: "",
       writerId: writerId,
-      finalLedgerBal: 0,
-      finalOutStBal: 0,
+      finalLedgerBal: fromMultiBillViewStatus
+        ? items[mIndex].finalLedgerBal
+        : 0,
+      finalOutStBal: fromMultiBillViewStatus
+        ? items[mIndex].finalLedgerBal - items[mIndex].cashPaid
+        : 0,
       billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
@@ -447,7 +446,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           }
         },
@@ -486,7 +485,7 @@ const Step3 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           }
         },
