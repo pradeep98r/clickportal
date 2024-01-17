@@ -43,6 +43,7 @@ const Step3 = (props) => {
   const billEditedObject = selectedStep?.totalEditedObject;
   const partyType = selectedStep?.multiSelectPartyType;
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
+  console.log(fromPreviousStep3Status, "fromPreviousStep3Status");
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
   const cancelStep = () => {
@@ -253,7 +254,7 @@ const Step3 = (props) => {
       less: true,
       mandiFee: 0,
       misc: 0,
-      outStBal: 0,
+      outStBal: fromMultiBillViewStatus ? items[mIndex].outStBal : 0,
       paidTo: 0,
       rent: 0,
       rtComm: 0,
@@ -266,10 +267,20 @@ const Step3 = (props) => {
       updatedOn: "",
       writerId: writerId,
       finalLedgerBal: fromMultiBillViewStatus
-        ? items[mIndex].finalLedgerBal
+        ? fromPreviousStep3Status
+          ? gTotal + items[mIndex].outStBal
+          : items[mIndex].finalLedgerBal
         : 0,
-      finalOutStBal: fromMultiBillViewStatus ? items[mIndex].finalOutStBal : 0,
-      billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
+      finalOutStBal: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal + items[mIndex].outStBal
+          : items[mIndex].finalOutStBal
+        : 0,
+      billAmt: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal
+          : items[mIndex].billAmt
+        : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
