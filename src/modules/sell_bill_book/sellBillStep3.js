@@ -1065,6 +1065,7 @@ const SellBillStep3 = (props) => {
         toast.error("Failed to fetch Outstanding Balance", {
           toastId: "error5",
         });
+        $("#disable").attr("disabled", false);
       }
     }
   };

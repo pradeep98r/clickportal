@@ -1137,6 +1137,7 @@ const Step33 = (props) => {
       toast.error("Failed to fetch Outstanding Balance", {
         toastId: "error5",
       });
+      $("#disable").attr("disabled", false);
     }
   };
   const editBillApiCall = () => {
