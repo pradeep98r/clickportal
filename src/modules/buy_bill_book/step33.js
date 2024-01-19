@@ -691,6 +691,7 @@ const Step33 = (props) => {
   };
 
   const getTotalValue = (value) => {
+    console.log(value, "vall");
     return (value / 100) * grossTotal;
   };
   const getTotalUnits = (val) => {
@@ -815,6 +816,7 @@ const Step33 = (props) => {
     );
     var finalValue = grossTotal - t;
     var finalVal = finalValue;
+    console.log(getTotalValue(commValue), commValue, "commm");
     if (editStatus ? billEditItem?.commIncluded : includeComm) {
       // if (isShown) {
       finalVal = finalValue - getTotalValue(commValue);
@@ -1153,7 +1155,7 @@ const Step33 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           } else {
             window.setTimeout(function () {
@@ -1497,7 +1499,7 @@ const Step33 = (props) => {
       if (i == index) {
         var v = (val / grossTotal) * 100;
         if (v != 0) {
-          v = v.toFixed(2);
+          v = v;
         }
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];

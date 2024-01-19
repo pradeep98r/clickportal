@@ -1,10 +1,10 @@
 import React from "react";
 import { getText } from "./getText";
 const resetInput = (e) => {
-  if(e.target.value == 0){
+  if (e.target.value == 0) {
     e.target.value = "";
   }
-}
+};
 const CommissionCard = ({
   title,
   rateTitle,
@@ -36,7 +36,7 @@ const CommissionCard = ({
               placeholder=""
               onChange={onChange}
               onFocus={(e) => resetInput(e)}
-              value={inputValue}
+              value={parseFloat(inputValue).toFixed(2)}
             />
           </div>
           <div className="col-lg-4 col-sm-12 col_left_border">
