@@ -272,7 +272,6 @@ const Step33 = (props) => {
     });
 
     var partyID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
-    console.log(billCreationStatus + "partyID", "billCreationStatus");
     if (billCreationStatus) {
       const generateBillObj = {
         caId: clickId,
@@ -691,7 +690,6 @@ const Step33 = (props) => {
   };
 
   const getTotalValue = (value) => {
-    console.log(value, "vall");
     return (value / 100) * grossTotal;
   };
   const getTotalUnits = (val) => {
@@ -816,7 +814,6 @@ const Step33 = (props) => {
     );
     var finalValue = grossTotal - t;
     var finalVal = finalValue;
-    console.log(getTotalValue(commValue), commValue, "commm");
     if (editStatus ? billEditItem?.commIncluded : includeComm) {
       // if (isShown) {
       finalVal = finalValue - getTotalValue(commValue);
@@ -1132,7 +1129,6 @@ const Step33 = (props) => {
           });
           $("#disable").attr("disabled", false);
           setBillCreationStatus(billIdVal != 0 ? false : true);
-          console.log("billID", billIdVal);
         }
       );
     } else {
@@ -1557,7 +1553,7 @@ const Step33 = (props) => {
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: val };
+        return { ...groupLiist[i], value: v.toFixed(2), totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }

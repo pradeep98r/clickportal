@@ -96,7 +96,6 @@ const SellBillStep3 = (props) => {
       ? billEditItemInfo?.generatedBillId
       : 0
   );
-  console.log(billEditItemInfo?.generatedBillId, billIdVal);
   const [billCreationStatus, setBillCreationStatus] = useState(
     billEditItemInfo?.generatedBillId != 0 ? false : editStatus ? false : true
   );
@@ -1333,7 +1332,7 @@ const SellBillStep3 = (props) => {
       if (i == index) {
         var v = (val / grossTotal) * 100;
         if (v != 0) {
-          v = v.toFixed(2);
+          v = v;
         }
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
@@ -1377,7 +1376,7 @@ const SellBillStep3 = (props) => {
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: val };
+        return { ...groupLiist[i], value: v.toFixed(2), totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }

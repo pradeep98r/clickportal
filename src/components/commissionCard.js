@@ -36,7 +36,7 @@ const CommissionCard = ({
               placeholder=""
               onChange={onChange}
               onFocus={(e) => resetInput(e)}
-              value={parseFloat(inputValue).toFixed(2)}
+              value={inputValue}
             />
           </div>
           <div className="col-lg-4 col-sm-12 col_left_border">
