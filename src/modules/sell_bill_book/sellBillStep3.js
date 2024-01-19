@@ -27,8 +27,10 @@ import { selectSteps } from "../../reducers/stepsSlice";
 import $ from "jquery";
 import { selectTrans } from "../../reducers/transSlice";
 import { selectBuyer } from "../../reducers/buyerSlice";
+import loading from "../../assets/images/loading.gif";
 import {
   fromBillbook,
+  generatedBillId,
   tableEditStatus,
 } from "../../reducers/billEditItemSlice";
 import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
@@ -88,7 +90,17 @@ const SellBillStep3 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
-  const [billIdVal, setBillIdVal] = useState(0);
+  const [isLoading, setLoading] = useState(true);
+  const [billIdVal, setBillIdVal] = useState(
+    billEditItemInfo?.generatedBillId != 0
+      ? billEditItemInfo?.generatedBillId
+      : 0
+  );
+  console.log(billEditItemInfo?.generatedBillId, billIdVal);
+  const [billCreationStatus, setBillCreationStatus] = useState(
+    billEditItemInfo?.generatedBillId != 0 ? false : editStatus ? false : true
+  );
+  const [outBalStatus, setOutBalStatus] = useState(false);
   useEffect(() => {
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
@@ -114,13 +126,27 @@ const SellBillStep3 = (props) => {
       setTableChangeStatus(true);
     }
     if (partnerSelectedData != null) {
+      setLoading(true);
       var pID = editStatus ? billEditItem.buyerId : partnerSelectedData.partyId;
       if (pID != 0) {
-        getOutstandingBal(clickId, pID).then((res) => {
-          console.log(res, "out");
-          setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
-          setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
-        });
+        getOutstandingBal(clickId, pID).then(
+          (res) => {
+            console.log(res, "out");
+            setLoading(false);
+            setOutsBal(res.data.data == null ? 0 : res.data.data.tobePaidRcvd);
+            setOutBalAdvance(res.data.data == null ? 0 : res.data.data.advance);
+            $("#disable").attr("disabled", false);
+            setOutBalStatus(true);
+          },
+          (error) => {
+            // $("#disable").attr("disabled", true);
+            setLoading(false);
+            setOutBalStatus(false);
+            toast.error(error.res.data.status.description, {
+              toastId: "error10",
+            });
+          }
+        );
       }
     }
     getGrossTotalValue(
@@ -238,16 +264,19 @@ const SellBillStep3 = (props) => {
     var partyID = editStatus
       ? billEditItem.buyerId
       : partnerSelectedData.partyId;
-    const generateBillObj = {
-      caId: clickId,
-      multiBill: false,
-      partyId: partyID,
-      type: "SELL",
-      writerId: writerId,
-    };
-    getGeneratedBillId(generateBillObj).then((res) => {
-      setBillIdVal(res.data.data == null ? 0 : res.data.data);
-    });
+    if (billCreationStatus) {
+      const generateBillObj = {
+        caId: clickId,
+        multiBill: false,
+        partyId: partyID,
+        type: "SELL",
+        writerId: writerId,
+      };
+      getGeneratedBillId(generateBillObj).then((res) => {
+        setBillIdVal(res.data.data == null ? 0 : res.data.data);
+        dispatch(generatedBillId(res.data.data == null ? 0 : res.data.data));
+      });
+    }
   }, []);
 
   const [questionsTitle, setQuestionsTitle] = useState([]);
@@ -1007,29 +1036,37 @@ const SellBillStep3 = (props) => {
         }
       );
     } else {
-      postsellbillApi(sellBillRequestObj).then(
-        (response) => {
-          if (response.data.status.message === "SUCCESS") {
-            toast.success(response.data.status.description?.toUpperCase(), {
-              toastId: "success1",
+      if (outBalStatus) {
+        postsellbillApi(sellBillRequestObj).then(
+          (response) => {
+            if (response.data.status.message === "SUCCESS") {
+              toast.success(response.data.status.description?.toUpperCase(), {
+                toastId: "success1",
+              });
+              localStorage.setItem("stepOneSingleBook", false);
+              window.setTimeout(function () {
+                props.closem();
+              }, 800);
+              window.setTimeout(function () {
+                navigate("/sellbillbook");
+                window.location.reload();
+              }, 1000);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
             });
-            localStorage.setItem("stepOneSingleBook", false);
-            window.setTimeout(function () {
-              props.closem();
-            }, 800);
-            window.setTimeout(function () {
-              navigate("/sellbillbook");
-              window.location.reload();
-            }, 1000);
+            $("#disable").attr("disabled", false);
+            setBillCreationStatus(billIdVal != 0 ? false : true);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-        }
-      );
+        );
+      } else {
+        toast.error("Failed to fetch Outstanding Balance", {
+          toastId: "error5",
+        });
+        $("#disable").attr("disabled", false);
+      }
     }
   };
 
@@ -1541,336 +1578,348 @@ const SellBillStep3 = (props) => {
     setAllGroups([...updatedItems]);
   };
   return (
-    <div>
-      <div className="main_div_padding">
-        <div className="row">
-          <div className="col-lg-3 p-0">
-            <Step3PartySelect
-              parentSelectedParty={callbackFunctionPartySelect}
-              billEditItemval={billEditItem}
-              selectedBuyerSellerData={
-                editStatus
-                  ? billEditItemInfo.selectedBillInfo
-                  : partnerSelectedData
-              }
-              transpoSelectedData={
-                editStatus
-                  ? billEditItemInfo.selectedBillInfo
-                  : transpoSelectedData
-              }
-              selectedCrop={
-                editStatus
-                  ? step2CropEditStatus
-                    ? props.slectedSellCropsArray
-                    : billEditItemInfo.selectedBillInfo
-                  : props.slectedSellCropsArray
-              }
-            />
-          </div>
-          <div className="col-lg-6">
-            <h5 className="head_modal">Additions/Deductions</h5>
-            <div
-              className="card default_card comm_total_card"
-              id="scroll_style"
-            >
-              {allGroups.length > 0
-                ? allGroups.map((item, index) => {
-                    if (item.tableType == 2) {
-                      return (
-                        <div>
-                          <CommissionCard
-                            title={item.settingName}
-                            rateTitle={item.subText}
-                            onChange={commRetCommOnchangeEvent(
-                              allGroups,
-                              index
-                            )}
-                            inputValue={allGroups[index].value}
-                            inputText={allGroups[index].totalVal}
-                            totalTitle="Total"
-                            totalOnChange={commRetComTotalOnchangeEvent(
-                              allGroups,
-                              index
-                            )}
-                          />
-                          {item?.comments ? (
-                            <div className="comm_cards">
-                              <div className="card input_card">
-                                <div className="row">
-                                  <div className="col-lg-3 title_bg">
-                                    <h5 className="comm_card_title mb-0">
-                                      Comments
-                                    </h5>
-                                  </div>
-                                  <div className="col-lg-9 col-sm-12 col_left_border">
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      value={allGroups[index].commentText}
-                                      onChange={cstmCommentText(
-                                        allGroups,
-                                        index
-                                      )}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      );
-                    } else if (allGroups[index].tableType == 3) {
-                      return tableChangeStatus ? (
-                        <div>
-                          {allGroups[index]?.settingName == null ? (
-                            ""
-                          ) : (
-                            <div className="comm_cards">
-                              <div className="card input_card">
-                                <div className="row">
-                                  <div className="col-lg-3 title_bg">
-                                    <h5 className="comm_card_title mb-0">
-                                      {allGroups[index]?.settingName == null
-                                        ? ""
-                                        : //  (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) )
-                                          getText(
-                                            allGroups[index]?.settingName
+    <>
+      {isLoading ? (
+        <div className="">
+          <img src={loading} alt="my-gif" className="gif_img" />
+        </div>
+      ) : (
+        <div>
+          <div className="main_div_padding">
+            <div className="row">
+              <div className="col-lg-3 p-0">
+                <Step3PartySelect
+                  parentSelectedParty={callbackFunctionPartySelect}
+                  billEditItemval={billEditItem}
+                  selectedBuyerSellerData={
+                    editStatus
+                      ? billEditItemInfo.selectedBillInfo
+                      : partnerSelectedData
+                  }
+                  transpoSelectedData={
+                    editStatus
+                      ? billEditItemInfo.selectedBillInfo
+                      : transpoSelectedData
+                  }
+                  selectedCrop={
+                    editStatus
+                      ? step2CropEditStatus
+                        ? props.slectedSellCropsArray
+                        : billEditItemInfo.selectedBillInfo
+                      : props.slectedSellCropsArray
+                  }
+                />
+              </div>
+              <div className="col-lg-6">
+                <h5 className="head_modal">Additions/Deductions</h5>
+                <div
+                  className="card default_card comm_total_card"
+                  id="scroll_style"
+                >
+                  {allGroups.length > 0
+                    ? allGroups.map((item, index) => {
+                        if (item.tableType == 2) {
+                          return (
+                            <div>
+                              <CommissionCard
+                                title={item.settingName}
+                                rateTitle={item.subText}
+                                onChange={commRetCommOnchangeEvent(
+                                  allGroups,
+                                  index
+                                )}
+                                inputValue={allGroups[index].value}
+                                inputText={allGroups[index].totalVal}
+                                totalTitle="Total"
+                                totalOnChange={commRetComTotalOnchangeEvent(
+                                  allGroups,
+                                  index
+                                )}
+                              />
+                              {item?.comments ? (
+                                <div className="comm_cards">
+                                  <div className="card input_card">
+                                    <div className="row">
+                                      <div className="col-lg-3 title_bg">
+                                        <h5 className="comm_card_title mb-0">
+                                          Comments
+                                        </h5>
+                                      </div>
+                                      <div className="col-lg-9 col-sm-12 col_left_border">
+                                        <input
+                                          type="text"
+                                          placeholder=""
+                                          value={allGroups[index].commentText}
+                                          onChange={cstmCommentText(
+                                            allGroups,
+                                            index
                                           )}
-                                    </h5>
-                                  </div>
-                                  <div className="col-lg-9 col-sm-12 col_left_border">
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onFocus={(e) => resetInput(e)}
-                                      value={allGroups[index].value}
-                                      onChange={advLevOnchangeEvent(
-                                        allGroups,
-                                        index
-                                      )}
-                                    />
+                                        />
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
+                              ) : (
+                                ""
+                              )}
                             </div>
-                          )}
+                          );
+                        } else if (allGroups[index].tableType == 3) {
+                          return tableChangeStatus ? (
+                            <div>
+                              {allGroups[index]?.settingName == null ? (
+                                ""
+                              ) : (
+                                <div className="comm_cards">
+                                  <div className="card input_card">
+                                    <div className="row">
+                                      <div className="col-lg-3 title_bg">
+                                        <h5 className="comm_card_title mb-0">
+                                          {allGroups[index]?.settingName == null
+                                            ? ""
+                                            : //  (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) )
+                                              getText(
+                                                allGroups[index]?.settingName
+                                              )}
+                                        </h5>
+                                      </div>
+                                      <div className="col-lg-9 col-sm-12 col_left_border">
+                                        <input
+                                          type="text"
+                                          placeholder=""
+                                          onFocus={(e) => resetInput(e)}
+                                          value={allGroups[index].value}
+                                          onChange={advLevOnchangeEvent(
+                                            allGroups,
+                                            index
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
 
-                          {item?.comments ? (
-                            <div className="comm_cards">
-                              <div className="card input_card">
-                                <div className="row">
-                                  <div className="col-lg-3 title_bg">
-                                    <h5 className="comm_card_title mb-0">
-                                      Comments
-                                    </h5>
-                                  </div>
-                                  <div className="col-lg-9 col-sm-12 col_left_border">
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      value={allGroups[index].commentText}
-                                      onChange={cstmCommentText(
-                                        allGroups,
-                                        index
-                                      )}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      ) : (
-                        <CommonCard
-                          title={allGroups[index].settingName}
-                          rateTitle={allGroups[index].subText}
-                          onChange={fieldOnchangeEvent(allGroups, index)}
-                          inputValue={allGroups[index].value}
-                          inputText={allGroups[index].totalVal}
-                          totalTitle="Total"
-                          unitsTitle={allGroups[index].subText2}
-                          units={totalUnits}
-                          onChangeTotals={fieldOnchangeTotals(allGroups, index)}
-                        />
-                      );
-                    } else if (allGroups[index].tableType == 1) {
-                      return (
-                        <div>
-                          {allGroups[index]?.settingName == null ? (
-                            ""
-                          ) : (
-                            <div className="comm_cards">
-                              <div className="card input_card">
-                                <div className="row">
-                                  <div className="col-lg-3 title_bg">
-                                    <h5 className="comm_card_title mb-0">
-                                      {allGroups[index]?.settingName == null
-                                        ? ""
-                                        : // (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) )
-                                          getText(
-                                            allGroups[index]?.settingName
+                              {item?.comments ? (
+                                <div className="comm_cards">
+                                  <div className="card input_card">
+                                    <div className="row">
+                                      <div className="col-lg-3 title_bg">
+                                        <h5 className="comm_card_title mb-0">
+                                          Comments
+                                        </h5>
+                                      </div>
+                                      <div className="col-lg-9 col-sm-12 col_left_border">
+                                        <input
+                                          type="text"
+                                          placeholder=""
+                                          value={allGroups[index].commentText}
+                                          onChange={cstmCommentText(
+                                            allGroups,
+                                            index
                                           )}
-                                    </h5>
-                                  </div>
-                                  <div className="col-lg-9 col-sm-12 col_left_border">
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      onFocus={(e) => resetInput(e)}
-                                      value={allGroups[index].value}
-                                      onChange={advLevOnchangeEvent(
-                                        allGroups,
-                                        index
-                                      )}
-                                    />
+                                        />
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          )}
-                          {item?.comments ? (
-                            <div className="comm_cards">
-                              <div className="card input_card">
-                                <div className="row">
-                                  <div className="col-lg-3 title_bg">
-                                    <h5 className="comm_card_title mb-0">
-                                      Comments
-                                    </h5>
-                                  </div>
-                                  <div className="col-lg-9 col-sm-12 col_left_border">
-                                    <input
-                                      type="text"
-                                      placeholder=""
-                                      value={allGroups[index].commentText}
-                                      onChange={cstmCommentText(
-                                        allGroups,
-                                        index
-                                      )}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
+                              ) : (
+                                ""
+                              )}
                             </div>
                           ) : (
-                            ""
-                          )}
-                          {allGroups[index].settingName == "OTHER_FEE" ? (
-                            commentShownStatus ? (
-                              <div className="comm_cards">
-                                <div className="card input_card">
-                                  <div className="row">
-                                    <div className="col-lg-3 title_bg">
-                                      <h5 className="comm_card_title mb-0">
-                                        Comments
-                                      </h5>
-                                    </div>
-                                    <div className="col-lg-9 col-sm-12 col_left_border">
-                                      <input
-                                        type="text"
-                                        placeholder=""
-                                        value={commentFieldText}
-                                        onChange={commentText}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            ) : (
-                              <button
-                                className="comment_text"
-                                onClick={() => addCommentClick()}
-                              >
-                                +Add Comment
-                              </button>
-                            )
-                          ) : (
-                            ""
-                          )}
-                          {allGroups[index].settingName == "CASH_RECEIVED" ? (
-                            cashPaidCommentStatus ? (
-                              <div className="comm_cards">
-                                <div className="card input_card">
-                                  <div className="row">
-                                    <div className="col-lg-3 title_bg">
-                                      <h5 className="comm_card_title mb-0">
-                                        Comments
-                                      </h5>
-                                    </div>
-                                    <div className="col-lg-9 col-sm-12 col_left_border">
-                                      <input
-                                        type="text"
-                                        placeholder=""
-                                        value={cashCommentTextVal}
-                                        onChange={cashCommentText}
-                                      />
+                            <CommonCard
+                              title={allGroups[index].settingName}
+                              rateTitle={allGroups[index].subText}
+                              onChange={fieldOnchangeEvent(allGroups, index)}
+                              inputValue={allGroups[index].value}
+                              inputText={allGroups[index].totalVal}
+                              totalTitle="Total"
+                              unitsTitle={allGroups[index].subText2}
+                              units={totalUnits}
+                              onChangeTotals={fieldOnchangeTotals(
+                                allGroups,
+                                index
+                              )}
+                            />
+                          );
+                        } else if (allGroups[index].tableType == 1) {
+                          return (
+                            <div>
+                              {allGroups[index]?.settingName == null ? (
+                                ""
+                              ) : (
+                                <div className="comm_cards">
+                                  <div className="card input_card">
+                                    <div className="row">
+                                      <div className="col-lg-3 title_bg">
+                                        <h5 className="comm_card_title mb-0">
+                                          {allGroups[index]?.settingName == null
+                                            ? ""
+                                            : // (allGroups[index]?.cstmName != '' ? (allGroups[index]?.customFieldName != null ? getText(allGroups[index]?.customFieldName) : getText(allGroups[index]?.cstmName)) : getText(allGroups[index]?.cstmName) )
+                                              getText(
+                                                allGroups[index]?.settingName
+                                              )}
+                                        </h5>
+                                      </div>
+                                      <div className="col-lg-9 col-sm-12 col_left_border">
+                                        <input
+                                          type="text"
+                                          placeholder=""
+                                          onFocus={(e) => resetInput(e)}
+                                          value={allGroups[index].value}
+                                          onChange={advLevOnchangeEvent(
+                                            allGroups,
+                                            index
+                                          )}
+                                        />
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <button
-                                className="comment_text"
-                                onClick={() => addCashCommentClick()}
-                              >
-                                +Add Comment
-                              </button>
-                            )
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      );
-                    }
-                  })
-                : ""}
-            </div>
-          </div>
-          <div className="col-lg-3 pl-0">
-            <h5 className="head_modal">Totals</h5>
-            <div className="default_card comm_total_card total_bal">
-              <div className="totals_value pt-0">
-                <h5>Gross Total (₹)</h5>
-                <h6 className="black_color">
-                  {getCurrencyNumberWithOutSymbol(grossTotal)}
-                </h6>
-              </div>
-              <div className="totals_value">
-                <h5>Total Bill Amount (₹)</h5>
-                <h6 className="color_green">
-                  {getCurrencyNumberWithOutSymbol(Number(getTotalBillAmount()))}
-                </h6>
-              </div>
-              {outBalformStatusvalue ? (
-                <div className="totals_value">
-                  <h5>Outstanding Balance (₹)</h5>
-                  <h6 className="color_green">
-                    {outBal != 0
-                      ? editStatus
-                        ? billEditItem?.outStBal != 0
-                          ? getCurrencyNumberWithOutSymbol(
-                              billEditItem?.outStBal
-                            )
-                          : 0
-                        : getCurrencyNumberWithOutSymbol(outBal)
-                      : "0"}
-                  </h6>
+                              )}
+                              {item?.comments ? (
+                                <div className="comm_cards">
+                                  <div className="card input_card">
+                                    <div className="row">
+                                      <div className="col-lg-3 title_bg">
+                                        <h5 className="comm_card_title mb-0">
+                                          Comments
+                                        </h5>
+                                      </div>
+                                      <div className="col-lg-9 col-sm-12 col_left_border">
+                                        <input
+                                          type="text"
+                                          placeholder=""
+                                          value={allGroups[index].commentText}
+                                          onChange={cstmCommentText(
+                                            allGroups,
+                                            index
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                ""
+                              )}
+                              {allGroups[index].settingName == "OTHER_FEE" ? (
+                                commentShownStatus ? (
+                                  <div className="comm_cards">
+                                    <div className="card input_card">
+                                      <div className="row">
+                                        <div className="col-lg-3 title_bg">
+                                          <h5 className="comm_card_title mb-0">
+                                            Comments
+                                          </h5>
+                                        </div>
+                                        <div className="col-lg-9 col-sm-12 col_left_border">
+                                          <input
+                                            type="text"
+                                            placeholder=""
+                                            value={commentFieldText}
+                                            onChange={commentText}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <button
+                                    className="comment_text"
+                                    onClick={() => addCommentClick()}
+                                  >
+                                    +Add Comment
+                                  </button>
+                                )
+                              ) : (
+                                ""
+                              )}
+                              {allGroups[index].settingName ==
+                              "CASH_RECEIVED" ? (
+                                cashPaidCommentStatus ? (
+                                  <div className="comm_cards">
+                                    <div className="card input_card">
+                                      <div className="row">
+                                        <div className="col-lg-3 title_bg">
+                                          <h5 className="comm_card_title mb-0">
+                                            Comments
+                                          </h5>
+                                        </div>
+                                        <div className="col-lg-9 col-sm-12 col_left_border">
+                                          <input
+                                            type="text"
+                                            placeholder=""
+                                            value={cashCommentTextVal}
+                                            onChange={cashCommentText}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <button
+                                    className="comment_text"
+                                    onClick={() => addCashCommentClick()}
+                                  >
+                                    +Add Comment
+                                  </button>
+                                )
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                          );
+                        }
+                      })
+                    : ""}
                 </div>
-              ) : (
-                ""
-              )}
-
-              {/* {outBalformStatusvalue ? ( */}
-              <div className="totals_value">
-                <h5>Final Ledger Balance (₹)</h5>
-                <h6 className="color_green">
-                  {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
-                </h6>
               </div>
-              {/* // ) : (
+              <div className="col-lg-3 pl-0">
+                <h5 className="head_modal">Totals</h5>
+                <div className="default_card comm_total_card total_bal">
+                  <div className="totals_value pt-0">
+                    <h5>Gross Total (₹)</h5>
+                    <h6 className="black_color">
+                      {getCurrencyNumberWithOutSymbol(grossTotal)}
+                    </h6>
+                  </div>
+                  <div className="totals_value">
+                    <h5>Total Bill Amount (₹)</h5>
+                    <h6 className="color_green">
+                      {getCurrencyNumberWithOutSymbol(
+                        Number(getTotalBillAmount())
+                      )}
+                    </h6>
+                  </div>
+                  {outBalformStatusvalue ? (
+                    <div className="totals_value">
+                      <h5>Outstanding Balance (₹)</h5>
+                      <h6 className="color_green">
+                        {outBal != 0
+                          ? editStatus
+                            ? billEditItem?.outStBal != 0
+                              ? getCurrencyNumberWithOutSymbol(
+                                  billEditItem?.outStBal
+                                )
+                              : 0
+                            : getCurrencyNumberWithOutSymbol(outBal)
+                          : "0"}
+                      </h6>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+
+                  {/* {outBalformStatusvalue ? ( */}
+                  <div className="totals_value">
+                    <h5>Final Ledger Balance (₹)</h5>
+                    <h6 className="color_green">
+                      {getCurrencyNumberWithOutSymbol(getFinalLedgerbalance())}
+                    </h6>
+                  </div>
+                  {/* // ) : (
               //   <div className="totals_value">
               //     <h5>Total Receivables (₹)</h5>
               //     <h6 className="color_green">
@@ -1878,64 +1927,74 @@ const SellBillStep3 = (props) => {
               //     </h6>
               //   </div>
               // )} */}
-              {cashRcvdValue != 0 ? (
-                <div className="totals_value">
-                  <h5>Cash Received (₹)</h5>
-                  <h6>
-                    -
-                    {billEditItem?.cashRcvd
-                      ? cashRcdStatus
-                        ? getCurrencyNumberWithOutSymbol(Number(cashRcvdValue))
-                        : getCurrencyNumberWithOutSymbol(billEditItem?.cashRcvd)
-                      : getCurrencyNumberWithOutSymbol(Number(cashRcvdValue))}
-                  </h6>
+                  {cashRcvdValue != 0 ? (
+                    <div className="totals_value">
+                      <h5>Cash Received (₹)</h5>
+                      <h6>
+                        -
+                        {billEditItem?.cashRcvd
+                          ? cashRcdStatus
+                            ? getCurrencyNumberWithOutSymbol(
+                                Number(cashRcvdValue)
+                              )
+                            : getCurrencyNumberWithOutSymbol(
+                                billEditItem?.cashRcvd
+                              )
+                          : getCurrencyNumberWithOutSymbol(
+                              Number(cashRcvdValue)
+                            )}
+                      </h6>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  {outBalformStatusvalue ? (
+                    <div className="totals_value">
+                      <h5>Final Outstanding Balance (₹)</h5>
+                      <h6 className="color_green">
+                        {getCurrencyNumberWithOutSymbol(
+                          getFinalOutstandingBal()
+                        )}
+                      </h6>
+                    </div>
+                  ) : (
+                    <div className="totals_value">
+                      <h5>Total Receivables (₹)</h5>
+                      <h6 className="color_green">
+                        {getCurrencyNumberWithOutSymbol(getTotalRcble())}
+                      </h6>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                ""
-              )}
-              {outBalformStatusvalue ? (
-                <div className="totals_value">
-                  <h5>Final Outstanding Balance (₹)</h5>
-                  <h6 className="color_green">
-                    {getCurrencyNumberWithOutSymbol(getFinalOutstandingBal())}
-                  </h6>
-                </div>
-              ) : (
-                <div className="totals_value">
-                  <h5>Total Receivables (₹)</h5>
-                  <h6 className="color_green">
-                    {getCurrencyNumberWithOutSymbol(getTotalRcble())}
-                  </h6>
-                </div>
-              )}
+              </div>
+            </div>
+            <ToastContainer />
+          </div>
+          <div className="bottom_div">
+            <div className="d-flex align-items-center justify-content-between">
+              <button className="secondary_btn" onClick={cancelStep}>
+                cancel
+              </button>
+              <div className="d-flex align-items-center">
+                <button
+                  className="secondary_btn no_delete_btn"
+                  onClick={() => previousStep()}
+                >
+                  Previous
+                </button>
+                <button
+                  className="primary_btn"
+                  id="disable"
+                  onClick={() => postsellbill()}
+                >
+                  Submit
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        <ToastContainer />
-      </div>
-      <div className="bottom_div">
-        <div className="d-flex align-items-center justify-content-between">
-          <button className="secondary_btn" onClick={cancelStep}>
-            cancel
-          </button>
-          <div className="d-flex align-items-center">
-            <button
-              className="secondary_btn no_delete_btn"
-              onClick={() => previousStep()}
-            >
-              Previous
-            </button>
-            <button
-              className="primary_btn"
-              id="disable"
-              onClick={() => postsellbill()}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

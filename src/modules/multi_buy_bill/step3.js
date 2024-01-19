@@ -153,16 +153,16 @@ const Step3 = (props) => {
         setObjArrray2([...objArray1]);
       }
     }
-    const generateBillObj = {
-      caId: clickId,
-      multiBill: true,
-      partyId: 0,
-      type: "BUY",
-      writerId: writerId,
-    };
-    getGeneratedBillId(generateBillObj).then((res) => {
-      setBillIdVal(res.data.data == null ? 0 : res.data.data);
-    });
+    // const generateBillObj = {
+    //   caId: clickId,
+    //   multiBill: true,
+    //   partyId: 0,
+    //   type: "BUY",
+    //   writerId: writerId,
+    // };
+    // getGeneratedBillId(generateBillObj).then((res) => {
+    //   setBillIdVal(res.data.data == null ? 0 : res.data.data);
+    // });
   }, []);
   var gTotal = 0;
 
