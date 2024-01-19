@@ -1,10 +1,10 @@
 import React from "react";
 import { getText } from "./getText";
 const resetInput = (e) => {
-  if(e.target.value == 0){
+  if (e.target.value == 0) {
     e.target.value = "";
   }
-}
+};
 const CommissionCard = ({
   title,
   rateTitle,
