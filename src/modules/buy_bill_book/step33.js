@@ -272,7 +272,6 @@ const Step33 = (props) => {
     });
 
     var partyID = editStatus ? billEditItem.farmerId : buyerInfo.partyId;
-    console.log(billCreationStatus + "partyID", "billCreationStatus");
     if (billCreationStatus) {
       const generateBillObj = {
         caId: clickId,
@@ -1130,7 +1129,6 @@ const Step33 = (props) => {
           });
           $("#disable").attr("disabled", false);
           setBillCreationStatus(billIdVal != 0 ? false : true);
-          console.log("billID", billIdVal);
         }
       );
     } else {
@@ -1153,7 +1151,7 @@ const Step33 = (props) => {
             }, 800);
             window.setTimeout(function () {
               navigate("/buy_bill_book");
-              window.location.reload();
+              // window.location.reload();
             }, 1000);
           } else {
             window.setTimeout(function () {
@@ -1497,7 +1495,7 @@ const Step33 = (props) => {
       if (i == index) {
         var v = (val / grossTotal) * 100;
         if (v != 0) {
-          v = v.toFixed(2);
+          v = v;
         }
         if (groupLiist[i].cstmName != "") {
           let tab = [...questionsTitle];
@@ -1555,7 +1553,7 @@ const Step33 = (props) => {
           setQuestionsTitle(tab);
         }
         getAdditionValues(groupLiist[i], v);
-        return { ...groupLiist[i], value: v, totalVal: val };
+        return { ...groupLiist[i], value: v.toFixed(2), totalVal: val };
       } else {
         return { ...groupLiist[i] };
       }
