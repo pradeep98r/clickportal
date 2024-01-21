@@ -19,6 +19,11 @@ const Step11 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateSelected = billEditItemInfo?.selectedBillDate;
+  console.log(
+    billEditItemInfo?.selectedBillDate,
+    billEditItemInfo,
+    billDateSelected
+  );
   const cancelStep = () => {
     dispatch(selectTrans(null));
     dispatch(selectBuyer(null));
