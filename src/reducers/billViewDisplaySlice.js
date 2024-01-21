@@ -79,5 +79,7 @@ export const {
   filtereArray,
   allSettings,
   selectedTotalBillAmount,
+  disableFromLastDays,
+  numberOfDays,
 } = billViewDisplaySlice.actions;
 export default billViewDisplaySlice.reducer;

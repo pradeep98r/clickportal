@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import "../ledgers/paymentHistory.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import {
+  getMaskedMobileNumber,
+  isEditBill,
+} from "../../components/getCurrencyNumber";
 import PaymentHistoryCard from "../../components/paymentHistoryCard";
 import cancel from "../../assets/images/cancel.svg";
 import edit from "../../assets/images/edit_round.svg";
@@ -84,6 +87,9 @@ const PaymentHistoryView = (props) => {
   const partyTypeVal = props.partyType;
   const dispatch = useDispatch();
   const paymentHistoryData = paymentViewData?.paymentViewInfo;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDays;
+  const numberOfDaysValue = billViewData?.numberOfDays;
   var discountedAmount = 0;
   var discountPercentage = 0;
   var amount = paymentViewData?.paymentViewInfo?.amount
@@ -160,6 +166,19 @@ const PaymentHistoryView = (props) => {
     toBePaidRcvd: 0,
     writerId: writerId,
   };
+  const onTapDeletePayment = (date) => {
+    var value = isEditBill(date, numberOfDaysValue);
+    if (!value) {
+      toast.error(
+        `Payment Records that are more than ${numberOfDaysValue} days old can’t be deleted/edited.`,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      removeRecordPayment();
+    }
+  };
   const removeRecordPayment = () => {
     updateRecordPayment(deleteRecordPayment).then((res) => {
       toast.success(res.data.status.message, {
@@ -184,6 +203,19 @@ const PaymentHistoryView = (props) => {
     writerId: writerId,
   };
   const label = advancesData.selectPartnerOption;
+  const onTapDeleteAdvance = (date) => {
+    var value = isEditBill(date, numberOfDaysValue);
+    if (!value) {
+      toast.error(
+        `Advance Records that are more than ${numberOfDaysValue} days old can’t be deleted/edited.`,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      advanceDelete();
+    }
+  };
   const advanceDelete = () => {
     deleteAdvancePayment(advanceDeleteObject).then((res) => {
       toast.success(res.data.status.message, {
@@ -561,7 +593,11 @@ const PaymentHistoryView = (props) => {
                     paymentHistoryData?.paymentMode != "BILL" ? (
                       <div className="action_icons">
                         <div className="items_div">
-                          <button onClick={() => advanceDelete()}>
+                          <button
+                            onClick={() =>
+                              onTapDeleteAdvance(paymentHistoryData?.date)
+                            }
+                          >
                             <img src={cancel} alt="img" className="" />
                           </button>
                           <p>Cancel</p>
@@ -598,7 +634,7 @@ const PaymentHistoryView = (props) => {
                         <div className="items_div">
                           <button
                             onClick={() => {
-                              removeRecordPayment();
+                              onTapDeletePayment(paymentHistoryData?.date);
                             }}
                           >
                             <img src={cancel} alt="img" className="" />

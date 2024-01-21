@@ -21,7 +21,10 @@ import {
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import {
+  getMaskedMobileNumber,
+  isEditBill,
+} from "../../components/getCurrencyNumber";
 import {
   getBuyBills,
   getBuyerDetailedLedger,
@@ -133,6 +136,10 @@ const RecordPayment = (props) => {
   var startDate = tabClick.beginDate;
   var endDate = tabClick.closeDate;
   const recordPayment = tabClick?.trhoughRecordPayment;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDays;
+  const numberOfDaysValue = billViewData?.numberOfDays;
+  const numberOfDaysSell = billViewData?.numberOfDaysSell;
   useEffect(() => {
     setLoading(false);
   }, [props.showRecordPaymentModal]);
@@ -276,110 +283,128 @@ const RecordPayment = (props) => {
           toast.error(error.res.data.status.message, {
             toastId: "error3",
           });
+          setLoading(false);
         }
       );
     } else {
-      await postRecordPayment(addRecordData).then(
-        (response) => {
-          toast.success(response.data.status.message, {
-            toastId: "errorr2",
-          });
-          window.setTimeout(function () {
-            props.closeRecordPaymentModal();
-            closePopup();
-          }, 1000);
-          dispatch(fromRecordPayment(true));
-          if (fromBillViewPopup && !fromBillbookToRecordPayment) {
-            if (
-              props.partyType?.toLowerCase() == "seller" ||
-              props.partyType?.toLowerCase() == "farmer"
-            ) {
-              getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                  Object.assign(res.data.data, { partyType: "FARMER" });
-                  dispatch(billViewInfo(res.data.data));
-                  localStorage.setItem(
-                    "billData",
-                    JSON.stringify(res.data.data)
-                  );
-                  setShowBillModalStatus(true);
-                  setShowBillModal(true);
-                }
-              });
+      if (!enableCreationStatus) {
+        await postRecordPayment(addRecordData).then(
+          (response) => {
+            toast.success(response.data.status.message, {
+              toastId: "errorr2",
+            });
+            window.setTimeout(function () {
+              props.closeRecordPaymentModal();
+              closePopup();
+            }, 1000);
+            dispatch(fromRecordPayment(true));
+            if (fromBillViewPopup && !fromBillbookToRecordPayment) {
+              if (
+                props.partyType?.toLowerCase() == "seller" ||
+                props.partyType?.toLowerCase() == "farmer"
+              ) {
+                getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                  if (res.data.status.type === "SUCCESS") {
+                    Object.assign(res.data.data, { partyType: "FARMER" });
+                    dispatch(billViewInfo(res.data.data));
+                    localStorage.setItem(
+                      "billData",
+                      JSON.stringify(res.data.data)
+                    );
+                    setShowBillModalStatus(true);
+                    setShowBillModal(true);
+                  }
+                });
+              } else {
+                getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                  if (res.data.status.type === "SUCCESS") {
+                    Object.assign(res.data.data, {
+                      partyType: props.partyType,
+                    });
+                    dispatch(billViewInfo(res.data.data));
+                    localStorage.setItem(
+                      "billData",
+                      JSON.stringify(res.data.data)
+                    );
+                    setShowBillModalStatus(true);
+                    setShowBillModal(true);
+                  }
+                });
+              }
             } else {
-              getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                  Object.assign(res.data.data, { partyType: props.partyType });
-                  dispatch(billViewInfo(res.data.data));
-                  localStorage.setItem(
-                    "billData",
-                    JSON.stringify(res.data.data)
-                  );
-                  setShowBillModalStatus(true);
-                  setShowBillModal(true);
-                }
-              });
+              if (
+                props.partyType?.toLowerCase() == "seller" ||
+                props.partyType?.toLowerCase() == "farmer"
+              ) {
+                getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                  if (res.data.status.type === "SUCCESS") {
+                    Object.assign(res.data.data, { partyType: "FARMER" });
+                    dispatch(billViewInfo(res.data.data));
+                    localStorage.setItem(
+                      "billData",
+                      JSON.stringify(res.data.data)
+                    );
+                    setShowBillModalStatus(true);
+                    setShowBillModal(true);
+                  }
+                });
+                // startDate
+                getBuyBills(clickId, startDate, endDate).then((response) => {
+                  if (response.data.data != null) {
+                    // setBuyBillData(response.data.data.singleBills);
+                    response.data.data.singleBills.map((i, ind) => {
+                      Object.assign(i, { index: ind });
+                    });
+                    dispatch(allBuyBillsData(response.data.data.singleBills));
+                    // setBuyBillData(response.data.data.singleBills);
+                  }
+                });
+              } else {
+                getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
+                  if (res.data.status.type === "SUCCESS") {
+                    Object.assign(res.data.data, {
+                      partyType: props.partyType,
+                    });
+                    dispatch(billViewInfo(res.data.data));
+                    localStorage.setItem(
+                      "billData",
+                      JSON.stringify(res.data.data)
+                    );
+                    setShowBillModalStatus(true);
+                    setShowBillModal(true);
+                  }
+                });
+                getSellBills(clickId, startDate, endDate).then((response) => {
+                  if (response.data.data != null) {
+                    response.data.data.singleBills.map((i, ind) => {
+                      Object.assign(i, { index: ind });
+                    });
+                    dispatch(allSellBillsData(response.data.data.singleBills));
+                  } else {
+                    dispatch(allSellBillsData([]));
+                  }
+                });
+              }
             }
-          } else {
-            if (
-              props.partyType?.toLowerCase() == "seller" ||
-              props.partyType?.toLowerCase() == "farmer"
-            ) {
-              getBuyBillId(clickId, ledgerData?.caBSeq).then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                  Object.assign(res.data.data, { partyType: "FARMER" });
-                  dispatch(billViewInfo(res.data.data));
-                  localStorage.setItem(
-                    "billData",
-                    JSON.stringify(res.data.data)
-                  );
-                  setShowBillModalStatus(true);
-                  setShowBillModal(true);
-                }
-              });
-              // startDate
-              getBuyBills(clickId, startDate, endDate).then((response) => {
-                if (response.data.data != null) {
-                  // setBuyBillData(response.data.data.singleBills);
-                  response.data.data.singleBills.map((i, ind) => {
-                    Object.assign(i, { index: ind });
-                  });
-                  dispatch(allBuyBillsData(response.data.data.singleBills));
-                  // setBuyBillData(response.data.data.singleBills);
-                }
-              });
-            } else {
-              getSellBillId(clickId, ledgerData?.caBSeq).then((res) => {
-                if (res.data.status.type === "SUCCESS") {
-                  Object.assign(res.data.data, { partyType: props.partyType });
-                  dispatch(billViewInfo(res.data.data));
-                  localStorage.setItem(
-                    "billData",
-                    JSON.stringify(res.data.data)
-                  );
-                  setShowBillModalStatus(true);
-                  setShowBillModal(true);
-                }
-              });
-              getSellBills(clickId, startDate, endDate).then((response) => {
-                if (response.data.data != null) {
-                  response.data.data.singleBills.map((i, ind) => {
-                    Object.assign(i, { index: ind });
-                  });
-                  dispatch(allSellBillsData(response.data.data.singleBills));
-                } else {
-                  dispatch(allSellBillsData([]));
-                }
-              });
-            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.message, {
+              toastId: "error3",
+            });
+            setLoading(false);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error3",
-          });
-        }
-      );
+        );
+      } else {
+        toast.error(
+          `Choose “Select Date” from past ${
+            props.partyType == "BUYER" ? numberOfDaysSell : numberOfDaysValue
+          } days only. `,
+          {
+            toastId: "error10",
+          }
+        );
+        setLoading(false);
+      }
     }
 
     if (props.tabs == "paymentledger") {
@@ -702,11 +727,24 @@ const RecordPayment = (props) => {
       setBillAmount((totalRecieved - val).toFixed(2));
     }
   };
-
+  const [enableCreationStatus, setEnableCreationStatus] = useState(false);
   const onChangeDateSelect = (date) => {
     setSelectDate(date);
     dispatch(dateInRP(date));
     dispatch(dates(date));
+    var days =
+      props.partyType == "BUYER" ? numberOfDaysSell : numberOfDaysValue;
+    var value = isEditBill(date, days);
+    if (!value) {
+      setEnableCreationStatus(true);
+      // dispatch(disableFromLastDays(true));
+      toast.error(`Choose “Select Date” from past ${days} days only. `, {
+        toastId: "error6",
+      });
+    } else {
+      setEnableCreationStatus(false);
+      // dispatch(disableFromLastDays(false));
+    }
   };
   const handleCommentText = (e) => {
     let text = e.target.value;

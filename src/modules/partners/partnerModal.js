@@ -26,6 +26,8 @@ import {
   radioButtonVal,
 } from "../../reducers/partnerSlice";
 import { singleTransporter } from "../../reducers/transpoSlice";
+import { disableFromLastDays } from "../../reducers/billViewSlice";
+import { isEditBill } from "../../components/getCurrencyNumber";
 const PartnerModal = (props) => {
   const dispatch = useDispatch();
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
@@ -47,6 +49,8 @@ const PartnerModal = (props) => {
   const isEdit = partnerDataArray?.isEditPartner;
   const selectedPartnerObj = partnerDataArray?.partnerSingleObj;
   const transpoData = useSelector((state) => state.transpoInfo);
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const numberOfDaysValue = billViewData?.numberOfDays;
   const getPartyVal = () => {
     var val;
     if (partyType.toUpperCase() === "FARMER" && !fromTrader) {
@@ -272,11 +276,36 @@ const PartnerModal = (props) => {
     });
     return exitStatus;
   };
+  const [enableCreationStatus, setEnableCreationStatus] = useState(false);
+  const handleDate = (date) => {
+    setStartDate(date);
+    var value = isEditBill(date, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      setEnableCreationStatus(true);
+      toast.error(
+        `Select “As On" date from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      setEnableCreationStatus(false);
+    }
+  };
+
   const onSubmit = () => {
     if (handleExitPartner(mobileNumber)) {
       toast.error("Partner Already Existed", {
         toastId: "error5",
       });
+    } else if (enableCreationStatus) {
+      toast.error(
+        `Select “As On" date from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
     } else if (
       nameField.trim().length !== 0 &&
       nameField.trim().length !== 1 &&
@@ -982,7 +1011,7 @@ const PartnerModal = (props) => {
                             <DatePicker
                               dateFormat="dd-MMM-yyyy"
                               selected={startDate}
-                              onChange={(date) => setStartDate(date)}
+                              onChange={(date) => handleDate(date)}
                               className="form-control"
                               placeholder="Date"
                               maxDate={new Date()}

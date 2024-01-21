@@ -33,7 +33,10 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
-import { billViewInfo } from "../../reducers/billViewSlice";
+import {
+  billViewInfo,
+  disableFromLastDays,
+} from "../../reducers/billViewSlice";
 import { getBuyBillId } from "../../actions/ledgersService";
 
 const Step33 = (props) => {
@@ -87,8 +90,12 @@ const Step33 = (props) => {
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
   const [billIdVal, setBillIdVal] = useState(0);
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDays;
+  const numberOfDaysValue = billViewData?.numberOfDays;
   useEffect(() => {
     $("#disable").attr("disabled", false);
+    dispatch(disableFromLastDays(false));
     getDefaultSystemSettings().then((res) => {
       // console.log(res, "res");
     });
@@ -1070,31 +1077,41 @@ const Step33 = (props) => {
   };
   const addBillApiCall = () => {
     console.log(billRequestObj);
-    postbuybillApi(billRequestObj).then(
-      (response) => {
-        if (response.data.status.type === "SUCCESS") {
-          toast.success(response.data.status.message, {
-            toastId: "success1",
-          });
-          localStorage.setItem("stepOne", false);
-          localStorage.setItem("LinkPath", "/buy_bill_book");
+    if (!disableDaysStatus) {
+      postbuybillApi(billRequestObj).then(
+        (response) => {
+          if (response.data.status.type === "SUCCESS") {
+            toast.success(response.data.status.message, {
+              toastId: "success1",
+            });
+            localStorage.setItem("stepOne", false);
+            localStorage.setItem("LinkPath", "/buy_bill_book");
 
-          window.setTimeout(function () {
-            props.closem();
-          }, 800);
-          window.setTimeout(function () {
-            navigate("/buy_bill_book");
-            window.location.reload();
-          }, 1000);
+            window.setTimeout(function () {
+              props.closem();
+            }, 800);
+            window.setTimeout(function () {
+              navigate("/buy_bill_book");
+              window.location.reload();
+            }, 1000);
+          }
+        },
+        (error) => {
+          toast.error(error.response.data.status.description, {
+            toastId: "error1",
+          });
+          $("#disable").attr("disabled", false);
         }
-      },
-      (error) => {
-        toast.error(error.response.data.status.description, {
-          toastId: "error1",
-        });
-        $("#disable").attr("disabled", false);
-      }
-    );
+      );
+    } else {
+      toast.error(
+        `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
+      $("#disable").attr("disabled", false);
+    }
   };
   const editBillApiCall = () => {
     editbuybillApi(editBillRequestObj).then(

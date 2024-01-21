@@ -41,6 +41,7 @@ import {
 import {
   billViewInfo,
   colorthemeValue,
+  disableFromLastDays,
   pdfSelectedThemeData,
 } from "../../reducers/billViewSlice";
 import { colorAdjustBg, getText } from "../../components/getText";
@@ -76,6 +77,7 @@ import {
 } from "../../actions/pdfservice/singleBillPdf";
 import loading from "../../assets/images/loading.gif";
 import { colorAdjustBill } from "../../components/qtyValues";
+import { isEditBill } from "../../components/getCurrencyNumber";
 const BillView = (props) => {
   const loginData = JSON.parse(localStorage.getItem("loginResponse"));
   const pdfThemeDataArray = JSON.parse(localStorage.getItem("settingsData"));
@@ -105,9 +107,10 @@ const BillView = (props) => {
   const fromDate = moment(tabClick?.beginDate).format("YYYY-MM-DD");
   const toDate = moment(tabClick?.closeDate).format("YYYY-MM-DD");
   const [isLoading, setLoading] = useState(false);
+  const numberOfDaysValue = billViewData?.numberOfDays;
+  const numberOfDaysSell = billViewData?.numberOfDaysSell;
   useEffect(() => {
     if (pdfThemeData != null) {
-      console.log(pdfThemeData, billData);
       for (var i = 0; i < pdfThemeData.length; i++) {
         if (
           pdfThemeData[i].type == "BUY_BILL" &&
@@ -162,7 +165,9 @@ const BillView = (props) => {
       dispatch(colorthemeValue("#16a12c"));
       localStorage.setItem("pdftheme", null);
     }
-
+    // if (disableDaysStatus) {
+    //   document.getElementById("edit_btn").disabled = true;
+    // }
     dispatch(billViewStatus(true));
     // setBillViewData(billViewData.billViewInfo);
     dispatch(billViewInfo(billViewData.billViewInfo));
@@ -226,6 +231,23 @@ const BillView = (props) => {
     var val = data / feePerUnit();
     return val;
   };
+  const onTapEditBill = (billData) => {
+    var days =
+      billData?.partyType == "FARMER" ? numberOfDaysValue : numberOfDaysSell;
+    var value = isEditBill(billData.billDate, days);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Bills that are more than ${days} days old can’t be edited. `,
+        {
+          toastId: "error6",
+        }
+      );
+      document.getElementById("edit_btn").disabled = true;
+    } else {
+      editBill(billData);
+    }
+  };
 
   const editBill = (itemVal) => {
     editBillTim(itemVal);
@@ -284,7 +306,6 @@ const BillView = (props) => {
       //Due to advance feature changes as we are disabling the edit option for some time
       var currentDate = new Date("2024-01-03");
       var billDate = new Date(billData?.billDate);
-      console.log(currentDate, billDate);
       if (currentDate == billDate) {
         _value = true;
       } else if (billDate > currentDate) {
@@ -389,6 +410,23 @@ const BillView = (props) => {
     );
   };
   let isPopupOpen = false;
+  const onTapCancelBill = () => {
+    var days =
+      billData?.partyType == "FARMER" ? numberOfDaysValue : numberOfDaysSell;
+    var value = isEditBill(billData.billDate, days);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Bills that are more than ${days} days old can’t be cancelled. `,
+        {
+          toastId: "error6",
+        }
+      );
+      document.getElementById("edit_btn").disabled = true;
+    } else {
+      handleCheckEvent();
+    }
+  };
   const handleCheckEvent = () => {
     editBillTim();
     if (editBillTim()) {
@@ -873,7 +911,10 @@ const BillView = (props) => {
                           <p>Pay</p>
                         </div>
                         <div className="items_div">
-                          <button onClick={() => editBill(billData)}>
+                          <button
+                            onClick={() => onTapEditBill(billData)}
+                            id="edit_btn"
+                          >
                             <img src={edit} alt="img" />
                           </button>
                           <p>Edit</p>
@@ -914,7 +955,7 @@ const BillView = (props) => {
                         ""
                       ) : (
                         <div className="items_div">
-                          <button onClick={() => handleCheckEvent()}>
+                          <button onClick={() => onTapCancelBill()}>
                             <img src={cancel} alt="img" className="" />
                           </button>
                           <p>Cancel</p>

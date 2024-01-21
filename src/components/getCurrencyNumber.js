@@ -28,7 +28,7 @@ export function getMaskedMobileNumber(number) {
   return number.replace(/.(?=.{4})/g, "X");
 }
 export function getQuantityData(qty, qtyUnit, weight) {
-  console.log("hi,", qty,qtyUnit,weight);
+  console.log("hi,", qty, qtyUnit, weight);
   var qtyData = {
     majorUnitVal: `${
       (qty === 0 ? "" : getCurrencyNumberWithOneDigit(qty)) +
@@ -103,7 +103,20 @@ export function getWastage(wastage, qtyUnit, rateType) {
       : ""
   }`;
 }
-
+export function isEditBill(date, settingsDate) {
+  console.log(date, settingsDate, "date");
+  if (date != "") {
+    var currentDate = new Date();
+    var billDateVal = new Date(date);
+    const diffTime = Math.abs(currentDate - billDateVal);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log(diffDays, settingsDate, "dateif");
+    if (diffDays < settingsDate) {
+      return true;
+    }
+  }
+  return false;
+}
 export default {
   getCurrencyNumberWithSymbol,
   getCurrencyNumberWithOutSymbol,
@@ -111,4 +124,5 @@ export default {
   getMaskedMobileNumber,
   getQuantityData,
   getWastage,
+  isEditBill,
 };

@@ -89,6 +89,9 @@ const SellBillStep3 = (props) => {
       : ""
   );
   const [billIdVal, setBillIdVal] = useState(0);
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDaysSell;
+  const numberOfDaysValue = billViewData?.numberOfDaysSell;
   useEffect(() => {
     $("#disable").attr("disabled", false);
     var cropArrays = editStatus
@@ -1007,29 +1010,39 @@ const SellBillStep3 = (props) => {
         }
       );
     } else {
-      postsellbillApi(sellBillRequestObj).then(
-        (response) => {
-          if (response.data.status.message === "SUCCESS") {
-            toast.success(response.data.status.description?.toUpperCase(), {
-              toastId: "success1",
+      if (!disableDaysStatus) {
+        postsellbillApi(sellBillRequestObj).then(
+          (response) => {
+            if (response.data.status.message === "SUCCESS") {
+              toast.success(response.data.status.description?.toUpperCase(), {
+                toastId: "success1",
+              });
+              localStorage.setItem("stepOneSingleBook", false);
+              window.setTimeout(function () {
+                props.closem();
+              }, 800);
+              window.setTimeout(function () {
+                navigate("/sellbillbook");
+                window.location.reload();
+              }, 1000);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
             });
-            localStorage.setItem("stepOneSingleBook", false);
-            window.setTimeout(function () {
-              props.closem();
-            }, 800);
-            window.setTimeout(function () {
-              navigate("/sellbillbook");
-              window.location.reload();
-            }, 1000);
+            $("#disable").attr("disabled", false);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-        }
-      );
+        );
+      } else {
+        toast.error(
+          `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+          {
+            toastId: "error6",
+          }
+        );
+        $("#disable").attr("disabled", false);
+      }
     }
   };
 
