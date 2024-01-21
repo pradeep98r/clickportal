@@ -34,7 +34,10 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
 } from "../../components/getCurrencyNumber";
-import { billViewInfo } from "../../reducers/billViewSlice";
+import {
+  billViewInfo,
+  disableFromLastDays,
+} from "../../reducers/billViewSlice";
 import { getBuyBillId } from "../../actions/ledgersService";
 import loading from "../../assets/images/loading.gif";
 
@@ -88,6 +91,9 @@ const Step33 = (props) => {
   var tableChangeStatusval;
   const [tableChangeStatus, setTableChangeStatus] = useState(false);
   const [isShown, setisShown] = useState(false);
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDays;
+  const numberOfDaysValue = billViewData?.numberOfDays;
   const [outBalStatus, setOutBalStatus] = useState(false);
   const [billIdVal, setBillIdVal] = useState(
     billEditItemInfo?.generatedBillId != 0
@@ -100,6 +106,7 @@ const Step33 = (props) => {
   );
   useEffect(() => {
     $("#disable").attr("disabled", false);
+    dispatch(disableFromLastDays(false));
     getDefaultSystemSettings().then((res) => {
       // console.log(res, "res");
     });
@@ -1105,32 +1112,41 @@ const Step33 = (props) => {
   const addBillApiCall = () => {
     console.log(billRequestObj);
     if (outBalStatus) {
-      postbuybillApi(billRequestObj).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
-            localStorage.setItem("stepOne", false);
-            localStorage.setItem("LinkPath", "/buy_bill_book");
+      if (!disableDaysStatus) {
+        postbuybillApi(billRequestObj).then(
+          (response) => {
+            if (response.data.status.type === "SUCCESS") {
+              toast.success(response.data.status.message, {
+                toastId: "success1",
+              });
+              localStorage.setItem("stepOne", false);
+              localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closem();
-            }, 800);
-            window.setTimeout(function () {
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 1000);
+              window.setTimeout(function () {
+                props.closem();
+              }, 800);
+              window.setTimeout(function () {
+                navigate("/buy_bill_book");
+                window.location.reload();
+              }, 1000);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
+            });
+            $("#disable").attr("disabled", false);
+            setBillCreationStatus(billIdVal != 0 ? false : true);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-          setBillCreationStatus(billIdVal != 0 ? false : true);
-        }
-      );
+        );
+      } else {
+        toast.error(
+          `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+          {
+            toastId: "error6",
+          }
+        );
+      }
     } else {
       toast.error("Failed to fetch Outstanding Balance", {
         toastId: "error5",

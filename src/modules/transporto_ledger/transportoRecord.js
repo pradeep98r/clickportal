@@ -8,7 +8,10 @@ import close from "../../assets/images/close.svg";
 import date_icon from "../../assets/images/date_icon.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getMaskedMobileNumber } from "../../components/getCurrencyNumber";
+import {
+  getMaskedMobileNumber,
+  isEditBill,
+} from "../../components/getCurrencyNumber";
 import loading from "../../assets/images/loading.gif";
 import {
   getLedgers,
@@ -88,6 +91,9 @@ const TransportoRecord = (props) => {
   var fromInventoryTab = transpoData?.fromInv;
   const [isLoading, setLoading] = useState(false);
   var writerId = loginData?.useStatus == "WRITER" ? loginData?.clickId : 0;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDays;
+  const numberOfDaysValue = billViewData?.numberOfDays;
   // const [outBalAdvance, setOutBalAdvance] = useState(outStandingBalAdv);
   useEffect(() => {
     if (!fromAdvSummary) {
@@ -132,6 +138,24 @@ const TransportoRecord = (props) => {
   const resetInput = (e) => {
     if (e.target.value == 0) {
       e.target.value = "";
+    }
+  };
+  const [enableCreationStatus, setEnableCreationStatus] = useState(false);
+  const handleDate = (date) => {
+    setSelectDate(date);
+    var value = isEditBill(date, numberOfDaysValue);
+    if (!value) {
+      setEnableCreationStatus(true);
+      // dispatch(disableFromLastDays(true));
+      toast.error(
+        `Choose “Select Date” from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      setEnableCreationStatus(false);
+      // dispatch(disableFromLastDays(false));
     }
   };
   const onSubmitRecordPayment = () => {
@@ -267,18 +291,49 @@ const TransportoRecord = (props) => {
         );
         setLoading(false);
       } else {
-        await addAdvanceRecord(addAdvanceReq).then(
+        if (!enableCreationStatus) {
+          await addAdvanceRecord(addAdvanceReq).then(
+            (res) => {
+              toast.success(res.data.status.message, {
+                toastId: "errorr12",
+              });
+              updateAdvances();
+
+              window.setTimeout(function () {
+                props.closeRecordPayModal();
+                closePopup();
+              }, 800);
+              fetchLedgers();
+            },
+            (error) => {
+              toast.error(error.response.data.status.message, {
+                toastId: "error15",
+              });
+              setLoading(false);
+            }
+          );
+        } else {
+          toast.error(
+            `Choose “Select Date” from past ${numberOfDaysValue} days only. `,
+            {
+              toastId: "error6",
+            }
+          );
+          setLoading(false);
+        }
+      }
+    } else if (transpoData?.fromTransporter) {
+      if (!enableCreationStatus) {
+        await updateRecordPayment(updateRecordRequest).then(
           (res) => {
             toast.success(res.data.status.message, {
-              toastId: "errorr12",
+              toastId: "errorr1",
             });
-            updateAdvances();
-
+            dispatch(paymentViewInfo(updateRecordRequest));
+            // dispatch(fromRecordPayment(true));
             window.setTimeout(function () {
               props.closeRecordPayModal();
-              closePopup();
             }, 800);
-            fetchLedgers();
           },
           (error) => {
             toast.error(error.response.data.status.message, {
@@ -287,45 +342,44 @@ const TransportoRecord = (props) => {
             setLoading(false);
           }
         );
+      } else {
+        toast.error(
+          `Payment Records that are more than ${numberOfDaysValue} days old can’t be deleted/edited. `,
+          {
+            toastId: "error16",
+          }
+        );
+        setLoading(false);
       }
-    } else if (transpoData?.fromTransporter) {
-      await updateRecordPayment(updateRecordRequest).then(
-        (res) => {
-          toast.success(res.data.status.message, {
-            toastId: "errorr1",
-          });
-          dispatch(paymentViewInfo(updateRecordRequest));
-          // dispatch(fromRecordPayment(true));
-          window.setTimeout(function () {
-            props.closeRecordPayModal();
-          }, 800);
-        },
-        (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error15",
-          });
-          setLoading(false);
-        }
-      );
     } else {
-      await postRecordPayment(addRecordData).then(
-        (response) => {
-          toast.success(response.data.status.message, {
-            toastId: "errorr10",
-          });
-          window.setTimeout(function () {
-            props.closeRecordPayModal();
-            closePopup();
-          }, 800);
-          // dispatch(fromRecordPayment(true));
-        },
-        (error) => {
-          toast.error(error.response.data.status.message, {
-            toastId: "error4",
-          });
-          setLoading(false);
-        }
-      );
+      if (!enableCreationStatus) {
+        await postRecordPayment(addRecordData).then(
+          (response) => {
+            toast.success(response.data.status.message, {
+              toastId: "errorr10",
+            });
+            window.setTimeout(function () {
+              props.closeRecordPayModal();
+              closePopup();
+            }, 800);
+            // dispatch(fromRecordPayment(true));
+          },
+          (error) => {
+            toast.error(error.response.data.status.message, {
+              toastId: "error4",
+            });
+            setLoading(false);
+          }
+        );
+      } else {
+        toast.error(
+          `Choose “Select Date” from past ${numberOfDaysValue} days only. `,
+          {
+            toastId: "error6",
+          }
+        );
+        setLoading(false);
+      }
     }
     if (transpoData?.transporterMainTab == "inventoryLedgerSummary") {
       getInventoryData();
@@ -616,7 +670,7 @@ const TransportoRecord = (props) => {
                     <DatePicker
                       selected={selectDate}
                       onChange={(date) => {
-                        setSelectDate(date);
+                        handleDate(date);
                       }}
                       dateFormat="dd-MMM-yy"
                       maxDate={new Date()}

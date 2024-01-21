@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { billDate } from "../../reducers/billEditItemSlice";
 import date_icon from "../../assets/images/date_icon.svg";
 import { editStatus } from "../../reducers/billEditItemSlice";
-
+import { disableFromLastDaysSell } from "../../reducers/billViewSlice";
+import { isEditBill } from "../../components/getCurrencyNumber";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const SellBillDateSelection = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateselected = billEditItemInfo?.selectedBillDate;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const numberOfDaysValue = billViewData?.numberOfDaysSell;
   const [selectedDate, setStartDate] = useState(
     billDateselected !== null ? billDateselected : new Date()
   );
@@ -19,6 +24,18 @@ const SellBillDateSelection = (props) => {
     setStartDate(date);
     localStorage.setItem("setDate1", date);
     dispatch(billDate(date));
+    var value = isEditBill(date, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDaysSell(true));
+      toast.error(
+        `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDaysSell(false));
+    }
   };
   const [checked, setChecked] = useState(
     localStorage.getItem("defaultDateSell") !== null ? true : false
@@ -85,6 +102,7 @@ const SellBillDateSelection = (props) => {
           {langFullData.date}
         </span>
       </label>
+      <ToastContainer />
     </div>
   );
 };

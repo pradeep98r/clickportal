@@ -90,6 +90,9 @@ const SellBillStep3 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDaysSell;
+  const numberOfDaysValue = billViewData?.numberOfDaysSell;
   const [isLoading, setLoading] = useState(true);
   const [billIdVal, setBillIdVal] = useState(
     billEditItemInfo?.generatedBillId != 0
@@ -1036,30 +1039,39 @@ const SellBillStep3 = (props) => {
       );
     } else {
       if (outBalStatus) {
-        postsellbillApi(sellBillRequestObj).then(
-          (response) => {
-            if (response.data.status.message === "SUCCESS") {
-              toast.success(response.data.status.description?.toUpperCase(), {
-                toastId: "success1",
+        if (!disableDaysStatus) {
+          postsellbillApi(sellBillRequestObj).then(
+            (response) => {
+              if (response.data.status.message === "SUCCESS") {
+                toast.success(response.data.status.description?.toUpperCase(), {
+                  toastId: "success1",
+                });
+                localStorage.setItem("stepOneSingleBook", false);
+                window.setTimeout(function () {
+                  props.closem();
+                }, 800);
+                window.setTimeout(function () {
+                  navigate("/sellbillbook");
+                  window.location.reload();
+                }, 1000);
+              }
+            },
+            (error) => {
+              toast.error(error.response.data.status.description, {
+                toastId: "error1",
               });
-              localStorage.setItem("stepOneSingleBook", false);
-              window.setTimeout(function () {
-                props.closem();
-              }, 800);
-              window.setTimeout(function () {
-                navigate("/sellbillbook");
-                window.location.reload();
-              }, 1000);
+              $("#disable").attr("disabled", false);
+              setBillCreationStatus(billIdVal != 0 ? false : true);
             }
-          },
-          (error) => {
-            toast.error(error.response.data.status.description, {
-              toastId: "error1",
-            });
-            $("#disable").attr("disabled", false);
-            setBillCreationStatus(billIdVal != 0 ? false : true);
-          }
-        );
+          );
+        } else {
+          toast.error(
+            `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+            {
+              toastId: "error6",
+            }
+          );
+        }
       } else {
         toast.error("Failed to fetch Outstanding Balance", {
           toastId: "error5",
