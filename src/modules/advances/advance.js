@@ -430,12 +430,10 @@ const Advance = (props) => {
                                 >
                                   <div className="row align-items-center">
                                     <td className="col-lg-1">{index + 1}</td>
-                                    <td key={item.advDate} className="col-lg-2">
+                                    <td key={item.date} className="col-lg-2">
                                       <p className="date_ledger_val">
                                         {" "}
-                                        {moment(item.advDate).format(
-                                          "DD-MMM-YY"
-                                        )}
+                                        {moment(item.date).format("DD-MMM-YY")}
                                       </p>
                                     </td>
                                     <td
