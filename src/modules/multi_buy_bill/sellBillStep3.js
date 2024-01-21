@@ -131,7 +131,7 @@ const SellMultiBillStep3 = (props) => {
             finalOutStBal:
               multiSelectPartnersArray1[i].finalLedgerBal -
               multiSelectPartnersArray1[i]?.cashRcvd,
-            billAmt: multiSelectPartnersArray1[i].grossTotal,
+            billAmt: multiSelectPartnersArray1[i].billAmt,
             advBal: 0,
           },
           billId: multiSelectPartnersArray1[i]?.billId,
@@ -151,16 +151,16 @@ const SellMultiBillStep3 = (props) => {
         setObjArrray2([...objArray1]);
       }
     }
-    const generateBillObj = {
-      caId: clickId,
-      multiBill: true,
-      partyId: 0,
-      type: "BUY",
-      writerId: writerId,
-    };
-    getGeneratedBillId(generateBillObj).then((res) => {
-      setBillIdVal(res.data.data == null ? 0 : res.data.data);
-    });
+    // const generateBillObj = {
+    //   caId: clickId,
+    //   multiBill: true,
+    //   partyId: 0,
+    //   type: "BUY",
+    //   writerId: writerId,
+    // };
+    // getGeneratedBillId(generateBillObj).then((res) => {
+    //   setBillIdVal(res.data.data == null ? 0 : res.data.data);
+    // });
   }, []);
   var gTotal = 0;
 
@@ -252,10 +252,20 @@ const SellMultiBillStep3 = (props) => {
       updatedOn: "",
       writerId: writerId,
       finalLedgerBal: fromMultiBillViewStatus
-        ? items[mIndex].finalLedgerBal
+        ? fromPreviousStep3Status
+          ? gTotal + items[mIndex].outStBal
+          : items[mIndex].finalLedgerBal
         : 0,
-      finalOutStBal: fromMultiBillViewStatus ? items[mIndex].finalOutStBal : 0,
-      billAmt: fromMultiBillViewStatus ? items[mIndex].billAmt : gTotal,
+      finalOutStBal: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal + items[mIndex].outStBal
+          : items[mIndex].finalOutStBal
+        : 0,
+      billAmt: fromMultiBillViewStatus
+        ? fromPreviousStep3Status
+          ? gTotal
+          : items[mIndex].billAmt
+        : gTotal,
     });
     totalGross += clonedArray[mIndex].grossTotal;
     setGrossTotal(totalGross);
