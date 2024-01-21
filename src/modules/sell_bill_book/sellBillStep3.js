@@ -33,9 +33,15 @@ import {
   generatedBillId,
   tableEditStatus,
 } from "../../reducers/billEditItemSlice";
-import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
+import {
+  getCurrencyNumberWithOutSymbol,
+  isEditBill,
+} from "../../components/getCurrencyNumber";
 import { getSellBillId } from "../../actions/ledgersService";
-import { billViewInfo } from "../../reducers/billViewSlice";
+import {
+  billViewInfo,
+  disableFromLastDaysSell,
+} from "../../reducers/billViewSlice";
 const SellBillStep3 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -90,6 +96,9 @@ const SellBillStep3 = (props) => {
       ? billEditItemInfo?.selectedBillInfo?.comments
       : ""
   );
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDaysSell;
+  const numberOfDaysValue = billViewData?.numberOfDaysSell;
   const [isLoading, setLoading] = useState(true);
   const [billIdVal, setBillIdVal] = useState(
     billEditItemInfo?.generatedBillId != 0
@@ -275,6 +284,18 @@ const SellBillStep3 = (props) => {
         setBillIdVal(res.data.data == null ? 0 : res.data.data);
         dispatch(generatedBillId(res.data.data == null ? 0 : res.data.data));
       });
+    }
+    var value = isEditBill(partnerSelectDate, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDaysSell(true));
+      toast.error(
+        `Bills that are more than ${numberOfDaysValue} days old can’t be edited. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDaysSell(false));
     }
   }, []);
 
@@ -1036,30 +1057,39 @@ const SellBillStep3 = (props) => {
       );
     } else {
       if (outBalStatus) {
-        postsellbillApi(sellBillRequestObj).then(
-          (response) => {
-            if (response.data.status.message === "SUCCESS") {
-              toast.success(response.data.status.description?.toUpperCase(), {
-                toastId: "success1",
+        if (!disableDaysStatus) {
+          postsellbillApi(sellBillRequestObj).then(
+            (response) => {
+              if (response.data.status.message === "SUCCESS") {
+                toast.success(response.data.status.description?.toUpperCase(), {
+                  toastId: "success1",
+                });
+                localStorage.setItem("stepOneSingleBook", false);
+                window.setTimeout(function () {
+                  props.closem();
+                }, 800);
+                window.setTimeout(function () {
+                  navigate("/sellbillbook");
+                  window.location.reload();
+                }, 1000);
+              }
+            },
+            (error) => {
+              toast.error(error.response.data.status.description, {
+                toastId: "error1",
               });
-              localStorage.setItem("stepOneSingleBook", false);
-              window.setTimeout(function () {
-                props.closem();
-              }, 800);
-              window.setTimeout(function () {
-                navigate("/sellbillbook");
-                window.location.reload();
-              }, 1000);
+              $("#disable").attr("disabled", false);
+              setBillCreationStatus(billIdVal != 0 ? false : true);
             }
-          },
-          (error) => {
-            toast.error(error.response.data.status.description, {
-              toastId: "error1",
-            });
-            $("#disable").attr("disabled", false);
-            setBillCreationStatus(billIdVal != 0 ? false : true);
-          }
-        );
+          );
+        } else {
+          toast.error(
+            `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+            {
+              toastId: "error6",
+            }
+          );
+        }
       } else {
         toast.error("Failed to fetch Outstanding Balance", {
           toastId: "error5",

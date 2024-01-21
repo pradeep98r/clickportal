@@ -26,6 +26,10 @@ import {
   selectedTotalBillAmount,
 } from "../../reducers/billViewDisplaySlice";
 import { map } from "jquery";
+import {
+  disableFromLastDays,
+  numberOfDays,
+} from "../../reducers/billViewSlice";
 
 const GroupTotals = (props) => {
   var groupOneTotal = 0;
@@ -159,6 +163,17 @@ const GroupTotals = (props) => {
                       : false
                   );
                 }
+                if (res.data.data.billSetting[i].settingName === "BILL_EDIT") {
+                  if (res.data.data.billSetting[i].value == 0) {
+                    dispatch(numberOfDays(7));
+                  } else if (res.data.data.billSetting[i].value == 1) {
+                    dispatch(numberOfDays(15));
+                  }
+                  if (res.data.data.billSetting[i].value == 2) {
+                    dispatch(numberOfDays(30));
+                  }
+                }
+
                 groupOne = [res.data.data.billSetting[i], ...groupOne];
                 dispatch(groupOneSettings(groupOne));
                 setGroupOne([groupone, ...groupOne]);

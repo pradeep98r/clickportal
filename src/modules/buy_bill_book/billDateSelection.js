@@ -5,12 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { billDate } from "../../reducers/billEditItemSlice";
 import date_icon from "../../assets/images/date_icon.svg";
 import { editStatus } from "../../reducers/billEditItemSlice";
-
+import { disableFromLastDays } from "../../reducers/billViewSlice";
+import { isEditBill } from "../../components/getCurrencyNumber";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const langData = localStorage.getItem("languageData");
 const langFullData = JSON.parse(langData);
 const BillDateSelection = (props) => {
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateselected = billEditItemInfo?.selectedBillDate;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const numberOfDaysValue = billViewData?.numberOfDays;
   const [selectedDate, setStartDate] = useState(
     billDateselected !== null ? billDateselected : new Date()
   );
@@ -19,6 +24,18 @@ const BillDateSelection = (props) => {
     setStartDate(date);
     localStorage.setItem("setDate", date);
     dispatch(billDate(date));
+    var value = isEditBill(date, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDays(false));
+    }
   };
   const [checked, setChecked] = useState(
     localStorage.getItem("defaultDate") !== null ? true : false
@@ -48,7 +65,6 @@ const BillDateSelection = (props) => {
       setStartDate(new Date(localStorage.getItem("setDate")));
       dispatch(billDate(new Date(localStorage.getItem("setDate"))));
     }
-   
   }, []);
 
   return (
@@ -76,7 +92,9 @@ const BillDateSelection = (props) => {
           className="custom-control-input"
           id="modal_checkbox"
           value="my-value"
-          onChange={()=>{handleCheckEvent()}}
+          onChange={() => {
+            handleCheckEvent();
+          }}
         />
         <span className="custom-control-indicator"></span>
         <span className="custom-control-description">
@@ -84,6 +102,7 @@ const BillDateSelection = (props) => {
           {langFullData.date}
         </span>
       </label>
+      <ToastContainer />
     </div>
   );
 };

@@ -14,7 +14,10 @@ import { editMultiBuyBill } from "../../actions/multiBillService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import { colorthemeValue } from "../../reducers/billViewSlice";
+import {
+  colorthemeValue,
+  disableFromLastDays,
+} from "../../reducers/billViewSlice";
 import print from "../../assets/images/print_bill.svg";
 import { Buffer } from "buffer";
 import loading from "../../assets/images/loading.gif";
@@ -30,6 +33,7 @@ import MultiBillSteps from "./steps";
 import { getMultiBillPdf } from "../../actions/pdfservice/singleBillPdf";
 import getMultibillPdfData from "../../actions/pdfservice/billpdf/getMultiBillPdfJson";
 import download_icon from "../../assets/images/dwnld.svg";
+import { isEditBill } from "../../components/getCurrencyNumber";
 const MultiBillView = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -45,6 +49,9 @@ const MultiBillView = (props) => {
   let isPopupOpen = false;
   const [objArray, setObjArrray] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const numberOfDaysValue = billViewData?.numberOfDays;
+  const numberOfDaysSell = billViewData?.numberOfDaysSell;
   useEffect(() => {
     if (pdfThemeData != null) {
       for (var i = 0; i < pdfThemeData.length; i++) {
@@ -280,6 +287,36 @@ const MultiBillView = (props) => {
   const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
     useState(false);
   const [showMultiStepsModal, setShowMultiStepsModal] = useState(false);
+  const onTapEditBill = () => {
+    var days = partyType == "FARMER" ? numberOfDaysValue : numberOfDaysSell;
+    var value = isEditBill(selectedBillData?.billInfo[0].billDate, days);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Bills that are more than ${days} days old can’t be edited. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      editBill();
+    }
+  };
+  const onTapCancelBill = () => {
+    var days = partyType == "FARMER" ? numberOfDaysValue : numberOfDaysSell;
+    var value = isEditBill(selectedBillData?.billInfo[0].billDate, days);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Bills that are more than ${days} days old can’t be cancelled. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      handleCheckEvent();
+    }
+  };
   const editBill = () => {
     setShowMultiStepsModalStatus(true);
     setShowMultiStepsModal(true);
@@ -291,7 +328,7 @@ const MultiBillView = (props) => {
     dispatch(multiSelectPartners(selectedBillData?.billInfo));
     dispatch(fromMultiBillView(true));
     dispatch(totalEditedObject(selectedBillData));
-    dispatch(slectedBillDate(new Date(selectedBillData?.billInfo[0].billDate)))
+    dispatch(slectedBillDate(new Date(selectedBillData?.billInfo[0].billDate)));
   };
   async function getPrintPdf() {
     console.log("pdf coming", selectedBillData);
@@ -407,7 +444,7 @@ const MultiBillView = (props) => {
                   <p className="more-p-tag">Actions</p>
                   <div className="action_icons">
                     <div className="items_div">
-                      <button onClick={() => editBill()}>
+                      <button onClick={() => onTapEditBill()}>
                         <img src={edit} alt="img" />
                       </button>
                       <p>Edit</p>
@@ -433,7 +470,7 @@ const MultiBillView = (props) => {
                       <p>Download</p>
                     </div>
                     <div className="items_div">
-                      <button onClick={() => handleCheckEvent()}>
+                      <button onClick={() => onTapCancelBill()}>
                         <img src={cancel} alt="img" className="" />
                       </button>
                       <p>Cancel</p>

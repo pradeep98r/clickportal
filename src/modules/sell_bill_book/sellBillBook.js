@@ -59,6 +59,8 @@ const SellBillBook = (props) => {
   const langFullData = JSON.parse(langData);
   const billViiewSttatus = localStorage.getItem("billViiewSttatus");
   const billViiewDate = localStorage.getItem("billDate");
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateSelected = billEditItemInfo?.selectedBillDate;
   var bDate = props.selectedBillviewDate ? props.selectedBillviewDate : "";
 
   const billData = useSelector((state) => state.billViewInfo);
@@ -110,6 +112,7 @@ const SellBillBook = (props) => {
     }
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
+    dispatch(billDate(startDate != null ? new Date(startDate) : new Date()));
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         if (response.data.data != null) {
@@ -182,6 +185,11 @@ const SellBillBook = (props) => {
     dispatch(selectSteps("step1"));
     dispatch(selectBuyer(null));
     dispatch(fromBillbook(true));
+    dispatch(
+      billDate(
+        billDateSelected != null ? new Date(billDateSelected) : new Date()
+      )
+    );
   };
 
   const handleSearch = (event) => {

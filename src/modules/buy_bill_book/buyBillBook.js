@@ -67,6 +67,8 @@ function BuyBillBook() {
   const billData = useSelector((state) => state.billViewInfo);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showPrevNext, setShowPrevNext] = useState(true);
+  const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
+  const billDateSelected = billEditItemInfo?.selectedBillDate;
   const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
@@ -117,6 +119,8 @@ function BuyBillBook() {
       setShowPrevNext(false);
     }
     dispatch(beginDate(fromDate));
+    console.log(startDate, new Date(startDate));
+    dispatch(billDate(startDate != null ? new Date(startDate) : new Date()));
     dispatch(closeDate(toDate));
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
@@ -204,6 +208,11 @@ function BuyBillBook() {
     dispatch(selectBuyer(null));
     dispatch(selectTrans(null));
     dispatch(fromBillbook(true));
+    dispatch(
+      billDate(
+        billDateSelected != null ? new Date(billDateSelected) : new Date()
+      )
+    );
   };
 
   const totalBagsValue = (bags) => {

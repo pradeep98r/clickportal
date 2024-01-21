@@ -1,3 +1,4 @@
+import moment from "moment";
 export function getCurrencyNumberWithSymbol(number) {
   return number == null || number == 0
     ? ""
@@ -28,7 +29,7 @@ export function getMaskedMobileNumber(number) {
   return number.replace(/.(?=.{4})/g, "X");
 }
 export function getQuantityData(qty, qtyUnit, weight) {
-  console.log("hi,", qty,qtyUnit,weight);
+  console.log("hi,", qty, qtyUnit, weight);
   var qtyData = {
     majorUnitVal: `${
       (qty === 0 ? "" : getCurrencyNumberWithOneDigit(qty)) +
@@ -103,7 +104,18 @@ export function getWastage(wastage, qtyUnit, rateType) {
       : ""
   }`;
 }
-
+export function isEditBill(date, settingsDate) {
+  if (date != "") {
+    var currentDate = moment(new Date());
+    var billDateVal = moment(new Date(date));
+    var days_diff = currentDate.diff(billDateVal, "days");
+    console.log(days_diff, settingsDate, "dateif");
+    if (days_diff < settingsDate) {
+      return true;
+    }
+  }
+  return false;
+}
 export default {
   getCurrencyNumberWithSymbol,
   getCurrencyNumberWithOutSymbol,
@@ -111,4 +123,5 @@ export default {
   getMaskedMobileNumber,
   getQuantityData,
   getWastage,
+  isEditBill,
 };

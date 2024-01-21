@@ -25,15 +25,50 @@ import {
   getSystemSettings,
 } from "../actions/billCreationService";
 import Advance from "../modules/advances/advance";
+import { numberOfDays, numberOfDaysSell } from "../reducers/billViewSlice";
+import { useDispatch } from "react-redux";
 const RoutesConfig = () => {
+  const dispatch = useDispatch();
   function setSystemSettingsDetails(clickId) {
     getSystemSettings(clickId)
       .then((response) => {
-        console.log(response.data.data)
+        console.log(response.data.data);
         localStorage.setItem(
           "systemSettingsData",
           JSON.stringify(response.data.data)
         );
+        if (response.data.data != null) {
+          if (response.data.data.billSetting.length > 0)
+            for (var i = 0; i < response.data.data.billSetting.length; i++) {
+              if (
+                response.data.data.billSetting[i].billType === "BUY" &&
+                response.data.data.billSetting[i].formStatus === 1 &&
+                response.data.data.billSetting[i].settingName === "BILL_EDIT"
+              ) {
+                if (response.data.data.billSetting[i].value == 0) {
+                  dispatch(numberOfDays(7));
+                } else if (response.data.data.billSetting[i].value == 1) {
+                  dispatch(numberOfDays(15));
+                }
+                if (response.data.data.billSetting[i].value == 2) {
+                  dispatch(numberOfDays(30));
+                }
+              } else if (
+                response.data.data.billSetting[i].billType === "SELL" &&
+                response.data.data.billSetting[i].formStatus === 1 &&
+                response.data.data.billSetting[i].settingName === "BILL_EDIT"
+              ) {
+                if (response.data.data.billSetting[i].value == 0) {
+                  dispatch(numberOfDaysSell(7));
+                } else if (response.data.data.billSetting[i].value == 1) {
+                  dispatch(numberOfDaysSell(15));
+                }
+                if (response.data.data.billSetting[i].value == 2) {
+                  dispatch(numberOfDaysSell(30));
+                }
+              }
+            }
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -42,7 +77,7 @@ const RoutesConfig = () => {
   function setSettingsDetails(clickId) {
     getMandiLogoDetails(clickId)
       .then((response) => {
-        console.log(response.data.data)
+        console.log(response.data.data);
         localStorage.setItem(
           "settingsData",
           JSON.stringify(response.data.data)
