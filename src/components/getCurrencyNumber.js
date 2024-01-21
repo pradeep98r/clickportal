@@ -1,3 +1,4 @@
+import moment from "moment";
 export function getCurrencyNumberWithSymbol(number) {
   return number == null || number == 0
     ? ""
@@ -104,14 +105,12 @@ export function getWastage(wastage, qtyUnit, rateType) {
   }`;
 }
 export function isEditBill(date, settingsDate) {
-  console.log(date, settingsDate, "date");
   if (date != "") {
-    var currentDate = new Date();
-    var billDateVal = new Date(date);
-    const diffTime = Math.abs(currentDate - billDateVal);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    console.log(diffDays, settingsDate, "dateif");
-    if (diffDays < settingsDate) {
+    var currentDate = moment(new Date());
+    var billDateVal = moment(new Date(date));
+    var days_diff = currentDate.diff(billDateVal, "days");
+    console.log(days_diff, settingsDate, "dateif");
+    if (days_diff < settingsDate) {
       return true;
     }
   }
