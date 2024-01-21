@@ -21,7 +21,7 @@ const Steps = (props) => {
   const callbackfunction = (chaild, editStatus) => {
     setSelctedCrops(chaild);
   };
-  const linkPath = localStorage.getItem('LinkPath');
+  const linkPath = localStorage.getItem("LinkPath");
 
   const partyType = useSelector(
     (state) => state.billEditItemInfo?.selectedPartyType
@@ -41,19 +41,24 @@ const Steps = (props) => {
   };
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billViewEditStatus = billEditItemInfo?.billEditStatus;
-  const link = localStorage.getItem('LinkPath');
+  const billDateSelected = billEditItemInfo?.selectedBillDate;
+  const link = localStorage.getItem("LinkPath");
   const dispatch = useDispatch();
   const clearData = (e) => {
-    setMaintainCrops(true)
+    setMaintainCrops(true);
     localStorage.setItem("maintainCrops", true);
-    dispatch(billDate(new Date()));
+    dispatch(
+      billDate(
+        billDateSelected != null ? new Date(billDateSelected) : new Date()
+      )
+    );
     // localStorage.removeItem("defaultDate");
     // localStorage.removeItem("setDate");
     dispatch(selectTrans(null));
     setcropEditObject([]);
     setslectedCropstableArray([]);
-    if(billViewEditStatus){
-      if(!props.fromLedger){
+    if (billViewEditStatus) {
+      if (!props.fromLedger) {
         window.location.reload();
       }
     }
@@ -65,10 +70,10 @@ const Steps = (props) => {
       className="cropmodal_poopup steps_modal"
     >
       <div className="modal-header date_modal_header smartboard_modal_header">
-      {linkPath == '/buy_bill_book'?
-        <h5 className="modal-title header2_text" id="staticBackdropLabel">
-        Add Purchase Bill
-          {/* {(() => {
+        {linkPath == "/buy_bill_book" ? (
+          <h5 className="modal-title header2_text" id="staticBackdropLabel">
+            Add Purchase Bill
+            {/* {(() => {
             switch (selectedStep.stepsInfo) {
               case "step1":
                 return "Bill Information";
@@ -78,9 +83,12 @@ const Steps = (props) => {
                 return "Additions/Deductions";
             }
           })()} */}
-        </h5>
-        : <h5 className="modal-title header2_text" id="staticBackdropLabel">
-        Add Sales Bill</h5>}
+          </h5>
+        ) : (
+          <h5 className="modal-title header2_text" id="staticBackdropLabel">
+            Add Sales Bill
+          </h5>
+        )}
         <img
           alt="image"
           src={clo}
@@ -93,17 +101,40 @@ const Steps = (props) => {
       </div>
       <div className="modal-body p-0">
         <div className="d-flex steps_flex align-items-center justify-content-center">
-          <div className={selectedStep.stepsInfo == 'step1' ? 'steps_btn steps_btn_active' : selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')}>
-             Step1
+          <div
+            className={
+              selectedStep.stepsInfo == "step1"
+                ? "steps_btn steps_btn_active"
+                : selectedStep.stepsInfo == "step2"
+                ? "steps_btn steps_btn_active"
+                : selectedStep.stepsInfo == "step3"
+                ? "steps_btn steps_btn_active"
+                : "steps_btn"
+            }
+          >
+            Step1
           </div>
           <div className="steps_btn_border"></div>
-          <div className={selectedStep.stepsInfo == 'step2' ? 'steps_btn steps_btn_active' : (selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 'steps_btn')} >
-             Step2
+          <div
+            className={
+              selectedStep.stepsInfo == "step2"
+                ? "steps_btn steps_btn_active"
+                : selectedStep.stepsInfo == "step3"
+                ? "steps_btn steps_btn_active"
+                : "steps_btn"
+            }
+          >
+            Step2
           </div>
           <div className="steps_btn_border"></div>
-          <div className={selectedStep.stepsInfo == 'step3' ? 'steps_btn steps_btn_active' : 
-          'steps_btn'}>
-             Step3
+          <div
+            className={
+              selectedStep.stepsInfo == "step3"
+                ? "steps_btn steps_btn_active"
+                : "steps_btn"
+            }
+          >
+            Step3
           </div>
         </div>
         {(() => {
@@ -134,7 +165,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
-                  fromLedger = {props.fromLedger}
+                  fromLedger={props.fromLedger}
                 />
               );
             case partyType.toUpperCase() === "BUYER" && "step3":
@@ -145,7 +176,7 @@ const Steps = (props) => {
                   billEditStatus={billStatus}
                   selectdDate={selectedDate}
                   closem={props.closeStepsModal}
-                  fromLedger = {props.fromLedger}
+                  fromLedger={props.fromLedger}
                 />
               );
           }
