@@ -266,26 +266,39 @@ const RecordPayment = (props) => {
       partyName: ledgerData.partyName,
     };
     if (props.fromPaymentHistory && !fromBillViewPopup) {
-      await updateRecordPayment(updateRecordRequest).then(
-        (res) => {
-          toast.success(res.data.status.message, {
-            toastId: "errorr2",
-          });
-          dispatch(paymentViewInfo(updateRecordRequest));
-          dispatch(fromRecordPayment(true));
-          window.setTimeout(function () {
-            props.closeRecordPaymentModal();
+      var days =
+        props.partyType == "BUYER" ? numberOfDaysSell : numberOfDaysValue;
+      var value = isEditBill(selectDate, days);
+      if (!value) {
+        toast.error(
+          `Payment Records that are more than ${days} days old can’t be deleted/edited.`,
+          {
+            toastId: "error6",
+          }
+        );
+        setLoading(false);
+      } else {
+        await updateRecordPayment(updateRecordRequest).then(
+          (res) => {
+            toast.success(res.data.status.message, {
+              toastId: "errorr2",
+            });
             dispatch(paymentViewInfo(updateRecordRequest));
-          }, 1000);
-        },
-        (error) => {
-          console.log(error.message);
-          toast.error(error.res.data.status.message, {
-            toastId: "error3",
-          });
-          setLoading(false);
-        }
-      );
+            dispatch(fromRecordPayment(true));
+            window.setTimeout(function () {
+              props.closeRecordPaymentModal();
+              dispatch(paymentViewInfo(updateRecordRequest));
+            }, 1000);
+          },
+          (error) => {
+            console.log(error.message);
+            toast.error(error.res.data.status.message, {
+              toastId: "error3",
+            });
+            setLoading(false);
+          }
+        );
+      }
     } else {
       if (!enableCreationStatus) {
         await postRecordPayment(addRecordData).then(
