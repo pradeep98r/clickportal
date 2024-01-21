@@ -33,9 +33,15 @@ import {
   generatedBillId,
   tableEditStatus,
 } from "../../reducers/billEditItemSlice";
-import { getCurrencyNumberWithOutSymbol } from "../../components/getCurrencyNumber";
+import {
+  getCurrencyNumberWithOutSymbol,
+  isEditBill,
+} from "../../components/getCurrencyNumber";
 import { getSellBillId } from "../../actions/ledgersService";
-import { billViewInfo } from "../../reducers/billViewSlice";
+import {
+  billViewInfo,
+  disableFromLastDaysSell,
+} from "../../reducers/billViewSlice";
 const SellBillStep3 = (props) => {
   const users = useSelector((state) => state.buyerInfo);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
@@ -278,6 +284,18 @@ const SellBillStep3 = (props) => {
         setBillIdVal(res.data.data == null ? 0 : res.data.data);
         dispatch(generatedBillId(res.data.data == null ? 0 : res.data.data));
       });
+    }
+    var value = isEditBill(partnerSelectDate, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDaysSell(true));
+      toast.error(
+        `Bills that are more than ${numberOfDaysValue} days old can’t be edited. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDaysSell(false));
     }
   }, []);
 

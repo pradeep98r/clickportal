@@ -117,6 +117,7 @@ function BuyBillBook() {
       setShowPrevNext(false);
     }
     dispatch(beginDate(fromDate));
+    dispatch(billDate(new Date(startDate)));
     dispatch(closeDate(toDate));
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
