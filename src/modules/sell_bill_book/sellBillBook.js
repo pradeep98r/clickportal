@@ -110,6 +110,7 @@ const SellBillBook = (props) => {
     }
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
+    dispatch(billDate(new Date(startDate)));
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         if (response.data.data != null) {

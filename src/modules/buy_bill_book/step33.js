@@ -33,6 +33,7 @@ import {
 import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
+  isEditBill,
 } from "../../components/getCurrencyNumber";
 import {
   billViewInfo,
@@ -106,7 +107,18 @@ const Step33 = (props) => {
   );
   useEffect(() => {
     $("#disable").attr("disabled", false);
-    dispatch(disableFromLastDays(false));
+    var value = isEditBill(partnerSelectDate, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Bills that are more than ${numberOfDaysValue} days old can’t be edited. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDays(false));
+    }
     getDefaultSystemSettings().then((res) => {
       // console.log(res, "res");
     });
