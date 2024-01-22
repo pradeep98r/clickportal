@@ -4,6 +4,7 @@ import single_bill from "../../assets/images/bills/single_bill.svg";
 import {
   getCurrencyNumberWithSymbol,
   getMaskedMobileNumber,
+  isEditBill,
 } from "../../components/getCurrencyNumber";
 import "./step3.scss";
 import { qtyValues } from "../../components/qtyValues";
@@ -27,6 +28,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { getGeneratedBillId } from "../../actions/billCreationService";
+import { disableFromLastDaysSell } from "../../reducers/billViewSlice";
 const SellMultiBillStep3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,6 +45,9 @@ const SellMultiBillStep3 = (props) => {
   const fromPreviousStep3Status = selectedStep?.fromPreviousStep3;
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDaysSell;
+  const numberOfDaysValue = billViewData?.numberOfDaysSell;
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -161,6 +166,18 @@ const SellMultiBillStep3 = (props) => {
     // getGeneratedBillId(generateBillObj).then((res) => {
     //   setBillIdVal(res.data.data == null ? 0 : res.data.data);
     // });
+    var value = isEditBill(slectedBillDateVal, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDaysSell(true));
+      toast.error(
+        `Bills that are more than ${numberOfDaysValue} days old can’t be edited. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDaysSell(false));
+    }
   }, []);
   var gTotal = 0;
 
@@ -461,30 +478,40 @@ const SellMultiBillStep3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, sellBills: arrMain };
-      postMultiSellBill(clonedObject).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
-            localStorage.setItem("LinkPath", "/sellbillbook");
+      if (!disableDaysStatus) {
+        postMultiSellBill(clonedObject).then(
+          (response) => {
+            if (response.data.status.type === "SUCCESS") {
+              toast.success(response.data.status.message, {
+                toastId: "success1",
+              });
+              localStorage.setItem("LinkPath", "/sellbillbook");
 
-            window.setTimeout(function () {
-              props.closeModal();
-            }, 800);
-            window.setTimeout(function () {
-              navigate("/sellbillbook");
-              window.location.reload();
-            }, 1000);
+              window.setTimeout(function () {
+                props.closeModal();
+              }, 800);
+              window.setTimeout(function () {
+                navigate("/sellbillbook");
+                window.location.reload();
+              }, 1000);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
+            });
+            $("#disable").attr("disabled", false);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-        }
-      );
+        );
+      } else {
+        toast.error(
+          `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+          {
+            toastId: "error6",
+          }
+        );
+        $("#disable").attr("disabled", false);
+      }
     }
   };
   $("#disable").on("click", function () {

@@ -1,22 +1,36 @@
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import clo from "../../assets/images/close.svg";
-import { multiSelectPartners, selectedTransporter } from "../../reducers/multiBillSteps";
+import {
+  multiSelectPartners,
+  selectedTransporter,
+  slectedBillDate,
+} from "../../reducers/multiBillSteps";
 import SellMultiBillStep3 from "./sellBillStep3";
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
 const MultiBillSteps = (props) => {
   const selectedStep = useSelector((state) => state.multiStepsInfo);
+  const listOfDates = useSelector((state) => state.multiStepsInfo);
   const partyType = selectedStep?.multiSelectPartyType;
   const dispatch = useDispatch();
   const selectedStepVal = selectedStep?.multiStepsVal;
   const linkPath = localStorage.getItem("LinkPath");
+  const slectedBillDateVal =
+    listOfDates?.slectedBillDate != ""
+      ? listOfDates?.slectedBillDate
+      : new Date();
   const clearData = () => {
     dispatch(multiSelectPartners([]));
-    console.log('cleardata')
+    console.log("cleardata");
     dispatch(selectedTransporter([]));
-    console.log(selectedStep,'close')
+    console.log(selectedStep, "close");
+    dispatch(
+      slectedBillDate(
+        slectedBillDateVal != null ? new Date(slectedBillDateVal) : new Date()
+      )
+    );
   };
   return (
     <Modal
@@ -90,8 +104,10 @@ const MultiBillSteps = (props) => {
               return <Step2 closeModal={props.closeMultiStepsModal} />;
             case partyType.toUpperCase() === "SELLER" && "step3":
               return <Step3 closeModal={props.closeMultiStepsModal} />;
-              case partyType.toUpperCase() === "BUYER" && "step3":
-              return <SellMultiBillStep3 closeModal={props.closeMultiStepsModal} />;
+            case partyType.toUpperCase() === "BUYER" && "step3":
+              return (
+                <SellMultiBillStep3 closeModal={props.closeMultiStepsModal} />
+              );
           }
         })()}
       </div>
