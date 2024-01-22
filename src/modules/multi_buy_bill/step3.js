@@ -5,6 +5,7 @@ import {
   getCurrencyNumberWithOutSymbol,
   getCurrencyNumberWithSymbol,
   getMaskedMobileNumber,
+  isEditBill,
 } from "../../components/getCurrencyNumber";
 import "./step3.scss";
 import { qtyValues } from "../../components/qtyValues";
@@ -27,6 +28,7 @@ import {
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { getGeneratedBillId } from "../../actions/billCreationService";
+import { disableFromLastDays } from "../../reducers/billViewSlice";
 const Step3 = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,6 +48,9 @@ const Step3 = (props) => {
   console.log(fromPreviousStep3Status, "fromPreviousStep3Status");
   var multiSelectPartnersArray1 = [];
   const slectedBillDateVal = selectedStep?.slectedBillDate;
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const disableDaysStatus = billViewData?.disableFromLastDays;
+  const numberOfDaysValue = billViewData?.numberOfDays;
   const cancelStep = () => {
     dispatch(multiSelectPartners([]));
     props.closeModal();
@@ -163,6 +168,18 @@ const Step3 = (props) => {
     // getGeneratedBillId(generateBillObj).then((res) => {
     //   setBillIdVal(res.data.data == null ? 0 : res.data.data);
     // });
+    var value = isEditBill(slectedBillDateVal, numberOfDaysValue);
+    if (!value) {
+      dispatch(disableFromLastDays(true));
+      toast.error(
+        `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+        {
+          toastId: "error6",
+        }
+      );
+    } else {
+      dispatch(disableFromLastDays(false));
+    }
   }, []);
   var gTotal = 0;
 
@@ -475,30 +492,40 @@ const Step3 = (props) => {
       });
       let clonedObject = { ...billRequestObj };
       clonedObject = { ...clonedObject, buyBills: arrMain };
-      postMultiBuyBill(clonedObject).then(
-        (response) => {
-          if (response.data.status.type === "SUCCESS") {
-            toast.success(response.data.status.message, {
-              toastId: "success1",
-            });
-            localStorage.setItem("LinkPath", "/buy_bill_book");
+      if (!disableDaysStatus) {
+        postMultiBuyBill(clonedObject).then(
+          (response) => {
+            if (response.data.status.type === "SUCCESS") {
+              toast.success(response.data.status.message, {
+                toastId: "success1",
+              });
+              localStorage.setItem("LinkPath", "/buy_bill_book");
 
-            window.setTimeout(function () {
-              props.closeModal();
-            }, 800);
-            window.setTimeout(function () {
-              navigate("/buy_bill_book");
-              window.location.reload();
-            }, 1000);
+              window.setTimeout(function () {
+                props.closeModal();
+              }, 800);
+              window.setTimeout(function () {
+                navigate("/buy_bill_book");
+                window.location.reload();
+              }, 1000);
+            }
+          },
+          (error) => {
+            toast.error(error.response.data.status.description, {
+              toastId: "error1",
+            });
+            $("#disable").attr("disabled", false);
           }
-        },
-        (error) => {
-          toast.error(error.response.data.status.description, {
-            toastId: "error1",
-          });
-          $("#disable").attr("disabled", false);
-        }
-      );
+        );
+      } else {
+        toast.error(
+          `Select a “Bill Date” from past ${numberOfDaysValue} days only. `,
+          {
+            toastId: "error6",
+          }
+        );
+        $("#disable").attr("disabled", false);
+      }
     }
   };
   $("#disable").on("click", function () {

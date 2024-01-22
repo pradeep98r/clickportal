@@ -12,6 +12,13 @@ import {
   slectedBillDate,
 } from "../../reducers/multiBillSteps";
 import moment from "moment";
+import { isEditBill } from "../../components/getCurrencyNumber";
+import {
+  disableFromLastDays,
+  disableFromLastDaysSell,
+} from "../../reducers/billViewSlice";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const DateSelection = ({ fromStep3BillDate }) => {
   const listOfDates = useSelector((state) => state.multiStepsInfo);
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -19,7 +26,13 @@ const DateSelection = ({ fromStep3BillDate }) => {
     ? listOfDates?.multiSelectPartners
     : listOfDates?.multiSelectPartners;
   const fromPreviousStep3Status = listOfDates?.fromPreviousStep3;
-  const slectedBillDateVal = listOfDates?.slectedBillDate != '' ? listOfDates?.slectedBillDate : new Date();
+  const slectedBillDateVal =
+    listOfDates?.slectedBillDate != ""
+      ? listOfDates?.slectedBillDate
+      : new Date();
+  var billViewData = useSelector((state) => state.billViewInfo);
+  const numberOfDaysValue = billViewData?.numberOfDays;
+  const numberOfDaysSell = billViewData?.numberOfDaysSell;
   const dispatch = useDispatch();
 
   var arr = [];
@@ -29,10 +42,12 @@ const DateSelection = ({ fromStep3BillDate }) => {
       let clonedObject = { ...multiSelectPartnersArray[i] };
       if (!fromPreviousStep3Status) {
         Object.assign(clonedObject, {
-          billDate: moment(new Date()).format("YYYY-MM-DD"),
+          billDate: moment(slectedBillDateVal).format("YYYY-MM-DD"),
         });
       } else {
-        dispatch(slectedBillDate(new Date(multiSelectPartnersArray[i].billDate)));
+        dispatch(
+          slectedBillDate(new Date(multiSelectPartnersArray[i].billDate))
+        );
         setSelectedDate(new Date(multiSelectPartnersArray[i].billDate));
       }
       clonedArray[i] = clonedObject;
@@ -48,32 +63,54 @@ const DateSelection = ({ fromStep3BillDate }) => {
       setSelectedDate(new Date(objCopy.billDate));
       dispatch(slectedBillDate(date));
       arrMain.push(objCopy);
+      var value = isEditBill(
+        date,
+        entry.partyType == "BUYER" ? numberOfDaysSell : numberOfDaysValue
+      );
+      if (!value) {
+        entry.partyType == "BUYER"
+          ? dispatch(disableFromLastDaysSell(true))
+          : dispatch(disableFromLastDays(true));
+
+        toast.error(
+          `Select a “Bill Date” from past ${
+            entry.partyType == "BUYER" ? numberOfDaysSell : numberOfDaysValue
+          } days only. `,
+          {
+            toastId: "error6",
+          }
+        );
+      } else {
+        entry.partyType == "BUYER"
+          ? dispatch(disableFromLastDaysSell(false))
+          : dispatch(disableFromLastDays(false));
+      }
       return entry;
     });
-    console.log(arrMain)
     dispatch(multiSelectPartners(arrMain));
   };
   return (
-   <div>
-      <div className="d-flex align-items-center dateSelection">   
-      <span className="date_icon m-0">
-        <img src={date_icon} alt="icon" className="dateIcon" />
-      </span>
-      <div className="date_field date_step2_field partner_date">
-        <DatePicker
-          dateFormat="dd-MMM-yyyy"
-          selected={slectedBillDateVal}
-          onChange={(date) => dateSelected(date)}
-          className="form-control input_date"
-          placeholder="Date"
-          maxDate={new Date()}
-          onKeyDown={(e) => {
-            e.preventDefault();
-          }}
-        />
+    <div>
+      <div className="d-flex align-items-center dateSelection">
+        <span className="date_icon m-0">
+          <img src={date_icon} alt="icon" className="dateIcon" />
+        </span>
+        <div className="date_field date_step2_field partner_date">
+          <DatePicker
+            dateFormat="dd-MMM-yyyy"
+            selected={slectedBillDateVal}
+            onChange={(date) => dateSelected(date)}
+            className="form-control input_date"
+            placeholder="Date"
+            maxDate={new Date()}
+            onKeyDown={(e) => {
+              e.preventDefault();
+            }}
+          />
+        </div>
       </div>
+      <ToastContainer />
     </div>
-   </div>
   );
 };
 

@@ -88,6 +88,20 @@ const PartnerModal = (props) => {
         }
       }
       setStartDate(new Date(selectedPartnerObj.openingBalDate));
+      var value = isEditBill(
+        selectedPartnerObj.openingBalDate,
+        numberOfDaysValue
+      );
+      var ele = document.getElementById("out_bal_input");
+      if (!value) {
+        if (ele != null) {
+          ele.disabled = true;
+        }
+      } else {
+        if (ele != null) {
+          ele.disabled = false;
+        }
+      }
     } else {
       showModalEvent();
     }
@@ -978,17 +992,36 @@ const PartnerModal = (props) => {
                     {partyType == "FARMER" ||
                     partyType == "BUYER" ||
                     partyType == "TRANSPORTER" ? (
-                      <InputField
-                        type="text"
-                        value={openingBalance}
-                        label={langFullData.openingBalance}
-                        name="name"
-                        onChange={(e) => {
-                          handleOpeninngBal(e);
-                        }}
-                        starRequired={false}
-                      />
+                      <div>
+                        <label className="input_field">
+                          {langFullData.openingBalance}
+                        </label>
+                        <div>
+                          <input
+                            id="out_bal_input"
+                            className="form-control"
+                            type="text"
+                            label="openingBalance"
+                            name="zip"
+                            onChange={(e) => {
+                              handleOpeninngBal(e);
+                            }}
+                            value={openingBalance}
+                          />
+                        </div>
+                      </div>
                     ) : (
+                      // <input
+                      //   type="text"
+                      //   value={openingBalance}
+                      //   label={langFullData.openingBalance}
+                      //   name="name"
+                      //   onChange={(e) => {
+                      //     handleOpeninngBal(e);
+                      //   }}
+                      //   starRequired={false}
+                      //   id="out_bal_input"
+                      // />
                       <div></div>
                     )}
                   </div>

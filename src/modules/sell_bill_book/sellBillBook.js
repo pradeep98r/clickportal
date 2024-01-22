@@ -43,6 +43,7 @@ import {
   multiSelectPartyType,
   multiStepsVal,
   selectedMultBillArray,
+  slectedBillDate,
 } from "../../reducers/multiBillSteps";
 import MultiBillSteps from "../multi_buy_bill/steps";
 import MultiBillView from "../multi_buy_bill/multiBillView";
@@ -66,6 +67,11 @@ const SellBillBook = (props) => {
   const billData = useSelector((state) => state.billViewInfo);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showPrevNext, setShowPrevNext] = useState(true);
+  const listOfDates = useSelector((state) => state.multiStepsInfo);
+  const slectedBillDateVal =
+    listOfDates?.slectedBillDate != ""
+      ? listOfDates?.slectedBillDate
+      : new Date();
   // console.log(billViiewDate)
   const dispatch = useDispatch();
   useEffect(() => {
@@ -113,6 +119,9 @@ const SellBillBook = (props) => {
     dispatch(beginDate(fromDate));
     dispatch(closeDate(toDate));
     dispatch(billDate(startDate != null ? new Date(startDate) : new Date()));
+    dispatch(
+      slectedBillDate(startDate != null ? new Date(startDate) : new Date())
+    );
     getSellBills(clickId, fromDate, toDate)
       .then((response) => {
         if (response.data.data != null) {
@@ -221,6 +230,7 @@ const SellBillBook = (props) => {
     callbackFunction(newDate, newDate, "Daily");
     setCurrentDate(newDate);
     dispatch(billDate(newDate));
+    dispatch(slectedBillDate(newDate));
   };
   const onNextDate = () => {
     const newDate = new Date(currentDate.getTime());
@@ -231,6 +241,7 @@ const SellBillBook = (props) => {
       setCurrentDate(newDate);
     }
     dispatch(billDate(newDate));
+    dispatch(slectedBillDate(newDate));
   };
   const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
     useState(false);
@@ -241,6 +252,11 @@ const SellBillBook = (props) => {
     dispatch(multiStepsVal("step1"));
     dispatch(multiSelectPartyType("Buyer"));
     dispatch(fromMultiBillView(false));
+    dispatch(
+      slectedBillDate(
+        slectedBillDateVal != null ? new Date(slectedBillDateVal) : new Date()
+      )
+    );
   };
   const [showMultiBillModalStatus, setMultiShowBillModalStatus] =
     useState(false);

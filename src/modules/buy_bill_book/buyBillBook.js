@@ -48,6 +48,7 @@ import {
   multiSelectPartyType,
   multiStepsVal,
   selectedMultBillArray,
+  slectedBillDate,
 } from "../../reducers/multiBillSteps";
 import MultiBillSteps from "../multi_buy_bill/steps";
 import MultiBillView from "../multi_buy_bill/multiBillView";
@@ -69,6 +70,11 @@ function BuyBillBook() {
   const [showPrevNext, setShowPrevNext] = useState(true);
   const billEditItemInfo = useSelector((state) => state.billEditItemInfo);
   const billDateSelected = billEditItemInfo?.selectedBillDate;
+  const listOfDates = useSelector((state) => state.multiStepsInfo);
+  const slectedBillDateVal =
+    listOfDates?.slectedBillDate != ""
+      ? listOfDates?.slectedBillDate
+      : new Date();
   const dispatch = useDispatch();
   useEffect(() => {
     callbackFunction();
@@ -121,6 +127,9 @@ function BuyBillBook() {
     dispatch(beginDate(fromDate));
     console.log(startDate, new Date(startDate));
     dispatch(billDate(startDate != null ? new Date(startDate) : new Date()));
+    dispatch(
+      slectedBillDate(startDate != null ? new Date(startDate) : new Date())
+    );
     dispatch(closeDate(toDate));
     getBuyBills(clickId, fromDate, toDate)
       .then((response) => {
@@ -230,6 +239,7 @@ function BuyBillBook() {
     callbackFunction(newDate, newDate, "Daily");
     setCurrentDate(newDate);
     dispatch(billDate(newDate));
+    dispatch(slectedBillDate(newDate));
   };
   const onNextDate = () => {
     const newDate = new Date(currentDate.getTime());
@@ -240,6 +250,7 @@ function BuyBillBook() {
       setCurrentDate(newDate);
     }
     dispatch(billDate(newDate));
+    dispatch(slectedBillDate(newDate));
   };
   const [showMultiStepsModalStatus, setShowMultiStepsModalStatus] =
     useState(false);
@@ -251,6 +262,11 @@ function BuyBillBook() {
     dispatch(multiSelectPartyType("Seller"));
     dispatch(multiSelectPartners([]));
     dispatch(fromMultiBillView(false));
+    dispatch(
+      slectedBillDate(
+        slectedBillDateVal != null ? new Date(slectedBillDateVal) : new Date()
+      )
+    );
   };
 
   return (
