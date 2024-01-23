@@ -266,16 +266,16 @@ const BillView = (props) => {
     if (editBillTim()) {
       editEvent(arr);
     } else {
-      // if (billData?.advance > 0) {
-      toast.error(
-        "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
-        {
-          toastId: "success33",
-        }
-      );
-      // } else {
-      //   editEvent(arr);
-      // }
+      if (billData?.advance > 0) {
+        toast.error(
+          "The Edit option has been temporarily disabled. Please reach out to mandi heads for assistance",
+          {
+            toastId: "success33",
+          }
+        );
+      } else {
+        editEvent(arr);
+      }
     }
   };
   const editEvent = (arr) => {

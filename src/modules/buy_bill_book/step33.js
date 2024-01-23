@@ -965,7 +965,7 @@ const Step33 = (props) => {
       cashRcvd: Number(cashpaidValue),
       CashCmnt: cashCommentTextVal,
       comm: Number(getTotalValue(commValue).toFixed(2)),
-      commIncluded: includeComm,
+      commIncluded: billEditItem?.commIncluded,
       comments: commentFieldText,
       customFields: editStatus
         ? cstmval
@@ -980,7 +980,7 @@ const Step33 = (props) => {
           : tableChangeStatus
           ? Number(laborChargeValue)
           : Number(getTotalUnits(laborChargeValue).toFixed(2)),
-      less: addRetComm,
+      less: billEditItem.less,
       mandiFee: Number(getTotalValue(mandifeeValue).toFixed(2)),
       misc: Number(otherfeeValue),
       otherFee: Number(otherfeeValue),
@@ -994,7 +994,7 @@ const Step33 = (props) => {
           ? Number(rentValue)
           : Number(getTotalUnits(rentValue).toFixed(2)),
       rtComm: Number(getTotalValue(retcommValue).toFixed(2)),
-      rtCommIncluded: includeRetComm,
+      rtCommIncluded: billEditItem?.rtCommIncluded,
       totalPayRecieevable: getTotalPayble(),
       transportation:
         transTotalValue != 0
